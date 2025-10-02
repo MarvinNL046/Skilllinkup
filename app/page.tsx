@@ -38,7 +38,12 @@ export default function HomePage() {
 
   return (
     <>
-      <HeaderOne postData={allPosts}/>
+      <HeaderOne
+        pClass=""
+        darkLogo="/images/logo/logo-black.webp"
+        lightLogo="/images/logo/logo-white.webp"
+        postData={allPosts}
+      />
       {/* Hero Section: 1 grote featured post + 4 kleine posts */}
       <PostSectionEight postData={allPosts} />
 
@@ -49,7 +54,12 @@ export default function HomePage() {
       <PostSectionSix postData={allPosts} />
 
       {/* Featured Video sectie */}
-      <PostSectionThree postData={videoPost} heading="Featured Video"/>
+      <PostSectionThree
+        postData={videoPost}
+        heading="Featured Video"
+        adBanner={false}
+        bgColor="bg-color-grey"
+      />
 
       {/* Trending Topics - Category carousel */}
       <CategoryList cateData={allPosts}/>

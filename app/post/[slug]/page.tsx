@@ -79,7 +79,12 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
   return (
     <>
-      <HeaderOne postData={allPosts} />
+      <HeaderOne
+        pClass=""
+        darkLogo="/images/logo/logo-black.webp"
+        lightLogo="/images/logo/logo-white.webp"
+        postData={allPosts}
+      />
       {renderPostFormat()}
       <FooterOne />
     </>
