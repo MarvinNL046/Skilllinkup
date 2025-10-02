@@ -30,6 +30,8 @@ async function checkHealth() {
         COUNT(*) AS total_posts,
         COUNT(*) FILTER (WHERE feature_img IS NULL) AS null_images,
         COUNT(*) FILTER (WHERE TRIM(feature_img) = '') AS empty_images,
+        COUNT(*) FILTER (WHERE meta_title IS NULL OR TRIM(meta_title) = '') AS null_meta_titles,
+        COUNT(*) FILTER (WHERE meta_description IS NULL OR TRIM(meta_description) = '') AS null_meta_descriptions,
         COUNT(*) FILTER (WHERE status = 'published') AS published_posts,
         COUNT(*) FILTER (WHERE featured = true) AS featured_posts
       FROM posts;
@@ -41,12 +43,21 @@ async function checkHealth() {
     console.log(`   Total posts: ${stats.total_posts}`);
     console.log(`   Published posts: ${stats.published_posts}`);
     console.log(`   Featured posts: ${stats.featured_posts}`);
+    console.log('');
+    console.log('🖼️  Images:');
     console.log(`   Posts with NULL images: ${stats.null_images}`);
     console.log(`   Posts with empty images: ${stats.empty_images}`);
     console.log('');
+    console.log('🔍 SEO Meta Fields:');
+    console.log(`   Posts missing meta_title: ${stats.null_meta_titles}`);
+    console.log(`   Posts missing meta_description: ${stats.null_meta_descriptions}`);
+    console.log('');
 
     // Check for problematic posts
-    if (Number(stats.null_images) > 0 || Number(stats.empty_images) > 0) {
+    const hasImageIssues = Number(stats.null_images) > 0 || Number(stats.empty_images) > 0;
+    const hasMetaIssues = Number(stats.null_meta_titles) > 0 || Number(stats.null_meta_descriptions) > 0;
+
+    if (hasImageIssues) {
       console.log('⚠️  WARNING: Found posts with missing/empty images!');
       console.log('');
 
@@ -57,19 +68,50 @@ async function checkHealth() {
         LIMIT 10;
       `;
 
-      console.log('First 10 problematic posts:');
+      console.log('Posts with image issues:');
       problematic.forEach(post => {
         console.log(`   - ID ${post.id}: "${post.title}" (${post.slug})`);
         console.log(`     feature_img: ${post.feature_img === null ? 'NULL' : `'${post.feature_img}'`}`);
       });
       console.log('');
 
-      // Offer to fix
-      console.log('💡 To fix these issues, run:');
-      console.log('   node scripts/fix-empty-images.mjs');
+      console.log('💡 To fix image issues, run:');
+      console.log('   npm run db:fix-images');
       console.log('');
     } else {
       console.log('✅ All posts have valid feature images!');
+      console.log('');
+    }
+
+    if (hasMetaIssues) {
+      console.log('⚠️  WARNING: Found posts with missing SEO meta fields!');
+      console.log('');
+
+      const metaProblems = await sql`
+        SELECT id, slug, title, meta_title, meta_description
+        FROM posts
+        WHERE meta_title IS NULL OR TRIM(meta_title) = ''
+           OR meta_description IS NULL OR TRIM(meta_description) = ''
+        LIMIT 10;
+      `;
+
+      console.log('Posts with SEO issues:');
+      metaProblems.forEach(post => {
+        console.log(`   - "${post.title}" (${post.slug})`);
+        if (!post.meta_title || post.meta_title.trim() === '') {
+          console.log(`     ❌ meta_title: ${post.meta_title === null ? 'NULL' : 'EMPTY'}`);
+        }
+        if (!post.meta_description || post.meta_description.trim() === '') {
+          console.log(`     ❌ meta_description: ${post.meta_description === null ? 'NULL' : 'EMPTY'}`);
+        }
+      });
+      console.log('');
+
+      console.log('💡 To fix SEO meta fields, run:');
+      console.log('   npm run db:fix-meta');
+      console.log('');
+    } else {
+      console.log('✅ All posts have valid SEO meta fields!');
       console.log('');
     }
 

@@ -12,7 +12,8 @@
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
     "db:health": "node scripts/db-health-check.mjs",
-    "db:fix-images": "node scripts/fix-empty-images.mjs"
+    "db:fix-images": "node scripts/fix-empty-images.mjs",
+    "db:fix-meta": "node scripts/fix-meta-fields.mjs"
   },
   "dependencies": {
     "@emailjs/browser": "^4.3.3",

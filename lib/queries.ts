@@ -70,6 +70,8 @@ export async function getPublishedPosts(limit = 10, offset = 0): Promise<Post[]>
       p.featured,
       p.sticky,
       p.created_at,
+      COALESCE(NULLIF(TRIM(p.meta_title), ''), CONCAT(p.title, ' - SkillLinkup')) as meta_title,
+      COALESCE(NULLIF(TRIM(p.meta_description), ''), LEFT(p.excerpt, 160)) as meta_description,
       u.id as author_id,
       COALESCE(NULLIF(TRIM(u.name), ''), 'Anonymous') as author_name,
       u.email as author_email,
@@ -125,7 +127,7 @@ export async function getFeaturedPosts(limit = 3): Promise<Post[]> {
   return posts as Post[];
 }
 
-// Query: Get post by slug (SAFE)
+// Query: Get post by slug (SAFE - includes meta fields for SEO)
 export async function getPostBySlug(slug: string): Promise<Post | null> {
   const posts = await sql`
     SELECT
@@ -143,6 +145,8 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       p.featured,
       p.sticky,
       p.created_at,
+      COALESCE(NULLIF(TRIM(p.meta_title), ''), CONCAT(p.title, ' - SkillLinkup')) as meta_title,
+      COALESCE(NULLIF(TRIM(p.meta_description), ''), LEFT(COALESCE(p.excerpt, p.title), 160)) as meta_description,
       u.id as author_id,
       COALESCE(NULLIF(TRIM(u.name), ''), 'Anonymous') as author_name,
       u.email as author_email,
