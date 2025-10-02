@@ -1,20 +1,44 @@
-import type { Metadata } from 'next'
-import '../src/styles/style.scss'
-import 'bootstrap/dist/css/bootstrap.min.css'
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'SkillLinkup - Connect, Learn & Grow',
-  description: 'Your professional learning platform - Connect with experts, learn new skills, and grow your career with SkillLinkup',
-}
+  title: "SkillLinkup - Find the Best Freelance Marketplaces",
+  description: "Compare and discover the best freelance platforms for your skills. Honest reviews, detailed comparisons, and expert insights to help you succeed as a freelancer.",
+  keywords: "freelance platforms, freelance marketplaces, Upwork, Fiverr, freelancer reviews, remote work",
+  openGraph: {
+    title: "SkillLinkup - Find the Best Freelance Marketplaces",
+    description: "Compare and discover the best freelance platforms for your skills.",
+    url: "https://skilllinkup.com",
+    siteName: "SkillLinkup",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SkillLinkup - Find the Best Freelance Marketplaces",
+    description: "Compare and discover the best freelance platforms for your skills.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode
-}) {
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <div className="min-h-screen flex flex-col">
+          {children}
+        </div>
+      </body>
     </html>
-  )
+  );
 }
