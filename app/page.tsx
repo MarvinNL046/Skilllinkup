@@ -10,6 +10,7 @@ import PostSectionFour from '../src/common/components/post/PostSectionFour';
 import SocialOne from '../src/common/components/social/SocialOne';
 import PostSectionSix from '../src/common/components/post/PostSectionSix';
 import { DEFAULTS } from '../lib/defaults';
+import { safeImage, safeText, safeArray, safeNumber, safeBoolean } from '../lib/safe';
 
 export const metadata = {
   title: 'SkillLinkup - SEO Tips & Insights',
@@ -21,36 +22,31 @@ export const dynamic = 'force-dynamic';
 
 /**
  * Normalize post data to prevent undefined/null crashes
- * Single source of truth for data transformation
+ * Single source of truth for data transformation with safe helpers
  */
 function normalizePost(post: any) {
   if (!post || typeof post !== 'object') {
     return null; // Invalid post, will be filtered out
   }
 
-  // Ensure author_social is always a valid array
-  const authorSocial = Array.isArray(post.author_social)
-    ? post.author_social.filter((s: any) => s && typeof s === 'object')
-    : DEFAULTS.authorSocial;
-
   return {
-    id: post.id || '',
-    title: post.title || DEFAULTS.title,
-    featureImg: post.feature_img || post.featureImg || DEFAULTS.featureImg,
-    postFormat: post.post_format || DEFAULTS.postFormat,
-    featured: post.featured || false,
-    slidePost: post.featured || false,
+    id: safeText(post.id, ''),
+    title: safeText(post.title, DEFAULTS.title),
+    featureImg: safeImage(post.feature_img || post.featureImg, DEFAULTS.featureImg),
+    postFormat: safeText(post.post_format, DEFAULTS.postFormat),
+    featured: safeBoolean(post.featured, false),
+    slidePost: safeBoolean(post.featured, false),
     date: post.published_at ? new Date(post.published_at).toISOString() : new Date().toISOString(),
-    slug: post.slug || '',
-    cate: post.category_name || DEFAULTS.category,
+    slug: safeText(post.slug, ''),
+    cate: safeText(post.category_name, DEFAULTS.category),
     cate_img: DEFAULTS.categoryImg,
-    author_img: post.author_avatar || post.author_img || DEFAULTS.authorImg,
-    author_name: post.author_name || DEFAULTS.authorName,
-    post_views: post.views || DEFAULTS.views,
-    read_time: post.read_time || DEFAULTS.readTime,
-    author_social: authorSocial,
-    excerpt: post.excerpt || DEFAULTS.excerpt,
-    content: post.content || DEFAULTS.content,
+    author_img: safeImage(post.author_avatar || post.author_img, DEFAULTS.authorImg),
+    author_name: safeText(post.author_name, DEFAULTS.authorName),
+    post_views: safeNumber(post.views, DEFAULTS.views),
+    read_time: safeNumber(post.read_time, DEFAULTS.readTime),
+    author_social: safeArray(post.author_social),
+    excerpt: safeText(post.excerpt, DEFAULTS.excerpt),
+    content: safeText(post.content, DEFAULTS.content),
   };
 }
 

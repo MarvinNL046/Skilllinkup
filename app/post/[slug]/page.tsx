@@ -7,6 +7,7 @@ import PostFormatAudio from '../../../src/common/components/post/format/PostForm
 import PostFormatGallery from '../../../src/common/components/post/format/PostFormatGallery';
 import PostFormatQuote from '../../../src/common/components/post/format/PostFormatQuote';
 import { DEFAULTS } from '../../../lib/defaults';
+import { safeImage, safeText, safeArray } from '../../../lib/safe';
 
 export async function generateStaticParams() {
   const posts = getAllPosts(['slug']);
@@ -30,10 +31,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       };
     }
 
-    // Safe fallback for all metadata fields
-    const title = post.title || DEFAULTS.title;
-    const description = post.excerpt || post.title || 'SkillLinkup blog post';
-    const ogImage = post.featureImg || DEFAULTS.ogImg;
+    // Safe fallback for all metadata fields using safe helpers
+    const title = safeText(post.title, DEFAULTS.title);
+    const description = safeText(post.excerpt || post.title, 'SkillLinkup blog post');
+    const ogImage = safeImage(post.featureImg, DEFAULTS.ogImg);
 
     return {
       title: `${title} - SkillLinkup`,
@@ -125,20 +126,16 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     );
   }
 
-  // Normalize post data with safe defaults using DEFAULTS
-  const authorSocial = Array.isArray(post.author_social)
-    ? post.author_social.filter((s: any) => s && typeof s === 'object')
-    : DEFAULTS.authorSocial;
-
+  // Normalize post data with safe defaults using safe helpers
   const normalizedPost = {
     ...post,
-    title: post.title || DEFAULTS.title,
-    featureImg: post.featureImg || DEFAULTS.featureImg,
-    author_img: post.author_img || DEFAULTS.authorImg,
-    author_name: post.author_name || DEFAULTS.authorName,
-    author_social: authorSocial,
-    excerpt: post.excerpt || DEFAULTS.excerpt,
-    content: post.content || DEFAULTS.content,
+    title: safeText(post.title, DEFAULTS.title),
+    featureImg: safeImage(post.featureImg, DEFAULTS.featureImg),
+    author_img: safeImage(post.author_img, DEFAULTS.authorImg),
+    author_name: safeText(post.author_name, DEFAULTS.authorName),
+    author_social: safeArray(post.author_social),
+    excerpt: safeText(post.excerpt, DEFAULTS.excerpt),
+    content: safeText(post.content, DEFAULTS.content),
   };
 
   // Select the appropriate post format component based on postFormat
