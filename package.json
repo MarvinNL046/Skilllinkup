@@ -20,26 +20,13 @@
     "db:add-posts": "node scripts/add-posts.mjs"
   },
   "dependencies": {
-    "@emailjs/browser": "^4.3.3",
     "@neondatabase/serverless": "^1.0.2",
-    "bootstrap": "^5.3.3",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.6",
-    "framer-motion": "^11.0.8",
-    "gray-matter": "^4.0.3",
-    "luxon": "^3.4.4",
     "next": "^15.5.4",
     "react": "^19.2.0",
-    "react-audio-player": "^0.17.0",
-    "react-bootstrap": "^2.10.1",
     "react-dom": "^19.2.0",
-    "react-paginate": "^8.2.0",
-    "react-search-box": "^2.3.0",
-    "react-slick": "^0.30.2",
-    "remark": "^15.0.1",
-    "remark-html": "^16.0.1",
     "resend": "^6.1.2",
-    "sass": "^1.71.1",
     "sharp": "^0.33.2"
   },
   "devDependencies": {
