@@ -10,6 +10,10 @@ import PostSectionFour from '../src/common/components/post/PostSectionFour';
 import SocialOne from '../src/common/components/social/SocialOne';
 import PostSectionSix from '../src/common/components/post/PostSectionSix';
 
+// Fallback constants for safe rendering
+const DEFAULT_FEATURE_IMG = '/images/posts/lifestyle-post-01.webp';
+const DEFAULT_AUTHOR_IMG = '/images/posts/author/author-image-1.png';
+
 export const metadata = {
   title: 'SkillLinkup - SEO Tips & Insights',
   description: 'Learn SEO strategies, tips and techniques to grow your online presence with SkillLinkup',
@@ -35,7 +39,7 @@ export default async function HomePage() {
   const allPosts = dbPosts.map(post => ({
     id: post?.id || '',
     title: post?.title || 'Untitled',
-    featureImg: post?.feature_img || '/images/post-images/post-grid-01.jpg',
+    featureImg: post?.feature_img || DEFAULT_FEATURE_IMG,
     postFormat: post?.post_format || 'standard',
     featured: post?.featured || false,
     slidePost: post?.featured || false,
@@ -43,7 +47,7 @@ export default async function HomePage() {
     slug: post?.slug || '',
     cate: post?.category_name || 'Uncategorized',
     cate_img: '',
-    author_img: post?.author_avatar || '/images/post-images/author/author-image-1.png',
+    author_img: post?.author_avatar || DEFAULT_AUTHOR_IMG,
     author_name: post?.author_name || 'Anonymous',
     post_views: post?.views || 0,
     read_time: post?.read_time || 5,
