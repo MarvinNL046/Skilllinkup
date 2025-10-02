@@ -31,23 +31,25 @@ export default async function HomePage() {
     // Continue with empty arrays - components will handle gracefully
   }
 
-  // Transform database posts to component format
+  // Transform database posts to component format with safe defaults
   const allPosts = dbPosts.map(post => ({
-    id: post.id,
-    title: post.title,
-    featureImg: post.feature_img || '/images/post-images/post-grid-01.jpg',
-    postFormat: post.post_format || 'standard',
-    featured: post.featured,
-    slidePost: post.featured,
-    date: post.published_at ? new Date(post.published_at).toISOString() : new Date().toISOString(),
-    slug: post.slug,
-    cate: post.category_name || 'Uncategorized',
+    id: post?.id || '',
+    title: post?.title || 'Untitled',
+    featureImg: post?.feature_img || '/images/post-images/post-grid-01.jpg',
+    postFormat: post?.post_format || 'standard',
+    featured: post?.featured || false,
+    slidePost: post?.featured || false,
+    date: post?.published_at ? new Date(post.published_at).toISOString() : new Date().toISOString(),
+    slug: post?.slug || '',
+    cate: post?.category_name || 'Uncategorized',
     cate_img: '',
-    author_img: post.author_avatar || '/images/post-images/author/author-image-1.png',
-    author_name: post.author_name || 'Anonymous',
-    post_views: post.views || 0,
-    read_time: post.read_time || 5,
-    author_social: {},
+    author_img: post?.author_avatar || '/images/post-images/author/author-image-1.png',
+    author_name: post?.author_name || 'Anonymous',
+    post_views: post?.views || 0,
+    read_time: post?.read_time || 5,
+    author_social: [], // Components expect an array
+    excerpt: post?.excerpt || '',
+    content: post?.content || '',
   }));
 
   const videoPost = allPosts.filter(post => post.postFormat === "video");
