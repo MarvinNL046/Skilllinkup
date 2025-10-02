@@ -9,10 +9,7 @@ import CategoryList from '../src/common/components/category/CategoryList';
 import PostSectionFour from '../src/common/components/post/PostSectionFour';
 import SocialOne from '../src/common/components/social/SocialOne';
 import PostSectionSix from '../src/common/components/post/PostSectionSix';
-
-// Fallback constants for safe rendering
-const DEFAULT_FEATURE_IMG = '/images/posts/lifestyle-post-01.webp';
-const DEFAULT_AUTHOR_IMG = '/images/posts/author/author-image-1.png';
+import { DEFAULTS } from '../lib/defaults';
 
 export const metadata = {
   title: 'SkillLinkup - SEO Tips & Insights',
@@ -31,24 +28,29 @@ function normalizePost(post: any) {
     return null; // Invalid post, will be filtered out
   }
 
+  // Ensure author_social is always a valid array
+  const authorSocial = Array.isArray(post.author_social)
+    ? post.author_social.filter((s: any) => s && typeof s === 'object')
+    : DEFAULTS.authorSocial;
+
   return {
     id: post.id || '',
-    title: post.title || 'Untitled',
-    featureImg: post.feature_img || DEFAULT_FEATURE_IMG,
-    postFormat: post.post_format || 'standard',
+    title: post.title || DEFAULTS.title,
+    featureImg: post.feature_img || post.featureImg || DEFAULTS.featureImg,
+    postFormat: post.post_format || DEFAULTS.postFormat,
     featured: post.featured || false,
     slidePost: post.featured || false,
     date: post.published_at ? new Date(post.published_at).toISOString() : new Date().toISOString(),
     slug: post.slug || '',
-    cate: post.category_name || 'Uncategorized',
-    cate_img: '',
-    author_img: post.author_avatar || DEFAULT_AUTHOR_IMG,
-    author_name: post.author_name || 'Anonymous',
-    post_views: post.views || 0,
-    read_time: post.read_time || 5,
-    author_social: Array.isArray(post.author_social) ? post.author_social : [],
-    excerpt: post.excerpt || '',
-    content: post.content || '',
+    cate: post.category_name || DEFAULTS.category,
+    cate_img: DEFAULTS.categoryImg,
+    author_img: post.author_avatar || post.author_img || DEFAULTS.authorImg,
+    author_name: post.author_name || DEFAULTS.authorName,
+    post_views: post.views || DEFAULTS.views,
+    read_time: post.read_time || DEFAULTS.readTime,
+    author_social: authorSocial,
+    excerpt: post.excerpt || DEFAULTS.excerpt,
+    content: post.content || DEFAULTS.content,
   };
 }
 

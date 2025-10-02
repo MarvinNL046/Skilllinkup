@@ -6,6 +6,7 @@ import PostFormatVideo from '../../../src/common/components/post/format/PostForm
 import PostFormatAudio from '../../../src/common/components/post/format/PostFormatAudio';
 import PostFormatGallery from '../../../src/common/components/post/format/PostFormatGallery';
 import PostFormatQuote from '../../../src/common/components/post/format/PostFormatQuote';
+import { DEFAULTS } from '../../../lib/defaults';
 
 export async function generateStaticParams() {
   const posts = getAllPosts(['slug']);
@@ -24,25 +25,30 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       return {
         title: 'Post Not Found - SkillLinkup',
         description: 'The requested post could not be found.',
+        openGraph: { images: [DEFAULTS.ogImg] },
+        twitter: { images: [DEFAULTS.ogImg] },
       };
     }
 
-    const ogImage = post.featureImg || '/images/posts/lifestyle-post-01.webp';
+    // Safe fallback for all metadata fields
+    const title = post.title || DEFAULTS.title;
+    const description = post.excerpt || post.title || 'SkillLinkup blog post';
+    const ogImage = post.featureImg || DEFAULTS.ogImg;
 
     return {
-      title: `${post.title || 'Untitled'} - SkillLinkup`,
-      description: post.excerpt || post.title || 'SkillLinkup blog post',
+      title: `${title} - SkillLinkup`,
+      description,
       openGraph: {
-        title: post.title || 'Untitled',
-        description: post.excerpt || post.title || 'SkillLinkup blog post',
-        images: [ogImage],
+        title,
+        description,
+        images: [ogImage], // Always a valid string
         type: 'article',
       },
       twitter: {
-        card: 'summary_large_image',
-        title: post.title || 'Untitled',
-        description: post.excerpt || post.title || 'SkillLinkup blog post',
-        images: [ogImage],
+        card: 'summary_large_image' as const,
+        title,
+        description,
+        images: [ogImage], // Always a valid string
       },
     };
   } catch (error) {
@@ -50,6 +56,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return {
       title: 'SkillLinkup',
       description: 'SEO Tips & Insights',
+      openGraph: { images: [DEFAULTS.ogImg] },
+      twitter: { images: [DEFAULTS.ogImg] },
     };
   }
 }
@@ -117,12 +125,20 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     );
   }
 
-  // Normalize post data with safe defaults
+  // Normalize post data with safe defaults using DEFAULTS
+  const authorSocial = Array.isArray(post.author_social)
+    ? post.author_social.filter((s: any) => s && typeof s === 'object')
+    : DEFAULTS.authorSocial;
+
   const normalizedPost = {
     ...post,
-    featureImg: post.featureImg || '/images/posts/lifestyle-post-01.webp',
-    author_img: post.author_img || '/images/posts/author/author-image-1.png',
-    author_social: Array.isArray(post.author_social) ? post.author_social : [],
+    title: post.title || DEFAULTS.title,
+    featureImg: post.featureImg || DEFAULTS.featureImg,
+    author_img: post.author_img || DEFAULTS.authorImg,
+    author_name: post.author_name || DEFAULTS.authorName,
+    author_social: authorSocial,
+    excerpt: post.excerpt || DEFAULTS.excerpt,
+    content: post.content || DEFAULTS.content,
   };
 
   // Select the appropriate post format component based on postFormat
