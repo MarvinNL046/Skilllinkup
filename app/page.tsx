@@ -19,8 +19,8 @@ export const metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  let dbPosts = [];
-  let featuredPosts = [];
+  let dbPosts: Awaited<ReturnType<typeof getPublishedPosts>> = [];
+  let featuredPosts: Awaited<ReturnType<typeof getFeaturedPosts>> = [];
 
   try {
     // Fetch posts from database

@@ -1,15 +1,9 @@
-import { neon } from '@netlify/neon';
-import { neon as neonServerless } from '@neondatabase/serverless';
+import { neon } from '@neondatabase/serverless';
 
-// Detect environment
-const isNetlify = process.env.NETLIFY === 'true';
-
-// Get database URL
+// Detect environment and get database URL
 const getDatabaseUrl = () => {
-  if (isNetlify) {
-    return process.env.NETLIFY_DATABASE_URL || process.env.DATABASE_URL;
-  }
-  return process.env.DATABASE_URL;
+  // Try Netlify-specific env var first, then fall back to standard DATABASE_URL
+  return process.env.NETLIFY_DATABASE_URL || process.env.DATABASE_URL;
 };
 
 // Create SQL client factory
@@ -28,12 +22,13 @@ const createSqlClient = () => {
     );
   }
 
-  return isNetlify ? neon(databaseUrl) : neonServerless(databaseUrl);
+  console.log('✅ Database client initialized');
+  return neon(databaseUrl);
 };
 
 // Lazy initialization - only create client when needed
-let sqlClient: ReturnType<typeof neon> | ReturnType<typeof neonServerless> | null = null;
-export const sql: ReturnType<typeof neon> | ReturnType<typeof neonServerless> = new Proxy({} as any, {
+let sqlClient: ReturnType<typeof neon> | null = null;
+export const sql: ReturnType<typeof neon> = new Proxy({} as any, {
   get(target, prop) {
     if (!sqlClient) {
       sqlClient = createSqlClient();
