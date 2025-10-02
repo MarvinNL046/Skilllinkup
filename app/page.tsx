@@ -71,6 +71,17 @@ export default async function HomePage() {
 
   const videoPost = allPosts.filter(post => post.postFormat === "video");
 
+  // Serialize-safe data for client components (prevents JSON.stringify crashes)
+  const serializablePosts = allPosts.map(post => ({
+    id: post.id,
+    title: post.title,
+    slug: post.slug,
+    featureImg: post.featureImg,
+    cate: post.cate,
+    author_name: post.author_name,
+    date: post.date,
+  }));
+
   // Show loading/empty state if no posts
   if (!allPosts || allPosts.length === 0) {
     return (
@@ -98,7 +109,7 @@ export default async function HomePage() {
         pClass=""
         darkLogo="/images/logo/logo-black.webp"
         lightLogo="/images/logo/logo-white.webp"
-        postData={allPosts}
+        postData={serializablePosts}
       />
       {/* Hero Section: 1 grote featured post + 4 kleine posts */}
       <PostSectionEight postData={allPosts} />
