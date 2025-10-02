@@ -3,8 +3,13 @@ import Image from "next/image";
 import { slugify } from '../../utils/functions';
 
 const PostSectionNine = ({ postData, bgColor }) => {
+  // Handle empty or insufficient data
+  if (!postData || postData.length === 0) {
+    return null;
+  }
 
   const firstPost = postData[0];
+  const additionalPosts = postData.slice(1, 5).filter(post => post && post.slug);
 
   return (
     <div className={`axil-tech-post-banner ${bgColor || "bg-color-grey"}`}>
@@ -12,7 +17,7 @@ const PostSectionNine = ({ postData, bgColor }) => {
         <div className="row">
           <div className="col-xl-6 col-md-12 col-12 mt--30">
             <div className="content-block post-grid post-grid-transparent">
-            {firstPost.featureImg ? 
+            {firstPost && firstPost.featureImg ?
               <div className="post-thumbnail">
                 <Link href={`/post/${firstPost.slug}`}>
                     <Image
@@ -46,7 +51,7 @@ const PostSectionNine = ({ postData, bgColor }) => {
           </div>
           <div className="col-xl-6 col-lg-6 col-md-12 col-md-6 col-12">
             <div className="row">
-              {postData.slice(1, 5).map((data) => (
+              {additionalPosts.map((data) => (
                 <div className="col-lg-6 col-md-6 col-sm-6 col-12 mt--30" key={data.slug}>
                   <div className="content-block post-default image-rounded">
                   {data.featureImg ? 

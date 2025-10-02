@@ -23,6 +23,8 @@ const PostSectionEight = ({ postData }) => {
 	}
 
 	const firstPost = postData[0];
+	// Only show additional posts if we have them (prevents undefined errors)
+	const additionalPosts = postData.slice(1, 5).filter(post => post && post.slug);
 
   return (
     <div className="axil-seo-post-banner seoblog-banner axil-section-gap bg-color-grey">
@@ -30,7 +32,7 @@ const PostSectionEight = ({ postData }) => {
         <div className="row">
           <div className="col-xl-7 col-lg-7 col-md-12 col-12">
             <div className="content-block post-grid post-grid-large">
-            {firstPost.featureImg ? 
+            {firstPost && firstPost.featureImg ? 
               <div className="post-thumbnail">
                 <Link href={`/post/${firstPost.slug}`}>
                     <Image
@@ -104,7 +106,7 @@ const PostSectionEight = ({ postData }) => {
           </div>
           <div className="col-xl-5 col-lg-5 col-md-12 col-12 mt_md--30 mt_sm--30">
             <div className="row g-4">
-			{postData.slice(1, 5).map((data) => (
+			{additionalPosts.map((data) => (
 				<div className="col-md-6 col-sm-6 col-12" key={data.slug}>
                   <div className="content-block post-grid post-grid-small">
           {data.featureImg ?

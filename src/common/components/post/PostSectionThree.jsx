@@ -5,8 +5,13 @@ import { SectionTitleOne } from "../../elements/sectionTitle/SectionTitle";
 import AddBanner from "../ad-banner/AddBanner";
 
 const PostSectionThree = ({ postData, adBanner, bgColor, heading }) => {
+  // Handle empty or insufficient data
+  if (!postData || postData.length === 0) {
+    return null;
+  }
 
   const firstPost = postData[0];
+  const additionalPosts = postData.slice(1, 5).filter(post => post && post.slug);
 
   return (
     <div className={`axil-video-post-area axil-section-gap ${bgColor || "bg-color-black"}`}>
@@ -24,7 +29,7 @@ const PostSectionThree = ({ postData, adBanner, bgColor, heading }) => {
         <div className="row">
           <div className="col-xl-6 col-lg-6 col-md-12 col-md-6 col-12">
             <div className="content-block post-default image-rounded mt--30">
-            {firstPost.featureImg ? 
+            {firstPost && firstPost.featureImg ?
               <div className="post-thumbnail">
                 <Link href={`/post/${firstPost.slug}`}>
                     <Image
@@ -88,7 +93,7 @@ const PostSectionThree = ({ postData, adBanner, bgColor, heading }) => {
           </div>
           <div className="col-xl-6 col-lg-6 col-md-12 col-md-6 col-12">
             <div className="row">
-              {postData.slice(1, 5).map((data) => (
+              {additionalPosts.map((data) => (
                 <div className="col-lg-6 col-md-6 col-sm-6 col-12" key={data.slug}>
                   <div className="content-block post-default image-rounded mt--30">
                   {data.featureImg ? 

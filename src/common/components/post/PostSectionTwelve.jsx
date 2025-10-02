@@ -3,8 +3,13 @@ import Image from "next/image";
 import { slugify } from '../../utils/functions';
 
 const PostSectionTwelve = ({ postData }) => {
+  // Handle empty or insufficient data
+  if (!postData || postData.length === 0) {
+    return null;
+  }
 
   const firstPost = postData[0];
+  const additionalPosts = postData.slice(1, 5).filter(post => post && post.slug);
 
   return (
     <div className="slider-area bg-color-grey pt--60 pb--80">
@@ -12,7 +17,7 @@ const PostSectionTwelve = ({ postData }) => {
         <div className="row row--10">
           <div className="col-lg-12 col-xl-6 col-md-12 col-12 mt--20">
             <div className="content-block post-grid post-grid-transparent post-overlay-bottom">
-            {firstPost.featureImg ? 
+            {firstPost && firstPost.featureImg ?
               <div className="post-thumbnail">
                 <Link href={`/post/${firstPost.slug}`}>
                     <Image
@@ -46,7 +51,7 @@ const PostSectionTwelve = ({ postData }) => {
           </div>
           <div className="col-lg-12 col-xl-6 col-md-12 col-12 mt_lg--20 mt_md--20 mt_sm--20">
             <div className="row row--10">
-              {postData.slice(1, 5).map((data) => (
+              {additionalPosts.map((data) => (
                 <div className="col-lg-6 col-md-6 col-sm-6 col-12 mt--20" key={data.slug}>
                   <div className="content-block post-grid post-grid-transparent post-grid-small post-overlay-bottom">
                   {data.featureImg ? 
