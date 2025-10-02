@@ -52,7 +52,7 @@ export interface Category {
   post_count?: number;
 }
 
-// Query: Get all published posts
+// Query: Get all published posts (SAFE: returns camelCase + never NULL/empty strings)
 export async function getPublishedPosts(limit = 10, offset = 0): Promise<Post[]> {
   const posts = await sql`
     SELECT
@@ -61,7 +61,7 @@ export async function getPublishedPosts(limit = 10, offset = 0): Promise<Post[]>
       p.slug,
       p.excerpt,
       p.content,
-      p.feature_img,
+      COALESCE(NULLIF(TRIM(p.feature_img), ''), '/images/posts/lifestyle-post-01.webp') AS feature_img,
       p.post_format,
       p.status,
       p.published_at,
@@ -71,11 +71,11 @@ export async function getPublishedPosts(limit = 10, offset = 0): Promise<Post[]>
       p.sticky,
       p.created_at,
       u.id as author_id,
-      u.name as author_name,
+      COALESCE(NULLIF(TRIM(u.name), ''), 'Anonymous') as author_name,
       u.email as author_email,
-      u.avatar as author_avatar,
+      COALESCE(NULLIF(TRIM(u.avatar), ''), '/images/posts/author/author-image-1.png') as author_avatar,
       c.id as category_id,
-      c.name as category_name,
+      COALESCE(c.name, 'Uncategorized') as category_name,
       c.slug as category_slug
     FROM posts p
     LEFT JOIN users u ON p.author_id = u.id
@@ -89,7 +89,7 @@ export async function getPublishedPosts(limit = 10, offset = 0): Promise<Post[]>
   return posts as Post[];
 }
 
-// Query: Get featured posts
+// Query: Get featured posts (SAFE)
 export async function getFeaturedPosts(limit = 3): Promise<Post[]> {
   const posts = await sql`
     SELECT
@@ -98,7 +98,7 @@ export async function getFeaturedPosts(limit = 3): Promise<Post[]> {
       p.slug,
       p.excerpt,
       p.content,
-      p.feature_img,
+      COALESCE(NULLIF(TRIM(p.feature_img), ''), '/images/posts/lifestyle-post-01.webp') AS feature_img,
       p.post_format,
       p.status,
       p.published_at,
@@ -108,11 +108,11 @@ export async function getFeaturedPosts(limit = 3): Promise<Post[]> {
       p.sticky,
       p.created_at,
       u.id as author_id,
-      u.name as author_name,
+      COALESCE(NULLIF(TRIM(u.name), ''), 'Anonymous') as author_name,
       u.email as author_email,
-      u.avatar as author_avatar,
+      COALESCE(NULLIF(TRIM(u.avatar), ''), '/images/posts/author/author-image-1.png') as author_avatar,
       c.id as category_id,
-      c.name as category_name,
+      COALESCE(c.name, 'Uncategorized') as category_name,
       c.slug as category_slug
     FROM posts p
     LEFT JOIN users u ON p.author_id = u.id
@@ -125,7 +125,7 @@ export async function getFeaturedPosts(limit = 3): Promise<Post[]> {
   return posts as Post[];
 }
 
-// Query: Get post by slug
+// Query: Get post by slug (SAFE)
 export async function getPostBySlug(slug: string): Promise<Post | null> {
   const posts = await sql`
     SELECT
@@ -134,7 +134,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       p.slug,
       p.excerpt,
       p.content,
-      p.feature_img,
+      COALESCE(NULLIF(TRIM(p.feature_img), ''), '/images/posts/lifestyle-post-01.webp') AS feature_img,
       p.post_format,
       p.status,
       p.published_at,
@@ -144,11 +144,11 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       p.sticky,
       p.created_at,
       u.id as author_id,
-      u.name as author_name,
+      COALESCE(NULLIF(TRIM(u.name), ''), 'Anonymous') as author_name,
       u.email as author_email,
-      u.avatar as author_avatar,
+      COALESCE(NULLIF(TRIM(u.avatar), ''), '/images/posts/author/author-image-1.png') as author_avatar,
       c.id as category_id,
-      c.name as category_name,
+      COALESCE(c.name, 'Uncategorized') as category_name,
       c.slug as category_slug
     FROM posts p
     LEFT JOIN users u ON p.author_id = u.id
@@ -160,7 +160,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
   return (posts[0] as Post) || null;
 }
 
-// Query: Get posts by category
+// Query: Get posts by category (SAFE)
 export async function getPostsByCategory(categorySlug: string, limit = 10): Promise<Post[]> {
   const posts = await sql`
     SELECT
@@ -169,7 +169,7 @@ export async function getPostsByCategory(categorySlug: string, limit = 10): Prom
       p.slug,
       p.excerpt,
       p.content,
-      p.feature_img,
+      COALESCE(NULLIF(TRIM(p.feature_img), ''), '/images/posts/lifestyle-post-01.webp') AS feature_img,
       p.post_format,
       p.status,
       p.published_at,
@@ -179,11 +179,11 @@ export async function getPostsByCategory(categorySlug: string, limit = 10): Prom
       p.sticky,
       p.created_at,
       u.id as author_id,
-      u.name as author_name,
+      COALESCE(NULLIF(TRIM(u.name), ''), 'Anonymous') as author_name,
       u.email as author_email,
-      u.avatar as author_avatar,
+      COALESCE(NULLIF(TRIM(u.avatar), ''), '/images/posts/author/author-image-1.png') as author_avatar,
       c.id as category_id,
-      c.name as category_name,
+      COALESCE(c.name, 'Uncategorized') as category_name,
       c.slug as category_slug
     FROM posts p
     LEFT JOIN users u ON p.author_id = u.id
@@ -215,17 +215,17 @@ export async function getCategories(): Promise<Category[]> {
   return categories as Category[];
 }
 
-// Query: Get recent posts (for sidebar)
+// Query: Get recent posts (for sidebar) (SAFE)
 export async function getRecentPosts(limit = 5): Promise<Post[]> {
   const posts = await sql`
     SELECT
       p.id,
       p.title,
       p.slug,
-      p.feature_img,
+      COALESCE(NULLIF(TRIM(p.feature_img), ''), '/images/posts/lifestyle-post-01.webp') AS feature_img,
       p.published_at,
       p.views,
-      c.name as category_name,
+      COALESCE(c.name, 'Uncategorized') as category_name,
       c.slug as category_slug
     FROM posts p
     LEFT JOIN categories c ON p.category_id = c.id
@@ -235,4 +235,43 @@ export async function getRecentPosts(limit = 5): Promise<Post[]> {
   `;
 
   return posts as Post[];
+}
+
+// Utility: Check database health and data quality
+export async function checkDatabaseHealth() {
+  try {
+    const result = await sql`
+      SELECT
+        COUNT(*) AS total_posts,
+        COUNT(*) FILTER (WHERE feature_img IS NULL) AS null_images,
+        COUNT(*) FILTER (WHERE TRIM(feature_img) = '') AS empty_images,
+        COUNT(*) FILTER (WHERE status = 'published') AS published_posts,
+        COUNT(*) FILTER (WHERE featured = true) AS featured_posts
+      FROM posts;
+    `;
+
+    console.log('📊 Database Health Check:', result[0]);
+    return result[0];
+  } catch (error) {
+    console.error('❌ Database health check failed:', error);
+    return null;
+  }
+}
+
+// Utility: Fix NULL/empty feature_img in database
+export async function fixEmptyImages() {
+  try {
+    const result = await sql`
+      UPDATE posts
+      SET feature_img = '/images/posts/lifestyle-post-01.webp'
+      WHERE feature_img IS NULL OR TRIM(feature_img) = ''
+      RETURNING id, slug, feature_img;
+    `;
+
+    console.log(`✅ Fixed ${result.length} posts with empty images`);
+    return result;
+  } catch (error) {
+    console.error('❌ Failed to fix empty images:', error);
+    return [];
+  }
 }

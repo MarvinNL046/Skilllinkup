@@ -20,6 +20,11 @@ export const metadata = {
 // Force dynamic rendering to avoid database queries during build
 export const dynamic = 'force-dynamic';
 
+// Use Node.js runtime (CRITICAL for Neon compatibility)
+// The @neondatabase/serverless driver works on both edge and nodejs,
+// but for Netlify we explicitly use nodejs to ensure stability
+export const runtime = 'nodejs';
+
 /**
  * Normalize post data to prevent undefined/null crashes
  * Single source of truth for data transformation with safe helpers

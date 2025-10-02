@@ -10,7 +10,9 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "db:health": "node scripts/db-health-check.mjs",
+    "db:fix-images": "node scripts/fix-empty-images.mjs"
   },
   "dependencies": {
     "@emailjs/browser": "^4.3.3",
