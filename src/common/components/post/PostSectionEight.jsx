@@ -7,6 +7,20 @@ import { slugify } from '../../utils/functions';
 
 
 const PostSectionEight = ({ postData }) => {
+	// Handle empty postData gracefully
+	if (!postData || postData.length === 0) {
+		return (
+			<div className="axil-seo-post-banner seoblog-banner axil-section-gap bg-color-grey">
+				<div className="container">
+					<div className="row">
+						<div className="col-12">
+							<p className="text-center">No posts available yet.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
 
 	const firstPost = postData[0];
 

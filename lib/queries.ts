@@ -1,47 +1,22 @@
 import { neon } from '@neondatabase/serverless';
 
-// Detect environment and get database URL
-const getDatabaseUrl = () => {
-  // Try Netlify-specific env var first, then fall back to standard DATABASE_URL
-  return process.env.NETLIFY_DATABASE_URL || process.env.DATABASE_URL;
-};
+// Get database URL - try Netlify-specific env var first
+const databaseUrl = process.env.NETLIFY_DATABASE_URL || process.env.DATABASE_URL;
 
-// Create SQL client factory
-const createSqlClient = () => {
-  const databaseUrl = getDatabaseUrl();
+if (!databaseUrl) {
+  console.error('❌ Database URL not configured');
+  console.error('Environment:', {
+    NETLIFY: process.env.NETLIFY,
+    hasNETLIFY_DATABASE_URL: !!process.env.NETLIFY_DATABASE_URL,
+    hasDATABASE_URL: !!process.env.DATABASE_URL,
+  });
+  throw new Error(
+    'Database URL not configured. Please set DATABASE_URL or NETLIFY_DATABASE_URL environment variable.'
+  );
+}
 
-  if (!databaseUrl) {
-    console.error('❌ Database URL not configured');
-    console.error('Environment:', {
-      NETLIFY: process.env.NETLIFY,
-      hasNETLIFY_DATABASE_URL: !!process.env.NETLIFY_DATABASE_URL,
-      hasDATABASE_URL: !!process.env.DATABASE_URL,
-    });
-    throw new Error(
-      'Database URL not configured. Please set DATABASE_URL or NETLIFY_DATABASE_URL environment variable.'
-    );
-  }
-
-  console.log('✅ Database client initialized');
-  return neon(databaseUrl);
-};
-
-// Lazy initialization - only create client when needed
-let sqlClient: ReturnType<typeof neon> | null = null;
-export const sql: ReturnType<typeof neon> = new Proxy({} as any, {
-  get(target, prop) {
-    if (!sqlClient) {
-      sqlClient = createSqlClient();
-    }
-    return sqlClient[prop as keyof typeof sqlClient];
-  },
-  apply(target, thisArg, args) {
-    if (!sqlClient) {
-      sqlClient = createSqlClient();
-    }
-    return (sqlClient as any).apply(thisArg, args);
-  }
-});
+// Create SQL client - simple and direct
+export const sql = neon(databaseUrl);
 
 // Type definitions
 export interface Post {
