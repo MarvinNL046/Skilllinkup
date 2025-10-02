@@ -22,6 +22,36 @@ export const metadata = {
 // Force dynamic rendering to avoid database queries during build
 export const dynamic = 'force-dynamic';
 
+/**
+ * Normalize post data to prevent undefined/null crashes
+ * Single source of truth for data transformation
+ */
+function normalizePost(post: any) {
+  if (!post || typeof post !== 'object') {
+    return null; // Invalid post, will be filtered out
+  }
+
+  return {
+    id: post.id || '',
+    title: post.title || 'Untitled',
+    featureImg: post.feature_img || DEFAULT_FEATURE_IMG,
+    postFormat: post.post_format || 'standard',
+    featured: post.featured || false,
+    slidePost: post.featured || false,
+    date: post.published_at ? new Date(post.published_at).toISOString() : new Date().toISOString(),
+    slug: post.slug || '',
+    cate: post.category_name || 'Uncategorized',
+    cate_img: '',
+    author_img: post.author_avatar || DEFAULT_AUTHOR_IMG,
+    author_name: post.author_name || 'Anonymous',
+    post_views: post.views || 0,
+    read_time: post.read_time || 5,
+    author_social: Array.isArray(post.author_social) ? post.author_social : [],
+    excerpt: post.excerpt || '',
+    content: post.content || '',
+  };
+}
+
 export default async function HomePage() {
   let dbPosts: Awaited<ReturnType<typeof getPublishedPosts>> = [];
   let featuredPosts: Awaited<ReturnType<typeof getFeaturedPosts>> = [];
@@ -35,31 +65,16 @@ export default async function HomePage() {
     // Continue with empty arrays - components will handle gracefully
   }
 
-  // Transform database posts to component format with safe defaults
-  const allPosts = dbPosts.map(post => ({
-    id: post?.id || '',
-    title: post?.title || 'Untitled',
-    featureImg: post?.feature_img || DEFAULT_FEATURE_IMG,
-    postFormat: post?.post_format || 'standard',
-    featured: post?.featured || false,
-    slidePost: post?.featured || false,
-    date: post?.published_at ? new Date(post.published_at).toISOString() : new Date().toISOString(),
-    slug: post?.slug || '',
-    cate: post?.category_name || 'Uncategorized',
-    cate_img: '',
-    author_img: post?.author_avatar || DEFAULT_AUTHOR_IMG,
-    author_name: post?.author_name || 'Anonymous',
-    post_views: post?.views || 0,
-    read_time: post?.read_time || 5,
-    author_social: [], // Components expect an array
-    excerpt: post?.excerpt || '',
-    content: post?.content || '',
-  }));
+  // Normalize and filter invalid posts
+  const safePosts = Array.isArray(dbPosts) ? dbPosts : [];
+  const allPosts = safePosts
+    .map(normalizePost)
+    .filter((post): post is NonNullable<typeof post> => post !== null);
 
   const videoPost = allPosts.filter(post => post.postFormat === "video");
 
   // Show loading/empty state if no posts
-  if (allPosts.length === 0) {
+  if (!allPosts || allPosts.length === 0) {
     return (
       <>
         <HeaderOne
