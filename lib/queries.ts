@@ -4,10 +4,26 @@ import { neon as neonServerless } from '@neondatabase/serverless';
 // Detect environment
 const isNetlify = process.env.NETLIFY === 'true';
 
+// Get database URL
+const getDatabaseUrl = () => {
+  if (isNetlify) {
+    return process.env.NETLIFY_DATABASE_URL || process.env.DATABASE_URL;
+  }
+  return process.env.DATABASE_URL;
+};
+
+const databaseUrl = getDatabaseUrl();
+
+if (!databaseUrl) {
+  throw new Error(
+    'Database URL not configured. Please set DATABASE_URL or NETLIFY_DATABASE_URL environment variable.'
+  );
+}
+
 // Create SQL client
 export const sql = isNetlify
-  ? neon() // Auto uses NETLIFY_DATABASE_URL
-  : neonServerless(process.env.DATABASE_URL!);
+  ? neon(databaseUrl) // Use explicit URL for better error messages
+  : neonServerless(databaseUrl);
 
 // Type definitions
 export interface Post {

@@ -15,6 +15,9 @@ export const metadata = {
   description: 'Learn SEO strategies, tips and techniques to grow your online presence with SkillLinkup',
 }
 
+// Force dynamic rendering to avoid database queries during build
+export const dynamic = 'force-dynamic';
+
 export default async function HomePage() {
   // Fetch posts from database
   const dbPosts = await getPublishedPosts(20, 0);

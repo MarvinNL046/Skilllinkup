@@ -5,8 +5,9 @@ export const runtime = 'edge';
 
 export async function GET(
   request: Request,
-  { params }: { params: { slug: string } }
+  context: { params: Promise<{ slug: string }> }
 ) {
+  const params = await context.params;
   try {
     const post = await getPostBySlug(params.slug);
 
