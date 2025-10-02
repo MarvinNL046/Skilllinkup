@@ -1,5 +1,5 @@
 import { pgTable, uuid, varchar, text, timestamp, integer, boolean, jsonb, pgPolicy } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
+import { sql, relations } from 'drizzle-orm';
 
 // Tenants Table
 export const tenants = pgTable('tenants', {
@@ -166,3 +166,33 @@ export const analytics = pgTable('analytics', {
   metadata: jsonb('metadata').default({}),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
+
+// Relations
+export const postsRelations = relations(posts, ({ one }) => ({
+  author: one(users, {
+    fields: [posts.authorId],
+    references: [users.id],
+  }),
+  category: one(categories, {
+    fields: [posts.categoryId],
+    references: [categories.id],
+  }),
+  tenant: one(tenants, {
+    fields: [posts.tenantId],
+    references: [tenants.id],
+  }),
+}));
+
+export const usersRelations = relations(users, ({ one }) => ({
+  tenant: one(tenants, {
+    fields: [users.tenantId],
+    references: [tenants.id],
+  }),
+}));
+
+export const categoriesRelations = relations(categories, ({ one }) => ({
+  tenant: one(tenants, {
+    fields: [categories.tenantId],
+    references: [tenants.id],
+  }),
+}));

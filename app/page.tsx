@@ -1,7 +1,7 @@
 import InstagramOne from '../src/common/components/instagram/InstagramOne';
 import FooterOne from '../src/common/elements/footer/FooterOne';
 import HeaderOne from '../src/common/elements/header/HeaderOne';
-import { getAllPosts } from '../lib/api';
+import { getPublishedPosts, getFeaturedPosts } from '../lib/queries';
 import PostSectionEight from '../src/common/components/post/PostSectionEight';
 import PostSectionTwo from '../src/common/components/post/PostSectionTwo';
 import PostSectionThree from '../src/common/components/post/PostSectionThree';
@@ -15,24 +15,29 @@ export const metadata = {
   description: 'Learn SEO strategies, tips and techniques to grow your online presence with SkillLinkup',
 }
 
-export default function HomePage() {
-  const allPosts = getAllPosts([
-    'id',
-    'title',
-    'featureImg',
-    'postFormat',
-    'featured',
-    'slidePost',
-    'date',
-    'slug',
-    'cate',
-    'cate_img',
-    'author_img',
-    'author_name',
-    'post_views',
-    'read_time',
-    'author_social',
-  ])
+export default async function HomePage() {
+  // Fetch posts from database
+  const dbPosts = await getPublishedPosts(20, 0);
+  const featuredPosts = await getFeaturedPosts(5);
+
+  // Transform database posts to component format
+  const allPosts = dbPosts.map(post => ({
+    id: post.id,
+    title: post.title,
+    featureImg: post.feature_img || '/images/post-images/post-grid-01.jpg',
+    postFormat: post.post_format || 'standard',
+    featured: post.featured,
+    slidePost: post.featured,
+    date: post.published_at ? new Date(post.published_at).toISOString() : new Date().toISOString(),
+    slug: post.slug,
+    cate: post.category_name || 'Uncategorized',
+    cate_img: '',
+    author_img: post.author_avatar || '/images/post-images/author/author-image-1.png',
+    author_name: post.author_name || 'Anonymous',
+    post_views: post.views || 0,
+    read_time: post.read_time || 5,
+    author_social: {},
+  }));
 
   const videoPost = allPosts.filter(post => post.postFormat === "video");
 
