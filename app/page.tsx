@@ -19,9 +19,17 @@ export const metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  // Fetch posts from database
-  const dbPosts = await getPublishedPosts(20, 0);
-  const featuredPosts = await getFeaturedPosts(5);
+  let dbPosts = [];
+  let featuredPosts = [];
+
+  try {
+    // Fetch posts from database
+    dbPosts = await getPublishedPosts(20, 0);
+    featuredPosts = await getFeaturedPosts(5);
+  } catch (error) {
+    console.error('Error fetching posts from database:', error);
+    // Continue with empty arrays - components will handle gracefully
+  }
 
   // Transform database posts to component format
   const allPosts = dbPosts.map(post => ({

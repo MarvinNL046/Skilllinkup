@@ -12,18 +12,41 @@ const getDatabaseUrl = () => {
   return process.env.DATABASE_URL;
 };
 
-const databaseUrl = getDatabaseUrl();
+// Create SQL client factory
+const createSqlClient = () => {
+  const databaseUrl = getDatabaseUrl();
 
-if (!databaseUrl) {
-  throw new Error(
-    'Database URL not configured. Please set DATABASE_URL or NETLIFY_DATABASE_URL environment variable.'
-  );
-}
+  if (!databaseUrl) {
+    console.error('❌ Database URL not configured');
+    console.error('Environment:', {
+      NETLIFY: process.env.NETLIFY,
+      hasNETLIFY_DATABASE_URL: !!process.env.NETLIFY_DATABASE_URL,
+      hasDATABASE_URL: !!process.env.DATABASE_URL,
+    });
+    throw new Error(
+      'Database URL not configured. Please set DATABASE_URL or NETLIFY_DATABASE_URL environment variable.'
+    );
+  }
 
-// Create SQL client
-export const sql = isNetlify
-  ? neon(databaseUrl) // Use explicit URL for better error messages
-  : neonServerless(databaseUrl);
+  return isNetlify ? neon(databaseUrl) : neonServerless(databaseUrl);
+};
+
+// Lazy initialization - only create client when needed
+let sqlClient: ReturnType<typeof neon> | ReturnType<typeof neonServerless> | null = null;
+export const sql: ReturnType<typeof neon> | ReturnType<typeof neonServerless> = new Proxy({} as any, {
+  get(target, prop) {
+    if (!sqlClient) {
+      sqlClient = createSqlClient();
+    }
+    return sqlClient[prop as keyof typeof sqlClient];
+  },
+  apply(target, thisArg, args) {
+    if (!sqlClient) {
+      sqlClient = createSqlClient();
+    }
+    return (sqlClient as any).apply(thisArg, args);
+  }
+});
 
 // Type definitions
 export interface Post {
