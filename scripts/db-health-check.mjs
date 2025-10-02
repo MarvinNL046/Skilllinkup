@@ -130,12 +130,23 @@ async function checkHealth() {
 
     // Check categories
     const catStats = await sql`
-      SELECT COUNT(*) AS total_categories FROM categories;
+      SELECT
+        COUNT(*) AS total_categories,
+        COUNT(*) FILTER (WHERE image IS NULL OR TRIM(image) = '') AS null_images
+      FROM categories;
     `;
 
     console.log('📁 Category Statistics:');
     console.log(`   Total categories: ${catStats[0].total_categories}`);
+    console.log(`   Categories missing images: ${catStats[0].null_images}`);
     console.log('');
+
+    if (Number(catStats[0].null_images) > 0) {
+      console.log('⚠️  WARNING: Found categories with missing images!');
+      console.log('💡 To fix category images, run:');
+      console.log('   npm run db:fix-categories');
+      console.log('');
+    }
 
     console.log('✅ Health check complete!');
   } catch (error) {

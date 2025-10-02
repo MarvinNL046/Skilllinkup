@@ -200,7 +200,7 @@ export async function getPostsByCategory(categorySlug: string, limit = 10): Prom
   return posts as Post[];
 }
 
-// Query: Get all categories
+// Query: Get all categories (SAFE)
 export async function getCategories(): Promise<Category[]> {
   const categories = await sql`
     SELECT
@@ -208,7 +208,7 @@ export async function getCategories(): Promise<Category[]> {
       c.name,
       c.slug,
       c.description,
-      c.image,
+      COALESCE(NULLIF(TRIM(c.image), ''), '/images/post-images/category-image-01.jpg') as image,
       COUNT(p.id)::int as post_count
     FROM categories c
     LEFT JOIN posts p ON c.id = p.category_id AND p.status = 'published'

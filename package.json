@@ -13,7 +13,10 @@
     "db:push": "drizzle-kit push",
     "db:health": "node scripts/db-health-check.mjs",
     "db:fix-images": "node scripts/fix-empty-images.mjs",
-    "db:fix-meta": "node scripts/fix-meta-fields.mjs"
+    "db:fix-meta": "node scripts/fix-meta-fields.mjs",
+    "db:fix-categories": "node scripts/fix-category-images.mjs",
+    "db:fix-avatars": "node scripts/fix-user-avatars.mjs",
+    "db:fix-all": "npm run db:fix-images && npm run db:fix-meta && npm run db:fix-categories && npm run db:fix-avatars"
   },
   "dependencies": {
     "@emailjs/browser": "^4.3.3",

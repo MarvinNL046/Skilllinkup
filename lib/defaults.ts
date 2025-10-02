@@ -8,7 +8,7 @@ export const DEFAULTS = {
   featureImg: '/images/posts/lifestyle-post-01.webp',
   authorImg: '/images/posts/author/author-image-1.png',
   ogImg: '/images/posts/lifestyle-post-01.webp',
-  categoryImg: '',
+  categoryImg: '/images/post-images/category-image-01.jpg',
 
   // Author data
   authorName: 'Anonymous',
