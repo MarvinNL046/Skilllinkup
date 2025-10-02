@@ -54,6 +54,27 @@ export default async function HomePage() {
 
   const videoPost = allPosts.filter(post => post.postFormat === "video");
 
+  // Show loading/empty state if no posts
+  if (allPosts.length === 0) {
+    return (
+      <>
+        <HeaderOne
+          pClass=""
+          darkLogo="/images/logo/logo-black.webp"
+          lightLogo="/images/logo/logo-white.webp"
+          postData={[]}
+        />
+        <div className="container" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="text-center">
+            <h2>Welcome to SkillLinkup</h2>
+            <p>Content is being loaded. Please check back soon!</p>
+          </div>
+        </div>
+        <FooterOne />
+      </>
+    );
+  }
+
   return (
     <>
       <HeaderOne
