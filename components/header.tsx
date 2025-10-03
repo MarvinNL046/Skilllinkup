@@ -7,12 +7,12 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <span className="font-bold text-2xl bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+          <Link href="/" className="flex items-center">
+            <span className="font-bold text-xl text-gray-900 dark:text-white">
               SkillLinkup
             </span>
           </Link>
@@ -21,41 +21,41 @@ export function Header() {
           <nav className="hidden md:flex items-center space-x-8">
             <Link
               href="/"
-              className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               Home
             </Link>
             <Link
               href="/platforms"
-              className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               Platforms
             </Link>
             <Link
               href="/reviews"
-              className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               Reviews
             </Link>
             <Link
               href="/comparisons"
-              className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               Comparisons
             </Link>
             <Link
               href="/about"
-              className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               About
             </Link>
           </nav>
 
           {/* CTA Button */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center">
             <Link
               href="/newsletter"
-              className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 transition-colors"
             >
               Subscribe
             </Link>
@@ -63,7 +63,7 @@ export function Header() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden rounded-md p-2 text-foreground/60 hover:text-foreground hover:bg-accent"
+            className="md:hidden rounded-md p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             <svg
@@ -93,46 +93,46 @@ export function Header() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden pb-4">
-            <nav className="flex flex-col space-y-4">
+          <div className="md:hidden pb-4 pt-4 border-t border-gray-200 dark:border-gray-800">
+            <nav className="flex flex-col space-y-3">
               <Link
                 href="/"
-                className="text-sm font-medium text-foreground/80 hover:text-foreground"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-2 py-1"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Home
               </Link>
               <Link
                 href="/platforms"
-                className="text-sm font-medium text-foreground/80 hover:text-foreground"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-2 py-1"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Platforms
               </Link>
               <Link
                 href="/reviews"
-                className="text-sm font-medium text-foreground/80 hover:text-foreground"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-2 py-1"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Reviews
               </Link>
               <Link
                 href="/comparisons"
-                className="text-sm font-medium text-foreground/80 hover:text-foreground"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-2 py-1"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Comparisons
               </Link>
               <Link
                 href="/about"
-                className="text-sm font-medium text-foreground/80 hover:text-foreground"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-2 py-1"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 About
               </Link>
               <Link
                 href="/newsletter"
-                className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90"
+                className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 mt-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Subscribe
