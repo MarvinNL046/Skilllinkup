@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 
 interface AdminNavProps {
@@ -30,8 +31,17 @@ export function AdminNav({ userEmail }: AdminNavProps) {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-8">
-            <Link href="/" className="text-2xl font-heading font-bold text-text-primary">
-              SkillLinkup <span className="text-primary">Admin</span>
+            <Link href="/" className="flex items-center gap-3">
+              <Image
+                src="/images/logo/Skilllinkup-transparant-logo1.png"
+                alt="SkillLinkup Logo"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
+              <span className="text-2xl font-heading font-bold text-text-primary">
+                SkillLinkup <span className="text-primary">Admin</span>
+              </span>
             </Link>
             <nav className="hidden md:flex items-center gap-6">
               {navItems.map((item) => (
