@@ -31,17 +31,15 @@ export function AdminNav({ userEmail }: AdminNavProps) {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center gap-3">
+            <Link href="/" className="flex items-center">
               <Image
                 src="/images/logo/Skilllinkup-transparant-logo1.png"
-                alt="SkillLinkup Logo"
-                width={40}
-                height={40}
-                className="object-contain"
+                alt="SkillLinkup Admin"
+                width={150}
+                height={50}
+                className="object-contain h-10"
+                priority
               />
-              <span className="text-2xl font-heading font-bold text-text-primary">
-                SkillLinkup <span className="text-primary">Admin</span>
-              </span>
             </Link>
             <nav className="hidden md:flex items-center gap-6">
               {navItems.map((item) => (
