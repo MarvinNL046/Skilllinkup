@@ -35,7 +35,12 @@ export default function BlogPage() {
 
     return (
         <>
-            <HeaderOne postData={sortedPosts} pClass="header-light header-sticky header-with-shadow" />
+            <HeaderOne
+                postData={sortedPosts}
+                pClass="header-light header-sticky header-with-shadow"
+                darkLogo="/images/logo/logo-black.png"
+                lightLogo="/images/logo/logo-white.png"
+            />
             <div className="axil-post-list-area axil-section-gap bg-color-white">
                 <div className="container">
                     <div className="row">
@@ -49,7 +54,11 @@ export default function BlogPage() {
                 </div>
             </div>
             <InstagramOne parentClass="bg-color-grey" />
-            <FooterThree />
+            <FooterThree
+                bgColor="bg-color-white"
+                darkLogo="/images/logo/logo-black.png"
+                lightLogo="/images/logo/logo-white.png"
+            />
         </>
     );
 }

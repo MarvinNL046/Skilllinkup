@@ -1,10 +1,24 @@
 import type { Metadata } from 'next'
-import '../src/styles/style.scss'
-import 'bootstrap/dist/css/bootstrap.min.css'
+import { Inter, Lexend } from 'next/font/google'
+import { StackProvider, StackTheme } from "@stackframe/stack";
+import { stackClientApp } from "../stack/client";
+import './globals.css'
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+})
+
+const lexend = Lexend({
+  subsets: ['latin'],
+  variable: '--font-lexend',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
-  title: 'SkillLinkup - Connect, Learn & Grow',
-  description: 'Your professional learning platform - Connect with experts, learn new skills, and grow your career with SkillLinkup',
+  title: 'Admin - SkillLinkup',
+  description: 'Manage your SkillLinkup blog content',
 }
 
 export default function RootLayout({
@@ -13,8 +27,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" className={`${inter.variable} ${lexend.variable}`}>
+      <body className="font-sans antialiased">
+        <StackProvider app={stackClientApp}>
+          <StackTheme>
+            {children}
+          </StackTheme>
+        </StackProvider>
+      </body>
     </html>
   )
 }

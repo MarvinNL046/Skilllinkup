@@ -17,7 +17,7 @@ export default function BlogList({ allPosts }: { allPosts: any[] }) {
 
     return (
         <>
-            <PostLayoutTwo dataPost={allPosts} show={pageVisited + blogsPerPage} postStart={pageVisited} />
+            <PostLayoutTwo dataPost={allPosts} show={pageVisited + blogsPerPage} postStart={pageVisited} bgColor="" />
 
             <ReactPaginate
                 previousLabel={<i className="fas fa-arrow-left"></i>}

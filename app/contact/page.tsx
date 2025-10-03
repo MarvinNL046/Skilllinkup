@@ -31,7 +31,12 @@ export default function ContactPage() {
 
     return (
         <>
-        <HeaderOne postData={allPosts} pClass="header-light header-sticky header-with-shadow"/>
+        <HeaderOne
+            postData={allPosts}
+            pClass="header-light header-sticky header-with-shadow"
+            darkLogo="/images/logo/logo-black.png"
+            lightLogo="/images/logo/logo-white.png"
+        />
         <BreadcrumbTwo
         title= "Contact Us"
         paragraph="Wherever &amp; whenever you need us. We are here for you – contact us for all your support needs.<br /> be it technical, general queries or information support."
@@ -65,7 +70,11 @@ export default function ContactPage() {
             </div>
         </div>
         <InstagramOne parentClass="bg-color-grey"/>
-        <FooterThree />
+        <FooterThree
+            bgColor="bg-color-white"
+            darkLogo="/images/logo/logo-black.png"
+            lightLogo="/images/logo/logo-white.png"
+        />
         </>
      );
 }
