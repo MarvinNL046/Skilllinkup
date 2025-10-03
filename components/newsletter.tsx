@@ -36,38 +36,20 @@ export function Newsletter() {
   };
 
   return (
-    <section className="bg-primary py-16 sm:py-20">
+    <section className="bg-blue-600 dark:bg-blue-700 py-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          {/* Icon */}
-          <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary-foreground/10">
-            <svg
-              className="h-8 w-8 text-primary-foreground"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-              />
-            </svg>
-          </div>
-
           {/* Heading */}
-          <h2 className="mb-4 text-3xl font-bold text-primary-foreground sm:text-4xl">
+          <h2 className="mb-3 text-2xl font-bold text-white sm:text-3xl">
             Get Weekly Freelance Tips
           </h2>
-          <p className="mb-8 text-lg text-primary-foreground/90">
-            Join 1,000+ freelancers who receive our weekly newsletter with platform
-            reviews, success stories, and insider tips.
+          <p className="mb-6 text-sm text-blue-100 sm:text-base">
+            Join 1,000+ freelancers receiving weekly platform reviews and insider tips.
           </p>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="mx-auto max-w-md">
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="flex flex-col gap-2 sm:flex-row">
               <input
                 type="email"
                 value={email}
@@ -75,24 +57,24 @@ export function Newsletter() {
                 placeholder="Enter your email"
                 required
                 disabled={status === "loading"}
-                className="flex-1 rounded-md border border-primary-foreground/20 bg-primary-foreground/10 px-4 py-3 text-primary-foreground placeholder:text-primary-foreground/60 focus:border-primary-foreground focus:outline-none focus:ring-2 focus:ring-primary-foreground/20 disabled:opacity-50"
+                className="flex-1 rounded-lg border-0 bg-white px-4 py-2.5 text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50"
               />
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className="rounded-md bg-background px-6 py-3 font-medium text-foreground shadow-lg hover:bg-background/90 focus:outline-none focus:ring-2 focus:ring-background/20 disabled:opacity-50 transition-all"
+                className="rounded-lg bg-gray-900 px-6 py-2.5 font-semibold text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50 transition-colors"
               >
-                {status === "loading" ? "Subscribing..." : "Subscribe"}
+                {status === "loading" ? "..." : "Subscribe"}
               </button>
             </div>
 
             {/* Status Message */}
             {message && (
               <p
-                className={`mt-4 text-sm ${
+                className={`mt-3 text-sm ${
                   status === "success"
-                    ? "text-primary-foreground"
-                    : "text-red-200"
+                    ? "text-white font-medium"
+                    : "text-red-100"
                 }`}
               >
                 {message}
@@ -100,8 +82,8 @@ export function Newsletter() {
             )}
 
             {/* Trust Badge */}
-            <p className="mt-4 text-sm text-primary-foreground/70">
-              No spam. Unsubscribe anytime. We respect your privacy.
+            <p className="mt-3 text-xs text-blue-100">
+              No spam. Unsubscribe anytime.
             </p>
           </form>
         </div>
