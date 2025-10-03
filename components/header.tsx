@@ -12,17 +12,15 @@ export function Header() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3">
+          <Link href="/" className="flex items-center">
             <Image
               src="/images/logo/Skilllinkup-transparant-logo1.png"
-              alt="SkillLinkup Logo"
-              width={40}
-              height={40}
-              className="object-contain"
+              alt="SkillLinkup"
+              width={150}
+              height={50}
+              className="object-contain h-10"
+              priority
             />
-            <span className="font-heading font-bold text-xl text-text-primary">
-              SkillLinkup
-            </span>
           </Link>
 
           {/* Desktop Navigation */}

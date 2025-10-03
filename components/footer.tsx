@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -10,9 +11,13 @@ export function Footer() {
           {/* Brand */}
           <div className="md:col-span-1">
             <Link href="/" className="inline-block">
-              <span className="font-heading font-bold text-2xl text-text-primary">
-                SkillLinkup
-              </span>
+              <Image
+                src="/images/logo/Skilllinkup-transparant-logo1.png"
+                alt="SkillLinkup"
+                width={150}
+                height={50}
+                className="object-contain h-10"
+              />
             </Link>
             <p className="mt-4 text-sm text-text-secondary leading-relaxed">
               Your trusted guide to finding the perfect freelance platform for your skills.
