@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(request: Request) {
   try {
     const { email } = await request.json();
@@ -15,11 +13,23 @@ export async function POST(request: Request) {
       );
     }
 
+    // Check if Resend API key is configured
+    if (!process.env.RESEND_API_KEY || !process.env.RESEND_AUDIENCE_ID) {
+      console.error("Resend API credentials not configured");
+      return NextResponse.json(
+        { message: "Newsletter service is not configured yet. Please check back later." },
+        { status: 503 }
+      );
+    }
+
+    // Initialize Resend client
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
     // Subscribe to newsletter using Resend
     // Note: You'll need to set up a contact list in Resend first
     const data = await resend.contacts.create({
       email: email,
-      audienceId: process.env.RESEND_AUDIENCE_ID!,
+      audienceId: process.env.RESEND_AUDIENCE_ID,
     });
 
     if (data.error) {
