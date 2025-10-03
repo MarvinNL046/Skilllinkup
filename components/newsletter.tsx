@@ -36,20 +36,20 @@ export function Newsletter() {
   };
 
   return (
-    <section className="bg-blue-600 dark:bg-blue-700 py-12">
+    <section className="bg-gradient-to-r from-primary to-primary-dark py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           {/* Heading */}
-          <h2 className="mb-3 text-2xl font-bold text-white sm:text-3xl">
+          <h2 className="mb-4 text-3xl font-heading font-bold text-white sm:text-4xl">
             Get Weekly Freelance Tips
           </h2>
-          <p className="mb-6 text-sm text-blue-100 sm:text-base">
+          <p className="mb-8 text-base text-white/90 sm:text-lg">
             Join 1,000+ freelancers receiving weekly platform reviews and insider tips.
           </p>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="mx-auto max-w-md">
-            <div className="flex flex-col gap-2 sm:flex-row">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <input
                 type="email"
                 value={email}
@@ -57,12 +57,12 @@ export function Newsletter() {
                 placeholder="Enter your email"
                 required
                 disabled={status === "loading"}
-                className="flex-1 rounded-lg border-0 bg-white px-4 py-2.5 text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50"
+                className="flex-1 rounded-lg border-0 bg-white px-5 py-3 text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50 shadow-lg"
               />
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className="rounded-lg bg-gray-900 px-6 py-2.5 font-semibold text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50 transition-colors"
+                className="rounded-lg bg-secondary hover:bg-secondary-medium px-8 py-3 font-heading font-semibold text-white focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50 transition-all shadow-lg hover:shadow-xl"
               >
                 {status === "loading" ? "..." : "Subscribe"}
               </button>
@@ -71,10 +71,10 @@ export function Newsletter() {
             {/* Status Message */}
             {message && (
               <p
-                className={`mt-3 text-sm ${
+                className={`mt-4 text-sm font-medium ${
                   status === "success"
-                    ? "text-white font-medium"
-                    : "text-red-100"
+                    ? "text-white"
+                    : "text-white/90"
                 }`}
               >
                 {message}
@@ -82,7 +82,7 @@ export function Newsletter() {
             )}
 
             {/* Trust Badge */}
-            <p className="mt-3 text-xs text-blue-100">
+            <p className="mt-4 text-sm text-white/80">
               No spam. Unsubscribe anytime.
             </p>
           </form>

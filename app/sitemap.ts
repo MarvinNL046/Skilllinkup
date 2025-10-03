@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import { getPublishedPosts, getCategories } from '@/lib/queries'
+import { getPublishedPosts, getCategories, getPublishedPlatforms } from '@/lib/queries'
 
 export const dynamic = 'force-dynamic'
 
@@ -7,9 +7,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com'
 
   try {
-    // Fetch all published posts and categories from database
+    // Fetch all published content from database
     const posts = await getPublishedPosts(1000, 0)
     const categories = await getCategories()
+    const platforms = await getPublishedPlatforms(100)
 
     // Static pages
     const staticPages = [
@@ -37,6 +38,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: 'monthly' as const,
         priority: 0.6,
       },
+      {
+        url: `${baseUrl}/platforms`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.9,
+      },
+      {
+        url: `${baseUrl}/reviews`,
+        lastModified: new Date(),
+        changeFrequency: 'daily' as const,
+        priority: 0.9,
+      },
     ]
 
     // Dynamic post pages
@@ -55,7 +68,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }))
 
-    return [...staticPages, ...postPages, ...categoryPages]
+    // Dynamic platform pages
+    const platformPages = platforms.map((platform) => ({
+      url: `${baseUrl}/platforms/${platform.slug}`,
+      lastModified: platform.published_at ? new Date(platform.published_at) : new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }))
+
+    return [...staticPages, ...postPages, ...categoryPages, ...platformPages]
   } catch (error) {
     console.error('Error generating sitemap:', error)
     // Return at least static pages if database fails

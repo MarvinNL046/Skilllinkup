@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Lexend } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
+
+const lexend = Lexend({
+  subsets: ["latin"],
+  variable: "--font-lexend",
+});
 
 export const metadata: Metadata = {
   title: "SkillLinkup - Find the Best Freelance Marketplaces",
@@ -34,7 +42,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${inter.variable} ${lexend.variable} font-sans antialiased`}>
         <div className="min-h-screen flex flex-col">
           {children}
         </div>

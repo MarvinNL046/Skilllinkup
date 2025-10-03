@@ -7,8 +7,8 @@
 ## Technology Stack
 
 ### Core Framework
-- **Next.js**: 15.0.0 (App Router)
-- **React**: 18.3.1
+- **Next.js**: 15.5.4 (App Router)
+- **React**: 19.2.0
 - **TypeScript**: 5.x (with gradual migration from JavaScript)
 
 ### Database & Backend
@@ -135,6 +135,11 @@ npm run db:generate    # Generate migrations from schema
 npm run db:migrate     # Run database migrations
 npm run db:push        # Push schema changes to database
 npm run db:studio      # Open Drizzle Studio (database GUI)
+
+# Database maintenance utilities
+npm run db:fix-images  # Fix broken image references in posts
+npm run db:fix-meta    # Update metadata fields (read_time, etc.)
+npm run db:update-slugs # Regenerate URL slugs from titles
 
 # Build for production
 npm run build
@@ -309,6 +314,28 @@ NEXT_PUBLIC_BASEPATH=""          # Base path for production deployment
 
 ## Version History
 
+### v1.2.0 (January 2025) - Next.js 15 Type Safety & Admin Dashboard
+- ✅ **Next.js 15 Breaking Changes**: Fixed all dynamic route params to use Promise type
+  - Updated 8+ route handlers across main app and admin dashboard
+  - Pattern: `params: Promise<{ id: string }>` with `await params` destructuring
+- ✅ **TypeScript Strict Compliance**: Resolved all production build type errors
+  - Fixed Date → ISO string conversions for HTML dateTime attributes
+  - Aligned database schema property names (feature_img, not featured_image)
+  - Removed deprecated category_color styling, using Tailwind classes
+  - Fixed Vercel Postgres sql template type parameter issues
+- ✅ **Admin Dashboard Updates**: Applied same type fixes to skillLinkup-admin
+  - Fixed API routes: categories/[id], posts/[id], platforms/[id], reviews/[id]
+  - Resolved legacy template component prop requirements
+- ✅ **Database Utility Scripts**: Added maintenance commands
+  - `db:fix-images` - Fix broken image references
+  - `db:fix-meta` - Update metadata fields
+  - `db:update-slugs` - Regenerate URL slugs
+- ✅ **Dual Server Setup**: Main app (3000) + Admin dashboard (3002)
+- 📦 **Dependency Updates**:
+  - Next.js 15.0.0 → 15.5.4
+  - React 18.3.1 → 19.2.0
+  - Updated all supporting packages
+
 ### v1.1.0 (October 2, 2025) - Production Hardening
 - ✅ **Neon PostgreSQL Integration**: Full database migration with Drizzle ORM
 - ✅ **Production Crash Protection**:
@@ -470,6 +497,134 @@ export const runtime = 'edge';  // Required for Netlify deployment
 Set in Netlify Dashboard → Site settings → Environment variables:
 - `DATABASE_URL` - Neon PostgreSQL connection string
 - `NEXT_PUBLIC_BASEPATH` - Base path (usually empty)
+
+## Admin Dashboard Structure
+
+**Location**: `/home/marvin/Documenten/skillLinkup-admin`
+
+### Admin Setup
+```bash
+# Start admin dashboard (runs on port 3002)
+cd /home/marvin/Documenten/skillLinkup-admin
+npm run dev
+
+# Dual server development
+# Terminal 1: Main app on port 3000
+npm run dev
+
+# Terminal 2: Admin on port 3002
+cd ../skillLinkup-admin && npm run dev
+```
+
+### Admin API Routes
+All admin API routes follow Next.js 15 patterns:
+- `app/api/categories/[id]/route.ts` - Category CRUD
+- `app/api/posts/[id]/route.ts` - Post management
+- `app/api/platforms/[id]/route.ts` - Platform management
+- `app/api/reviews/[id]/route.ts` - Review management
+
+### Legacy Template Components
+The admin uses Blogar template components requiring specific props:
+```typescript
+// Required props for HeaderOne
+<HeaderOne
+  pClass=""
+  darkLogo="/images/logo/logo-black.png"
+  lightLogo="/images/logo/logo-white.png"
+  postData={allPosts}
+/>
+
+// Required props for FooterThree
+<FooterThree
+  bgColor=""
+  darkLogo="/images/logo/logo-black.png"
+  lightLogo="/images/logo/logo-white.png"
+/>
+```
+
+## Next.js 15 Migration Patterns
+
+### Dynamic Route Params (Breaking Change)
+Next.js 15 requires all dynamic route params to be Promise type:
+
+```typescript
+// ❌ OLD (Next.js 14 and earlier)
+interface PageProps {
+  params: { id: string };
+}
+
+export default function Page({ params }: PageProps) {
+  const { id } = params;
+  // ...
+}
+
+// ✅ NEW (Next.js 15)
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function Page({ params }: PageProps) {
+  const { id } = await params;  // Must await
+  // ...
+}
+```
+
+### API Route Handlers
+```typescript
+// ❌ OLD
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const { id } = params;
+  // ...
+}
+
+// ✅ NEW
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;  // Must await
+  // ...
+}
+```
+
+### Batch Fix Script
+For fixing multiple files at once:
+```bash
+# Fix all dynamic route files
+for file in app/api/**/[id]/route.ts; do
+  sed -i 's/{ params }: { params: { id: string } }/{ params }: { params: Promise<{ id: string }> }/g' "$file"
+  sed -i 's/const { id } = params;/const { id } = await params;/g' "$file"
+done
+```
+
+### Database Schema Alignment
+Ensure component interfaces match database schema:
+```typescript
+// ✅ CORRECT - matches database
+interface Post {
+  feature_img: string | null;  // Not featured_image
+  // No category_color - removed from schema
+}
+
+// Component usage
+const featureImg = safeImage(post.feature_img, DEFAULTS.featureImg);
+
+// Tailwind classes instead of inline styles
+<span className="bg-primary">  // Not style={{ backgroundColor: color }}
+```
+
+### SQL Template Type Parameters
+Vercel Postgres doesn't accept type parameters:
+```typescript
+// ❌ WRONG
+const result = await sql<Tool[]>`SELECT * FROM tools`;
+
+// ✅ CORRECT
+const result = await sql`SELECT * FROM tools`;
+```
 
 ## Troubleshooting
 

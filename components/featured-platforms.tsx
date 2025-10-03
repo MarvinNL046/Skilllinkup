@@ -12,14 +12,14 @@ export function FeaturedPlatforms({ posts }: FeaturedPlatformsProps) {
   }
 
   return (
-    <section className="py-12 bg-gray-50 dark:bg-gray-900/50">
+    <section className="py-16 bg-background-light">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
+        <div className="mb-10">
+          <h2 className="text-3xl font-heading font-bold text-text-primary sm:text-4xl">
             Top Rated Platforms
           </h2>
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          <p className="mt-3 text-base text-text-secondary">
             Our highest-rated freelance marketplaces
           </p>
         </div>
@@ -30,7 +30,7 @@ export function FeaturedPlatforms({ posts }: FeaturedPlatformsProps) {
             <Link
               key={post.id}
               href={`/post/${post.slug}`}
-              className="group relative overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all hover:shadow-lg hover:border-blue-500"
+              className="group relative overflow-hidden rounded-lg border border-background-gray bg-white transition-all hover:shadow-xl hover:border-accent"
             >
               {/* Image */}
               {post.feature_img && (
@@ -43,8 +43,8 @@ export function FeaturedPlatforms({ posts }: FeaturedPlatformsProps) {
                     className="object-cover transition-transform group-hover:scale-105"
                   />
                   {/* Featured Badge */}
-                  <div className="absolute right-2 top-2">
-                    <span className="inline-flex items-center gap-1 rounded-full bg-blue-600 px-2 py-0.5 text-xs font-medium text-white">
+                  <div className="absolute right-3 top-3">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-heading font-semibold text-white shadow-lg">
                       ★ Featured
                     </span>
                   </div>
@@ -52,30 +52,30 @@ export function FeaturedPlatforms({ posts }: FeaturedPlatformsProps) {
               )}
 
               {/* Content */}
-              <div className="p-4">
+              <div className="p-5">
                 {/* Category */}
                 {post.category_name && (
                   <div className="mb-2">
-                    <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide">
+                    <span className="text-xs font-heading font-semibold text-accent uppercase tracking-wide">
                       {post.category_name}
                     </span>
                   </div>
                 )}
 
                 {/* Title */}
-                <h3 className="mb-2 text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+                <h3 className="mb-2 text-lg font-heading font-bold text-text-primary group-hover:text-primary transition-colors line-clamp-2">
                   {post.title}
                 </h3>
 
                 {/* Excerpt */}
                 {post.excerpt && (
-                  <p className="mb-3 text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                  <p className="mb-3 text-sm text-text-secondary line-clamp-2">
                     {post.excerpt}
                   </p>
                 )}
 
                 {/* Meta */}
-                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-500">
+                <div className="flex items-center justify-between text-xs text-text-muted">
                   {post.read_time && (
                     <span>{post.read_time} min read</span>
                   )}
@@ -89,13 +89,13 @@ export function FeaturedPlatforms({ posts }: FeaturedPlatformsProps) {
         </div>
 
         {/* View All Link */}
-        <div className="mt-8 text-center">
+        <div className="mt-10 text-center">
           <Link
             href="/platforms"
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-5 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg border-2 border-secondary bg-white hover:bg-background-light px-6 py-3 text-base font-heading font-semibold text-secondary transition-all"
           >
             View All Reviews
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </Link>
