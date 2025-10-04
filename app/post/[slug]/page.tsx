@@ -279,8 +279,27 @@ export default async function PostPage({ params }: PostPageProps) {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="max-w-4xl mx-auto">
               <div className="grid gap-12 lg:grid-cols-3">
+                {/* Sidebar - Shows first on mobile, right on desktop */}
+                <aside className="lg:col-span-1 lg:order-2">
+                  <div className="lg:sticky lg:top-24 space-y-8">
+                    {/* Table of Contents - Automatically generated from H2/H3 */}
+                    <TableOfContents content={post.content} />
+
+                    {/* Quick Info - Only shows if data is filled in */}
+                    <QuickInfoWidget
+                      platformType={post.platform_type}
+                      feeStructure={post.fee_structure}
+                      difficultyLevel={post.difficulty_level}
+                      bestFor={post.best_for}
+                    />
+
+                    {/* Advertisement - Only shows if configured */}
+                    <AdWidget adImage={post.ad_image} adLink={post.ad_link} />
+                  </div>
+                </aside>
+
                 {/* Main Content */}
-                <div className="lg:col-span-2">
+                <div className="lg:col-span-2 lg:order-1">
                   {/* Excerpt */}
                   {post.excerpt && (
                     <div className="mb-8 text-xl text-text-secondary leading-relaxed font-medium border-l-4 border-primary pl-6 py-2">
@@ -340,25 +359,6 @@ export default async function PostPage({ params }: PostPageProps) {
                     </div>
                   </div>
                 </div>
-
-                {/* Sidebar */}
-                <aside className="lg:col-span-1">
-                  <div className="sticky top-24 space-y-8">
-                    {/* Table of Contents - Automatically generated from H2/H3 */}
-                    <TableOfContents content={post.content} />
-
-                    {/* Quick Info - Only shows if data is filled in */}
-                    <QuickInfoWidget
-                      platformType={post.platform_type}
-                      feeStructure={post.fee_structure}
-                      difficultyLevel={post.difficulty_level}
-                      bestFor={post.best_for}
-                    />
-
-                    {/* Advertisement - Only shows if configured */}
-                    <AdWidget adImage={post.ad_image} adLink={post.ad_link} />
-                  </div>
-                </aside>
               </div>
             </div>
           </div>
