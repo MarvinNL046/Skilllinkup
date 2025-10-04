@@ -5,6 +5,9 @@ import { getPostBySlug, getPublishedPosts } from "../../../lib/queries";
 import { Header } from "../../../components/header";
 import { Footer } from "../../../components/footer";
 import { Newsletter } from "../../../components/newsletter";
+import AdWidget from "../../../src/common/components/sidebar/AdWidget";
+import QuickInfoWidget from "../../../src/common/components/sidebar/QuickInfoWidget";
+import TableOfContents from "../../../src/common/components/sidebar/TableOfContents";
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -340,73 +343,20 @@ export default async function PostPage({ params }: PostPageProps) {
 
                 {/* Sidebar */}
                 <aside className="lg:col-span-1">
-                  <div className="sticky top-4 space-y-8">
-                    {/* Table of Contents */}
-                    <div className="bg-background-light rounded-lg p-6">
-                      <h3 className="text-lg font-heading font-bold text-text-primary mb-4">
-                        Table of Contents
-                      </h3>
-                      <nav>
-                        <ul className="space-y-2 text-sm">
-                          <li>
-                            <a href="#introduction" className="text-text-secondary hover:text-primary transition-colors">
-                              Introduction
-                            </a>
-                          </li>
-                          <li>
-                            <a href="#key-features" className="text-text-secondary hover:text-primary transition-colors">
-                              Key Features
-                            </a>
-                          </li>
-                          <li>
-                            <a href="#pricing" className="text-text-secondary hover:text-primary transition-colors">
-                              Pricing & Fees
-                            </a>
-                          </li>
-                          <li>
-                            <a href="#pros-cons" className="text-text-secondary hover:text-primary transition-colors">
-                              Pros & Cons
-                            </a>
-                          </li>
-                          <li>
-                            <a href="#conclusion" className="text-text-secondary hover:text-primary transition-colors">
-                              Conclusion
-                            </a>
-                          </li>
-                        </ul>
-                      </nav>
-                    </div>
+                  <div className="sticky top-24 space-y-8">
+                    {/* Table of Contents - Automatically generated from H2/H3 */}
+                    <TableOfContents content={post.content} />
 
-                    {/* Quick Info */}
-                    <div className="bg-primary/5 border-2 border-primary/20 rounded-lg p-6">
-                      <h3 className="text-lg font-heading font-bold text-text-primary mb-4">
-                        Quick Info
-                      </h3>
-                      <dl className="space-y-3 text-sm">
-                        <div>
-                          <dt className="text-text-muted mb-1">Platform Type</dt>
-                          <dd className="font-semibold text-text-primary">General Marketplace</dd>
-                        </div>
-                        <div>
-                          <dt className="text-text-muted mb-1">Fee Structure</dt>
-                          <dd className="font-semibold text-text-primary">5-20%</dd>
-                        </div>
-                        <div>
-                          <dt className="text-text-muted mb-1">Difficulty Level</dt>
-                          <dd className="font-semibold text-accent">Medium</dd>
-                        </div>
-                        <div>
-                          <dt className="text-text-muted mb-1">Best For</dt>
-                          <dd className="font-semibold text-text-primary">All skill levels</dd>
-                        </div>
-                      </dl>
-                      <Link
-                        href="/platforms"
-                        className="mt-6 inline-flex items-center justify-center w-full rounded-lg bg-primary hover:bg-primary-dark px-4 py-2.5 text-sm font-heading font-semibold text-white transition-all shadow-md"
-                      >
-                        Compare Platforms
-                      </Link>
-                    </div>
+                    {/* Quick Info - Only shows if data is filled in */}
+                    <QuickInfoWidget
+                      platformType={post.platform_type}
+                      feeStructure={post.fee_structure}
+                      difficultyLevel={post.difficulty_level}
+                      bestFor={post.best_for}
+                    />
+
+                    {/* Advertisement - Only shows if configured */}
+                    <AdWidget adImage={post.ad_image} adLink={post.ad_link} />
                   </div>
                 </aside>
               </div>

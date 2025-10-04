@@ -45,6 +45,12 @@ export interface Post {
   tags?: string[];
   meta_title?: string | null;
   meta_description?: string | null;
+  ad_image?: string | null;
+  ad_link?: string | null;
+  platform_type?: string | null;
+  fee_structure?: string | null;
+  difficulty_level?: string | null;
+  best_for?: string | null;
 }
 
 export interface Category {
@@ -202,6 +208,12 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       p.meta_title,
       p.meta_description,
       p.tags,
+      p.ad_image,
+      p.ad_link,
+      p.platform_type,
+      p.fee_structure,
+      p.difficulty_level,
+      p.best_for,
       a.id as author_id,
       COALESCE(a.name, 'Anonymous') as author_name,
       a.email as author_email,

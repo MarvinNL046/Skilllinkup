@@ -82,6 +82,10 @@ export const posts = pgTable('posts', {
   metaDescription: text('meta_description'),
   tags: jsonb('tags').default([]),
 
+  // Advertising
+  adImage: varchar('ad_image', { length: 500 }), // Image URL for ad
+  adLink: varchar('ad_link', { length: 500 }), // Click destination URL
+
   // Status & Publishing
   status: varchar('status', { length: 50 }).default('draft').notNull(), // draft, published, scheduled
   publishedAt: timestamp('published_at'),
