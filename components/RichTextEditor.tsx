@@ -5,7 +5,8 @@ import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
-import { useCallback } from 'react';
+import { useCallback, useRef, useState, useEffect } from 'react';
+import { marked } from 'marked';
 
 interface RichTextEditorProps {
   content: string;
@@ -14,18 +15,32 @@ interface RichTextEditorProps {
 }
 
 export default function RichTextEditor({ content, onChange, placeholder }: RichTextEditorProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [pendingImage, setPendingImage] = useState<{ url: string } | null>(null);
+  const [imageAlt, setImageAlt] = useState('');
+  const [imageTitle, setImageTitle] = useState('');
+  const [showLinkModal, setShowLinkModal] = useState(false);
+  const [linkUrl, setLinkUrl] = useState('');
+  const [linkText, setLinkText] = useState('');
+
   const editor = useEditor({
     extensions: [
       StarterKit,
       Image.configure({
         HTMLAttributes: {
-          class: 'rounded-lg max-w-full h-auto',
+          class: 'rounded-lg max-w-full h-auto my-6 shadow-md',
+          style: 'max-width: 100%; height: auto; display: block; margin: 1.5rem 0;',
         },
+        allowBase64: true,
+        inline: false,
       }),
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
           class: 'text-primary hover:underline',
+          target: null, // Prevent opening links
+          rel: null,
         },
       }),
       Placeholder.configure({
@@ -41,31 +56,198 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
       attributes: {
         class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-xl focus:outline-none min-h-[400px] p-4',
       },
+      handlePaste: (view, event) => {
+        const items = Array.from(event.clipboardData?.items || []);
+        const imageItem = items.find(item => item.type.indexOf('image') !== -1);
+
+        if (imageItem) {
+          event.preventDefault();
+          const file = imageItem.getAsFile();
+          if (file) {
+            handleImageUpload(file);
+          }
+          return true;
+        }
+        return false;
+      },
+      handleClick: (view, pos, event) => {
+        const target = event.target as HTMLElement;
+
+        // Handle link clicks
+        if (target.tagName === 'A') {
+          event.preventDefault();
+          const linkAttrs = editor?.getAttributes('link');
+          if (linkAttrs?.href) {
+            setLinkUrl(linkAttrs.href);
+            setLinkText(target.textContent || '');
+            setShowLinkModal(true);
+          }
+          return true;
+        }
+
+        // Handle image clicks
+        if (target.tagName === 'IMG') {
+          // Don't prevent default - let TipTap select the image first
+          // Then show the modal
+          setTimeout(() => {
+            const imgElement = target as HTMLImageElement;
+            setPendingImage({ url: imgElement.src });
+            setImageAlt(imgElement.alt || '');
+            setImageTitle(imgElement.title || '');
+          }, 100);
+          return false; // Let TipTap handle the selection
+        }
+
+        return false;
+      },
     },
   });
 
-  const addImage = useCallback(() => {
-    const url = window.prompt('Voer de afbeelding URL in:');
-    if (url && editor) {
-      editor.chain().focus().setImage({ src: url }).run();
+  const handleImageUpload = useCallback(async (file: File) => {
+    if (!editor) return;
+
+    setIsUploading(true);
+
+    try {
+      // Valideer bestand
+      if (!file.type.startsWith('image/')) {
+        alert('Selecteer een geldig afbeeldingsbestand');
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Afbeelding is te groot. Maximum 5MB');
+        return;
+      }
+
+      // Upload afbeelding
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Upload mislukt');
+      }
+
+      const data = await response.json();
+
+      // Toon modal voor alt tekst en titel
+      setPendingImage({ url: data.url });
+      setImageAlt('');
+      setImageTitle('');
+
+    } catch (error) {
+      console.error('Upload error:', error);
+      alert('Fout bij uploaden van afbeelding');
+    } finally {
+      setIsUploading(false);
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   }, [editor]);
+
+  const insertImageWithMetadata = useCallback(() => {
+    if (!editor || !pendingImage) return;
+
+    console.log('Inserting image:', {
+      src: pendingImage.url,
+      alt: imageAlt,
+      title: imageTitle,
+    });
+
+    editor.chain().focus().setImage({
+      src: pendingImage.url,
+      alt: imageAlt,
+      title: imageTitle || undefined,
+    }).run();
+
+    // Reset
+    setPendingImage(null);
+    setImageAlt('');
+    setImageTitle('');
+  }, [editor, pendingImage, imageAlt, imageTitle]);
+
+  const addImage = useCallback(() => {
+    // Trigger file input
+    fileInputRef.current?.click();
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+
+  const handleDrop = useCallback(async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const files = Array.from(e.dataTransfer.files);
+    const imageFile = files.find(file => file.type.startsWith('image/'));
+
+    if (imageFile) {
+      await handleImageUpload(imageFile);
+    }
+  }, [handleImageUpload]);
 
   const setLink = useCallback(() => {
     const previousUrl = editor?.getAttributes('link').href;
-    const url = window.prompt('URL:', previousUrl);
+    const { from, to } = editor?.state.selection || {};
+    const selectedText = editor?.state.doc.textBetween(from || 0, to || 0, ' ') || '';
 
-    if (url === null) {
-      return;
-    }
-
-    if (url === '') {
-      editor?.chain().focus().extendMarkRange('link').unsetLink().run();
-      return;
-    }
-
-    editor?.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+    setLinkUrl(previousUrl || 'https://');
+    setLinkText(selectedText);
+    setShowLinkModal(true);
   }, [editor]);
+
+  const updateLink = useCallback(() => {
+    if (!editor) return;
+
+    if (!linkUrl.trim()) {
+      // Remove link if URL is empty
+      editor.chain().focus().unsetLink().run();
+    } else {
+      // Update link
+      editor.chain().focus().extendMarkRange('link').setLink({ href: linkUrl }).run();
+    }
+
+    setShowLinkModal(false);
+    setLinkUrl('');
+    setLinkText('');
+  }, [editor, linkUrl]);
+
+  const removeLink = useCallback(() => {
+    if (!editor) return;
+
+    editor.chain().focus().unsetLink().run();
+    setShowLinkModal(false);
+    setLinkUrl('');
+    setLinkText('');
+  }, [editor]);
+
+  const pasteMarkdown = useCallback(async () => {
+    const markdown = window.prompt('Plak je Markdown hier:');
+    if (markdown && editor) {
+      try {
+        const html = await marked(markdown);
+        editor.commands.setContent(html);
+      } catch (error) {
+        alert('Fout bij converteren van Markdown. Controleer de syntax.');
+      }
+    }
+  }, [editor]);
+
+  // Update editor content when prop changes (for edit page)
+  useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      editor.commands.setContent(content);
+    }
+  }, [editor, content]);
 
   if (!editor) {
     return null;
@@ -73,6 +255,61 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
 
   return (
     <div className="border border-background-gray rounded-lg overflow-hidden">
+      {/* Hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) handleImageUpload(file);
+        }}
+        className="hidden"
+      />
+
+      {/* Custom CSS for image visibility, links, and delete */}
+      <style jsx>{`
+        :global(.ProseMirror img) {
+          max-width: 100% !important;
+          height: auto !important;
+          display: block !important;
+          margin: 1.5rem 0 !important;
+          border-radius: 0.5rem !important;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+          cursor: pointer !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+        }
+        :global(.ProseMirror img:hover) {
+          outline: 2px solid #ef2b70;
+          outline-offset: 2px;
+        }
+        :global(.ProseMirror img.ProseMirror-selectednode) {
+          outline: 3px solid #ef2b70;
+          outline-offset: 2px;
+        }
+        :global(.prose img) {
+          max-width: 100% !important;
+          height: auto !important;
+          display: block !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+        }
+        :global(.ProseMirror a) {
+          color: #ef2b70 !important;
+          text-decoration: underline !important;
+          cursor: text !important;
+          pointer-events: auto !important;
+        }
+        :global(.ProseMirror a:hover) {
+          color: #d91a5f !important;
+          background-color: rgba(239, 43, 112, 0.1) !important;
+        }
+        :global(.ProseMirror a:active) {
+          pointer-events: none !important;
+        }
+      `}</style>
+
       {/* Toolbar */}
       <div className="bg-background-light border-b border-background-gray p-2 flex flex-wrap gap-1">
         {/* Text Formatting */}
@@ -222,9 +459,21 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         <button
           type="button"
           onClick={addImage}
-          className="px-3 py-1.5 rounded text-sm font-semibold bg-white text-text-secondary hover:bg-background-gray transition-colors"
+          disabled={isUploading}
+          className="px-3 py-1.5 rounded text-sm font-semibold bg-white text-text-secondary hover:bg-background-gray transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          title="Afbeelding toevoegen - Klik op afbeelding en druk Delete/Backspace om te verwijderen"
         >
-          🖼️ Afbeelding
+          {isUploading ? '⏳ Uploaden...' : '🖼️ Afbeelding'}
+        </button>
+
+        {/* Paste Markdown */}
+        <button
+          type="button"
+          onClick={pasteMarkdown}
+          className="px-3 py-1.5 rounded text-sm font-semibold bg-accent text-white hover:bg-accent-dark transition-colors"
+          title="Plak Markdown van ChatGPT"
+        >
+          📝 MD
         </button>
 
         <div className="w-px h-8 bg-background-gray mx-1" />
@@ -249,7 +498,178 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
       </div>
 
       {/* Editor */}
-      <EditorContent editor={editor} className="bg-white" />
+      <div
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+        className="relative bg-white"
+      >
+        <EditorContent editor={editor} />
+
+        {/* Drag & Drop Indicator */}
+        {isUploading && (
+          <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-10">
+            <div className="text-center">
+              <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+              <p className="text-text-secondary font-heading font-semibold">Afbeelding uploaden...</p>
+            </div>
+          </div>
+        )}
+
+        {/* Image Metadata Modal */}
+        {pendingImage && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center p-4 z-20">
+            <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+              <h3 className="text-lg font-heading font-bold text-text-primary mb-4">
+                Afbeelding details toevoegen
+              </h3>
+
+              {/* Preview */}
+              <div className="mb-4">
+                <img
+                  src={pendingImage.url}
+                  alt="Preview"
+                  className="w-full h-48 object-cover rounded-lg border border-background-gray"
+                />
+              </div>
+
+              {/* Alt text */}
+              <div className="mb-4">
+                <label className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                  Alt tekst (verplicht voor SEO) *
+                </label>
+                <input
+                  type="text"
+                  value={imageAlt}
+                  onChange={(e) => setImageAlt(e.target.value)}
+                  placeholder="Beschrijf de afbeelding..."
+                  className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  autoFocus
+                />
+                <p className="text-xs text-text-muted mt-1">
+                  Voor toegankelijkheid en SEO
+                </p>
+              </div>
+
+              {/* Title */}
+              <div className="mb-6">
+                <label className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                  Titel (optioneel)
+                </label>
+                <input
+                  type="text"
+                  value={imageTitle}
+                  onChange={(e) => setImageTitle(e.target.value)}
+                  placeholder="Hover tekst..."
+                  className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                />
+                <p className="text-xs text-text-muted mt-1">
+                  Verschijnt bij hover over afbeelding
+                </p>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={insertImageWithMetadata}
+                  disabled={!imageAlt.trim()}
+                  className="flex-1 px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors font-heading font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Opslaan
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    editor?.commands.deleteSelection();
+                    setPendingImage(null);
+                    setImageAlt('');
+                    setImageTitle('');
+                  }}
+                  className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors font-heading font-semibold"
+                >
+                  Verwijderen
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPendingImage(null);
+                    setImageAlt('');
+                    setImageTitle('');
+                  }}
+                  className="px-4 py-2 rounded-lg bg-background-gray hover:bg-background-gray/80 text-text-primary font-heading font-semibold transition-colors"
+                >
+                  Annuleren
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Link Edit Modal */}
+        {showLinkModal && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center p-4 z-20">
+            <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+              <h3 className="text-lg font-heading font-bold text-text-primary mb-4">
+                Link bewerken
+              </h3>
+
+              {/* Link text (readonly) */}
+              <div className="mb-4">
+                <label className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                  Link tekst
+                </label>
+                <input
+                  type="text"
+                  value={linkText}
+                  readOnly
+                  className="w-full px-4 py-2 rounded-lg border border-background-gray bg-background-light text-text-secondary cursor-not-allowed"
+                />
+              </div>
+
+              {/* URL */}
+              <div className="mb-6">
+                <label className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                  URL *
+                </label>
+                <input
+                  type="url"
+                  value={linkUrl}
+                  onChange={(e) => setLinkUrl(e.target.value)}
+                  placeholder="https://..."
+                  className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  autoFocus
+                />
+              </div>
+
+              {/* Buttons */}
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={updateLink}
+                  disabled={!linkUrl.trim()}
+                  className="flex-1 px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors font-heading font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Link bijwerken
+                </button>
+                <button
+                  type="button"
+                  onClick={removeLink}
+                  className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors font-heading font-semibold"
+                >
+                  Verwijderen
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowLinkModal(false)}
+                  className="px-4 py-2 rounded-lg bg-background-gray hover:bg-background-gray/80 text-text-primary font-heading font-semibold transition-colors"
+                >
+                  Annuleren
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

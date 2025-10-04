@@ -18,9 +18,18 @@ export async function POST(request: NextRequest) {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
 
+    // Default tenant ID for single-tenant setup
+    const TENANT_ID = '62999b2a-04ec-4ba8-814b-1d74d6937199';
+
+    // Convert tags string to array
+    const tagsArray = data.tags
+      ? data.tags.split(',').map((tag: string) => tag.trim()).filter((tag: string) => tag)
+      : [];
+
     // Insert post into database
     const result = await sql`
       INSERT INTO posts (
+        tenant_id,
         title,
         slug,
         excerpt,
@@ -30,18 +39,25 @@ export async function POST(request: NextRequest) {
         featured,
         category_id,
         author_id,
+        tags,
+        meta_title,
+        meta_description,
         created_at,
         updated_at
       ) VALUES (
+        ${TENANT_ID},
         ${data.title},
         ${slug},
         ${data.excerpt || null},
         ${data.content},
-        ${data.feature_img || null},
+        ${data.feature_img || data.featuredImage || null},
         ${data.status || 'draft'},
         ${data.featured || false},
-        ${data.category_id || null},
-        ${user.id},
+        ${data.category_id || data.category || null},
+        NULL,
+        ${JSON.stringify(tagsArray)},
+        ${data.meta_title || data.metaTitle || null},
+        ${data.meta_description || data.metaDescription || null},
         NOW(),
         NOW()
       )
@@ -97,7 +113,7 @@ export async function GET(request: NextRequest) {
         p.views,
         p.published_at,
         p.created_at,
-        u.display_name as author_name,
+        u.name as author_name,
         c.name as category_name
       FROM posts p
       LEFT JOIN users u ON p.author_id = u.id

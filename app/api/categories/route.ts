@@ -64,14 +64,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Default tenant ID
+    const TENANT_ID = '62999b2a-04ec-4ba8-814b-1d74d6937199';
+
     // Maak categorie aan
     const result = await sql`
       INSERT INTO categories (
+        tenant_id,
         name,
         slug,
         description,
         color
       ) VALUES (
+        ${TENANT_ID},
         ${data.name},
         ${slug},
         ${data.description || null},

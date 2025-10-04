@@ -1,17 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import ImageUpload from "../../../../components/ImageUpload";
+import CategoryQuickAdd from "../../../../components/CategoryQuickAdd";
 
 const RichTextEditor = dynamic(() => import("../../../../components/RichTextEditor"), {
   ssr: false,
   loading: () => <p className="p-4 text-text-muted">Editor laden...</p>,
 });
 
+interface Category {
+  id: number;
+  name: string;
+  slug: string;
+}
+
 export default function NewPostPage() {
   const router = useRouter();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     title: "",
     slug: "",
@@ -21,17 +34,70 @@ export default function NewPostPage() {
     content: "",
     featuredImage: "",
     tags: "",
+    metaTitle: "",
+    metaDescription: "",
   });
+
+  // Haal categorieën op bij laden van de pagina
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const response = await fetch('/api/categories');
+        const data = await response.json();
+        if (data.categories) {
+          setCategories(data.categories);
+        }
+      } catch (error) {
+        console.error('Error loading categories:', error);
+      } finally {
+        setLoadingCategories(false);
+      }
+    }
+    fetchCategories();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // TODO: Save to database
-    console.log("Form data:", formData);
-    
-    // For now, just redirect back to posts
-    alert("Post opgeslagen! (Mock - nog geen database connectie)");
-    router.push("/posts");
+    setError(null);
+    setSubmitting(true);
+
+    try {
+      const response = await fetch('/api/posts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: formData.title,
+          slug: formData.slug,
+          excerpt: formData.excerpt,
+          content: formData.content,
+          feature_img: formData.featuredImage,
+          featuredImage: formData.featuredImage,
+          status: formData.status,
+          category_id: formData.category,
+          category: formData.category,
+          tags: formData.tags,
+          meta_title: formData.metaTitle,
+          metaTitle: formData.metaTitle,
+          meta_description: formData.metaDescription,
+          metaDescription: formData.metaDescription,
+          featured: false,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Post aanmaken mislukt');
+      }
+
+      // Success! Redirect to posts list
+      router.push('/posts');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Er ging iets mis bij het opslaan');
+      setSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -40,7 +106,7 @@ export default function NewPostPage() {
       ...prev,
       [name]: value
     }));
-    
+
     // Auto-generate slug from title
     if (name === "title" && !formData.slug) {
       const slug = value
@@ -49,6 +115,13 @@ export default function NewPostPage() {
         .replace(/(^-|-$)/g, '');
       setFormData(prev => ({ ...prev, slug }));
     }
+  };
+
+  const handleCategoryAdded = (newCategory: Category) => {
+    // Voeg nieuwe categorie toe aan lijst
+    setCategories(prev => [...prev, newCategory]);
+    // Selecteer automatisch de nieuwe categorie
+    setFormData(prev => ({ ...prev, category: String(newCategory.id) }));
   };
 
   return (
@@ -119,6 +192,64 @@ export default function NewPostPage() {
                 />
               </div>
 
+              {/* SEO Settings */}
+              <div className="bg-white rounded-lg shadow-sm border border-background-gray p-6">
+                <h3 className="text-sm font-heading font-semibold text-text-primary mb-4 flex items-center gap-2">
+                  🔍 SEO Instellingen
+                </h3>
+                <div className="space-y-4">
+                  {/* Meta Title */}
+                  <div>
+                    <label htmlFor="metaTitle" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                      Meta Title
+                    </label>
+                    <input
+                      type="text"
+                      id="metaTitle"
+                      name="metaTitle"
+                      value={formData.metaTitle}
+                      onChange={handleChange}
+                      maxLength={60}
+                      placeholder={formData.title || "SEO titel (wordt getoond in zoekmachines)"}
+                      className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                    />
+                    <div className="flex justify-between items-center mt-1">
+                      <p className="text-xs text-text-muted">
+                        Laat leeg om automatisch "{formData.title || 'Titel'} - SkillLinkup" te gebruiken
+                      </p>
+                      <span className={`text-xs ${formData.metaTitle.length > 60 ? 'text-red-500' : 'text-text-muted'}`}>
+                        {formData.metaTitle.length}/60
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Meta Description */}
+                  <div>
+                    <label htmlFor="metaDescription" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                      Meta Description
+                    </label>
+                    <textarea
+                      id="metaDescription"
+                      name="metaDescription"
+                      value={formData.metaDescription}
+                      onChange={handleChange}
+                      maxLength={160}
+                      rows={3}
+                      placeholder={formData.excerpt || "SEO beschrijving (wordt getoond in zoekmachines)"}
+                      className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
+                    />
+                    <div className="flex justify-between items-center mt-1">
+                      <p className="text-xs text-text-muted">
+                        Laat leeg om automatisch de samenvatting te gebruiken
+                      </p>
+                      <span className={`text-xs ${formData.metaDescription.length > 160 ? 'text-red-500' : 'text-text-muted'}`}>
+                        {formData.metaDescription.length}/160
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Content */}
               <div className="bg-white rounded-lg shadow-sm border border-background-gray p-6">
                 <label htmlFor="content" className="block text-sm font-heading font-semibold text-text-primary mb-4">
@@ -164,21 +295,33 @@ export default function NewPostPage() {
                     <label htmlFor="category" className="block text-sm font-heading font-semibold text-text-primary mb-2">
                       Categorie *
                     </label>
-                    <select
-                      id="category"
-                      name="category"
-                      value={formData.category}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                    >
-                      <option value="">Selecteer categorie</option>
-                      <option value="Platforms">Platforms</option>
-                      <option value="Guides">Guides</option>
-                      <option value="Comparisons">Comparisons</option>
-                      <option value="Career">Career</option>
-                      <option value="Business">Business</option>
-                    </select>
+                    <div className="space-y-2">
+                      <select
+                        id="category"
+                        name="category"
+                        value={formData.category}
+                        onChange={handleChange}
+                        required
+                        disabled={loadingCategories}
+                        className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:opacity-50"
+                      >
+                        <option value="">
+                          {loadingCategories ? "Categorieën laden..." : "Selecteer categorie"}
+                        </option>
+                        {categories.map((cat) => (
+                          <option key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        onClick={() => setShowCategoryModal(true)}
+                        className="w-full px-4 py-2 rounded-lg border-2 border-dashed border-background-gray text-sm font-heading font-semibold text-primary hover:border-primary hover:bg-primary/5 transition-colors"
+                      >
+                        + Nieuwe categorie
+                      </button>
+                    </div>
                   </div>
 
                   <div>
@@ -203,38 +346,50 @@ export default function NewPostPage() {
 
               {/* Featured Image */}
               <div className="bg-white rounded-lg shadow-sm border border-background-gray p-6">
-                <h3 className="text-sm font-heading font-semibold text-text-primary mb-4">
-                  Uitgelichte Afbeelding
-                </h3>
-                <div className="space-y-4">
-                  <input
-                    type="text"
-                    id="featuredImage"
-                    name="featuredImage"
-                    value={formData.featuredImage}
-                    onChange={handleChange}
-                    placeholder="/images/post-image.jpg"
-                    className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                  />
-                  <button
-                    type="button"
-                    className="w-full px-4 py-2 rounded-lg border-2 border-dashed border-background-gray text-sm font-heading font-semibold text-text-secondary hover:border-primary hover:text-primary transition-colors"
-                  >
-                    📁 Upload Afbeelding
-                  </button>
-                </div>
+                <ImageUpload
+                  value={formData.featuredImage}
+                  onChange={(url) => setFormData(prev => ({ ...prev, featuredImage: url }))}
+                  label="Uitgelichte Afbeelding"
+                />
               </div>
+
+              {/* Error Message */}
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg">
+                  {error}
+                </div>
+              )}
 
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full px-6 py-3 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors font-heading font-semibold shadow-lg"
+                disabled={submitting}
+                className="w-full px-6 py-3 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors font-heading font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {formData.status === 'published' ? '✅ Publiceren' : '📄 Opslaan als Concept'}
+                {submitting ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Opslaan...
+                  </span>
+                ) : formData.status === 'published' ? (
+                  '✅ Publiceren'
+                ) : (
+                  '📄 Opslaan als Concept'
+                )}
               </button>
             </div>
           </div>
         </form>
+
+        {/* Category Quick Add Modal */}
+        <CategoryQuickAdd
+          isOpen={showCategoryModal}
+          onClose={() => setShowCategoryModal(false)}
+          onCategoryAdded={handleCategoryAdded}
+        />
       </main>
   );
 }

@@ -17,10 +17,10 @@ export async function GET(
     const result = await sql`
       SELECT
         p.*,
-        u.display_name as author_name,
+        a.name as author_name,
         c.name as category_name
       FROM posts p
-      LEFT JOIN users u ON p.author_id = u.id
+      LEFT JOIN authors a ON p.author_id = a.id
       LEFT JOIN categories c ON p.category_id = c.id
       WHERE p.id = ${postId}
       LIMIT 1;
