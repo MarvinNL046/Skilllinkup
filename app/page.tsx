@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getPublishedPosts, getFeaturedPosts } from "../lib/queries";
+import { getPublishedPosts, getFeaturedPosts, getTopRatedPlatforms } from "../lib/queries";
 import { Header } from "../components/header";
 import { Hero } from "../components/hero";
 import { FeaturedPlatforms } from "../components/featured-platforms";
@@ -18,20 +18,20 @@ export const dynamic = 'force-dynamic';
 export default async function HomePage() {
   let posts: Awaited<ReturnType<typeof getPublishedPosts>> = [];
   let featuredPosts: Awaited<ReturnType<typeof getFeaturedPosts>> = [];
-  let latestPosts: Awaited<ReturnType<typeof getPublishedPosts>> = [];
+  let topPlatforms: Awaited<ReturnType<typeof getTopRatedPlatforms>> = [];
 
   try {
     posts = await getPublishedPosts(6, 0);
     featuredPosts = await getFeaturedPosts(3);
-    latestPosts = await getPublishedPosts(6, 0);
+    topPlatforms = await getTopRatedPlatforms(6);
 
-    console.log('📊 Posts fetched:', {
+    console.log('📊 Data fetched:', {
       posts: posts.length,
       featuredPosts: featuredPosts.length,
-      latestPosts: latestPosts.length
+      topPlatforms: topPlatforms.length
     });
   } catch (error) {
-    console.error('❌ Error fetching posts:', error);
+    console.error('❌ Error fetching data:', error);
   }
 
   return (
@@ -40,7 +40,7 @@ export default async function HomePage() {
       <main className="flex-1">
         <Hero />
         <FeaturedPlatforms posts={featuredPosts} />
-        <TopRatedPlatforms posts={latestPosts} />
+        <TopRatedPlatforms platforms={topPlatforms} />
         <PlatformComparison />
         <HowItWorks />
         <TrendingTopics />

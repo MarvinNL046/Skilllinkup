@@ -411,6 +411,37 @@ export async function getFeaturedPlatforms(limit = 3): Promise<Platform[]> {
   return platforms as Platform[];
 }
 
+// Query: Get top-rated platforms (SAFE)
+export async function getTopRatedPlatforms(limit = 6): Promise<Platform[]> {
+  const platforms = await sql`
+    SELECT
+      id,
+      name,
+      slug,
+      description,
+      logo_url,
+      website_url,
+      rating,
+      category,
+      fees,
+      difficulty,
+      color,
+      featured,
+      pros,
+      cons,
+      features,
+      status,
+      published_at,
+      created_at
+    FROM platforms
+    WHERE status = 'published'
+    ORDER BY rating DESC, name ASC
+    LIMIT ${limit};
+  `;
+
+  return platforms as Platform[];
+}
+
 // Query: Get platform by slug (SAFE)
 export async function getPlatformBySlug(slug: string): Promise<Platform | null> {
   const platforms = await sql`

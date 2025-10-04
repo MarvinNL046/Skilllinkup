@@ -1,28 +1,29 @@
 import Link from 'next/link';
-import { ArrowRight, Calendar, User } from 'lucide-react';
+import { ArrowRight, Star } from 'lucide-react';
 import Image from 'next/image';
 
-interface Post {
+interface Platform {
   id: string;
-  title: string;
+  name: string;
   slug: string;
-  excerpt: string | null;
-  feature_img: string | null;
-  created_at: Date | string;
-  author_name: string | null;
-  category_name: string | null;
-  category_slug: string | null;
+  description: string | null;
+  logo_url: string | null;
+  website_url: string | null;
+  rating: number;
+  category: string;
+  fees: string | null;
+  difficulty: string;
 }
 
 interface TopRatedPlatformsProps {
-  posts: Post[];
+  platforms: Platform[];
 }
 
-export function TopRatedPlatforms({ posts }: TopRatedPlatformsProps) {
-  // Toon alleen eerste 6 posts
-  const displayPosts = posts.slice(0, 6);
+export function TopRatedPlatforms({ platforms }: TopRatedPlatformsProps) {
+  // Show only first 6 platforms
+  const displayPlatforms = platforms.slice(0, 6);
 
-  if (displayPosts.length === 0) {
+  if (displayPlatforms.length === 0) {
     return null;
   }
 
@@ -32,69 +33,74 @@ export function TopRatedPlatforms({ posts }: TopRatedPlatformsProps) {
         {/* Header */}
         <div className="mb-12 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Laatste Blog Posts
+            Top Rated Platforms
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Ontdek onze nieuwste artikelen, guides en tips voor freelancers
+            Our highest-rated freelance marketplaces based on user reviews and ratings
           </p>
         </div>
 
-        {/* Posts Grid */}
+        {/* Platforms Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {displayPosts.map((post) => (
+          {displayPlatforms.map((platform) => (
             <Link
-              key={post.id}
-              href={`/blog/${post.slug}`}
+              key={platform.id}
+              href={`/platforms/${platform.slug}`}
               className="group block"
             >
               <article className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden h-full flex flex-col">
-                {/* Featured Image */}
-                {post.feature_img ? (
-                  <div className="relative h-48 bg-gray-200 overflow-hidden">
+                {/* Platform Logo */}
+                <div className="relative h-48 bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center p-8">
+                  {platform.logo_url ? (
                     <Image
-                      src={post.feature_img}
-                      alt={post.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      src={platform.logo_url}
+                      alt={platform.name}
+                      width={200}
+                      height={100}
+                      className="object-contain group-hover:scale-105 transition-transform duration-300"
                     />
-                  </div>
-                ) : (
-                  <div className="h-48 bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center">
-                    <span className="text-6xl">📝</span>
-                  </div>
-                )}
-
-                {/* Post Content */}
-                <div className="p-6 flex-1 flex flex-col">
-                  {/* Category Badge */}
-                  {post.category_name && (
-                    <div className="mb-3">
-                      <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold text-white bg-primary">
-                        {post.category_name}
-                      </span>
+                  ) : (
+                    <div className="text-6xl font-bold text-gray-300">
+                      {platform.name.charAt(0)}
                     </div>
                   )}
+                </div>
 
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors line-clamp-2">
-                    {post.title}
+                {/* Platform Content */}
+                <div className="p-6 flex-1 flex flex-col">
+                  {/* Platform Name */}
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
+                    {platform.name}
                   </h3>
 
-                  {post.excerpt && (
+                  {/* Rating */}
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-1">
+                      <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                      <span className="text-lg font-semibold text-gray-900">
+                        {Number(platform.rating).toFixed(1)}
+                      </span>
+                    </div>
+                    <span className="text-sm text-gray-500">• {platform.category}</span>
+                  </div>
+
+                  {/* Description */}
+                  {platform.description && (
                     <p className="text-gray-600 text-sm mb-4 line-clamp-3 flex-1">
-                      {post.excerpt}
+                      {platform.description}
                     </p>
                   )}
 
                   {/* Meta Info */}
                   <div className="flex items-center justify-between text-sm text-gray-500 mt-auto pt-4 border-t border-gray-100">
                     <div className="flex items-center gap-2">
-                      <User className="w-4 h-4" />
-                      <span>{post.author_name || 'SkillLinkup'}</span>
+                      <span className="px-2 py-1 rounded bg-blue-50 text-blue-700 text-xs font-medium">
+                        {platform.difficulty}
+                      </span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      <span>{new Date(post.created_at).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })}</span>
-                    </div>
+                    {platform.fees && (
+                      <span className="text-xs">{platform.fees}</span>
+                    )}
                   </div>
                 </div>
               </article>
@@ -105,10 +111,10 @@ export function TopRatedPlatforms({ posts }: TopRatedPlatformsProps) {
         {/* View All Button */}
         <div className="text-center">
           <Link
-            href="/blog"
+            href="/platforms"
             className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-dark transition-colors"
           >
-            Bekijk Alle Posts
+            View All Platforms
             <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
