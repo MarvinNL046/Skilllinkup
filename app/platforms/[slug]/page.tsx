@@ -118,32 +118,10 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                   )}
                 </div>
 
-                {/* Platform Name & Logo */}
-                <div className="flex items-start gap-6 mb-6">
-                  {platform.logo_url && (
-                    <div className="flex-shrink-0">
-                      <div className="relative w-20 h-20 rounded-lg overflow-hidden shadow-lg" style={{ backgroundColor: platform.color }}>
-                        <Image
-                          src={platform.logo_url}
-                          alt={`${platform.name} logo`}
-                          fill
-                          sizes="80px"
-                          className="object-contain p-2"
-                        />
-                      </div>
-                    </div>
-                  )}
-                  <div className="flex-1">
-                    <h1 className="text-4xl font-heading font-bold text-text-primary sm:text-5xl mb-3 leading-tight">
-                      {platform.name}
-                    </h1>
-                    {platform.description && (
-                      <p className="text-lg text-text-secondary leading-relaxed">
-                        {platform.description}
-                      </p>
-                    )}
-                  </div>
-                </div>
+                {/* Platform Name */}
+                <h1 className="text-4xl font-heading font-bold text-text-primary sm:text-5xl mb-4 leading-tight">
+                  {platform.name}
+                </h1>
 
                 {/* Quick Stats */}
                 <div className="flex flex-wrap items-center gap-6 text-sm">
@@ -209,12 +187,40 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
             </div>
           </header>
 
+          {/* Featured Image */}
+          {platform.logo_url && (
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
+              <div className="max-w-4xl mx-auto">
+                <div className="relative aspect-[16/9] overflow-hidden rounded-lg shadow-xl">
+                  <Image
+                    src={platform.logo_url}
+                    alt={platform.name}
+                    fill
+                    sizes="(max-width: 1200px) 100vw, 1200px"
+                    className="object-cover"
+                    priority
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Platform Content */}
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="max-w-4xl mx-auto">
               <div className="grid gap-12 lg:grid-cols-3">
                 {/* Main Content */}
                 <div className="lg:col-span-2 space-y-12">
+                  {/* Description */}
+                  {platform.description && (
+                    <section id="description">
+                      <div
+                        className="prose prose-lg max-w-none text-text-secondary leading-relaxed"
+                        dangerouslySetInnerHTML={{ __html: platform.description }}
+                      />
+                    </section>
+                  )}
+
                   {/* Features Section */}
                   {platform.features && platform.features.length > 0 && (
                     <section id="features">
@@ -398,15 +404,13 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                     <Link href={`/platforms/${relatedPlatform.slug}`} className="block">
                       <div className="flex items-start gap-4 mb-4">
                         {relatedPlatform.logo_url && (
-                          <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0" style={{ backgroundColor: relatedPlatform.color }}>
-                            <Image
-                              src={relatedPlatform.logo_url}
-                              alt={`${relatedPlatform.name} logo`}
-                              fill
-                              sizes="48px"
-                              className="object-contain p-1"
-                            />
-                          </div>
+                          <Image
+                            src={relatedPlatform.logo_url}
+                            alt={`${relatedPlatform.name} logo`}
+                            width={48}
+                            height={48}
+                            className="rounded-lg shadow-sm object-cover flex-shrink-0"
+                          />
                         )}
                         <div className="flex-1">
                           <h3 className="text-lg font-heading font-bold text-text-primary group-hover:text-primary transition-colors mb-1">
@@ -419,9 +423,10 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                         </div>
                       </div>
                       {relatedPlatform.description && (
-                        <p className="text-sm text-text-secondary line-clamp-2 mb-3">
-                          {relatedPlatform.description}
-                        </p>
+                        <div
+                          className="text-sm text-text-secondary line-clamp-2 mb-3 prose prose-sm max-w-none"
+                          dangerouslySetInnerHTML={{ __html: relatedPlatform.description }}
+                        />
                       )}
                       <div className="flex items-center justify-between text-xs">
                         <span className={`px-2 py-1 rounded-full font-semibold ${getDifficultyColor(relatedPlatform.difficulty)}`}>
