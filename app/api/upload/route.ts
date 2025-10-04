@@ -53,14 +53,16 @@ export async function POST(request: NextRequest) {
     const filepath = join(uploadDir, filename);
     await writeFile(filepath, buffer);
 
-    // Return the URL path
-    // For admin dashboard, we need the full URL to the main app
+    // Return RELATIVE path for database storage (SEO-friendly, works in all environments)
+    // But also return full URL for editor preview
+    const relativePath = `/images/posts/${filename}`;
     const mainAppUrl = process.env.NEXT_PUBLIC_MAIN_APP_URL || 'http://localhost:3000';
-    const imageUrl = `${mainAppUrl}/images/posts/${filename}`;
+    const previewUrl = `${mainAppUrl}${relativePath}`;
 
     return NextResponse.json({
       success: true,
-      url: imageUrl,
+      url: relativePath,          // Relative path for database (SEO-friendly)
+      previewUrl: previewUrl,     // Full URL for editor preview
       filename: filename
     });
 

@@ -50,7 +50,8 @@ export default function ImageUpload({ value, onChange, label = "Afbeelding" }: I
         throw new Error(data.error || 'Upload mislukt');
       }
 
-      setPreview(data.url);
+      // Use previewUrl for display, but save relative url to database
+      setPreview(data.previewUrl || data.url);
       onChange(data.url);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Er ging iets mis bij het uploaden');
