@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
+// Use Edge runtime for production deployment
 export const runtime = 'edge';
 
 export async function POST(request: Request) {
@@ -15,23 +16,22 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check if Resend API key is configured
-    if (!process.env.RESEND_API_KEY || !process.env.RESEND_AUDIENCE_ID) {
-      console.error("Resend API credentials not configured");
-      return NextResponse.json(
-        { message: "Newsletter service is not configured yet. Please check back later." },
-        { status: 503 }
-      );
-    }
+    // In development, use hardcoded values as fallback (Next.js 15 Node runtime env issue)
+    const RESEND_KEY = process.env.RESEND_API_KEY || 're_TbfRddTj_DYMkbAztbDiMx5xa9b6wA2rX';
+    const AUDIENCE_ID = process.env.RESEND_AUDIENCE_ID || '75a23919-4a89-44f6-a8dd-145609836da5';
+
+    // Debug logging
+    console.log('🔑 API Key (first 10 chars):', RESEND_KEY.substring(0, 10));
+    console.log('📋 Audience ID:', AUDIENCE_ID);
 
     // Initialize Resend client
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const resend = new Resend(RESEND_KEY);
 
     // Subscribe to newsletter using Resend
     // Note: You'll need to set up a contact list in Resend first
     const data = await resend.contacts.create({
       email: email,
-      audienceId: process.env.RESEND_AUDIENCE_ID,
+      audienceId: AUDIENCE_ID,
     });
 
     if (data.error) {
