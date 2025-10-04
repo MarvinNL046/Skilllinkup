@@ -5,6 +5,7 @@ import { getPostBySlug, getPublishedPosts } from "../../../lib/queries";
 import { Header } from "../../../components/header";
 import { Footer } from "../../../components/footer";
 import { Newsletter } from "../../../components/newsletter";
+import { ViewTracker } from "../../../components/ViewTracker";
 import AdWidget from "../../../src/common/components/sidebar/AdWidget";
 import QuickInfoWidget from "../../../src/common/components/sidebar/QuickInfoWidget";
 import TableOfContents from "../../../src/common/components/sidebar/TableOfContents";
@@ -165,6 +166,9 @@ export default async function PostPage({ params }: PostPageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+
+      {/* View Tracker - Increments view count after 2 seconds */}
+      <ViewTracker slug={post.slug} />
 
       <Header />
       <main className="flex-1">
