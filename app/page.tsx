@@ -24,8 +24,14 @@ export default async function HomePage() {
     posts = await getPublishedPosts(6, 0);
     featuredPosts = await getFeaturedPosts(3);
     latestPosts = await getPublishedPosts(6, 0);
+
+    console.log('📊 Posts fetched:', {
+      posts: posts.length,
+      featuredPosts: featuredPosts.length,
+      latestPosts: latestPosts.length
+    });
   } catch (error) {
-    console.error('Error fetching posts:', error);
+    console.error('❌ Error fetching posts:', error);
   }
 
   return (

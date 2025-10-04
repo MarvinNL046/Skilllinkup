@@ -16,6 +16,11 @@ export const metadata: Metadata = {
   title: "SkillLinkup - Find the Best Freelance Marketplaces",
   description: "Compare and discover the best freelance platforms for your skills. Honest reviews, detailed comparisons, and expert insights to help you succeed as a freelancer.",
   keywords: "freelance platforms, freelance marketplaces, Upwork, Fiverr, freelancer reviews, remote work",
+  icons: {
+    icon: "/images/favicon-skilllinkup.png",
+    shortcut: "/images/favicon-skilllinkup.png",
+    apple: "/images/favicon-skilllinkup.png",
+  },
   openGraph: {
     title: "SkillLinkup - Find the Best Freelance Marketplaces",
     description: "Compare and discover the best freelance platforms for your skills.",

@@ -26,9 +26,71 @@ export async function generateMetadata({ params }: PostPageProps) {
       };
     }
 
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+    const postUrl = `${siteUrl}/post/${post.slug}`;
+
+    // Use custom meta title/description if available, otherwise fallback to defaults
+    const metaTitle = post.meta_title || `${post.title} - SkillLinkup`;
+    const metaDescription = post.meta_description || post.excerpt || post.title;
+    const imageUrl = post.feature_img?.startsWith('http')
+      ? post.feature_img
+      : `${siteUrl}${post.feature_img}`;
+
     return {
-      title: `${post.title} - SkillLinkup`,
-      description: post.excerpt || post.title,
+      title: metaTitle,
+      description: metaDescription,
+
+      // Keywords (optional, but can help)
+      keywords: post.tags?.join(', '),
+
+      // Authors
+      authors: post.author_name ? [{ name: post.author_name }] : [],
+
+      // Canonical URL
+      alternates: {
+        canonical: postUrl,
+      },
+
+      // Open Graph (Facebook, LinkedIn, etc.)
+      openGraph: {
+        title: metaTitle,
+        description: metaDescription,
+        url: postUrl,
+        siteName: 'SkillLinkup',
+        images: post.feature_img ? [
+          {
+            url: imageUrl,
+            width: 1200,
+            height: 630,
+            alt: post.title,
+          }
+        ] : [],
+        locale: 'en_US',
+        type: 'article',
+        publishedTime: post.published_at || undefined,
+        authors: post.author_name ? [post.author_name] : [],
+        tags: post.tags || [],
+      },
+
+      // Twitter Card
+      twitter: {
+        card: 'summary_large_image',
+        title: metaTitle,
+        description: metaDescription,
+        images: post.feature_img ? [imageUrl] : [],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+
+      // Robots
+      robots: {
+        index: post.status === 'published',
+        follow: post.status === 'published',
+        googleBot: {
+          index: post.status === 'published',
+          follow: post.status === 'published',
+        },
+      },
     };
   } catch (error) {
     return {
@@ -56,8 +118,51 @@ export default async function PostPage({ params }: PostPageProps) {
     notFound();
   }
 
+  // Schema.org JSON-LD for Rich Results
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const postUrl = `${siteUrl}/post/${post.slug}`;
+  const imageUrl = post.feature_img?.startsWith('http')
+    ? post.feature_img
+    : `${siteUrl}${post.feature_img}`;
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt || post.title,
+    image: post.feature_img ? imageUrl : undefined,
+    author: post.author_name ? {
+      '@type': 'Person',
+      name: post.author_name,
+    } : undefined,
+    publisher: {
+      '@type': 'Organization',
+      name: 'SkillLinkup',
+      logo: {
+        '@type': 'ImageObject',
+        url: `${siteUrl}/images/logo/logo.png`,
+      },
+    },
+    datePublished: post.published_at,
+    dateModified: post.updated_at || post.published_at,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': postUrl,
+    },
+    keywords: post.tags?.join(', '),
+    articleSection: post.category_name,
+    wordCount: post.content ? post.content.split(/\s+/).length : undefined,
+    timeRequired: post.read_time ? `PT${post.read_time}M` : undefined,
+  };
+
   return (
     <>
+      {/* Schema.org JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <Header />
       <main className="flex-1">
         {/* Post Header */}

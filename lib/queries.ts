@@ -29,6 +29,7 @@ export interface Post {
   post_format: string;
   status: string;
   published_at: Date | null;
+  updated_at: Date | null;
   views: number;
   read_time: number | null;
   featured: boolean;
@@ -41,6 +42,9 @@ export interface Post {
   category_id: string | null;
   category_name: string | null;
   category_slug: string | null;
+  tags?: string[];
+  meta_title?: string | null;
+  meta_description?: string | null;
 }
 
 export interface Category {
@@ -110,17 +114,17 @@ export async function getPublishedPosts(limit = 10, offset = 0): Promise<Post[]>
       p.slug,
       p.excerpt,
       p.content,
-      COALESCE(NULLIF(TRIM(p.featured_image), ''), '/images/posts/lifestyle-post-01.webp') AS feature_img,
-      'standard' as post_format,
+      COALESCE(NULLIF(TRIM(p.feature_img), ''), '/images/posts/lifestyle-post-01.webp') AS feature_img,
+      COALESCE(p.post_format, 'standard') as post_format,
       p.status,
       p.published_at,
-      p.views,
-      5 as read_time,
-      false as featured,
-      false as sticky,
+      COALESCE(p.views, 0) as views,
+      COALESCE(p.read_time, 5) as read_time,
+      COALESCE(p.featured, false) as featured,
+      COALESCE(p.sticky, false) as sticky,
       p.created_at,
-      CONCAT(p.title, ' - SkillLinkup') as meta_title,
-      LEFT(p.excerpt, 160) as meta_description,
+      COALESCE(p.meta_title, CONCAT(p.title, ' - SkillLinkup')) as meta_title,
+      COALESCE(p.meta_description, LEFT(p.excerpt, 160)) as meta_description,
       a.id as author_id,
       COALESCE(a.name, 'Anonymous') as author_name,
       a.email as author_email,
@@ -132,7 +136,7 @@ export async function getPublishedPosts(limit = 10, offset = 0): Promise<Post[]>
     LEFT JOIN categories c ON p.category_id = c.id
     LEFT JOIN authors a ON p.author_id = a.id
     WHERE p.status = 'published'
-    ORDER BY p.published_at DESC
+    ORDER BY p.published_at DESC NULLS LAST
     LIMIT ${limit}
     OFFSET ${offset};
   `;
@@ -149,7 +153,7 @@ export async function getFeaturedPosts(limit = 3): Promise<Post[]> {
       p.slug,
       p.excerpt,
       p.content,
-      COALESCE(NULLIF(TRIM(p.featured_image), ''), '/images/posts/lifestyle-post-01.webp') AS feature_img,
+      COALESCE(NULLIF(TRIM(p.feature_img), ''), '/images/posts/lifestyle-post-01.webp') AS feature_img,
       'standard' as post_format,
       p.status,
       p.published_at,
@@ -185,17 +189,19 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       p.slug,
       p.excerpt,
       p.content,
-      COALESCE(NULLIF(TRIM(p.featured_image), ''), '/images/posts/lifestyle-post-01.webp') AS feature_img,
-      'standard' as post_format,
+      COALESCE(NULLIF(TRIM(p.feature_img), ''), '/images/posts/lifestyle-post-01.webp') AS feature_img,
+      COALESCE(p.post_format, 'standard') as post_format,
       p.status,
       p.published_at,
-      p.views,
-      5 as read_time,
-      false as featured,
-      false as sticky,
+      p.updated_at,
+      COALESCE(p.views, 0) as views,
+      COALESCE(p.read_time, 5) as read_time,
+      COALESCE(p.featured, false) as featured,
+      COALESCE(p.sticky, false) as sticky,
       p.created_at,
-      CONCAT(p.title, ' - SkillLinkup') as meta_title,
-      LEFT(p.excerpt, 160) as meta_description,
+      p.meta_title,
+      p.meta_description,
+      p.tags,
       a.id as author_id,
       COALESCE(a.name, 'Anonymous') as author_name,
       a.email as author_email,
@@ -222,7 +228,7 @@ export async function getPostsByCategory(categorySlug: string, limit = 10): Prom
       p.slug,
       p.excerpt,
       p.content,
-      COALESCE(NULLIF(TRIM(p.featured_image), ''), '/images/posts/lifestyle-post-01.webp') AS feature_img,
+      COALESCE(NULLIF(TRIM(p.feature_img), ''), '/images/posts/lifestyle-post-01.webp') AS feature_img,
       'standard' as post_format,
       p.status,
       p.published_at,
@@ -276,7 +282,7 @@ export async function getRecentPosts(limit = 5): Promise<Post[]> {
       p.id,
       p.title,
       p.slug,
-      COALESCE(NULLIF(TRIM(p.featured_image), ''), '/images/posts/lifestyle-post-01.webp') AS feature_img,
+      COALESCE(NULLIF(TRIM(p.feature_img), ''), '/images/posts/lifestyle-post-01.webp') AS feature_img,
       p.published_at,
       p.views,
       COALESCE(c.name, 'Uncategorized') as category_name,
@@ -297,8 +303,8 @@ export async function checkDatabaseHealth() {
     const result = await sql`
       SELECT
         COUNT(*) AS total_posts,
-        COUNT(*) FILTER (WHERE featured_image IS NULL) AS null_images,
-        COUNT(*) FILTER (WHERE TRIM(featured_image) = '') AS empty_images,
+        COUNT(*) FILTER (WHERE feature_img IS NULL) AS null_images,
+        COUNT(*) FILTER (WHERE TRIM(feature_img) = '') AS empty_images,
         COUNT(*) FILTER (WHERE status = 'published') AS published_posts
       FROM posts;
     `;
@@ -316,9 +322,9 @@ export async function fixEmptyImages() {
   try {
     const result = await sql`
       UPDATE posts
-      SET featured_image = '/images/posts/lifestyle-post-01.webp'
-      WHERE featured_image IS NULL OR TRIM(featured_image) = ''
-      RETURNING id, slug, featured_image;
+      SET feature_img = '/images/posts/lifestyle-post-01.webp'
+      WHERE feature_img IS NULL OR TRIM(feature_img) = ''
+      RETURNING id, slug, feature_img;
     `;
 
     console.log(`✅ Fixed ${result.length} posts with empty images`);
