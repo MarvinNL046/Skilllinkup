@@ -64,6 +64,14 @@ export async function POST(request: NextRequest) {
       cons,
       features,
       status,
+      // Affiliate fields
+      affiliate_link,
+      commission_type,
+      commission_value,
+      cookie_duration,
+      avg_affiliate_earnings,
+      unique_benefits,
+      automation_status,
     } = body;
 
     // Validate required fields
@@ -92,7 +100,14 @@ export async function POST(request: NextRequest) {
         cons,
         features,
         status,
-        published_at
+        published_at,
+        affiliate_link,
+        commission_type,
+        commission_value,
+        cookie_duration,
+        avg_affiliate_earnings,
+        unique_benefits,
+        automation_status
       ) VALUES (
         'test-owner-id',
         ${name},
@@ -110,7 +125,14 @@ export async function POST(request: NextRequest) {
         ${JSON.stringify(cons || [])}::jsonb,
         ${JSON.stringify(features || [])}::jsonb,
         ${status || 'draft'},
-        ${status === 'published' ? new Date().toISOString() : null}
+        ${status === 'published' ? new Date().toISOString() : null},
+        ${affiliate_link || null},
+        ${commission_type || 'fixed'},
+        ${commission_value || null},
+        ${cookie_duration || 30},
+        ${avg_affiliate_earnings || 0},
+        ${unique_benefits && unique_benefits.length > 0 ? unique_benefits.filter((b: string) => b.trim()) : null}::text[],
+        ${automation_status || 'pending'}
       )
       RETURNING *
     `;

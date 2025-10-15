@@ -68,6 +68,14 @@ export async function PUT(
       cons,
       features,
       status,
+      // Affiliate fields
+      affiliate_link,
+      commission_type,
+      commission_value,
+      cookie_duration,
+      avg_affiliate_earnings,
+      unique_benefits,
+      automation_status,
     } = body;
 
     // Check if platform exists
@@ -101,7 +109,14 @@ export async function PUT(
         features = ${JSON.stringify(features || [])}::jsonb,
         status = ${status || 'draft'},
         published_at = ${status === 'published' && !existing[0].published_at ? new Date().toISOString() : existing[0].published_at},
-        updated_at = NOW()
+        updated_at = NOW(),
+        affiliate_link = ${affiliate_link || null},
+        commission_type = ${commission_type || 'fixed'},
+        commission_value = ${commission_value || null},
+        cookie_duration = ${cookie_duration || 30},
+        avg_affiliate_earnings = ${avg_affiliate_earnings || 0},
+        unique_benefits = ${unique_benefits && unique_benefits.length > 0 ? unique_benefits.filter((b: string) => b.trim()) : null}::text[],
+        automation_status = ${automation_status || 'pending'}
       WHERE id = ${id}
       RETURNING *
     `;

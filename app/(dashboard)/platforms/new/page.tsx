@@ -29,6 +29,14 @@ export default function NewPlatformPage() {
     cons: [''],
     features: [''],
     status: 'draft',
+    // Affiliate fields
+    affiliate_link: '',
+    commission_type: 'fixed',
+    commission_value: '',
+    cookie_duration: 30,
+    avg_affiliate_earnings: 0,
+    unique_benefits: [''],
+    automation_status: 'pending',
   });
 
   const handleChange = (
@@ -67,7 +75,7 @@ export default function NewPlatformPage() {
   };
 
   const handleArrayChange = (
-    field: 'pros' | 'cons' | 'features',
+    field: 'pros' | 'cons' | 'features' | 'unique_benefits',
     index: number,
     value: string
   ) => {
@@ -76,11 +84,11 @@ export default function NewPlatformPage() {
     setFormData({ ...formData, [field]: newArray });
   };
 
-  const addArrayItem = (field: 'pros' | 'cons' | 'features') => {
+  const addArrayItem = (field: 'pros' | 'cons' | 'features' | 'unique_benefits') => {
     setFormData({ ...formData, [field]: [...formData[field], ''] });
   };
 
-  const removeArrayItem = (field: 'pros' | 'cons' | 'features', index: number) => {
+  const removeArrayItem = (field: 'pros' | 'cons' | 'features' | 'unique_benefits', index: number) => {
     const newArray = formData[field].filter((_, i) => i !== index);
     setFormData({ ...formData, [field]: newArray });
   };
@@ -96,6 +104,7 @@ export default function NewPlatformPage() {
         pros: formData.pros.filter((p) => p.trim() !== ''),
         cons: formData.cons.filter((c) => c.trim() !== ''),
         features: formData.features.filter((f) => f.trim() !== ''),
+        unique_benefits: formData.unique_benefits.filter((b) => b.trim() !== ''),
       };
 
       const response = await fetch('/api/platforms', {
@@ -402,6 +411,107 @@ export default function NewPlatformPage() {
             className="mt-2 rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700"
           >
             + Add Feature
+          </button>
+        </div>
+
+        {/* Affiliate Settings */}
+        <div className="rounded-lg border border-gray-200 bg-white p-6">
+          <h2 className="mb-4 text-lg font-semibold text-gray-900">💰 Affiliate Settings</h2>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Affiliate Link (Short.io)</label>
+              <input
+                type="url"
+                name="affiliate_link"
+                value={formData.affiliate_link}
+                onChange={handleChange}
+                placeholder="https://go.skilllinkup.com/upwork"
+                className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Commission Type</label>
+                <select
+                  name="commission_type"
+                  value={formData.commission_type}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500"
+                >
+                  <option value="fixed">💵 Fixed</option>
+                  <option value="percentage">📊 Percentage</option>
+                  <option value="recurring">🔄 Recurring</option>
+                  <option value="cpa">🎯 CPA</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Commission Value</label>
+                <input
+                  type="text"
+                  name="commission_value"
+                  value={formData.commission_value}
+                  onChange={handleChange}
+                  placeholder="$150, 30%, etc."
+                  className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Cookie Duration (days)</label>
+                <input
+                  type="number"
+                  name="cookie_duration"
+                  value={formData.cookie_duration}
+                  onChange={handleChange}
+                  min="0"
+                  className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Avg. Earnings/Year ($)</label>
+                <input
+                  type="number"
+                  name="avg_affiliate_earnings"
+                  value={formData.avg_affiliate_earnings}
+                  onChange={handleChange}
+                  min="0"
+                  step="0.01"
+                  placeholder="1200.00"
+                  className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Unique Benefits */}
+        <div className="rounded-lg border border-gray-200 bg-white p-6">
+          <h2 className="mb-4 text-lg font-semibold text-gray-900">⭐ Unique Benefits (USPs)</h2>
+          {formData.unique_benefits.map((benefit, index) => (
+            <div key={index} className="mb-3 flex gap-2">
+              <input
+                type="text"
+                value={benefit}
+                onChange={(e) => handleArrayChange('unique_benefits', index, e.target.value)}
+                className="block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500"
+                placeholder="e.g., Dedicated account manager"
+              />
+              <button
+                type="button"
+                onClick={() => removeArrayItem('unique_benefits', index)}
+                className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => addArrayItem('unique_benefits')}
+            className="mt-2 rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+          >
+            + Add Benefit
           </button>
         </div>
 

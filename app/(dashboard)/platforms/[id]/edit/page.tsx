@@ -39,6 +39,14 @@ export default function EditPlatformPage({ params }: PageProps) {
     cons: [''],
     features: [''],
     status: 'draft',
+    // Affiliate fields
+    affiliate_link: '',
+    commission_type: 'fixed',
+    commission_value: '',
+    cookie_duration: 30,
+    avg_affiliate_earnings: 0,
+    unique_benefits: [''],
+    automation_status: 'pending',
   });
 
   useEffect(() => {
@@ -71,6 +79,14 @@ export default function EditPlatformPage({ params }: PageProps) {
           cons: platform.cons && platform.cons.length > 0 ? platform.cons : [''],
           features: platform.features && platform.features.length > 0 ? platform.features : [''],
           status: platform.status || 'draft',
+          // Affiliate fields
+          affiliate_link: platform.affiliate_link || '',
+          commission_type: platform.commission_type || 'fixed',
+          commission_value: platform.commission_value || '',
+          cookie_duration: platform.cookie_duration || 30,
+          avg_affiliate_earnings: platform.avg_affiliate_earnings || 0,
+          unique_benefits: platform.unique_benefits && platform.unique_benefits.length > 0 ? platform.unique_benefits : [''],
+          automation_status: platform.automation_status || 'pending',
         });
       }
     } catch (error) {
@@ -105,7 +121,7 @@ export default function EditPlatformPage({ params }: PageProps) {
   };
 
   const handleArrayChange = (
-    field: 'pros' | 'cons' | 'features',
+    field: 'pros' | 'cons' | 'features' | 'unique_benefits',
     index: number,
     value: string
   ) => {
@@ -114,11 +130,11 @@ export default function EditPlatformPage({ params }: PageProps) {
     setFormData({ ...formData, [field]: newArray });
   };
 
-  const addArrayItem = (field: 'pros' | 'cons' | 'features') => {
+  const addArrayItem = (field: 'pros' | 'cons' | 'features' | 'unique_benefits') => {
     setFormData({ ...formData, [field]: [...formData[field], ''] });
   };
 
-  const removeArrayItem = (field: 'pros' | 'cons' | 'features', index: number) => {
+  const removeArrayItem = (field: 'pros' | 'cons' | 'features' | 'unique_benefits', index: number) => {
     const newArray = formData[field].filter((_, i) => i !== index);
     setFormData({ ...formData, [field]: newArray });
   };
@@ -355,6 +371,136 @@ export default function EditPlatformPage({ params }: PageProps) {
                 + Feature toevoegen
               </button>
             </div>
+
+            {/* Affiliate Settings */}
+            <div className="bg-white rounded-lg shadow-sm border border-background-gray p-6">
+              <h3 className="text-sm font-heading font-semibold text-text-primary mb-4 flex items-center gap-2">
+                💰 Affiliate Settings
+              </h3>
+
+              <div className="space-y-4">
+                {/* Affiliate Link */}
+                <div>
+                  <label htmlFor="affiliate_link" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                    Affiliate Link (Short.io)
+                  </label>
+                  <input
+                    type="url"
+                    id="affiliate_link"
+                    name="affiliate_link"
+                    value={formData.affiliate_link}
+                    onChange={handleChange}
+                    placeholder="https://go.skilllinkup.com/upwork"
+                    className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  />
+                  <p className="text-xs text-text-muted mt-1">Your go.skilllinkup.com short link</p>
+                </div>
+
+                {/* Commission Type */}
+                <div>
+                  <label htmlFor="commission_type" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                    Commission Type
+                  </label>
+                  <select
+                    id="commission_type"
+                    name="commission_type"
+                    value={formData.commission_type}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  >
+                    <option value="fixed">💵 Fixed (per signup/sale)</option>
+                    <option value="percentage">📊 Percentage</option>
+                    <option value="recurring">🔄 Recurring</option>
+                    <option value="cpa">🎯 CPA (Cost Per Action)</option>
+                  </select>
+                </div>
+
+                {/* Commission Value */}
+                <div>
+                  <label htmlFor="commission_value" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                    Commission Value
+                  </label>
+                  <input
+                    type="text"
+                    id="commission_value"
+                    name="commission_value"
+                    value={formData.commission_value}
+                    onChange={handleChange}
+                    placeholder="$150 per signup, 30%, $50 recurring"
+                    className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  />
+                  <p className="text-xs text-text-muted mt-1">Human-readable format (e.g., "$150", "30%", "$50/month")</p>
+                </div>
+
+                {/* Cookie Duration */}
+                <div>
+                  <label htmlFor="cookie_duration" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                    Cookie Duration (days)
+                  </label>
+                  <input
+                    type="number"
+                    id="cookie_duration"
+                    name="cookie_duration"
+                    value={formData.cookie_duration}
+                    onChange={handleChange}
+                    min="0"
+                    className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  />
+                  <p className="text-xs text-text-muted mt-1">How long the affiliate cookie lasts</p>
+                </div>
+
+                {/* Avg Affiliate Earnings */}
+                <div>
+                  <label htmlFor="avg_affiliate_earnings" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                    Avg. Earnings per Year ($)
+                  </label>
+                  <input
+                    type="number"
+                    id="avg_affiliate_earnings"
+                    name="avg_affiliate_earnings"
+                    value={formData.avg_affiliate_earnings}
+                    onChange={handleChange}
+                    min="0"
+                    step="0.01"
+                    placeholder="1200.00"
+                    className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  />
+                  <p className="text-xs text-text-muted mt-1">Average affiliate earnings per customer per year</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Unique Benefits */}
+            <div className="bg-white rounded-lg shadow-sm border border-background-gray p-6">
+              <h3 className="text-sm font-heading font-semibold text-text-primary mb-4 flex items-center gap-2">
+                ⭐ Unique Benefits (USPs for Affiliates)
+              </h3>
+              {formData.unique_benefits.map((benefit, index) => (
+                <div key={index} className="mb-3 flex gap-2">
+                  <input
+                    type="text"
+                    value={benefit}
+                    onChange={(e) => handleArrayChange('unique_benefits', index, e.target.value)}
+                    placeholder="e.g., Dedicated account manager"
+                    className="flex-1 px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeArrayItem('unique_benefits', index)}
+                    className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors font-heading font-semibold"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => addArrayItem('unique_benefits')}
+                className="w-full px-4 py-2 rounded-lg border-2 border-dashed border-background-gray text-sm font-heading font-semibold text-primary hover:border-primary hover:bg-primary/5 transition-colors"
+              >
+                + Benefit toevoegen
+              </button>
+            </div>
           </div>
 
           {/* Sidebar Column */}
@@ -394,6 +540,24 @@ export default function EditPlatformPage({ params }: PageProps) {
                   <label htmlFor="featured" className="text-sm font-heading font-semibold text-text-primary">
                     ⭐ Featured platform
                   </label>
+                </div>
+
+                <div>
+                  <label htmlFor="automation_status" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                    Automation Status
+                  </label>
+                  <select
+                    id="automation_status"
+                    name="automation_status"
+                    value={formData.automation_status}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm"
+                  >
+                    <option value="pending">⏳ Pending (not started)</option>
+                    <option value="in-progress">🔄 In Progress (generating)</option>
+                    <option value="published">✅ Published (complete)</option>
+                    <option value="failed">❌ Failed (error)</option>
+                  </select>
                 </div>
               </div>
             </div>
