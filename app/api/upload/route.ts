@@ -41,28 +41,32 @@ export async function POST(request: NextRequest) {
     const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '-').toLowerCase();
     const filename = `${timestamp}-${originalName}`;
 
-    // Create upload directory if it doesn't exist
-    // We'll upload to the main app's public folder so images are accessible
-    const uploadDir = join(process.cwd(), '..', 'skillLinkup', 'public', 'images', 'posts');
+    // Create upload directories if they don't exist
+    // We save to BOTH admin and main app for instant availability
+    const adminUploadDir = join(process.cwd(), 'public', 'images', 'posts');
+    const mainAppUploadDir = join(process.cwd(), '..', 'skillLinkup', 'public', 'images', 'posts');
 
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true });
+    if (!existsSync(adminUploadDir)) {
+      await mkdir(adminUploadDir, { recursive: true });
+    }
+    if (!existsSync(mainAppUploadDir)) {
+      await mkdir(mainAppUploadDir, { recursive: true });
     }
 
-    // Save file
-    const filepath = join(uploadDir, filename);
-    await writeFile(filepath, buffer);
+    // Save file to BOTH locations
+    const adminFilepath = join(adminUploadDir, filename);
+    const mainAppFilepath = join(mainAppUploadDir, filename);
 
-    // Return RELATIVE path for database storage (SEO-friendly, works in all environments)
-    // But also return full URL for editor preview
+    await writeFile(adminFilepath, buffer);
+    await writeFile(mainAppFilepath, buffer);
+
+    // Always return relative path for consistent database storage
+    // This works in both development and production
     const relativePath = `/images/posts/${filename}`;
-    const mainAppUrl = process.env.NEXT_PUBLIC_MAIN_APP_URL || 'http://localhost:3000';
-    const previewUrl = `${mainAppUrl}${relativePath}`;
 
     return NextResponse.json({
       success: true,
-      url: relativePath,          // Relative path for database (SEO-friendly)
-      previewUrl: previewUrl,     // Full URL for editor preview
+      url: relativePath,    // Relative path works everywhere
       filename: filename
     });
 

@@ -17,6 +17,7 @@ export function AdminNav({ userEmail }: AdminNavProps) {
     { href: '/platforms', label: 'Platforms' },
     { href: '/reviews', label: 'Reviews' },
     { href: '/categories', label: 'Categories' },
+    { href: '/comments', label: 'Comments' },
   ];
 
   const isActive = (href: string) => {

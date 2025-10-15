@@ -23,6 +23,10 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
   const [linkText, setLinkText] = useState('');
+  const [showFloatingMenu, setShowFloatingMenu] = useState(false);
+  const [floatingMenuPosition, setFloatingMenuPosition] = useState({ top: 0, left: 0 });
+  const [showHTMLEditor, setShowHTMLEditor] = useState(false);
+  const [htmlContent, setHtmlContent] = useState('');
 
   const editor = useEditor({
     extensions: [
@@ -32,15 +36,15 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
           class: 'rounded-lg max-w-full h-auto my-6 shadow-md',
           style: 'max-width: 100%; height: auto; display: block; margin: 1.5rem 0;',
         },
-        allowBase64: true,
+        allowBase64: false, // Prevent broken images from base64/invalid URLs
         inline: false,
       }),
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
-          class: 'text-primary hover:underline',
-          target: null, // Prevent opening links
-          rel: null,
+          class: 'text-primary hover:underline cursor-text',
+          target: '_blank',
+          rel: 'noopener noreferrer nofollow',
         },
       }),
       Placeholder.configure({
@@ -64,6 +68,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
           event.preventDefault();
           const file = imageItem.getAsFile();
           if (file) {
+            // Don't insert anything yet, just upload
             handleImageUpload(file);
           }
           return true;
@@ -196,24 +201,32 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
   }, [handleImageUpload]);
 
   const setLink = useCallback(() => {
-    const previousUrl = editor?.getAttributes('link').href;
-    const { from, to } = editor?.state.selection || {};
-    const selectedText = editor?.state.doc.textBetween(from || 0, to || 0, ' ') || '';
+    if (!editor) return;
 
-    setLinkUrl(previousUrl || 'https://');
-    setLinkText(selectedText);
-    setShowLinkModal(true);
+    const previousUrl = editor.getAttributes('link').href;
+    const { from, to } = editor.state.selection;
+    const selectedText = editor.state.doc.textBetween(from, to, ' ');
+
+    // If text is selected, show modal to add link
+    if (selectedText) {
+      setLinkUrl(previousUrl || 'https://');
+      setLinkText(selectedText);
+      setShowLinkModal(true);
+    } else {
+      // No selection, ask user to select text first
+      alert('Selecteer eerst tekst om een link toe te voegen');
+    }
   }, [editor]);
 
   const updateLink = useCallback(() => {
     if (!editor) return;
 
-    if (!linkUrl.trim()) {
+    if (!linkUrl.trim() || linkUrl === 'https://') {
       // Remove link if URL is empty
       editor.chain().focus().unsetLink().run();
     } else {
-      // Update link
-      editor.chain().focus().extendMarkRange('link').setLink({ href: linkUrl }).run();
+      // Add/update link to selected text
+      editor.chain().focus().setLink({ href: linkUrl }).run();
     }
 
     setShowLinkModal(false);
@@ -242,12 +255,59 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     }
   }, [editor]);
 
+  const openHTMLEditor = useCallback(() => {
+    if (!editor) return;
+    setHtmlContent(editor.getHTML());
+    setShowHTMLEditor(true);
+  }, [editor]);
+
+  const saveHTMLContent = useCallback(() => {
+    if (!editor) return;
+    try {
+      editor.commands.setContent(htmlContent);
+      setShowHTMLEditor(false);
+    } catch (error) {
+      alert('Ongeldige HTML. Controleer de syntax.');
+    }
+  }, [editor, htmlContent]);
+
   // Update editor content when prop changes (for edit page)
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
       editor.commands.setContent(content);
     }
   }, [editor, content]);
+
+  // Show floating menu on text selection
+  useEffect(() => {
+    if (!editor) return;
+
+    const handleSelectionUpdate = () => {
+      const { from, to } = editor.state.selection;
+      const text = editor.state.doc.textBetween(from, to, ' ');
+
+      if (text && text.length > 0) {
+        // Get selection position
+        const { view } = editor;
+        const start = view.coordsAtPos(from);
+        const end = view.coordsAtPos(to);
+
+        // Calculate position for floating menu (centered above selection)
+        const left = (start.left + end.left) / 2;
+        const top = start.top - 50; // 50px above selection
+
+        setFloatingMenuPosition({ top, left });
+        setShowFloatingMenu(true);
+      } else {
+        setShowFloatingMenu(false);
+      }
+    };
+
+    editor.on('selectionUpdate', handleSelectionUpdate);
+    return () => {
+      editor.off('selectionUpdate', handleSelectionUpdate);
+    };
+  }, [editor]);
 
   if (!editor) {
     return null;
@@ -268,8 +328,8 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
       />
 
       {/* Custom CSS for image visibility, links, and delete */}
-      <style jsx>{`
-        :global(.ProseMirror img) {
+      <style jsx global>{`
+        .ProseMirror img {
           max-width: 100% !important;
           height: auto !important;
           display: block !important;
@@ -279,34 +339,49 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
           cursor: pointer !important;
           visibility: visible !important;
           opacity: 1 !important;
+          object-fit: cover !important;
         }
-        :global(.ProseMirror img:hover) {
+
+        /* Hide broken image icons */
+        .ProseMirror img[src=""],
+        .ProseMirror img:not([src]),
+        .ProseMirror img[src^="data:"] {
+          display: none !important;
+        }
+
+        .ProseMirror img:hover {
           outline: 2px solid #ef2b70;
           outline-offset: 2px;
         }
-        :global(.ProseMirror img.ProseMirror-selectednode) {
+
+        .ProseMirror img.ProseMirror-selectednode {
           outline: 3px solid #ef2b70;
           outline-offset: 2px;
         }
-        :global(.prose img) {
+
+        .prose img {
           max-width: 100% !important;
           height: auto !important;
           display: block !important;
           visibility: visible !important;
           opacity: 1 !important;
         }
-        :global(.ProseMirror a) {
+
+        .ProseMirror a {
           color: #ef2b70 !important;
           text-decoration: underline !important;
-          cursor: text !important;
-          pointer-events: auto !important;
+          cursor: pointer !important;
+          pointer-events: all !important;
         }
-        :global(.ProseMirror a:hover) {
+
+        .ProseMirror a:hover {
           color: #d91a5f !important;
           background-color: rgba(239, 43, 112, 0.1) !important;
         }
-        :global(.ProseMirror a:active) {
-          pointer-events: none !important;
+
+        /* Prevent default link behavior */
+        .ProseMirror a[href] {
+          text-decoration: underline !important;
         }
       `}</style>
 
@@ -476,6 +551,16 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
           📝 MD
         </button>
 
+        {/* HTML Source Editor */}
+        <button
+          type="button"
+          onClick={openHTMLEditor}
+          className="px-3 py-1.5 rounded text-sm font-semibold bg-orange-500 text-white hover:bg-orange-600 transition-colors"
+          title="HTML broncode bewerken (voor links uit ChatGPT)"
+        >
+          &lt;/&gt; HTML
+        </button>
+
         <div className="w-px h-8 bg-background-gray mx-1" />
 
         {/* Undo/Redo */}
@@ -503,6 +588,52 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         onDrop={handleDrop}
         className="relative bg-white"
       >
+        {/* Floating Menu for Text Selection */}
+        {showFloatingMenu && (
+          <div
+            className="fixed bg-white rounded-lg shadow-xl border border-background-gray p-2 flex gap-1 z-50"
+            style={{
+              top: `${floatingMenuPosition.top}px`,
+              left: `${floatingMenuPosition.left}px`,
+              transform: 'translateX(-50%)',
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => editor.chain().focus().toggleBold().run()}
+              className={`px-2 py-1 rounded text-sm font-semibold transition-colors ${
+                editor.isActive('bold')
+                  ? 'bg-primary text-white'
+                  : 'bg-background-light text-text-secondary hover:bg-background-gray'
+              }`}
+              title="Bold (Ctrl+B)"
+            >
+              <strong>B</strong>
+            </button>
+            <button
+              type="button"
+              onClick={() => editor.chain().focus().toggleItalic().run()}
+              className={`px-2 py-1 rounded text-sm font-semibold transition-colors ${
+                editor.isActive('italic')
+                  ? 'bg-primary text-white'
+                  : 'bg-background-light text-text-secondary hover:bg-background-gray'
+              }`}
+              title="Italic (Ctrl+I)"
+            >
+              <em>I</em>
+            </button>
+            <div className="w-px h-8 bg-background-gray mx-1" />
+            <button
+              type="button"
+              onClick={setLink}
+              className="px-3 py-1 rounded text-sm font-semibold bg-primary text-white hover:bg-primary-dark transition-colors"
+              title="Add Link (Ctrl+K)"
+            >
+              🔗
+            </button>
+          </div>
+        )}
+
         <EditorContent editor={editor} />
 
         {/* Drag & Drop Indicator */}
@@ -517,7 +648,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
 
         {/* Image Metadata Modal */}
         {pendingImage && (
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center p-4 z-20">
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
               <h3 className="text-lg font-heading font-bold text-text-primary mb-4">
                 Afbeelding details toevoegen
@@ -607,7 +738,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
 
         {/* Link Edit Modal */}
         {showLinkModal && (
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center p-4 z-20">
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
               <h3 className="text-lg font-heading font-bold text-text-primary mb-4">
                 Link bewerken
@@ -661,6 +792,54 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 <button
                   type="button"
                   onClick={() => setShowLinkModal(false)}
+                  className="px-4 py-2 rounded-lg bg-background-gray hover:bg-background-gray/80 text-text-primary font-heading font-semibold transition-colors"
+                >
+                  Annuleren
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* HTML Source Editor Modal */}
+        {showHTMLEditor && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full p-6">
+              <h3 className="text-lg font-heading font-bold text-text-primary mb-4">
+                HTML Broncode Editor
+              </h3>
+
+              <p className="text-sm text-text-muted mb-4">
+                💡 Tip: Kopieer HTML direct uit ChatGPT (inclusief links) en plak het hier. Perfect voor content met veel links!
+              </p>
+
+              {/* HTML Textarea */}
+              <div className="mb-6">
+                <textarea
+                  value={htmlContent}
+                  onChange={(e) => setHtmlContent(e.target.value)}
+                  className="w-full h-96 px-4 py-3 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary font-mono text-sm"
+                  placeholder="<p>Plak hier je HTML code...</p>"
+                  spellCheck={false}
+                  autoFocus
+                />
+                <p className="text-xs text-text-muted mt-2">
+                  ⚠️ Let op: Zorg dat je HTML geldig is. Ongeldige HTML kan de editor breken.
+                </p>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={saveHTMLContent}
+                  className="flex-1 px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors font-heading font-semibold"
+                >
+                  💾 HTML toepassen
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowHTMLEditor(false)}
                   className="px-4 py-2 rounded-lg bg-background-gray hover:bg-background-gray/80 text-text-primary font-heading font-semibold transition-colors"
                 >
                   Annuleren

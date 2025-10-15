@@ -1,17 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sql } from '../../../lib/queries';
-import { stackServerApp } from '../../../stack/server';
+import { neon } from '@neondatabase/serverless';
 
-// GET /api/categories - Haal alle categorieën op
+export const runtime = 'edge';
+
 export async function GET(request: NextRequest) {
   try {
-    const user = await stackServerApp.getUser();
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const sql = neon(process.env.DATABASE_URL!);
 
-    const categories = await sql`
-      SELECT 
+    // Fetch post categories
+    const postCategories = await sql`
+      SELECT
         c.id,
         c.name,
         c.slug,
@@ -26,74 +24,25 @@ export async function GET(request: NextRequest) {
       ORDER BY c.name ASC
     `;
 
-    return NextResponse.json({ categories });
+    // Fetch platform categories (unique categories from platforms table)
+    const platformCategories = await sql`
+      SELECT
+        category,
+        COUNT(*)::int as count
+      FROM platforms
+      WHERE status = 'published'
+      GROUP BY category
+      ORDER BY category ASC
+    `;
+
+    return NextResponse.json({
+      postCategories,
+      platformCategories,
+    });
   } catch (error) {
     console.error('Error fetching categories:', error);
     return NextResponse.json(
       { error: 'Failed to fetch categories' },
-      { status: 500 }
-    );
-  }
-}
-
-// POST /api/categories - Maak nieuwe categorie aan
-export async function POST(request: NextRequest) {
-  try {
-    const user = await stackServerApp.getUser();
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const data = await request.json();
-
-    // Genereer slug als die niet is meegegeven
-    const slug = data.slug || data.name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
-
-    // Check of slug al bestaat
-    const existing = await sql`
-      SELECT id FROM categories WHERE slug = ${slug}
-    `;
-
-    if (existing.length > 0) {
-      return NextResponse.json(
-        { error: 'Een categorie met deze slug bestaat al' },
-        { status: 400 }
-      );
-    }
-
-    // Default tenant ID
-    const TENANT_ID = '62999b2a-04ec-4ba8-814b-1d74d6937199';
-
-    // Maak categorie aan
-    const result = await sql`
-      INSERT INTO categories (
-        tenant_id,
-        name,
-        slug,
-        description,
-        color
-      ) VALUES (
-        ${TENANT_ID},
-        ${data.name},
-        ${slug},
-        ${data.description || null},
-        ${data.color || '#ef2b70'}
-      )
-      RETURNING id, name, slug, description, color, created_at, updated_at
-    `;
-
-    return NextResponse.json({
-      success: true,
-      category: result[0]
-    });
-
-  } catch (error) {
-    console.error('Error creating category:', error);
-    return NextResponse.json(
-      { error: 'Failed to create category' },
       { status: 500 }
     );
   }

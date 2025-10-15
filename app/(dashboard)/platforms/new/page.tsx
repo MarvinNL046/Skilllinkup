@@ -3,6 +3,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+
+const RichTextEditor = dynamic(() => import('../../../../components/RichTextEditor'), {
+  ssr: false,
+  loading: () => <p className="p-4 text-text-muted">Editor laden...</p>,
+});
 
 export default function NewPlatformPage() {
   const router = useRouter();
@@ -168,16 +174,13 @@ export default function NewPlatformPage() {
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Description
               </label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                rows={3}
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500"
-                placeholder="Brief description of the platform"
+              <RichTextEditor
+                content={formData.description}
+                onChange={(html) => setFormData({ ...formData, description: html })}
+                placeholder="Schrijf een uitgebreide beschrijving van dit platform..."
               />
             </div>
 

@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 const Nav = () => {
-    
+
     return (
         <ul className="mainmenu">
             <li>
@@ -19,9 +19,16 @@ const Nav = () => {
                 </Link>
             </li>
             <li>
-                <Link href="/post/4-types-of-research-methods-all-designers">
+                <Link href="/platforms">
                     <span className="hover-flip-item">
-                        <span data-text="Posts">Posts</span>
+                        <span data-text="Platforms">Platforms</span>
+                    </span>
+                </Link>
+            </li>
+            <li>
+                <Link href="/comments">
+                    <span className="hover-flip-item">
+                        <span data-text="Comments">Comments</span>
                     </span>
                 </Link>
             </li>

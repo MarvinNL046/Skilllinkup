@@ -3,6 +3,13 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+import ImageUpload from '../../../../../components/ImageUpload';
+
+const RichTextEditor = dynamic(() => import('../../../../../components/RichTextEditor'), {
+  ssr: false,
+  loading: () => <p className="p-4 text-text-muted">Editor laden...</p>,
+});
 
 interface PageProps {
   params: Promise<{
@@ -15,6 +22,7 @@ export default function EditPlatformPage({ params }: PageProps) {
   const [id, setId] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
@@ -67,7 +75,7 @@ export default function EditPlatformPage({ params }: PageProps) {
       }
     } catch (error) {
       console.error('Error fetching platform:', error);
-      alert('Failed to load platform');
+      setError('Fout bij laden van platform');
     } finally {
       setFetching(false);
     }
@@ -117,6 +125,7 @@ export default function EditPlatformPage({ params }: PageProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     setLoading(true);
 
     try {
@@ -136,344 +145,400 @@ export default function EditPlatformPage({ params }: PageProps) {
         body: JSON.stringify(cleanData),
       });
 
-      if (response.ok) {
-        alert('Platform updated successfully!');
-        router.push('/platforms');
-      } else {
-        const error = await response.json();
-        alert(`Error: ${error.error || 'Failed to update platform'}`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Fout bij opslaan');
       }
-    } catch (error) {
-      console.error('Error updating platform:', error);
-      alert('Error updating platform');
-    } finally {
+
+      router.push('/platforms');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Er ging iets mis bij het opslaan');
       setLoading(false);
     }
   };
 
   if (fetching) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="text-gray-600">Loading platform...</div>
-      </div>
+      <main className="p-8">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-text-secondary">Platform laden...</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (error && !formData.name) {
+    return (
+      <main className="p-8">
+        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg">
+          {error}
+        </div>
+        <Link href="/platforms" className="mt-4 inline-block text-primary hover:underline">
+          ← Terug naar overzicht
+        </Link>
+      </main>
     );
   }
 
   return (
-    <div className="p-8">
-      {/* Header */}
+    <main className="p-8">
       <div className="mb-8">
-        <Link
-          href="/platforms"
-          className="mb-4 inline-flex items-center text-sm text-gray-600 hover:text-gray-900"
-        >
-          ← Back to Platforms
-        </Link>
-        <h1 className="text-3xl font-bold text-gray-900">Edit Platform</h1>
-        <p className="mt-2 text-sm text-gray-600">
-          Update the platform details below
+        <h1 className="text-3xl font-heading font-bold text-text-primary mb-2">
+          Platform Bewerken
+        </h1>
+        <p className="text-text-secondary">
+          Bewerk "{formData.name}"
         </p>
       </div>
 
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Basic Information */}
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">Basic Information</h2>
-          <div className="grid gap-6 md:grid-cols-2">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Platform Name *
+      <form onSubmit={handleSubmit}>
+        <div className="grid gap-6 lg:grid-cols-3">
+          {/* Main Content Column */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Platform Name */}
+            <div className="bg-white rounded-lg shadow-sm border border-background-gray p-6">
+              <label htmlFor="name" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                Platform Naam *
               </label>
               <input
                 type="text"
+                id="name"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500"
+                className="w-full px-4 py-3 text-lg rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Slug *
+            {/* Slug */}
+            <div className="bg-white rounded-lg shadow-sm border border-background-gray p-6">
+              <label htmlFor="slug" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                URL Slug *
               </label>
-              <input
-                type="text"
-                name="slug"
-                value={formData.slug}
-                onChange={handleChange}
-                required
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500"
-              />
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-text-muted">skilllinkup.com/platforms/</span>
+                <input
+                  type="text"
+                  id="slug"
+                  name="slug"
+                  value={formData.slug}
+                  onChange={handleChange}
+                  required
+                  className="flex-1 px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                />
+              </div>
             </div>
 
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Description
+            {/* Description */}
+            <div className="bg-white rounded-lg shadow-sm border border-background-gray p-6">
+              <label className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                Beschrijving
               </label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                rows={3}
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500"
+              <RichTextEditor
+                content={formData.description}
+                onChange={(html) => setFormData({ ...formData, description: html })}
+                placeholder="Schrijf een uitgebreide beschrijving van dit platform..."
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Logo URL
-              </label>
-              <input
-                type="url"
-                name="logo_url"
-                value={formData.logo_url}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
+            {/* Website URL */}
+            <div className="bg-white rounded-lg shadow-sm border border-background-gray p-6">
+              <label htmlFor="website_url" className="block text-sm font-heading font-semibold text-text-primary mb-2">
                 Website URL
               </label>
               <input
                 type="url"
+                id="website_url"
                 name="website_url"
                 value={formData.website_url}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Classification */}
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">Classification</h2>
-          <div className="grid gap-6 md:grid-cols-2">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Category *
-              </label>
-              <select
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                required
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500"
-              >
-                <option value="General">General</option>
-                <option value="Premium">Premium</option>
-                <option value="Design">Design</option>
-                <option value="Development">Development</option>
-                <option value="Writing">Writing</option>
-                <option value="Marketing">Marketing</option>
-                <option value="Remote Jobs">Remote Jobs</option>
-                <option value="Local Services">Local Services</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Difficulty *
-              </label>
-              <select
-                name="difficulty"
-                value={formData.difficulty}
-                onChange={handleChange}
-                required
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500"
-              >
-                <option value="Easy">Easy</option>
-                <option value="Medium">Medium</option>
-                <option value="Hard">Hard</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Rating (0-5)
-              </label>
-              <input
-                type="number"
-                name="rating"
-                value={formData.rating}
-                onChange={handleChange}
-                min="0"
-                max="5"
-                step="0.1"
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500"
+                placeholder="https://example.com"
+                className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Fees
-              </label>
-              <input
-                type="text"
-                name="fees"
-                value={formData.fees}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Brand Color
-              </label>
-              <input
-                type="color"
-                name="color"
-                value={formData.color}
-                onChange={handleChange}
-                className="mt-1 block h-10 w-full rounded-lg border border-gray-300"
-              />
-            </div>
-
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                name="featured"
-                checked={formData.featured}
-                onChange={handleChange}
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <label className="ml-2 text-sm font-medium text-gray-700">
-                Featured Platform
-              </label>
-            </div>
-          </div>
-        </div>
-
-        {/* Pros */}
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">Pros</h2>
-          {formData.pros.map((pro, index) => (
-            <div key={index} className="mb-3 flex gap-2">
-              <input
-                type="text"
-                value={pro}
-                onChange={(e) => handleArrayChange('pros', index, e.target.value)}
-                className="block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500"
-              />
+            {/* Pros */}
+            <div className="bg-white rounded-lg shadow-sm border border-background-gray p-6">
+              <h3 className="text-sm font-heading font-semibold text-text-primary mb-4 flex items-center gap-2">
+                ✅ Voordelen (Pros)
+              </h3>
+              {formData.pros.map((pro, index) => (
+                <div key={index} className="mb-3 flex gap-2">
+                  <input
+                    type="text"
+                    value={pro}
+                    onChange={(e) => handleArrayChange('pros', index, e.target.value)}
+                    placeholder="Voeg een voordeel toe..."
+                    className="flex-1 px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeArrayItem('pros', index)}
+                    className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors font-heading font-semibold"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
               <button
                 type="button"
-                onClick={() => removeArrayItem('pros', index)}
-                className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+                onClick={() => addArrayItem('pros')}
+                className="w-full px-4 py-2 rounded-lg border-2 border-dashed border-background-gray text-sm font-heading font-semibold text-primary hover:border-primary hover:bg-primary/5 transition-colors"
               >
-                Remove
+                + Voordeel toevoegen
               </button>
             </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => addArrayItem('pros')}
-            className="mt-2 rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700"
-          >
-            + Add Pro
-          </button>
-        </div>
 
-        {/* Cons */}
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">Cons</h2>
-          {formData.cons.map((con, index) => (
-            <div key={index} className="mb-3 flex gap-2">
-              <input
-                type="text"
-                value={con}
-                onChange={(e) => handleArrayChange('cons', index, e.target.value)}
-                className="block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500"
-              />
+            {/* Cons */}
+            <div className="bg-white rounded-lg shadow-sm border border-background-gray p-6">
+              <h3 className="text-sm font-heading font-semibold text-text-primary mb-4 flex items-center gap-2">
+                ❌ Nadelen (Cons)
+              </h3>
+              {formData.cons.map((con, index) => (
+                <div key={index} className="mb-3 flex gap-2">
+                  <input
+                    type="text"
+                    value={con}
+                    onChange={(e) => handleArrayChange('cons', index, e.target.value)}
+                    placeholder="Voeg een nadeel toe..."
+                    className="flex-1 px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeArrayItem('cons', index)}
+                    className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors font-heading font-semibold"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
               <button
                 type="button"
-                onClick={() => removeArrayItem('cons', index)}
-                className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+                onClick={() => addArrayItem('cons')}
+                className="w-full px-4 py-2 rounded-lg border-2 border-dashed border-background-gray text-sm font-heading font-semibold text-primary hover:border-primary hover:bg-primary/5 transition-colors"
               >
-                Remove
+                + Nadeel toevoegen
               </button>
             </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => addArrayItem('cons')}
-            className="mt-2 rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700"
-          >
-            + Add Con
-          </button>
-        </div>
 
-        {/* Features */}
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">Features</h2>
-          {formData.features.map((feature, index) => (
-            <div key={index} className="mb-3 flex gap-2">
-              <input
-                type="text"
-                value={feature}
-                onChange={(e) => handleArrayChange('features', index, e.target.value)}
-                className="block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500"
-              />
+            {/* Features */}
+            <div className="bg-white rounded-lg shadow-sm border border-background-gray p-6">
+              <h3 className="text-sm font-heading font-semibold text-text-primary mb-4 flex items-center gap-2">
+                ⚡ Features
+              </h3>
+              {formData.features.map((feature, index) => (
+                <div key={index} className="mb-3 flex gap-2">
+                  <input
+                    type="text"
+                    value={feature}
+                    onChange={(e) => handleArrayChange('features', index, e.target.value)}
+                    placeholder="Voeg een feature toe..."
+                    className="flex-1 px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeArrayItem('features', index)}
+                    className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors font-heading font-semibold"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
               <button
                 type="button"
-                onClick={() => removeArrayItem('features', index)}
-                className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+                onClick={() => addArrayItem('features')}
+                className="w-full px-4 py-2 rounded-lg border-2 border-dashed border-background-gray text-sm font-heading font-semibold text-primary hover:border-primary hover:bg-primary/5 transition-colors"
               >
-                Remove
+                + Feature toevoegen
               </button>
             </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => addArrayItem('features')}
-            className="mt-2 rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700"
-          >
-            + Add Feature
-          </button>
-        </div>
-
-        {/* Publishing */}
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">Publishing</h2>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Status
-            </label>
-            <select
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500 md:w-1/3"
-            >
-              <option value="draft">Draft</option>
-              <option value="published">Published</option>
-              <option value="archived">Archived</option>
-            </select>
           </div>
-        </div>
 
-        {/* Submit Buttons */}
-        <div className="flex justify-end gap-4">
-          <Link
-            href="/platforms"
-            className="rounded-lg border border-gray-300 px-6 py-3 font-semibold text-gray-700 hover:bg-gray-50"
-          >
-            Cancel
-          </Link>
-          <button
-            type="submit"
-            disabled={loading}
-            className="rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
-          >
-            {loading ? 'Updating...' : 'Update Platform'}
-          </button>
+          {/* Sidebar Column */}
+          <div className="space-y-6 pb-32">
+            {/* Publish Settings */}
+            <div className="bg-white rounded-lg shadow-sm border border-background-gray p-6">
+              <h3 className="text-sm font-heading font-semibold text-text-primary mb-4">
+                Publicatie Instellingen
+              </h3>
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="status" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                    Status
+                  </label>
+                  <select
+                    id="status"
+                    name="status"
+                    value={formData.status}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  >
+                    <option value="draft">📄 Concept</option>
+                    <option value="published">✅ Gepubliceerd</option>
+                    <option value="archived">📦 Gearchiveerd</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="featured"
+                    name="featured"
+                    checked={formData.featured}
+                    onChange={handleChange}
+                    className="w-4 h-4 rounded border-background-gray text-primary focus:ring-2 focus:ring-primary/20"
+                  />
+                  <label htmlFor="featured" className="text-sm font-heading font-semibold text-text-primary">
+                    ⭐ Featured platform
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* Classification */}
+            <div className="bg-white rounded-lg shadow-sm border border-background-gray p-6">
+              <h3 className="text-sm font-heading font-semibold text-text-primary mb-4">
+                Classificatie
+              </h3>
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="category" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                    Categorie *
+                  </label>
+                  <select
+                    id="category"
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  >
+                    <option value="General">General</option>
+                    <option value="Premium">Premium</option>
+                    <option value="Design">Design</option>
+                    <option value="Development">Development</option>
+                    <option value="Writing">Writing</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Remote Jobs">Remote Jobs</option>
+                    <option value="Local Services">Local Services</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="difficulty" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                    Moeilijkheidsgraad *
+                  </label>
+                  <select
+                    id="difficulty"
+                    name="difficulty"
+                    value={formData.difficulty}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  >
+                    <option value="Easy">🟢 Easy</option>
+                    <option value="Medium">🟡 Medium</option>
+                    <option value="Hard">🔴 Hard</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="rating" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                    Rating (0-5)
+                  </label>
+                  <input
+                    type="number"
+                    id="rating"
+                    name="rating"
+                    value={formData.rating}
+                    onChange={handleChange}
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="fees" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                    Kosten/Fees
+                  </label>
+                  <input
+                    type="text"
+                    id="fees"
+                    name="fees"
+                    value={formData.fees}
+                    onChange={handleChange}
+                    placeholder="bijv. 10-20%, Free"
+                    className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="color" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                    Brand Kleur
+                  </label>
+                  <input
+                    type="color"
+                    id="color"
+                    name="color"
+                    value={formData.color}
+                    onChange={handleChange}
+                    className="w-full h-10 rounded-lg border border-background-gray cursor-pointer"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Logo Upload */}
+            <div className="bg-white rounded-lg shadow-sm border border-background-gray p-6">
+              <ImageUpload
+                value={formData.logo_url}
+                onChange={(url) => setFormData(prev => ({ ...prev, logo_url: url }))}
+                label="Platform Logo"
+              />
+            </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg">
+                {error}
+              </div>
+            )}
+
+            {/* Action Buttons - Fixed at bottom of screen */}
+            <div className="fixed bottom-0 right-0 lg:w-[calc((100%-2rem)/3)] bg-white pt-4 pb-4 px-6 border-t border-background-gray space-y-3 shadow-lg z-10">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full px-6 py-3 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors font-heading font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Opslaan...
+                  </span>
+                ) : (
+                  '💾 Wijzigingen opslaan'
+                )}
+              </button>
+
+              <Link
+                href="/platforms"
+                className="block w-full px-6 py-3 rounded-lg bg-background-gray hover:bg-background-gray/80 text-text-primary font-heading font-semibold transition-colors text-center"
+              >
+                Annuleren
+              </Link>
+            </div>
+          </div>
         </div>
       </form>
-    </div>
+    </main>
   );
 }

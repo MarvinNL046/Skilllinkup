@@ -36,6 +36,15 @@ export default function NewPostPage() {
     tags: "",
     metaTitle: "",
     metaDescription: "",
+    featured: false,
+    adImage: "",
+    adLink: "",
+    platformType: "",
+    feeStructure: "",
+    difficultyLevel: "",
+    bestFor: "",
+    authorName: "",
+    readTime: "",
   });
 
   // Haal categorieën op bij laden van de pagina
@@ -82,7 +91,15 @@ export default function NewPostPage() {
           metaTitle: formData.metaTitle,
           meta_description: formData.metaDescription,
           metaDescription: formData.metaDescription,
-          featured: false,
+          featured: formData.featured,
+          ad_image: formData.adImage,
+          ad_link: formData.adLink,
+          platform_type: formData.platformType,
+          fee_structure: formData.feeStructure,
+          difficulty_level: formData.difficultyLevel,
+          best_for: formData.bestFor,
+          author_name: formData.authorName,
+          read_time: formData.readTime ? parseInt(formData.readTime) : null,
         }),
       });
 
@@ -267,7 +284,7 @@ export default function NewPostPage() {
             </div>
 
             {/* Sidebar Column */}
-            <div className="space-y-6">
+            <div className="space-y-6 pb-32">
               {/* Publish Settings */}
               <div className="bg-white rounded-lg shadow-sm border border-background-gray p-6">
                 <h3 className="text-sm font-heading font-semibold text-text-primary mb-4">
@@ -341,6 +358,163 @@ export default function NewPostPage() {
                       Gescheiden door komma's
                     </p>
                   </div>
+
+                  <div>
+                    <label htmlFor="authorName" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                      Author
+                    </label>
+                    <input
+                      type="text"
+                      id="authorName"
+                      name="authorName"
+                      value={formData.authorName}
+                      onChange={handleChange}
+                      placeholder="bijv. John Doe"
+                      className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                    />
+                    <p className="text-xs text-text-muted mt-1">
+                      Laat leeg voor "Anonymous"
+                    </p>
+                  </div>
+
+                  <div>
+                    <label htmlFor="readTime" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                      Reading Time (minuten)
+                    </label>
+                    <input
+                      type="number"
+                      id="readTime"
+                      name="readTime"
+                      value={formData.readTime}
+                      onChange={handleChange}
+                      min="1"
+                      max="60"
+                      placeholder="bijv. 5"
+                      className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                    />
+                    <p className="text-xs text-text-muted mt-1">
+                      Geschatte leestijd in minuten
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="featured"
+                      checked={formData.featured}
+                      onChange={(e) => setFormData(prev => ({ ...prev, featured: e.target.checked }))}
+                      className="w-4 h-4 rounded border-background-gray text-primary focus:ring-2 focus:ring-primary/20"
+                    />
+                    <label htmlFor="featured" className="text-sm font-heading font-semibold text-text-primary">
+                      ⭐ Featured post
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Advertisement Settings */}
+              <div className="bg-white rounded-lg shadow-sm border border-background-gray p-6">
+                <h3 className="text-sm font-heading font-semibold text-text-primary mb-4 flex items-center gap-2">
+                  📢 Advertentie Instellingen
+                </h3>
+                <div className="space-y-4">
+                  <ImageUpload
+                    value={formData.adImage}
+                    onChange={(url) => setFormData(prev => ({ ...prev, adImage: url }))}
+                    label="Advertentie Afbeelding"
+                  />
+
+                  <div>
+                    <label htmlFor="adLink" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                      Advertentie Link (URL)
+                    </label>
+                    <input
+                      type="url"
+                      id="adLink"
+                      name="adLink"
+                      value={formData.adLink}
+                      onChange={handleChange}
+                      placeholder="https://example.com"
+                      className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                    />
+                    <p className="text-xs text-text-muted mt-1">
+                      De URL waar gebruikers naartoe gaan wanneer ze op de advertentie klikken
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Info Settings */}
+              <div className="bg-white rounded-lg shadow-sm border border-background-gray p-6">
+                <h3 className="text-sm font-heading font-semibold text-text-primary mb-4 flex items-center gap-2">
+                  ℹ️ Quick Info (Optioneel)
+                </h3>
+                <p className="text-xs text-text-muted mb-4">
+                  Deze informatie wordt getoond in de sidebar van de post. Vul alleen in voor platform reviews.
+                </p>
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor="platformType" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                      Platform Type
+                    </label>
+                    <input
+                      type="text"
+                      id="platformType"
+                      name="platformType"
+                      value={formData.platformType}
+                      onChange={handleChange}
+                      placeholder="bijv. General Marketplace, Specialized Platform"
+                      className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="feeStructure" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                      Fee Structure
+                    </label>
+                    <input
+                      type="text"
+                      id="feeStructure"
+                      name="feeStructure"
+                      value={formData.feeStructure}
+                      onChange={handleChange}
+                      placeholder="bijv. 5-20%, Subscription-based"
+                      className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="difficultyLevel" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                      Difficulty Level
+                    </label>
+                    <select
+                      id="difficultyLevel"
+                      name="difficultyLevel"
+                      value={formData.difficultyLevel}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                    >
+                      <option value="">-- Selecteer niveau --</option>
+                      <option value="Beginner">Beginner</option>
+                      <option value="Medium">Medium</option>
+                      <option value="Advanced">Advanced</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label htmlFor="bestFor" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                      Best For
+                    </label>
+                    <input
+                      type="text"
+                      id="bestFor"
+                      name="bestFor"
+                      value={formData.bestFor}
+                      onChange={handleChange}
+                      placeholder="bijv. All skill levels, Experienced freelancers"
+                      className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -360,26 +534,35 @@ export default function NewPostPage() {
                 </div>
               )}
 
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={submitting}
-                className="w-full px-6 py-3 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors font-heading font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {submitting ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Opslaan...
-                  </span>
-                ) : formData.status === 'published' ? (
-                  '✅ Publiceren'
-                ) : (
-                  '📄 Opslaan als Concept'
-                )}
-              </button>
+              {/* Action Buttons - Fixed at bottom of screen */}
+              <div className="fixed bottom-0 right-0 lg:w-[calc((100%-2rem)/3)] bg-white pt-4 pb-4 px-6 border-t border-background-gray space-y-3 shadow-lg z-10">
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="w-full px-6 py-3 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors font-heading font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {submitting ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Opslaan...
+                    </span>
+                  ) : formData.status === 'published' ? (
+                    '✅ Publiceren'
+                  ) : (
+                    '📄 Opslaan als Concept'
+                  )}
+                </button>
+
+                <Link
+                  href="/posts"
+                  className="block w-full px-6 py-3 rounded-lg bg-background-gray hover:bg-background-gray/80 text-text-primary font-heading font-semibold transition-colors text-center"
+                >
+                  Annuleren
+                </Link>
+              </div>
             </div>
           </div>
         </form>

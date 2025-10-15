@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 
 interface ImageUploadProps {
@@ -12,8 +12,20 @@ interface ImageUploadProps {
 export default function ImageUpload({ value, onChange, label = "Afbeelding" }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [preview, setPreview] = useState<string>(value || "");
+  const [preview, setPreview] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Update preview when value changes
+  useEffect(() => {
+    if (value) {
+      // If value is a relative path, construct full URL for preview
+      const mainAppUrl = process.env.NEXT_PUBLIC_MAIN_APP_URL || 'http://localhost:3000';
+      const previewUrl = value.startsWith('http') ? value : `${mainAppUrl}${value}`;
+      setPreview(previewUrl);
+    } else {
+      setPreview("");
+    }
+  }, [value]);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -88,7 +100,8 @@ export default function ImageUpload({ value, onChange, label = "Afbeelding" }: I
           <button
             type="button"
             onClick={handleRemove}
-            className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors"
+            className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg font-bold text-xl z-10"
+            title="Afbeelding verwijderen"
           >
             ✕
           </button>
@@ -135,8 +148,9 @@ export default function ImageUpload({ value, onChange, label = "Afbeelding" }: I
         type="text"
         value={value}
         onChange={(e) => {
-          onChange(e.target.value);
-          setPreview(e.target.value);
+          const inputValue = e.target.value;
+          onChange(inputValue);
+          // Preview will be updated by useEffect
         }}
         placeholder="/images/posts/mijn-afbeelding.jpg"
         className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm"
