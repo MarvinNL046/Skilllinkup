@@ -12,7 +12,7 @@ export function Footer() {
           <div className="md:col-span-1">
             <Link href="/" className="inline-block">
               <Image
-                src="/images/logo/Skilllinkup-transparant-logo1.png"
+                src="/images/logo/skilllinkup-transparant-rozepunt.webp"
                 alt="SkillLinkup"
                 width={150}
                 height={50}
@@ -95,6 +95,11 @@ export function Footer() {
               <li>
                 <Link href="/privacy" className="text-text-secondary hover:text-accent transition-colors">
                   Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="text-text-secondary hover:text-accent transition-colors">
+                  Terms of Service
                 </Link>
               </li>
               <li>

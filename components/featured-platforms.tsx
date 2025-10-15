@@ -92,7 +92,7 @@ export function FeaturedPlatforms({ posts }: FeaturedPlatformsProps) {
         <div className="mt-10 text-center">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 rounded-lg border-2 border-secondary bg-white hover:bg-background-light px-6 py-3 text-base font-heading font-semibold text-secondary transition-all"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary hover:bg-primary-dark px-6 py-3 text-base font-heading font-semibold text-white transition-all shadow-lg hover:shadow-xl"
           >
             View All Posts
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">

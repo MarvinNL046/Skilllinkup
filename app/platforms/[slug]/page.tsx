@@ -26,9 +26,71 @@ export async function generateMetadata({ params }: PlatformPageProps) {
       };
     }
 
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+    const platformUrl = `${siteUrl}/platforms/${platform.slug}`;
+    const imageUrl = platform.logo_url?.startsWith('http')
+      ? platform.logo_url
+      : `${siteUrl}${platform.logo_url}`;
+
+    // Extract plain text from HTML description for meta tags
+    const plainDescription = platform.description
+      ? platform.description.replace(/<[^>]*>/g, '').substring(0, 160)
+      : `Comprehensive review of ${platform.name} freelance platform. Rating: ${platform.rating}/5. ${platform.difficulty} to use. ${platform.fees || 'Learn about fees'}.`;
+
+    const metaTitle = `${platform.name} Review 2025: Fees, Features & Pros/Cons - SkillLinkup`;
+
     return {
-      title: `${platform.name} Review - SkillLinkup`,
-      description: platform.description || `Comprehensive review of ${platform.name} - fees, features, pros and cons.`,
+      title: metaTitle,
+      description: plainDescription,
+
+      // Keywords
+      keywords: `${platform.name}, ${platform.name} review, ${platform.name} fees, freelance platform, ${platform.category}, ${platform.difficulty}`,
+
+      // Canonical URL
+      alternates: {
+        canonical: platformUrl,
+      },
+
+      // Open Graph (Facebook, LinkedIn, etc.)
+      openGraph: {
+        title: metaTitle,
+        description: plainDescription,
+        url: platformUrl,
+        siteName: 'SkillLinkup',
+        images: platform.logo_url ? [
+          {
+            url: imageUrl,
+            width: 1200,
+            height: 630,
+            alt: `${platform.name} logo`,
+          }
+        ] : [],
+        locale: 'en_US',
+        type: 'website',
+      },
+
+      // Twitter Card
+      twitter: {
+        card: 'summary_large_image',
+        title: metaTitle,
+        description: plainDescription,
+        images: platform.logo_url ? [imageUrl] : [],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+
+      // Robots
+      robots: {
+        index: platform.status === 'published',
+        follow: platform.status === 'published',
+        googleBot: {
+          index: platform.status === 'published',
+          follow: platform.status === 'published',
+          'max-video-preview': -1,
+          'max-image-preview': 'large',
+          'max-snippet': -1,
+        },
+      },
     };
   } catch (error) {
     return {
@@ -59,6 +121,67 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
     notFound();
   }
 
+  // Schema.org structured data
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const platformUrl = `${siteUrl}/platforms/${platform.slug}`;
+  const imageUrl = platform.logo_url?.startsWith('http')
+    ? platform.logo_url
+    : `${siteUrl}${platform.logo_url}`;
+
+  // Product/Service Schema with aggregateRating
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: platform.name,
+    description: platform.description ? platform.description.replace(/<[^>]*>/g, '') : `${platform.name} freelance platform`,
+    image: platform.logo_url ? imageUrl : undefined,
+    brand: {
+      '@type': 'Brand',
+      name: platform.name,
+    },
+    offers: {
+      '@type': 'AggregateOffer',
+      priceCurrency: 'USD',
+      price: '0',
+      description: platform.fees || 'Free to join',
+    },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: platform.rating,
+      bestRating: '5',
+      worstRating: '1',
+      ratingCount: '1',
+    },
+    category: platform.category,
+    url: platformUrl,
+  };
+
+  // BreadcrumbList Schema
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: siteUrl,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Platforms',
+        item: `${siteUrl}/platforms`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: platform.name,
+        item: platformUrl,
+      },
+    ],
+  };
+
   // Helper function for difficulty badge color
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -75,6 +198,18 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
 
   return (
     <>
+      {/* Product Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
+
+      {/* Breadcrumb Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
       <Header />
       <main className="flex-1">
         {/* Platform Header */}

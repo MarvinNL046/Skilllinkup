@@ -132,7 +132,7 @@ export async function getPublishedPosts(limit = 10, offset = 0): Promise<Post[]>
       COALESCE(p.meta_title, CONCAT(p.title, ' - SkillLinkup')) as meta_title,
       COALESCE(p.meta_description, LEFT(p.excerpt, 160)) as meta_description,
       a.id as author_id,
-      COALESCE(a.name, 'Anonymous') as author_name,
+      COALESCE(NULLIF(TRIM(p.author_name), ''), a.name, 'Anonymous') as author_name,
       a.email as author_email,
       COALESCE(NULLIF(TRIM(a.avatar), ''), '/images/posts/author/author-image-1.png') as author_avatar,
       c.id as category_id,
@@ -169,7 +169,7 @@ export async function getFeaturedPosts(limit = 3): Promise<Post[]> {
       false as sticky,
       p.created_at,
       a.id as author_id,
-      COALESCE(a.name, 'Anonymous') as author_name,
+      COALESCE(NULLIF(TRIM(p.author_name), ''), a.name, 'Anonymous') as author_name,
       a.email as author_email,
       COALESCE(NULLIF(TRIM(a.avatar), ''), '/images/posts/author/author-image-1.png') as author_avatar,
       c.id as category_id,
@@ -215,7 +215,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       p.difficulty_level,
       p.best_for,
       a.id as author_id,
-      COALESCE(a.name, 'Anonymous') as author_name,
+      COALESCE(NULLIF(TRIM(p.author_name), ''), a.name, 'Anonymous') as author_name,
       a.email as author_email,
       COALESCE(NULLIF(TRIM(a.avatar), ''), '/images/posts/author/author-image-1.png') as author_avatar,
       c.id as category_id,
@@ -250,7 +250,7 @@ export async function getPostsByCategory(categorySlug: string, limit = 10): Prom
       false as sticky,
       p.created_at,
       a.id as author_id,
-      COALESCE(a.name, 'Anonymous') as author_name,
+      COALESCE(NULLIF(TRIM(p.author_name), ''), a.name, 'Anonymous') as author_name,
       a.email as author_email,
       COALESCE(NULLIF(TRIM(a.avatar), ''), '/images/posts/author/author-image-1.png') as author_avatar,
       c.id as category_id,
@@ -303,6 +303,28 @@ export async function getRecentPosts(limit = 5): Promise<Post[]> {
     LEFT JOIN categories c ON p.category_id = c.id
     WHERE p.status = 'published'
     ORDER BY p.published_at DESC
+    LIMIT ${limit};
+  `;
+
+  return posts as Post[];
+}
+
+// Query: Get trending posts (sorted by views) (SAFE)
+export async function getTrendingPosts(limit = 6): Promise<Post[]> {
+  const posts = await sql`
+    SELECT
+      p.id,
+      p.title,
+      p.slug,
+      COALESCE(NULLIF(TRIM(p.feature_img), ''), '/images/posts/lifestyle-post-01.webp') AS feature_img,
+      p.published_at,
+      COALESCE(p.views, 0) as views,
+      COALESCE(c.name, 'Uncategorized') as category_name,
+      c.slug as category_slug
+    FROM posts p
+    LEFT JOIN categories c ON p.category_id = c.id
+    WHERE p.status = 'published'
+    ORDER BY p.views DESC, p.published_at DESC
     LIMIT ${limit};
   `;
 
@@ -772,4 +794,73 @@ export async function getFeaturedTools(): Promise<Tool[]> {
   `;
 
   return tools as Tool[];
+}
+
+// ==========================================
+// Comment Queries
+// ==========================================
+
+export interface Comment {
+  id: string;
+  post_id: string;
+  author_name: string;
+  author_email: string;
+  content: string;
+  status: string;
+  created_at: Date;
+}
+
+/**
+ * Get approved comments for a post
+ */
+export async function getCommentsByPost(postId: string): Promise<Comment[]> {
+  const comments = await sql`
+    SELECT
+      id,
+      post_id,
+      author_name,
+      author_email,
+      content,
+      status,
+      created_at
+    FROM comments
+    WHERE post_id = ${postId} AND status = 'approved'
+    ORDER BY created_at DESC;
+  `;
+
+  return comments as Comment[];
+}
+
+/**
+ * Get all comments (for admin)
+ */
+export async function getAllComments(limit = 100): Promise<Comment[]> {
+  const comments = await sql`
+    SELECT
+      id,
+      post_id,
+      author_name,
+      author_email,
+      content,
+      status,
+      created_at
+    FROM comments
+    ORDER BY created_at DESC
+    LIMIT ${limit};
+  `;
+
+  return comments as Comment[];
+}
+
+/**
+ * Get pending comments count (for admin dashboard)
+ */
+export async function getPendingCommentsCount(): Promise<number> {
+  const result = await sql`
+    SELECT COUNT(*)::int as count
+    FROM comments
+    WHERE status = 'pending';
+  `;
+
+  return result[0]?.count || 0;
 }

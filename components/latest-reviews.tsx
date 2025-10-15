@@ -15,7 +15,7 @@ export function LatestReviews({ posts }: LatestReviewsProps) {
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="mb-10">
+        <div className="mb-10 text-center">
           <h2 className="text-3xl font-heading font-bold text-text-primary sm:text-4xl">
             Latest Reviews & Guides
           </h2>

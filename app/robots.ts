@@ -1,16 +1,12 @@
-import { MetadataRoute } from 'next'
+// app/robots.ts
+import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com'
-
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
   return {
     rules: [
-      {
-        userAgent: '*',
-        allow: '/',
-        disallow: ['/api/', '/admin/'],
-      },
+      { userAgent: "*", allow: "/", disallow: ["/admin", "/api", "/preview", "/_next"] },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,
-  }
+  };
 }

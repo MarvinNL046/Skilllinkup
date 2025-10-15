@@ -1,11 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getPostBySlug, getPublishedPosts } from "../../../lib/queries";
+import { getPostBySlug, getPublishedPosts, getCommentsByPost } from "../../../lib/queries";
 import { Header } from "../../../components/header";
 import { Footer } from "../../../components/footer";
 import { Newsletter } from "../../../components/newsletter";
 import { ViewTracker } from "../../../components/ViewTracker";
+import { CommentSection } from "../../../components/CommentSection";
 import AdWidget from "../../../src/common/components/sidebar/AdWidget";
 import QuickInfoWidget from "../../../src/common/components/sidebar/QuickInfoWidget";
 import TableOfContents from "../../../src/common/components/sidebar/TableOfContents";
@@ -107,6 +108,7 @@ export default async function PostPage({ params }: PostPageProps) {
   const { slug } = await params;
   let post;
   let relatedPosts: Awaited<ReturnType<typeof getPublishedPosts>> = [];
+  let comments: Awaited<ReturnType<typeof getCommentsByPost>> = [];
 
   try {
     post = await getPostBySlug(slug);
@@ -117,6 +119,9 @@ export default async function PostPage({ params }: PostPageProps) {
 
     // Get related posts from same category
     relatedPosts = await getPublishedPosts(3, 0);
+
+    // Get comments for this post
+    comments = await getCommentsByPost(post.id);
   } catch (error) {
     console.error('Error fetching post:', error);
     notFound();
@@ -129,7 +134,8 @@ export default async function PostPage({ params }: PostPageProps) {
     ? post.feature_img
     : `${siteUrl}${post.feature_img}`;
 
-  const jsonLd = {
+  // BlogPosting Schema
+  const blogPostingSchema = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline: post.title,
@@ -144,7 +150,7 @@ export default async function PostPage({ params }: PostPageProps) {
       name: 'SkillLinkup',
       logo: {
         '@type': 'ImageObject',
-        url: `${siteUrl}/images/logo/logo.png`,
+        url: `${siteUrl}/images/logo/skilllinkup-transparant-rozepunt.webp`,
       },
     },
     datePublished: post.published_at,
@@ -159,12 +165,44 @@ export default async function PostPage({ params }: PostPageProps) {
     timeRequired: post.read_time ? `PT${post.read_time}M` : undefined,
   };
 
+  // BreadcrumbList Schema
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: siteUrl,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Blog',
+        item: `${siteUrl}/blog`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: post.title,
+        item: postUrl,
+      },
+    ],
+  };
+
   return (
     <>
-      {/* Schema.org JSON-LD */}
+      {/* BlogPosting Schema */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingSchema) }}
+      />
+
+      {/* Breadcrumb Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
       {/* View Tracker - Increments view count after 2 seconds */}
@@ -367,6 +405,9 @@ export default async function PostPage({ params }: PostPageProps) {
             </div>
           </div>
         </article>
+
+        {/* Comments Section */}
+        <CommentSection postId={post.id} comments={comments} />
 
         {/* Related Posts */}
         {relatedPosts.length > 0 && (

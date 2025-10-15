@@ -1,3 +1,4 @@
+import "server-only";
 import { drizzle } from 'drizzle-orm/neon-http';
 import { neon } from '@neondatabase/serverless';
 import * as schema from '../drizzle/schema';
@@ -11,7 +12,10 @@ if (!connectionString) {
   );
 }
 
-const sql = neon(connectionString);
+// Raw SQL client for direct queries (used by sitemap)
+export const sql = neon(connectionString);
+
+// Drizzle ORM client (used by app queries)
 export const db = drizzle(sql, { schema });
 
 // Export schema for direct access

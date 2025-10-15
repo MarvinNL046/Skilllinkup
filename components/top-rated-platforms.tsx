@@ -19,6 +19,12 @@ interface TopRatedPlatformsProps {
   platforms: Platform[];
 }
 
+// Helper function to strip HTML tags from text
+function stripHtml(html: string | null): string {
+  if (!html) return '';
+  return html.replace(/<[^>]*>/g, '').trim();
+}
+
 export function TopRatedPlatforms({ platforms }: TopRatedPlatformsProps) {
   // Show only first 6 platforms
   const displayPlatforms = platforms.slice(0, 6);
@@ -87,7 +93,7 @@ export function TopRatedPlatforms({ platforms }: TopRatedPlatformsProps) {
                   {/* Description */}
                   {platform.description && (
                     <p className="text-gray-600 text-sm mb-4 line-clamp-3 flex-1">
-                      {platform.description}
+                      {stripHtml(platform.description)}
                     </p>
                   )}
 

@@ -14,7 +14,7 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <Image
-              src="/images/logo/Skilllinkup-transparant-logo1.png"
+              src="/images/logo/skilllinkup-transparant-rozepunt.webp"
               alt="SkillLinkup"
               width={150}
               height={50}

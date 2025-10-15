@@ -75,6 +75,7 @@ export const posts = pgTable('posts', {
 
   // Author & Category
   authorId: uuid('author_id').references(() => users.id, { onDelete: 'set null' }),
+  authorName: varchar('author_name', { length: 255 }), // Custom author name (overrides user lookup)
   categoryId: uuid('category_id').references(() => categories.id, { onDelete: 'set null' }),
 
   // SEO & Meta
