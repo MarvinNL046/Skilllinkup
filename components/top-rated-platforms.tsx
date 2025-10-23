@@ -55,19 +55,21 @@ export function TopRatedPlatforms({ platforms }: TopRatedPlatformsProps) {
               className="group block"
             >
               <article className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden h-full flex flex-col">
-                {/* Platform Logo */}
-                <div className="relative h-48 bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center p-8">
+                {/* Platform Screenshot/Logo */}
+                <div className="relative w-full bg-gradient-to-br from-purple-50 to-blue-50 overflow-hidden">
                   {platform.logo_url ? (
                     <Image
                       src={platform.logo_url}
                       alt={platform.name}
-                      width={200}
-                      height={100}
-                      className="object-contain group-hover:scale-105 transition-transform duration-300"
+                      width={800}
+                      height={600}
+                      className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   ) : (
-                    <div className="text-6xl font-bold text-gray-300">
-                      {platform.name.charAt(0)}
+                    <div className="h-48 flex items-center justify-center">
+                      <div className="text-6xl font-bold text-gray-300">
+                        {platform.name.charAt(0)}
+                      </div>
                     </div>
                   )}
                 </div>
