@@ -16,13 +16,25 @@ export async function POST(request: Request) {
       );
     }
 
-    // In development, use hardcoded values as fallback (Next.js 15 Node runtime env issue)
-    const RESEND_KEY = process.env.RESEND_API_KEY || 're_TbfRddTj_DYMkbAztbDiMx5xa9b6wA2rX';
-    const AUDIENCE_ID = process.env.RESEND_AUDIENCE_ID || '75a23919-4a89-44f6-a8dd-145609836da5';
+    // Check for required environment variables
+    const RESEND_KEY = process.env.RESEND_API_KEY;
+    const AUDIENCE_ID = process.env.RESEND_AUDIENCE_ID;
 
-    // Debug logging
-    console.log('🔑 API Key (first 10 chars):', RESEND_KEY.substring(0, 10));
-    console.log('📋 Audience ID:', AUDIENCE_ID);
+    if (!RESEND_KEY) {
+      console.error("[Newsletter] Resend API key not configured");
+      return NextResponse.json(
+        { message: "De nieuwsbrief service is tijdelijk niet beschikbaar. Probeer het later opnieuw." },
+        { status: 503 }
+      );
+    }
+
+    if (!AUDIENCE_ID) {
+      console.error("[Newsletter] Resend Audience ID not configured");
+      return NextResponse.json(
+        { message: "De nieuwsbrief service is tijdelijk niet beschikbaar. Probeer het later opnieuw." },
+        { status: 503 }
+      );
+    }
 
     // Initialize Resend client
     const resend = new Resend(RESEND_KEY);

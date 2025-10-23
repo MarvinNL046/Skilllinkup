@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Lexend } from "next/font/google";
 import "./globals.css";
+import BackToTop from "@/components/BackToTop";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -72,6 +73,7 @@ export default function RootLayout({
         <div className="min-h-screen flex flex-col">
           {children}
         </div>
+        <BackToTop />
       </body>
     </html>
   );

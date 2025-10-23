@@ -1,0 +1,130 @@
+{
+  "name": "SkillLinkup Blog Automation - Adam Enfroy Style",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "c8c0a6aa-8f3e-4c3d-b8c4-4c4e4e4e4e4e",
+      "name": "When clicking 'Test workflow'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "content": "## 📋 Step 1: Read Google Sheet\n\nTrigger: New row added to Google Sheet\n\n**Required columns:**\n- program_name\n- affiliate_link (short.io URL)\n- description\n- commission_type\n- commission_value\n- cookie_duration\n- avg_earnings\n- unique_benefits (comma-separated)\n- category\n\n**Setup:**\n1. Connect your Google account\n2. Select the spreadsheet\n3. Set trigger on 'Row Added'",
+        "height": 400,
+        "width": 300
+      },
+      "id": "note-1",
+      "name": "Note - Google Sheet Setup",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [450, 100]
+    },
+    {
+      "parameters": {
+        "content": "## 🔗 Step 2: Get Base URL from Short.io\n\nUse short.io API to get the original URL from the affiliate link.\n\n**API Endpoint:**\n`GET https://api.short.io/links/expand`\n\n**Headers:**\n- Authorization: Your short.io API key\n\n**Body:**\n- domain: go.skilllinkup.com\n- path: /upwork (from affiliate_link)\n\n**Output:** originalURL for screenshot",
+        "height": 400,
+        "width": 300
+      },
+      "id": "note-2",
+      "name": "Note - Short.io API",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [800, 100]
+    },
+    {
+      "parameters": {
+        "content": "## 📸 Step 3: Capture Screenshot with Playwright\n\n**Method 1: Use n8n HTTP Request + Playwright service**\n\n**Method 2: Use custom Playwright node**\n\n**Screenshot settings:**\n- URL: originalURL from short.io\n- Viewport: 1920x1080\n- Wait for: networkidle\n- Remove cookie banners\n- Clip: {x:0, y:0, width:1920, height:900}\n- Format: PNG\n- Save to: /public/images/posts/\n\n**Output:** Screenshot filename",
+        "height": 400,
+        "width": 300
+      },
+      "id": "note-3",
+      "name": "Note - Playwright Screenshot",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [1150, 100]
+    },
+    {
+      "parameters": {
+        "content": "## ✍️ Step 4: Generate Content with Claude API\n\n**API Endpoint:**\n`POST https://api.anthropic.com/v1/messages`\n\n**Headers:**\n- x-api-key: Your Anthropic API key\n- anthropic-version: 2023-06-01\n- content-type: application/json\n\n**Body:**\n```json\n{\n  \"model\": \"claude-3-5-sonnet-20241022\",\n  \"max_tokens\": 1024,\n  \"messages\": [{\n    \"role\": \"user\",\n    \"content\": \"[See prompt template below]\"\n  }]\n}\n```\n\n**Output:** Markdown content for blog post",
+        "height": 400,
+        "width": 300
+      },
+      "id": "note-4",
+      "name": "Note - Claude API",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [1500, 100]
+    },
+    {
+      "parameters": {
+        "content": "## 📝 Step 5: Create Draft Post\n\n**API Endpoint:**\n`POST http://localhost:3002/api/posts`\n\n**Body:**\n```json\n{\n  \"title\": \"{{program_name}} Affiliate Program Review\",\n  \"slug\": \"{{program_name_slug}}\",\n  \"content\": \"{{generated_content}}\",\n  \"feature_img\": \"/images/posts/{{screenshot_filename}}\",\n  \"category\": \"{{category}}\",\n  \"status\": \"draft\",\n  \"author_name\": \"Marvin\"\n}\n```\n\n**Output:** Draft post created in admin dashboard",
+        "height": 400,
+        "width": 300
+      },
+      "id": "note-5",
+      "name": "Note - Create Draft",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [1850, 100]
+    },
+    {
+      "parameters": {
+        "content": "## 📧 Step 6: Send Notification Email\n\nSend email notification to yourself that a new draft is ready for review.\n\n**Email content:**\n- Subject: New blog post draft ready: {{program_name}}\n- Body: Link to admin dashboard edit page\n- Admin URL: http://localhost:3002/posts/{{post_id}}/edit\n\n**Use:** Gmail node or SMTP node",
+        "height": 400,
+        "width": 300
+      },
+      "id": "note-6",
+      "name": "Note - Email Notification",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [2200, 100]
+    },
+    {
+      "parameters": {
+        "content": "## 🎯 Claude API Prompt Template\n\nWrite a blog post section for {{program_name}} in Adam Enfroy's conversational style.\n\n**Input data:**\n- Program: {{program_name}}\n- Description: {{description}}\n- Commission: {{commission_value}} ({{commission_type}})\n- Cookie Duration: {{cookie_duration}} days\n- Avg Earnings: {{avg_earnings}}\n- Unique Benefits: {{unique_benefits}}\n- Affiliate Link: {{affiliate_link}}\n\n**Style requirements:**\n1. Conversational tone (use \"they've got\", \"doesn't mess around\")\n2. Short paragraphs (2-3 sentences max)\n3. **Bold** important numbers and features (markdown syntax)\n4. Include rhetorical questions for engagement\n5. Personal touch (\"Yeah, you heard that right\")\n6. Length: 200-300 words\n7. Write in ENGLISH\n\n**Structure:**\n1. Opening: Inline affiliate link + 1-sentence description\n2. Commission: Highlight the money (be specific)\n3. Earnings: Include average affiliate earnings\n4. Cookies: Explain cookie duration benefit\n5. Perks: List 2-3 unique benefits\n6. Closing: Personal take (1-2 sentences)\n\n**Output format: MARKDOWN**\n- Use ### for heading\n- Use **bold** for emphasis\n- Use [text](url) for links\n- Add image: ![{{program_name}}](/images/posts/{{screenshot_filename}})",
+        "height": 600,
+        "width": 400
+      },
+      "id": "note-7",
+      "name": "Note - Full Prompt Template",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [250, 600]
+    },
+    {
+      "parameters": {
+        "content": "## 💰 Cost Analysis\n\n**Per Post:**\n- Claude API: ~$0.01 (1K tokens input, 1K tokens output)\n- Short.io API: Free (included in plan)\n- Screenshot: Free (Playwright)\n- Total: ~$0.01-0.02 per post\n\n**Monthly (5-10 posts/week):**\n- 20-40 posts/month\n- Cost: $0.20-0.80/month\n- Time saved: 15-20 hours/month\n- ROI: Massive (vs $50-100/hour for manual writing)",
+        "height": 300,
+        "width": 300
+      },
+      "id": "note-8",
+      "name": "Note - ROI Calculator",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [700, 600]
+    },
+    {
+      "parameters": {
+        "content": "## 🚀 Next Steps to Implement\n\n**1. Setup Credentials in n8n Cloud:**\n- Google Sheets (OAuth)\n- Short.io API key\n- Anthropic API key (Claude)\n- Admin Dashboard API (if needed)\n- Email (Gmail or SMTP)\n\n**2. Replace Manual Trigger:**\n- Switch to Google Sheets trigger\n- Set to trigger on 'Row Added'\n\n**3. Add Error Handling:**\n- Catch failed API calls\n- Log errors to Google Sheet\n- Send error notification email\n\n**4. Test with Sample Data:**\n- Use 1-2 test platforms first\n- Verify screenshot quality\n- Check content style\n- Review draft in admin\n\n**5. Go Live:**\n- Activate workflow\n- Add platforms to Google Sheet\n- Monitor first 5-10 posts\n- Adjust prompt if needed",
+        "height": 500,
+        "width": 350
+      },
+      "id": "note-9",
+      "name": "Note - Implementation Steps",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [1100, 600]
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-10-15T17:00:00.000Z",
+  "versionId": "1"
+}

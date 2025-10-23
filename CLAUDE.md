@@ -314,6 +314,62 @@ npm run build
 - `app/api/upload/route.ts` (admin) - Dual-folder image upload
 - `scripts/import-platforms.ts` - Platform data import script
 
+## N8N Blog Automation
+
+### Workflow Architecture
+The project includes an n8n workflow blueprint (`n8n-blog-automation-workflow.json`) for automated blog post generation:
+
+**Workflow Pipeline**:
+1. **Google Sheets Trigger** → New affiliate program row added
+2. **Short.io API** → Resolve affiliate link to original URL
+3. **Playwright Screenshot** → Capture platform homepage (1920x1080)
+4. **Claude API** → Generate blog content in Adam Enfroy style
+5. **Admin API** → Create draft post via `POST /api/posts`
+6. **Email Notification** → Alert for review
+
+**Integration Points**:
+- Screenshots saved to both `/public/images/posts/` folders (main + admin)
+- Content follows Adam Enfroy conversational style (short paragraphs, bold numbers, rhetorical questions)
+- Draft posts created in admin dashboard (port 3002) for manual review
+- Cost: ~$0.01-0.02 per post via Claude API
+
+**Required Setup**:
+- Google Sheets with columns: `program_name`, `affiliate_link`, `description`, `commission_type`, `commission_value`, etc.
+- Short.io API key for link resolution
+- Anthropic API key for content generation
+- Admin dashboard API endpoint (`POST http://localhost:3002/api/posts`)
+
+### Affiliate Marketing Schema
+Platforms table includes affiliate-specific fields for monetization (see latest migration):
+- `affiliate_link` - Short.io URL for tracking
+- `commission_type` - Percentage, CPA, or hybrid
+- `commission_value` - Payout amount/percentage
+- `cookie_duration` - Attribution window in days
+- `avg_earnings` - Typical affiliate earnings
+- `unique_benefits` - JSONB array of selling points
+
+## Testing Infrastructure
+
+### Playwright E2E Tests
+Playwright is installed for:
+- Cross-browser screenshot capture (n8n automation)
+- E2E testing workflows (not yet implemented)
+- Visual regression testing capabilities
+
+**Available but not configured**:
+- Run tests: `npx playwright test`
+- Generate test: `npx playwright codegen`
+- Test report: `npx playwright show-report`
+
+### Production Safety Scripts
+Pre-deployment validation via `bash scripts/sanity-check.sh`:
+- ✅ No unsafe `featureImg` destructuring
+- ✅ All `<Image>` components have `src`
+- ✅ No empty OpenGraph images arrays
+- ✅ Safe helpers in use (`safeImage`, `safeText`, `safeArray`)
+- ✅ Error boundary exists (`app/error.tsx`)
+- ✅ DEFAULTS and safe utilities present
+
 ## Important Notes
 
 1. **Never destructure featureImg in function parameters** - crashes if undefined
@@ -325,3 +381,4 @@ npm run build
 7. **Sitemap auto-updates** - revalidates every 15 minutes, manual trigger via webhook
 8. **Use `lib/db.ts` exports** - `sql` for raw queries (sitemap), `db` for Drizzle ORM (app)
 9. **Platforms table requires owner_id** - use "test-owner-id" for import scripts
+10. **N8N workflow is blueprint only** - requires manual setup in n8n Cloud to activate

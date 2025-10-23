@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Header } from "../../components/header";
 import { Footer } from "../../components/footer";
+import { ReviewAvatar } from "../../components/ReviewAvatar";
 import { getApprovedReviews } from "../../lib/queries";
 
 export const metadata = {
@@ -88,13 +89,10 @@ export default async function ReviewsPage() {
                     {/* Review Header */}
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
-                        {review.user_avatar && (
-                          <img
-                            src={review.user_avatar}
-                            alt={review.user_name}
-                            className="w-12 h-12 rounded-full object-cover"
-                          />
-                        )}
+                        <ReviewAvatar
+                          userAvatar={review.user_avatar}
+                          userName={review.user_name}
+                        />
                         <div>
                           <div className="flex items-center gap-2">
                             <h3 className="font-heading font-semibold text-text-primary">
