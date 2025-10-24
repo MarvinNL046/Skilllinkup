@@ -51,6 +51,12 @@ export function Header() {
               Comparisons
             </Link>
             <Link
+              href="/tools"
+              className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors"
+            >
+              Tools
+            </Link>
+            <Link
               href="/about"
               className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors"
             >
@@ -131,6 +137,13 @@ export function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Comparisons
+              </Link>
+              <Link
+                href="/tools"
+                className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent px-2 py-1"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Tools
               </Link>
               <Link
                 href="/about"
