@@ -27,6 +27,7 @@ npm run db:fix-images          # Fix broken image references
 npm run db:fix-meta            # Update metadata fields
 npm run db:fix-all             # Run all fix scripts
 npm run db:import-platforms    # Import platforms from scripts/import-platforms.ts
+npm run db:import-tools        # Import tools from scripts/import-tools.ts
 
 # Production Safety
 bash scripts/sanity-check.sh   # Pre-deployment checks
@@ -108,6 +109,38 @@ Client-side filtering with URL state management (SEO-friendly and shareable):
 
 **Example**: `components/platform-filters.tsx` demonstrates this pattern for platform filtering.
 
+### Freelance Tools Architecture
+Client-side tools with localStorage persistence (no authentication required):
+
+**Available Tools**:
+- **Time Tracker** (`/tools/time-tracker`): Billable hours tracking with project management, timer/manual entry, data persistence
+- **Rate Calculator** (`/tools/rate-calculator`): Calculate ideal hourly rate based on costs, goals, and experience level with custom rate input
+- **Invoice Generator** (`/tools/invoice-generator`): Professional invoices with auto-numbering (INV-2025-XXXX), multi-currency (€/$£), logo upload, real-time calculations, localStorage save/load, print/PDF export
+
+**Key Implementation Details**:
+- All tools use React `useState` + `useEffect` for client-side state management
+- Data persistence via `localStorage` API (browser-only, ~5-10MB limit per domain)
+- No server-side storage or authentication (planned for future version)
+- Logo upload uses Base64 encoding for localStorage compatibility
+- Tools page (`/tools/page.tsx`) has hardcoded fallback array if database is empty
+- Database script: `scripts/import-tools.ts` (run with `npm run db:import-tools`)
+
+**LocalStorage Strategy**:
+```typescript
+// Save to localStorage
+useEffect(() => {
+  localStorage.setItem('toolName_data', JSON.stringify(data));
+}, [data]);
+
+// Load from localStorage on mount
+useEffect(() => {
+  const saved = localStorage.getItem('toolName_data');
+  if (saved) setData(JSON.parse(saved));
+}, []);
+```
+
+**Future Enhancement**: User accounts with cloud sync for cross-device tool data access.
+
 ## Database Schema Key Points
 
 ### Multi-Tenant Design
@@ -125,6 +158,36 @@ export const posts = pgTable('posts', {
 - Use `featureImg` in normalized data (camelCase)
 - No `category_color` field - removed in migration
 - `tags` is JSONB array, not string
+
+### Platform Work Type and Location Fields (Migration 0004)
+Platforms support filtering by work type and geographic location:
+
+**Work Type Field**:
+- `work_type VARCHAR(50)` - Values: 'remote', 'local', 'hybrid'
+- Defaults to 'remote' for new platforms
+- Indexed for efficient filtering
+
+**Countries Field**:
+- `countries TEXT[]` - Array of ISO 3166-1 alpha-2 country codes
+- Examples: `['NL', 'BE']` for Benelux, `['Worldwide']` for remote platforms
+- Uses GIN index for array searches
+
+**Usage Examples**:
+```typescript
+// Remote platform (global)
+{ work_type: 'remote', countries: ['Worldwide'] }
+
+// Local platform (Netherlands only)
+{ work_type: 'local', countries: ['NL'] }
+
+// Hybrid platform (Benelux region)
+{ work_type: 'hybrid', countries: ['NL', 'BE', 'LU'] }
+```
+
+**Migration Details**:
+- File: `drizzle/migrations/0004_add_worktype_countries.sql`
+- Runner: `scripts/run-migration-0004-simple.mjs`
+- All existing platforms set to work_type='remote', countries=['Worldwide']
 
 ### Dynamic Rendering Pattern
 All database-driven pages must use:
@@ -313,6 +376,13 @@ npm run build
 - `components/RichTextEditor.tsx` (admin) - TipTap rich text editor
 - `app/api/upload/route.ts` (admin) - Dual-folder image upload
 - `scripts/import-platforms.ts` - Platform data import script
+- `scripts/import-tools.ts` - Tools data import script
+- `drizzle/migrations/0004_add_worktype_countries.sql` - Work type and location filtering migration
+- `scripts/run-migration-0004-simple.mjs` - Migration runner for work_type and countries fields
+- `scripts/check-platforms-schema.mjs` - Database schema inspection utility
+- `app/tools/time-tracker/page.tsx` - Time tracking tool with localStorage
+- `app/tools/rate-calculator/page.tsx` - Rate calculator with custom input
+- `app/tools/invoice-generator/page.tsx` - Invoice generator with logo upload
 
 ## N8N Blog Automation
 
@@ -382,3 +452,5 @@ Pre-deployment validation via `bash scripts/sanity-check.sh`:
 8. **Use `lib/db.ts` exports** - `sql` for raw queries (sitemap), `db` for Drizzle ORM (app)
 9. **Platforms table requires owner_id** - use "test-owner-id" for import scripts
 10. **N8N workflow is blueprint only** - requires manual setup in n8n Cloud to activate
+11. **Tools use localStorage only** - no authentication yet, data stored in browser, future: cloud sync
+12. **Logo upload uses Base64** - enables localStorage compatibility for invoice generator
