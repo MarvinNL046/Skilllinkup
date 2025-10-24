@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import ImageUpload from '../../../../components/ImageUpload';
 
 const RichTextEditor = dynamic(() => import('../../../../components/RichTextEditor'), {
   ssr: false,
@@ -195,20 +196,6 @@ export default function NewPlatformPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Logo URL
-              </label>
-              <input
-                type="url"
-                name="logo_url"
-                value={formData.logo_url}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-blue-500"
-                placeholder="https://example.com/logo.png"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
                 Website URL
               </label>
               <input
@@ -322,6 +309,21 @@ export default function NewPlatformPage() {
               </label>
             </div>
           </div>
+        </div>
+
+        {/* Logo Upload */}
+        <div className="rounded-lg border border-gray-200 bg-white p-6">
+          <h2 className="mb-4 text-lg font-semibold text-gray-900">Platform Logo</h2>
+          <ImageUpload
+            value={formData.logo_url}
+            onChange={(url) => setFormData(prev => ({ ...prev, logo_url: url }))}
+            label="Upload Platform Logo"
+          />
+          {formData.logo_url && (
+            <p className="mt-2 text-sm text-gray-600">
+              Preview: <span className="font-mono text-xs">{formData.logo_url}</span>
+            </p>
+          )}
         </div>
 
         {/* Pros */}
