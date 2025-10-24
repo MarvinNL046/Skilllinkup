@@ -381,6 +381,7 @@ export async function getPublishedPlatforms(limit = 50): Promise<Platform[]> {
       description,
       logo_url,
       website_url,
+      affiliate_link,
       rating,
       category,
       fees,
