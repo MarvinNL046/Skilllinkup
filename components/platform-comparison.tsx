@@ -44,14 +44,14 @@ export function PlatformComparison() {
   ];
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white dark:bg-gray-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mb-10 text-center">
-          <h2 className="text-3xl font-heading font-bold text-text-primary sm:text-4xl">
+          <h2 className="text-3xl font-heading font-bold text-text-primary dark:text-white sm:text-4xl">
             Compare Top Platforms
           </h2>
-          <p className="mt-3 text-base text-text-secondary max-w-2xl mx-auto">
+          <p className="mt-3 text-base text-text-secondary dark:text-gray-300 max-w-2xl mx-auto">
             Side-by-side comparison of the most popular freelance marketplaces
           </p>
         </div>
@@ -61,11 +61,11 @@ export function PlatformComparison() {
           {platforms.map((platform, index) => (
             <div
               key={platform.name}
-              className="group relative overflow-hidden rounded-lg border-2 border-background-gray bg-background-light p-6 transition-all hover:border-accent hover:shadow-xl"
+              className="group relative overflow-hidden rounded-lg border-2 border-background-gray dark:border-gray-700 bg-background-light dark:bg-gray-700 p-6 transition-all hover:border-accent hover:shadow-xl"
             >
               {/* Platform Name & Rating */}
               <div className="mb-4">
-                <h3 className="text-xl font-heading font-bold text-text-primary mb-2">
+                <h3 className="text-xl font-heading font-bold text-text-primary dark:text-white mb-2">
                   {platform.name}
                 </h3>
                 <div className="flex items-center gap-2">
@@ -76,7 +76,7 @@ export function PlatformComparison() {
                         className={`w-4 h-4 ${
                           i < Math.floor(platform.rating)
                             ? "text-accent"
-                            : "text-background-gray"
+                            : "text-background-gray dark:text-gray-600"
                         }`}
                         fill="currentColor"
                         viewBox="0 0 20 20"
@@ -85,7 +85,7 @@ export function PlatformComparison() {
                       </svg>
                     ))}
                   </div>
-                  <span className="text-sm font-semibold text-text-primary">
+                  <span className="text-sm font-semibold text-text-primary dark:text-white">
                     {platform.rating}
                   </span>
                 </div>
@@ -94,19 +94,19 @@ export function PlatformComparison() {
               {/* Key Features */}
               <div className="mb-4 space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-text-secondary">Service Fees</span>
-                  <span className="font-semibold text-text-primary">
+                  <span className="text-text-secondary dark:text-gray-300">Service Fees</span>
+                  <span className="font-semibold text-text-primary dark:text-white">
                     {platform.features.fees}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-text-secondary">Active Jobs</span>
-                  <span className="font-semibold text-text-primary">
+                  <span className="text-text-secondary dark:text-gray-300">Active Jobs</span>
+                  <span className="font-semibold text-text-primary dark:text-white">
                     {platform.features.activeJobs}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-text-secondary">Payment Protection</span>
+                  <span className="text-text-secondary dark:text-gray-300">Payment Protection</span>
                   <span className="font-semibold text-accent">
                     {platform.features.paymentProtection ? "✓" : "✗"}
                   </span>
@@ -116,12 +116,12 @@ export function PlatformComparison() {
               {/* Pros & Cons */}
               <div className="mb-4 space-y-3">
                 <div>
-                  <h4 className="text-xs font-heading font-semibold text-text-primary uppercase mb-2">
+                  <h4 className="text-xs font-heading font-semibold text-text-primary dark:text-white uppercase mb-2">
                     Pros
                   </h4>
                   <ul className="space-y-1">
                     {platform.pros.map((pro, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-text-secondary">
+                      <li key={i} className="flex items-start gap-2 text-sm text-text-secondary dark:text-gray-300">
                         <span className="text-accent mt-0.5">✓</span>
                         <span>{pro}</span>
                       </li>
@@ -129,12 +129,12 @@ export function PlatformComparison() {
                   </ul>
                 </div>
                 <div>
-                  <h4 className="text-xs font-heading font-semibold text-text-primary uppercase mb-2">
+                  <h4 className="text-xs font-heading font-semibold text-text-primary dark:text-white uppercase mb-2">
                     Cons
                   </h4>
                   <ul className="space-y-1">
                     {platform.cons.map((con, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-text-secondary">
+                      <li key={i} className="flex items-start gap-2 text-sm text-text-secondary dark:text-gray-300">
                         <span className="text-primary mt-0.5">✗</span>
                         <span>{con}</span>
                       </li>

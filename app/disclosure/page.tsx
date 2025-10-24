@@ -11,45 +11,54 @@ export default function DisclosurePage() {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 py-16 max-w-4xl">
-        <h1 className="text-4xl font-heading font-bold text-text-primary mb-4">
+        <h1 className="text-4xl font-heading font-bold text-gray-900 dark:text-white mb-4">
           Affiliate Disclosure
         </h1>
-        <p className="text-text-secondary mb-8">
+        <p className="text-gray-600 dark:text-gray-400 mb-8">
           Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
         </p>
 
-        <div className="prose prose-lg max-w-none">
+        <div className="prose prose-lg dark:prose-invert max-w-none
+          prose-headings:font-heading
+          prose-h2:text-2xl prose-h2:font-bold prose-h2:mb-4 prose-h2:mt-8
+          prose-h3:text-xl prose-h3:font-semibold prose-h3:mb-3 prose-h3:mt-6
+          prose-p:mb-4
+          prose-ul:mb-4 prose-ul:space-y-2
+          prose-li:marker:text-primary dark:prose-li:marker:text-accent
+          prose-strong:font-semibold
+          prose-a:text-primary dark:prose-a:text-accent prose-a:no-underline
+          prose-a:hover:text-primary-dark dark:prose-a:hover:text-accent/90">
           <section className="mb-8">
-            <h2 className="text-2xl font-heading font-bold text-text-primary mb-4">
+            <h2 className="">
               Our Commitment to Transparency
             </h2>
-            <p className="text-text-secondary mb-4">
+            <p className="">
               At SkillLinkup, we believe in complete transparency with our readers. This page explains our affiliate relationships and how we earn revenue while maintaining our commitment to providing honest, unbiased reviews and recommendations.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-heading font-bold text-text-primary mb-4">
+            <h2 className="">
               What Are Affiliate Links?
             </h2>
-            <p className="text-text-secondary mb-4">
+            <p className="">
               Affiliate links are special tracking links that allow us to earn a commission when you click through to a platform and make a purchase or sign up for a service. These links help support our work at no additional cost to you.
             </p>
-            <p className="text-text-secondary mb-4">
+            <p className="">
               When you use an affiliate link, the price you pay remains the same. The platform simply pays us a small commission for referring you to their service.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-heading font-bold text-text-primary mb-4">
+            <h2 className="">
               How We Use Affiliate Links
             </h2>
-            <p className="text-text-secondary mb-4">
+            <p className="">
               SkillLinkup participates in affiliate marketing programs with various freelance platforms and services, including but not limited to:
             </p>
-            <ul className="list-disc list-inside text-text-secondary mb-4 space-y-2">
+            <ul className="">
               <li>Upwork</li>
               <li>Fiverr</li>
               <li>Freelancer.com</li>
@@ -57,19 +66,19 @@ export default function DisclosurePage() {
               <li>99designs</li>
               <li>Other freelance marketplaces and tools</li>
             </ul>
-            <p className="text-text-secondary mb-4">
+            <p className="">
               Not all links on our website are affiliate links. We clearly mark affiliate content where appropriate and only recommend platforms and services we genuinely believe can benefit our readers.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-heading font-bold text-text-primary mb-4">
+            <h2 className="">
               Our Editorial Independence
             </h2>
-            <p className="text-text-secondary mb-4">
+            <p className="">
               While we do earn commissions from some platforms we review, this does not influence our editorial content. Our commitment to you includes:
             </p>
-            <ul className="list-disc list-inside text-text-secondary mb-4 space-y-2">
+            <ul className="">
               <li><strong>Honest Reviews:</strong> We provide unbiased, accurate reviews based on thorough research and real user experiences</li>
               <li><strong>No Pay-to-Play:</strong> Platforms cannot pay us to receive positive reviews or higher rankings</li>
               <li><strong>Balanced Coverage:</strong> We highlight both pros and cons of every platform we review</li>
@@ -79,84 +88,84 @@ export default function DisclosurePage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-heading font-bold text-text-primary mb-4">
+            <h2 className="">
               How Affiliate Commissions Work
             </h2>
-            <p className="text-text-secondary mb-4">
+            <p className="">
               We may earn a commission when:
             </p>
-            <ul className="list-disc list-inside text-text-secondary mb-4 space-y-2">
+            <ul className="">
               <li>You click an affiliate link and sign up for a platform</li>
               <li>You make a purchase through an affiliate link</li>
               <li>You subscribe to a service after clicking our link</li>
             </ul>
-            <p className="text-text-secondary mb-4">
+            <p className="">
               Commission rates vary by platform and are subject to change. Some platforms offer one-time commissions, while others provide recurring commissions for ongoing subscriptions.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-heading font-bold text-text-primary mb-4">
+            <h2 className="">
               Your Support Helps Us
             </h2>
-            <p className="text-text-secondary mb-4">
+            <p className="">
               When you use our affiliate links, you help support SkillLinkup at no extra cost to you. These commissions allow us to:
             </p>
-            <ul className="list-disc list-inside text-text-secondary mb-4 space-y-2">
+            <ul className="">
               <li>Continue providing free, comprehensive platform reviews and comparisons</li>
               <li>Maintain and improve our website</li>
               <li>Research and test new freelance platforms</li>
               <li>Create helpful guides, tutorials, and resources</li>
               <li>Keep our content up-to-date and accurate</li>
             </ul>
-            <p className="text-text-secondary mb-4">
+            <p className="">
               We deeply appreciate your support and trust in our recommendations.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-heading font-bold text-text-primary mb-4">
+            <h2 className="">
               FTC Compliance
             </h2>
-            <p className="text-text-secondary mb-4">
+            <p className="">
               SkillLinkup complies with the Federal Trade Commission's (FTC) guidelines concerning the use of endorsements and testimonials in advertising. We disclose our affiliate relationships in accordance with the FTC's 16 CFR Part 255: "Guides Concerning the Use of Endorsements and Testimonials in Advertising."
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-heading font-bold text-text-primary mb-4">
+            <h2 className="">
               Third-Party Advertising
             </h2>
-            <p className="text-text-secondary mb-4">
+            <p className="">
               In addition to affiliate links, we may display advertisements from third-party networks. These ads are clearly labeled and do not influence our editorial content or platform rankings.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-heading font-bold text-text-primary mb-4">
+            <h2 className="">
               No Guarantees
             </h2>
-            <p className="text-text-secondary mb-4">
+            <p className="">
               While we strive to provide accurate information, we cannot guarantee:
             </p>
-            <ul className="list-disc list-inside text-text-secondary mb-4 space-y-2">
+            <ul className="">
               <li>That you will earn income using the platforms we recommend</li>
               <li>Specific results or outcomes from using any freelance platform</li>
               <li>That platform features, fees, or policies won't change</li>
             </ul>
-            <p className="text-text-secondary mb-4">
+            <p className="">
               Your success on any freelance platform depends on many factors including your skills, effort, market demand, and the platform's policies.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-heading font-bold text-text-primary mb-4">
+            <h2 className="">
               Due Diligence
             </h2>
-            <p className="text-text-secondary mb-4">
+            <p className="">
               We encourage you to:
             </p>
-            <ul className="list-disc list-inside text-text-secondary mb-4 space-y-2">
+            <ul className="">
               <li>Conduct your own research before signing up for any platform</li>
               <li>Read the platform's terms of service and fee structure</li>
               <li>Compare multiple platforms to find the best fit for your needs</li>
@@ -166,34 +175,34 @@ export default function DisclosurePage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-heading font-bold text-text-primary mb-4">
+            <h2 className="">
               Updates to This Disclosure
             </h2>
-            <p className="text-text-secondary mb-4">
+            <p className="">
               We may update this Affiliate Disclosure from time to time to reflect changes in our affiliate partnerships or policies. The "Last updated" date at the top of this page indicates when changes were last made.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-heading font-bold text-text-primary mb-4">
+            <h2 className="">
               Questions or Concerns?
             </h2>
-            <p className="text-text-secondary mb-4">
+            <p className="">
               If you have any questions about our affiliate relationships or this disclosure, please contact us at:
             </p>
-            <p className="text-text-secondary mb-4">
+            <p className="">
               Email: <a href="mailto:disclosure@skilllinkup.com" className="text-primary hover:text-primary-dark">disclosure@skilllinkup.com</a>
             </p>
-            <p className="text-text-secondary">
+            <p className="">
               We value your trust and are committed to maintaining transparency in all our business practices.
             </p>
           </section>
 
-          <section className="mb-8 bg-background-light p-6 rounded-lg border-l-4 border-primary">
-            <h3 className="text-xl font-heading font-semibold text-text-primary mb-3">
+          <section className="mb-8 bg-accent/10 dark:bg-accent/20 p-6 rounded-lg border-l-4 border-accent">
+            <h3 className="">
               Thank You for Your Support
             </h3>
-            <p className="text-text-secondary">
+            <p className="">
               By using our affiliate links, you're helping us continue to provide free, valuable content to the freelance community. We appreciate your trust and support in our mission to help freelancers find the best platforms for their careers.
             </p>
           </section>

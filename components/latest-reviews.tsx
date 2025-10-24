@@ -12,14 +12,14 @@ export function LatestReviews({ posts }: LatestReviewsProps) {
   }
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white dark:bg-gray-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mb-10 text-center">
-          <h2 className="text-3xl font-heading font-bold text-text-primary sm:text-4xl">
-            Latest Reviews & Guides
+          <h2 className="text-3xl font-heading font-bold text-text-primary dark:text-white sm:text-4xl">
+            Latest Guides
           </h2>
-          <p className="mt-3 text-base text-text-secondary">
+          <p className="mt-3 text-base text-text-secondary dark:text-gray-300">
             Stay updated with our newest platform reviews
           </p>
         </div>
@@ -52,29 +52,29 @@ export function LatestReviews({ posts }: LatestReviewsProps) {
                       </span>
                     )}
                     {post.read_time && (
-                      <span className="text-text-muted">
+                      <span className="text-text-muted dark:text-gray-400">
                         {post.read_time} min
                       </span>
                     )}
                   </div>
 
                   {/* Title */}
-                  <h3 className="mb-2 text-lg font-heading font-bold text-text-primary group-hover:text-primary transition-colors line-clamp-2">
+                  <h3 className="mb-2 text-lg font-heading font-bold text-text-primary dark:text-white group-hover:text-primary transition-colors line-clamp-2">
                     {post.title}
                   </h3>
 
                   {/* Excerpt */}
                   {post.excerpt && (
-                    <p className="mb-3 text-sm text-text-secondary line-clamp-2">
+                    <p className="mb-3 text-sm text-text-secondary dark:text-gray-300 line-clamp-2">
                       {post.excerpt}
                     </p>
                   )}
 
                   {/* Meta */}
-                  <div className="flex items-center gap-2 text-xs text-text-muted">
+                  <div className="flex items-center gap-2 text-xs text-text-muted dark:text-gray-400">
                     {post.author_name && (
                       <>
-                        <span className="font-semibold text-text-primary">
+                        <span className="font-semibold text-text-primary dark:text-white">
                           {post.author_name}
                         </span>
                         <span>·</span>
@@ -104,10 +104,10 @@ export function LatestReviews({ posts }: LatestReviewsProps) {
         {/* View All Link */}
         <div className="mt-12 text-center">
           <Link
-            href="/reviews"
+            href="/guides"
             className="inline-flex items-center gap-2 rounded-lg bg-primary hover:bg-primary-dark px-6 py-3 text-base font-heading font-semibold text-white shadow-lg transition-all hover:shadow-xl"
           >
-            Browse All Reviews
+            Browse All Guides
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>

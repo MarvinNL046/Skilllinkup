@@ -138,34 +138,34 @@ export default function FAQPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gray-50">
+      <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
         {/* Breadcrumb */}
-        <section className="bg-white border-b">
+        <section className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
           <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <Link href="/" className="hover:text-primary transition-colors">
+            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+              <Link href="/" className="hover:text-primary dark:hover:text-accent transition-colors">
                 Home
               </Link>
               <span>→</span>
-              <span className="text-gray-900 font-semibold">FAQ</span>
+              <span className="text-gray-900 dark:text-white font-semibold">FAQ</span>
             </div>
           </div>
         </section>
 
         {/* Hero Section */}
-        <section className="bg-white py-16 sm:py-20">
+        <section className="bg-white dark:bg-gray-800 py-16 sm:py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
               <div className="flex items-center justify-center gap-3 mb-6">
-                <div className="w-14 h-14 bg-accent rounded-lg flex items-center justify-center">
+                <div className="w-14 h-14 bg-accent dark:bg-accent/90 rounded-lg flex items-center justify-center">
                   <HelpCircle className="w-7 h-7 text-white" />
                 </div>
               </div>
 
-              <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
                 Frequently Asked Questions
               </h1>
-              <p className="text-xl text-text-secondary">
+              <p className="text-xl text-gray-700 dark:text-gray-300">
                 Find answers to common questions about SkillLinkup, platform reviews,
                 and freelancing success.
               </p>
@@ -179,13 +179,13 @@ export default function FAQPage() {
             {/* Search Bar */}
             <div className="mb-6">
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                 <input
                   type="text"
                   placeholder="Search questions..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 rounded-lg focus:ring-2 focus:ring-accent dark:focus:ring-accent/80 focus:border-transparent"
                 />
               </div>
             </div>
@@ -197,7 +197,7 @@ export default function FAQPage() {
                 className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
                   selectedCategory === 'all'
                     ? 'bg-accent text-white'
-                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600'
                 }`}
               >
                 All Questions
@@ -209,7 +209,7 @@ export default function FAQPage() {
                   className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
                     selectedCategory === category
                       ? 'bg-accent text-white'
-                      : 'bg-white text-gray-700 hover:bg-gray-100'
+                      : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600'
                   }`}
                 >
                   {category}
@@ -223,8 +223,8 @@ export default function FAQPage() {
         <section className="container mx-auto px-4 pb-16">
           <div className="max-w-4xl mx-auto">
             {filteredFAQs.length === 0 ? (
-              <div className="text-center py-12 bg-white rounded-lg shadow-md">
-                <p className="text-gray-600 text-lg">
+              <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                <p className="text-gray-600 dark:text-gray-400 text-lg">
                   No questions found matching your search.
                 </p>
               </div>
@@ -233,29 +233,29 @@ export default function FAQPage() {
                 {filteredFAQs.map((item, index) => (
                   <div
                     key={index}
-                    className="bg-white rounded-lg shadow-md overflow-hidden"
+                    className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden border border-gray-200 dark:border-gray-700"
                   >
                     <button
                       onClick={() => toggleAccordion(index)}
-                      className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+                      className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     >
                       <div className="flex-1 pr-4">
-                        <span className="text-xs font-semibold text-accent mb-1 block">
+                        <span className="text-xs font-semibold text-accent dark:text-accent-light mb-1 block">
                           {item.category}
                         </span>
-                        <span className="text-lg font-bold text-gray-900">
+                        <span className="text-lg font-bold text-gray-900 dark:text-white">
                           {item.question}
                         </span>
                       </div>
                       <ChevronDown
-                        className={`w-5 h-5 text-gray-500 transition-transform ${
+                        className={`w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform ${
                           openIndex === index ? 'rotate-180' : ''
                         }`}
                       />
                     </button>
                     {openIndex === index && (
-                      <div className="px-6 py-4 border-t border-gray-100 bg-gray-50">
-                        <p className="text-gray-700 leading-relaxed">
+                      <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
                           {item.answer}
                         </p>
                       </div>
@@ -268,28 +268,28 @@ export default function FAQPage() {
         </section>
 
         {/* Still Have Questions Section */}
-        <section className="bg-white py-16">
+        <section className="bg-white dark:bg-gray-800 py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <HelpCircle className="w-8 h-8 text-primary" />
+              <div className="w-16 h-16 bg-primary/10 dark:bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <HelpCircle className="w-8 h-8 text-primary dark:text-accent" />
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                 Still Have Questions?
               </h2>
-              <p className="text-lg text-gray-600 mb-8">
+              <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
                 Can't find the answer you're looking for? Our support team is here to help.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href="/contact"
-                  className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary/90 transition-colors"
+                  className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-primary dark:bg-accent text-white font-semibold hover:bg-primary/90 dark:hover:bg-accent/90 transition-colors"
                 >
                   Contact Support
                 </Link>
                 <Link
                   href="/blog"
-                  className="inline-flex items-center justify-center px-6 py-3 rounded-lg border-2 border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
+                  className="inline-flex items-center justify-center px-6 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
                   Browse Guides
                 </Link>
@@ -299,47 +299,47 @@ export default function FAQPage() {
         </section>
 
         {/* Quick Links */}
-        <section className="bg-accent/10 py-16">
+        <section className="bg-accent/10 dark:bg-gray-900 py-16">
           <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-8">
               Popular Resources
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
               <Link
                 href="/reviews"
-                className="bg-white rounded-lg p-6 shadow-md hover:shadow-xl transition-all text-center group"
+                className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md hover:shadow-xl transition-all text-center group border border-gray-200 dark:border-gray-700"
               >
-                <div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 bg-accent dark:bg-accent/90 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                   <span className="text-2xl">📊</span>
                 </div>
-                <h3 className="font-bold text-gray-900 mb-2">Platform Reviews</h3>
-                <p className="text-sm text-gray-600">
+                <h3 className="font-bold text-gray-900 dark:text-white mb-2">Platform Reviews</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   Read detailed reviews of 25+ freelance platforms
                 </p>
               </Link>
 
               <Link
                 href="/tools/rate-calculator"
-                className="bg-white rounded-lg p-6 shadow-md hover:shadow-xl transition-all text-center group"
+                className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md hover:shadow-xl transition-all text-center group border border-gray-200 dark:border-gray-700"
               >
-                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 bg-primary dark:bg-accent rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                   <span className="text-2xl">🧮</span>
                 </div>
-                <h3 className="font-bold text-gray-900 mb-2">Rate Calculator</h3>
-                <p className="text-sm text-gray-600">
+                <h3 className="font-bold text-gray-900 dark:text-white mb-2">Rate Calculator</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   Calculate your ideal hourly and project rates
                 </p>
               </Link>
 
               <Link
                 href="/newsletter"
-                className="bg-white rounded-lg p-6 shadow-md hover:shadow-xl transition-all text-center group"
+                className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md hover:shadow-xl transition-all text-center group border border-gray-200 dark:border-gray-700"
               >
-                <div className="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 bg-secondary dark:bg-accent rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                   <span className="text-2xl">📧</span>
                 </div>
-                <h3 className="font-bold text-gray-900 mb-2">Newsletter</h3>
-                <p className="text-sm text-gray-600">
+                <h3 className="font-bold text-gray-900 dark:text-white mb-2">Newsletter</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   Get weekly tips and insights delivered to your inbox
                 </p>
               </Link>

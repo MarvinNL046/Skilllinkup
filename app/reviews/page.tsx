@@ -30,36 +30,36 @@ export default async function ReviewsPage() {
       <Header />
       <main className="flex-1">
         {/* Page Header */}
-        <section className="bg-gradient-to-b from-background-light to-white py-12 sm:py-16">
+        <section className="bg-gradient-to-b from-gray-50 dark:from-gray-900 to-white dark:to-slate-800 py-12 sm:py-16">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto">
-              <h1 className="text-4xl font-heading font-bold text-text-primary sm:text-5xl mb-4">
+              <h1 className="text-4xl font-heading font-bold text-gray-900 dark:text-white sm:text-5xl mb-4">
                 Platform Reviews
               </h1>
-              <p className="text-lg text-text-secondary mb-6">
+              <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
                 Read {totalReviews}+ authentic reviews from freelancers around the world
               </p>
 
               {/* Stats Bar */}
               <div className="grid grid-cols-3 gap-4 max-w-xl mx-auto">
-                <div className="bg-white rounded-lg p-4 shadow-sm">
+                <div className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-slate-700">
                   <div className="text-3xl font-heading font-bold text-primary">
                     {totalReviews}
                   </div>
-                  <div className="text-xs text-text-muted mt-1">Total Reviews</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Total Reviews</div>
                 </div>
-                <div className="bg-white rounded-lg p-4 shadow-sm">
+                <div className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-slate-700">
                   <div className="text-3xl font-heading font-bold text-accent flex items-center justify-center gap-1">
                     <span className="text-yellow-400">★</span>
                     {averageRating.toFixed(1)}
                   </div>
-                  <div className="text-xs text-text-muted mt-1">Avg Rating</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Avg Rating</div>
                 </div>
-                <div className="bg-white rounded-lg p-4 shadow-sm">
+                <div className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-slate-700">
                   <div className="text-3xl font-heading font-bold text-secondary">
                     {verifiedCount}
                   </div>
-                  <div className="text-xs text-text-muted mt-1">Verified</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Verified</div>
                 </div>
               </div>
             </div>
@@ -67,15 +67,15 @@ export default async function ReviewsPage() {
         </section>
 
         {/* Reviews Grid */}
-        <section className="py-12 bg-white">
+        <section className="py-12 bg-white dark:bg-slate-800">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             {reviews.length === 0 ? (
               <div className="text-center py-12">
                 <div className="text-6xl mb-4">📝</div>
-                <h3 className="text-xl font-heading font-bold text-text-primary mb-2">
+                <h3 className="text-xl font-heading font-bold text-gray-900 dark:text-white mb-2">
                   No reviews yet
                 </h3>
-                <p className="text-text-secondary">
+                <p className="text-gray-600 dark:text-gray-300">
                   Be the first to share your experience!
                 </p>
               </div>
@@ -84,7 +84,7 @@ export default async function ReviewsPage() {
                 {reviews.map((review) => (
                   <article
                     key={review.id}
-                    className="bg-white rounded-lg border border-background-gray hover:shadow-lg transition-all p-6"
+                    className="bg-white dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700 hover:shadow-lg transition-all p-6"
                   >
                     {/* Review Header */}
                     <div className="flex items-start justify-between mb-4">
@@ -95,24 +95,24 @@ export default async function ReviewsPage() {
                         />
                         <div>
                           <div className="flex items-center gap-2">
-                            <h3 className="font-heading font-semibold text-text-primary">
+                            <h3 className="font-heading font-semibold text-gray-900 dark:text-white">
                               {review.user_name}
                             </h3>
                             {review.verified && (
-                              <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
+                              <span className="inline-flex items-center rounded-full bg-blue-100 dark:bg-blue-900 px-2 py-0.5 text-xs font-medium text-blue-800 dark:text-blue-200">
                                 ✓
                               </span>
                             )}
                           </div>
                           {review.user_role && (
-                            <p className="text-xs text-text-muted">{review.user_role}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">{review.user_role}</p>
                           )}
                         </div>
                       </div>
                       {/* Rating */}
-                      <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-lg">
+                      <div className="flex items-center gap-1 bg-yellow-50 dark:bg-yellow-900/30 px-2 py-1 rounded-lg">
                         <span className="text-yellow-400">★</span>
-                        <span className="text-sm font-heading font-semibold text-text-primary">
+                        <span className="text-sm font-heading font-semibold text-gray-900 dark:text-white">
                           {Number(review.overall_rating).toFixed(1)}
                         </span>
                       </div>
@@ -122,7 +122,7 @@ export default async function ReviewsPage() {
                     {review.platform_name && (
                       <Link
                         href={`/platforms/${review.platform_slug}`}
-                        className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-3 hover:bg-primary/20 transition-colors"
+                        className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary/10 dark:bg-primary/20 text-primary dark:text-accent text-sm font-medium mb-3 hover:bg-primary/20 dark:hover:bg-primary/30 transition-colors"
                       >
                         <span>🏢</span>
                         {review.platform_name}
@@ -130,12 +130,12 @@ export default async function ReviewsPage() {
                     )}
 
                     {/* Review Title */}
-                    <h4 className="font-heading font-bold text-text-primary mb-2 text-lg">
+                    <h4 className="font-heading font-bold text-gray-900 dark:text-white mb-2 text-lg">
                       {review.title}
                     </h4>
 
                     {/* Review Content */}
-                    <p className="text-text-secondary text-sm mb-4 line-clamp-3">
+                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">
                       {review.content}
                     </p>
 
@@ -146,7 +146,7 @@ export default async function ReviewsPage() {
                           <div>
                             <div className="flex items-center gap-1 mb-2">
                               <span className="text-green-500">✓</span>
-                              <span className="text-xs font-heading font-semibold text-text-secondary uppercase">
+                              <span className="text-xs font-heading font-semibold text-gray-700 dark:text-gray-300 uppercase">
                                 Pros
                               </span>
                             </div>
@@ -154,7 +154,7 @@ export default async function ReviewsPage() {
                               {review.pros.slice(0, 2).map((pro, index) => (
                                 <li
                                   key={index}
-                                  className="text-xs text-text-muted line-clamp-1"
+                                  className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1"
                                 >
                                   • {pro}
                                 </li>
@@ -166,7 +166,7 @@ export default async function ReviewsPage() {
                           <div>
                             <div className="flex items-center gap-1 mb-2">
                               <span className="text-red-500">✗</span>
-                              <span className="text-xs font-heading font-semibold text-text-secondary uppercase">
+                              <span className="text-xs font-heading font-semibold text-gray-700 dark:text-gray-300 uppercase">
                                 Cons
                               </span>
                             </div>
@@ -174,7 +174,7 @@ export default async function ReviewsPage() {
                               {review.cons.slice(0, 2).map((con, index) => (
                                 <li
                                   key={index}
-                                  className="text-xs text-text-muted line-clamp-1"
+                                  className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1"
                                 >
                                   • {con}
                                 </li>
@@ -186,7 +186,7 @@ export default async function ReviewsPage() {
                     )}
 
                     {/* Meta Information */}
-                    <div className="flex items-center justify-between text-xs text-text-muted border-t border-background-gray pt-3">
+                    <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-slate-700 pt-3">
                       <div className="flex items-center gap-4">
                         {review.years_experience && (
                           <span>{review.years_experience}y exp</span>
@@ -208,13 +208,13 @@ export default async function ReviewsPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-12 bg-background-light">
+        <section className="py-12 bg-gray-50 dark:bg-gray-900">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl font-heading font-bold text-text-primary mb-4">
+              <h2 className="text-3xl font-heading font-bold text-gray-900 dark:text-white mb-4">
                 Share Your Experience
               </h2>
-              <p className="text-text-secondary mb-6">
+              <p className="text-gray-600 dark:text-gray-300 mb-6">
                 Help other freelancers by sharing your honest review of the platforms you've used
               </p>
               <Link

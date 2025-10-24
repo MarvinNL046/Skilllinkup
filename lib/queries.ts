@@ -287,6 +287,26 @@ export async function getCategories(): Promise<Category[]> {
   return categories as Category[];
 }
 
+// Query: Get category by slug (SAFE)
+export async function getCategoryBySlug(slug: string): Promise<Category | null> {
+  const result = await sql`
+    SELECT
+      c.id,
+      c.name,
+      c.slug,
+      c.description,
+      c.color,
+      '/images/post-images/category-image-01.jpg' as image,
+      COUNT(p.id)::int as post_count
+    FROM categories c
+    LEFT JOIN posts p ON c.id = p.category_id AND p.status = 'published'
+    WHERE c.slug = ${slug}
+    GROUP BY c.id, c.name, c.slug, c.description, c.color;
+  `;
+
+  return result.length > 0 ? (result[0] as Category) : null;
+}
+
 // Query: Get recent posts (for sidebar) (SAFE)
 export async function getRecentPosts(limit = 5): Promise<Post[]> {
   const posts = await sql`

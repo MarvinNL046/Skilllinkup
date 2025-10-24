@@ -3,6 +3,7 @@ import { Inter, Lexend } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import BackToTop from "@/components/BackToTop";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -104,10 +105,12 @@ export default function RootLayout({
           />
         </noscript>
 
-        <div className="min-h-screen flex flex-col">
-          {children}
-        </div>
-        <BackToTop />
+        <ThemeProvider>
+          <div className="min-h-screen flex flex-col">
+            {children}
+          </div>
+          <BackToTop />
+        </ThemeProvider>
       </body>
     </html>
   );

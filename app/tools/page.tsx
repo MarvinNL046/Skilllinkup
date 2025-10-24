@@ -33,12 +33,82 @@ export default async function ToolsPage() {
     console.error('Error fetching tools:', error);
   }
 
+  // Add hardcoded tools if database is empty
+  const hardcodedTools = [
+    {
+      id: 'time-tracker-temp',
+      owner_id: 'system',
+      name: 'Time Tracker',
+      slug: 'time-tracker',
+      description: 'Track your billable hours and generate reports for your clients',
+      category: 'tool',
+      icon: 'Clock',
+      color: '#3B82F6',
+      tool_url: '/tools/time-tracker',
+      is_available: true,
+      featured: true,
+      sort_order: 1,
+      views: 0,
+      status: 'published',
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    {
+      id: 'rate-calculator-temp',
+      owner_id: 'system',
+      name: 'Rate Calculator',
+      slug: 'rate-calculator',
+      description: 'Calculate your ideal hourly rate based on your costs and goals',
+      category: 'tool',
+      icon: 'Calculator',
+      color: '#10B981',
+      tool_url: '/tools/rate-calculator',
+      is_available: true,
+      featured: true,
+      sort_order: 2,
+      views: 0,
+      status: 'published',
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    {
+      id: 'invoice-generator-temp',
+      owner_id: 'system',
+      name: 'Invoice Generator',
+      slug: 'invoice-generator',
+      description: 'Create professional invoices with real-time preview, save, print and download as PDF',
+      category: 'tool',
+      icon: 'FileText',
+      color: '#8B5CF6',
+      tool_url: '/tools/invoice-generator',
+      is_available: true,
+      featured: true,
+      sort_order: 3,
+      views: 0,
+      status: 'published',
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+  ];
+
+  // Use hardcoded tools if database is empty
+  if (tools.length === 0) {
+    tools = hardcodedTools as any;
+  } else {
+    // Check if time-tracker exists in database
+    const hasTimeTracker = tools.some(t => t.slug === 'time-tracker');
+    if (!hasTimeTracker) {
+      // Add time tracker to beginning of array
+      tools = [hardcodedTools[0] as any, ...tools];
+    }
+  }
+
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gray-50">
+      <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
         {/* Hero Section */}
-        <section className="bg-white py-16 sm:py-20">
+        <section className="bg-white dark:bg-slate-800 py-16 sm:py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
               <div className="flex items-center justify-center gap-3 mb-6">
@@ -47,10 +117,10 @@ export default async function ToolsPage() {
                 </div>
               </div>
 
-              <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
                 Freelance Tools & Resources
               </h1>
-              <p className="text-xl text-text-secondary">
+              <p className="text-xl text-gray-700 dark:text-gray-300">
                 Useful tools and calculators to better manage your freelance business.
                 From rate calculations to time tracking.
               </p>
@@ -61,10 +131,10 @@ export default async function ToolsPage() {
         {/* Tools Grid */}
         <section className="container mx-auto px-4 py-16">
           <div className="mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
               Free Freelance Tools
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl">
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl">
               Use our tools to calculate your rates, track your time and organize your business.
             </p>
           </div>
@@ -76,7 +146,7 @@ export default async function ToolsPage() {
                 return (
                   <div
                     key={tool.id}
-                    className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all overflow-hidden"
+                    className="bg-white dark:bg-slate-800 rounded-lg shadow-md hover:shadow-xl transition-all overflow-hidden border border-gray-200 dark:border-slate-700"
                   >
                     <div className="p-6">
                       <div
@@ -85,10 +155,10 @@ export default async function ToolsPage() {
                       >
                         <Icon className="w-6 h-6 text-white" />
                       </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                         {tool.name}
                       </h3>
-                      <p className="text-gray-600 mb-4">
+                      <p className="text-gray-600 dark:text-gray-300 mb-4">
                         {tool.description}
                       </p>
                       {tool.is_available ? (
@@ -100,7 +170,7 @@ export default async function ToolsPage() {
                         </Link>
                       ) : (
                         <div className="flex items-center gap-2">
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
                             Coming soon
                           </span>
                         </div>
@@ -112,7 +182,7 @@ export default async function ToolsPage() {
             </div>
           ) : (
             <div className="text-center py-12 mb-16">
-              <p className="text-lg text-gray-600">
+              <p className="text-lg text-gray-600 dark:text-gray-300">
                 No tools found. Check back soon!
               </p>
             </div>
@@ -120,10 +190,10 @@ export default async function ToolsPage() {
 
           {/* Resources Section */}
           <div className="mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
               Downloads & Resources
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl">
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl">
               Useful templates and guides to help you get started.
             </p>
           </div>
@@ -135,18 +205,18 @@ export default async function ToolsPage() {
                 return (
                   <div
                     key={resource.id}
-                    className="bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-all"
+                    className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 hover:shadow-xl transition-all border border-gray-200 dark:border-slate-700"
                   >
                     <div
                       className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
                       style={{ backgroundColor: resource.color }}
                     >
-                      <Icon className="w-6 h-6" />
+                      <Icon className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                       {resource.name}
                     </h3>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
                       {resource.description}
                     </p>
                   </div>
@@ -155,7 +225,7 @@ export default async function ToolsPage() {
             </div>
           ) : (
             <div className="text-center py-12 mb-16">
-              <p className="text-lg text-gray-600">
+              <p className="text-lg text-gray-600 dark:text-gray-300">
                 No resources found. Check back soon!
               </p>
             </div>

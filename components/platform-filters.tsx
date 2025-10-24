@@ -165,7 +165,7 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
       case "Hard":
         return "text-secondary bg-secondary/10";
       default:
-        return "text-text-muted bg-background-gray";
+        return "text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-700";
     }
   };
 
@@ -179,10 +179,10 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
             placeholder="Search platforms..."
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
-            className="w-full rounded-lg border border-background-gray bg-white px-6 py-4 pl-12 text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-md"
+            className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-6 py-4 pl-12 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-md"
           />
           <svg
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted"
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -200,8 +200,8 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
       <div className="grid gap-8 lg:grid-cols-4">
         {/* Sidebar Filters */}
         <aside className="lg:col-span-1">
-          <div className="bg-background-light rounded-lg p-6 sticky top-4">
-            <h3 className="text-lg font-heading font-bold text-text-primary mb-4">
+          <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 sticky top-4">
+            <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white mb-4">
               Categories
             </h3>
             <ul className="space-y-2">
@@ -212,12 +212,12 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
                     className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-left transition-all ${
                       selectedCategory === cat.category
                         ? 'bg-primary text-white'
-                        : 'text-text-secondary hover:bg-white hover:text-primary'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-700 hover:text-primary'
                     }`}
                   >
                     <span className="font-medium">{cat.category}</span>
                     <span className={`text-xs ${
-                      selectedCategory === cat.category ? 'text-white/80' : 'text-text-muted'
+                      selectedCategory === cat.category ? 'text-white/80' : 'text-gray-500 dark:text-gray-400'
                     }`}>
                       {cat.count}
                     </span>
@@ -226,9 +226,9 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
               ))}
             </ul>
 
-            <hr className="my-6 border-background-gray" />
+            <hr className="my-6 border-gray-200 dark:border-gray-700" />
 
-            <h3 className="text-lg font-heading font-bold text-text-primary mb-4">
+            <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white mb-4">
               Difficulty
             </h3>
             <div className="space-y-2">
@@ -238,16 +238,16 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
                     type="checkbox"
                     checked={selectedDifficulties.includes(level)}
                     onChange={() => handleDifficultyToggle(level)}
-                    className="w-4 h-4 rounded border-background-gray text-primary focus:ring-primary/50"
+                    className="w-4 h-4 rounded border-gray-200 dark:border-gray-700 text-primary focus:ring-primary/50"
                   />
-                  <span className="text-sm text-text-secondary">{level}</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-300">{level}</span>
                 </label>
               ))}
             </div>
 
-            <hr className="my-6 border-background-gray" />
+            <hr className="my-6 border-gray-200 dark:border-gray-700" />
 
-            <h3 className="text-lg font-heading font-bold text-text-primary mb-4">
+            <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white mb-4">
               Rating
             </h3>
             <div className="space-y-2">
@@ -261,9 +261,9 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
                     type="checkbox"
                     checked={selectedRatings.includes(rating.value)}
                     onChange={() => handleRatingToggle(rating.value)}
-                    className="w-4 h-4 rounded border-background-gray text-primary focus:ring-primary/50"
+                    className="w-4 h-4 rounded border-gray-200 dark:border-gray-700 text-primary focus:ring-primary/50"
                   />
-                  <span className="text-sm text-text-secondary">{rating.label}</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-300">{rating.label}</span>
                 </label>
               ))}
             </div>
@@ -273,13 +273,13 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
         {/* Platforms Grid */}
         <div className="lg:col-span-3">
           <div className="flex items-center justify-between mb-6">
-            <p className="text-sm text-text-secondary">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
               Showing {filteredPlatforms.length} platform{filteredPlatforms.length !== 1 ? 's' : ''}
             </p>
             <select
               value={sortBy}
               onChange={(e) => handleSort(e.target.value)}
-              className="rounded-lg border border-background-gray bg-white px-4 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
             >
               <option value="rating">Sort by: Rating</option>
               <option value="name">Sort by: Name</option>
@@ -288,8 +288,8 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
           </div>
 
           {filteredPlatforms.length === 0 ? (
-            <div className="text-center py-12 bg-background-light rounded-lg">
-              <p className="text-text-secondary">No platforms found matching your filters.</p>
+            <div className="text-center py-12 bg-gray-50 dark:bg-gray-900 rounded-lg">
+              <p className="text-gray-600 dark:text-gray-300">No platforms found matching your filters.</p>
               <button
                 onClick={() => router.push('/platforms')}
                 className="mt-4 text-primary hover:text-primary-dark font-semibold"
@@ -303,7 +303,7 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
                 <a
                   key={platform.id}
                   href={`/platforms/${platform.slug}`}
-                  className="group relative overflow-hidden rounded-lg border-2 border-background-gray bg-white p-6 transition-all hover:border-accent hover:shadow-xl"
+                  className="group relative overflow-hidden rounded-lg border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 transition-all hover:border-accent hover:shadow-xl"
                 >
                   {/* Featured Badge */}
                   {platform.featured && (
@@ -315,7 +315,7 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
                   )}
 
                   {/* Platform Name */}
-                  <h3 className="text-xl font-heading font-bold text-text-primary mb-2 group-hover:text-primary transition-colors">
+                  <h3 className="text-xl font-heading font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">
                     {platform.name}
                   </h3>
 
@@ -328,7 +328,7 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
                           className={`w-4 h-4 ${
                             i < Math.floor(platform.rating)
                               ? "text-accent"
-                              : "text-background-gray"
+                              : "text-gray-200 dark:text-gray-700"
                           }`}
                           fill="currentColor"
                           viewBox="0 0 20 20"
@@ -337,7 +337,7 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
                         </svg>
                       ))}
                     </div>
-                    <span className="text-sm font-semibold text-text-primary">
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">
                       {Number(platform.rating).toFixed(1)}
                     </span>
                   </div>
@@ -345,21 +345,21 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
                   {/* Details */}
                   <div className="space-y-2 mb-4">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-text-secondary">Category</span>
+                      <span className="text-gray-600 dark:text-gray-300">Category</span>
                       <span className="font-semibold text-accent">
                         {platform.category}
                       </span>
                     </div>
                     {platform.fees && (
                       <div className="flex items-center justify-between text-xs">
-                        <span className="text-text-secondary">Fees</span>
-                        <span className="font-semibold text-text-primary">
+                        <span className="text-gray-600 dark:text-gray-300">Fees</span>
+                        <span className="font-semibold text-gray-900 dark:text-white">
                           {platform.fees}
                         </span>
                       </div>
                     )}
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-text-secondary">Difficulty</span>
+                      <span className="text-gray-600 dark:text-gray-300">Difficulty</span>
                       <span
                         className={`font-semibold text-xs px-2 py-0.5 rounded-full ${getDifficultyColor(
                           platform.difficulty

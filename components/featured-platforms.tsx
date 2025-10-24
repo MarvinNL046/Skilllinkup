@@ -12,14 +12,14 @@ export function FeaturedPlatforms({ posts }: FeaturedPlatformsProps) {
   }
 
   return (
-    <section className="py-16 bg-background-light">
+    <section className="py-16 bg-background-light dark:bg-gray-900">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mb-10 text-center">
-          <h2 className="text-3xl font-heading font-bold text-text-primary sm:text-4xl">
+          <h2 className="text-3xl font-heading font-bold text-text-primary dark:text-white sm:text-4xl">
             Latest Blog Posts
           </h2>
-          <p className="mt-3 text-base text-text-secondary">
+          <p className="mt-3 text-base text-text-secondary dark:text-gray-300">
             Discover our latest articles, guides and tips for freelancers
           </p>
         </div>
@@ -30,7 +30,7 @@ export function FeaturedPlatforms({ posts }: FeaturedPlatformsProps) {
             <Link
               key={post.id}
               href={`/post/${post.slug}`}
-              className="group relative overflow-hidden rounded-lg border border-background-gray bg-white transition-all hover:shadow-xl hover:border-accent"
+              className="group relative overflow-hidden rounded-lg border border-background-gray dark:border-gray-700 bg-white dark:bg-gray-800 transition-all hover:shadow-xl hover:border-accent"
             >
               {/* Image */}
               {post.feature_img && (
@@ -63,19 +63,19 @@ export function FeaturedPlatforms({ posts }: FeaturedPlatformsProps) {
                 )}
 
                 {/* Title */}
-                <h3 className="mb-2 text-lg font-heading font-bold text-text-primary group-hover:text-primary transition-colors line-clamp-2">
+                <h3 className="mb-2 text-lg font-heading font-bold text-text-primary dark:text-white group-hover:text-primary transition-colors line-clamp-2">
                   {post.title}
                 </h3>
 
                 {/* Excerpt */}
                 {post.excerpt && (
-                  <p className="mb-3 text-sm text-text-secondary line-clamp-2">
+                  <p className="mb-3 text-sm text-text-secondary dark:text-gray-300 line-clamp-2">
                     {post.excerpt}
                   </p>
                 )}
 
                 {/* Meta */}
-                <div className="flex items-center justify-between text-xs text-text-muted">
+                <div className="flex items-center justify-between text-xs text-text-muted dark:text-gray-400">
                   {post.read_time && (
                     <span>{post.read_time} min read</span>
                   )}

@@ -2,11 +2,11 @@ import Link from "next/link";
 
 export function Hero() {
   return (
-    <section className="relative bg-gradient-to-b from-background-light to-white py-16 sm:py-20">
+    <section className="relative bg-gradient-to-b from-background-light to-white dark:from-gray-900 dark:to-gray-800 py-16 sm:py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           {/* Badge */}
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-accent/10 px-4 py-1.5 text-sm font-medium text-accent">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-accent/10 dark:bg-accent/20 px-4 py-1.5 text-sm font-medium text-accent dark:text-accent">
             <span className="h-2 w-2 rounded-full bg-accent animate-pulse"></span>
             Updated Daily
           </div>
@@ -37,7 +37,7 @@ export function Hero() {
             </Link>
             <Link
               href="/comparisons"
-              className="inline-flex items-center justify-center rounded-lg border-2 border-secondary bg-white hover:bg-background-light px-8 py-3 text-base font-heading font-semibold text-secondary transition-all"
+              className="inline-flex items-center justify-center rounded-lg border-2 border-secondary bg-white dark:bg-gray-800 hover:bg-background-light dark:hover:bg-gray-700 px-8 py-3 text-base font-heading font-semibold text-secondary dark:text-white transition-all"
             >
               Compare
             </Link>
@@ -46,18 +46,18 @@ export function Hero() {
           {/* Trust Indicators */}
           <div className="mt-12 flex items-center justify-center gap-8 text-sm">
             <div className="flex flex-col items-center gap-1">
-              <span className="font-heading font-bold text-2xl text-text-primary">25+</span>
-              <span className="text-text-muted">Reviews</span>
+              <span className="font-heading font-bold text-2xl text-text-primary dark:text-white">25+</span>
+              <span className="text-text-muted dark:text-gray-400">Reviews</span>
             </div>
-            <div className="h-8 w-px bg-background-gray"></div>
+            <div className="h-8 w-px bg-background-gray dark:bg-gray-700"></div>
             <div className="flex flex-col items-center gap-1">
-              <span className="font-heading font-bold text-2xl text-text-primary">4.9★</span>
-              <span className="text-text-muted">Rated</span>
+              <span className="font-heading font-bold text-2xl text-text-primary dark:text-white">4.9★</span>
+              <span className="text-text-muted dark:text-gray-400">Rated</span>
             </div>
-            <div className="h-8 w-px bg-background-gray"></div>
+            <div className="h-8 w-px bg-background-gray dark:bg-gray-700"></div>
             <div className="flex flex-col items-center gap-1">
-              <span className="font-heading font-bold text-2xl text-text-primary">1000+</span>
-              <span className="text-text-muted">Helped</span>
+              <span className="font-heading font-bold text-2xl text-text-primary dark:text-white">1000+</span>
+              <span className="text-text-muted dark:text-gray-400">Helped</span>
             </div>
           </div>
         </div>

@@ -19,7 +19,8 @@
     "db:fix-image-urls": "npx tsx scripts/fix-image-urls.ts",
     "db:fix-all": "npm run db:fix-images && npm run db:fix-meta && npm run db:fix-categories && npm run db:fix-avatars && npm run db:fix-image-urls",
     "db:add-posts": "node scripts/add-posts.mjs",
-    "db:import-platforms": "npx tsx scripts/import-platforms.ts"
+    "db:import-platforms": "npx tsx scripts/import-platforms.ts",
+    "db:import-tools": "npx tsx scripts/import-tools.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

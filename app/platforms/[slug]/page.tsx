@@ -182,17 +182,17 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
     ],
   };
 
-  // Helper function for difficulty badge color
+  // Helper function for difficulty badge color with dark mode support
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'Easy':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300';
       case 'Medium':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300';
       case 'Hard':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
     }
   };
 
@@ -214,25 +214,25 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
       <main className="flex-1">
         {/* Platform Header */}
         <article>
-          <header className="bg-gradient-to-b from-background-light to-white py-12 sm:py-16">
+          <header className="bg-gradient-to-b from-background-light to-white dark:from-gray-900 dark:to-gray-900 py-12 sm:py-16">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="max-w-4xl mx-auto">
                 {/* Breadcrumb */}
                 <nav className="mb-6">
-                  <ol className="flex items-center gap-2 text-sm text-text-muted">
+                  <ol className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                     <li>
-                      <Link href="/" className="hover:text-primary transition-colors">
+                      <Link href="/" className="hover:text-primary dark:hover:text-accent-light transition-colors">
                         Home
                       </Link>
                     </li>
                     <li>/</li>
                     <li>
-                      <Link href="/platforms" className="hover:text-primary transition-colors">
+                      <Link href="/platforms" className="hover:text-primary dark:hover:text-accent-light transition-colors">
                         Platforms
                       </Link>
                     </li>
                     <li>/</li>
-                    <li className="text-text-primary font-medium line-clamp-1">
+                    <li className="text-gray-900 dark:text-white font-medium line-clamp-1">
                       {platform.name}
                     </li>
                   </ol>
@@ -242,19 +242,19 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                 <div className="mb-4 flex items-center gap-2">
                   <Link
                     href={`/platforms?category=${platform.category.toLowerCase()}`}
-                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 text-accent text-sm font-heading font-semibold uppercase tracking-wide hover:bg-accent/20 transition-colors"
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 dark:bg-accent/20 text-accent dark:text-accent-light text-sm font-heading font-semibold uppercase tracking-wide hover:bg-accent/20 dark:hover:bg-accent/30 transition-colors"
                   >
                     {platform.category}
                   </Link>
                   {platform.featured && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-yellow-100 text-yellow-800 text-sm font-heading font-semibold">
+                    <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 text-sm font-heading font-semibold">
                       ★ Featured
                     </span>
                   )}
                 </div>
 
                 {/* Platform Name */}
-                <h1 className="text-4xl font-heading font-bold text-text-primary sm:text-5xl mb-4 leading-tight">
+                <h1 className="text-4xl font-heading font-bold text-gray-900 dark:text-white sm:text-5xl mb-4 leading-tight">
                   {platform.name}
                 </h1>
 
@@ -267,7 +267,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                         <svg
                           key={star}
                           className={`w-5 h-5 ${
-                            star <= platform.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                            star <= platform.rating ? 'text-yellow-400 fill-current' : 'text-gray-300 dark:text-gray-600'
                           }`}
                           fill="none"
                           viewBox="0 0 24 24"
@@ -282,13 +282,13 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                         </svg>
                       ))}
                     </div>
-                    <span className="font-semibold text-text-primary">{Number(platform.rating).toFixed(1)}</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">{Number(platform.rating).toFixed(1)}</span>
                   </div>
 
                   {/* Difficulty */}
                   {platform.difficulty && (
                     <div className="flex items-center gap-2">
-                      <span className="text-text-muted">Difficulty:</span>
+                      <span className="text-gray-600 dark:text-gray-400">Difficulty:</span>
                       <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getDifficultyColor(platform.difficulty)}`}>
                         {platform.difficulty}
                       </span>
@@ -298,8 +298,8 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                   {/* Fees */}
                   {platform.fees && (
                     <div className="flex items-center gap-2">
-                      <span className="text-text-muted">Fees:</span>
-                      <span className="font-semibold text-text-primary">{platform.fees}</span>
+                      <span className="text-gray-600 dark:text-gray-400">Fees:</span>
+                      <span className="font-semibold text-gray-900 dark:text-white">{platform.fees}</span>
                     </div>
                   )}
 
@@ -309,7 +309,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                       href={platform.website_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-primary hover:text-primary-dark font-semibold transition-colors"
+                      className="inline-flex items-center gap-1 text-primary hover:text-primary-dark dark:text-accent-light dark:hover:text-accent font-semibold transition-colors"
                     >
                       Visit Website
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -350,7 +350,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                   {platform.description && (
                     <section id="description">
                       <div
-                        className="prose prose-lg max-w-none text-text-secondary leading-relaxed"
+                        className="prose prose-lg dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 leading-relaxed"
                         dangerouslySetInnerHTML={{ __html: platform.description }}
                       />
                     </section>
@@ -359,19 +359,19 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                   {/* Features Section */}
                   {platform.features && platform.features.length > 0 && (
                     <section id="features">
-                      <h2 className="text-2xl font-heading font-bold text-text-primary mb-6">
+                      <h2 className="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-6">
                         Key Features
                       </h2>
                       <div className="grid gap-4 sm:grid-cols-2">
                         {platform.features.map((feature, index) => (
                           <div
                             key={index}
-                            className="flex items-start gap-3 p-4 rounded-lg bg-background-light border border-background-gray"
+                            className="flex items-start gap-3 p-4 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
                           >
-                            <svg className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg className="w-5 h-5 text-primary dark:text-accent-light flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
-                            <span className="text-text-secondary">{feature}</span>
+                            <span className="text-gray-700 dark:text-gray-300">{feature}</span>
                           </div>
                         ))}
                       </div>
@@ -381,14 +381,14 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                   {/* Pros & Cons Section */}
                   {((platform.pros && platform.pros.length > 0) || (platform.cons && platform.cons.length > 0)) && (
                     <section id="pros-cons">
-                      <h2 className="text-2xl font-heading font-bold text-text-primary mb-6">
+                      <h2 className="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-6">
                         Pros & Cons
                       </h2>
                       <div className="grid gap-6 sm:grid-cols-2">
                         {/* Pros */}
                         {platform.pros && platform.pros.length > 0 && (
-                          <div className="bg-green-50 border-2 border-green-200 rounded-lg p-6">
-                            <h3 className="text-lg font-heading font-bold text-green-900 mb-4 flex items-center gap-2">
+                          <div className="bg-green-50 dark:bg-green-900/10 border-2 border-green-200 dark:border-green-800 rounded-lg p-6">
+                            <h3 className="text-lg font-heading font-bold text-green-900 dark:text-green-400 mb-4 flex items-center gap-2">
                               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
                               </svg>
@@ -397,10 +397,10 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                             <ul className="space-y-3">
                               {platform.pros.map((pro, index) => (
                                 <li key={index} className="flex items-start gap-2">
-                                  <svg className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <svg className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                   </svg>
-                                  <span className="text-green-900">{pro}</span>
+                                  <span className="text-green-900 dark:text-green-300">{pro}</span>
                                 </li>
                               ))}
                             </ul>
@@ -409,8 +409,8 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
 
                         {/* Cons */}
                         {platform.cons && platform.cons.length > 0 && (
-                          <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6">
-                            <h3 className="text-lg font-heading font-bold text-red-900 mb-4 flex items-center gap-2">
+                          <div className="bg-red-50 dark:bg-red-900/10 border-2 border-red-200 dark:border-red-800 rounded-lg p-6">
+                            <h3 className="text-lg font-heading font-bold text-red-900 dark:text-red-400 mb-4 flex items-center gap-2">
                               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5" />
                               </svg>
@@ -419,10 +419,10 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                             <ul className="space-y-3">
                               {platform.cons.map((con, index) => (
                                 <li key={index} className="flex items-start gap-2">
-                                  <svg className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <svg className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                   </svg>
-                                  <span className="text-red-900">{con}</span>
+                                  <span className="text-red-900 dark:text-red-300">{con}</span>
                                 </li>
                               ))}
                             </ul>
@@ -434,8 +434,8 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
 
                   {/* CTA Section */}
                   {platform.website_url && (
-                    <section className="bg-gradient-to-r from-primary to-primary-dark rounded-lg p-8 text-center text-white shadow-xl">
-                      <h2 className="text-2xl font-heading font-bold mb-3">
+                    <section className="bg-gradient-to-r from-primary to-primary-dark dark:from-accent dark:to-accent-dark rounded-lg p-8 text-center text-white shadow-xl">
+                      <h2 className="text-2xl font-heading font-bold mb-3 text-white">
                         Ready to get started with {platform.name}?
                       </h2>
                       <p className="text-white/90 mb-6 max-w-2xl mx-auto">
@@ -445,7 +445,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                         href={platform.website_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-2 rounded-lg bg-white hover:bg-gray-100 px-8 py-3 font-heading font-semibold text-primary transition-all shadow-lg"
+                        className="inline-flex items-center justify-center gap-2 rounded-lg bg-white hover:bg-gray-100 dark:bg-gray-900 dark:hover:bg-gray-800 px-8 py-3 font-heading font-semibold text-primary dark:text-accent-light transition-all shadow-lg"
                       >
                         Visit {platform.name}
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -460,23 +460,23 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                 <aside className="lg:col-span-1">
                   <div className="sticky top-4 space-y-8">
                     {/* Quick Info Card */}
-                    <div className="bg-primary/5 border-2 border-primary/20 rounded-lg p-6">
-                      <h3 className="text-lg font-heading font-bold text-text-primary mb-4">
+                    <div className="bg-primary/5 dark:bg-accent/10 border-2 border-primary/20 dark:border-accent/30 rounded-lg p-6">
+                      <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white mb-4">
                         Quick Info
                       </h3>
                       <dl className="space-y-4 text-sm">
                         <div>
-                          <dt className="text-text-muted mb-1">Category</dt>
-                          <dd className="font-semibold text-text-primary">{platform.category}</dd>
+                          <dt className="text-gray-600 dark:text-gray-400 mb-1">Category</dt>
+                          <dd className="font-semibold text-gray-900 dark:text-white">{platform.category}</dd>
                         </div>
                         {platform.fees && (
                           <div>
-                            <dt className="text-text-muted mb-1">Fee Structure</dt>
-                            <dd className="font-semibold text-text-primary">{platform.fees}</dd>
+                            <dt className="text-gray-600 dark:text-gray-400 mb-1">Fee Structure</dt>
+                            <dd className="font-semibold text-gray-900 dark:text-white">{platform.fees}</dd>
                           </div>
                         )}
                         <div>
-                          <dt className="text-text-muted mb-1">Difficulty Level</dt>
+                          <dt className="text-gray-600 dark:text-gray-400 mb-1">Difficulty Level</dt>
                           <dd>
                             <span className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${getDifficultyColor(platform.difficulty)}`}>
                               {platform.difficulty}
@@ -484,11 +484,11 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                           </dd>
                         </div>
                         <div>
-                          <dt className="text-text-muted mb-1">Rating</dt>
+                          <dt className="text-gray-600 dark:text-gray-400 mb-1">Rating</dt>
                           <dd className="flex items-center gap-1">
                             <span className="text-yellow-400">★</span>
-                            <span className="font-semibold text-text-primary">{Number(platform.rating).toFixed(1)}</span>
-                            <span className="text-text-muted">/ 5.0</span>
+                            <span className="font-semibold text-gray-900 dark:text-white">{Number(platform.rating).toFixed(1)}</span>
+                            <span className="text-gray-600 dark:text-gray-400">/ 5.0</span>
                           </dd>
                         </div>
                       </dl>
@@ -497,7 +497,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                           href={platform.website_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="mt-6 inline-flex items-center justify-center w-full rounded-lg bg-primary hover:bg-primary-dark px-4 py-2.5 text-sm font-heading font-semibold text-white transition-all shadow-md"
+                          className="mt-6 inline-flex items-center justify-center w-full rounded-lg bg-primary hover:bg-primary-dark dark:bg-accent dark:hover:bg-accent-dark px-4 py-2.5 text-sm font-heading font-semibold text-white transition-all shadow-md"
                         >
                           Visit Platform
                         </a>
@@ -505,16 +505,16 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                     </div>
 
                     {/* Compare Platforms Link */}
-                    <div className="bg-background-light rounded-lg p-6">
-                      <h3 className="text-lg font-heading font-bold text-text-primary mb-3">
+                    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
+                      <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white mb-3">
                         Compare Platforms
                       </h3>
-                      <p className="text-sm text-text-secondary mb-4">
+                      <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
                         Not sure if {platform.name} is right for you? Compare with other platforms.
                       </p>
                       <Link
                         href="/platforms"
-                        className="inline-flex items-center justify-center w-full rounded-lg bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white px-4 py-2.5 text-sm font-heading font-semibold transition-all"
+                        className="inline-flex items-center justify-center w-full rounded-lg bg-white dark:bg-gray-900 border-2 border-primary dark:border-accent text-primary dark:text-accent-light hover:bg-primary hover:text-white dark:hover:bg-accent dark:hover:text-white px-4 py-2.5 text-sm font-heading font-semibold transition-all"
                       >
                         View All Platforms
                       </Link>
@@ -528,14 +528,14 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
 
         {/* Related Platforms */}
         {relatedPlatforms.length > 0 && (
-          <section className="py-16 bg-background-light">
+          <section className="py-16 bg-gray-50 dark:bg-gray-900">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-              <h2 className="text-2xl font-heading font-bold text-text-primary mb-8">
+              <h2 className="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-8">
                 Similar {platform.category} Platforms
               </h2>
               <div className="grid gap-6 md:grid-cols-3">
                 {relatedPlatforms.map((relatedPlatform) => (
-                  <article key={relatedPlatform.id} className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow p-6">
+                  <article key={relatedPlatform.id} className="group bg-white dark:bg-slate-800 rounded-lg shadow-md hover:shadow-xl transition-shadow p-6 border border-gray-200 dark:border-slate-700">
                     <Link href={`/platforms/${relatedPlatform.slug}`} className="block">
                       <div className="flex items-start gap-4 mb-4">
                         {relatedPlatform.logo_url && (
@@ -548,18 +548,18 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                           />
                         )}
                         <div className="flex-1">
-                          <h3 className="text-lg font-heading font-bold text-text-primary group-hover:text-primary transition-colors mb-1">
+                          <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white group-hover:text-primary dark:group-hover:text-accent-light transition-colors mb-1">
                             {relatedPlatform.name}
                           </h3>
                           <div className="flex items-center gap-1 text-sm">
                             <span className="text-yellow-400">★</span>
-                            <span className="font-semibold text-text-primary">{Number(relatedPlatform.rating).toFixed(1)}</span>
+                            <span className="font-semibold text-gray-900 dark:text-white">{Number(relatedPlatform.rating).toFixed(1)}</span>
                           </div>
                         </div>
                       </div>
                       {relatedPlatform.description && (
                         <div
-                          className="text-sm text-text-secondary line-clamp-2 mb-3 prose prose-sm max-w-none"
+                          className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2 mb-3 prose prose-sm dark:prose-invert max-w-none"
                           dangerouslySetInnerHTML={{ __html: relatedPlatform.description }}
                         />
                       )}
@@ -568,7 +568,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                           {relatedPlatform.difficulty}
                         </span>
                         {relatedPlatform.fees && (
-                          <span className="text-text-muted">{relatedPlatform.fees}</span>
+                          <span className="text-gray-600 dark:text-gray-400">{relatedPlatform.fees}</span>
                         )}
                       </div>
                     </Link>

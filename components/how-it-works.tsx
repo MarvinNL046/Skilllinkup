@@ -33,14 +33,14 @@ export function HowItWorks() {
   ];
 
   return (
-    <section className="py-16 bg-gradient-to-b from-background-light to-white">
+    <section className="py-16 bg-gradient-to-b from-background-light to-white dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mb-12 text-center">
-          <h2 className="text-3xl font-heading font-bold text-text-primary sm:text-4xl mb-3">
+          <h2 className="text-3xl font-heading font-bold text-text-primary dark:text-white sm:text-4xl mb-3">
             How It Works
           </h2>
-          <p className="text-base text-text-secondary max-w-2xl mx-auto">
+          <p className="text-base text-text-secondary dark:text-gray-300 max-w-2xl mx-auto">
             Find your perfect freelance platform in three simple steps
           </p>
         </div>
@@ -55,7 +55,7 @@ export function HowItWorks() {
               )}
 
               {/* Step Card */}
-              <div className="relative bg-white rounded-lg p-6 shadow-md hover:shadow-xl transition-shadow">
+              <div className="relative bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md hover:shadow-xl transition-shadow border border-gray-200 dark:border-gray-700">
                 {/* Number Badge */}
                 <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-primary flex items-center justify-center shadow-lg">
                   <span className="text-white font-heading font-bold text-xl">
@@ -69,10 +69,10 @@ export function HowItWorks() {
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl font-heading font-bold text-text-primary mb-3">
+                <h3 className="text-xl font-heading font-bold text-text-primary dark:text-white mb-3">
                   {step.title}
                 </h3>
-                <p className="text-sm text-text-secondary leading-relaxed">
+                <p className="text-sm text-text-secondary dark:text-gray-300 leading-relaxed">
                   {step.description}
                 </p>
               </div>

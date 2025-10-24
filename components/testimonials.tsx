@@ -71,14 +71,14 @@ export function Testimonials() {
   ];
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white dark:bg-gray-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mb-12 text-center">
-          <h2 className="text-3xl font-heading font-bold text-text-primary sm:text-4xl mb-3">
+          <h2 className="text-3xl font-heading font-bold text-text-primary dark:text-white sm:text-4xl mb-3">
             Success Stories
           </h2>
-          <p className="text-base text-text-secondary max-w-2xl mx-auto">
+          <p className="text-base text-text-secondary dark:text-gray-300 max-w-2xl mx-auto">
             Join thousands of freelancers who found their perfect platform through our reviews
           </p>
         </div>
@@ -89,7 +89,7 @@ export function Testimonials() {
             {visibleTestimonials.map((testimonial, index) => (
               <div
                 key={`${testimonial.name}-${index}`}
-                className="bg-background-light rounded-lg p-6 shadow-md hover:shadow-xl transition-all"
+                className="bg-background-light dark:bg-gray-700 rounded-lg p-6 shadow-md hover:shadow-xl transition-all border border-gray-200 dark:border-gray-600"
               >
                 {/* Rating */}
                 <div className="flex gap-1 mb-4">
@@ -107,7 +107,7 @@ export function Testimonials() {
 
                 {/* Quote */}
                 <blockquote className="mb-6">
-                  <p className="text-sm text-text-secondary leading-relaxed italic">
+                  <p className="text-sm text-text-secondary dark:text-gray-300 leading-relaxed italic">
                     "{testimonial.quote}"
                   </p>
                 </blockquote>
@@ -120,10 +120,10 @@ export function Testimonials() {
                     </span>
                   </div>
                   <div>
-                    <div className="font-heading font-semibold text-text-primary">
+                    <div className="font-heading font-semibold text-text-primary dark:text-white">
                       {testimonial.name}
                     </div>
-                    <div className="text-xs text-text-secondary">
+                    <div className="text-xs text-text-secondary dark:text-gray-300">
                       {testimonial.role}
                     </div>
                     <div className="text-xs text-accent mt-0.5">
@@ -139,7 +139,7 @@ export function Testimonials() {
           <div className="flex items-center justify-center gap-4 mt-8">
             <button
               onClick={prevTestimonial}
-              className="w-10 h-10 rounded-full border-2 border-primary hover:bg-primary hover:text-white text-primary transition-all flex items-center justify-center shadow-md hover:shadow-lg"
+              className="w-10 h-10 rounded-full border-2 border-primary hover:bg-primary text-primary hover:text-white dark:text-accent dark:hover:text-white transition-all flex items-center justify-center shadow-md hover:shadow-lg"
               aria-label="Previous testimonial"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -156,7 +156,7 @@ export function Testimonials() {
                   className={`w-2 h-2 rounded-full transition-all ${
                     index === currentIndex
                       ? "bg-primary w-6"
-                      : "bg-background-gray hover:bg-accent"
+                      : "bg-background-gray dark:bg-gray-600 hover:bg-accent"
                   }`}
                   aria-label={`Go to testimonial ${index + 1}`}
                 />
@@ -165,7 +165,7 @@ export function Testimonials() {
 
             <button
               onClick={nextTestimonial}
-              className="w-10 h-10 rounded-full border-2 border-primary hover:bg-primary hover:text-white text-primary transition-all flex items-center justify-center shadow-md hover:shadow-lg"
+              className="w-10 h-10 rounded-full border-2 border-primary hover:bg-primary text-primary hover:text-white dark:text-accent dark:hover:text-white transition-all flex items-center justify-center shadow-md hover:shadow-lg"
               aria-label="Next testimonial"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -181,7 +181,7 @@ export function Testimonials() {
             <div className="text-3xl font-heading font-bold text-primary mb-1">
               1,000+
             </div>
-            <div className="text-sm text-text-secondary">
+            <div className="text-sm text-text-secondary dark:text-gray-300">
               Happy Freelancers
             </div>
           </div>
@@ -189,7 +189,7 @@ export function Testimonials() {
             <div className="text-3xl font-heading font-bold text-primary mb-1">
               25+
             </div>
-            <div className="text-sm text-text-secondary">
+            <div className="text-sm text-text-secondary dark:text-gray-300">
               Platforms Reviewed
             </div>
           </div>
@@ -197,7 +197,7 @@ export function Testimonials() {
             <div className="text-3xl font-heading font-bold text-primary mb-1">
               4.9★
             </div>
-            <div className="text-sm text-text-secondary">
+            <div className="text-sm text-text-secondary dark:text-gray-300">
               Average Rating
             </div>
           </div>
@@ -205,7 +205,7 @@ export function Testimonials() {
             <div className="text-3xl font-heading font-bold text-primary mb-1">
               100%
             </div>
-            <div className="text-sm text-text-secondary">
+            <div className="text-sm text-text-secondary dark:text-gray-300">
               Unbiased Reviews
             </div>
           </div>

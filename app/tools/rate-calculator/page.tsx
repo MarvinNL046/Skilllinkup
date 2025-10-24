@@ -16,11 +16,18 @@ export default function RateCalculatorPage() {
   const [vacationWeeks, setVacationWeeks] = useState<number>(4);
   const [currency, setCurrency] = useState<'$' | '€' | '£'>('$');
 
+  // Custom hourly rate mode
+  const [useCustomRate, setUseCustomRate] = useState<boolean>(false);
+  const [customHourlyRate, setCustomHourlyRate] = useState<number>(50);
+
   // Calculations
   const totalNeeded = desiredIncome + businessExpenses;
   const withBuffer = totalNeeded * (1 + bufferPercent / 100);
   const withTax = withBuffer / (1 - taxRate / 100);
-  const hourlyRate = withTax / billableHours;
+  const calculatedHourlyRate = withTax / billableHours;
+
+  // Use custom rate if enabled, otherwise use calculated rate
+  const hourlyRate = useCustomRate ? customHourlyRate : calculatedHourlyRate;
 
   // Additional calculations
   const dayRate = hourlyRate * 8;
@@ -51,6 +58,7 @@ export default function RateCalculatorPage() {
     setBusinessExpenses(p.expenses);
     setTaxRate(p.tax);
     setBufferPercent(p.buffer);
+    setUseCustomRate(false); // Disable custom rate mode when using presets
   };
 
   const formatCurrency = (amount: number) => {
@@ -60,11 +68,11 @@ export default function RateCalculatorPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gray-50">
+      <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
         {/* Breadcrumb */}
-        <section className="bg-white border-b">
+        <section className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700">
           <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
               <Link href="/" className="hover:text-primary transition-colors">
                 Home
               </Link>
@@ -73,13 +81,13 @@ export default function RateCalculatorPage() {
                 Tools
               </Link>
               <span>→</span>
-              <span className="text-gray-900 font-semibold">Rate Calculator</span>
+              <span className="text-gray-900 dark:text-white font-semibold">Rate Calculator</span>
             </div>
           </div>
         </section>
 
         {/* Hero */}
-        <section className="bg-white py-16 sm:py-20">
+        <section className="bg-white dark:bg-slate-800 py-16 sm:py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
               <div className="flex items-center justify-center gap-3 mb-6">
@@ -88,10 +96,10 @@ export default function RateCalculatorPage() {
                 </div>
               </div>
 
-              <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
                 Freelance Rate Calculator
               </h1>
-              <p className="text-xl text-text-secondary">
+              <p className="text-xl text-gray-700 dark:text-gray-300">
                 Calculate your ideal hourly rate based on your desired income, expenses, and billable hours.
                 This calculator accounts for taxes and a buffer for unexpected costs.
               </p>
@@ -103,9 +111,9 @@ export default function RateCalculatorPage() {
         <section className="container mx-auto px-4 py-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Input Section */}
-            <div className="bg-white rounded-lg shadow-md p-8">
+            <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-8">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                   Your Information
                 </h2>
 
@@ -118,7 +126,7 @@ export default function RateCalculatorPage() {
                       className={`px-3 py-1.5 rounded-lg font-semibold transition-colors ${
                         currency === curr
                           ? 'bg-primary text-white'
-                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                       }`}
                     >
                       {curr}
@@ -128,92 +136,153 @@ export default function RateCalculatorPage() {
               </div>
 
               {/* Preset Buttons */}
-              <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-                <p className="text-sm font-semibold text-gray-700 mb-3">Quick Presets</p>
+              <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Quick Presets</p>
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     onClick={() => applyPreset('junior')}
-                    className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 hover:bg-primary hover:text-white hover:border-primary transition-colors"
+                    className="px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-primary hover:text-white hover:border-primary transition-colors"
                   >
                     Junior
                   </button>
                   <button
                     onClick={() => applyPreset('medior')}
-                    className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 hover:bg-primary hover:text-white hover:border-primary transition-colors"
+                    className="px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-primary hover:text-white hover:border-primary transition-colors"
                   >
                     Medior
                   </button>
                   <button
                     onClick={() => applyPreset('senior')}
-                    className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 hover:bg-primary hover:text-white hover:border-primary transition-colors"
+                    className="px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-primary hover:text-white hover:border-primary transition-colors"
                   >
                     Senior
                   </button>
                 </div>
               </div>
 
+              {/* Custom Hourly Rate */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Enter your own hourly rate
+                  </label>
+                  <button
+                    onClick={() => {
+                      setUseCustomRate(!useCustomRate);
+                      if (!useCustomRate) {
+                        setCustomHourlyRate(Math.ceil(calculatedHourlyRate));
+                      }
+                    }}
+                    className={`px-3 py-1 text-xs rounded-lg font-semibold transition-colors ${
+                      useCustomRate
+                        ? 'bg-primary text-white'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    }`}
+                  >
+                    {useCustomRate ? 'Active' : 'Enable'}
+                  </button>
+                </div>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                    {currency}
+                  </span>
+                  <input
+                    type="number"
+                    value={customHourlyRate}
+                    onChange={(e) => {
+                      setCustomHourlyRate(Number(e.target.value));
+                      if (!useCustomRate) setUseCustomRate(true);
+                    }}
+                    min="1"
+                    max="500"
+                    step="1"
+                    disabled={!useCustomRate}
+                    className={`w-full pl-8 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all ${
+                      useCustomRate
+                        ? 'bg-white dark:bg-slate-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white'
+                        : 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                    }`}
+                    placeholder="e.g., 45"
+                  />
+                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  {useCustomRate
+                    ? 'Using custom rate to calculate your potential income'
+                    : 'Click Enable to enter your own hourly rate and see your potential income'}
+                </p>
+              </div>
+
               <div className="space-y-6">
                 {/* Desired Income */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                     Desired net annual income
                   </label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                       {currency}
                     </span>
                     <input
                       type="number"
                       value={desiredIncome}
-                      onChange={(e) => setDesiredIncome(Number(e.target.value))}
-                      className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                      onChange={(e) => {
+                        setDesiredIncome(Number(e.target.value));
+                        if (useCustomRate) setUseCustomRate(false);
+                      }}
+                      className="w-full pl-8 pr-4 py-3 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                     The amount you want to earn net per year
                   </p>
                 </div>
 
                 {/* Billable Hours */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                     Billable hours per year
                   </label>
                   <input
                     type="number"
                     value={billableHours}
-                    onChange={(e) => setBillableHours(Number(e.target.value))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                    onChange={(e) => {
+                      setBillableHours(Number(e.target.value));
+                      if (useCustomRate) setUseCustomRate(false);
+                    }}
+                    className="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                   />
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                     Typically 1600-1800 hours (40 hours/week, 40-45 weeks/year)
                   </p>
                 </div>
 
                 {/* Business Expenses */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                     Annual business expenses
                   </label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                       {currency}
                     </span>
                     <input
                       type="number"
                       value={businessExpenses}
-                      onChange={(e) => setBusinessExpenses(Number(e.target.value))}
-                      className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                      onChange={(e) => {
+                        setBusinessExpenses(Number(e.target.value));
+                        if (useCustomRate) setUseCustomRate(false);
+                      }}
+                      className="w-full pl-8 pr-4 py-3 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                     Software, hardware, office, insurance, accountant, etc.
                   </p>
                 </div>
 
                 {/* Tax Rate */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                     Average tax rate
                   </label>
                   <div className="flex items-center gap-4">
@@ -222,21 +291,24 @@ export default function RateCalculatorPage() {
                       min="0"
                       max="50"
                       value={taxRate}
-                      onChange={(e) => setTaxRate(Number(e.target.value))}
+                      onChange={(e) => {
+                        setTaxRate(Number(e.target.value));
+                        if (useCustomRate) setUseCustomRate(false);
+                      }}
                       className="flex-1"
                     />
-                    <span className="w-16 text-right font-semibold text-gray-900">
+                    <span className="w-16 text-right font-semibold text-gray-900 dark:text-white">
                       {taxRate}%
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                     Average 25-40% for freelancers (varies by country)
                   </p>
                 </div>
 
                 {/* Buffer Percentage */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                     Safety buffer
                   </label>
                   <div className="flex items-center gap-4">
@@ -245,21 +317,24 @@ export default function RateCalculatorPage() {
                       min="0"
                       max="50"
                       value={bufferPercent}
-                      onChange={(e) => setBufferPercent(Number(e.target.value))}
+                      onChange={(e) => {
+                        setBufferPercent(Number(e.target.value));
+                        if (useCustomRate) setUseCustomRate(false);
+                      }}
                       className="flex-1"
                     />
-                    <span className="w-16 text-right font-semibold text-gray-900">
+                    <span className="w-16 text-right font-semibold text-gray-900 dark:text-white">
                       {bufferPercent}%
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                     Extra buffer for unexpected costs and slower periods
                   </p>
                 </div>
 
                 {/* Vacation Weeks */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                     Vacation weeks per year
                   </label>
                   <div className="flex items-center gap-4">
@@ -271,11 +346,11 @@ export default function RateCalculatorPage() {
                       onChange={(e) => setVacationWeeks(Number(e.target.value))}
                       className="flex-1"
                     />
-                    <span className="w-16 text-right font-semibold text-gray-900">
+                    <span className="w-16 text-right font-semibold text-gray-900 dark:text-white">
                       {vacationWeeks} weeks
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                     Typical 4-6 weeks per year for work-life balance
                   </p>
                 </div>
@@ -301,108 +376,108 @@ export default function RateCalculatorPage() {
 
               {/* Additional Rates Grid */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <div className="flex items-center gap-2 mb-2 text-gray-600">
+                <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
+                  <div className="flex items-center gap-2 mb-2 text-gray-600 dark:text-gray-300">
                     <Clock className="w-4 h-4" />
                     <p className="text-sm font-semibold">Day Rate</p>
                   </div>
-                  <p className="text-3xl font-bold text-gray-900">{formatCurrency(dayRate)}</p>
-                  <p className="text-xs text-gray-500 mt-1">8 hours</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{formatCurrency(dayRate)}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">8 hours</p>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <div className="flex items-center gap-2 mb-2 text-gray-600">
+                <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
+                  <div className="flex items-center gap-2 mb-2 text-gray-600 dark:text-gray-300">
                     <Calendar className="w-4 h-4" />
                     <p className="text-sm font-semibold">Week Rate</p>
                   </div>
-                  <p className="text-3xl font-bold text-gray-900">{formatCurrency(weekRate)}</p>
-                  <p className="text-xs text-gray-500 mt-1">40 hours</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{formatCurrency(weekRate)}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">40 hours</p>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <div className="flex items-center gap-2 mb-2 text-gray-600">
+                <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
+                  <div className="flex items-center gap-2 mb-2 text-gray-600 dark:text-gray-300">
                     <DollarSign className="w-4 h-4" />
                     <p className="text-sm font-semibold">Monthly Income</p>
                   </div>
-                  <p className="text-3xl font-bold text-gray-900">{formatCurrency(monthlyIncome)}</p>
-                  <p className="text-xs text-gray-500 mt-1">Average per month</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{formatCurrency(monthlyIncome)}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Average per month</p>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <div className="flex items-center gap-2 mb-2 text-gray-600">
+                <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
+                  <div className="flex items-center gap-2 mb-2 text-gray-600 dark:text-gray-300">
                     <TrendingUp className="w-4 h-4" />
                     <p className="text-sm font-semibold">Weekly Income</p>
                   </div>
-                  <p className="text-3xl font-bold text-gray-900">{formatCurrency(weeklyIncome)}</p>
-                  <p className="text-xs text-gray-500 mt-1">{workingWeeks} working weeks</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{formatCurrency(weeklyIncome)}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{workingWeeks} working weeks</p>
                 </div>
               </div>
 
               {/* Breakdown Card */}
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">
+              <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
                   Calculation Breakdown
                 </h3>
 
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between py-2 border-b border-gray-100">
-                    <span className="text-sm text-gray-600">Desired net income</span>
-                    <span className="font-semibold text-gray-900">
+                  <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
+                    <span className="text-sm text-gray-600 dark:text-gray-300">Desired net income</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">
                       {formatCurrency(desiredIncome)}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between py-2 border-b border-gray-100">
-                    <span className="text-sm text-gray-600">Business expenses</span>
-                    <span className="font-semibold text-gray-900">
+                  <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
+                    <span className="text-sm text-gray-600 dark:text-gray-300">Business expenses</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">
                       {formatCurrency(businessExpenses)}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between py-2 border-b border-gray-100">
-                    <span className="text-sm text-gray-600">Subtotal</span>
-                    <span className="font-semibold text-gray-900">
+                  <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
+                    <span className="text-sm text-gray-600 dark:text-gray-300">Subtotal</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">
                       {formatCurrency(totalNeeded)}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between py-2 border-b border-gray-100">
-                    <span className="text-sm text-gray-600">Safety buffer ({bufferPercent}%)</span>
-                    <span className="font-semibold text-gray-900">
+                  <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
+                    <span className="text-sm text-gray-600 dark:text-gray-300">Safety buffer ({bufferPercent}%)</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">
                       {formatCurrency(withBuffer - totalNeeded)}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between py-2 border-b border-gray-100">
-                    <span className="text-sm text-gray-600">Subtotal with buffer</span>
-                    <span className="font-semibold text-gray-900">
+                  <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
+                    <span className="text-sm text-gray-600 dark:text-gray-300">Subtotal with buffer</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">
                       {formatCurrency(withBuffer)}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between py-2 border-b border-gray-100">
-                    <span className="text-sm text-gray-600">Taxes ({taxRate}%)</span>
-                    <span className="font-semibold text-gray-900">
+                  <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
+                    <span className="text-sm text-gray-600 dark:text-gray-300">Taxes ({taxRate}%)</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">
                       {formatCurrency(withTax - withBuffer)}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between py-3 bg-gray-50 -mx-6 px-6 mt-3">
-                    <span className="font-semibold text-gray-900">Total required revenue</span>
+                  <div className="flex items-center justify-between py-3 bg-gray-50 dark:bg-gray-700 -mx-6 px-6 mt-3">
+                    <span className="font-semibold text-gray-900 dark:text-white">Total required revenue</span>
                     <span className="text-lg font-bold text-primary">
                       {formatCurrency(withTax)}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between py-2 mt-3">
-                    <span className="text-sm text-gray-600">Billable hours</span>
-                    <span className="font-semibold text-gray-900">
+                    <span className="text-sm text-gray-600 dark:text-gray-300">Billable hours</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">
                       {billableHours} hours
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between py-3 bg-primary/5 -mx-6 px-6 mt-3 rounded-lg">
-                    <span className="font-bold text-gray-900">Hourly rate</span>
+                  <div className="flex items-center justify-between py-3 bg-primary/5 dark:bg-primary/10 -mx-6 px-6 mt-3 rounded-lg">
+                    <span className="font-bold text-gray-900 dark:text-white">Hourly rate</span>
                     <span className="text-2xl font-bold text-primary">
                       {formatCurrency(hourlyRate)}
                     </span>
@@ -411,36 +486,36 @@ export default function RateCalculatorPage() {
               </div>
 
               {/* Project Price Calculator */}
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">
+              <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
                   Project Price Calculator
                 </h3>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                   Estimate project price based on your hourly rate
                 </p>
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                       Estimated project hours
                     </label>
                     <input
                       type="number"
                       value={projectHours}
                       onChange={(e) => setProjectHours(Number(e.target.value))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                       placeholder="40"
                     />
                   </div>
 
-                  <div className="flex items-center justify-between py-3 bg-primary/5 px-4 rounded-lg">
-                    <span className="font-bold text-gray-900">Project Price</span>
+                  <div className="flex items-center justify-between py-3 bg-primary/5 dark:bg-primary/10 px-4 rounded-lg">
+                    <span className="font-bold text-gray-900 dark:text-white">Project Price</span>
                     <span className="text-2xl font-bold text-primary">
                       {formatCurrency(projectPrice)}
                     </span>
                   </div>
 
-                  <div className="text-xs text-gray-500 space-y-1">
+                  <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
                     <p>• {projectHours} hours × {formatCurrency(hourlyRate)}/hour</p>
                     <p>• Consider adding 10-20% buffer for scope changes</p>
                   </div>
@@ -448,14 +523,14 @@ export default function RateCalculatorPage() {
               </div>
 
               {/* Info Card */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
                 <div className="flex items-start gap-3">
-                  <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">
+                    <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
                       Tips for setting your rate
                     </h4>
-                    <ul className="text-sm text-gray-700 space-y-1">
+                    <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
                       <li>• Compare your rate with the market in your industry</li>
                       <li>• Consider your experience and expertise level</li>
                       <li>• Don't start too low - raising rates is harder than lowering them</li>
@@ -472,17 +547,17 @@ export default function RateCalculatorPage() {
 
         {/* Additional Information Section */}
         <section className="container mx-auto px-4 pb-12">
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-8">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
               Understanding Your Rate
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
                   Why this rate?
                 </h3>
-                <div className="space-y-2 text-sm text-gray-700">
+                <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                   <p>
                     <strong>Desired income:</strong> Your target take-home pay for the year
                   </p>
@@ -502,10 +577,10 @@ export default function RateCalculatorPage() {
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
                   Quick reference
                 </h3>
-                <div className="space-y-2 text-sm text-gray-700">
+                <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                   <p>💰 <strong>Hourly:</strong> {formatCurrency(hourlyRate)}/hour</p>
                   <p>📅 <strong>Daily:</strong> {formatCurrency(dayRate)}/day (8 hours)</p>
                   <p>📆 <strong>Weekly:</strong> {formatCurrency(weekRate)}/week (40 hours)</p>

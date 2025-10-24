@@ -56,11 +56,11 @@ export default async function ToolDetailPage({ params }: PageProps) {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gray-50">
+      <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
         {/* Breadcrumb */}
-        <section className="bg-white border-b">
+        <section className="bg-white dark:bg-slate-800 border-b dark:border-slate-700">
           <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
               <Link href="/" className="hover:text-primary transition-colors">
                 Home
               </Link>
@@ -69,7 +69,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
                 Tools
               </Link>
               <span>→</span>
-              <span className="text-gray-900 font-semibold">{tool.name}</span>
+              <span className="text-gray-900 dark:text-white font-semibold">{tool.name}</span>
             </div>
           </div>
         </section>
@@ -127,14 +127,14 @@ export default async function ToolDetailPage({ params }: PageProps) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content Area */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-md p-8">
+              <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-8 border border-gray-200 dark:border-slate-700">
                 {tool.is_available ? (
                   <>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                       Over deze tool
                     </h2>
-                    <div className="prose max-w-none">
-                      <p className="text-gray-600 leading-relaxed mb-6">
+                    <div className="prose dark:prose-invert max-w-none">
+                      <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
                         {tool.description}
                       </p>
 
@@ -155,17 +155,17 @@ export default async function ToolDetailPage({ params }: PageProps) {
                   </>
                 ) : (
                   <>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                       Binnenkort beschikbaar
                     </h2>
-                    <p className="text-gray-600 leading-relaxed mb-6">
+                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
                       Deze tool is momenteel in ontwikkeling. We werken hard om deze tool zo snel mogelijk beschikbaar te maken.
                     </p>
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                      <h3 className="font-semibold text-gray-900 mb-2">
+                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+                      <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
                         Blijf op de hoogte
                       </h3>
-                      <p className="text-sm text-gray-600 mb-4">
+                      <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                         Wil je een melding ontvangen wanneer deze tool beschikbaar is? Schrijf je in voor onze nieuwsbrief.
                       </p>
                       <Link
@@ -183,16 +183,16 @@ export default async function ToolDetailPage({ params }: PageProps) {
             {/* Sidebar */}
             <div className="lg:col-span-1">
               {/* Tool Info Card */}
-              <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-                <h3 className="font-bold text-gray-900 mb-4">Tool informatie</h3>
+              <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 mb-6 border border-gray-200 dark:border-slate-700">
+                <h3 className="font-bold text-gray-900 dark:text-white mb-4">Tool informatie</h3>
                 <dl className="space-y-3">
                   <div>
-                    <dt className="text-sm text-gray-600">Categorie</dt>
-                    <dd className="font-semibold text-gray-900 capitalize">{tool.category}</dd>
+                    <dt className="text-sm text-gray-600 dark:text-gray-400">Categorie</dt>
+                    <dd className="font-semibold text-gray-900 dark:text-white capitalize">{tool.category}</dd>
                   </div>
                   <div>
-                    <dt className="text-sm text-gray-600">Status</dt>
-                    <dd className="font-semibold text-gray-900">
+                    <dt className="text-sm text-gray-600 dark:text-gray-400">Status</dt>
+                    <dd className="font-semibold text-gray-900 dark:text-white">
                       {tool.is_available ? (
                         <span className="text-green-600">Beschikbaar</span>
                       ) : (
@@ -201,16 +201,16 @@ export default async function ToolDetailPage({ params }: PageProps) {
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-sm text-gray-600">Views</dt>
-                    <dd className="font-semibold text-gray-900">{tool.views}</dd>
+                    <dt className="text-sm text-gray-600 dark:text-gray-400">Views</dt>
+                    <dd className="font-semibold text-gray-900 dark:text-white">{tool.views}</dd>
                   </div>
                 </dl>
               </div>
 
               {/* Related Tools */}
               {filteredRelated.length > 0 && (
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h3 className="font-bold text-gray-900 mb-4">Gerelateerde tools</h3>
+                <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-slate-700">
+                  <h3 className="font-bold text-gray-900 dark:text-white mb-4">Gerelateerde tools</h3>
                   <div className="space-y-4">
                     {filteredRelated.map((relatedTool) => {
                       const RelatedIcon = relatedTool.icon && iconMap[relatedTool.icon] ? iconMap[relatedTool.icon] : Wrench;
@@ -227,10 +227,10 @@ export default async function ToolDetailPage({ params }: PageProps) {
                             <RelatedIcon className="w-5 h-5 text-white" />
                           </div>
                           <div className="flex-1">
-                            <h4 className="font-semibold text-gray-900 group-hover:text-primary transition-colors text-sm">
+                            <h4 className="font-semibold text-gray-900 dark:text-white group-hover:text-primary transition-colors text-sm">
                               {relatedTool.name}
                             </h4>
-                            <p className="text-xs text-gray-600 line-clamp-2">
+                            <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
                               {relatedTool.description}
                             </p>
                           </div>

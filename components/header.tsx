@@ -3,12 +3,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import ThemeToggle from "./ThemeToggle";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-background-gray bg-white shadow-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-background-gray dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -27,38 +28,39 @@ export function Header() {
           <nav className="hidden md:flex items-center space-x-8">
             <Link
               href="/"
-              className="text-sm font-medium text-text-secondary hover:text-accent transition-colors"
+              className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors"
             >
               Home
             </Link>
             <Link
               href="/platforms"
-              className="text-sm font-medium text-text-secondary hover:text-accent transition-colors"
+              className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors"
             >
               Platforms
             </Link>
             <Link
               href="/reviews"
-              className="text-sm font-medium text-text-secondary hover:text-accent transition-colors"
+              className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors"
             >
               Reviews
             </Link>
             <Link
               href="/comparisons"
-              className="text-sm font-medium text-text-secondary hover:text-accent transition-colors"
+              className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors"
             >
               Comparisons
             </Link>
             <Link
               href="/about"
-              className="text-sm font-medium text-text-secondary hover:text-accent transition-colors"
+              className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors"
             >
               About
             </Link>
           </nav>
 
           {/* CTA Button */}
-          <div className="hidden md:flex items-center">
+          <div className="hidden md:flex items-center space-x-4">
+            <ThemeToggle />
             <Link
               href="/newsletter"
               className="inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-dark px-4 py-2 text-sm font-heading font-semibold text-white transition-colors shadow-lg"
@@ -69,7 +71,7 @@ export function Header() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden rounded-md p-2 text-text-secondary hover:text-text-primary hover:bg-background-light"
+            className="md:hidden rounded-md p-2 text-text-secondary dark:text-gray-300 hover:text-text-primary dark:hover:text-white hover:bg-background-light dark:hover:bg-gray-800"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             <svg
@@ -100,39 +102,39 @@ export function Header() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden pb-4 pt-4 border-t border-background-gray">
+          <div className="md:hidden pb-4 pt-4 border-t border-background-gray dark:border-gray-800 dark:bg-gray-900">
             <nav className="flex flex-col space-y-3">
               <Link
                 href="/"
-                className="text-sm font-medium text-text-secondary hover:text-accent px-2 py-1"
+                className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent px-2 py-1"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Home
               </Link>
               <Link
                 href="/platforms"
-                className="text-sm font-medium text-text-secondary hover:text-accent px-2 py-1"
+                className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent px-2 py-1"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Platforms
               </Link>
               <Link
                 href="/reviews"
-                className="text-sm font-medium text-text-secondary hover:text-accent px-2 py-1"
+                className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent px-2 py-1"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Reviews
               </Link>
               <Link
                 href="/comparisons"
-                className="text-sm font-medium text-text-secondary hover:text-accent px-2 py-1"
+                className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent px-2 py-1"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Comparisons
               </Link>
               <Link
                 href="/about"
-                className="text-sm font-medium text-text-secondary hover:text-accent px-2 py-1"
+                className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent px-2 py-1"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 About
@@ -144,6 +146,9 @@ export function Header() {
               >
                 Subscribe
               </Link>
+              <div className="flex justify-center mt-4">
+                <ThemeToggle />
+              </div>
             </nav>
           </div>
         )}
