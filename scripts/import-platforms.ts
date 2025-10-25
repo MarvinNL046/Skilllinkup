@@ -27,6 +27,8 @@ interface PlatformData {
   features: string[];
   status: 'published' | 'draft';
   published_at?: Date;
+  work_type: 'remote' | 'local' | 'hybrid';
+  countries: string[];
 }
 
 const platforms: PlatformData[] = [
@@ -59,7 +61,9 @@ const platforms: PlatformData[] = [
       'Proposal credits system'
     ],
     status: 'published',
-    published_at: new Date()
+    published_at: new Date(),
+    work_type: 'remote',
+    countries: ['Worldwide']
   },
   {
     name: 'Guru',
@@ -90,7 +94,9 @@ const platforms: PlatformData[] = [
       'Job matching algorithm'
     ],
     status: 'published',
-    published_at: new Date()
+    published_at: new Date(),
+    work_type: 'remote',
+    countries: ['Worldwide']
   },
   {
     name: 'Truelancer',
@@ -121,7 +127,9 @@ const platforms: PlatformData[] = [
       'Prime membership benefits'
     ],
     status: 'published',
-    published_at: new Date()
+    published_at: new Date(),
+    work_type: 'remote',
+    countries: ['Worldwide']
   },
   {
     name: 'Malt',
@@ -153,7 +161,9 @@ const platforms: PlatformData[] = [
       'Business networking events'
     ],
     status: 'published',
-    published_at: new Date()
+    published_at: new Date(),
+    work_type: 'remote',
+    countries: ['Worldwide']
   },
   {
     name: 'FlexJobs',
@@ -185,7 +195,9 @@ const platforms: PlatformData[] = [
       'Resume review services'
     ],
     status: 'published',
-    published_at: new Date()
+    published_at: new Date(),
+    work_type: 'remote',
+    countries: ['Worldwide']
   },
   {
     name: 'Arc',
@@ -217,7 +229,9 @@ const platforms: PlatformData[] = [
       'Payroll and benefits handling'
     ],
     status: 'published',
-    published_at: new Date()
+    published_at: new Date(),
+    work_type: 'remote',
+    countries: ['Worldwide']
   },
   {
     name: 'We Work Remotely',
@@ -249,7 +263,9 @@ const platforms: PlatformData[] = [
       'Category-specific job feeds'
     ],
     status: 'published',
-    published_at: new Date()
+    published_at: new Date(),
+    work_type: 'remote',
+    countries: ['Worldwide']
   },
   {
     name: 'Dribbble',
@@ -281,7 +297,9 @@ const platforms: PlatformData[] = [
       'Design showcases and trends'
     ],
     status: 'published',
-    published_at: new Date()
+    published_at: new Date(),
+    work_type: 'remote',
+    countries: ['Worldwide']
   },
   {
     name: 'CloudPeeps',
@@ -313,7 +331,9 @@ const platforms: PlatformData[] = [
       'Educational resources'
     ],
     status: 'published',
-    published_at: new Date()
+    published_at: new Date(),
+    work_type: 'remote',
+    countries: ['Worldwide']
   },
   {
     name: 'GoLance',
@@ -344,7 +364,9 @@ const platforms: PlatformData[] = [
       'Project milestones'
     ],
     status: 'published',
-    published_at: new Date()
+    published_at: new Date(),
+    work_type: 'remote',
+    countries: ['Worldwide']
   },
   {
     name: 'Apploye',
@@ -375,7 +397,9 @@ const platforms: PlatformData[] = [
       'Team collaboration tools'
     ],
     status: 'published',
-    published_at: new Date()
+    published_at: new Date(),
+    work_type: 'remote',
+    countries: ['Worldwide']
   },
   {
     name: 'Andela',
@@ -408,7 +432,9 @@ const platforms: PlatformData[] = [
       'Community events and networking'
     ],
     status: 'published',
-    published_at: new Date()
+    published_at: new Date(),
+    work_type: 'remote',
+    countries: ['Worldwide']
   },
   {
     name: 'ProZ',
@@ -441,7 +467,9 @@ const platforms: PlatformData[] = [
       'Blueboard credentialing system'
     ],
     status: 'published',
-    published_at: new Date()
+    published_at: new Date(),
+    work_type: 'remote',
+    countries: ['Worldwide']
   },
   {
     name: 'Ureed',
@@ -473,7 +501,9 @@ const platforms: PlatformData[] = [
       'Quality assurance processes'
     ],
     status: 'published',
-    published_at: new Date()
+    published_at: new Date(),
+    work_type: 'remote',
+    countries: ['Worldwide']
   }
 ];
 
@@ -515,6 +545,8 @@ async function importPlatforms() {
           features,
           status,
           published_at,
+          work_type,
+          countries,
           created_at,
           updated_at
         ) VALUES (
@@ -535,6 +567,8 @@ async function importPlatforms() {
           ${JSON.stringify(platform.features)},
           ${platform.status},
           ${platform.published_at || new Date()},
+          ${platform.work_type},
+          ${platform.countries},
           NOW(),
           NOW()
         )

@@ -82,6 +82,8 @@ export interface Platform {
   status: string;
   published_at: Date | null;
   created_at: Date;
+  work_type: string;
+  countries: string[];
 }
 
 export interface Review {
@@ -413,7 +415,9 @@ export async function getPublishedPlatforms(limit = 50): Promise<Platform[]> {
       features,
       status,
       published_at,
-      created_at
+      created_at,
+      COALESCE(work_type, 'remote') as work_type,
+      COALESCE(countries, ARRAY['Worldwide']::TEXT[]) as countries
     FROM platforms
     WHERE status = 'published'
     ORDER BY featured DESC, rating DESC, name ASC

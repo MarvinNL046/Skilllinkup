@@ -12,6 +12,8 @@ interface Platform {
   difficulty: string;
   fees: string | null;
   featured: boolean;
+  work_type: string;
+  countries: string[];
 }
 
 interface PlatformCategory {
@@ -35,6 +37,8 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
   const selectedRatings = searchParams.get('rating')?.split(',').filter(Boolean) || [];
   const searchQuery = searchParams.get('search') || '';
   const sortBy = searchParams.get('sort') || 'rating';
+  const selectedWorkType = searchParams.get('work_type') || 'all';
+  const selectedCountry = searchParams.get('country') || 'all';
 
   // Create URL with new params
   const createQueryString = useCallback(
@@ -80,6 +84,19 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
       });
     }
 
+    // Work type filter
+    if (selectedWorkType !== 'all') {
+      filtered = filtered.filter(p => p.work_type === selectedWorkType);
+    }
+
+    // Country filter (check if country is in the countries array or is Worldwide)
+    if (selectedCountry !== 'all') {
+      filtered = filtered.filter(p => {
+        if (!p.countries || !Array.isArray(p.countries)) return false;
+        return p.countries.includes(selectedCountry) || p.countries.includes('Worldwide');
+      });
+    }
+
     // Search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
@@ -106,7 +123,7 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
     }
 
     return filtered;
-  }, [platforms, selectedCategory, selectedDifficulties, selectedRatings, searchQuery, sortBy]);
+  }, [platforms, selectedCategory, selectedDifficulties, selectedRatings, searchQuery, sortBy, selectedWorkType, selectedCountry]);
 
   // Handle category change
   const handleCategoryChange = (category: string) => {
@@ -152,6 +169,22 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
   const handleSort = (value: string) => {
     const query = createQueryString({
       sort: value,
+    });
+    router.push(`${pathname}?${query}`);
+  };
+
+  // Handle work type change
+  const handleWorkTypeChange = (workType: string) => {
+    const query = createQueryString({
+      work_type: workType === 'all' ? null : workType,
+    });
+    router.push(`${pathname}?${query}`);
+  };
+
+  // Handle country change
+  const handleCountryChange = (country: string) => {
+    const query = createQueryString({
+      country: country === 'all' ? null : country,
     });
     router.push(`${pathname}?${query}`);
   };
@@ -267,6 +300,41 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
                 </label>
               ))}
             </div>
+
+            <hr className="my-6 border-gray-200 dark:border-gray-700" />
+
+            <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white mb-4">
+              Work Type
+            </h3>
+            <select
+              value={selectedWorkType}
+              onChange={(e) => handleWorkTypeChange(e.target.value)}
+              className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
+            >
+              <option value="all">All Work Types</option>
+              <option value="remote">Remote Only</option>
+              <option value="local">Local Only</option>
+              <option value="hybrid">Hybrid</option>
+            </select>
+
+            <hr className="my-6 border-gray-200 dark:border-gray-700" />
+
+            <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white mb-4">
+              Country
+            </h3>
+            <select
+              value={selectedCountry}
+              onChange={(e) => handleCountryChange(e.target.value)}
+              className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
+            >
+              <option value="all">All Countries</option>
+              <option value="Worldwide">Worldwide</option>
+              <option value="NL">Netherlands</option>
+              <option value="BE">Belgium</option>
+              <option value="DE">Germany</option>
+              <option value="FR">France</option>
+              <option value="US">United States</option>
+            </select>
           </div>
         </aside>
 
