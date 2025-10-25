@@ -128,7 +128,7 @@ export default async function ComparisonsPage() {
                               href={platform.affiliate_link || platform.website_url}
                               target="_blank"
                               rel="noopener noreferrer sponsored"
-                              className="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors"
+                              className="inline-flex items-center px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors shadow-md"
                             >
                               Visit →
                             </a>
@@ -198,7 +198,7 @@ export default async function ComparisonsPage() {
             </Link>
             <Link
               href="/reviews"
-              className="inline-flex items-center px-6 py-3 rounded-lg border-2 border-white text-white font-semibold hover:bg-white/10 transition-colors"
+              className="inline-flex items-center px-6 py-3 rounded-lg bg-white text-primary font-semibold hover:bg-gray-100 transition-colors shadow-md"
             >
               Read Reviews
             </Link>
