@@ -47,6 +47,9 @@ export default function EditPlatformPage({ params }: PageProps) {
     avg_affiliate_earnings: 0,
     unique_benefits: [''],
     automation_status: 'pending',
+    // Work type and location
+    work_type: 'remote',
+    countries: ['Worldwide'],
   });
 
   useEffect(() => {
@@ -87,6 +90,9 @@ export default function EditPlatformPage({ params }: PageProps) {
           avg_affiliate_earnings: platform.avg_affiliate_earnings || 0,
           unique_benefits: platform.unique_benefits && platform.unique_benefits.length > 0 ? platform.unique_benefits : [''],
           automation_status: platform.automation_status || 'pending',
+          // Work type and location
+          work_type: platform.work_type || 'remote',
+          countries: platform.countries && platform.countries.length > 0 ? platform.countries : ['Worldwide'],
         });
       }
     } catch (error) {
@@ -137,6 +143,11 @@ export default function EditPlatformPage({ params }: PageProps) {
   const removeArrayItem = (field: 'pros' | 'cons' | 'features' | 'unique_benefits', index: number) => {
     const newArray = formData[field].filter((_, i) => i !== index);
     setFormData({ ...formData, [field]: newArray });
+  };
+
+  const handleCountriesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selected = Array.from(e.target.selectedOptions, option => option.value);
+    setFormData({ ...formData, countries: selected });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -607,6 +618,55 @@ export default function EditPlatformPage({ params }: PageProps) {
                     <option value="Medium">🟡 Medium</option>
                     <option value="Hard">🔴 Hard</option>
                   </select>
+                </div>
+
+                <div>
+                  <label htmlFor="work_type" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                    Work Type *
+                  </label>
+                  <select
+                    id="work_type"
+                    name="work_type"
+                    value={formData.work_type}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  >
+                    <option value="remote">🌍 Remote</option>
+                    <option value="local">📍 Local</option>
+                    <option value="hybrid">🔄 Hybrid</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="countries" className="block text-sm font-heading font-semibold text-text-primary mb-2">
+                    Countries *
+                  </label>
+                  <select
+                    id="countries"
+                    name="countries"
+                    multiple
+                    value={formData.countries}
+                    onChange={handleCountriesChange}
+                    required
+                    className="w-full px-4 py-2 rounded-lg border border-background-gray focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                    style={{ minHeight: '120px' }}
+                  >
+                    <option value="Worldwide">🌎 Worldwide</option>
+                    <option value="NL">🇳🇱 Netherlands</option>
+                    <option value="BE">🇧🇪 Belgium</option>
+                    <option value="DE">🇩🇪 Germany</option>
+                    <option value="FR">🇫🇷 France</option>
+                    <option value="ES">🇪🇸 Spain</option>
+                    <option value="IT">🇮🇹 Italy</option>
+                    <option value="GB">🇬🇧 United Kingdom</option>
+                    <option value="US">🇺🇸 United States</option>
+                    <option value="CA">🇨🇦 Canada</option>
+                    <option value="AU">🇦🇺 Australia</option>
+                  </select>
+                  <p className="text-xs text-text-muted mt-1">
+                    Hold Ctrl/Cmd to select multiple countries. Use ISO codes (NL, BE, DE) or "Worldwide" for global platforms.
+                  </p>
                 </div>
 
                 <div>

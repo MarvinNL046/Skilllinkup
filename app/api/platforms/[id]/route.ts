@@ -76,6 +76,9 @@ export async function PUT(
       avg_affiliate_earnings,
       unique_benefits,
       automation_status,
+      // Work type and location
+      work_type,
+      countries,
     } = body;
 
     // Check if platform exists
@@ -88,6 +91,26 @@ export async function PUT(
         { error: 'Platform not found' },
         { status: 404 }
       );
+    }
+
+    // Validate work_type
+    const validWorkTypes = ['remote', 'local', 'hybrid'];
+    if (work_type && !validWorkTypes.includes(work_type)) {
+      return NextResponse.json(
+        { error: `Invalid work_type. Must be one of: ${validWorkTypes.join(', ')}` },
+        { status: 400 }
+      );
+    }
+
+    // Validate and process countries array
+    let processedCountries = countries;
+    if (countries && Array.isArray(countries)) {
+      processedCountries = countries.filter((c: string) => c && c.trim());
+      if (processedCountries.length === 0) {
+        processedCountries = ['Worldwide'];
+      }
+    } else {
+      processedCountries = ['Worldwide'];
     }
 
     // Update platform
@@ -116,7 +139,9 @@ export async function PUT(
         cookie_duration = ${cookie_duration || 30},
         avg_affiliate_earnings = ${avg_affiliate_earnings || 0},
         unique_benefits = ${unique_benefits && unique_benefits.length > 0 ? unique_benefits.filter((b: string) => b.trim()) : null}::text[],
-        automation_status = ${automation_status || 'pending'}
+        automation_status = ${automation_status || 'pending'},
+        work_type = ${work_type || 'remote'},
+        countries = ${processedCountries}::text[]
       WHERE id = ${id}
       RETURNING *
     `;
