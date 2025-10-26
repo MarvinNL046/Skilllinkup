@@ -553,6 +553,50 @@
       "ctaContact": "Neem contact op"
     }
   },
+  "contactPage": {
+    "metadata": {
+      "title": "Neem contact met ons op - SkillLinkup",
+      "description": "Neem contact op met SkillLinkup. We zijn er om u te helpen met platformvragen, partnerschappen en feedback."
+    },
+    "hero": {
+      "title": "Neem contact op",
+      "subtitle": "Heeft u vragen? Wij horen graag van u. Stuur ons een bericht en wij reageren zo snel mogelijk."
+    },
+    "contactInfo": {
+      "heading": "Contactgegevens",
+      "email": "E-mail",
+      "emailAddress": "hello@skilllinkup.com",
+      "responseTime": "Reactietijd",
+      "responseTimeText": "Wij reageren doorgaans binnen 24 uur",
+      "support": "Steun",
+      "supportHours": "Maandag - vrijdag, 9.00 - 17.00 uur EST"
+    },
+    "faq": {
+      "heading": "Op zoek naar snelle antwoorden?",
+      "text": "Bekijk onze veelgestelde vragen voor directe hulp.",
+      "button": "Bezoek Veelgestelde vragen"
+    },
+    "form": {
+      "heading": "Stuur ons een bericht",
+      "nameLabel": "Jouw naam *",
+      "namePlaceholder": "John Doe",
+      "emailLabel": "E-mailadres *",
+      "emailPlaceholder": "john@voorbeeld.com",
+      "subjectLabel": "Onderwerp *",
+      "selectSubject": "Selecteer een onderwerp",
+      "subjectGeneral": "Algemeen onderzoek",
+      "subjectPlatform": "Platformvraag",
+      "subjectReview": "Beoordelingsverzoek",
+      "subjectPartnership": "Partnerschap",
+      "subjectFeedback": "Feedback",
+      "subjectOther": "Ander",
+      "messageLabel": "Bericht *",
+      "messagePlaceholder": "Vertel ons hoe wij u kunnen helpen...",
+      "sendButton": "Bericht verzenden",
+      "sending": "Verzenden...",
+      "successMessage": "Bedankt dat u contact met ons opneemt! Wij nemen binnen 24 uur contact met u op."
+    }
+  },
   "invoiceGenerator": {
     "breadcrumb": {
       "home": "Thuis",
@@ -663,5 +707,338 @@
       "storageLoadError": "Fout bij laden vanuit opslag:",
       "storageSaveError": "Fout bij opslaan in opslag:"
     }
+  },
+  "privacyPage": {
+    "metadata": {
+      "title": "Privacybeleid | VaardigheidLinkup",
+      "description": "Ontdek hoe SkillLinkup uw persoonlijke gegevens verzamelt, gebruikt en beschermt."
+    },
+    "sections": {
+      "section1": {
+        "title": "Invoering",
+        "content": "Welkom bij SkillLinkup (\"wij\", \"onze\" of \"ons\"). Wij doen er alles aan om uw persoonlijke gegevens en uw recht op privacy te beschermen. In dit privacybeleid wordt uitgelegd hoe wij uw gegevens verzamelen, gebruiken, openbaar maken en beveiligen wanneer u onze website bezoekt.",
+        "content2": "Lees dit privacybeleid zorgvuldig door. Als u het niet eens bent met de voorwaarden van dit privacybeleid, bezoek dan de site niet."
+      },
+      "section2": {
+        "title": "Informatie die we verzamelen",
+        "subsection1": {
+          "title": "Persoonlijke informatie die u aan ons verstrekt",
+          "content": "Wij verzamelen persoonlijke informatie die u vrijwillig aan ons verstrekt wanneer u:",
+          "list": [
+            "Abonneer u op onze nieuwsbrief",
+            "Vul contactformulieren in",
+            "Neem deel aan enquêtes of promoties",
+            "Neem anders contact met ons op"
+          ],
+          "content2": "De persoonlijke informatie die we verzamelen kan het volgende omvatten:",
+          "list2": [
+            "Naam en contactgegevens (e-mailadres)",
+            "Berichtinhoud (wanneer u contact met ons opneemt)"
+          ]
+        },
+        "subsection2": {
+          "title": "Informatie automatisch verzameld",
+          "content": "Wij verzamelen automatisch bepaalde informatie wanneer u onze website bezoekt, gebruikt of navigeert. Deze informatie onthult uw specifieke identiteit niet, maar kan het volgende omvatten:",
+          "list": [
+            "Apparaat- en gebruiksinformatie (IP-adres, browsertype, besturingssysteem)",
+            "Locatiegegevens (land, regio)",
+            "Log- en gebruiksgegevens (bekeken pagina's, tijd doorgebracht op pagina's)"
+          ]
+        }
+      },
+      "section3": {
+        "title": "Hoe wij uw gegevens gebruiken",
+        "content": "We gebruiken de informatie die we verzamelen of ontvangen:",
+        "list": [
+          "Om u marketing- en promotionele communicatie te sturen (met uw toestemming)",
+          "Om op uw vragen te reageren en eventuele problemen op te lossen",
+          "Om administratieve informatie te verzenden (updates, beveiligingswaarschuwingen)",
+          "Om onze website en dienstverlening te verbeteren",
+          "Om gebruikstrends te analyseren en de gebruikerservaring te optimaliseren",
+          "Om te voldoen aan wettelijke verplichtingen"
+        ]
+      },
+      "section4": {
+        "title": "Het delen van uw informatie",
+        "content": "In de volgende situaties kunnen wij uw gegevens delen of overdragen:",
+        "content2": "Wij verkopen uw persoonlijke gegevens niet aan derden.",
+        "list": [
+          "Dienstverleners: Wij kunnen uw informatie delen met externe dienstverleners die diensten voor ons uitvoeren (e-mailbezorging, analyses, hosting)",
+          "Bedrijfsoverdrachten: We kunnen uw gegevens delen of overdragen in verband met een fusie, verkoop of overname",
+          "Wettelijke vereisten: We kunnen uw gegevens vrijgeven wanneer dit wettelijk vereist is of om onze rechten te beschermen"
+        ]
+      },
+      "section5": {
+        "title": "Cookies en trackingtechnologieën",
+        "content": "We kunnen cookies en soortgelijke trackingtechnologieën gebruiken om toegang te krijgen tot informatie of deze op te slaan. U kunt uw browser opdracht geven alle cookies te weigeren of aan te geven wanneer een cookie wordt verzonden."
+      },
+      "section6": {
+        "title": "Links van derden",
+        "content": "Onze website kan links naar websites van derden bevatten. Wij zijn niet verantwoordelijk voor de privacypraktijken van deze externe sites. Wij raden u aan hun privacybeleid te lezen."
+      },
+      "section7": {
+        "title": "Gegevensbeveiliging",
+        "content": "We hebben passende technische en organisatorische beveiligingsmaatregelen geïmplementeerd om uw persoonlijke gegevens te beschermen. Geen enkele elektronische transmissie- of opslagmethode is echter 100% veilig en we kunnen geen absolute veiligheid garanderen."
+      },
+      "section8": {
+        "title": "Uw privacyrechten",
+        "content": "Afhankelijk van uw locatie heeft u mogelijk de volgende rechten:",
+        "content2": "Om deze rechten uit te oefenen, kunt u contact met ons opnemen via de onderstaande informatie.",
+        "list": [
+          "Toegang tot uw persoonlijke gegevens",
+          "Correctie van onjuiste gegevens",
+          "Verwijdering van uw persoonlijke gegevens",
+          "Intrekking van toestemming (voor nieuwsbriefabonnementen)",
+          "Bezwaar tegen de verwerking van uw gegevens"
+        ]
+      },
+      "section9": {
+        "title": "Gegevensretentie",
+        "content": "Wij bewaren uw persoonlijke gegevens slechts zo lang als nodig is om de in dit Privacybeleid beschreven doeleinden te verwezenlijken, tenzij een langere bewaartermijn wettelijk vereist is."
+      },
+      "section10": {
+        "title": "Privacy van kinderen",
+        "content": "Onze website is niet bedoeld voor kinderen jonger dan 13 jaar. We verzamelen niet bewust persoonlijke gegevens van kinderen jonger dan 13 jaar."
+      },
+      "section11": {
+        "title": "Updates van dit beleid",
+        "content": "We kunnen dit privacybeleid van tijd tot tijd bijwerken. De bijgewerkte versie wordt aangegeven met de bijgewerkte datum 'Laatst bijgewerkt' bovenaan deze pagina."
+      },
+      "section12": {
+        "title": "Neem contact met ons op",
+        "content": "Als u vragen of opmerkingen heeft over dit privacybeleid, kunt u contact met ons opnemen via:",
+        "email": "E-mail: privacy@skilllinkup.com"
+      }
+    },
+    "title": "Privacybeleid",
+    "lastUpdated": "Laatst bijgewerkt",
+    "intro": "Welkom bij SkillLinkup (\"wij\", \"onze\" of \"ons\"). Wij doen er alles aan om uw persoonlijke gegevens en uw recht op privacy te beschermen. In dit privacybeleid wordt uitgelegd hoe wij uw gegevens verzamelen, gebruiken, openbaar maken en beveiligen wanneer u onze website bezoekt.",
+    "intro2": "Lees dit privacybeleid zorgvuldig door. Als u het niet eens bent met de voorwaarden van dit privacybeleid, bezoek dan de site niet."
+  },
+  "termsPage": {
+    "metadata": {
+      "title": "Servicevoorwaarden | VaardigheidLinkup",
+      "description": "Algemene voorwaarden voor het gebruik van SkillLinkup-services."
+    },
+    "sections": {
+      "section1": {
+        "title": "Akkoord met voorwaarden",
+        "content": "Door SkillLinkup (\"de Website\") te bezoeken of te gebruiken, gaat u ermee akkoord gebonden te zijn aan deze Servicevoorwaarden (\"Voorwaarden\"). Als u niet akkoord gaat met deze Voorwaarden, maak dan geen gebruik van de Website.",
+        "content2": "Wij behouden ons het recht voor om deze Voorwaarden op elk moment te wijzigen. Als u de website na eventuele wijzigingen blijft gebruiken, geeft u aan dat u de nieuwe voorwaarden accepteert."
+      },
+      "section2": {
+        "title": "Gebruik van de website",
+        "subsection": {
+          "title": "Toegestaan ​​gebruik",
+          "content": "U mag de Website uitsluitend voor wettige doeleinden gebruiken. U stemt ermee in om het volgende niet te doen:",
+          "list": [
+            "Gebruik de Website op een manier die in strijd is met toepasselijke wet- of regelgeving",
+            "Poging om ongeoorloofde toegang te krijgen tot enig deel van de Website",
+            "De website of servers verstoren of verstoren",
+            "Upload of verzend virussen of kwaadaardige code",
+            "Verzamel of oogst informatie van de Website met behulp van geautomatiseerde middelen",
+            "Gebruik de website voor commerciële doeleinden zonder onze toestemming"
+          ]
+        }
+      },
+      "section3": {
+        "title": "Intellectuele eigendomsrechten",
+        "content": "De Website en de volledige inhoud, kenmerken en functionaliteit (inclusief maar niet beperkt tot alle informatie, software, tekst, displays, afbeeldingen, video en audio) zijn eigendom van SkillLinkup, haar licentiegevers of andere leveranciers van dergelijk materiaal.",
+        "content2": "U mag de inhoud niet reproduceren, distribueren, wijzigen, er afgeleide werken van maken, publiekelijk weergeven of exploiteren zonder onze uitdrukkelijke schriftelijke toestemming."
+      },
+      "section4": {
+        "title": "Door gebruikers gegenereerde inhoud",
+        "content": "Als u inhoud op de website plaatst (recensies, opmerkingen, feedback), verleent u ons een niet-exclusieve, wereldwijde, royaltyvrije licentie om dergelijke inhoud te gebruiken, reproduceren, wijzigen en weergeven.",
+        "content2": "U verklaart dat u eigenaar bent van de inhoud of over de noodzakelijke rechten beschikt om de inhoud in te dienen en dat deze geen rechten van derden of toepasselijke wetten schendt."
+      },
+      "section5": {
+        "title": "Links en diensten van derden",
+        "content": "De Website kan links bevatten naar websites of diensten van derden (freelanceplatforms, aangesloten partners). Wij zijn niet verantwoordelijk voor:",
+        "content2": "Uw gebruik van diensten van derden is op eigen risico en onderworpen aan hun algemene voorwaarden.",
+        "list": [
+          "De inhoud, het privacybeleid of de praktijken van websites van derden",
+          "Eventuele schade of verliezen veroorzaakt door uw gebruik van diensten van derden",
+          "De juistheid van informatie verstrekt door derden"
+        ]
+      },
+      "section6": {
+        "title": "Partnerrelaties",
+        "content": "SkillLinkup neemt deel aan affiliate marketingprogramma's. We kunnen commissies verdienen met in aanmerking komende aankopen gedaan via links op onze website. Zie onze",
+        "content2": "voor meer informatie.",
+        "linkText": "Openbaarmaking van partners"
+      },
+      "section7": {
+        "title": "Afwijzing van garanties",
+        "content": "DE WEBSITE WORDT GELEVERD OP EEN \"AS IS\" EN \"ZOALS BESCHIKBAAR\" BASIS ZONDER ENIGE GARANTIES, HETZIJ EXPLICIET OF IMPLICIET.",
+        "content2": "Wij garanderen niet dat:",
+        "list": [
+          "De Website zal ononderbroken of foutloos zijn",
+          "Gebreken zullen worden gecorrigeerd",
+          "De Website is vrij van virussen of schadelijke componenten",
+          "De verstrekte informatie is juist, volledig of actueel"
+        ]
+      },
+      "section8": {
+        "title": "Beperking van aansprakelijkheid",
+        "content": "VOOR ZOVER TOEGESTAAN DOOR DE WET IS SKILLLINKUP NIET AANSPRAKELIJK VOOR:",
+        "list": [
+          "Eventuele indirecte, incidentele, speciale of gevolgschade",
+          "Verlies van winst, gegevens of zakelijke kansen",
+          "Schade die voortvloeit uit uw gebruik of onvermogen om de Website te gebruiken",
+          "Vertrouwen op informatie verkregen van de Website"
+        ]
+      },
+      "section9": {
+        "title": "Schadeloosstelling",
+        "content": "U stemt ermee in om SkillLinkup en zijn dochterondernemingen schadeloos te stellen en te vrijwaren van alle claims, schade, verliezen of kosten die voortvloeien uit:",
+        "list": [
+          "Uw gebruik van de Website",
+          "Uw schending van deze Voorwaarden",
+          "Uw schending van rechten van derden",
+          "Uw inhoudsinzendingen"
+        ]
+      },
+      "section10": {
+        "title": "Nauwkeurigheid van informatie",
+        "content": "Wij streven ernaar om nauwkeurige en actuele informatie over freelanceplatforms te verstrekken. Echter:",
+        "list": [
+          "Platformfuncties, kosten en beleid kunnen zonder voorafgaande kennisgeving worden gewijzigd",
+          "Wij zijn niet verantwoordelijk voor de juistheid van informatie van derden",
+          "Recensies en vergelijkingen weerspiegelen onze meningen en onderzoeken op het moment van publicatie",
+          "U moet informatie rechtstreeks bij de platforms verifiëren voordat u beslissingen neemt"
+        ]
+      },
+      "section11": {
+        "title": "Beëindiging",
+        "content": "Wij behouden ons het recht voor om uw toegang tot de Website op elk moment en zonder voorafgaande kennisgeving te beëindigen of op te schorten vanwege gedrag dat naar onze mening in strijd is met deze Voorwaarden of schadelijk is voor andere gebruikers, ons of derden."
+      },
+      "section12": {
+        "title": "Toepasselijk recht",
+        "content": "Deze Voorwaarden worden beheerst door en geïnterpreteerd in overeenstemming met de wetten van Nederland, zonder rekening te houden met conflicterende wettelijke bepalingen."
+      },
+      "section13": {
+        "title": "Wijzigingen in de voorwaarden",
+        "content": "Wij behouden ons het recht voor om deze Voorwaarden op elk moment te wijzigen. Wijzigingen worden onmiddellijk na publicatie van kracht. Als u de Website na wijzigingen blijft gebruiken, betekent dit dat u akkoord gaat met de gewijzigde Voorwaarden."
+      },
+      "section14": {
+        "title": "Contactgegevens",
+        "content": "Als u vragen heeft over deze voorwaarden, kunt u contact met ons opnemen via:",
+        "email": "E-mail: legal@skilllinkup.com"
+      },
+      "section15": {
+        "title": "Deelbaarheid",
+        "content": "Als een bepaling van deze Voorwaarden niet-afdwingbaar of ongeldig blijkt te zijn, zal die bepaling worden beperkt of geëlimineerd tot het minimum dat noodzakelijk is, zodat de Voorwaarden voor het overige volledig van kracht blijven."
+      }
+    },
+    "title": "Servicevoorwaarden",
+    "lastUpdated": "Laatst bijgewerkt"
+  },
+  "disclosurePage": {
+    "metadata": {
+      "title": "Openbaarmaking van partners | VaardigheidLinkup",
+      "description": "Lees meer over de partnerpartnerschappen van SkillLinkup en hoe we de transparantie behouden."
+    },
+    "sections": {
+      "section1": {
+        "title": "Onze inzet voor transparantie",
+        "content": "Bij SkillLinkup geloven we in volledige transparantie met onze lezers. Op deze pagina worden onze partnerrelaties uitgelegd en hoe we inkomsten genereren, terwijl we ons blijven inzetten voor het geven van eerlijke, onpartijdige beoordelingen en aanbevelingen."
+      },
+      "section2": {
+        "title": "Wat zijn affiliatelinks?",
+        "content": "Affiliate links zijn speciale trackinglinks waarmee wij een commissie kunnen verdienen wanneer u doorklikt naar een platform en een aankoop doet of zich aanmeldt voor een dienst. Deze links ondersteunen ons werk zonder extra kosten voor u.",
+        "content2": "Wanneer je gebruik maakt van een affiliate link, blijft de prijs die je betaalt hetzelfde. Het platform betaalt ons eenvoudigweg een kleine commissie voor het verwijzen naar hun service."
+      },
+      "section3": {
+        "title": "Hoe wij affiliate-links gebruiken",
+        "content": "SkillLinkup neemt deel aan affiliate marketingprogramma's met verschillende freelance platforms en diensten, inclusief maar niet beperkt tot:",
+        "content2": "Niet alle links op onze website zijn affiliate links. We markeren affiliate-inhoud waar nodig duidelijk en bevelen alleen platforms en diensten aan waarvan we oprecht denken dat ze onze lezers ten goede kunnen komen.",
+        "list": [
+          "Opwerk",
+          "Vijfrr",
+          "Freelancer.com",
+          "Toptaal",
+          "99ontwerpen",
+          "Andere freelance marktplaatsen en tools"
+        ]
+      },
+      "section4": {
+        "title": "Onze redactionele onafhankelijkheid",
+        "content": "Hoewel we commissie verdienen van sommige platforms die we beoordelen, heeft dit geen invloed op onze redactionele inhoud. Onze toewijding aan u omvat:",
+        "list": [
+          "Eerlijke beoordelingen: we bieden onpartijdige, nauwkeurige beoordelingen op basis van grondig onderzoek en echte gebruikerservaringen",
+          "Geen Pay-to-Play: Platforms kunnen ons niet betalen om positieve recensies of hogere rankings te ontvangen",
+          "Evenwichtige dekking: we benadrukken zowel de voor- als nadelen van elk platform dat we beoordelen",
+          "Regelmatige updates: We werken onze inhoud regelmatig bij om veranderingen in platformfuncties en prijzen weer te geven",
+          "Gebruikersgerichte aanpak: onze aanbevelingen zijn gebaseerd op wat het beste is voor onze lezers, niet op commissietarieven"
+        ]
+      },
+      "section5": {
+        "title": "Hoe partnercommissies werken",
+        "content": "Wij kunnen een commissie verdienen wanneer:",
+        "content2": "De commissietarieven variëren per platform en zijn aan verandering onderhevig. Sommige platforms bieden eenmalige commissies, terwijl andere terugkerende commissies bieden voor lopende abonnementen.",
+        "list": [
+          "U klikt op een affiliate-link en meldt u aan voor een platform",
+          "Je doet een aankoop via een affiliate link",
+          "U abonneert zich op een dienst nadat u op onze link heeft geklikt"
+        ]
+      },
+      "section6": {
+        "title": "Uw steun helpt ons",
+        "content": "Wanneer u onze affiliate-links gebruikt, ondersteunt u SkillLinkup zonder extra kosten voor u. Deze commissies stellen ons in staat om:",
+        "content2": "Wij stellen uw steun en vertrouwen in onze aanbevelingen zeer op prijs.",
+        "list": [
+          "Blijf gratis, uitgebreide platformrecensies en vergelijkingen aanbieden",
+          "Onderhouden en verbeteren van onze website",
+          "Onderzoek en test nieuwe freelanceplatforms",
+          "Maak handige handleidingen, tutorials en bronnen",
+          "Houd onze inhoud actueel en accuraat"
+        ]
+      },
+      "section7": {
+        "title": "FTC-naleving",
+        "content": "SkillLinkup voldoet aan de richtlijnen van de Federal Trade Commission (FTC) met betrekking tot het gebruik van aanbevelingen en getuigenissen in advertenties. We maken onze partnerrelaties bekend in overeenstemming met 16 CFR Part 255 van de FTC: \"Gidsen betreffende het gebruik van aanbevelingen en getuigenissen in advertenties.\""
+      },
+      "section8": {
+        "title": "Advertenties van derden",
+        "content": "Naast affiliatelinks kunnen we advertenties van netwerken van derden weergeven. Deze advertenties zijn duidelijk gelabeld en hebben geen invloed op onze redactionele inhoud of platformrangschikking."
+      },
+      "section9": {
+        "title": "Geen garanties",
+        "content": "Hoewel we ernaar streven nauwkeurige informatie te verstrekken, kunnen we het volgende niet garanderen:",
+        "content2": "Uw succes op elk freelanceplatform hangt van vele factoren af, waaronder uw vaardigheden, inzet, marktvraag en het beleid van het platform.",
+        "list": [
+          "Dat u inkomsten zult verdienen met behulp van de platforms die wij aanbevelen",
+          "Specifieke resultaten of uitkomsten van het gebruik van een freelance platform",
+          "De functies, kosten of het beleid van dat platform veranderen niet"
+        ]
+      },
+      "section10": {
+        "title": "Due diligence",
+        "content": "Wij moedigen u aan om:",
+        "list": [
+          "Voer uw eigen onderzoek uit voordat u zich aanmeldt voor een platform",
+          "Lees de servicevoorwaarden en de tariefstructuur van het platform",
+          "Vergelijk meerdere platforms om de beste oplossing voor uw behoeften te vinden",
+          "Begin met gratis proefversies of basisabonnementen, indien beschikbaar",
+          "Lees recente gebruikersrecensies uit meerdere bronnen"
+        ]
+      },
+      "section11": {
+        "title": "Updates van deze openbaarmaking",
+        "content": "We kunnen deze Affiliate Disclosure van tijd tot tijd bijwerken om wijzigingen in onze partnerpartnerschappen of ons beleid weer te geven. De datum 'Laatst bijgewerkt' bovenaan deze pagina geeft aan wanneer er voor het laatst wijzigingen zijn aangebracht."
+      },
+      "section12": {
+        "title": "Vragen of zorgen?",
+        "content": "Als u vragen heeft over onze partnerrelaties of deze openbaarmaking, neem dan contact met ons op via:",
+        "content2": "Wij waarderen uw vertrouwen en streven ernaar de transparantie in al onze zakelijke praktijken te behouden.",
+        "email": "E-mail: openbaarmaking@skilllinkup.com"
+      },
+      "section13": {
+        "title": "Bedankt voor uw steun",
+        "content": "Door onze affiliate-links te gebruiken, helpt u ons gratis, waardevolle inhoud aan de freelance-gemeenschap te blijven bieden. We waarderen uw vertrouwen en steun in onze missie om freelancers te helpen de beste platforms voor hun carrière te vinden."
+      }
+    },
+    "title": "Openbaarmaking van partners",
+    "lastUpdated": "Laatst bijgewerkt"
   }
 }

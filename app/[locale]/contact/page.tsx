@@ -2,10 +2,16 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
 export default function ContactPage() {
+  const t = useTranslations("contactPage");
+  const params = useParams();
+  const locale = params.locale as string;
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -23,7 +29,7 @@ export default function ContactPage() {
     // Simulate form submission
     setTimeout(() => {
       setStatus("success");
-      setMessage("Thanks for reaching out! We'll get back to you within 24 hours.");
+      setMessage(t("form.successMessage"));
       setFormData({ name: "", email: "", subject: "", message: "" });
 
       setTimeout(() => {
@@ -49,10 +55,10 @@ export default function ContactPage() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl font-heading font-bold text-gray-900 dark:text-white sm:text-5xl mb-4">
-                Get in Touch
+                {t("hero.title")}
               </h1>
               <p className="text-lg text-gray-700 dark:text-gray-300">
-                Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+                {t("hero.subtitle")}
               </p>
             </div>
           </div>
@@ -65,7 +71,7 @@ export default function ContactPage() {
               {/* Contact Info */}
               <div>
                 <h2 className="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-6">
-                  Contact Information
+                  {t("contactInfo.heading")}
                 </h2>
 
                 <div className="space-y-6 mb-8">
@@ -77,10 +83,10 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="font-heading font-semibold text-gray-900 dark:text-white mb-1">
-                        Email
+                        {t("contactInfo.email")}
                       </h3>
                       <a href="mailto:hello@skilllinkup.com" className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-accent transition-colors">
-                        hello@skilllinkup.com
+                        {t("contactInfo.emailAddress")}
                       </a>
                     </div>
                   </div>
@@ -93,10 +99,10 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="font-heading font-semibold text-gray-900 dark:text-white mb-1">
-                        Response Time
+                        {t("contactInfo.responseTime")}
                       </h3>
                       <p className="text-gray-700 dark:text-gray-300">
-                        We typically respond within 24 hours
+                        {t("contactInfo.responseTimeText")}
                       </p>
                     </div>
                   </div>
@@ -109,10 +115,10 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="font-heading font-semibold text-gray-900 dark:text-white mb-1">
-                        Support
+                        {t("contactInfo.support")}
                       </h3>
                       <p className="text-gray-700 dark:text-gray-300">
-                        Monday - Friday, 9am - 5pm EST
+                        {t("contactInfo.supportHours")}
                       </p>
                     </div>
                   </div>
@@ -121,16 +127,16 @@ export default function ContactPage() {
                 {/* FAQs Link */}
                 <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
                   <h3 className="font-heading font-bold text-gray-900 dark:text-white mb-3">
-                    Looking for quick answers?
+                    {t("faq.heading")}
                   </h3>
                   <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
-                    Check out our frequently asked questions for instant help.
+                    {t("faq.text")}
                   </p>
                   <Link
-                    href="/faq"
+                    href={`/${locale}/faq`}
                     className="inline-flex items-center gap-2 text-primary dark:text-accent hover:text-primary-dark dark:hover:text-accent/90 font-heading font-semibold transition-colors"
                   >
-                    Visit FAQ
+                    {t("faq.button")}
                     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
@@ -141,13 +147,13 @@ export default function ContactPage() {
               {/* Contact Form */}
               <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-8 border border-gray-200 dark:border-gray-700">
                 <h2 className="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-6">
-                  Send us a Message
+                  {t("form.heading")}
                 </h2>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-heading font-semibold text-gray-900 dark:text-white mb-2">
-                      Your Name *
+                      {t("form.nameLabel")}
                     </label>
                     <input
                       type="text"
@@ -158,13 +164,13 @@ export default function ContactPage() {
                       required
                       disabled={status === "loading"}
                       className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-3 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-accent disabled:opacity-50"
-                      placeholder="John Doe"
+                      placeholder={t("form.namePlaceholder")}
                     />
                   </div>
 
                   <div>
                     <label htmlFor="email" className="block text-sm font-heading font-semibold text-gray-900 dark:text-white mb-2">
-                      Email Address *
+                      {t("form.emailLabel")}
                     </label>
                     <input
                       type="email"
@@ -175,13 +181,13 @@ export default function ContactPage() {
                       required
                       disabled={status === "loading"}
                       className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-3 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-accent disabled:opacity-50"
-                      placeholder="john@example.com"
+                      placeholder={t("form.emailPlaceholder")}
                     />
                   </div>
 
                   <div>
                     <label htmlFor="subject" className="block text-sm font-heading font-semibold text-gray-900 dark:text-white mb-2">
-                      Subject *
+                      {t("form.subjectLabel")}
                     </label>
                     <select
                       id="subject"
@@ -192,19 +198,19 @@ export default function ContactPage() {
                       disabled={status === "loading"}
                       className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-accent disabled:opacity-50"
                     >
-                      <option value="">Select a subject</option>
-                      <option value="general">General Inquiry</option>
-                      <option value="platform">Platform Question</option>
-                      <option value="review">Review Request</option>
-                      <option value="partnership">Partnership</option>
-                      <option value="feedback">Feedback</option>
-                      <option value="other">Other</option>
+                      <option value="">{t("form.selectSubject")}</option>
+                      <option value="general">{t("form.subjectGeneral")}</option>
+                      <option value="platform">{t("form.subjectPlatform")}</option>
+                      <option value="review">{t("form.subjectReview")}</option>
+                      <option value="partnership">{t("form.subjectPartnership")}</option>
+                      <option value="feedback">{t("form.subjectFeedback")}</option>
+                      <option value="other">{t("form.subjectOther")}</option>
                     </select>
                   </div>
 
                   <div>
                     <label htmlFor="message" className="block text-sm font-heading font-semibold text-gray-900 dark:text-white mb-2">
-                      Message *
+                      {t("form.messageLabel")}
                     </label>
                     <textarea
                       id="message"
@@ -215,7 +221,7 @@ export default function ContactPage() {
                       disabled={status === "loading"}
                       rows={6}
                       className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-3 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-accent disabled:opacity-50 resize-none"
-                      placeholder="Tell us how we can help you..."
+                      placeholder={t("form.messagePlaceholder")}
                     />
                   </div>
 
@@ -224,7 +230,7 @@ export default function ContactPage() {
                     disabled={status === "loading"}
                     className="w-full rounded-lg bg-primary hover:bg-primary-dark dark:bg-accent dark:hover:bg-accent/90 px-8 py-3 font-heading font-semibold text-white transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {status === "loading" ? "Sending..." : "Send Message"}
+                    {status === "loading" ? t("form.sending") : t("form.sendButton")}
                   </button>
 
                   {message && (

@@ -553,6 +553,50 @@
       "ctaContact": "Get in Touch"
     }
   },
+  "contactPage": {
+    "metadata": {
+      "title": "Contact Us - SkillLinkup",
+      "description": "Get in touch with SkillLinkup. We're here to help with platform questions, partnerships, and feedback."
+    },
+    "hero": {
+      "title": "Get in Touch",
+      "subtitle": "Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible."
+    },
+    "contactInfo": {
+      "heading": "Contact Information",
+      "email": "Email",
+      "emailAddress": "hello@skilllinkup.com",
+      "responseTime": "Response Time",
+      "responseTimeText": "We typically respond within 24 hours",
+      "support": "Support",
+      "supportHours": "Monday - Friday, 9am - 5pm EST"
+    },
+    "faq": {
+      "heading": "Looking for quick answers?",
+      "text": "Check out our frequently asked questions for instant help.",
+      "button": "Visit FAQ"
+    },
+    "form": {
+      "heading": "Send us a Message",
+      "nameLabel": "Your Name *",
+      "namePlaceholder": "John Doe",
+      "emailLabel": "Email Address *",
+      "emailPlaceholder": "john@example.com",
+      "subjectLabel": "Subject *",
+      "selectSubject": "Select a subject",
+      "subjectGeneral": "General Inquiry",
+      "subjectPlatform": "Platform Question",
+      "subjectReview": "Review Request",
+      "subjectPartnership": "Partnership",
+      "subjectFeedback": "Feedback",
+      "subjectOther": "Other",
+      "messageLabel": "Message *",
+      "messagePlaceholder": "Tell us how we can help you...",
+      "sendButton": "Send Message",
+      "sending": "Sending...",
+      "successMessage": "Thanks for reaching out! We'll get back to you within 24 hours."
+    }
+  },
   "invoiceGenerator": {
     "breadcrumb": {
       "home": "Home",
@@ -662,6 +706,339 @@
       "clearConfirm": "Clear all fields? This will reset the invoice.",
       "storageLoadError": "Error loading from storage:",
       "storageSaveError": "Error saving to storage:"
+    }
+  },
+  "privacyPage": {
+    "metadata": {
+      "title": "Privacy Policy | SkillLinkup",
+      "description": "Learn how SkillLinkup collects, uses, and protects your personal information."
+    },
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated",
+    "intro": "Welcome to SkillLinkup (\"we,\" \"our,\" or \"us\"). We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website.",
+    "intro2": "Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access the site.",
+    "sections": {
+      "section1": {
+        "title": "Introduction",
+        "content": "Welcome to SkillLinkup (\"we,\" \"our,\" or \"us\"). We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website.",
+        "content2": "Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access the site."
+      },
+      "section2": {
+        "title": "Information We Collect",
+        "subsection1": {
+          "title": "Personal Information You Disclose to Us",
+          "content": "We collect personal information that you voluntarily provide to us when you:",
+          "list": [
+            "Subscribe to our newsletter",
+            "Fill out contact forms",
+            "Participate in surveys or promotions",
+            "Otherwise contact us"
+          ],
+          "content2": "The personal information we collect may include:",
+          "list2": [
+            "Name and contact data (email address)",
+            "Message content (when you contact us)"
+          ]
+        },
+        "subsection2": {
+          "title": "Information Automatically Collected",
+          "content": "We automatically collect certain information when you visit, use, or navigate our website. This information does not reveal your specific identity but may include:",
+          "list": [
+            "Device and usage information (IP address, browser type, operating system)",
+            "Location data (country, region)",
+            "Log and usage data (pages viewed, time spent on pages)"
+          ]
+        }
+      },
+      "section3": {
+        "title": "How We Use Your Information",
+        "content": "We use the information we collect or receive:",
+        "list": [
+          "To send you marketing and promotional communications (with your consent)",
+          "To respond to your inquiries and solve any potential issues",
+          "To send administrative information (updates, security alerts)",
+          "To improve our website and services",
+          "To analyze usage trends and optimize user experience",
+          "To comply with legal obligations"
+        ]
+      },
+      "section4": {
+        "title": "Sharing Your Information",
+        "content": "We may share or transfer your information in the following situations:",
+        "list": [
+          "Service Providers: We may share your information with third-party service providers who perform services for us (email delivery, analytics, hosting)",
+          "Business Transfers: We may share or transfer your information in connection with a merger, sale, or acquisition",
+          "Legal Requirements: We may disclose your information where required by law or to protect our rights"
+        ],
+        "content2": "We do not sell your personal information to third parties."
+      },
+      "section5": {
+        "title": "Cookies and Tracking Technologies",
+        "content": "We may use cookies and similar tracking technologies to access or store information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent."
+      },
+      "section6": {
+        "title": "Third-Party Links",
+        "content": "Our website may contain links to third-party websites. We are not responsible for the privacy practices of these external sites. We encourage you to review their privacy policies."
+      },
+      "section7": {
+        "title": "Data Security",
+        "content": "We have implemented appropriate technical and organizational security measures to protect your personal information. However, no electronic transmission or storage method is 100% secure, and we cannot guarantee absolute security."
+      },
+      "section8": {
+        "title": "Your Privacy Rights",
+        "content": "Depending on your location, you may have the following rights:",
+        "list": [
+          "Access to your personal information",
+          "Correction of inaccurate data",
+          "Deletion of your personal information",
+          "Withdrawal of consent (for newsletter subscriptions)",
+          "Objection to processing of your data"
+        ],
+        "content2": "To exercise these rights, please contact us using the information provided below."
+      },
+      "section9": {
+        "title": "Data Retention",
+        "content": "We will retain your personal information only for as long as necessary to fulfill the purposes outlined in this Privacy Policy, unless a longer retention period is required by law."
+      },
+      "section10": {
+        "title": "Children's Privacy",
+        "content": "Our website is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13."
+      },
+      "section11": {
+        "title": "Updates to This Policy",
+        "content": "We may update this privacy policy from time to time. The updated version will be indicated by an updated \"Last updated\" date at the top of this page."
+      },
+      "section12": {
+        "title": "Contact Us",
+        "content": "If you have questions or comments about this privacy policy, please contact us at:",
+        "email": "Email: privacy@skilllinkup.com"
+      }
+    }
+  },
+  "termsPage": {
+    "metadata": {
+      "title": "Terms of Service | SkillLinkup",
+      "description": "Terms and conditions for using SkillLinkup services."
+    },
+    "title": "Terms of Service",
+    "lastUpdated": "Last updated",
+    "sections": {
+      "section1": {
+        "title": "Agreement to Terms",
+        "content": "By accessing or using SkillLinkup (\"the Website\"), you agree to be bound by these Terms of Service (\"Terms\"). If you do not agree to these Terms, please do not use the Website.",
+        "content2": "We reserve the right to modify these Terms at any time. Your continued use of the Website following any changes indicates your acceptance of the new Terms."
+      },
+      "section2": {
+        "title": "Use of the Website",
+        "subsection": {
+          "title": "Permitted Use",
+          "content": "You may use the Website for lawful purposes only. You agree not to:",
+          "list": [
+            "Use the Website in any way that violates applicable laws or regulations",
+            "Attempt to gain unauthorized access to any portion of the Website",
+            "Interfere with or disrupt the Website or servers",
+            "Upload or transmit viruses or malicious code",
+            "Collect or harvest any information from the Website using automated means",
+            "Use the Website for any commercial purposes without our consent"
+          ]
+        }
+      },
+      "section3": {
+        "title": "Intellectual Property Rights",
+        "content": "The Website and its entire contents, features, and functionality (including but not limited to all information, software, text, displays, images, video, and audio) are owned by SkillLinkup, its licensors, or other providers of such material.",
+        "content2": "You may not reproduce, distribute, modify, create derivative works of, publicly display, or exploit any of the content without our express written permission."
+      },
+      "section4": {
+        "title": "User-Generated Content",
+        "content": "If you submit any content to the Website (reviews, comments, feedback), you grant us a non-exclusive, worldwide, royalty-free license to use, reproduce, modify, and display such content.",
+        "content2": "You represent that you own or have the necessary rights to submit the content and that it does not violate any third-party rights or applicable laws."
+      },
+      "section5": {
+        "title": "Third-Party Links and Services",
+        "content": "The Website may contain links to third-party websites or services (freelance platforms, affiliate partners). We are not responsible for:",
+        "list": [
+          "The content, privacy policies, or practices of third-party websites",
+          "Any damages or losses caused by your use of third-party services",
+          "The accuracy of information provided by third parties"
+        ],
+        "content2": "Your use of third-party services is at your own risk and subject to their terms and conditions."
+      },
+      "section6": {
+        "title": "Affiliate Relationships",
+        "content": "SkillLinkup participates in affiliate marketing programs. We may earn commissions from qualifying purchases made through links on our Website. See our",
+        "linkText": "Affiliate Disclosure",
+        "content2": "for more information."
+      },
+      "section7": {
+        "title": "Disclaimer of Warranties",
+        "content": "THE WEBSITE IS PROVIDED ON AN \"AS IS\" AND \"AS AVAILABLE\" BASIS WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED.",
+        "content2": "We do not warrant that:",
+        "list": [
+          "The Website will be uninterrupted or error-free",
+          "Defects will be corrected",
+          "The Website is free of viruses or harmful components",
+          "The information provided is accurate, complete, or current"
+        ]
+      },
+      "section8": {
+        "title": "Limitation of Liability",
+        "content": "TO THE FULLEST EXTENT PERMITTED BY LAW, SKILLLINKUP SHALL NOT BE LIABLE FOR:",
+        "list": [
+          "Any indirect, incidental, special, or consequential damages",
+          "Loss of profits, data, or business opportunities",
+          "Damages arising from your use of or inability to use the Website",
+          "Reliance on any information obtained from the Website"
+        ]
+      },
+      "section9": {
+        "title": "Indemnification",
+        "content": "You agree to indemnify and hold harmless SkillLinkup and its affiliates from any claims, damages, losses, or expenses arising from:",
+        "list": [
+          "Your use of the Website",
+          "Your violation of these Terms",
+          "Your violation of any third-party rights",
+          "Your content submissions"
+        ]
+      },
+      "section10": {
+        "title": "Information Accuracy",
+        "content": "We strive to provide accurate and up-to-date information about freelance platforms. However:",
+        "list": [
+          "Platform features, fees, and policies may change without notice",
+          "We are not responsible for the accuracy of third-party information",
+          "Reviews and comparisons reflect our opinions and research at the time of publication",
+          "You should verify information directly with the platforms before making decisions"
+        ]
+      },
+      "section11": {
+        "title": "Termination",
+        "content": "We reserve the right to terminate or suspend your access to the Website at any time, without notice, for conduct that we believe violates these Terms or is harmful to other users, us, or third parties."
+      },
+      "section12": {
+        "title": "Governing Law",
+        "content": "These Terms shall be governed by and construed in accordance with the laws of the Netherlands, without regard to its conflict of law provisions."
+      },
+      "section13": {
+        "title": "Changes to Terms",
+        "content": "We reserve the right to modify these Terms at any time. Changes will be effective immediately upon posting. Your continued use of the Website after changes constitutes acceptance of the modified Terms."
+      },
+      "section14": {
+        "title": "Contact Information",
+        "content": "If you have any questions about these Terms, please contact us at:",
+        "email": "Email: legal@skilllinkup.com"
+      },
+      "section15": {
+        "title": "Severability",
+        "content": "If any provision of these Terms is found to be unenforceable or invalid, that provision shall be limited or eliminated to the minimum extent necessary so that the Terms shall otherwise remain in full force and effect."
+      }
+    }
+  },
+  "disclosurePage": {
+    "metadata": {
+      "title": "Affiliate Disclosure | SkillLinkup",
+      "description": "Learn about SkillLinkup's affiliate partnerships and how we maintain transparency."
+    },
+    "title": "Affiliate Disclosure",
+    "lastUpdated": "Last updated",
+    "sections": {
+      "section1": {
+        "title": "Our Commitment to Transparency",
+        "content": "At SkillLinkup, we believe in complete transparency with our readers. This page explains our affiliate relationships and how we earn revenue while maintaining our commitment to providing honest, unbiased reviews and recommendations."
+      },
+      "section2": {
+        "title": "What Are Affiliate Links?",
+        "content": "Affiliate links are special tracking links that allow us to earn a commission when you click through to a platform and make a purchase or sign up for a service. These links help support our work at no additional cost to you.",
+        "content2": "When you use an affiliate link, the price you pay remains the same. The platform simply pays us a small commission for referring you to their service."
+      },
+      "section3": {
+        "title": "How We Use Affiliate Links",
+        "content": "SkillLinkup participates in affiliate marketing programs with various freelance platforms and services, including but not limited to:",
+        "list": [
+          "Upwork",
+          "Fiverr",
+          "Freelancer.com",
+          "Toptal",
+          "99designs",
+          "Other freelance marketplaces and tools"
+        ],
+        "content2": "Not all links on our website are affiliate links. We clearly mark affiliate content where appropriate and only recommend platforms and services we genuinely believe can benefit our readers."
+      },
+      "section4": {
+        "title": "Our Editorial Independence",
+        "content": "While we do earn commissions from some platforms we review, this does not influence our editorial content. Our commitment to you includes:",
+        "list": [
+          "Honest Reviews: We provide unbiased, accurate reviews based on thorough research and real user experiences",
+          "No Pay-to-Play: Platforms cannot pay us to receive positive reviews or higher rankings",
+          "Balanced Coverage: We highlight both pros and cons of every platform we review",
+          "Regular Updates: We update our content regularly to reflect changes in platform features and pricing",
+          "User-First Approach: Our recommendations are based on what's best for our readers, not commission rates"
+        ]
+      },
+      "section5": {
+        "title": "How Affiliate Commissions Work",
+        "content": "We may earn a commission when:",
+        "list": [
+          "You click an affiliate link and sign up for a platform",
+          "You make a purchase through an affiliate link",
+          "You subscribe to a service after clicking our link"
+        ],
+        "content2": "Commission rates vary by platform and are subject to change. Some platforms offer one-time commissions, while others provide recurring commissions for ongoing subscriptions."
+      },
+      "section6": {
+        "title": "Your Support Helps Us",
+        "content": "When you use our affiliate links, you help support SkillLinkup at no extra cost to you. These commissions allow us to:",
+        "list": [
+          "Continue providing free, comprehensive platform reviews and comparisons",
+          "Maintain and improve our website",
+          "Research and test new freelance platforms",
+          "Create helpful guides, tutorials, and resources",
+          "Keep our content up-to-date and accurate"
+        ],
+        "content2": "We deeply appreciate your support and trust in our recommendations."
+      },
+      "section7": {
+        "title": "FTC Compliance",
+        "content": "SkillLinkup complies with the Federal Trade Commission's (FTC) guidelines concerning the use of endorsements and testimonials in advertising. We disclose our affiliate relationships in accordance with the FTC's 16 CFR Part 255: \"Guides Concerning the Use of Endorsements and Testimonials in Advertising.\""
+      },
+      "section8": {
+        "title": "Third-Party Advertising",
+        "content": "In addition to affiliate links, we may display advertisements from third-party networks. These ads are clearly labeled and do not influence our editorial content or platform rankings."
+      },
+      "section9": {
+        "title": "No Guarantees",
+        "content": "While we strive to provide accurate information, we cannot guarantee:",
+        "list": [
+          "That you will earn income using the platforms we recommend",
+          "Specific results or outcomes from using any freelance platform",
+          "That platform features, fees, or policies won't change"
+        ],
+        "content2": "Your success on any freelance platform depends on many factors including your skills, effort, market demand, and the platform's policies."
+      },
+      "section10": {
+        "title": "Due Diligence",
+        "content": "We encourage you to:",
+        "list": [
+          "Conduct your own research before signing up for any platform",
+          "Read the platform's terms of service and fee structure",
+          "Compare multiple platforms to find the best fit for your needs",
+          "Start with free trials or basic plans when available",
+          "Read recent user reviews from multiple sources"
+        ]
+      },
+      "section11": {
+        "title": "Updates to This Disclosure",
+        "content": "We may update this Affiliate Disclosure from time to time to reflect changes in our affiliate partnerships or policies. The \"Last updated\" date at the top of this page indicates when changes were last made."
+      },
+      "section12": {
+        "title": "Questions or Concerns?",
+        "content": "If you have any questions about our affiliate relationships or this disclosure, please contact us at:",
+        "email": "Email: disclosure@skilllinkup.com",
+        "content2": "We value your trust and are committed to maintaining transparency in all our business practices."
+      },
+      "section13": {
+        "title": "Thank You for Your Support",
+        "content": "By using our affiliate links, you're helping us continue to provide free, valuable content to the freelance community. We appreciate your trust and support in our mission to help freelancers find the best platforms for their careers."
+      }
     }
   }
 }

@@ -3,9 +3,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
 
 export function Footer() {
   const t = useTranslations();
+  const params = useParams();
+  const locale = params.locale as string;
   const currentYear = new Date().getFullYear();
 
   return (
@@ -14,7 +17,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
           {/* Brand */}
           <div className="md:col-span-1">
-            <Link href="/" className="inline-block">
+            <Link href={`/${locale}`} className="inline-block">
               <Image
                 src="/images/logo/skilllinkup-transparant-rozepunt.webp"
                 alt="SkillLinkup"
@@ -33,22 +36,22 @@ export function Footer() {
             <h3 className="font-heading font-bold mb-4 text-text-primary dark:text-white">{t('footer.platforms')}</h3>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link href="/platforms" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
+                <Link href={`/${locale}/platforms`} className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
                   {t('footer.allPlatforms')}
                 </Link>
               </li>
               <li>
-                <Link href="/platforms/upwork" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
+                <Link href={`/${locale}/platforms/upwork`} className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
                   {t('footer.upworkReview')}
                 </Link>
               </li>
               <li>
-                <Link href="/platforms/fiverr" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
+                <Link href={`/${locale}/platforms/fiverr`} className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
                   {t('footer.fiverrReview')}
                 </Link>
               </li>
               <li>
-                <Link href="/comparisons" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
+                <Link href={`/${locale}/comparisons`} className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
                   {t('footer.platformComparisons')}
                 </Link>
               </li>
@@ -60,22 +63,22 @@ export function Footer() {
             <h3 className="font-heading font-bold mb-4 text-text-primary dark:text-white">{t('footer.resources')}</h3>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link href="/guides" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
+                <Link href={`/${locale}/guides`} className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
                   {t('footer.guidesTutorials')}
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
+                <Link href={`/${locale}/blog`} className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
                   {t('footer.blog')}
                 </Link>
               </li>
               <li>
-                <Link href="/tools" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
+                <Link href={`/${locale}/tools`} className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
                   {t('footer.freelanceTools')}
                 </Link>
               </li>
               <li>
-                <Link href="/newsletter" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
+                <Link href={`/${locale}/newsletter`} className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
                   {t('footer.newsletterLink')}
                 </Link>
               </li>
@@ -87,27 +90,27 @@ export function Footer() {
             <h3 className="font-heading font-bold mb-4 text-text-primary dark:text-white">{t('footer.company')}</h3>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link href="/about" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
+                <Link href={`/${locale}/about`} className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
                   {t('footer.aboutUs')}
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
+                <Link href={`/${locale}/contact`} className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
                   {t('footer.contact')}
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
+                <Link href={`/${locale}/privacy`} className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
                   {t('footer.privacyPolicy')}
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
+                <Link href={`/${locale}/terms`} className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
                   {t('footer.termsOfService')}
                 </Link>
               </li>
               <li>
-                <Link href="/disclosure" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
+                <Link href={`/${locale}/disclosure`} className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
                   {t('footer.affiliateDisclosure')}
                 </Link>
               </li>

@@ -1,23 +1,41 @@
-import { Metadata } from "next";
+import { getTranslations } from 'next-intl/server';
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
-export const metadata: Metadata = {
-  title: "Affiliate Disclosure | SkillLinkup",
-  description: "Learn about SkillLinkup's affiliate partnerships and how we maintain transparency.",
-};
+interface PageProps {
+  params: Promise<{ locale: string }>;
+}
 
-export default function DisclosurePage() {
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'disclosurePage.metadata' });
+
+  return {
+    title: t('title'),
+    description: t('description'),
+  };
+}
+
+export default async function DisclosurePage({ params }: PageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'disclosurePage' });
+
+  // Format date with locale
+  const lastUpdated = new Date().toLocaleDateString(
+    locale === 'nl' ? 'nl-NL' : 'en-US',
+    { year: 'numeric', month: 'long', day: 'numeric' }
+  );
+
   return (
     <>
       <Header />
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 py-16 max-w-4xl">
         <h1 className="text-4xl font-heading font-bold text-gray-900 dark:text-white mb-4">
-          Affiliate Disclosure
+          {t('title')}
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mb-8">
-          Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+          {t('lastUpdated')}: {lastUpdated}
         </p>
 
         <div className="prose prose-lg dark:prose-invert max-w-none
@@ -32,178 +50,169 @@ export default function DisclosurePage() {
           prose-a:hover:text-primary-dark dark:prose-a:hover:text-accent/90">
           <section className="mb-8">
             <h2 className="">
-              Our Commitment to Transparency
+              {t('sections.section1.title')}
             </h2>
             <p className="">
-              At SkillLinkup, we believe in complete transparency with our readers. This page explains our affiliate relationships and how we earn revenue while maintaining our commitment to providing honest, unbiased reviews and recommendations.
+              {t('sections.section1.content')}
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              What Are Affiliate Links?
+              {t('sections.section2.title')}
             </h2>
             <p className="">
-              Affiliate links are special tracking links that allow us to earn a commission when you click through to a platform and make a purchase or sign up for a service. These links help support our work at no additional cost to you.
+              {t('sections.section2.content')}
             </p>
             <p className="">
-              When you use an affiliate link, the price you pay remains the same. The platform simply pays us a small commission for referring you to their service.
+              {t('sections.section2.content2')}
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              How We Use Affiliate Links
+              {t('sections.section3.title')}
             </h2>
             <p className="">
-              SkillLinkup participates in affiliate marketing programs with various freelance platforms and services, including but not limited to:
+              {t('sections.section3.content')}
             </p>
             <ul className="">
-              <li>Upwork</li>
-              <li>Fiverr</li>
-              <li>Freelancer.com</li>
-              <li>Toptal</li>
-              <li>99designs</li>
-              <li>Other freelance marketplaces and tools</li>
+              {(t.raw('sections.section3.list') as string[]).map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
             </ul>
             <p className="">
-              Not all links on our website are affiliate links. We clearly mark affiliate content where appropriate and only recommend platforms and services we genuinely believe can benefit our readers.
+              {t('sections.section3.content2')}
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              Our Editorial Independence
+              {t('sections.section4.title')}
             </h2>
             <p className="">
-              While we do earn commissions from some platforms we review, this does not influence our editorial content. Our commitment to you includes:
+              {t('sections.section4.content')}
             </p>
             <ul className="">
-              <li><strong>Honest Reviews:</strong> We provide unbiased, accurate reviews based on thorough research and real user experiences</li>
-              <li><strong>No Pay-to-Play:</strong> Platforms cannot pay us to receive positive reviews or higher rankings</li>
-              <li><strong>Balanced Coverage:</strong> We highlight both pros and cons of every platform we review</li>
-              <li><strong>Regular Updates:</strong> We update our content regularly to reflect changes in platform features and pricing</li>
-              <li><strong>User-First Approach:</strong> Our recommendations are based on what's best for our readers, not commission rates</li>
+              {(t.raw('sections.section4.list') as string[]).map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
             </ul>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              How Affiliate Commissions Work
+              {t('sections.section5.title')}
             </h2>
             <p className="">
-              We may earn a commission when:
+              {t('sections.section5.content')}
             </p>
             <ul className="">
-              <li>You click an affiliate link and sign up for a platform</li>
-              <li>You make a purchase through an affiliate link</li>
-              <li>You subscribe to a service after clicking our link</li>
+              {(t.raw('sections.section5.list') as string[]).map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
             </ul>
             <p className="">
-              Commission rates vary by platform and are subject to change. Some platforms offer one-time commissions, while others provide recurring commissions for ongoing subscriptions.
+              {t('sections.section5.content2')}
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              Your Support Helps Us
+              {t('sections.section6.title')}
             </h2>
             <p className="">
-              When you use our affiliate links, you help support SkillLinkup at no extra cost to you. These commissions allow us to:
+              {t('sections.section6.content')}
             </p>
             <ul className="">
-              <li>Continue providing free, comprehensive platform reviews and comparisons</li>
-              <li>Maintain and improve our website</li>
-              <li>Research and test new freelance platforms</li>
-              <li>Create helpful guides, tutorials, and resources</li>
-              <li>Keep our content up-to-date and accurate</li>
+              {(t.raw('sections.section6.list') as string[]).map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
             </ul>
             <p className="">
-              We deeply appreciate your support and trust in our recommendations.
+              {t('sections.section6.content2')}
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              FTC Compliance
+              {t('sections.section7.title')}
             </h2>
             <p className="">
-              SkillLinkup complies with the Federal Trade Commission's (FTC) guidelines concerning the use of endorsements and testimonials in advertising. We disclose our affiliate relationships in accordance with the FTC's 16 CFR Part 255: "Guides Concerning the Use of Endorsements and Testimonials in Advertising."
+              {t('sections.section7.content')}
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              Third-Party Advertising
+              {t('sections.section8.title')}
             </h2>
             <p className="">
-              In addition to affiliate links, we may display advertisements from third-party networks. These ads are clearly labeled and do not influence our editorial content or platform rankings.
+              {t('sections.section8.content')}
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              No Guarantees
+              {t('sections.section9.title')}
             </h2>
             <p className="">
-              While we strive to provide accurate information, we cannot guarantee:
+              {t('sections.section9.content')}
             </p>
             <ul className="">
-              <li>That you will earn income using the platforms we recommend</li>
-              <li>Specific results or outcomes from using any freelance platform</li>
-              <li>That platform features, fees, or policies won't change</li>
+              {(t.raw('sections.section9.list') as string[]).map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
             </ul>
             <p className="">
-              Your success on any freelance platform depends on many factors including your skills, effort, market demand, and the platform's policies.
+              {t('sections.section9.content2')}
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              Due Diligence
+              {t('sections.section10.title')}
             </h2>
             <p className="">
-              We encourage you to:
+              {t('sections.section10.content')}
             </p>
             <ul className="">
-              <li>Conduct your own research before signing up for any platform</li>
-              <li>Read the platform's terms of service and fee structure</li>
-              <li>Compare multiple platforms to find the best fit for your needs</li>
-              <li>Start with free trials or basic plans when available</li>
-              <li>Read recent user reviews from multiple sources</li>
+              {(t.raw('sections.section10.list') as string[]).map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
             </ul>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              Updates to This Disclosure
+              {t('sections.section11.title')}
             </h2>
             <p className="">
-              We may update this Affiliate Disclosure from time to time to reflect changes in our affiliate partnerships or policies. The "Last updated" date at the top of this page indicates when changes were last made.
+              {t('sections.section11.content')}
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              Questions or Concerns?
+              {t('sections.section12.title')}
             </h2>
             <p className="">
-              If you have any questions about our affiliate relationships or this disclosure, please contact us at:
+              {t('sections.section12.content')}
             </p>
             <p className="">
-              Email: <a href="mailto:disclosure@skilllinkup.com" className="text-primary hover:text-primary-dark">disclosure@skilllinkup.com</a>
+              {t('sections.section12.email')}
             </p>
             <p className="">
-              We value your trust and are committed to maintaining transparency in all our business practices.
+              {t('sections.section12.content2')}
             </p>
           </section>
 
           <section className="mb-8 bg-accent/10 dark:bg-accent/20 p-6 rounded-lg border-l-4 border-accent">
             <h3 className="">
-              Thank You for Your Support
+              {t('sections.section13.title')}
             </h3>
             <p className="">
-              By using our affiliate links, you're helping us continue to provide free, valuable content to the freelance community. We appreciate your trust and support in our mission to help freelancers find the best platforms for their careers.
+              {t('sections.section13.content')}
             </p>
           </section>
         </div>

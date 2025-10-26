@@ -1,23 +1,41 @@
-import { Metadata } from "next";
+import { getTranslations } from 'next-intl/server';
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
-export const metadata: Metadata = {
-  title: "Terms of Service | SkillLinkup",
-  description: "Terms and conditions for using SkillLinkup services.",
-};
+interface PageProps {
+  params: Promise<{ locale: string }>;
+}
 
-export default function TermsPage() {
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'termsPage.metadata' });
+
+  return {
+    title: t('title'),
+    description: t('description'),
+  };
+}
+
+export default async function TermsPage({ params }: PageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'termsPage' });
+
+  // Format date with locale
+  const lastUpdated = new Date().toLocaleDateString(
+    locale === 'nl' ? 'nl-NL' : 'en-US',
+    { year: 'numeric', month: 'long', day: 'numeric' }
+  );
+
   return (
     <>
       <Header />
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 py-16 max-w-4xl">
         <h1 className="text-4xl font-heading font-bold text-gray-900 dark:text-white mb-4">
-          Terms of Service
+          {t('title')}
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mb-8">
-          Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+          {t('lastUpdated')}: {lastUpdated}
         </p>
 
         <div className="prose prose-lg dark:prose-invert max-w-none
@@ -32,194 +50,187 @@ export default function TermsPage() {
           prose-a:hover:text-primary-dark dark:prose-a:hover:text-accent/90">
           <section className="mb-8">
             <h2 className="">
-              1. Agreement to Terms
+              1. {t('sections.section1.title')}
             </h2>
             <p className="">
-              By accessing or using SkillLinkup ("the Website"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, please do not use the Website.
+              {t('sections.section1.content')}
             </p>
             <p className="">
-              We reserve the right to modify these Terms at any time. Your continued use of the Website following any changes indicates your acceptance of the new Terms.
+              {t('sections.section1.content2')}
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              2. Use of the Website
+              2. {t('sections.section2.title')}
             </h2>
             <h3 className="">
-              Permitted Use
+              {t('sections.section2.subsection.title')}
             </h3>
             <p className="">
-              You may use the Website for lawful purposes only. You agree not to:
+              {t('sections.section2.subsection.content')}
             </p>
             <ul className="">
-              <li>Use the Website in any way that violates applicable laws or regulations</li>
-              <li>Attempt to gain unauthorized access to any portion of the Website</li>
-              <li>Interfere with or disrupt the Website or servers</li>
-              <li>Upload or transmit viruses or malicious code</li>
-              <li>Collect or harvest any information from the Website using automated means</li>
-              <li>Use the Website for any commercial purposes without our consent</li>
+              {(t.raw('sections.section2.subsection.list') as string[]).map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
             </ul>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              3. Intellectual Property Rights
+              3. {t('sections.section3.title')}
             </h2>
             <p className="">
-              The Website and its entire contents, features, and functionality (including but not limited to all information, software, text, displays, images, video, and audio) are owned by SkillLinkup, its licensors, or other providers of such material.
+              {t('sections.section3.content')}
             </p>
             <p className="">
-              You may not reproduce, distribute, modify, create derivative works of, publicly display, or exploit any of the content without our express written permission.
+              {t('sections.section3.content2')}
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              4. User-Generated Content
+              4. {t('sections.section4.title')}
             </h2>
             <p className="">
-              If you submit any content to the Website (reviews, comments, feedback), you grant us a non-exclusive, worldwide, royalty-free license to use, reproduce, modify, and display such content.
+              {t('sections.section4.content')}
             </p>
             <p className="">
-              You represent that you own or have the necessary rights to submit the content and that it does not violate any third-party rights or applicable laws.
+              {t('sections.section4.content2')}
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              5. Third-Party Links and Services
+              5. {t('sections.section5.title')}
             </h2>
             <p className="">
-              The Website may contain links to third-party websites or services (freelance platforms, affiliate partners). We are not responsible for:
+              {t('sections.section5.content')}
             </p>
             <ul className="">
-              <li>The content, privacy policies, or practices of third-party websites</li>
-              <li>Any damages or losses caused by your use of third-party services</li>
-              <li>The accuracy of information provided by third parties</li>
+              {(t.raw('sections.section5.list') as string[]).map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
             </ul>
             <p className="">
-              Your use of third-party services is at your own risk and subject to their terms and conditions.
+              {t('sections.section5.content2')}
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              6. Affiliate Relationships
+              6. {t('sections.section6.title')}
             </h2>
             <p className="">
-              SkillLinkup participates in affiliate marketing programs. We may earn commissions from qualifying purchases made through links on our Website. See our <a href="/disclosure" className="text-primary hover:text-primary-dark">Affiliate Disclosure</a> for more information.
+              {t('sections.section6.content')} <a href={`/${locale}/disclosure`} className="text-primary hover:text-primary-dark">{t('sections.section6.linkText')}</a> {t('sections.section6.content2')}
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              7. Disclaimer of Warranties
+              7. {t('sections.section7.title')}
             </h2>
             <p className="">
-              THE WEBSITE IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+              {t('sections.section7.content')}
             </p>
             <p className="">
-              We do not warrant that:
+              {t('sections.section7.content2')}
             </p>
             <ul className="">
-              <li>The Website will be uninterrupted or error-free</li>
-              <li>Defects will be corrected</li>
-              <li>The Website is free of viruses or harmful components</li>
-              <li>The information provided is accurate, complete, or current</li>
-            </ul>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="">
-              8. Limitation of Liability
-            </h2>
-            <p className="">
-              TO THE FULLEST EXTENT PERMITTED BY LAW, SKILLLINKUP SHALL NOT BE LIABLE FOR:
-            </p>
-            <ul className="">
-              <li>Any indirect, incidental, special, or consequential damages</li>
-              <li>Loss of profits, data, or business opportunities</li>
-              <li>Damages arising from your use of or inability to use the Website</li>
-              <li>Reliance on any information obtained from the Website</li>
+              {(t.raw('sections.section7.list') as string[]).map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
             </ul>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              9. Indemnification
+              8. {t('sections.section8.title')}
             </h2>
             <p className="">
-              You agree to indemnify and hold harmless SkillLinkup and its affiliates from any claims, damages, losses, or expenses arising from:
+              {t('sections.section8.content')}
             </p>
             <ul className="">
-              <li>Your use of the Website</li>
-              <li>Your violation of these Terms</li>
-              <li>Your violation of any third-party rights</li>
-              <li>Your content submissions</li>
+              {(t.raw('sections.section8.list') as string[]).map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
             </ul>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              10. Information Accuracy
+              9. {t('sections.section9.title')}
             </h2>
             <p className="">
-              We strive to provide accurate and up-to-date information about freelance platforms. However:
+              {t('sections.section9.content')}
             </p>
             <ul className="">
-              <li>Platform features, fees, and policies may change without notice</li>
-              <li>We are not responsible for the accuracy of third-party information</li>
-              <li>Reviews and comparisons reflect our opinions and research at the time of publication</li>
-              <li>You should verify information directly with the platforms before making decisions</li>
+              {(t.raw('sections.section9.list') as string[]).map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
             </ul>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              11. Termination
+              10. {t('sections.section10.title')}
             </h2>
             <p className="">
-              We reserve the right to terminate or suspend your access to the Website at any time, without notice, for conduct that we believe violates these Terms or is harmful to other users, us, or third parties.
+              {t('sections.section10.content')}
+            </p>
+            <ul className="">
+              {(t.raw('sections.section10.list') as string[]).map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="">
+              11. {t('sections.section11.title')}
+            </h2>
+            <p className="">
+              {t('sections.section11.content')}
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              12. Governing Law
+              12. {t('sections.section12.title')}
             </h2>
             <p className="">
-              These Terms shall be governed by and construed in accordance with the laws of the Netherlands, without regard to its conflict of law provisions.
+              {t('sections.section12.content')}
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              13. Changes to Terms
+              13. {t('sections.section13.title')}
             </h2>
             <p className="">
-              We reserve the right to modify these Terms at any time. Changes will be effective immediately upon posting. Your continued use of the Website after changes constitutes acceptance of the modified Terms.
+              {t('sections.section13.content')}
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              14. Contact Information
+              14. {t('sections.section14.title')}
             </h2>
             <p className="">
-              If you have any questions about these Terms, please contact us at:
+              {t('sections.section14.content')}
             </p>
             <p className="">
-              Email: <a href="mailto:legal@skilllinkup.com" className="text-primary hover:text-primary-dark">legal@skilllinkup.com</a>
+              {t('sections.section14.email')}
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="">
-              15. Severability
+              15. {t('sections.section15.title')}
             </h2>
             <p className="">
-              If any provision of these Terms is found to be unenforceable or invalid, that provision shall be limited or eliminated to the minimum extent necessary so that the Terms shall otherwise remain in full force and effect.
+              {t('sections.section15.content')}
             </p>
           </section>
         </div>
