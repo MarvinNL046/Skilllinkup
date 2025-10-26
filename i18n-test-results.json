@@ -1,0 +1,47 @@
+[
+  {
+    "test": "Test 1: English Homepage",
+    "screenshot": ".playwright-mcp/i18n-test-english-homepage.png",
+    "status": "PASS",
+    "details": {
+      "languageSwitcher": "Found",
+      "homeLink": "Found",
+      "platformsLink": "Found"
+    }
+  },
+  {
+    "test": "Test 2: Dutch Homepage",
+    "screenshot": ".playwright-mcp/i18n-test-dutch-homepage.png",
+    "status": "PASS",
+    "details": {
+      "languageSwitcher": "Found EN switcher"
+    }
+  },
+  {
+    "test": "Test 3: Language Switcher Functionality",
+    "screenshot": ".playwright-mcp/i18n-test-language-switch.png",
+    "status": "PASS",
+    "details": {
+      "currentUrl": "http://localhost:3000/nl",
+      "switchedToNl": "URL changed to /nl"
+    }
+  },
+  {
+    "test": "Test 4: Platform Page (English)",
+    "screenshot": ".playwright-mcp/i18n-test-platform-english.png",
+    "status": "PASS",
+    "details": {
+      "pageTitle": "Fiverr Review 2025: Fees, Features & Pros/Cons - SkillLinkup",
+      "contentLoaded": "Page loaded"
+    }
+  },
+  {
+    "test": "Test 5: Platform Page (Dutch)",
+    "screenshot": ".playwright-mcp/i18n-test-platform-dutch.png",
+    "status": "PASS",
+    "details": {
+      "pageTitle": "Fiverr Review 2025: Fees, Features & Pros/Cons - SkillLinkup",
+      "contentLoaded": "Page loaded"
+    }
+  }
+]

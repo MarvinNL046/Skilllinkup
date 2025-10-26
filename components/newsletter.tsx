@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from 'next-intl';
 
 export function Newsletter() {
+  const t = useTranslations('homepage.newsletter');
+
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -23,15 +26,15 @@ export function Newsletter() {
 
       if (response.ok) {
         setStatus("success");
-        setMessage("Thanks for subscribing! Check your email to confirm.");
+        setMessage(t('successMessage'));
         setEmail("");
       } else {
         setStatus("error");
-        setMessage(data.message || "Something went wrong. Please try again.");
+        setMessage(data.message || t('errorMessage'));
       }
     } catch (error) {
       setStatus("error");
-      setMessage("Failed to subscribe. Please try again later.");
+      setMessage(t('failedMessage'));
     }
   };
 
@@ -41,10 +44,10 @@ export function Newsletter() {
         <div className="mx-auto max-w-2xl text-center">
           {/* Heading */}
           <h2 className="mb-4 text-3xl font-heading font-bold text-white sm:text-4xl">
-            Get Weekly Freelance Tips
+            {t('title')}
           </h2>
           <p className="mb-8 text-base text-white/90 sm:text-lg">
-            Join 1,000+ freelancers receiving weekly platform reviews and insider tips.
+            {t('description')}
           </p>
 
           {/* Form */}
@@ -54,7 +57,7 @@ export function Newsletter() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
+                placeholder={t('placeholder')}
                 required
                 disabled={status === "loading"}
                 className="flex-1 rounded-lg border-0 bg-white px-5 py-3 text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50 shadow-lg"
@@ -64,7 +67,7 @@ export function Newsletter() {
                 disabled={status === "loading"}
                 className="rounded-lg bg-secondary hover:bg-secondary-medium px-8 py-3 font-heading font-semibold text-white focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50 transition-all shadow-lg hover:shadow-xl"
               >
-                {status === "loading" ? "..." : "Subscribe"}
+                {status === "loading" ? t('loading') : t('subscribe')}
               </button>
             </div>
 
@@ -83,7 +86,7 @@ export function Newsletter() {
 
             {/* Trust Badge */}
             <p className="mt-4 text-sm text-white/80">
-              No spam. Unsubscribe anytime.
+              {t('trustBadge')}
             </p>
           </form>
         </div>

@@ -1,6 +1,11 @@
+'use client';
+
 import Link from "next/link";
+import { useTranslations } from 'next-intl';
 
 export function PlatformComparison() {
+  const t = useTranslations('homepage.platformComparison');
+
   const platforms = [
     {
       name: "Upwork",
@@ -11,8 +16,8 @@ export function PlatformComparison() {
         skillTests: true,
         activeJobs: "1M+",
       },
-      pros: ["Largest marketplace", "Payment protection", "Skill tests"],
-      cons: ["High competition", "Service fees"],
+      pros: [t('upworkPro1'), t('upworkPro2'), t('upworkPro3')],
+      cons: [t('upworkCon1'), t('upworkCon2')],
       color: "primary",
     },
     {
@@ -24,8 +29,8 @@ export function PlatformComparison() {
         skillTests: false,
         activeJobs: "500K+",
       },
-      pros: ["Easy to start", "Fixed-price gigs", "Fast payments"],
-      cons: ["Price competition", "Limited customization"],
+      pros: [t('fiverrPro1'), t('fiverrPro2'), t('fiverrPro3')],
+      cons: [t('fiverrCon1'), t('fiverrCon2')],
       color: "secondary",
     },
     {
@@ -37,8 +42,8 @@ export function PlatformComparison() {
         skillTests: true,
         activeJobs: "50K+",
       },
-      pros: ["Premium clients", "No fees", "Top 3% talent"],
-      cons: ["Strict screening", "Limited availability"],
+      pros: [t('toptalPro1'), t('toptalPro2'), t('toptalPro3')],
+      cons: [t('toptalCon1'), t('toptalCon2')],
       color: "accent",
     },
   ];
@@ -49,10 +54,10 @@ export function PlatformComparison() {
         {/* Section Header */}
         <div className="mb-10 text-center">
           <h2 className="text-3xl font-heading font-bold text-text-primary dark:text-white sm:text-4xl">
-            Compare Top Platforms
+            {t('title')}
           </h2>
           <p className="mt-3 text-base text-text-secondary dark:text-gray-300 max-w-2xl mx-auto">
-            Side-by-side comparison of the most popular freelance marketplaces
+            {t('description')}
           </p>
         </div>
 
@@ -94,19 +99,19 @@ export function PlatformComparison() {
               {/* Key Features */}
               <div className="mb-4 space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-text-secondary dark:text-gray-300">Service Fees</span>
+                  <span className="text-text-secondary dark:text-gray-300">{t('serviceFees')}</span>
                   <span className="font-semibold text-text-primary dark:text-white">
                     {platform.features.fees}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-text-secondary dark:text-gray-300">Active Jobs</span>
+                  <span className="text-text-secondary dark:text-gray-300">{t('activeJobs')}</span>
                   <span className="font-semibold text-text-primary dark:text-white">
                     {platform.features.activeJobs}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-text-secondary dark:text-gray-300">Payment Protection</span>
+                  <span className="text-text-secondary dark:text-gray-300">{t('paymentProtection')}</span>
                   <span className="font-semibold text-accent">
                     {platform.features.paymentProtection ? "✓" : "✗"}
                   </span>
@@ -117,7 +122,7 @@ export function PlatformComparison() {
               <div className="mb-4 space-y-3">
                 <div>
                   <h4 className="text-xs font-heading font-semibold text-text-primary dark:text-white uppercase mb-2">
-                    Pros
+                    {t('prosLabel')}
                   </h4>
                   <ul className="space-y-1">
                     {platform.pros.map((pro, i) => (
@@ -130,7 +135,7 @@ export function PlatformComparison() {
                 </div>
                 <div>
                   <h4 className="text-xs font-heading font-semibold text-text-primary dark:text-white uppercase mb-2">
-                    Cons
+                    {t('consLabel')}
                   </h4>
                   <ul className="space-y-1">
                     {platform.cons.map((con, i) => (
@@ -148,7 +153,7 @@ export function PlatformComparison() {
                 href={`/platforms/${platform.name.toLowerCase()}`}
                 className="inline-flex items-center justify-center w-full rounded-lg bg-primary hover:bg-primary-dark px-4 py-2.5 text-sm font-heading font-semibold text-white transition-all shadow-md hover:shadow-lg"
               >
-                Read Full Review
+                {t('readFullReview')}
               </Link>
             </div>
           ))}
@@ -160,7 +165,7 @@ export function PlatformComparison() {
             href="/comparisons"
             className="inline-flex items-center gap-2 text-base font-heading font-semibold text-primary hover:text-primary-dark transition-colors"
           >
-            View All Comparisons
+            {t('viewAllComparisons')}
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>

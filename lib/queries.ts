@@ -114,7 +114,7 @@ export interface Review {
 }
 
 // Query: Get all published posts (SAFE: returns camelCase + never NULL/empty strings)
-export async function getPublishedPosts(limit = 10, offset = 0): Promise<Post[]> {
+export async function getPublishedPosts(limit = 10, offset = 0, locale = 'nl'): Promise<Post[]> {
   const posts = await sql`
     SELECT
       p.id,
@@ -144,6 +144,7 @@ export async function getPublishedPosts(limit = 10, offset = 0): Promise<Post[]>
     LEFT JOIN categories c ON p.category_id = c.id
     LEFT JOIN authors a ON p.author_id = a.id
     WHERE p.status = 'published'
+      AND p.locale = ${locale}
     ORDER BY p.published_at DESC NULLS LAST
     LIMIT ${limit}
     OFFSET ${offset};
@@ -153,7 +154,7 @@ export async function getPublishedPosts(limit = 10, offset = 0): Promise<Post[]>
 }
 
 // Query: Get featured posts (SAFE)
-export async function getFeaturedPosts(limit = 3): Promise<Post[]> {
+export async function getFeaturedPosts(limit = 3, locale = 'nl'): Promise<Post[]> {
   const posts = await sql`
     SELECT
       p.id,
@@ -181,6 +182,7 @@ export async function getFeaturedPosts(limit = 3): Promise<Post[]> {
     LEFT JOIN categories c ON p.category_id = c.id
     LEFT JOIN authors a ON p.author_id = a.id
     WHERE p.status = 'published'
+      AND p.locale = ${locale}
     ORDER BY p.published_at DESC
     LIMIT ${limit};
   `;
@@ -189,7 +191,7 @@ export async function getFeaturedPosts(limit = 3): Promise<Post[]> {
 }
 
 // Query: Get post by slug (SAFE - includes meta fields for SEO)
-export async function getPostBySlug(slug: string): Promise<Post | null> {
+export async function getPostBySlug(slug: string, locale = 'nl'): Promise<Post | null> {
   const posts = await sql`
     SELECT
       p.id,
@@ -227,6 +229,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     LEFT JOIN authors a ON p.author_id = a.id
     LEFT JOIN categories c ON p.category_id = c.id
     WHERE p.slug = ${slug}
+      AND p.locale = ${locale}
     LIMIT 1;
   `;
 
@@ -234,7 +237,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
 }
 
 // Query: Get posts by category (SAFE)
-export async function getPostsByCategory(categorySlug: string, limit = 10): Promise<Post[]> {
+export async function getPostsByCategory(categorySlug: string, limit = 10, locale = 'nl'): Promise<Post[]> {
   const posts = await sql`
     SELECT
       p.id,
@@ -261,7 +264,9 @@ export async function getPostsByCategory(categorySlug: string, limit = 10): Prom
     FROM posts p
     LEFT JOIN authors a ON p.author_id = a.id
     LEFT JOIN categories c ON p.category_id = c.id
-    WHERE p.status = 'published' AND c.slug = ${categorySlug}
+    WHERE p.status = 'published'
+      AND c.slug = ${categorySlug}
+      AND p.locale = ${locale}
     ORDER BY p.published_at DESC
     LIMIT ${limit};
   `;
@@ -270,19 +275,20 @@ export async function getPostsByCategory(categorySlug: string, limit = 10): Prom
 }
 
 // Query: Get all categories (SAFE)
-export async function getCategories(): Promise<Category[]> {
+export async function getCategories(locale = 'nl'): Promise<Category[]> {
   const categories = await sql`
     SELECT
       c.id,
       c.name,
       c.slug,
       c.description,
-      c.color,
+      '#9333ea' as color,
       '/images/post-images/category-image-01.jpg' as image,
       COUNT(p.id)::int as post_count
     FROM categories c
-    LEFT JOIN posts p ON c.id = p.category_id AND p.status = 'published'
-    GROUP BY c.id, c.name, c.slug, c.description, c.color
+    LEFT JOIN posts p ON c.id = p.category_id AND p.status = 'published' AND p.locale = ${locale}
+    WHERE c.locale = ${locale}
+    GROUP BY c.id, c.name, c.slug, c.description
     ORDER BY c.name ASC;
   `;
 
@@ -290,27 +296,28 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 // Query: Get category by slug (SAFE)
-export async function getCategoryBySlug(slug: string): Promise<Category | null> {
+export async function getCategoryBySlug(slug: string, locale = 'nl'): Promise<Category | null> {
   const result = await sql`
     SELECT
       c.id,
       c.name,
       c.slug,
       c.description,
-      c.color,
+      '#9333ea' as color,
       '/images/post-images/category-image-01.jpg' as image,
       COUNT(p.id)::int as post_count
     FROM categories c
-    LEFT JOIN posts p ON c.id = p.category_id AND p.status = 'published'
+    LEFT JOIN posts p ON c.id = p.category_id AND p.status = 'published' AND p.locale = ${locale}
     WHERE c.slug = ${slug}
-    GROUP BY c.id, c.name, c.slug, c.description, c.color;
+      AND c.locale = ${locale}
+    GROUP BY c.id, c.name, c.slug, c.description;
   `;
 
   return result.length > 0 ? (result[0] as Category) : null;
 }
 
 // Query: Get recent posts (for sidebar) (SAFE)
-export async function getRecentPosts(limit = 5): Promise<Post[]> {
+export async function getRecentPosts(limit = 5, locale = 'nl'): Promise<Post[]> {
   const posts = await sql`
     SELECT
       p.id,
@@ -324,6 +331,7 @@ export async function getRecentPosts(limit = 5): Promise<Post[]> {
     FROM posts p
     LEFT JOIN categories c ON p.category_id = c.id
     WHERE p.status = 'published'
+      AND p.locale = ${locale}
     ORDER BY p.published_at DESC
     LIMIT ${limit};
   `;
@@ -332,7 +340,7 @@ export async function getRecentPosts(limit = 5): Promise<Post[]> {
 }
 
 // Query: Get trending posts (sorted by views) (SAFE)
-export async function getTrendingPosts(limit = 6): Promise<Post[]> {
+export async function getTrendingPosts(limit = 6, locale = 'nl'): Promise<Post[]> {
   const posts = await sql`
     SELECT
       p.id,
@@ -346,6 +354,7 @@ export async function getTrendingPosts(limit = 6): Promise<Post[]> {
     FROM posts p
     LEFT JOIN categories c ON p.category_id = c.id
     WHERE p.status = 'published'
+      AND p.locale = ${locale}
     ORDER BY p.views DESC, p.published_at DESC
     LIMIT ${limit};
   `;
@@ -394,7 +403,7 @@ export async function fixEmptyImages() {
 // ==================== PLATFORMS QUERIES ====================
 
 // Query: Get all published platforms (SAFE)
-export async function getPublishedPlatforms(limit = 50): Promise<Platform[]> {
+export async function getPublishedPlatforms(limit = 50, locale = 'nl'): Promise<Platform[]> {
   const platforms = await sql`
     SELECT
       id,
@@ -420,6 +429,7 @@ export async function getPublishedPlatforms(limit = 50): Promise<Platform[]> {
       COALESCE(countries, ARRAY['Worldwide']::TEXT[]) as countries
     FROM platforms
     WHERE status = 'published'
+      AND locale = ${locale}
     ORDER BY featured DESC, rating DESC, name ASC
     LIMIT ${limit};
   `;
@@ -428,7 +438,7 @@ export async function getPublishedPlatforms(limit = 50): Promise<Platform[]> {
 }
 
 // Query: Get featured platforms (SAFE)
-export async function getFeaturedPlatforms(limit = 3): Promise<Platform[]> {
+export async function getFeaturedPlatforms(limit = 3, locale = 'nl'): Promise<Platform[]> {
   const platforms = await sql`
     SELECT
       id,
@@ -450,7 +460,9 @@ export async function getFeaturedPlatforms(limit = 3): Promise<Platform[]> {
       published_at,
       created_at
     FROM platforms
-    WHERE status = 'published' AND featured = true
+    WHERE status = 'published'
+      AND featured = true
+      AND locale = ${locale}
     ORDER BY rating DESC, name ASC
     LIMIT ${limit};
   `;
@@ -459,7 +471,7 @@ export async function getFeaturedPlatforms(limit = 3): Promise<Platform[]> {
 }
 
 // Query: Get top-rated platforms (SAFE)
-export async function getTopRatedPlatforms(limit = 6): Promise<Platform[]> {
+export async function getTopRatedPlatforms(limit = 6, locale = 'nl'): Promise<Platform[]> {
   const platforms = await sql`
     SELECT
       id,
@@ -482,6 +494,7 @@ export async function getTopRatedPlatforms(limit = 6): Promise<Platform[]> {
       created_at
     FROM platforms
     WHERE status = 'published'
+      AND locale = ${locale}
     ORDER BY rating DESC, name ASC
     LIMIT ${limit};
   `;
@@ -490,7 +503,7 @@ export async function getTopRatedPlatforms(limit = 6): Promise<Platform[]> {
 }
 
 // Query: Get platform by slug (SAFE)
-export async function getPlatformBySlug(slug: string): Promise<Platform | null> {
+export async function getPlatformBySlug(slug: string, locale = 'nl'): Promise<Platform | null> {
   const platforms = await sql`
     SELECT
       id,
@@ -512,7 +525,9 @@ export async function getPlatformBySlug(slug: string): Promise<Platform | null> 
       published_at,
       created_at
     FROM platforms
-    WHERE slug = ${slug} AND status = 'published'
+    WHERE slug = ${slug}
+      AND status = 'published'
+      AND locale = ${locale}
     LIMIT 1;
   `;
 
@@ -520,7 +535,7 @@ export async function getPlatformBySlug(slug: string): Promise<Platform | null> 
 }
 
 // Query: Get platforms by category (SAFE)
-export async function getPlatformsByCategory(category: string, limit = 20): Promise<Platform[]> {
+export async function getPlatformsByCategory(category: string, limit = 20, locale = 'nl'): Promise<Platform[]> {
   const platforms = await sql`
     SELECT
       id,
@@ -542,7 +557,9 @@ export async function getPlatformsByCategory(category: string, limit = 20): Prom
       published_at,
       created_at
     FROM platforms
-    WHERE status = 'published' AND category = ${category}
+    WHERE status = 'published'
+      AND category = ${category}
+      AND locale = ${locale}
     ORDER BY rating DESC, name ASC
     LIMIT ${limit};
   `;
@@ -551,13 +568,14 @@ export async function getPlatformsByCategory(category: string, limit = 20): Prom
 }
 
 // Query: Get platform categories with counts (SAFE)
-export async function getPlatformCategories(): Promise<{ category: string; count: number }[]> {
+export async function getPlatformCategories(locale = 'nl'): Promise<{ category: string; count: number }[]> {
   const categories = await sql`
     SELECT
       category,
       COUNT(*)::int as count
     FROM platforms
     WHERE status = 'published'
+      AND locale = ${locale}
     GROUP BY category
     ORDER BY category ASC;
   `;

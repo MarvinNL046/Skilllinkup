@@ -1,55 +1,58 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from 'next-intl';
 
 export function Testimonials() {
+  const t = useTranslations('homepage.testimonials');
+
   const testimonials = [
     {
-      name: "Sarah Johnson",
-      role: "Web Designer",
-      platform: "Found via Upwork Review",
+      name: t('testimonial1Name'),
+      role: t('testimonial1Role'),
+      platform: t('testimonial1Platform'),
       avatar: "SJ",
-      quote: "SkillLinkup helped me understand which platform was best for my design skills. I'm now earning 40% more than my previous job!",
+      quote: t('testimonial1Quote'),
       rating: 5,
     },
     {
-      name: "Marcus Chen",
-      role: "Software Developer",
-      platform: "Found via Toptal Review",
+      name: t('testimonial2Name'),
+      role: t('testimonial2Role'),
+      platform: t('testimonial2Platform'),
       avatar: "MC",
-      quote: "The detailed comparison saved me weeks of research. I found the perfect platform match on my first try thanks to their expert insights.",
+      quote: t('testimonial2Quote'),
       rating: 5,
     },
     {
-      name: "Lisa Anderson",
-      role: "Content Writer",
-      platform: "Found via Fiverr Review",
+      name: t('testimonial3Name'),
+      role: t('testimonial3Role'),
+      platform: t('testimonial3Platform'),
       avatar: "LA",
-      quote: "As a beginner freelancer, the platform reviews gave me confidence to start. The tips and guidance were invaluable for my journey.",
+      quote: t('testimonial3Quote'),
       rating: 5,
     },
     {
-      name: "David Martinez",
-      role: "Digital Marketer",
-      platform: "Found via Freelancer Review",
+      name: t('testimonial4Name'),
+      role: t('testimonial4Role'),
+      platform: t('testimonial4Platform'),
       avatar: "DM",
-      quote: "I've tried 5 different platforms, and SkillLinkup's reviews were spot-on for each one. This is my go-to resource for freelance platform info.",
+      quote: t('testimonial4Quote'),
       rating: 5,
     },
     {
-      name: "Emma Thompson",
-      role: "Graphic Designer",
-      platform: "Found via 99designs Review",
+      name: t('testimonial5Name'),
+      role: t('testimonial5Role'),
+      platform: t('testimonial5Platform'),
       avatar: "ET",
-      quote: "The honest pros and cons helped me avoid platforms that wouldn't suit my style. Now I'm working with clients who truly value my work.",
+      quote: t('testimonial5Quote'),
       rating: 5,
     },
     {
-      name: "James Wilson",
-      role: "Video Editor",
-      platform: "Found via PeoplePerHour Review",
+      name: t('testimonial6Name'),
+      role: t('testimonial6Role'),
+      platform: t('testimonial6Platform'),
       avatar: "JW",
-      quote: "Clear, unbiased reviews with actual data. No fluff, just facts. Exactly what I needed to make an informed decision about my freelance career.",
+      quote: t('testimonial6Quote'),
       rating: 5,
     },
   ];
@@ -76,10 +79,10 @@ export function Testimonials() {
         {/* Section Header */}
         <div className="mb-12 text-center">
           <h2 className="text-3xl font-heading font-bold text-text-primary dark:text-white sm:text-4xl mb-3">
-            Success Stories
+            {t('title')}
           </h2>
           <p className="text-base text-text-secondary dark:text-gray-300 max-w-2xl mx-auto">
-            Join thousands of freelancers who found their perfect platform through our reviews
+            {t('description')}
           </p>
         </div>
 
@@ -140,7 +143,7 @@ export function Testimonials() {
             <button
               onClick={prevTestimonial}
               className="w-10 h-10 rounded-full border-2 border-primary hover:bg-primary text-primary hover:text-white dark:text-accent dark:hover:text-white transition-all flex items-center justify-center shadow-md hover:shadow-lg"
-              aria-label="Previous testimonial"
+              aria-label={t('previousTestimonial')}
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -158,7 +161,7 @@ export function Testimonials() {
                       ? "bg-primary w-6"
                       : "bg-background-gray dark:bg-gray-600 hover:bg-accent"
                   }`}
-                  aria-label={`Go to testimonial ${index + 1}`}
+                  aria-label={t('goToTestimonial', { number: index + 1 })}
                 />
               ))}
             </div>
@@ -166,7 +169,7 @@ export function Testimonials() {
             <button
               onClick={nextTestimonial}
               className="w-10 h-10 rounded-full border-2 border-primary hover:bg-primary text-primary hover:text-white dark:text-accent dark:hover:text-white transition-all flex items-center justify-center shadow-md hover:shadow-lg"
-              aria-label="Next testimonial"
+              aria-label={t('nextTestimonial')}
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -179,34 +182,34 @@ export function Testimonials() {
         <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6">
           <div className="text-center">
             <div className="text-3xl font-heading font-bold text-primary mb-1">
-              1,000+
+              {t('stat1Value')}
             </div>
             <div className="text-sm text-text-secondary dark:text-gray-300">
-              Happy Freelancers
+              {t('stat1Label')}
             </div>
           </div>
           <div className="text-center">
             <div className="text-3xl font-heading font-bold text-primary mb-1">
-              25+
+              {t('stat2Value')}
             </div>
             <div className="text-sm text-text-secondary dark:text-gray-300">
-              Platforms Reviewed
+              {t('stat2Label')}
             </div>
           </div>
           <div className="text-center">
             <div className="text-3xl font-heading font-bold text-primary mb-1">
-              4.9★
+              {t('stat3Value')}
             </div>
             <div className="text-sm text-text-secondary dark:text-gray-300">
-              Average Rating
+              {t('stat3Label')}
             </div>
           </div>
           <div className="text-center">
             <div className="text-3xl font-heading font-bold text-primary mb-1">
-              100%
+              {t('stat4Value')}
             </div>
             <div className="text-sm text-text-secondary dark:text-gray-300">
-              Unbiased Reviews
+              {t('stat4Label')}
             </div>
           </div>
         </div>

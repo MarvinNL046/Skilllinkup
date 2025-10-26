@@ -1,4 +1,7 @@
+'use client';
+
 import Link from "next/link";
+import { useLocale, useTranslations } from 'next-intl';
 
 interface TrendingPost {
   id: string;
@@ -13,6 +16,10 @@ interface TrendingTopicsProps {
 }
 
 export function TrendingTopics({ posts }: TrendingTopicsProps) {
+  const locale = useLocale();
+  const t = useTranslations('homepage.trendingTopics');
+  const tc = useTranslations('common');
+
   // Default icon for all posts
   const defaultIcon = (
     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -33,19 +40,19 @@ export function TrendingTopics({ posts }: TrendingTopicsProps) {
     if (index === 0 && views > 1000) {
       return (
         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-heading font-semibold">
-          🔥 Hot
+          {t('hotBadge')}
         </span>
       );
     } else if (views > 500) {
       return (
         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary/10 text-secondary text-xs font-heading font-semibold">
-          ↗ Trending
+          {t('trendingBadge')}
         </span>
       );
     } else {
       return (
         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-accent/10 text-accent text-xs font-heading font-semibold">
-          ✨ New
+          {t('newBadge')}
         </span>
       );
     }
@@ -57,20 +64,20 @@ export function TrendingTopics({ posts }: TrendingTopicsProps) {
         {/* Section Header */}
         <div className="mb-10 text-center">
           <h2 className="text-3xl font-heading font-bold text-text-primary dark:text-white sm:text-4xl mb-2">
-            Trending Topics
+            {t('title')}
           </h2>
           <p className="text-base text-text-secondary dark:text-gray-300">
-            What freelancers are reading right now
+            {t('description')}
           </p>
         </div>
 
         {/* View All Link - Now separate */}
         <div className="mb-6 text-center">
           <Link
-            href="/post"
+            href={`/${locale}/blog`}
             className="inline-flex items-center gap-2 text-base font-heading font-semibold text-primary hover:text-primary-dark transition-colors"
           >
-            View All
+            {t('viewAll')}
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
@@ -82,7 +89,7 @@ export function TrendingTopics({ posts }: TrendingTopicsProps) {
           {posts.map((post, index) => (
             <Link
               key={post.id}
-              href={`/post/${post.slug}`}
+              href={`/${locale}/post/${post.slug}`}
               className="group relative overflow-hidden rounded-lg border border-background-gray dark:border-gray-700 bg-white dark:bg-gray-800 p-5 transition-all hover:border-accent hover:shadow-xl"
             >
               {/* Icon & Badge */}
@@ -100,7 +107,7 @@ export function TrendingTopics({ posts }: TrendingTopicsProps) {
                 </h3>
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-accent font-semibold uppercase tracking-wide">
-                    {post.category_name || 'Uncategorized'}
+                    {post.category_name || tc('uncategorized')}
                   </span>
                   <div className="flex items-center gap-1 text-text-muted dark:text-gray-400">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -125,10 +132,10 @@ export function TrendingTopics({ posts }: TrendingTopicsProps) {
         {/* Mobile View All Link */}
         <div className="mt-8 text-center sm:hidden">
           <Link
-            href="/post"
+            href={`/${locale}/blog`}
             className="inline-flex items-center gap-2 text-base font-heading font-semibold text-primary hover:text-primary-dark transition-colors"
           >
-            View All Topics
+            {t('viewAllTopics')}
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>

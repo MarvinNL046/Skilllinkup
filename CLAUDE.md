@@ -29,6 +29,12 @@ npm run db:fix-all             # Run all fix scripts
 npm run db:import-platforms    # Import platforms from scripts/import-platforms.ts
 npm run db:import-tools        # Import tools from scripts/import-tools.ts
 
+# Internationalization
+node scripts/translate-platforms.mjs        # Basic word-replacement translation (EN→NL)
+node scripts/translate-platforms-google.mjs # FREE Google Translate (EN→NL, no API key!)
+node scripts/check-locales.mjs              # Check locale distribution in database
+node scripts/cleanup-locale-mess.mjs        # Fix incorrect locale data
+
 # Production Safety
 bash scripts/sanity-check.sh   # Pre-deployment checks
 ```
@@ -439,6 +445,104 @@ Pre-deployment validation via `bash scripts/sanity-check.sh`:
 - ✅ Safe helpers in use (`safeImage`, `safeText`, `safeArray`)
 - ✅ Error boundary exists (`app/error.tsx`)
 - ✅ DEFAULTS and safe utilities present
+
+## Internationalization (i18n)
+
+### Overview
+The platform supports multi-language content using **next-intl v4.4.0** with locale-based routing:
+- **Supported locales**: English (en - default), Dutch (nl)
+- **Routing**: `/[locale]/` pattern (e.g., `/en/platforms`, `/nl/platforms`)
+- **Database**: All content tables have `locale` column with composite unique constraints `(slug, locale)`
+
+### Architecture
+
+**Middleware** (`middleware.ts`):
+- Intercepts all requests and adds locale prefix
+- Redirects root `/` to `/en` (default locale)
+- Configured with `localePrefix: 'always'`
+
+**Translation Files**:
+- `messages/en.json` - English UI strings (header, footer, common)
+- `messages/nl.json` - Dutch UI strings
+
+**Key Components**:
+- `i18n/request.ts` - Server-side i18n configuration
+- `components/LanguageSwitcher.tsx` - Client-side locale toggle with flags
+- `app/[locale]/layout.tsx` - Wraps app with `NextIntlClientProvider`
+
+### Translation Workflows
+
+**Option 1: Basic Translation** (Free, instant)
+```bash
+node scripts/translate-platforms.mjs
+```
+- Uses simple word replacement dictionary
+- Good for: Quick testing, basic translations
+- Limitations: Low quality, misses context
+
+**Option 2: Google Translate** (FREE, no API key! ⭐ RECOMMENDED)
+```bash
+node scripts/translate-platforms-google.mjs
+```
+- **Cost**: 100% FREE - No API key, no creditcard!
+- **Quality**: Good quality translations
+- **Package**: Uses `@iamtraction/google-translate`
+- **Translates**: Descriptions, meta tags, pros, cons, features
+- **Speed**: Slower than paid APIs (rate limiting)
+- **Perfect for**: Getting started without any setup
+
+**Verification Scripts**:
+```bash
+node scripts/check-locales.mjs           # Check locale distribution
+node scripts/verify-translation-direction.mjs  # Verify EN→NL direction
+```
+
+### Environment Variables
+
+Add to `.env.local`:
+```bash
+DEEPL_API_KEY=your-key-here  # Get from https://www.deepl.com/pro#developer
+```
+
+### Database Schema
+
+All content tables support localization:
+```sql
+-- Platforms table
+locale VARCHAR(5) DEFAULT 'en'
+CREATE INDEX idx_platforms_locale ON platforms(locale);
+ALTER TABLE platforms ADD CONSTRAINT platforms_slug_locale_unique UNIQUE (slug, locale);
+
+-- Same pattern for posts, categories, tools
+```
+
+### Smart Sitemap
+
+Sitemap automatically generates correct URLs based on existing content:
+- Only generates URLs for content that exists
+- Adds hreflang alternates only when both EN and NL versions exist
+- Per-locale queries prevent 404 errors
+- Auto-revalidates every 15 minutes
+
+### Adding New Translations
+
+**UI Strings**:
+1. Add key to `messages/en.json`
+2. Add Dutch translation to `messages/nl.json`
+3. Use in components: `const t = useTranslations(); t('key.path')`
+
+**Content**:
+1. Create English version first (locale='en')
+2. Run DeepL script for professional Dutch translation
+3. Manual review in admin dashboard (port 3002)
+4. Publish both versions
+
+### SEO Considerations
+
+- Each locale has its own sitemap entries
+- Hreflang tags automatically added when both versions exist
+- Meta titles and descriptions translated separately
+- URL structure: `/{locale}/{slug}` for consistent indexing
 
 ## Important Notes
 

@@ -54,6 +54,9 @@ export const categories = pgTable('categories', {
   description: text('description'),
   image: varchar('image', { length: 500 }),
 
+  // Internationalization
+  locale: varchar('locale', { length: 5 }).default('nl').notNull(), // nl, en
+
   // Metadata
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -97,6 +100,9 @@ export const posts = pgTable('posts', {
   readTime: integer('read_time'), // in minutes
   featured: boolean('featured').default(false),
   sticky: boolean('sticky').default(false),
+
+  // Internationalization
+  locale: varchar('locale', { length: 5 }).default('nl').notNull(), // nl, en
 
   // Metadata
   createdAt: timestamp('created_at').defaultNow().notNull(),

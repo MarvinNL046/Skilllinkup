@@ -1,7 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 export function Footer() {
+  const t = useTranslations();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -20,32 +24,32 @@ export function Footer() {
               />
             </Link>
             <p className="mt-4 text-sm text-text-secondary dark:text-gray-400 leading-relaxed">
-              Your trusted guide to finding the perfect freelance platform for your skills.
+              {t('footer.slogan')}
             </p>
           </div>
 
           {/* Platforms */}
           <div>
-            <h3 className="font-heading font-bold mb-4 text-text-primary dark:text-white">Platforms</h3>
+            <h3 className="font-heading font-bold mb-4 text-text-primary dark:text-white">{t('footer.platforms')}</h3>
             <ul className="space-y-3 text-sm">
               <li>
                 <Link href="/platforms" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
-                  All Platforms
+                  {t('footer.allPlatforms')}
                 </Link>
               </li>
               <li>
                 <Link href="/platforms/upwork" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
-                  Upwork Review
+                  {t('footer.upworkReview')}
                 </Link>
               </li>
               <li>
                 <Link href="/platforms/fiverr" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
-                  Fiverr Review
+                  {t('footer.fiverrReview')}
                 </Link>
               </li>
               <li>
                 <Link href="/comparisons" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
-                  Platform Comparisons
+                  {t('footer.platformComparisons')}
                 </Link>
               </li>
             </ul>
@@ -53,26 +57,26 @@ export function Footer() {
 
           {/* Resources */}
           <div>
-            <h3 className="font-heading font-bold mb-4 text-text-primary dark:text-white">Resources</h3>
+            <h3 className="font-heading font-bold mb-4 text-text-primary dark:text-white">{t('footer.resources')}</h3>
             <ul className="space-y-3 text-sm">
               <li>
                 <Link href="/guides" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
-                  Guides & Tutorials
+                  {t('footer.guidesTutorials')}
                 </Link>
               </li>
               <li>
                 <Link href="/blog" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
-                  Blog
+                  {t('footer.blog')}
                 </Link>
               </li>
               <li>
                 <Link href="/tools" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
-                  Freelance Tools
+                  {t('footer.freelanceTools')}
                 </Link>
               </li>
               <li>
                 <Link href="/newsletter" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
-                  Newsletter
+                  {t('footer.newsletterLink')}
                 </Link>
               </li>
             </ul>
@@ -80,31 +84,31 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h3 className="font-heading font-bold mb-4 text-text-primary dark:text-white">Company</h3>
+            <h3 className="font-heading font-bold mb-4 text-text-primary dark:text-white">{t('footer.company')}</h3>
             <ul className="space-y-3 text-sm">
               <li>
                 <Link href="/about" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
-                  About Us
+                  {t('footer.aboutUs')}
                 </Link>
               </li>
               <li>
                 <Link href="/contact" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
-                  Contact
+                  {t('footer.contact')}
                 </Link>
               </li>
               <li>
                 <Link href="/privacy" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
-                  Privacy Policy
+                  {t('footer.privacyPolicy')}
                 </Link>
               </li>
               <li>
                 <Link href="/terms" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
-                  Terms of Service
+                  {t('footer.termsOfService')}
                 </Link>
               </li>
               <li>
                 <Link href="/disclosure" className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
-                  Affiliate Disclosure
+                  {t('footer.affiliateDisclosure')}
                 </Link>
               </li>
             </ul>
@@ -115,7 +119,7 @@ export function Footer() {
         <div className="mt-12 border-t border-background-gray dark:border-gray-800 pt-8">
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <p className="text-sm text-text-secondary dark:text-gray-400">
-              © {currentYear} SkillLinkup. All rights reserved.
+              {t('footer.copyright', { year: currentYear })}
             </p>
           </div>
         </div>

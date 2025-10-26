@@ -3,9 +3,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import ThemeToggle from "./ThemeToggle";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 export function Header() {
+  const t = useTranslations();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -30,48 +33,49 @@ export function Header() {
               href="/"
               className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors"
             >
-              Home
+              {t('header.home')}
             </Link>
             <Link
               href="/platforms"
               className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors"
             >
-              Platforms
+              {t('header.platforms')}
             </Link>
             <Link
               href="/reviews"
               className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors"
             >
-              Reviews
+              {t('header.reviews')}
             </Link>
             <Link
               href="/comparisons"
               className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors"
             >
-              Comparisons
+              {t('header.comparisons')}
             </Link>
             <Link
               href="/tools"
               className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors"
             >
-              Tools
+              {t('header.tools')}
             </Link>
             <Link
               href="/about"
               className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors"
             >
-              About
+              {t('header.about')}
             </Link>
           </nav>
 
           {/* CTA Button */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center gap-3">
+            <LanguageSwitcher />
             <ThemeToggle />
             <Link
               href="/newsletter"
               className="inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-dark px-4 py-2 text-sm font-heading font-semibold text-white transition-colors shadow-lg"
             >
-              Subscribe
+              {t('header.subscribe')}
             </Link>
           </div>
 
@@ -115,51 +119,52 @@ export function Header() {
                 className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent px-2 py-1"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Home
+                {t('header.home')}
               </Link>
               <Link
                 href="/platforms"
                 className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent px-2 py-1"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Platforms
+                {t('header.platforms')}
               </Link>
               <Link
                 href="/reviews"
                 className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent px-2 py-1"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Reviews
+                {t('header.reviews')}
               </Link>
               <Link
                 href="/comparisons"
                 className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent px-2 py-1"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Comparisons
+                {t('header.comparisons')}
               </Link>
               <Link
                 href="/tools"
                 className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent px-2 py-1"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Tools
+                {t('header.tools')}
               </Link>
               <Link
                 href="/about"
                 className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent px-2 py-1"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                About
+                {t('header.about')}
               </Link>
               <Link
                 href="/newsletter"
                 className="inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-dark px-4 py-2 text-sm font-heading font-semibold text-white mt-2 shadow-lg"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Subscribe
+                {t('header.subscribe')}
               </Link>
-              <div className="flex justify-center mt-4">
+              <div className="flex justify-center gap-3 mt-4">
+                <LanguageSwitcher />
                 <ThemeToggle />
               </div>
             </nav>

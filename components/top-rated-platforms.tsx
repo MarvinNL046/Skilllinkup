@@ -1,6 +1,9 @@
+'use client';
+
 import Link from 'next/link';
 import { ArrowRight, Star } from 'lucide-react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 interface Platform {
   id: string;
@@ -26,6 +29,8 @@ function stripHtml(html: string | null): string {
 }
 
 export function TopRatedPlatforms({ platforms }: TopRatedPlatformsProps) {
+  const t = useTranslations('homepage.topRatedPlatforms');
+
   // Show only first 6 platforms
   const displayPlatforms = platforms.slice(0, 6);
 
@@ -39,10 +44,10 @@ export function TopRatedPlatforms({ platforms }: TopRatedPlatformsProps) {
         {/* Header */}
         <div className="mb-12 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Top Rated Platforms
+            {t('title')}
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Our highest-rated freelance marketplaces based on user reviews and ratings
+            {t('description')}
           </p>
         </div>
 
@@ -122,7 +127,7 @@ export function TopRatedPlatforms({ platforms }: TopRatedPlatformsProps) {
             href="/platforms"
             className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-dark transition-colors"
           >
-            View All Platforms
+            {t('viewAllPlatforms')}
             <ArrowRight className="w-5 h-5" />
           </Link>
         </div>

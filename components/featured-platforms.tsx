@@ -1,5 +1,8 @@
+'use client';
+
 import Link from "next/link";
 import Image from "next/image";
+import { useLocale, useTranslations } from 'next-intl';
 import type { Post } from "../lib/queries";
 
 interface FeaturedPlatformsProps {
@@ -7,6 +10,10 @@ interface FeaturedPlatformsProps {
 }
 
 export function FeaturedPlatforms({ posts }: FeaturedPlatformsProps) {
+  const locale = useLocale();
+  const t = useTranslations('homepage.featuredPlatforms');
+  const tc = useTranslations('common');
+
   if (!posts || posts.length === 0) {
     return null;
   }
@@ -17,10 +24,10 @@ export function FeaturedPlatforms({ posts }: FeaturedPlatformsProps) {
         {/* Section Header */}
         <div className="mb-10 text-center">
           <h2 className="text-3xl font-heading font-bold text-text-primary dark:text-white sm:text-4xl">
-            Latest Blog Posts
+            {t('title')}
           </h2>
           <p className="mt-3 text-base text-text-secondary dark:text-gray-300">
-            Discover our latest articles, guides and tips for freelancers
+            {t('description')}
           </p>
         </div>
 
@@ -29,7 +36,7 @@ export function FeaturedPlatforms({ posts }: FeaturedPlatformsProps) {
           {posts.slice(0, 3).map((post) => (
             <Link
               key={post.id}
-              href={`/post/${post.slug}`}
+              href={`/${locale}/post/${post.slug}`}
               className="group relative overflow-hidden rounded-lg border border-background-gray dark:border-gray-700 bg-white dark:bg-gray-800 transition-all hover:shadow-xl hover:border-accent"
             >
               {/* Image */}
@@ -45,7 +52,7 @@ export function FeaturedPlatforms({ posts }: FeaturedPlatformsProps) {
                   {/* Featured Badge */}
                   <div className="absolute right-3 top-3">
                     <span className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-heading font-semibold text-white shadow-lg">
-                      ★ Featured
+                      ★ {t('featuredBadge')}
                     </span>
                   </div>
                 </div>
@@ -77,10 +84,10 @@ export function FeaturedPlatforms({ posts }: FeaturedPlatformsProps) {
                 {/* Meta */}
                 <div className="flex items-center justify-between text-xs text-text-muted dark:text-gray-400">
                   {post.read_time && (
-                    <span>{post.read_time} min read</span>
+                    <span>{post.read_time} {tc('minRead')}</span>
                   )}
                   {post.views && (
-                    <span>{post.views} views</span>
+                    <span>{post.views} {tc('views')}</span>
                   )}
                 </div>
               </div>
@@ -94,7 +101,7 @@ export function FeaturedPlatforms({ posts }: FeaturedPlatformsProps) {
             href="/blog"
             className="inline-flex items-center gap-2 rounded-lg bg-primary hover:bg-primary-dark px-6 py-3 text-base font-heading font-semibold text-white transition-all shadow-lg hover:shadow-xl"
           >
-            View All Posts
+            {t('viewAllPosts')}
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>

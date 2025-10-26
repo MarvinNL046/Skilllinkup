@@ -1,5 +1,8 @@
+'use client';
+
 import Link from "next/link";
 import Image from "next/image";
+import { useLocale, useTranslations } from 'next-intl';
 import type { Post } from "../lib/queries";
 
 interface LatestReviewsProps {
@@ -7,6 +10,9 @@ interface LatestReviewsProps {
 }
 
 export function LatestReviews({ posts }: LatestReviewsProps) {
+  const locale = useLocale();
+  const t = useTranslations('homepage.latestReviews');
+  const tc = useTranslations('common');
   if (!posts || posts.length === 0) {
     return null;
   }
@@ -17,10 +23,10 @@ export function LatestReviews({ posts }: LatestReviewsProps) {
         {/* Section Header */}
         <div className="mb-10 text-center">
           <h2 className="text-3xl font-heading font-bold text-text-primary dark:text-white sm:text-4xl">
-            Latest Guides
+            {t('title')}
           </h2>
           <p className="mt-3 text-base text-text-secondary dark:text-gray-300">
-            Stay updated with our newest platform reviews
+            {t('description')}
           </p>
         </div>
 
@@ -28,7 +34,7 @@ export function LatestReviews({ posts }: LatestReviewsProps) {
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {posts.slice(0, 6).map((post) => (
             <article key={post.id} className="group">
-              <Link href={`/post/${post.slug}`} className="block">
+              <Link href={`/${locale}/post/${post.slug}`} className="block">
                 {/* Image */}
                 {post.feature_img && (
                   <div className="relative aspect-[16/9] overflow-hidden rounded-lg mb-4 shadow-md group-hover:shadow-lg transition-shadow">
@@ -91,7 +97,7 @@ export function LatestReviews({ posts }: LatestReviewsProps) {
                     {post.read_time && (
                       <>
                         <span>·</span>
-                        <span>{post.read_time} min read</span>
+                        <span>{post.read_time} {tc('minRead')}</span>
                       </>
                     )}
                   </div>
@@ -107,7 +113,7 @@ export function LatestReviews({ posts }: LatestReviewsProps) {
             href="/guides"
             className="inline-flex items-center gap-2 rounded-lg bg-primary hover:bg-primary-dark px-6 py-3 text-base font-heading font-semibold text-white shadow-lg transition-all hover:shadow-xl"
           >
-            Browse All Guides
+            {t('browseAllGuides')}
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
