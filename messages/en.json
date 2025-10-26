@@ -1392,5 +1392,29 @@
       "description": "Help other freelancers by sharing your honest review of the platforms you've used",
       "browseButton": "Browse Platforms"
     }
+  },
+  "blogPage": {
+    "metadata": {
+      "title": "Blog - SkillLinkup",
+      "description": "Read our latest articles about freelance platforms, tips, and industry insights."
+    },
+    "hero": {
+      "title": "Blog & Resources",
+      "subtitle": "Expert insights, platform reviews, and practical tips to help you succeed as a freelancer"
+    },
+    "postCard": {
+      "minRead": "min read",
+      "views": "views"
+    },
+    "emptyState": {
+      "message": "No blog posts found. Check back soon!"
+    },
+    "loadMore": {
+      "button": "Load More Posts"
+    },
+    "categories": {
+      "heading": "Browse by Category",
+      "postCount": "{count, plural, one {article} other {articles}}"
+    }
   }
 }

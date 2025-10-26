@@ -1392,5 +1392,29 @@
       "description": "Help andere freelancers door uw eerlijke beoordeling te delen over de platforms die u heeft gebruikt",
       "browseButton": "Blader door platforms"
     }
+  },
+  "blogPage": {
+    "metadata": {
+      "title": "Blog - SkillLinkup",
+      "description": "Lees onze nieuwste artikelen over freelanceplatforms, tips en branche-inzichten."
+    },
+    "hero": {
+      "title": "Blog en bronnen",
+      "subtitle": "Deskundige inzichten, platformrecensies en praktische tips om u te helpen slagen als freelancer"
+    },
+    "postCard": {
+      "minRead": "min gelezen",
+      "views": "bekeken"
+    },
+    "emptyState": {
+      "message": "Geen blogposts gevonden. Kom snel terug!"
+    },
+    "loadMore": {
+      "button": "Laad meer berichten"
+    },
+    "categories": {
+      "heading": "Blader op categorie",
+      "postCount": "{count, plural, one {artikel} other {artikelen}}"
+    }
   }
 }
