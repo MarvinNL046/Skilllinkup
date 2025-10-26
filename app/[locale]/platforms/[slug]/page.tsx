@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { getPlatformBySlug, getPublishedPlatforms } from "@/lib/queries";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -33,12 +34,15 @@ export async function generateMetadata({ params }: PlatformPageProps) {
       ? platform.logo_url
       : `${siteUrl}${platform.logo_url}`;
 
+    // Get translations for metadata
+    const t = await getTranslations({ locale, namespace: 'platformDetail' });
+
     // Extract plain text from HTML description for meta tags
     const plainDescription = platform.description
       ? platform.description.replace(/<[^>]*>/g, '').substring(0, 160)
-      : `Comprehensive review of ${platform.name} freelance platform. Rating: ${platform.rating}/5. ${platform.difficulty} to use. ${platform.fees || 'Learn about fees'}.`;
+      : t('metaDescription', { name: platform.name });
 
-    const metaTitle = `${platform.name} Review 2025: Fees, Features & Pros/Cons - SkillLinkup`;
+    const metaTitle = t('metaTitle', { name: platform.name });
 
     return {
       title: metaTitle,
@@ -102,6 +106,7 @@ export async function generateMetadata({ params }: PlatformPageProps) {
 
 export default async function PlatformPage({ params }: PlatformPageProps) {
   const { slug, locale } = await params;
+  const t = await getTranslations('platformDetail');
   let platform;
   let relatedPlatforms: Awaited<ReturnType<typeof getPublishedPlatforms>> = [];
 
@@ -197,6 +202,12 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
     }
   };
 
+  // Helper function to translate difficulty values
+  const getDifficultyText = (difficulty: string) => {
+    const key = `difficulty${difficulty.charAt(0).toUpperCase() + difficulty.slice(1).toLowerCase()}`;
+    return t(key as any);
+  };
+
   return (
     <>
       {/* Product Schema */}
@@ -223,13 +234,13 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                   <ol className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                     <li>
                       <Link href="/" className="hover:text-primary dark:hover:text-accent-light transition-colors">
-                        Home
+                        {t('home')}
                       </Link>
                     </li>
                     <li>/</li>
                     <li>
                       <Link href="/platforms" className="hover:text-primary dark:hover:text-accent-light transition-colors">
-                        Platforms
+                        {t('platforms')}
                       </Link>
                     </li>
                     <li>/</li>
@@ -289,9 +300,9 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                   {/* Difficulty */}
                   {platform.difficulty && (
                     <div className="flex items-center gap-2">
-                      <span className="text-gray-600 dark:text-gray-400">Difficulty:</span>
+                      <span className="text-gray-600 dark:text-gray-400">{t('difficulty')}:</span>
                       <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getDifficultyColor(platform.difficulty)}`}>
-                        {platform.difficulty}
+                        {getDifficultyText(platform.difficulty)}
                       </span>
                     </div>
                   )}
@@ -299,7 +310,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                   {/* Fees */}
                   {platform.fees && (
                     <div className="flex items-center gap-2">
-                      <span className="text-gray-600 dark:text-gray-400">Fees:</span>
+                      <span className="text-gray-600 dark:text-gray-400">{t('fees')}:</span>
                       <span className="font-semibold text-gray-900 dark:text-white">{platform.fees}</span>
                     </div>
                   )}
@@ -312,7 +323,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-primary hover:text-primary-dark dark:text-accent-light dark:hover:text-accent font-semibold transition-colors"
                     >
-                      Visit Website
+                      {t('visitWebsite')}
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
@@ -361,7 +372,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                   {platform.features && platform.features.length > 0 && (
                     <section id="features">
                       <h2 className="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-6">
-                        Key Features
+                        {t('keyFeatures')}
                       </h2>
                       <div className="grid gap-4 sm:grid-cols-2">
                         {platform.features.map((feature, index) => (
@@ -383,7 +394,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                   {((platform.pros && platform.pros.length > 0) || (platform.cons && platform.cons.length > 0)) && (
                     <section id="pros-cons">
                       <h2 className="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-6">
-                        Pros & Cons
+                        {t('prosAndCons')}
                       </h2>
                       <div className="grid gap-6 sm:grid-cols-2">
                         {/* Pros */}
@@ -393,7 +404,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
                               </svg>
-                              Pros
+                              {t('pros')}
                             </h3>
                             <ul className="space-y-3">
                               {platform.pros.map((pro, index) => (
@@ -415,7 +426,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5" />
                               </svg>
-                              Cons
+                              {t('cons')}
                             </h3>
                             <ul className="space-y-3">
                               {platform.cons.map((con, index) => (
@@ -437,10 +448,10 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                   {platform.website_url && (
                     <section className="bg-gradient-to-r from-primary to-primary-dark dark:from-accent dark:to-accent-dark rounded-lg p-8 text-center text-white shadow-xl">
                       <h2 className="text-2xl font-heading font-bold mb-3 text-white">
-                        Ready to get started with {platform.name}?
+                        {t('readyToGetStarted', { name: platform.name })}
                       </h2>
                       <p className="text-white/90 mb-6 max-w-2xl mx-auto">
-                        Join thousands of freelancers already using this platform to grow their business.
+                        {t('joinThousands')}
                       </p>
                       <a
                         href={platform.website_url}
@@ -448,7 +459,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center gap-2 rounded-lg bg-white hover:bg-gray-100 dark:bg-gray-900 dark:hover:bg-gray-800 px-8 py-3 font-heading font-semibold text-primary dark:text-accent-light transition-all shadow-lg"
                       >
-                        Visit {platform.name}
+                        {t('visitPlatform')}
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
@@ -463,29 +474,29 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                     {/* Quick Info Card */}
                     <div className="bg-primary/5 dark:bg-accent/10 border-2 border-primary/20 dark:border-accent/30 rounded-lg p-6">
                       <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white mb-4">
-                        Quick Info
+                        {t('quickInfo')}
                       </h3>
                       <dl className="space-y-4 text-sm">
                         <div>
-                          <dt className="text-gray-600 dark:text-gray-400 mb-1">Category</dt>
+                          <dt className="text-gray-600 dark:text-gray-400 mb-1">{t('category')}</dt>
                           <dd className="font-semibold text-gray-900 dark:text-white">{platform.category}</dd>
                         </div>
                         {platform.fees && (
                           <div>
-                            <dt className="text-gray-600 dark:text-gray-400 mb-1">Fee Structure</dt>
+                            <dt className="text-gray-600 dark:text-gray-400 mb-1">{t('feeStructure')}</dt>
                             <dd className="font-semibold text-gray-900 dark:text-white">{platform.fees}</dd>
                           </div>
                         )}
                         <div>
-                          <dt className="text-gray-600 dark:text-gray-400 mb-1">Difficulty Level</dt>
+                          <dt className="text-gray-600 dark:text-gray-400 mb-1">{t('difficultyLevel')}</dt>
                           <dd>
                             <span className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${getDifficultyColor(platform.difficulty)}`}>
-                              {platform.difficulty}
+                              {getDifficultyText(platform.difficulty)}
                             </span>
                           </dd>
                         </div>
                         <div>
-                          <dt className="text-gray-600 dark:text-gray-400 mb-1">Rating</dt>
+                          <dt className="text-gray-600 dark:text-gray-400 mb-1">{t('rating')}</dt>
                           <dd className="flex items-center gap-1">
                             <span className="text-yellow-400">★</span>
                             <span className="font-semibold text-gray-900 dark:text-white">{Number(platform.rating).toFixed(1)}</span>
@@ -500,7 +511,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                           rel="noopener noreferrer"
                           className="mt-6 inline-flex items-center justify-center w-full rounded-lg bg-primary hover:bg-primary-dark dark:bg-accent dark:hover:bg-accent-dark px-4 py-2.5 text-sm font-heading font-semibold text-white transition-all shadow-md"
                         >
-                          Visit Platform
+                          {t('visitPlatform')}
                         </a>
                       )}
                     </div>
@@ -508,16 +519,16 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                     {/* Compare Platforms Link */}
                     <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
                       <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white mb-3">
-                        Compare Platforms
+                        {t('comparePlatforms')}
                       </h3>
                       <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
-                        Not sure if {platform.name} is right for you? Compare with other platforms.
+                        {t('notSure', { name: platform.name })}
                       </p>
                       <Link
                         href="/platforms"
                         className="inline-flex items-center justify-center w-full rounded-lg bg-white dark:bg-gray-900 border-2 border-primary dark:border-accent text-primary dark:text-accent-light hover:bg-primary hover:text-white dark:hover:bg-accent dark:hover:text-white px-4 py-2.5 text-sm font-heading font-semibold transition-all"
                       >
-                        View All Platforms
+                        {t('viewAllPlatforms')}
                       </Link>
                     </div>
                   </div>
@@ -532,7 +543,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
           <section className="py-16 bg-gray-50 dark:bg-gray-900">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <h2 className="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-8">
-                Similar {platform.category} Platforms
+                {t('similar', { category: platform.category })}
               </h2>
               <div className="grid gap-6 md:grid-cols-3">
                 {relatedPlatforms.map((relatedPlatform) => (
@@ -566,7 +577,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                       )}
                       <div className="flex items-center justify-between text-xs">
                         <span className={`px-2 py-1 rounded-full font-semibold ${getDifficultyColor(relatedPlatform.difficulty)}`}>
-                          {relatedPlatform.difficulty}
+                          {getDifficultyText(relatedPlatform.difficulty)}
                         </span>
                         {relatedPlatform.fees && (
                           <span className="text-gray-600 dark:text-gray-400">{relatedPlatform.fees}</span>

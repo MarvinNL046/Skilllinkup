@@ -233,5 +233,33 @@
     "title": "All Freelance Platforms",
     "subtitle": "Compare {count}+ platforms to find the perfect match for your skills and goals",
     "allPlatformsCategory": "All Platforms"
+  },
+  "platformDetail": {
+    "home": "Home",
+    "platforms": "Platforms",
+    "difficulty": "Difficulty",
+    "fees": "Fees",
+    "visitWebsite": "Visit Website",
+    "keyFeatures": "Key Features",
+    "prosAndCons": "Pros & Cons",
+    "pros": "Pros",
+    "cons": "Cons",
+    "readyToGetStarted": "Ready to get started with {name}?",
+    "joinThousands": "Join thousands of freelancers already using this platform to grow their business.",
+    "quickInfo": "Quick Info",
+    "category": "Category",
+    "feeStructure": "Fee Structure",
+    "difficultyLevel": "Difficulty Level",
+    "rating": "Rating",
+    "visitPlatform": "Visit Platform",
+    "comparePlatforms": "Compare Platforms",
+    "notSure": "Not sure if {name} is right for you? Compare with other platforms.",
+    "viewAllPlatforms": "View All Platforms",
+    "similar": "Similar {category} Platforms",
+    "difficultyEasy": "Easy",
+    "difficultyMedium": "Medium",
+    "difficultyHard": "Hard",
+    "metaTitle": "{name} Review 2025: Fees, Features & Pros/Cons - SkillLinkup",
+    "metaDescription": "Read our comprehensive {name} review. Learn about fees, features, pros & cons."
   }
 }

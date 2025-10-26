@@ -233,5 +233,33 @@
     "title": "Alle Freelance Platforms",
     "subtitle": "Vergelijk {count}+ platforms om de perfecte match voor jouw vaardigheden en doelen te vinden",
     "allPlatformsCategory": "Alle Platforms"
+  },
+  "platformDetail": {
+    "home": "Home",
+    "platforms": "Platforms",
+    "difficulty": "Moeilijkheidsgraad",
+    "fees": "Kosten",
+    "visitWebsite": "Bezoek website",
+    "keyFeatures": "Belangrijkste kenmerken",
+    "prosAndCons": "Voor- en nadelen",
+    "pros": "Pluspunten",
+    "cons": "Nadelen",
+    "readyToGetStarted": "Klaar om aan de slag te gaan met {name}?",
+    "joinThousands": "Sluit u aan bij de duizenden freelancers die dit platform al gebruiken om hun bedrijf te laten groeien.",
+    "quickInfo": "Snelle informatie",
+    "category": "Categorie",
+    "feeStructure": "Vergoedingsstructuur",
+    "difficultyLevel": "Moeilijkheidsgraad",
+    "rating": "Beoordeling",
+    "visitPlatform": "Bezoek Platform",
+    "comparePlatforms": "Vergelijk platforms",
+    "notSure": "Weet u niet zeker of {name} geschikt voor u is? Vergelijk met andere platforms.",
+    "viewAllPlatforms": "Bekijk alle platforms",
+    "similar": "Vergelijkbare {category} platforms",
+    "difficultyEasy": "Eenvoudig",
+    "difficultyMedium": "Medium",
+    "difficultyHard": "Moeilijk",
+    "metaTitle": "{name} Review 2025: Kosten, Functies & Voor-/Nadelen - SkillLinkup",
+    "metaDescription": "Lees onze uitgebreide {name} review. Meer informatie over kosten, functies, voor- en nadelen."
   }
 }
