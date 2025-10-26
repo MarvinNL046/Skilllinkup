@@ -40,3 +40,18 @@ public/sitemap.xml
 public/sitemap-0.xml
 # Local Netlify folder
 .netlify
+
+# Testing & Development Files
+.playwright-mcp/
+test-*.mjs
+test-*.js
+test-*.ts
+verify-*.mjs
+quick-*.mjs
+*-test-report.md
+*-test-results.json
+test-results/
+scripts/test-*.js
+scripts/test-*.ts
+scripts/check-*.mjs
+scripts/verify-*.mjs
