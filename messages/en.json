@@ -1280,5 +1280,41 @@
         "answer": "Check your spam or promotions folder. If you still can't find it, contact us and we'll help you get set up."
       }
     }
+  },
+  "comparisonsPage": {
+    "metadata": {
+      "title": "Platform Comparisons | SkillLinkup",
+      "description": "Compare the best freelance platforms and find the perfect platform for your skills."
+    },
+    "hero": {
+      "title": "Compare Freelance Platforms",
+      "subtitle": "Find the perfect platform for your skills. Compare fees, specializations, and reviews."
+    },
+    "table": {
+      "headers": {
+        "platform": "Platform",
+        "commission": "Commission",
+        "rating": "Rating",
+        "reviews": "Reviews",
+        "specialization": "Specialization",
+        "action": "Action"
+      },
+      "emptyState": "No platforms available for comparison yet.",
+      "reviewsLabel": "reviews",
+      "emptyCategory": "-",
+      "viewButton": "View",
+      "visitButton": "Visit →"
+    },
+    "stats": {
+      "totalPlatforms": "Total Platforms",
+      "averageCommission": "Average Commission",
+      "averageRating": "Average Rating"
+    },
+    "cta": {
+      "heading": "Not sure which platform is right for you?",
+      "description": "Read our comprehensive reviews and platform analyses to find the perfect platform for your skills.",
+      "viewAllButton": "View All Platforms",
+      "readReviewsButton": "Read Reviews"
+    }
   }
 }

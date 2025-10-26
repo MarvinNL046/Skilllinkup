@@ -1,15 +1,27 @@
-import { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { getPublishedPlatforms } from '@/lib/queries';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 
-export const metadata: Metadata = {
-  title: 'Platform Comparisons | SkillLinkup',
-  description: 'Compare the best freelance platforms and find the perfect platform for your skills.',
-};
+interface PageProps {
+  params: Promise<{ locale: string }>;
+}
 
-export default async function ComparisonsPage() {
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'comparisonsPage.metadata' });
+
+  return {
+    title: t('title'),
+    description: t('description'),
+  };
+}
+
+export default async function ComparisonsPage({ params }: PageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'comparisonsPage' });
+
   const platforms = await getPublishedPlatforms(100);
 
   return (
@@ -21,10 +33,10 @@ export default async function ComparisonsPage() {
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
-                Compare Freelance Platforms
+                {t('hero.title')}
               </h1>
               <p className="text-xl text-text-secondary">
-                Find the perfect platform for your skills. Compare fees, specializations, and reviews.
+                {t('hero.subtitle')}
               </p>
             </div>
           </div>
@@ -38,22 +50,22 @@ export default async function ComparisonsPage() {
               <thead className="bg-gray-100 dark:bg-gray-700">
                 <tr>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
-                    Platform
+                    {t('table.headers.platform')}
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
-                    Commission
+                    {t('table.headers.commission')}
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
-                    Rating
+                    {t('table.headers.rating')}
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
-                    Reviews
+                    {t('table.headers.reviews')}
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
-                    Specialization
+                    {t('table.headers.specialization')}
                   </th>
                   <th className="px-6 py-4 text-right text-sm font-semibold text-gray-900 dark:text-gray-100">
-                    Action
+                    {t('table.headers.action')}
                   </th>
                 </tr>
               </thead>
@@ -61,7 +73,7 @@ export default async function ComparisonsPage() {
                 {platforms.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
-                      No platforms available for comparison yet.
+                      {t('table.emptyState')}
                     </td>
                   </tr>
                 ) : (
@@ -99,7 +111,7 @@ export default async function ComparisonsPage() {
                       </td>
                       <td className="px-6 py-4">
                         <span className="text-sm text-gray-600 dark:text-gray-400">
-                          {platform.review_count || 0} reviews
+                          {platform.review_count || 0} {t('table.reviewsLabel')}
                         </span>
                       </td>
                       <td className="px-6 py-4">
@@ -111,17 +123,17 @@ export default async function ComparisonsPage() {
                               {platform.category}
                             </span>
                           ) : (
-                            <span className="text-sm text-gray-400 dark:text-gray-500">-</span>
+                            <span className="text-sm text-gray-400 dark:text-gray-500">{t('table.emptyCategory')}</span>
                           )}
                         </div>
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <Link
-                            href={`/platforms/${platform.slug}`}
+                            href={`/${locale}/platforms/${platform.slug}`}
                             className="text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
                           >
-                            View
+                            {t('table.viewButton')}
                           </Link>
                           {(platform.affiliate_link || platform.website_url) && (
                             <a
@@ -130,7 +142,7 @@ export default async function ComparisonsPage() {
                               rel="noopener noreferrer sponsored"
                               className="inline-flex items-center px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors shadow-md"
                             >
-                              Visit →
+                              {t('table.visitButton')}
                             </a>
                           )}
                         </div>
@@ -148,7 +160,7 @@ export default async function ComparisonsPage() {
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
               <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                Total Platforms
+                {t('stats.totalPlatforms')}
               </div>
               <div className="text-3xl font-bold text-gray-900 dark:text-white">
                 {platforms.length}
@@ -156,7 +168,7 @@ export default async function ComparisonsPage() {
             </div>
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
               <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                Average Commission
+                {t('stats.averageCommission')}
               </div>
               <div className="text-3xl font-bold text-green-600 dark:text-green-400">
                 {(
@@ -168,7 +180,7 @@ export default async function ComparisonsPage() {
             </div>
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
               <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                Average Rating
+                {t('stats.averageRating')}
               </div>
               <div className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">
                 {(
@@ -184,23 +196,23 @@ export default async function ComparisonsPage() {
         {/* CTA Section */}
         <div className="mt-12 bg-primary rounded-lg shadow-lg p-8 text-center text-white">
           <h2 className="text-2xl font-bold mb-4">
-            Not sure which platform is right for you?
+            {t('cta.heading')}
           </h2>
           <p className="text-white/90 mb-6 max-w-2xl mx-auto">
-            Read our comprehensive reviews and platform analyses to find the perfect platform for your skills.
+            {t('cta.description')}
           </p>
           <div className="flex items-center justify-center gap-4">
             <Link
-              href="/platforms"
+              href={`/${locale}/platforms`}
               className="inline-flex items-center px-6 py-3 rounded-lg bg-white text-primary font-semibold hover:bg-gray-100 transition-colors"
             >
-              View All Platforms
+              {t('cta.viewAllButton')}
             </Link>
             <Link
-              href="/reviews"
+              href={`/${locale}/reviews`}
               className="inline-flex items-center px-6 py-3 rounded-lg bg-white text-primary font-semibold hover:bg-gray-100 transition-colors shadow-md"
             >
-              Read Reviews
+              {t('cta.readReviewsButton')}
             </Link>
           </div>
         </div>

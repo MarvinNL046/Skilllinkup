@@ -1280,5 +1280,41 @@
         "answer": "Controleer uw map met spam of promoties. Als u het nog steeds niet kunt vinden, neem dan contact met ons op en wij helpen u met de installatie."
       }
     }
+  },
+  "comparisonsPage": {
+    "metadata": {
+      "title": "Platformvergelijkingen | SkillLinkup",
+      "description": "Vergelijk de beste freelanceplatforms en vind het perfecte platform voor jouw vaardigheden."
+    },
+    "hero": {
+      "title": "Vergelijk freelanceplatforms",
+      "subtitle": "Vind het perfecte platform voor uw vaardigheden. Vergelijk tarieven, specialisaties en beoordelingen."
+    },
+    "table": {
+      "headers": {
+        "platform": "Platform",
+        "commission": "Commissie",
+        "rating": "Beoordeling",
+        "reviews": "Recensies",
+        "specialization": "Specialisatie",
+        "action": "Actie"
+      },
+      "emptyState": "Er zijn nog geen platforms beschikbaar om te vergelijken.",
+      "reviewsLabel": "beoordelingen",
+      "emptyCategory": "-",
+      "viewButton": "Weergave",
+      "visitButton": "Bezoek →"
+    },
+    "stats": {
+      "totalPlatforms": "Totaal platforms",
+      "averageCommission": "Gemiddelde Commissie",
+      "averageRating": "Gemiddelde beoordeling"
+    },
+    "cta": {
+      "heading": "Weet u niet zeker welk platform het beste bij u past?",
+      "description": "Lees onze uitgebreide reviews en platformanalyses om het perfecte platform voor jouw vaardigheden te vinden.",
+      "viewAllButton": "Bekijk alle platforms",
+      "readReviewsButton": "Lees recensies"
+    }
   }
 }
