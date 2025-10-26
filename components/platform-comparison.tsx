@@ -1,9 +1,12 @@
 'use client';
 
 import Link from "next/link";
+import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 export function PlatformComparison() {
+  const params = useParams();
+  const locale = params.locale as string;
   const t = useTranslations('homepage.platformComparison');
 
   const platforms = [
@@ -150,7 +153,7 @@ export function PlatformComparison() {
 
               {/* CTA */}
               <Link
-                href={`/platforms/${platform.name.toLowerCase()}`}
+                href={`/${locale}/platforms/${platform.name.toLowerCase()}`}
                 className="inline-flex items-center justify-center w-full rounded-lg bg-primary hover:bg-primary-dark px-4 py-2.5 text-sm font-heading font-semibold text-white transition-all shadow-md hover:shadow-lg"
               >
                 {t('readFullReview')}
@@ -162,7 +165,7 @@ export function PlatformComparison() {
         {/* View All Link */}
         <div className="mt-10 text-center">
           <Link
-            href="/comparisons"
+            href={`/${locale}/comparisons`}
             className="inline-flex items-center gap-2 text-base font-heading font-semibold text-primary hover:text-primary-dark transition-colors"
           >
             {t('viewAllComparisons')}

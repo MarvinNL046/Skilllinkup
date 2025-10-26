@@ -110,7 +110,7 @@ export function LatestReviews({ posts }: LatestReviewsProps) {
         {/* View All Link */}
         <div className="mt-12 text-center">
           <Link
-            href="/guides"
+            href={`/${locale}/guides`}
             className="inline-flex items-center gap-2 rounded-lg bg-primary hover:bg-primary-dark px-6 py-3 text-base font-heading font-semibold text-white shadow-lg transition-all hover:shadow-xl"
           >
             {t('browseAllGuides')}

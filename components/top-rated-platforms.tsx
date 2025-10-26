@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight, Star } from 'lucide-react';
 import Image from 'next/image';
+import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 interface Platform {
@@ -29,6 +30,8 @@ function stripHtml(html: string | null): string {
 }
 
 export function TopRatedPlatforms({ platforms }: TopRatedPlatformsProps) {
+  const params = useParams();
+  const locale = params.locale as string;
   const t = useTranslations('homepage.topRatedPlatforms');
 
   // Show only first 6 platforms
@@ -56,7 +59,7 @@ export function TopRatedPlatforms({ platforms }: TopRatedPlatformsProps) {
           {displayPlatforms.map((platform) => (
             <Link
               key={platform.id}
-              href={`/platforms/${platform.slug}`}
+              href={`/${locale}/platforms/${platform.slug}`}
               className="group block"
             >
               <article className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden h-full flex flex-col border border-gray-200 dark:border-gray-700">
@@ -124,7 +127,7 @@ export function TopRatedPlatforms({ platforms }: TopRatedPlatformsProps) {
         {/* View All Button */}
         <div className="text-center">
           <Link
-            href="/platforms"
+            href={`/${locale}/platforms`}
             className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-dark transition-colors"
           >
             {t('viewAllPlatforms')}

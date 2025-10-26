@@ -1,9 +1,12 @@
 'use client';
 
 import Link from "next/link";
+import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 export function Hero() {
+  const params = useParams();
+  const locale = params.locale as string;
   const t = useTranslations('homepage.hero');
 
   return (
@@ -32,7 +35,7 @@ export function Hero() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/platforms"
+              href={`/${locale}/platforms`}
               className="inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-dark px-8 py-3 text-base font-heading font-semibold text-white shadow-lg transition-all hover:shadow-xl"
             >
               {t('browsePlatforms')}
@@ -41,7 +44,7 @@ export function Hero() {
               </svg>
             </Link>
             <Link
-              href="/comparisons"
+              href={`/${locale}/comparisons`}
               className="inline-flex items-center justify-center rounded-lg border-2 border-secondary bg-white dark:bg-gray-800 hover:bg-background-light dark:hover:bg-gray-700 px-8 py-3 text-base font-heading font-semibold text-secondary dark:text-white transition-all"
             >
               {t('compare')}

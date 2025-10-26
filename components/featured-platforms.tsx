@@ -98,7 +98,7 @@ export function FeaturedPlatforms({ posts }: FeaturedPlatformsProps) {
         {/* View All Link */}
         <div className="mt-10 text-center">
           <Link
-            href="/blog"
+            href={`/${locale}/blog`}
             className="inline-flex items-center gap-2 rounded-lg bg-primary hover:bg-primary-dark px-6 py-3 text-base font-heading font-semibold text-white transition-all shadow-lg hover:shadow-xl"
           >
             {t('viewAllPosts')}

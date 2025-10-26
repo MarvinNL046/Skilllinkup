@@ -1,8 +1,12 @@
 'use client';
 
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 export function HowItWorks() {
+  const params = useParams();
+  const locale = params.locale as string;
   const t = useTranslations('homepage.howItWorks');
 
   const steps = [
@@ -95,21 +99,21 @@ export function HowItWorks() {
             {t('ctaDescription')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="/platforms"
+            <Link
+              href={`/${locale}/platforms`}
               className="inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-dark px-8 py-3 text-base font-heading font-semibold text-white shadow-lg transition-all hover:shadow-xl"
             >
               {t('browsePlatforms')}
               <svg className="ml-2 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
-            </a>
-            <a
-              href="/comparisons"
+            </Link>
+            <Link
+              href={`/${locale}/comparisons`}
               className="inline-flex items-center justify-center rounded-lg border-2 border-white bg-transparent hover:bg-white/10 px-8 py-3 text-base font-heading font-semibold text-white transition-all"
             >
               {t('compareNow')}
-            </a>
+            </Link>
           </div>
         </div>
       </div>
