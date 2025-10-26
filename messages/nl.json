@@ -1186,5 +1186,99 @@
         "description": "Ontvang wekelijkse tips en inzichten in uw inbox"
       }
     }
+  },
+  "newsletterPage": {
+    "metadata": {
+      "title": "Nieuwsbrief - SkillLinkup",
+      "description": "Abonneer u op wekelijkse freelance-inzichten, platformrecensies en tips van experts. Sluit u aan bij ruim 12.000 freelancers die hun bedrijf laten groeien."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "newsletter": "Nieuwsbrief"
+    },
+    "hero": {
+      "title": "Ontvang wekelijks freelance-inzichten",
+      "subtitle": "Sluit u aan bij duizenden freelancers die exclusieve tips, platformrecensies en bruikbaar advies ontvangen om hun bedrijf te laten groeien."
+    },
+    "form": {
+      "heading": "Abonneer u op onze nieuwsbrief",
+      "emailLabel": "E-mailadres",
+      "emailPlaceholder": "jij@voorbeeld.com",
+      "submitButton": "Abonneer je nu",
+      "submittingButton": "Abonneren...",
+      "terms": "Door u te abonneren, gaat u akkoord met het ontvangen van onze wekelijkse nieuwsbrief. U kunt zich op elk gewenst moment met één klik afmelden.",
+      "privacyNotice": "Wij respecteren uw privacy.",
+      "privacyDetails": "Uw e-mailadres wordt nooit gedeeld en u kunt zich op elk moment afmelden."
+    },
+    "success": {
+      "heading": "Je bent helemaal klaar!",
+      "instruction": "Controleer uw inbox voor een welkomstmail. Vergeet niet uw spammap te controleren!",
+      "resetButton": "Abonneer u op een andere e-mail"
+    },
+    "errorMessage": "Er is een fout opgetreden. Probeer het later opnieuw.",
+    "benefits": {
+      "heading": "Wat je krijgt",
+      "weeklyReviews": {
+        "title": "Wekelijkse platformrecensies",
+        "description": "Diepgaande analyse van freelanceplatforms, waarbij functies, kosten en mogelijkheden worden vergeleken om u te helpen de beste match te kiezen."
+      },
+      "expertTips": {
+        "title": "Deskundige freelancetips",
+        "description": "Praktisch advies over prijzen, klantenbeheer, productiviteit en het opbouwen van een duurzaam freelancebedrijf."
+      },
+      "exclusiveInsights": {
+        "title": "Exclusieve inzichten",
+        "description": "Toegang tot tools, sjablonen en bronnen die niet beschikbaar zijn op onze website. Alleen inhoud voor abonnees en vroege toegang tot nieuwe functies."
+      },
+      "successStories": {
+        "title": "Succesverhalen",
+        "description": "Leer van andere freelancers die een succesvolle carrière hebben opgebouwd. Echte strategieën en lessen uit het veld."
+      }
+    },
+    "stats": {
+      "subscribersCount": "12K+",
+      "subscribersLabel": "Abonnees",
+      "satisfactionCount": "98%",
+      "satisfactionLabel": "Tevredenheid",
+      "weeksCount": "52",
+      "weeksLabel": "Weken/jaar"
+    },
+    "testimonials": {
+      "heading": "Wat abonnees zeggen",
+      "testimonial1": {
+        "quote": "De wekelijkse nieuwsbrief is van onschatbare waarde geweest voor het vinden van de juiste platforms en het op de hoogte blijven van freelancetrends.",
+        "name": "Sara K.",
+        "role": "Grafisch ontwerper"
+      },
+      "testimonial2": {
+        "quote": "Ik heb mijn tarieven met 30% verhoogd nadat ik de prijsgidsen had gelezen. Het bruikbare advies is goud waard!",
+        "name": "Michaël R.",
+        "role": "Webontwikkelaar"
+      },
+      "testimonial3": {
+        "quote": "Beste freelance nieuwsbrief waarop ik me heb geabonneerd. Beknopt, relevant en levert altijd waarde op. Sterk aanbevolen!",
+        "name": "Emma L.",
+        "role": "Inhoud Schrijver"
+      }
+    },
+    "faq": {
+      "heading": "Veelgestelde vragen",
+      "frequency": {
+        "question": "Hoe vaak ontvang ik e-mails?",
+        "answer": "We sturen één e-mail per week, meestal op maandagochtend. Geen spam, geen dagelijks bombardement - alleen waardevolle wekelijkse inzichten."
+      },
+      "unsubscribe": {
+        "question": "Kan ik me op elk moment afmelden?",
+        "answer": "Absoluut! Elke e-mail bevat een afmeldlink. Eén klik en u bent van de lijst verwijderd - er worden geen vragen gesteld."
+      },
+      "privacy": {
+        "question": "Wordt mijn e-mail gedeeld met derden?",
+        "answer": "Nooit. Wij respecteren uw privacy en zullen uw e-mailadres nooit met iemand verkopen, verhuren of delen."
+      },
+      "welcome": {
+        "question": "Wat moet ik doen als ik de welkomstmail niet zie?",
+        "answer": "Controleer uw map met spam of promoties. Als u het nog steeds niet kunt vinden, neem dan contact met ons op en wij helpen u met de installatie."
+      }
+    }
   }
 }
