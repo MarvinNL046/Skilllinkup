@@ -233,13 +233,13 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                 <nav className="mb-6">
                   <ol className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                     <li>
-                      <Link href="/" className="hover:text-primary dark:hover:text-accent-light transition-colors">
+                      <Link href={`/${locale}`} className="hover:text-primary dark:hover:text-accent-light transition-colors">
                         {t('home')}
                       </Link>
                     </li>
                     <li>/</li>
                     <li>
-                      <Link href="/platforms" className="hover:text-primary dark:hover:text-accent-light transition-colors">
+                      <Link href={`/${locale}/platforms`} className="hover:text-primary dark:hover:text-accent-light transition-colors">
                         {t('platforms')}
                       </Link>
                     </li>
@@ -253,14 +253,14 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                 {/* Category & Featured Badge */}
                 <div className="mb-4 flex items-center gap-2">
                   <Link
-                    href={`/platforms?category=${platform.category.toLowerCase()}`}
+                    href={`/${locale}/platforms?category=${platform.category.toLowerCase()}`}
                     className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 dark:bg-accent/20 text-accent dark:text-accent-light text-sm font-heading font-semibold uppercase tracking-wide hover:bg-accent/20 dark:hover:bg-accent/30 transition-colors"
                   >
                     {platform.category}
                   </Link>
                   {platform.featured && (
                     <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 text-sm font-heading font-semibold">
-                      ★ Featured
+                      ★ {t('featured')}
                     </span>
                   )}
                 </div>
@@ -525,7 +525,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                         {t('notSure', { name: platform.name })}
                       </p>
                       <Link
-                        href="/platforms"
+                        href={`/${locale}/platforms`}
                         className="inline-flex items-center justify-center w-full rounded-lg bg-white dark:bg-gray-900 border-2 border-primary dark:border-accent text-primary dark:text-accent-light hover:bg-primary hover:text-white dark:hover:bg-accent dark:hover:text-white px-4 py-2.5 text-sm font-heading font-semibold transition-all"
                       >
                         {t('viewAllPlatforms')}
@@ -548,7 +548,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
               <div className="grid gap-6 md:grid-cols-3">
                 {relatedPlatforms.map((relatedPlatform) => (
                   <article key={relatedPlatform.id} className="group bg-white dark:bg-slate-800 rounded-lg shadow-md hover:shadow-xl transition-shadow p-6 border border-gray-200 dark:border-slate-700">
-                    <Link href={`/platforms/${relatedPlatform.slug}`} className="block">
+                    <Link href={`/${locale}/platforms/${relatedPlatform.slug}`} className="block">
                       <div className="flex items-start gap-4 mb-4">
                         {relatedPlatform.logo_url && (
                           <Image
