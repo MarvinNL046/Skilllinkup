@@ -305,5 +305,314 @@
       "guidesButton": "Lees onze handleidingen",
       "updatesButton": "Blijf op de hoogte"
     }
+  },
+  "timeTracker": {
+    "breadcrumb": {
+      "home": "Thuis",
+      "tools": "Hulpmiddelen",
+      "timeTracker": "Tijdtracker",
+      "separator": "→"
+    },
+    "hero": {
+      "title": "Tijdtracker",
+      "subtitle": "Houd declarabele uren bij, beheer projecten en bereken de inkomsten automatisch. Ideaal voor freelancers en consultants."
+    },
+    "summaryCards": {
+      "today": "Vandaag",
+      "thisWeek": "Deze week",
+      "thisMonth": "Deze maand",
+      "allTime": "Altijd",
+      "hoursUnit": "h",
+      "currencySymbol": "$"
+    },
+    "timer": {
+      "title": "Live-timer",
+      "selectProject": "Project selecteren...",
+      "description": "Waar werk je aan?",
+      "start": "Start",
+      "pause": "Pauze",
+      "resume": "Hervatten",
+      "stop": "Stop"
+    },
+    "quickActions": {
+      "title": "Snelle acties",
+      "manualEntry": "Handmatige invoer toevoegen",
+      "addProject": "Project toevoegen",
+      "export": "Exporteren naar CSV"
+    },
+    "projects": {
+      "title": "Projecten",
+      "empty": "Nog geen projecten. Voeg er een toe om aan de slag te gaan!",
+      "hourlyRate": "/uur",
+      "count": "({count})"
+    },
+    "entries": {
+      "title": "Tijdsinvoer",
+      "filterProject": "Project",
+      "filterDateRange": "Datumbereik",
+      "allProjects": "Alle projecten",
+      "allTime": "Altijd",
+      "today": "Vandaag",
+      "thisWeek": "Deze week",
+      "thisMonth": "Deze maand",
+      "empty": "Nog geen tijdsinvoer. Start de timer of voeg een handmatige invoer toe!"
+    },
+    "projectModal": {
+      "titleEdit": "Project bewerken",
+      "titleAdd": "Project toevoegen",
+      "labelName": "Projectnaam",
+      "placeholderName": "Herontwerp van de website",
+      "labelClient": "Klantnaam",
+      "placeholderClient": "Acme Corp",
+      "labelRate": "Uurtarief ($)",
+      "labelColor": "Kleur",
+      "buttonUpdate": "Bijwerken",
+      "buttonAdd": "Toevoegen",
+      "buttonSuffix": "Project",
+      "buttonCancel": "Annuleren"
+    },
+    "manualModal": {
+      "title": "Handmatige invoer toevoegen",
+      "labelDate": "Datum",
+      "labelHours": "Uren",
+      "labelMinutes": "Minuten",
+      "labelProject": "Project",
+      "placeholderProject": "Project selecteren...",
+      "labelDescription": "Beschrijving",
+      "placeholderDescription": "Waar heb je aan gewerkt?",
+      "buttonAdd": "Invoer toevoegen",
+      "buttonCancel": "Annuleren"
+    },
+    "confirmations": {
+      "deleteProject": "Dit project verwijderen? Dit heeft geen invloed op bestaande tijdsinvoer.",
+      "deleteEntry": "Deze tijdsinvoer verwijderen?"
+    },
+    "csv": {
+      "filename": "tijdtracker-export"
+    }
+  },
+  "rateCalculator": {
+    "breadcrumb": {
+      "home": "Thuis",
+      "tools": "Hulpmiddelen",
+      "title": "Tariefcalculator",
+      "separator": "→"
+    },
+    "hero": {
+      "title": "Freelance Tariefcalculator",
+      "description": "Bereken uw ideale uurtarief op basis van uw gewenste inkomsten, uitgaven en declarabele uren. Deze calculator houdt rekening met belastingen en een buffer voor onverwachte kosten."
+    },
+    "inputs": {
+      "title": "Uw Informatie",
+      "quickPresets": "Snelle Voorinstellingen",
+      "customRateLabel": "Vul uw eigen uurtarief in",
+      "customRatePlaceholder": "bijvoorbeeld 45",
+      "presetJunior": "Junior",
+      "presetMedior": "Medior",
+      "presetSenior": "Senior",
+      "customRateActive": "Actief",
+      "customRateEnable": "Inschakelen",
+      "customRateHelpEnabled": "Gebruik een aangepast tarief om uw potentiële inkomen te berekenen",
+      "customRateHelpDisabled": "Klik op Inschakelen om uw eigen uurtarief in te voeren en uw potentiële inkomen te bekijken",
+      "labelDesiredIncome": "Gewenst netto jaarinkomen",
+      "helpDesiredIncome": "Het bedrag dat u netto per jaar wilt verdienen",
+      "labelBillableHours": "Factureerbare uren per jaar",
+      "helpBillableHours": "Typisch 1600-1800 uur (40 uur/week, 40-45 weken/jaar)",
+      "labelBusinessExpenses": "Jaarlijkse zakelijke uitgaven",
+      "helpBusinessExpenses": "Software, hardware, kantoor, verzekeringen, accountant, etc.",
+      "labelTaxRate": "Gemiddeld belastingtarief",
+      "helpTaxRate": "Gemiddeld 25-40% voor freelancers (verschilt per land)",
+      "labelSafetyBuffer": "Veiligheidsbuffer",
+      "helpSafetyBuffer": "Extra buffer voor onverwachte kosten en langzamere periodes",
+      "labelVacationWeeks": "Vakantieweken per jaar",
+      "helpVacationWeeks": "Typisch 4-6 weken per jaar voor de balans tussen werk en privé"
+    },
+    "results": {
+      "mainTitle": "Aanbevolen Uurtarief",
+      "perHour": "per uur",
+      "dayRate": "Dagtarief",
+      "dayHours": "8 uur",
+      "weekRate": "Weektarief",
+      "weekHours": "40 uur",
+      "monthlyIncome": "Maandelijks Inkomen",
+      "monthlyAvg": "Gemiddeld per maand",
+      "weeklyIncome": "Wekelijks Inkomen",
+      "workingWeeks": "werkweken"
+    },
+    "breakdown": {
+      "title": "Berekening Uitsplitsing",
+      "desiredIncome": "Gewenst netto inkomen",
+      "businessExpenses": "Zakelijke uitgaven",
+      "subtotal": "Subtotaal",
+      "safetyBuffer": "Veiligheidsbuffer",
+      "subtotalWithBuffer": "Subtotaal met buffer",
+      "taxes": "Belastingen",
+      "totalRevenue": "Totaal benodigde omzet",
+      "billableHours": "Factureerbare uren",
+      "hourlyRate": "Uurtarief"
+    },
+    "project": {
+      "title": "Projectprijscalculator",
+      "description": "Schat de projectprijs op basis van uw uurtarief",
+      "hoursLabel": "Geschatte projecturen",
+      "priceLabel": "Projectprijs",
+      "hoursPlaceholder": "40",
+      "bufferTip": "Overweeg om een buffer van 10-20% toe te voegen voor scopewijzigingen"
+    },
+    "tips": {
+      "title": "Tips voor het bepalen van uw tarief",
+      "tip1": "Vergelijk uw tarief met de markt in uw branche",
+      "tip2": "Houd rekening met uw ervaring en expertiseniveau",
+      "tip3": "Begin niet te laag - het verhogen van tarieven is moeilijker dan het verlagen ervan",
+      "tip4": "Rekening voor vakantie + ziekteverlof",
+      "tip5": "Controleer de tarieven jaarlijks en pas ze aan voor inflatie",
+      "tip6": "Verschillende tarieven voor verschillende klanttypes zijn gebruikelijk"
+    },
+    "understanding": {
+      "title": "Inzicht in Uw Tarief",
+      "whyTitle": "Waarom dit tarief?",
+      "incomeLabel": "Gewenst inkomen:",
+      "incomeExplain": "Uw streefloon voor het jaar",
+      "expensesLabel": "Zakelijke kosten:",
+      "expensesExplain": "Gereedschappen, software, verzekeringen, kantoorkosten",
+      "bufferLabel": "Veiligheidsbuffer",
+      "bufferExplain": "Bescherming tegen langzame periodes en onverwachte kosten",
+      "taxesLabel": "Belastingen",
+      "taxesExplain": "Inkomstenbelasting, BTW en andere toepasselijke belastingen",
+      "hoursLabel": "Factureerbare uren:",
+      "hoursExplain": "Niet alle werkuren zijn factureerbaar (admin, verkoop, enz.)"
+    },
+    "quickRef": {
+      "title": "Snelle referentie",
+      "hourly": "Uurlijks:",
+      "daily": "Dagelijks:",
+      "weekly": "Wekelijks:",
+      "monthly": "Maandelijks:",
+      "annual": "Jaaromzet:",
+      "workingWeeks": "Werkweken:",
+      "weeksYear": "weken/jaar"
+    },
+    "cta": {
+      "title": "Meer hulp nodig bij uw freelance bedrijf?",
+      "description": "Ontdek onze andere tools en lees onze uitgebreide gidsen over prijzen en freelancen.",
+      "toolsButton": "Meer tools",
+      "guidesButton": "Lees onze handleidingen"
+    },
+    "units": {
+      "weeks": "weken",
+      "hours": "uur",
+      "perHour": "/uur"
+    }
+  },
+  "invoiceGenerator": {
+    "breadcrumb": {
+      "home": "Thuis",
+      "tools": "Hulpmiddelen",
+      "title": "Factuurgenerator"
+    },
+    "hero": {
+      "title": "Factuurgenerator",
+      "subtitle": "Maak direct professionele facturen. Opslaan, afdrukken en downloaden als PDF.",
+      "tagline": "Perfect voor freelancers en kleine bedrijven."
+    },
+    "invoiceDetails": {
+      "title": "Factuurgegevens",
+      "invoiceNumber": "Factuurnummer",
+      "invoiceNumberPlaceholder": "INV-2025-0001",
+      "invoiceDate": "Factuurdatum",
+      "dueDate": "Deadline",
+      "currency": "Munteenheid",
+      "generate": "Genereer"
+    },
+    "from": {
+      "title": "Van (uw gegevens)",
+      "uploadLogo": "Logo uploaden",
+      "logoMaxSize": "Maximaal 2 MB",
+      "logoAlt": "Bedrijfslogo",
+      "removeLogo": "Logo verwijderen",
+      "namePlaceholder": "Uw naam/bedrijfsnaam",
+      "addressPlaceholder": "Adres",
+      "cityPlaceholder": "Stad",
+      "postalCodePlaceholder": "Postcode",
+      "countryPlaceholder": "Land",
+      "emailPlaceholder": "E-mail",
+      "phonePlaceholder": "Telefoon",
+      "taxNumberPlaceholder": "Belasting/BTW-nummer (optioneel)"
+    },
+    "to": {
+      "title": "Aan (klantgegevens)",
+      "billTo": "Factuur aan",
+      "namePlaceholder": "Naam klant/bedrijf",
+      "nameDefault": "Klantnaam",
+      "addressPlaceholder": "Adres",
+      "cityPlaceholder": "Stad",
+      "postalCodePlaceholder": "Postcode",
+      "countryPlaceholder": "Land",
+      "emailPlaceholder": "E-mail"
+    },
+    "lineItems": {
+      "title": "Regelitems",
+      "addItem": "Artikel toevoegen",
+      "descriptionPlaceholder": "Beschrijving",
+      "qtyPlaceholder": "Aantal",
+      "ratePlaceholder": "Tarief",
+      "amountPlaceholder": "Hoeveelheid",
+      "serviceDescription": "Dienstbeschrijving"
+    },
+    "calculations": {
+      "title": "Berekeningen",
+      "subtotal": "Subtotaal",
+      "taxRate": "Belasting/BTW-tarief",
+      "taxAmount": "Belastingbedrag",
+      "total": "Totaal"
+    },
+    "table": {
+      "description": "Beschrijving",
+      "qty": "Aantal",
+      "rate": "Tarief",
+      "amount": "Hoeveelheid"
+    },
+    "additional": {
+      "title": "Aanvullende informatie",
+      "notesLabel": "Opmerkingen",
+      "notesPlaceholder": "Aanvullende opmerkingen of voorwaarden...",
+      "paymentLabel": "Betalingsinstructies",
+      "paymentPlaceholder": "Bankgegevens, betaalmethoden, enz..."
+    },
+    "actions": {
+      "title": "Acties",
+      "save": "Factuur opslaan",
+      "load": "Factuur laden",
+      "print": "Afdrukken / PDF",
+      "clear": "Duidelijk formulier"
+    },
+    "preview": {
+      "title": "FACTUUR",
+      "from": "Van",
+      "yourName": "Jouw naam",
+      "vat": "VAT:",
+      "date": "Datum:",
+      "due": "Vanwege:",
+      "subtotal": "Subtotaal:",
+      "taxPrefix": "Belasting",
+      "total": "Totaal:",
+      "notes": "Opmerkingen",
+      "payment": "Betalingsinstructies"
+    },
+    "modal": {
+      "title": "Laad opgeslagen factuur",
+      "empty": "Nog geen opgeslagen facturen.",
+      "to": "Naar:",
+      "total": "Totaal:"
+    },
+    "messages": {
+      "requiredFields": "Vul de verplichte velden in",
+      "saved": "Factuur succesvol opgeslagen!",
+      "imageSize": "Afbeelding moet kleiner zijn dan 2 MB",
+      "invalidImage": "Selecteer een geldig afbeeldingsbestand",
+      "clearConfirm": "Alle velden wissen? Hiermee wordt de factuur gereset.",
+      "storageLoadError": "Fout bij laden vanuit opslag:",
+      "storageSaveError": "Fout bij opslaan in opslag:"
+    }
   }
 }

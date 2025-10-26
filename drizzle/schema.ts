@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, text, timestamp, integer, boolean, jsonb, pgPolicy } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, text, timestamp, integer, boolean, jsonb, pgPolicy, unique } from 'drizzle-orm/pg-core';
 import { sql, relations } from 'drizzle-orm';
 
 // Tenants Table
@@ -206,4 +206,27 @@ export const categoriesRelations = relations(categories, ({ one }) => ({
     fields: [categories.tenantId],
     references: [tenants.id],
   }),
+}));
+
+// Tools Table
+export const tools = pgTable('tools', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  ownerId: text('owner_id').notNull(),
+  name: text('name').notNull(),
+  slug: text('slug').notNull(),
+  description: text('description'),
+  category: text('category').notNull(),
+  icon: text('icon'),
+  color: text('color').default('#3b82f6'),
+  toolUrl: text('tool_url'),
+  isAvailable: boolean('is_available').default(false),
+  featured: boolean('featured').default(false),
+  sortOrder: integer('sort_order').default(0),
+  views: integer('views').default(0),
+  status: text('status').default('draft'),
+  locale: varchar('locale', { length: 5 }).default('en').notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+}, (table) => ({
+  slugLocaleUnique: unique('tools_slug_locale_unique').on(table.slug, table.locale),
 }));

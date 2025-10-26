@@ -721,7 +721,7 @@ export interface Tool {
 /**
  * Get all published tools with optional limit
  */
-export async function getPublishedTools(limit = 50): Promise<Tool[]> {
+export async function getPublishedTools(limit = 50, locale = 'en'): Promise<Tool[]> {
   const tools = await sql`
     SELECT
       id,
@@ -742,6 +742,7 @@ export async function getPublishedTools(limit = 50): Promise<Tool[]> {
       updated_at
     FROM tools
     WHERE status = 'published'
+      AND locale = ${locale}
     ORDER BY sort_order ASC, created_at DESC
     LIMIT ${limit};
   `;
@@ -752,7 +753,7 @@ export async function getPublishedTools(limit = 50): Promise<Tool[]> {
 /**
  * Get tool by slug
  */
-export async function getToolBySlug(slug: string): Promise<Tool | null> {
+export async function getToolBySlug(slug: string, locale = 'en'): Promise<Tool | null> {
   const tools = await sql`
     SELECT
       id,
@@ -772,7 +773,9 @@ export async function getToolBySlug(slug: string): Promise<Tool | null> {
       created_at,
       updated_at
     FROM tools
-    WHERE slug = ${slug} AND status = 'published'
+    WHERE slug = ${slug}
+      AND status = 'published'
+      AND locale = ${locale}
     LIMIT 1;
   `;
 
@@ -782,7 +785,7 @@ export async function getToolBySlug(slug: string): Promise<Tool | null> {
 /**
  * Get tools by category ('tool' or 'resource')
  */
-export async function getToolsByCategory(category: string): Promise<Tool[]> {
+export async function getToolsByCategory(category: string, locale = 'en'): Promise<Tool[]> {
   const tools = await sql`
     SELECT
       id,
@@ -802,7 +805,9 @@ export async function getToolsByCategory(category: string): Promise<Tool[]> {
       created_at,
       updated_at
     FROM tools
-    WHERE category = ${category} AND status = 'published'
+    WHERE category = ${category}
+      AND status = 'published'
+      AND locale = ${locale}
     ORDER BY sort_order ASC, created_at DESC;
   `;
 
@@ -812,7 +817,7 @@ export async function getToolsByCategory(category: string): Promise<Tool[]> {
 /**
  * Get featured tools
  */
-export async function getFeaturedTools(): Promise<Tool[]> {
+export async function getFeaturedTools(locale = 'en'): Promise<Tool[]> {
   const tools = await sql`
     SELECT
       id,
@@ -832,7 +837,9 @@ export async function getFeaturedTools(): Promise<Tool[]> {
       created_at,
       updated_at
     FROM tools
-    WHERE featured = true AND status = 'published'
+    WHERE featured = true
+      AND status = 'published'
+      AND locale = ${locale}
     ORDER BY sort_order ASC, created_at DESC;
   `;
 

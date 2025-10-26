@@ -305,5 +305,314 @@
       "guidesButton": "Read our guides",
       "updatesButton": "Stay updated"
     }
+  },
+  "timeTracker": {
+    "breadcrumb": {
+      "home": "Home",
+      "tools": "Tools",
+      "timeTracker": "Time Tracker",
+      "separator": "→"
+    },
+    "hero": {
+      "title": "Time Tracker",
+      "subtitle": "Track billable hours, manage projects, and calculate earnings automatically. Perfect for freelancers and consultants."
+    },
+    "summaryCards": {
+      "today": "Today",
+      "thisWeek": "This Week",
+      "thisMonth": "This Month",
+      "allTime": "All Time",
+      "hoursUnit": "h",
+      "currencySymbol": "$"
+    },
+    "timer": {
+      "title": "Live Timer",
+      "selectProject": "Select Project...",
+      "description": "What are you working on?",
+      "start": "Start",
+      "pause": "Pause",
+      "resume": "Resume",
+      "stop": "Stop"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "manualEntry": "Add Manual Entry",
+      "addProject": "Add Project",
+      "export": "Export to CSV"
+    },
+    "projects": {
+      "title": "Projects",
+      "empty": "No projects yet. Add one to get started!",
+      "hourlyRate": "/hr",
+      "count": "({count})"
+    },
+    "entries": {
+      "title": "Time Entries",
+      "filterProject": "Project",
+      "filterDateRange": "Date Range",
+      "allProjects": "All Projects",
+      "allTime": "All Time",
+      "today": "Today",
+      "thisWeek": "This Week",
+      "thisMonth": "This Month",
+      "empty": "No time entries yet. Start the timer or add a manual entry!"
+    },
+    "projectModal": {
+      "titleEdit": "Edit Project",
+      "titleAdd": "Add Project",
+      "labelName": "Project Name",
+      "placeholderName": "Website Redesign",
+      "labelClient": "Client Name",
+      "placeholderClient": "Acme Corp",
+      "labelRate": "Hourly Rate ($)",
+      "labelColor": "Color",
+      "buttonUpdate": "Update",
+      "buttonAdd": "Add",
+      "buttonSuffix": "Project",
+      "buttonCancel": "Cancel"
+    },
+    "manualModal": {
+      "title": "Add Manual Entry",
+      "labelDate": "Date",
+      "labelHours": "Hours",
+      "labelMinutes": "Minutes",
+      "labelProject": "Project",
+      "placeholderProject": "Select Project...",
+      "labelDescription": "Description",
+      "placeholderDescription": "What did you work on?",
+      "buttonAdd": "Add Entry",
+      "buttonCancel": "Cancel"
+    },
+    "confirmations": {
+      "deleteProject": "Delete this project? This will not affect existing time entries.",
+      "deleteEntry": "Delete this time entry?"
+    },
+    "csv": {
+      "filename": "time-tracker-export"
+    }
+  },
+  "rateCalculator": {
+    "breadcrumb": {
+      "home": "Home",
+      "tools": "Tools",
+      "title": "Rate Calculator",
+      "separator": "→"
+    },
+    "hero": {
+      "title": "Freelance Rate Calculator",
+      "description": "Calculate your ideal hourly rate based on your desired income, expenses, and billable hours. This calculator accounts for taxes and a buffer for unexpected costs."
+    },
+    "inputs": {
+      "title": "Your Information",
+      "quickPresets": "Quick Presets",
+      "customRateLabel": "Enter your own hourly rate",
+      "customRatePlaceholder": "e.g., 45",
+      "presetJunior": "Junior",
+      "presetMedior": "Medior",
+      "presetSenior": "Senior",
+      "customRateActive": "Active",
+      "customRateEnable": "Enable",
+      "customRateHelpEnabled": "Using custom rate to calculate your potential income",
+      "customRateHelpDisabled": "Click Enable to enter your own hourly rate and see your potential income",
+      "labelDesiredIncome": "Desired net annual income",
+      "helpDesiredIncome": "The amount you want to earn net per year",
+      "labelBillableHours": "Billable hours per year",
+      "helpBillableHours": "Typically 1600-1800 hours (40 hours/week, 40-45 weeks/year)",
+      "labelBusinessExpenses": "Annual business expenses",
+      "helpBusinessExpenses": "Software, hardware, office, insurance, accountant, etc.",
+      "labelTaxRate": "Average tax rate",
+      "helpTaxRate": "Average 25-40% for freelancers (varies by country)",
+      "labelSafetyBuffer": "Safety buffer",
+      "helpSafetyBuffer": "Extra buffer for unexpected costs and slower periods",
+      "labelVacationWeeks": "Vacation weeks per year",
+      "helpVacationWeeks": "Typical 4-6 weeks per year for work-life balance"
+    },
+    "results": {
+      "mainTitle": "Recommended Hourly Rate",
+      "perHour": "per hour",
+      "dayRate": "Day Rate",
+      "dayHours": "8 hours",
+      "weekRate": "Week Rate",
+      "weekHours": "40 hours",
+      "monthlyIncome": "Monthly Income",
+      "monthlyAvg": "Average per month",
+      "weeklyIncome": "Weekly Income",
+      "workingWeeks": "working weeks"
+    },
+    "breakdown": {
+      "title": "Calculation Breakdown",
+      "desiredIncome": "Desired net income",
+      "businessExpenses": "Business expenses",
+      "subtotal": "Subtotal",
+      "safetyBuffer": "Safety buffer",
+      "subtotalWithBuffer": "Subtotal with buffer",
+      "taxes": "Taxes",
+      "totalRevenue": "Total required revenue",
+      "billableHours": "Billable hours",
+      "hourlyRate": "Hourly rate"
+    },
+    "project": {
+      "title": "Project Price Calculator",
+      "description": "Estimate project price based on your hourly rate",
+      "hoursLabel": "Estimated project hours",
+      "priceLabel": "Project Price",
+      "hoursPlaceholder": "40",
+      "bufferTip": "Consider adding 10-20% buffer for scope changes"
+    },
+    "tips": {
+      "title": "Tips for setting your rate",
+      "tip1": "Compare your rate with the market in your industry",
+      "tip2": "Consider your experience and expertise level",
+      "tip3": "Don't start too low - raising rates is harder than lowering them",
+      "tip4": "Account for vacation + sick leave",
+      "tip5": "Review and adjust rates annually for inflation",
+      "tip6": "Different rates for different client types is common"
+    },
+    "understanding": {
+      "title": "Understanding Your Rate",
+      "whyTitle": "Why this rate?",
+      "incomeLabel": "Desired income:",
+      "incomeExplain": "Your target take-home pay for the year",
+      "expensesLabel": "Business expenses:",
+      "expensesExplain": "Tools, software, insurance, office costs",
+      "bufferLabel": "Safety buffer",
+      "bufferExplain": "Protection against slow periods and unexpected costs",
+      "taxesLabel": "Taxes",
+      "taxesExplain": "Income tax, VAT, and other applicable taxes",
+      "hoursLabel": "Billable hours:",
+      "hoursExplain": "Not all work hours are billable (admin, sales, etc.)"
+    },
+    "quickRef": {
+      "title": "Quick reference",
+      "hourly": "Hourly:",
+      "daily": "Daily:",
+      "weekly": "Weekly:",
+      "monthly": "Monthly:",
+      "annual": "Annual revenue:",
+      "workingWeeks": "Working weeks:",
+      "weeksYear": "weeks/year"
+    },
+    "cta": {
+      "title": "Need more help with your freelance business?",
+      "description": "Discover our other tools and read our comprehensive guides on pricing and freelancing.",
+      "toolsButton": "More tools",
+      "guidesButton": "Read our guides"
+    },
+    "units": {
+      "weeks": "weeks",
+      "hours": "hours",
+      "perHour": "/hour"
+    }
+  },
+  "invoiceGenerator": {
+    "breadcrumb": {
+      "home": "Home",
+      "tools": "Tools",
+      "title": "Invoice Generator"
+    },
+    "hero": {
+      "title": "Invoice Generator",
+      "subtitle": "Create professional invoices instantly. Save, print, and download as PDF.",
+      "tagline": "Perfect for freelancers and small businesses."
+    },
+    "invoiceDetails": {
+      "title": "Invoice Details",
+      "invoiceNumber": "Invoice Number",
+      "invoiceNumberPlaceholder": "INV-2025-0001",
+      "invoiceDate": "Invoice Date",
+      "dueDate": "Due Date",
+      "currency": "Currency",
+      "generate": "Generate"
+    },
+    "from": {
+      "title": "From (Your Details)",
+      "uploadLogo": "Upload Logo",
+      "logoMaxSize": "Max 2MB",
+      "logoAlt": "Company Logo",
+      "removeLogo": "Remove Logo",
+      "namePlaceholder": "Your Name / Company Name",
+      "addressPlaceholder": "Address",
+      "cityPlaceholder": "City",
+      "postalCodePlaceholder": "Postal Code",
+      "countryPlaceholder": "Country",
+      "emailPlaceholder": "Email",
+      "phonePlaceholder": "Phone",
+      "taxNumberPlaceholder": "Tax/VAT Number (optional)"
+    },
+    "to": {
+      "title": "To (Client Details)",
+      "billTo": "Bill To",
+      "namePlaceholder": "Client Name / Company",
+      "nameDefault": "Client Name",
+      "addressPlaceholder": "Address",
+      "cityPlaceholder": "City",
+      "postalCodePlaceholder": "Postal Code",
+      "countryPlaceholder": "Country",
+      "emailPlaceholder": "Email"
+    },
+    "lineItems": {
+      "title": "Line Items",
+      "addItem": "Add Item",
+      "descriptionPlaceholder": "Description",
+      "qtyPlaceholder": "Qty",
+      "ratePlaceholder": "Rate",
+      "amountPlaceholder": "Amount",
+      "serviceDescription": "Service description"
+    },
+    "calculations": {
+      "title": "Calculations",
+      "subtotal": "Subtotal",
+      "taxRate": "Tax/VAT Rate",
+      "taxAmount": "Tax Amount",
+      "total": "Total"
+    },
+    "table": {
+      "description": "Description",
+      "qty": "Qty",
+      "rate": "Rate",
+      "amount": "Amount"
+    },
+    "additional": {
+      "title": "Additional Information",
+      "notesLabel": "Notes",
+      "notesPlaceholder": "Additional notes or terms...",
+      "paymentLabel": "Payment Instructions",
+      "paymentPlaceholder": "Bank details, payment methods, etc..."
+    },
+    "actions": {
+      "title": "Actions",
+      "save": "Save Invoice",
+      "load": "Load Invoice",
+      "print": "Print / PDF",
+      "clear": "Clear Form"
+    },
+    "preview": {
+      "title": "INVOICE",
+      "from": "From",
+      "yourName": "Your Name",
+      "vat": "VAT:",
+      "date": "Date:",
+      "due": "Due:",
+      "subtotal": "Subtotal:",
+      "taxPrefix": "Tax",
+      "total": "Total:",
+      "notes": "Notes",
+      "payment": "Payment Instructions"
+    },
+    "modal": {
+      "title": "Load Saved Invoice",
+      "empty": "No saved invoices yet.",
+      "to": "To:",
+      "total": "Total:"
+    },
+    "messages": {
+      "requiredFields": "Please fill in required fields",
+      "saved": "Invoice saved successfully!",
+      "imageSize": "Image must be less than 2MB",
+      "invalidImage": "Please select a valid image file",
+      "clearConfirm": "Clear all fields? This will reset the invoice.",
+      "storageLoadError": "Error loading from storage:",
+      "storageSaveError": "Error saving to storage:"
+    }
   }
 }

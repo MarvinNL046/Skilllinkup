@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useTranslations, useLocale } from 'next-intl';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import {
@@ -112,15 +113,19 @@ const calculateDueDate = (invoiceDate: string): string => {
   return date.toISOString().split('T')[0];
 };
 
-const formatCurrency = (amount: number, currency: string): string => {
-  const formatted = amount.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
-  return `${currency}${formatted}`;
-};
-
 export default function InvoiceGeneratorPage() {
+  const t = useTranslations('invoiceGenerator');
+  const locale = useLocale();
+
+  // Locale-aware currency formatting
+  const formatCurrency = (amount: number, currency: string): string => {
+    const localeCode = locale === 'nl' ? 'nl-NL' : 'en-US';
+    const formatted = amount.toLocaleString(localeCode, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    return `${currency}${formatted}`;
+  };
   // Invoice State
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const [invoiceDate, setInvoiceDate] = useState('');
@@ -277,7 +282,7 @@ export default function InvoiceGeneratorPage() {
   // Save Invoice
   const saveInvoice = () => {
     if (!invoiceNumber || !yourDetails.name || !clientDetails.name || items.length === 0) {
-      setSaveMessage('Please fill in required fields');
+      setSaveMessage(t('messages.requiredFields'));
       setTimeout(() => setSaveMessage(''), 3000);
       return;
     }
@@ -288,7 +293,7 @@ export default function InvoiceGeneratorPage() {
     saveToStorage(STORAGE_KEYS.invoices, updatedInvoices);
     saveToStorage(STORAGE_KEYS.yourDetails, yourDetails);
 
-    setSaveMessage('Invoice saved successfully!');
+    setSaveMessage(t('messages.saved'));
     setTimeout(() => setSaveMessage(''), 3000);
   };
 
@@ -300,7 +305,7 @@ export default function InvoiceGeneratorPage() {
 
   // Clear Form
   const clearForm = () => {
-    if (confirm('Clear all fields? This will reset the invoice.')) {
+    if (confirm(t('messages.clearConfirm'))) {
       const today = new Date().toISOString().split('T')[0];
       setInvoiceDate(today);
       setDueDate(calculateDueDate(today));
@@ -326,7 +331,7 @@ export default function InvoiceGeneratorPage() {
     if (file && file.type.startsWith('image/')) {
       // Check file size (max 2MB)
       if (file.size > 2 * 1024 * 1024) {
-        setSaveMessage('Image must be less than 2MB');
+        setSaveMessage(t('messages.imageSize'));
         setTimeout(() => setSaveMessage(''), 3000);
         return;
       }
@@ -337,7 +342,7 @@ export default function InvoiceGeneratorPage() {
       };
       reader.readAsDataURL(file);
     } else {
-      setSaveMessage('Please select a valid image file');
+      setSaveMessage(t('messages.invalidImage'));
       setTimeout(() => setSaveMessage(''), 3000);
     }
   };
@@ -384,15 +389,15 @@ export default function InvoiceGeneratorPage() {
         <section className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 no-print">
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
-              <Link href="/" className="hover:text-primary transition-colors">
-                Home
+              <Link href={`/${locale}`} className="hover:text-primary transition-colors">
+                {t('breadcrumb.home')}
               </Link>
               <span>→</span>
-              <Link href="/tools" className="hover:text-primary transition-colors">
-                Tools
+              <Link href={`/${locale}/tools`} className="hover:text-primary transition-colors">
+                {t('breadcrumb.tools')}
               </Link>
               <span>→</span>
-              <span className="text-gray-900 dark:text-white font-semibold">Invoice Generator</span>
+              <span className="text-gray-900 dark:text-white font-semibold">{t('breadcrumb.title')}</span>
             </div>
           </div>
         </section>
@@ -408,11 +413,10 @@ export default function InvoiceGeneratorPage() {
               </div>
 
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-                Invoice Generator
+                {t('hero.title')}
               </h1>
               <p className="text-xl text-gray-700 dark:text-gray-300">
-                Create professional invoices instantly. Save, print, and download as PDF.
-                Perfect for freelancers and small businesses.
+                {t('hero.subtitle')} {t('hero.tagline')}
               </p>
             </div>
           </div>
@@ -426,14 +430,14 @@ export default function InvoiceGeneratorPage() {
               {/* Invoice Details Card */}
               <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                  Invoice Details
+                  {t('invoiceDetails.title')}
                 </h2>
 
                 <div className="space-y-4">
                   {/* Invoice Number */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      Invoice Number
+                      {t('invoiceDetails.invoiceNumber')}
                     </label>
                     <div className="flex gap-2">
                       <input
@@ -441,12 +445,12 @@ export default function InvoiceGeneratorPage() {
                         value={invoiceNumber}
                         onChange={(e) => setInvoiceNumber(e.target.value)}
                         className="flex-1 px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                        placeholder="INV-2025-0001"
+                        placeholder={t('invoiceDetails.invoiceNumberPlaceholder')}
                       />
                       <button
                         onClick={() => setInvoiceNumber(generateInvoiceNumber())}
                         className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
-                        title="Generate"
+                        title={t('invoiceDetails.generate')}
                       >
                         <RefreshCw className="w-4 h-4" />
                       </button>
@@ -457,7 +461,7 @@ export default function InvoiceGeneratorPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                        Invoice Date
+                        {t('invoiceDetails.invoiceDate')}
                       </label>
                       <input
                         type="date"
@@ -472,7 +476,7 @@ export default function InvoiceGeneratorPage() {
 
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                        Due Date
+                        {t('invoiceDetails.dueDate')}
                       </label>
                       <input
                         type="date"
@@ -486,7 +490,7 @@ export default function InvoiceGeneratorPage() {
                   {/* Currency */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      Currency
+                      {t('invoiceDetails.currency')}
                     </label>
                     <div className="flex gap-2">
                       {(['$', '€', '£'] as const).map((curr) => (
@@ -510,7 +514,7 @@ export default function InvoiceGeneratorPage() {
               {/* From Details Card */}
               <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                  From (Your Details)
+                  {t('from.title')}
                 </h2>
 
                 {/* Logo Upload Section */}
@@ -526,11 +530,11 @@ export default function InvoiceGeneratorPage() {
                         />
                         <div className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg font-semibold transition-colors">
                           <Upload className="w-4 h-4" />
-                          Upload Logo
+                          {t('from.uploadLogo')}
                         </div>
                       </label>
                       <span className="text-xs text-gray-500 dark:text-gray-400">
-                        Max 2MB
+                        {t('from.logoMaxSize')}
                       </span>
                     </div>
                   ) : (
@@ -538,7 +542,7 @@ export default function InvoiceGeneratorPage() {
                       <div className="relative">
                         <img
                           src={logo}
-                          alt="Company Logo"
+                          alt={t('from.logoAlt')}
                           className="max-w-[150px] h-auto rounded border border-gray-300 dark:border-gray-600"
                         />
                       </div>
@@ -547,7 +551,7 @@ export default function InvoiceGeneratorPage() {
                         className="flex items-center gap-2 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-semibold transition-colors"
                       >
                         <X className="w-4 h-4" />
-                        Remove Logo
+                        {t('from.removeLogo')}
                       </button>
                     </div>
                   )}
@@ -559,7 +563,7 @@ export default function InvoiceGeneratorPage() {
                     value={yourDetails.name}
                     onChange={(e) => setYourDetails({ ...yourDetails, name: e.target.value })}
                     className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="Your Name / Company Name"
+                    placeholder={t('from.namePlaceholder')}
                   />
 
                   <input
@@ -567,7 +571,7 @@ export default function InvoiceGeneratorPage() {
                     value={yourDetails.address}
                     onChange={(e) => setYourDetails({ ...yourDetails, address: e.target.value })}
                     className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="Address"
+                    placeholder={t('from.addressPlaceholder')}
                   />
 
                   <div className="grid grid-cols-2 gap-4">
@@ -576,14 +580,14 @@ export default function InvoiceGeneratorPage() {
                       value={yourDetails.city}
                       onChange={(e) => setYourDetails({ ...yourDetails, city: e.target.value })}
                       className="px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      placeholder="City"
+                      placeholder={t('from.cityPlaceholder')}
                     />
                     <input
                       type="text"
                       value={yourDetails.postalCode}
                       onChange={(e) => setYourDetails({ ...yourDetails, postalCode: e.target.value })}
                       className="px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      placeholder="Postal Code"
+                      placeholder={t('from.postalCodePlaceholder')}
                     />
                   </div>
 
@@ -592,7 +596,7 @@ export default function InvoiceGeneratorPage() {
                     value={yourDetails.country}
                     onChange={(e) => setYourDetails({ ...yourDetails, country: e.target.value })}
                     className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="Country"
+                    placeholder={t('from.countryPlaceholder')}
                   />
 
                   <div className="grid grid-cols-2 gap-4">
@@ -601,14 +605,14 @@ export default function InvoiceGeneratorPage() {
                       value={yourDetails.email}
                       onChange={(e) => setYourDetails({ ...yourDetails, email: e.target.value })}
                       className="px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      placeholder="Email"
+                      placeholder={t('from.emailPlaceholder')}
                     />
                     <input
                       type="tel"
                       value={yourDetails.phone}
                       onChange={(e) => setYourDetails({ ...yourDetails, phone: e.target.value })}
                       className="px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      placeholder="Phone"
+                      placeholder={t('from.phonePlaceholder')}
                     />
                   </div>
 
@@ -617,7 +621,7 @@ export default function InvoiceGeneratorPage() {
                     value={yourDetails.taxNumber}
                     onChange={(e) => setYourDetails({ ...yourDetails, taxNumber: e.target.value })}
                     className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="Tax/VAT Number (optional)"
+                    placeholder={t('from.taxNumberPlaceholder')}
                   />
                 </div>
               </div>
@@ -625,7 +629,7 @@ export default function InvoiceGeneratorPage() {
               {/* To Details Card */}
               <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                  To (Client Details)
+                  {t('to.title')}
                 </h2>
 
                 <div className="space-y-4">
@@ -634,7 +638,7 @@ export default function InvoiceGeneratorPage() {
                     value={clientDetails.name}
                     onChange={(e) => setClientDetails({ ...clientDetails, name: e.target.value })}
                     className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="Client Name / Company"
+                    placeholder={t('to.namePlaceholder')}
                   />
 
                   <input
@@ -642,7 +646,7 @@ export default function InvoiceGeneratorPage() {
                     value={clientDetails.address}
                     onChange={(e) => setClientDetails({ ...clientDetails, address: e.target.value })}
                     className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="Address"
+                    placeholder={t('from.addressPlaceholder')}
                   />
 
                   <div className="grid grid-cols-2 gap-4">
@@ -651,14 +655,14 @@ export default function InvoiceGeneratorPage() {
                       value={clientDetails.city}
                       onChange={(e) => setClientDetails({ ...clientDetails, city: e.target.value })}
                       className="px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      placeholder="City"
+                      placeholder={t('from.cityPlaceholder')}
                     />
                     <input
                       type="text"
                       value={clientDetails.postalCode}
                       onChange={(e) => setClientDetails({ ...clientDetails, postalCode: e.target.value })}
                       className="px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      placeholder="Postal Code"
+                      placeholder={t('from.postalCodePlaceholder')}
                     />
                   </div>
 
@@ -667,7 +671,7 @@ export default function InvoiceGeneratorPage() {
                     value={clientDetails.country}
                     onChange={(e) => setClientDetails({ ...clientDetails, country: e.target.value })}
                     className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="Country"
+                    placeholder={t('from.countryPlaceholder')}
                   />
 
                   <input
@@ -675,7 +679,7 @@ export default function InvoiceGeneratorPage() {
                     value={clientDetails.email}
                     onChange={(e) => setClientDetails({ ...clientDetails, email: e.target.value })}
                     className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="Email"
+                    placeholder={t('from.emailPlaceholder')}
                   />
                 </div>
               </div>
@@ -684,14 +688,14 @@ export default function InvoiceGeneratorPage() {
               <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                    Line Items
+                    {t('lineItems.title')}
                   </h2>
                   <button
                     onClick={addItem}
                     className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg font-semibold transition-colors"
                   >
                     <Plus className="w-4 h-4" />
-                    Add Item
+                    {t('lineItems.addItem')}
                   </button>
                 </div>
 
@@ -703,14 +707,14 @@ export default function InvoiceGeneratorPage() {
                         value={item.description}
                         onChange={(e) => updateItem(item.id, 'description', e.target.value)}
                         className="col-span-5 px-3 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
-                        placeholder="Description"
+                        placeholder={t('lineItems.descriptionPlaceholder')}
                       />
                       <input
                         type="number"
                         value={item.quantity}
                         onChange={(e) => updateItem(item.id, 'quantity', Number(e.target.value))}
                         className="col-span-2 px-3 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
-                        placeholder="Qty"
+                        placeholder={t('lineItems.qtyPlaceholder')}
                         min="1"
                       />
                       <input
@@ -718,7 +722,7 @@ export default function InvoiceGeneratorPage() {
                         value={item.rate}
                         onChange={(e) => updateItem(item.id, 'rate', Number(e.target.value))}
                         className="col-span-2 px-3 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
-                        placeholder="Rate"
+                        placeholder={t('lineItems.ratePlaceholder')}
                         min="0"
                         step="0.01"
                       />
@@ -740,12 +744,12 @@ export default function InvoiceGeneratorPage() {
               {/* Calculations Card */}
               <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                  Calculations
+                  {t('calculations.title')}
                 </h2>
 
                 <div className="space-y-4">
                   <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
-                    <span className="text-gray-600 dark:text-gray-300">Subtotal</span>
+                    <span className="text-gray-600 dark:text-gray-300">{t('calculations.subtotal')}</span>
                     <span className="font-semibold text-gray-900 dark:text-white">
                       {formatCurrency(subtotal, currency)}
                     </span>
@@ -753,7 +757,7 @@ export default function InvoiceGeneratorPage() {
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      Tax/VAT Rate
+                      {t('calculations.taxRate')}
                     </label>
                     <div className="flex items-center gap-4">
                       <input
@@ -772,14 +776,14 @@ export default function InvoiceGeneratorPage() {
                   </div>
 
                   <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
-                    <span className="text-gray-600 dark:text-gray-300">Tax Amount</span>
+                    <span className="text-gray-600 dark:text-gray-300">{t('calculations.taxAmount')}</span>
                     <span className="font-semibold text-gray-900 dark:text-white">
                       {formatCurrency(taxAmount, currency)}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between py-3 bg-primary/10 dark:bg-primary/20 -mx-6 px-6">
-                    <span className="text-lg font-bold text-gray-900 dark:text-white">Total</span>
+                    <span className="text-lg font-bold text-gray-900 dark:text-white">{t('calculations.total')}</span>
                     <span className="text-2xl font-bold text-primary">
                       {formatCurrency(total, currency)}
                     </span>
@@ -790,33 +794,33 @@ export default function InvoiceGeneratorPage() {
               {/* Notes Card */}
               <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                  Additional Information
+                  {t('additional.title')}
                 </h2>
 
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      Notes
+                      {t('additional.notesLabel')}
                     </label>
                     <textarea
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
                       rows={3}
                       className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      placeholder="Additional notes or terms..."
+                      placeholder={t('additional.notesPlaceholder')}
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      Payment Instructions
+                      {t('additional.paymentLabel')}
                     </label>
                     <textarea
                       value={paymentInstructions}
                       onChange={(e) => setPaymentInstructions(e.target.value)}
                       rows={3}
                       className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      placeholder="Bank details, payment methods, etc..."
+                      placeholder={t('additional.paymentPlaceholder')}
                     />
                   </div>
                 </div>
@@ -825,7 +829,7 @@ export default function InvoiceGeneratorPage() {
               {/* Actions Card */}
               <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                  Actions
+                  {t('actions.title')}
                 </h2>
 
                 {saveMessage && (
@@ -840,7 +844,7 @@ export default function InvoiceGeneratorPage() {
                     className="flex items-center justify-center gap-2 px-4 py-3 bg-primary hover:bg-primary-dark text-white rounded-lg font-semibold transition-colors"
                   >
                     <Save className="w-4 h-4" />
-                    Save Invoice
+                    {t('actions.save')}
                   </button>
 
                   <button
@@ -849,7 +853,7 @@ export default function InvoiceGeneratorPage() {
                     className="flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 text-white rounded-lg font-semibold transition-colors"
                   >
                     <Download className="w-4 h-4" />
-                    Load Invoice
+                    {t('actions.load')}
                   </button>
 
                   <button
@@ -857,7 +861,7 @@ export default function InvoiceGeneratorPage() {
                     className="flex items-center justify-center gap-2 px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors"
                   >
                     <Printer className="w-4 h-4" />
-                    Print / PDF
+                    {t('actions.print')}
                   </button>
 
                   <button
@@ -865,7 +869,7 @@ export default function InvoiceGeneratorPage() {
                     className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-semibold transition-colors"
                   >
                     <X className="w-4 h-4" />
-                    Clear Form
+                    {t('actions.clear')}
                   </button>
                 </div>
               </div>
@@ -875,7 +879,7 @@ export default function InvoiceGeneratorPage() {
             <div className="lg:sticky lg:top-20 h-fit">
               <div className="invoice-preview bg-white dark:bg-slate-800 rounded-lg shadow-lg p-8">
                 <div className="mb-8">
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">INVOICE</h1>
+                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{t('preview.title')}</h1>
                   <div className="h-1 w-20 bg-primary"></div>
                 </div>
 
@@ -888,14 +892,14 @@ export default function InvoiceGeneratorPage() {
                       <div className="mb-4">
                         <img
                           src={logo}
-                          alt="Company Logo"
+                          alt={t('from.logoAlt')}
                           className="max-w-[150px] h-auto"
                         />
                       </div>
                     )}
-                    <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">From</h3>
+                    <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">{t('preview.from')}</h3>
                     <div className="text-sm text-gray-900 dark:text-white space-y-1">
-                      <p className="font-semibold">{yourDetails.name || 'Your Name'}</p>
+                      <p className="font-semibold">{yourDetails.name || t('preview.yourName')}</p>
                       {yourDetails.address && <p>{yourDetails.address}</p>}
                       {(yourDetails.city || yourDetails.postalCode) && (
                         <p>{yourDetails.city} {yourDetails.postalCode}</p>
@@ -903,7 +907,7 @@ export default function InvoiceGeneratorPage() {
                       {yourDetails.country && <p>{yourDetails.country}</p>}
                       {yourDetails.email && <p>{yourDetails.email}</p>}
                       {yourDetails.phone && <p>{yourDetails.phone}</p>}
-                      {yourDetails.taxNumber && <p className="text-xs text-gray-600 dark:text-gray-400">VAT: {yourDetails.taxNumber}</p>}
+                      {yourDetails.taxNumber && <p className="text-xs text-gray-600 dark:text-gray-400">{t('preview.vat')} {yourDetails.taxNumber}</p>}
                     </div>
                   </div>
 
@@ -913,12 +917,12 @@ export default function InvoiceGeneratorPage() {
                       <p className="font-semibold">{invoiceNumber || 'INV-2025-0001'}</p>
                       {invoiceDate && (
                         <p className="text-xs text-gray-600 dark:text-gray-400">
-                          Date: {new Date(invoiceDate).toLocaleDateString()}
+                          {t('preview.date')} {new Date(invoiceDate).toLocaleDateString(locale === 'nl' ? 'nl-NL' : 'en-US')}
                         </p>
                       )}
                       {dueDate && (
                         <p className="text-xs text-gray-600 dark:text-gray-400">
-                          Due: {new Date(dueDate).toLocaleDateString()}
+                          {t('preview.due')} {new Date(dueDate).toLocaleDateString(locale === 'nl' ? 'nl-NL' : 'en-US')}
                         </p>
                       )}
                     </div>
@@ -927,9 +931,9 @@ export default function InvoiceGeneratorPage() {
 
                 {/* To */}
                 <div className="mb-8">
-                  <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Bill To</h3>
+                  <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">{t('to.billTo')}</h3>
                   <div className="text-sm text-gray-900 dark:text-white space-y-1">
-                    <p className="font-semibold">{clientDetails.name || 'Client Name'}</p>
+                    <p className="font-semibold">{clientDetails.name || t('to.nameDefault')}</p>
                     {clientDetails.address && <p>{clientDetails.address}</p>}
                     {(clientDetails.city || clientDetails.postalCode) && (
                       <p>{clientDetails.city} {clientDetails.postalCode}</p>
@@ -944,17 +948,17 @@ export default function InvoiceGeneratorPage() {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b-2 border-gray-300 dark:border-gray-600">
-                        <th className="text-left py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Description</th>
-                        <th className="text-center py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Qty</th>
-                        <th className="text-right py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Rate</th>
-                        <th className="text-right py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Amount</th>
+                        <th className="text-left py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">{t('table.description')}</th>
+                        <th className="text-center py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">{t('table.qty')}</th>
+                        <th className="text-right py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">{t('table.rate')}</th>
+                        <th className="text-right py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">{t('table.amount')}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {items.map((item) => (
                         <tr key={item.id} className="border-b border-gray-100 dark:border-gray-700">
                           <td className="py-3 text-sm text-gray-900 dark:text-white">
-                            {item.description || 'Service description'}
+                            {item.description || t('lineItems.serviceDescription')}
                           </td>
                           <td className="py-3 text-sm text-gray-900 dark:text-white text-center">
                             {item.quantity}
@@ -974,17 +978,17 @@ export default function InvoiceGeneratorPage() {
                 {/* Totals */}
                 <div className="ml-auto max-w-xs space-y-2">
                   <div className="flex justify-between text-sm text-gray-900 dark:text-white">
-                    <span>Subtotal:</span>
+                    <span>{t('preview.subtotal')}</span>
                     <span>{formatCurrency(subtotal, currency)}</span>
                   </div>
                   {taxRate > 0 && (
                     <div className="flex justify-between text-sm text-gray-900 dark:text-white">
-                      <span>Tax ({taxRate}%):</span>
+                      <span>{t('preview.taxPrefix')} ({taxRate}%):</span>
                       <span>{formatCurrency(taxAmount, currency)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-lg font-bold text-gray-900 dark:text-white pt-2 border-t-2 border-gray-300 dark:border-gray-600">
-                    <span>Total:</span>
+                    <span>{t('preview.total')}</span>
                     <span className="text-primary">{formatCurrency(total, currency)}</span>
                   </div>
                 </div>
@@ -994,13 +998,13 @@ export default function InvoiceGeneratorPage() {
                   <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
                     {notes && (
                       <div className="mb-4">
-                        <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Notes</h4>
+                        <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">{t('additional.notesLabel')}</h4>
                         <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{notes}</p>
                       </div>
                     )}
                     {paymentInstructions && (
                       <div>
-                        <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Payment Instructions</h4>
+                        <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">{t('additional.paymentLabel')}</h4>
                         <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{paymentInstructions}</p>
                       </div>
                     )}
@@ -1017,7 +1021,7 @@ export default function InvoiceGeneratorPage() {
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow-xl max-w-2xl w-full p-6 max-h-[80vh] overflow-y-auto">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                  Load Saved Invoice
+                  {t('modal.title')}
                 </h3>
                 <button
                   onClick={() => setShowLoadModal(false)}
@@ -1029,7 +1033,7 @@ export default function InvoiceGeneratorPage() {
 
               {savedInvoices.length === 0 ? (
                 <p className="text-gray-600 dark:text-gray-400 text-center py-8">
-                  No saved invoices yet.
+                  {t('modal.empty')}
                 </p>
               ) : (
                 <div className="space-y-3">
@@ -1044,11 +1048,11 @@ export default function InvoiceGeneratorPage() {
                           {invoice.invoiceNumber}
                         </span>
                         <span className="text-sm text-gray-600 dark:text-gray-400">
-                          {new Date(invoice.date).toLocaleDateString()}
+                          {new Date(invoice.date).toLocaleDateString(locale === 'nl' ? 'nl-NL' : 'en-US')}
                         </span>
                       </div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
-                        <p>To: {invoice.to.name}</p>
+                        <p>{t('modal.to')} {invoice.to.name}</p>
                         <p className="font-semibold text-primary">
                           Total: {formatCurrency(invoice.total, invoice.currency)}
                         </p>

@@ -2,11 +2,15 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useTranslations, useLocale } from 'next-intl';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Calculator, ArrowLeft, Info, DollarSign, Clock, TrendingUp, Calendar } from 'lucide-react';
 
 export default function RateCalculatorPage() {
+  const t = useTranslations('rateCalculator');
+  const locale = useLocale();
+
   // Input states
   const [desiredIncome, setDesiredIncome] = useState<number>(50000);
   const [billableHours, setBillableHours] = useState<number>(1600);
@@ -62,7 +66,8 @@ export default function RateCalculatorPage() {
   };
 
   const formatCurrency = (amount: number) => {
-    return `${currency}${Math.ceil(amount).toLocaleString('en-US')}`;
+    const localeCode = locale === 'nl' ? 'nl-NL' : 'en-US';
+    return `${currency}${Math.ceil(amount).toLocaleString(localeCode)}`;
   };
 
   return (
@@ -73,15 +78,15 @@ export default function RateCalculatorPage() {
         <section className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700">
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
-              <Link href="/" className="hover:text-primary transition-colors">
-                Home
+              <Link href={`/${locale}`} className="hover:text-primary transition-colors">
+                {t('breadcrumb.home')}
               </Link>
-              <span>→</span>
-              <Link href="/tools" className="hover:text-primary transition-colors">
-                Tools
+              <span>{t('breadcrumb.separator')}</span>
+              <Link href={`/${locale}/tools`} className="hover:text-primary transition-colors">
+                {t('breadcrumb.tools')}
               </Link>
-              <span>→</span>
-              <span className="text-gray-900 dark:text-white font-semibold">Rate Calculator</span>
+              <span>{t('breadcrumb.separator')}</span>
+              <span className="text-gray-900 dark:text-white font-semibold">{t('breadcrumb.title')}</span>
             </div>
           </div>
         </section>
@@ -97,11 +102,10 @@ export default function RateCalculatorPage() {
               </div>
 
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-                Freelance Rate Calculator
+                {t('hero.title')}
               </h1>
               <p className="text-xl text-gray-700 dark:text-gray-300">
-                Calculate your ideal hourly rate based on your desired income, expenses, and billable hours.
-                This calculator accounts for taxes and a buffer for unexpected costs.
+                {t('hero.description')}
               </p>
             </div>
           </div>
@@ -114,7 +118,7 @@ export default function RateCalculatorPage() {
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-8">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  Your Information
+                  {t('inputs.title')}
                 </h2>
 
                 {/* Currency Selector */}
@@ -137,25 +141,25 @@ export default function RateCalculatorPage() {
 
               {/* Preset Buttons */}
               <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Quick Presets</p>
+                <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">{t('inputs.quickPresets')}</p>
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     onClick={() => applyPreset('junior')}
                     className="px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-primary hover:text-white hover:border-primary transition-colors"
                   >
-                    Junior
+                    {t('inputs.presetJunior')}
                   </button>
                   <button
                     onClick={() => applyPreset('medior')}
                     className="px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-primary hover:text-white hover:border-primary transition-colors"
                   >
-                    Medior
+                    {t('inputs.presetMedior')}
                   </button>
                   <button
                     onClick={() => applyPreset('senior')}
                     className="px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-primary hover:text-white hover:border-primary transition-colors"
                   >
-                    Senior
+                    {t('inputs.presetSenior')}
                   </button>
                 </div>
               </div>
@@ -164,7 +168,7 @@ export default function RateCalculatorPage() {
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Enter your own hourly rate
+                    {t('inputs.customRateLabel')}
                   </label>
                   <button
                     onClick={() => {
@@ -179,7 +183,7 @@ export default function RateCalculatorPage() {
                         : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                     }`}
                   >
-                    {useCustomRate ? 'Active' : 'Enable'}
+                    {useCustomRate ? t('inputs.customRateActive') : t('inputs.customRateEnable')}
                   </button>
                 </div>
                 <div className="relative">
@@ -202,13 +206,13 @@ export default function RateCalculatorPage() {
                         ? 'bg-white dark:bg-slate-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white'
                         : 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
                     }`}
-                    placeholder="e.g., 45"
+                    placeholder={t('inputs.customRatePlaceholder')}
                   />
                 </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   {useCustomRate
-                    ? 'Using custom rate to calculate your potential income'
-                    : 'Click Enable to enter your own hourly rate and see your potential income'}
+                    ? t('inputs.customRateHelpEnabled')
+                    : t('inputs.customRateHelpDisabled')}
                 </p>
               </div>
 
@@ -216,7 +220,7 @@ export default function RateCalculatorPage() {
                 {/* Desired Income */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Desired net annual income
+                    {t('inputs.labelDesiredIncome')}
                   </label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
@@ -233,14 +237,14 @@ export default function RateCalculatorPage() {
                     />
                   </div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    The amount you want to earn net per year
+                    {t('inputs.helpDesiredIncome')}
                   </p>
                 </div>
 
                 {/* Billable Hours */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Billable hours per year
+                    {t('inputs.labelBillableHours')}
                   </label>
                   <input
                     type="number"
@@ -252,14 +256,14 @@ export default function RateCalculatorPage() {
                     className="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                   />
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Typically 1600-1800 hours (40 hours/week, 40-45 weeks/year)
+                    {t('inputs.helpBillableHours')}
                   </p>
                 </div>
 
                 {/* Business Expenses */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Annual business expenses
+                    {t('inputs.labelBusinessExpenses')}
                   </label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
@@ -276,14 +280,14 @@ export default function RateCalculatorPage() {
                     />
                   </div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Software, hardware, office, insurance, accountant, etc.
+                    {t('inputs.helpBusinessExpenses')}
                   </p>
                 </div>
 
                 {/* Tax Rate */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Average tax rate
+                    {t('inputs.labelTaxRate')}
                   </label>
                   <div className="flex items-center gap-4">
                     <input
@@ -302,14 +306,14 @@ export default function RateCalculatorPage() {
                     </span>
                   </div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Average 25-40% for freelancers (varies by country)
+                    {t('inputs.helpTaxRate')}
                   </p>
                 </div>
 
                 {/* Buffer Percentage */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Safety buffer
+                    {t('inputs.labelSafetyBuffer')}
                   </label>
                   <div className="flex items-center gap-4">
                     <input
@@ -328,14 +332,14 @@ export default function RateCalculatorPage() {
                     </span>
                   </div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Extra buffer for unexpected costs and slower periods
+                    {t('inputs.helpSafetyBuffer')}
                   </p>
                 </div>
 
                 {/* Vacation Weeks */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Vacation weeks per year
+                    {t('inputs.labelVacationWeeks')}
                   </label>
                   <div className="flex items-center gap-4">
                     <input
@@ -347,11 +351,11 @@ export default function RateCalculatorPage() {
                       className="flex-1"
                     />
                     <span className="w-16 text-right font-semibold text-gray-900 dark:text-white">
-                      {vacationWeeks} weeks
+                      {vacationWeeks} {t('units.weeks')}
                     </span>
                   </div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Typical 4-6 weeks per year for work-life balance
+                    {t('inputs.helpVacationWeeks')}
                   </p>
                 </div>
               </div>
@@ -363,13 +367,13 @@ export default function RateCalculatorPage() {
               <div className="bg-primary text-white rounded-lg shadow-lg p-8">
                 <div className="text-center">
                   <p className="text-sm font-semibold uppercase tracking-wide mb-2 text-white/80">
-                    Recommended Hourly Rate
+                    {t('results.mainTitle')}
                   </p>
                   <div className="text-6xl font-bold mb-4">
                     {formatCurrency(hourlyRate)}
                   </div>
                   <p className="text-white/90">
-                    per hour
+                    {t('results.perHour')}
                   </p>
                 </div>
               </div>
@@ -379,105 +383,105 @@ export default function RateCalculatorPage() {
                 <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
                   <div className="flex items-center gap-2 mb-2 text-gray-600 dark:text-gray-300">
                     <Clock className="w-4 h-4" />
-                    <p className="text-sm font-semibold">Day Rate</p>
+                    <p className="text-sm font-semibold">{t('results.dayRate')}</p>
                   </div>
                   <p className="text-3xl font-bold text-gray-900 dark:text-white">{formatCurrency(dayRate)}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">8 hours</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('results.dayHours')}</p>
                 </div>
 
                 <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
                   <div className="flex items-center gap-2 mb-2 text-gray-600 dark:text-gray-300">
                     <Calendar className="w-4 h-4" />
-                    <p className="text-sm font-semibold">Week Rate</p>
+                    <p className="text-sm font-semibold">{t('results.weekRate')}</p>
                   </div>
                   <p className="text-3xl font-bold text-gray-900 dark:text-white">{formatCurrency(weekRate)}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">40 hours</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('results.weekHours')}</p>
                 </div>
 
                 <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
                   <div className="flex items-center gap-2 mb-2 text-gray-600 dark:text-gray-300">
                     <DollarSign className="w-4 h-4" />
-                    <p className="text-sm font-semibold">Monthly Income</p>
+                    <p className="text-sm font-semibold">{t('results.monthlyIncome')}</p>
                   </div>
                   <p className="text-3xl font-bold text-gray-900 dark:text-white">{formatCurrency(monthlyIncome)}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Average per month</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('results.monthlyAvg')}</p>
                 </div>
 
                 <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
                   <div className="flex items-center gap-2 mb-2 text-gray-600 dark:text-gray-300">
                     <TrendingUp className="w-4 h-4" />
-                    <p className="text-sm font-semibold">Weekly Income</p>
+                    <p className="text-sm font-semibold">{t('results.weeklyIncome')}</p>
                   </div>
                   <p className="text-3xl font-bold text-gray-900 dark:text-white">{formatCurrency(weeklyIncome)}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{workingWeeks} working weeks</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{workingWeeks} {t('results.workingWeeks')}</p>
                 </div>
               </div>
 
               {/* Breakdown Card */}
               <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
-                  Calculation Breakdown
+                  {t('breakdown.title')}
                 </h3>
 
                 <div className="space-y-3">
                   <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
-                    <span className="text-sm text-gray-600 dark:text-gray-300">Desired net income</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-300">{t('breakdown.desiredIncome')}</span>
                     <span className="font-semibold text-gray-900 dark:text-white">
                       {formatCurrency(desiredIncome)}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
-                    <span className="text-sm text-gray-600 dark:text-gray-300">Business expenses</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-300">{t('breakdown.businessExpenses')}</span>
                     <span className="font-semibold text-gray-900 dark:text-white">
                       {formatCurrency(businessExpenses)}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
-                    <span className="text-sm text-gray-600 dark:text-gray-300">Subtotal</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-300">{t('breakdown.subtotal')}</span>
                     <span className="font-semibold text-gray-900 dark:text-white">
                       {formatCurrency(totalNeeded)}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
-                    <span className="text-sm text-gray-600 dark:text-gray-300">Safety buffer ({bufferPercent}%)</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-300">{t('breakdown.safetyBuffer')} ({bufferPercent}%)</span>
                     <span className="font-semibold text-gray-900 dark:text-white">
                       {formatCurrency(withBuffer - totalNeeded)}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
-                    <span className="text-sm text-gray-600 dark:text-gray-300">Subtotal with buffer</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-300">{t('breakdown.subtotalWithBuffer')}</span>
                     <span className="font-semibold text-gray-900 dark:text-white">
                       {formatCurrency(withBuffer)}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
-                    <span className="text-sm text-gray-600 dark:text-gray-300">Taxes ({taxRate}%)</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-300">{t('breakdown.taxes')} ({taxRate}%)</span>
                     <span className="font-semibold text-gray-900 dark:text-white">
                       {formatCurrency(withTax - withBuffer)}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between py-3 bg-gray-50 dark:bg-gray-700 -mx-6 px-6 mt-3">
-                    <span className="font-semibold text-gray-900 dark:text-white">Total required revenue</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">{t('breakdown.totalRevenue')}</span>
                     <span className="text-lg font-bold text-primary">
                       {formatCurrency(withTax)}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between py-2 mt-3">
-                    <span className="text-sm text-gray-600 dark:text-gray-300">Billable hours</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-300">{t('breakdown.billableHours')}</span>
                     <span className="font-semibold text-gray-900 dark:text-white">
-                      {billableHours} hours
+                      {billableHours} {t('units.hours')}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between py-3 bg-primary/5 dark:bg-primary/10 -mx-6 px-6 mt-3 rounded-lg">
-                    <span className="font-bold text-gray-900 dark:text-white">Hourly rate</span>
+                    <span className="font-bold text-gray-900 dark:text-white">{t('breakdown.hourlyRate')}</span>
                     <span className="text-2xl font-bold text-primary">
                       {formatCurrency(hourlyRate)}
                     </span>
@@ -488,36 +492,36 @@ export default function RateCalculatorPage() {
               {/* Project Price Calculator */}
               <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
-                  Project Price Calculator
+                  {t('project.title')}
                 </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-                  Estimate project price based on your hourly rate
+                  {t('project.description')}
                 </p>
 
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      Estimated project hours
+                      {t('project.hoursLabel')}
                     </label>
                     <input
                       type="number"
                       value={projectHours}
                       onChange={(e) => setProjectHours(Number(e.target.value))}
                       className="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      placeholder="40"
+                      placeholder={t('project.hoursPlaceholder')}
                     />
                   </div>
 
                   <div className="flex items-center justify-between py-3 bg-primary/5 dark:bg-primary/10 px-4 rounded-lg">
-                    <span className="font-bold text-gray-900 dark:text-white">Project Price</span>
+                    <span className="font-bold text-gray-900 dark:text-white">{t('project.priceLabel')}</span>
                     <span className="text-2xl font-bold text-primary">
                       {formatCurrency(projectPrice)}
                     </span>
                   </div>
 
                   <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
-                    <p>• {projectHours} hours × {formatCurrency(hourlyRate)}/hour</p>
-                    <p>• Consider adding 10-20% buffer for scope changes</p>
+                    <p>• {projectHours} {t('units.hours')} × {formatCurrency(hourlyRate)}{t('units.perHour')}</p>
+                    <p>• {t('project.bufferTip')}</p>
                   </div>
                 </div>
               </div>
@@ -528,15 +532,15 @@ export default function RateCalculatorPage() {
                   <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
                   <div>
                     <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
-                      Tips for setting your rate
+                      {t('tips.title')}
                     </h4>
                     <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
-                      <li>• Compare your rate with the market in your industry</li>
-                      <li>• Consider your experience and expertise level</li>
-                      <li>• Don't start too low - raising rates is harder than lowering them</li>
-                      <li>• Account for {vacationWeeks} weeks vacation + sick leave</li>
-                      <li>• Review and adjust rates annually for inflation</li>
-                      <li>• Different rates for different client types is common</li>
+                      <li>• {t('tips.tip1')}</li>
+                      <li>• {t('tips.tip2')}</li>
+                      <li>• {t('tips.tip3')}</li>
+                      <li>• {t('tips.tip4')} ({vacationWeeks} {t('units.weeks')})</li>
+                      <li>• {t('tips.tip5')}</li>
+                      <li>• {t('tips.tip6')}</li>
                     </ul>
                   </div>
                 </div>
@@ -549,44 +553,44 @@ export default function RateCalculatorPage() {
         <section className="container mx-auto px-4 pb-12">
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-              Understanding Your Rate
+              {t('understanding.title')}
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-                  Why this rate?
+                  {t('understanding.whyTitle')}
                 </h3>
                 <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                   <p>
-                    <strong>Desired income:</strong> Your target take-home pay for the year
+                    <strong>{t('understanding.incomeLabel')}</strong> {t('understanding.incomeExplain')}
                   </p>
                   <p>
-                    <strong>Business expenses:</strong> Tools, software, insurance, office costs
+                    <strong>{t('understanding.expensesLabel')}</strong> {t('understanding.expensesExplain')}
                   </p>
                   <p>
-                    <strong>Safety buffer ({bufferPercent}%):</strong> Protection against slow periods and unexpected costs
+                    <strong>{t('understanding.bufferLabel')} ({bufferPercent}%):</strong> {t('understanding.bufferExplain')}
                   </p>
                   <p>
-                    <strong>Taxes ({taxRate}%):</strong> Income tax, VAT, and other applicable taxes
+                    <strong>{t('understanding.taxesLabel')} ({taxRate}%):</strong> {t('understanding.taxesExplain')}
                   </p>
                   <p>
-                    <strong>Billable hours:</strong> Not all work hours are billable (admin, sales, etc.)
+                    <strong>{t('understanding.hoursLabel')}</strong> {t('understanding.hoursExplain')}
                   </p>
                 </div>
               </div>
 
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-                  Quick reference
+                  {t('quickRef.title')}
                 </h3>
                 <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-                  <p>💰 <strong>Hourly:</strong> {formatCurrency(hourlyRate)}/hour</p>
-                  <p>📅 <strong>Daily:</strong> {formatCurrency(dayRate)}/day (8 hours)</p>
-                  <p>📆 <strong>Weekly:</strong> {formatCurrency(weekRate)}/week (40 hours)</p>
-                  <p>📊 <strong>Monthly:</strong> {formatCurrency(monthlyIncome)}/month</p>
-                  <p>🎯 <strong>Annual revenue:</strong> {formatCurrency(withTax)}</p>
-                  <p>🏖️ <strong>Working weeks:</strong> {workingWeeks} weeks/year</p>
+                  <p>💰 <strong>{t('quickRef.hourly')}</strong> {formatCurrency(hourlyRate)}{t('units.perHour')}</p>
+                  <p>📅 <strong>{t('quickRef.daily')}</strong> {formatCurrency(dayRate)}/day (8 {t('units.hours')})</p>
+                  <p>📆 <strong>{t('quickRef.weekly')}</strong> {formatCurrency(weekRate)}/week (40 {t('units.hours')})</p>
+                  <p>📊 <strong>{t('quickRef.monthly')}</strong> {formatCurrency(monthlyIncome)}/month</p>
+                  <p>🎯 <strong>{t('quickRef.annual')}</strong> {formatCurrency(withTax)}</p>
+                  <p>🏖️ <strong>{t('quickRef.workingWeeks')}</strong> {workingWeeks} {t('quickRef.weeksYear')}</p>
                 </div>
               </div>
             </div>
@@ -597,23 +601,23 @@ export default function RateCalculatorPage() {
         <section className="bg-primary py-12">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-2xl font-bold text-white mb-4">
-              Need more help with your freelance business?
+              {t('cta.title')}
             </h2>
             <p className="text-white/90 mb-6 max-w-2xl mx-auto">
-              Discover our other tools and read our comprehensive guides on pricing and freelancing.
+              {t('cta.description')}
             </p>
             <div className="flex items-center justify-center gap-4">
               <Link
-                href="/tools"
+                href={`/${locale}/tools`}
                 className="inline-flex items-center px-6 py-3 rounded-lg bg-white text-primary font-semibold hover:bg-gray-100 transition-colors"
               >
-                More tools
+                {t('cta.toolsButton')}
               </Link>
               <Link
-                href="/guides"
+                href={`/${locale}/guides`}
                 className="inline-flex items-center px-6 py-3 rounded-lg border-2 border-white text-white font-semibold hover:bg-white/10 transition-colors"
               >
-                Read our guides
+                {t('cta.guidesButton')}
               </Link>
             </div>
           </div>

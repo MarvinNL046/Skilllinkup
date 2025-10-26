@@ -40,8 +40,8 @@ export default async function ToolsPage({ params }: PageProps) {
   let resources: Awaited<ReturnType<typeof getToolsByCategory>> = [];
 
   try {
-    tools = await getToolsByCategory('tool');
-    resources = await getToolsByCategory('resource');
+    tools = await getToolsByCategory('tool', locale);
+    resources = await getToolsByCategory('resource', locale);
   } catch (error) {
     console.error('Error fetching tools:', error);
   }

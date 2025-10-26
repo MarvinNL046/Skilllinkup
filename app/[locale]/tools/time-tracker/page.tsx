@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import {
@@ -152,6 +153,8 @@ const getDateRange = (type: 'today' | 'week' | 'month'): { start: Date; end: Dat
 };
 
 export default function TimeTrackerPage() {
+  const t = useTranslations('timeTracker');
+
   // State Management
   const [projects, setProjects] = useState<Project[]>([]);
   const [entries, setEntries] = useState<TimeEntry[]>([]);
@@ -305,7 +308,7 @@ export default function TimeTrackerPage() {
   };
 
   const deleteProject = (id: string) => {
-    if (confirm('Delete this project? This will not affect existing time entries.')) {
+    if (confirm(t('confirmations.deleteProject'))) {
       setProjects(prev => prev.filter(p => p.id !== id));
     }
   };
@@ -361,7 +364,7 @@ export default function TimeTrackerPage() {
   };
 
   const deleteEntry = (id: string) => {
-    if (confirm('Delete this time entry?')) {
+    if (confirm(t('confirmations.deleteEntry'))) {
       setEntries(prev => prev.filter(e => e.id !== id));
     }
   };
@@ -422,14 +425,14 @@ export default function TimeTrackerPage() {
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
               <Link href="/" className="hover:text-primary transition-colors">
-                Home
+                {t('breadcrumb.home')}
               </Link>
-              <span>→</span>
+              <span>{t('breadcrumb.separator')}</span>
               <Link href="/tools" className="hover:text-primary transition-colors">
-                Tools
+                {t('breadcrumb.tools')}
               </Link>
-              <span>→</span>
-              <span className="text-gray-900 dark:text-white font-semibold">Time Tracker</span>
+              <span>{t('breadcrumb.separator')}</span>
+              <span className="text-gray-900 dark:text-white font-semibold">{t('breadcrumb.timeTracker')}</span>
             </div>
           </div>
         </section>
@@ -445,11 +448,10 @@ export default function TimeTrackerPage() {
               </div>
 
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-                Time Tracker
+                {t('hero.title')}
               </h1>
               <p className="text-xl text-gray-700 dark:text-gray-300">
-                Track billable hours, manage projects, and calculate earnings automatically.
-                Perfect for freelancers and consultants.
+                {t('hero.subtitle')}
               </p>
             </div>
           </div>
@@ -461,37 +463,37 @@ export default function TimeTrackerPage() {
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
               <div className="flex items-center gap-2 mb-2 text-gray-600 dark:text-gray-300">
                 <Calendar className="w-4 h-4" />
-                <p className="text-sm font-semibold">Today</p>
+                <p className="text-sm font-semibold">{t('summaryCards.today')}</p>
               </div>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white">{todaySummary.hours}h</p>
-              <p className="text-sm text-green-600 dark:text-green-400 mt-1">${todaySummary.earnings}</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white">{todaySummary.hours}{t('summaryCards.hoursUnit')}</p>
+              <p className="text-sm text-green-600 dark:text-green-400 mt-1">{t('summaryCards.currencySymbol')}{todaySummary.earnings}</p>
             </div>
 
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
               <div className="flex items-center gap-2 mb-2 text-gray-600 dark:text-gray-300">
                 <Calendar className="w-4 h-4" />
-                <p className="text-sm font-semibold">This Week</p>
+                <p className="text-sm font-semibold">{t('summaryCards.thisWeek')}</p>
               </div>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white">{weekSummary.hours}h</p>
-              <p className="text-sm text-green-600 dark:text-green-400 mt-1">${weekSummary.earnings}</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white">{weekSummary.hours}{t('summaryCards.hoursUnit')}</p>
+              <p className="text-sm text-green-600 dark:text-green-400 mt-1">{t('summaryCards.currencySymbol')}{weekSummary.earnings}</p>
             </div>
 
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
               <div className="flex items-center gap-2 mb-2 text-gray-600 dark:text-gray-300">
                 <Calendar className="w-4 h-4" />
-                <p className="text-sm font-semibold">This Month</p>
+                <p className="text-sm font-semibold">{t('summaryCards.thisMonth')}</p>
               </div>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white">{monthSummary.hours}h</p>
-              <p className="text-sm text-green-600 dark:text-green-400 mt-1">${monthSummary.earnings}</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white">{monthSummary.hours}{t('summaryCards.hoursUnit')}</p>
+              <p className="text-sm text-green-600 dark:text-green-400 mt-1">{t('summaryCards.currencySymbol')}{monthSummary.earnings}</p>
             </div>
 
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
               <div className="flex items-center gap-2 mb-2 text-gray-600 dark:text-gray-300">
                 <DollarSign className="w-4 h-4" />
-                <p className="text-sm font-semibold">All Time</p>
+                <p className="text-sm font-semibold">{t('summaryCards.allTime')}</p>
               </div>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white">{allTimeSummary.hours}h</p>
-              <p className="text-sm text-green-600 dark:text-green-400 mt-1">${allTimeSummary.earnings}</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white">{allTimeSummary.hours}{t('summaryCards.hoursUnit')}</p>
+              <p className="text-sm text-green-600 dark:text-green-400 mt-1">{t('summaryCards.currencySymbol')}{allTimeSummary.earnings}</p>
             </div>
           </div>
         </section>
@@ -504,7 +506,7 @@ export default function TimeTrackerPage() {
               {/* Timer Card */}
               <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-8">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                  Live Timer
+                  {t('timer.title')}
                 </h2>
 
                 {/* Timer Display */}
@@ -522,7 +524,7 @@ export default function TimeTrackerPage() {
                         className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                         disabled={timerState.isRunning}
                       >
-                        <option value="">Select Project...</option>
+                        <option value="">{t('timer.selectProject')}</option>
                         {projects.map(p => (
                           <option key={p.id} value={p.id}>{p.name} - {p.client}</option>
                         ))}
@@ -542,7 +544,7 @@ export default function TimeTrackerPage() {
                       type="text"
                       value={timerState.description}
                       onChange={(e) => setTimerState(prev => ({ ...prev, description: e.target.value }))}
-                      placeholder="What are you working on?"
+                      placeholder={t('timer.description')}
                       className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent mb-4"
                     />
                   )}
@@ -557,7 +559,7 @@ export default function TimeTrackerPage() {
                       className="flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 text-white rounded-lg font-semibold transition-colors"
                     >
                       <Play className="w-5 h-5" />
-                      Start
+                      {t('timer.start')}
                     </button>
                   ) : (
                     <>
@@ -567,7 +569,7 @@ export default function TimeTrackerPage() {
                           className="flex items-center gap-2 px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-semibold transition-colors"
                         >
                           <Pause className="w-5 h-5" />
-                          Pause
+                          {t('timer.pause')}
                         </button>
                       ) : (
                         <button
@@ -575,7 +577,7 @@ export default function TimeTrackerPage() {
                           className="flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors"
                         >
                           <Play className="w-5 h-5" />
-                          Resume
+                          {t('timer.resume')}
                         </button>
                       )}
                       <button
@@ -583,7 +585,7 @@ export default function TimeTrackerPage() {
                         className="flex items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors"
                       >
                         <Square className="w-5 h-5" />
-                        Stop
+                        {t('timer.stop')}
                       </button>
                     </>
                   )}
@@ -593,7 +595,7 @@ export default function TimeTrackerPage() {
               {/* Quick Actions */}
               <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
-                  Quick Actions
+                  {t('quickActions.title')}
                 </h3>
                 <div className="space-y-3">
                   <button
@@ -601,14 +603,14 @@ export default function TimeTrackerPage() {
                     className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary hover:bg-primary-dark text-white rounded-lg font-semibold transition-colors"
                   >
                     <Plus className="w-5 h-5" />
-                    Add Manual Entry
+                    {t('quickActions.manualEntry')}
                   </button>
                   <button
                     onClick={() => setShowProjectModal(true)}
                     className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-semibold transition-colors"
                   >
                     <Plus className="w-5 h-5" />
-                    Add Project
+                    {t('quickActions.addProject')}
                   </button>
                   <button
                     onClick={() => exportToCSV(filteredEntries)}
@@ -616,7 +618,7 @@ export default function TimeTrackerPage() {
                     className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 text-white rounded-lg font-semibold transition-colors"
                   >
                     <Download className="w-5 h-5" />
-                    Export to CSV
+                    {t('quickActions.export')}
                   </button>
                 </div>
               </div>
@@ -624,10 +626,10 @@ export default function TimeTrackerPage() {
               {/* Projects List */}
               <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
-                  Projects ({projects.length})
+                  {t('projects.title')} {t('projects.count', { count: projects.length })}
                 </h3>
                 {projects.length === 0 ? (
-                  <p className="text-sm text-gray-600 dark:text-gray-400">No projects yet. Add one to get started!</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{t('projects.empty')}</p>
                 ) : (
                   <div className="space-y-2 max-h-96 overflow-y-auto">
                     {projects.map(project => (
@@ -645,7 +647,7 @@ export default function TimeTrackerPage() {
                               {project.name}
                             </p>
                             <p className="text-xs text-gray-600 dark:text-gray-400 truncate">
-                              {project.client} • ${project.hourlyRate}/hr
+                              {project.client} • {t('summaryCards.currencySymbol')}{project.hourlyRate}{t('projects.hourlyRate')}
                             </p>
                           </div>
                         </div>
@@ -675,7 +677,7 @@ export default function TimeTrackerPage() {
               <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-8">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                    Time Entries
+                    {t('entries.title')}
                   </h2>
                   <div className="flex items-center gap-3">
                     <Filter className="w-5 h-5 text-gray-600 dark:text-gray-400" />
@@ -686,14 +688,14 @@ export default function TimeTrackerPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      Project
+                      {t('entries.filterProject')}
                     </label>
                     <select
                       value={filterProject}
                       onChange={(e) => setFilterProject(e.target.value)}
                       className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     >
-                      <option value="all">All Projects</option>
+                      <option value="all">{t('entries.allProjects')}</option>
                       {projects.map(p => (
                         <option key={p.id} value={p.id}>{p.name}</option>
                       ))}
@@ -702,17 +704,17 @@ export default function TimeTrackerPage() {
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      Date Range
+                      {t('entries.filterDateRange')}
                     </label>
                     <select
                       value={filterDateRange}
                       onChange={(e) => setFilterDateRange(e.target.value as any)}
                       className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     >
-                      <option value="all">All Time</option>
-                      <option value="today">Today</option>
-                      <option value="week">This Week</option>
-                      <option value="month">This Month</option>
+                      <option value="all">{t('entries.allTime')}</option>
+                      <option value="today">{t('entries.today')}</option>
+                      <option value="week">{t('entries.thisWeek')}</option>
+                      <option value="month">{t('entries.thisMonth')}</option>
                     </select>
                   </div>
                 </div>
@@ -722,7 +724,7 @@ export default function TimeTrackerPage() {
                   <div className="text-center py-12">
                     <Clock className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
                     <p className="text-gray-600 dark:text-gray-400">
-                      No time entries yet. Start the timer or add a manual entry!
+                      {t('entries.empty')}
                     </p>
                   </div>
                 ) : (
@@ -788,7 +790,7 @@ export default function TimeTrackerPage() {
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow-xl max-w-md w-full p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                  {editingProject ? 'Edit Project' : 'Add Project'}
+                  {editingProject ? t('projectModal.titleEdit') : t('projectModal.titleAdd')}
                 </h3>
                 <button
                   onClick={() => {
@@ -805,33 +807,33 @@ export default function TimeTrackerPage() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Project Name
+                    {t('projectModal.labelName')}
                   </label>
                   <input
                     type="text"
                     value={projectForm.name}
                     onChange={(e) => setProjectForm(prev => ({ ...prev, name: e.target.value }))}
                     className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="Website Redesign"
+                    placeholder={t('projectModal.placeholderName')}
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Client Name
+                    {t('projectModal.labelClient')}
                   </label>
                   <input
                     type="text"
                     value={projectForm.client}
                     onChange={(e) => setProjectForm(prev => ({ ...prev, client: e.target.value }))}
                     className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="Acme Corp"
+                    placeholder={t('projectModal.placeholderClient')}
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Hourly Rate ($)
+                    {t('projectModal.labelRate')}
                   </label>
                   <input
                     type="number"
@@ -843,7 +845,7 @@ export default function TimeTrackerPage() {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Color
+                    {t('projectModal.labelColor')}
                   </label>
                   <input
                     type="color"
@@ -859,7 +861,7 @@ export default function TimeTrackerPage() {
                     className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary hover:bg-primary-dark text-white rounded-lg font-semibold transition-colors"
                   >
                     <Save className="w-5 h-5" />
-                    {editingProject ? 'Update' : 'Add'} Project
+                    {editingProject ? t('projectModal.buttonUpdate') : t('projectModal.buttonAdd')} {t('projectModal.buttonSuffix')}
                   </button>
                   <button
                     onClick={() => {
@@ -869,7 +871,7 @@ export default function TimeTrackerPage() {
                     }}
                     className="px-4 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg font-semibold transition-colors"
                   >
-                    Cancel
+                    {t('projectModal.buttonCancel')}
                   </button>
                 </div>
               </div>
@@ -883,7 +885,7 @@ export default function TimeTrackerPage() {
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow-xl max-w-md w-full p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                  Add Manual Entry
+                  {t('manualModal.title')}
                 </h3>
                 <button
                   onClick={() => {
@@ -905,7 +907,7 @@ export default function TimeTrackerPage() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Date
+                    {t('manualModal.labelDate')}
                   </label>
                   <input
                     type="date"
@@ -918,7 +920,7 @@ export default function TimeTrackerPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      Hours
+                      {t('manualModal.labelHours')}
                     </label>
                     <input
                       type="number"
@@ -931,7 +933,7 @@ export default function TimeTrackerPage() {
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      Minutes
+                      {t('manualModal.labelMinutes')}
                     </label>
                     <input
                       type="number"
@@ -946,14 +948,14 @@ export default function TimeTrackerPage() {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Project
+                    {t('manualModal.labelProject')}
                   </label>
                   <select
                     value={manualForm.projectId}
                     onChange={(e) => setManualForm(prev => ({ ...prev, projectId: e.target.value }))}
                     className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                   >
-                    <option value="">Select Project...</option>
+                    <option value="">{t('manualModal.placeholderProject')}</option>
                     {projects.map(p => (
                       <option key={p.id} value={p.id}>{p.name} - {p.client}</option>
                     ))}
@@ -962,14 +964,14 @@ export default function TimeTrackerPage() {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Description
+                    {t('manualModal.labelDescription')}
                   </label>
                   <textarea
                     value={manualForm.description}
                     onChange={(e) => setManualForm(prev => ({ ...prev, description: e.target.value }))}
                     rows={3}
                     className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="What did you work on?"
+                    placeholder={t('manualModal.placeholderDescription')}
                   />
                 </div>
 
@@ -979,7 +981,7 @@ export default function TimeTrackerPage() {
                     className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary hover:bg-primary-dark text-white rounded-lg font-semibold transition-colors"
                   >
                     <Save className="w-5 h-5" />
-                    Add Entry
+                    {t('manualModal.buttonAdd')}
                   </button>
                   <button
                     onClick={() => {
@@ -994,7 +996,7 @@ export default function TimeTrackerPage() {
                     }}
                     className="px-4 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg font-semibold transition-colors"
                   >
-                    Cancel
+                    {t('manualModal.buttonCancel')}
                   </button>
                 </div>
               </div>
