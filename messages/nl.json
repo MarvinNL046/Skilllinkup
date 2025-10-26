@@ -1363,5 +1363,34 @@
     "meta": {
       "authorFallback": "VaardigheidLinkup"
     }
+  },
+  "reviewsPage": {
+    "metadata": {
+      "title": "Platformrecensies - SkillLinkup",
+      "description": "Lees authentieke reviews van freelancers over hun ervaringen op verschillende platforms."
+    },
+    "hero": {
+      "title": "Platformrecensies",
+      "descriptionTemplate": "Lees {count}+ authentieke recensies van freelancers over de hele wereld"
+    },
+    "stats": {
+      "totalReviews": "Totaal beoordelingen",
+      "avgRating": "Gemiddelde beoordeling",
+      "verified": "Geverifieerd"
+    },
+    "emptyState": {
+      "title": "Nog geen beoordelingen",
+      "description": "Deel als eerste uw ervaring!"
+    },
+    "reviewCard": {
+      "pros": "Pluspunten",
+      "cons": "Nadelen",
+      "yearsExperience": "j exp"
+    },
+    "cta": {
+      "heading": "Deel uw ervaring",
+      "description": "Help andere freelancers door uw eerlijke beoordeling te delen over de platforms die u heeft gebruikt",
+      "browseButton": "Blader door platforms"
+    }
   }
 }

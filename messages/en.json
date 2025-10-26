@@ -1363,5 +1363,34 @@
     "meta": {
       "authorFallback": "SkillLinkup"
     }
+  },
+  "reviewsPage": {
+    "metadata": {
+      "title": "Platform Reviews - SkillLinkup",
+      "description": "Read authentic reviews from freelancers about their experiences on various platforms."
+    },
+    "hero": {
+      "title": "Platform Reviews",
+      "descriptionTemplate": "Read {count}+ authentic reviews from freelancers around the world"
+    },
+    "stats": {
+      "totalReviews": "Total Reviews",
+      "avgRating": "Avg Rating",
+      "verified": "Verified"
+    },
+    "emptyState": {
+      "title": "No reviews yet",
+      "description": "Be the first to share your experience!"
+    },
+    "reviewCard": {
+      "pros": "Pros",
+      "cons": "Cons",
+      "yearsExperience": "y exp"
+    },
+    "cta": {
+      "heading": "Share Your Experience",
+      "description": "Help other freelancers by sharing your honest review of the platforms you've used",
+      "browseButton": "Browse Platforms"
+    }
   }
 }

@@ -1,15 +1,28 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { ReviewAvatar } from "@/components/ReviewAvatar";
 import { getApprovedReviews } from "@/lib/queries";
 
-export const metadata = {
-  title: "Platform Reviews - SkillLinkup",
-  description: "Read authentic reviews from freelancers about their experiences on various platforms.",
-};
+interface PageProps {
+  params: Promise<{ locale: string }>;
+}
 
-export default async function ReviewsPage() {
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'reviewsPage.metadata' });
+
+  return {
+    title: t('title'),
+    description: t('description'),
+  };
+}
+
+export default async function ReviewsPage({ params }: PageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'reviewsPage' });
+
   let reviews: Awaited<ReturnType<typeof getApprovedReviews>> = [];
 
   try {
@@ -34,10 +47,10 @@ export default async function ReviewsPage() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto">
               <h1 className="text-4xl font-heading font-bold text-gray-900 dark:text-white sm:text-5xl mb-4">
-                Platform Reviews
+                {t('hero.title')}
               </h1>
               <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
-                Read {totalReviews}+ authentic reviews from freelancers around the world
+                {t('hero.descriptionTemplate', { count: totalReviews })}
               </p>
 
               {/* Stats Bar */}
@@ -46,20 +59,20 @@ export default async function ReviewsPage() {
                   <div className="text-3xl font-heading font-bold text-primary">
                     {totalReviews}
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Total Reviews</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('stats.totalReviews')}</div>
                 </div>
                 <div className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-slate-700">
                   <div className="text-3xl font-heading font-bold text-accent flex items-center justify-center gap-1">
                     <span className="text-yellow-400">★</span>
                     {averageRating.toFixed(1)}
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Avg Rating</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('stats.avgRating')}</div>
                 </div>
                 <div className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-slate-700">
                   <div className="text-3xl font-heading font-bold text-secondary">
                     {verifiedCount}
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Verified</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('stats.verified')}</div>
                 </div>
               </div>
             </div>
@@ -73,10 +86,10 @@ export default async function ReviewsPage() {
               <div className="text-center py-12">
                 <div className="text-6xl mb-4">📝</div>
                 <h3 className="text-xl font-heading font-bold text-gray-900 dark:text-white mb-2">
-                  No reviews yet
+                  {t('emptyState.title')}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300">
-                  Be the first to share your experience!
+                  {t('emptyState.description')}
                 </p>
               </div>
             ) : (
@@ -121,7 +134,7 @@ export default async function ReviewsPage() {
                     {/* Platform Badge */}
                     {review.platform_name && (
                       <Link
-                        href={`/platforms/${review.platform_slug}`}
+                        href={`/${locale}/platforms/${review.platform_slug}`}
                         className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary/10 dark:bg-primary/20 text-primary dark:text-accent text-sm font-medium mb-3 hover:bg-primary/20 dark:hover:bg-primary/30 transition-colors"
                       >
                         <span>🏢</span>
@@ -147,7 +160,7 @@ export default async function ReviewsPage() {
                             <div className="flex items-center gap-1 mb-2">
                               <span className="text-green-500">✓</span>
                               <span className="text-xs font-heading font-semibold text-gray-700 dark:text-gray-300 uppercase">
-                                Pros
+                                {t('reviewCard.pros')}
                               </span>
                             </div>
                             <ul className="space-y-1">
@@ -167,7 +180,7 @@ export default async function ReviewsPage() {
                             <div className="flex items-center gap-1 mb-2">
                               <span className="text-red-500">✗</span>
                               <span className="text-xs font-heading font-semibold text-gray-700 dark:text-gray-300 uppercase">
-                                Cons
+                                {t('reviewCard.cons')}
                               </span>
                             </div>
                             <ul className="space-y-1">
@@ -189,7 +202,7 @@ export default async function ReviewsPage() {
                     <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-slate-700 pt-3">
                       <div className="flex items-center gap-4">
                         {review.years_experience && (
-                          <span>{review.years_experience}y exp</span>
+                          <span>{review.years_experience}{t('reviewCard.yearsExperience')}</span>
                         )}
                         {review.earnings_range && (
                           <span>{review.earnings_range}</span>
@@ -212,16 +225,16 @@ export default async function ReviewsPage() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mx-auto text-center">
               <h2 className="text-3xl font-heading font-bold text-gray-900 dark:text-white mb-4">
-                Share Your Experience
+                {t('cta.heading')}
               </h2>
               <p className="text-gray-600 dark:text-gray-300 mb-6">
-                Help other freelancers by sharing your honest review of the platforms you've used
+                {t('cta.description')}
               </p>
               <Link
-                href="/platforms"
+                href={`/${locale}/platforms`}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-white font-heading font-semibold hover:bg-primary-dark transition-colors shadow-md"
               >
-                Browse Platforms
+                {t('cta.browseButton')}
                 <svg
                   className="w-5 h-5"
                   fill="none"
