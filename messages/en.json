@@ -504,6 +504,55 @@
       "perHour": "/hour"
     }
   },
+  "aboutPage": {
+    "metadata": {
+      "title": "About Us - SkillLinkup",
+      "description": "Learn about SkillLinkup's mission to help freelancers find the perfect platform for their skills."
+    },
+    "hero": {
+      "title": "Helping Freelancers Find Their Perfect Platform",
+      "subtitle": "We believe every freelancer deserves to work on a platform that matches their skills, experience level, and career goals. That's why we created SkillLinkup."
+    },
+    "mission": {
+      "title": "Our Mission",
+      "paragraph1": "The freelance economy is booming, with hundreds of platforms competing for your attention. Each platform has different fee structures, client types, and approval processes.",
+      "paragraph2": "SkillLinkup cuts through the noise with honest, data-driven reviews and comparisons. We help you make informed decisions so you can focus on what you do best: your work."
+    },
+    "whatWeDo": {
+      "title": "What We Do",
+      "item1": "Review 25+ freelance platforms with real data",
+      "item2": "Provide side-by-side platform comparisons",
+      "item3": "Share expert tips and success strategies",
+      "item4": "Keep you updated on platform changes"
+    },
+    "values": {
+      "title": "Our Values",
+      "honest": {
+        "title": "Honest Reviews",
+        "description": "We provide unbiased, data-driven reviews with real pros and cons. No sugar-coating, just honest insights."
+      },
+      "data": {
+        "title": "Data-Driven",
+        "description": "Every review is backed by real data: fee structures, approval rates, average earnings, and user satisfaction."
+      },
+      "community": {
+        "title": "Community First",
+        "description": "We're built by freelancers, for freelancers. Your success is our success, and we're here to support your journey."
+      }
+    },
+    "stats": {
+      "platforms": "Platforms Reviewed",
+      "freelancers": "Freelancers Helped",
+      "rating": "Average Rating",
+      "unbiased": "Unbiased Reviews"
+    },
+    "team": {
+      "title": "Built by Freelancers, For Freelancers",
+      "description": "Our team consists of experienced freelancers who have worked across multiple platforms. We know the challenges you face because we've faced them ourselves.",
+      "ctaBrowse": "Browse Platforms",
+      "ctaContact": "Get in Touch"
+    }
+  },
   "invoiceGenerator": {
     "breadcrumb": {
       "home": "Home",

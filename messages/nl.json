@@ -504,6 +504,55 @@
       "perHour": "/uur"
     }
   },
+  "aboutPage": {
+    "metadata": {
+      "title": "Over ons - SkillLinkup",
+      "description": "Lees meer over de missie van SkillLinkup om freelancers te helpen het perfecte platform voor hun vaardigheden te vinden."
+    },
+    "hero": {
+      "title": "Freelancers helpen hun perfecte platform te vinden",
+      "subtitle": "Wij zijn van mening dat elke freelancer het verdient om op een platform te werken dat past bij zijn vaardigheden, ervaringsniveau en carrièredoelen. Daarom hebben we SkillLinkup gecreëerd."
+    },
+    "mission": {
+      "title": "Onze missie",
+      "paragraph1": "De freelance-economie bloeit, waarbij honderden platforms strijden om uw aandacht. Elk platform heeft verschillende tariefstructuren, klanttypen en goedkeuringsprocessen.",
+      "paragraph2": "SkillLinkup doorbreekt de ruis met eerlijke, datagestuurde beoordelingen en vergelijkingen. Wij helpen u weloverwogen beslissingen te nemen, zodat u zich kunt concentreren op waar u goed in bent: uw werk."
+    },
+    "whatWeDo": {
+      "title": "Wat wij doen",
+      "item1": "Beoordeel meer dan 25 freelanceplatforms met echte gegevens",
+      "item2": "Bied side-by-side platformvergelijkingen aan",
+      "item3": "Deel deskundige tips en successtrategieën",
+      "item4": "Houd u op de hoogte van platformwijzigingen"
+    },
+    "values": {
+      "title": "Onze waarden",
+      "honest": {
+        "title": "Eerlijke beoordelingen",
+        "description": "We bieden onpartijdige, datagestuurde beoordelingen met echte voor- en nadelen. Geen suikerlaagje, maar eerlijke inzichten."
+      },
+      "data": {
+        "title": "Datagedreven",
+        "description": "Elke beoordeling wordt ondersteund door echte gegevens: vergoedingsstructuren, goedkeuringspercentages, gemiddelde inkomsten en gebruikerstevredenheid."
+      },
+      "community": {
+        "title": "Gemeenschap eerst",
+        "description": "We zijn gebouwd door freelancers, voor freelancers. Uw succes is ons succes, en wij zijn er om u te ondersteunen."
+      }
+    },
+    "stats": {
+      "platforms": "Platformen beoordeeld",
+      "freelancers": "Freelancers geholpen",
+      "rating": "Gemiddelde beoordeling",
+      "unbiased": "Onpartijdige beoordelingen"
+    },
+    "team": {
+      "title": "Gebouwd door freelancers, voor freelancers",
+      "description": "Ons team bestaat uit ervaren freelancers die op meerdere platforms hebben gewerkt. Wij kennen de uitdagingen waarmee u wordt geconfronteerd, omdat we ze zelf hebben meegemaakt.",
+      "ctaBrowse": "Blader door platforms",
+      "ctaContact": "Neem contact op"
+    }
+  },
   "invoiceGenerator": {
     "breadcrumb": {
       "home": "Thuis",
