@@ -1417,5 +1417,18 @@
       "heading": "Browse by Category",
       "postCount": "{count, plural, one {article} other {articles}}"
     }
+  },
+  "categoryPage": {
+    "notFound": "Category Not Found | SkillLinkup",
+    "postCount": {
+      "singular": "post",
+      "plural": "posts"
+    },
+    "emptyState": {
+      "message": "We're working on adding content to this category. Check back soon!",
+      "button": "Browse All Posts"
+    },
+    "minRead": "min read",
+    "views": "views"
   }
 }

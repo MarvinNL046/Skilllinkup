@@ -1417,5 +1417,18 @@
       "heading": "Blader op categorie",
       "postCount": "{count, plural, one {artikel} other {artikelen}}"
     }
+  },
+  "categoryPage": {
+    "notFound": "Categorie Niet Gevonden | SkillLinkup",
+    "postCount": {
+      "singular": "artikel",
+      "plural": "artikelen"
+    },
+    "emptyState": {
+      "message": "We werken aan het toevoegen van content aan deze categorie. Kom snel terug!",
+      "button": "Bekijk Alle Artikelen"
+    },
+    "minRead": "min lezen",
+    "views": "weergaven"
   }
 }

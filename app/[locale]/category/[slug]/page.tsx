@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { getTranslations } from 'next-intl/server';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { getCategoryBySlug, getPostsByCategory } from '@/lib/queries';
@@ -16,10 +17,11 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug, locale } = await params;
   const category = await getCategoryBySlug(slug, locale);
+  const t = await getTranslations({ locale, namespace: 'categoryPage' });
 
   if (!category) {
     return {
-      title: 'Category Not Found | SkillLinkup',
+      title: t('notFound'),
     };
   }
 
@@ -40,6 +42,7 @@ export default async function CategoryPage({ params }: PageProps) {
   }
 
   const posts = await getPostsByCategory(slug, 50, locale);
+  const t = await getTranslations({ locale, namespace: 'categoryPage' });
 
   return (
     <>
@@ -66,7 +69,7 @@ export default async function CategoryPage({ params }: PageProps) {
               )}
 
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                {category.post_count} {category.post_count === 1 ? 'post' : 'posts'}
+                {category.post_count} {category.post_count === 1 ? t('postCount.singular') : t('postCount.plural')}
               </p>
             </div>
           </div>
@@ -78,13 +81,13 @@ export default async function CategoryPage({ params }: PageProps) {
             {posts.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
-                  We're working on adding content to this category. Check back soon!
+                  {t('emptyState.message')}
                 </p>
                 <Link
-                  href="/blog"
+                  href={`/${locale}/blog`}
                   className="inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-dark px-8 py-3 text-base font-heading font-semibold text-white transition-colors shadow-lg"
                 >
-                  Browse All Posts
+                  {t('emptyState.button')}
                 </Link>
               </div>
             ) : (
@@ -116,7 +119,7 @@ export default async function CategoryPage({ params }: PageProps) {
                           )}
                           {post.read_time && (
                             <span className="text-gray-500 dark:text-gray-400">
-                              {post.read_time} min read
+                              {post.read_time} {t('minRead')}
                             </span>
                           )}
                         </div>
@@ -147,7 +150,7 @@ export default async function CategoryPage({ params }: PageProps) {
                           {post.views && (
                             <>
                               <span>·</span>
-                              <span>{post.views} views</span>
+                              <span>{post.views} {t('views')}</span>
                             </>
                           )}
                         </div>
