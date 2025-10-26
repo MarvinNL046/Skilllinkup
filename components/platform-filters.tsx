@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useCallback, useMemo } from "react";
+import { useTranslations } from 'next-intl';
 
 interface Platform {
   id: string;
@@ -30,6 +31,7 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const t = useTranslations('platformFilters');
 
   // Get current filters from URL
   const selectedCategory = searchParams.get('category') || 'All Platforms';
@@ -209,7 +211,7 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
         <div className="relative">
           <input
             type="text"
-            placeholder="Search platforms..."
+            placeholder={t('searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
             className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-6 py-4 pl-12 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-md"
@@ -235,7 +237,7 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
         <aside className="lg:col-span-1">
           <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 sticky top-4">
             <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white mb-4">
-              Categories
+              {t('categories')}
             </h3>
             <ul className="space-y-2">
               {categories.map((cat) => (
@@ -262,18 +264,22 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
             <hr className="my-6 border-gray-200 dark:border-gray-700" />
 
             <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white mb-4">
-              Difficulty
+              {t('difficulty')}
             </h3>
             <div className="space-y-2">
-              {["Easy", "Medium", "Hard"].map((level) => (
-                <label key={level} className="flex items-center gap-2 cursor-pointer">
+              {[
+                { value: "Easy", label: t('easy') },
+                { value: "Medium", label: t('medium') },
+                { value: "Hard", label: t('hard') }
+              ].map((level) => (
+                <label key={level.value} className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={selectedDifficulties.includes(level)}
-                    onChange={() => handleDifficultyToggle(level)}
+                    checked={selectedDifficulties.includes(level.value)}
+                    onChange={() => handleDifficultyToggle(level.value)}
                     className="w-4 h-4 rounded border-gray-200 dark:border-gray-700 text-primary focus:ring-primary/50"
                   />
-                  <span className="text-sm text-gray-600 dark:text-gray-300">{level}</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-300">{level.label}</span>
                 </label>
               ))}
             </div>
@@ -281,13 +287,13 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
             <hr className="my-6 border-gray-200 dark:border-gray-700" />
 
             <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white mb-4">
-              Rating
+              {t('rating')}
             </h3>
             <div className="space-y-2">
               {[
-                { label: "4.5+ Stars", value: "4.5" },
-                { label: "4.0-4.4 Stars", value: "4.0" },
-                { label: "3.5-3.9 Stars", value: "3.5" },
+                { label: t('rating45Plus'), value: "4.5" },
+                { label: t('rating40To44'), value: "4.0" },
+                { label: t('rating35To39'), value: "3.5" },
               ].map((rating) => (
                 <label key={rating.value} className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -304,36 +310,36 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
             <hr className="my-6 border-gray-200 dark:border-gray-700" />
 
             <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white mb-4">
-              Work Type
+              {t('workType')}
             </h3>
             <select
               value={selectedWorkType}
               onChange={(e) => handleWorkTypeChange(e.target.value)}
               className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
             >
-              <option value="all">All Work Types</option>
-              <option value="remote">Remote Only</option>
-              <option value="local">Local Only</option>
-              <option value="hybrid">Hybrid</option>
+              <option value="all">{t('allWorkTypes')}</option>
+              <option value="remote">{t('remoteOnly')}</option>
+              <option value="local">{t('localOnly')}</option>
+              <option value="hybrid">{t('hybrid')}</option>
             </select>
 
             <hr className="my-6 border-gray-200 dark:border-gray-700" />
 
             <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white mb-4">
-              Country
+              {t('country')}
             </h3>
             <select
               value={selectedCountry}
               onChange={(e) => handleCountryChange(e.target.value)}
               className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
             >
-              <option value="all">All Countries</option>
-              <option value="Worldwide">Worldwide</option>
-              <option value="NL">Netherlands</option>
-              <option value="BE">Belgium</option>
-              <option value="DE">Germany</option>
-              <option value="FR">France</option>
-              <option value="US">United States</option>
+              <option value="all">{t('allCountries')}</option>
+              <option value="Worldwide">{t('worldwide')}</option>
+              <option value="NL">{t('netherlands')}</option>
+              <option value="BE">{t('belgium')}</option>
+              <option value="DE">{t('germany')}</option>
+              <option value="FR">{t('france')}</option>
+              <option value="US">{t('unitedStates')}</option>
             </select>
           </div>
         </aside>
@@ -342,27 +348,30 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
         <div className="lg:col-span-3">
           <div className="flex items-center justify-between mb-6">
             <p className="text-sm text-gray-600 dark:text-gray-300">
-              Showing {filteredPlatforms.length} platform{filteredPlatforms.length !== 1 ? 's' : ''}
+              {filteredPlatforms.length === 1
+                ? t('showingCountSingular', { count: filteredPlatforms.length })
+                : t('showingCount', { count: filteredPlatforms.length, plural: 's' })
+              }
             </p>
             <select
               value={sortBy}
               onChange={(e) => handleSort(e.target.value)}
               className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
             >
-              <option value="rating">Sort by: Rating</option>
-              <option value="name">Sort by: Name</option>
-              <option value="difficulty">Sort by: Difficulty</option>
+              <option value="rating">{t('sortByRating')}</option>
+              <option value="name">{t('sortByName')}</option>
+              <option value="difficulty">{t('sortByDifficulty')}</option>
             </select>
           </div>
 
           {filteredPlatforms.length === 0 ? (
             <div className="text-center py-12 bg-gray-50 dark:bg-gray-900 rounded-lg">
-              <p className="text-gray-600 dark:text-gray-300">No platforms found matching your filters.</p>
+              <p className="text-gray-600 dark:text-gray-300">{t('noPlatformsFound')}</p>
               <button
                 onClick={() => router.push('/platforms')}
                 className="mt-4 text-primary hover:text-primary-dark font-semibold"
               >
-                Clear all filters
+                {t('clearAllFilters')}
               </button>
             </div>
           ) : (
@@ -413,21 +422,21 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
                   {/* Details */}
                   <div className="space-y-2 mb-4">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-gray-600 dark:text-gray-300">Category</span>
+                      <span className="text-gray-600 dark:text-gray-300">{t('categoryLabel')}</span>
                       <span className="font-semibold text-accent">
                         {platform.category}
                       </span>
                     </div>
                     {platform.fees && (
                       <div className="flex items-center justify-between text-xs">
-                        <span className="text-gray-600 dark:text-gray-300">Fees</span>
+                        <span className="text-gray-600 dark:text-gray-300">{t('feesLabel')}</span>
                         <span className="font-semibold text-gray-900 dark:text-white">
                           {platform.fees}
                         </span>
                       </div>
                     )}
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-gray-600 dark:text-gray-300">Difficulty</span>
+                      <span className="text-gray-600 dark:text-gray-300">{t('difficultyLabel')}</span>
                       <span
                         className={`font-semibold text-xs px-2 py-0.5 rounded-full ${getDifficultyColor(
                           platform.difficulty
@@ -440,7 +449,7 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
 
                   {/* CTA */}
                   <div className="flex items-center justify-between text-sm font-heading font-semibold text-primary group-hover:text-primary-dark transition-colors">
-                    <span>Read Review</span>
+                    <span>{t('readReview')}</span>
                     <svg
                       className="w-4 h-4"
                       fill="none"

@@ -2,21 +2,28 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { getPublishedPlatforms, getPlatformCategories } from "@/lib/queries";
 import { PlatformFilters } from "@/components/platform-filters";
+import { getTranslations } from 'next-intl/server';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
-
-export const metadata = {
-  title: "All Platforms - SkillLinkup",
-  description: "Browse all freelance platform reviews, comparisons, and ratings.",
-};
 
 interface PlatformsPageProps {
   params: Promise<{ locale: string }>;
 }
 
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'platformsPage' });
+
+  return {
+    title: `${t('title')} - SkillLinkup`,
+    description: t('subtitle', { count: '' }).replace('+ platforms', 'platforms'),
+  };
+}
+
 export default async function PlatformsPage({ params }: PlatformsPageProps) {
   const { locale } = await params;
+  const t = await getTranslations('platformsPage');
 
   let platforms: Awaited<ReturnType<typeof getPublishedPlatforms>> = [];
   let platformCategories: Awaited<ReturnType<typeof getPlatformCategories>> = [];
@@ -30,7 +37,7 @@ export default async function PlatformsPage({ params }: PlatformsPageProps) {
 
   // Add "All Platforms" category
   const categories = [
-    { category: "All Platforms", count: platforms.length },
+    { category: t('allPlatformsCategory'), count: platforms.length },
     ...platformCategories,
   ];
 
@@ -43,10 +50,10 @@ export default async function PlatformsPage({ params }: PlatformsPageProps) {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto">
               <h1 className="text-4xl font-heading font-bold text-gray-900 dark:text-white sm:text-5xl mb-4">
-                All Freelance Platforms
+                {t('title')}
               </h1>
               <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
-                Compare {platforms.length}+ platforms to find the perfect match for your skills and goals
+                {t('subtitle', { count: platforms.length })}
               </p>
             </div>
           </div>

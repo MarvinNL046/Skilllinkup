@@ -1,15 +1,17 @@
 'use client';
 
 import { useTheme } from './ThemeProvider';
+import { useTranslations } from 'next-intl';
 
 export default function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
+  const t = useTranslations('theme');
 
   return (
     <button
       onClick={toggleTheme}
-      aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-      title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      aria-label={theme === 'dark' ? t('switchToLight') : t('switchToDark')}
+      title={theme === 'dark' ? t('switchToLight') : t('switchToDark')}
       className="relative w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300 ease-in-out hover:scale-110 active:scale-95 flex items-center justify-center group"
     >
       {/* Sun Icon - Shows in dark mode */}

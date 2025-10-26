@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 interface Comment {
   id: string;
@@ -15,6 +16,7 @@ interface CommentSectionProps {
 }
 
 export function CommentSection({ postId, comments: initialComments }: CommentSectionProps) {
+  const t = useTranslations('commentSection');
   const [comments, setComments] = useState<Comment[]>(initialComments);
   const [authorName, setAuthorName] = useState('');
   const [authorEmail, setAuthorEmail] = useState('');
@@ -46,7 +48,7 @@ export function CommentSection({ postId, comments: initialComments }: CommentSec
       if (response.ok) {
         setMessage({
           type: 'success',
-          text: 'Thank you! Your comment has been submitted and will appear after moderation.',
+          text: t('successMessage'),
         });
         // Reset form
         setAuthorName('');
@@ -55,13 +57,13 @@ export function CommentSection({ postId, comments: initialComments }: CommentSec
       } else {
         setMessage({
           type: 'error',
-          text: data.error || 'Failed to submit comment. Please try again.',
+          text: data.error || t('errorMessage'),
         });
       }
     } catch (error) {
       setMessage({
         type: 'error',
-        text: 'An error occurred. Please try again later.',
+        text: t('generalError'),
       });
     } finally {
       setIsSubmitting(false);
@@ -82,17 +84,17 @@ export function CommentSection({ postId, comments: initialComments }: CommentSec
         {/* Comments Header */}
         <div className="mb-8">
           <h2 className="text-3xl font-heading font-bold text-text-primary mb-2">
-            Comments ({comments.length})
+            {t('commentsTitle', { count: comments.length })}
           </h2>
           <p className="text-text-secondary">
-            Share your thoughts and join the conversation
+            {t('joinConversation')}
           </p>
         </div>
 
         {/* Comment Form */}
         <div className="bg-white rounded-lg border border-background-gray p-6 mb-8 shadow-sm">
           <h3 className="text-xl font-heading font-semibold text-text-primary mb-4">
-            Leave a Comment
+            {t('leaveComment')}
           </h3>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -103,7 +105,7 @@ export function CommentSection({ postId, comments: initialComments }: CommentSec
                   htmlFor="authorName"
                   className="block text-sm font-medium text-text-secondary mb-1"
                 >
-                  Name *
+                  {t('nameLabel')}
                 </label>
                 <input
                   type="text"
@@ -112,7 +114,7 @@ export function CommentSection({ postId, comments: initialComments }: CommentSec
                   onChange={(e) => setAuthorName(e.target.value)}
                   required
                   className="w-full px-4 py-2 border border-background-gray rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="Your name"
+                  placeholder={t('namePlaceholder')}
                 />
               </div>
               <div>
@@ -120,7 +122,7 @@ export function CommentSection({ postId, comments: initialComments }: CommentSec
                   htmlFor="authorEmail"
                   className="block text-sm font-medium text-text-secondary mb-1"
                 >
-                  Email * (will not be published)
+                  {t('emailLabel')}
                 </label>
                 <input
                   type="email"
@@ -129,7 +131,7 @@ export function CommentSection({ postId, comments: initialComments }: CommentSec
                   onChange={(e) => setAuthorEmail(e.target.value)}
                   required
                   className="w-full px-4 py-2 border border-background-gray rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="your@email.com"
+                  placeholder={t('emailPlaceholder')}
                 />
               </div>
             </div>
@@ -140,7 +142,7 @@ export function CommentSection({ postId, comments: initialComments }: CommentSec
                 htmlFor="content"
                 className="block text-sm font-medium text-text-secondary mb-1"
               >
-                Comment *
+                {t('commentLabel')}
               </label>
               <textarea
                 id="content"
@@ -149,10 +151,10 @@ export function CommentSection({ postId, comments: initialComments }: CommentSec
                 required
                 rows={5}
                 className="w-full px-4 py-2 border border-background-gray rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                placeholder="Share your thoughts..."
+                placeholder={t('commentPlaceholder')}
               />
               <p className="text-xs text-text-muted mt-1">
-                {content.length}/5000 characters
+                {t('characterCount', { count: content.length })}
               </p>
             </div>
 
@@ -175,7 +177,7 @@ export function CommentSection({ postId, comments: initialComments }: CommentSec
               disabled={isSubmitting}
               className="w-full sm:w-auto px-6 py-3 bg-primary text-white font-heading font-semibold rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Submitting...' : 'Post Comment'}
+              {isSubmitting ? t('submitting') : t('postComment')}
             </button>
           </form>
         </div>
@@ -217,10 +219,10 @@ export function CommentSection({ postId, comments: initialComments }: CommentSec
           <div className="text-center py-12 bg-white rounded-lg border border-background-gray">
             <div className="text-6xl mb-4">💬</div>
             <h3 className="text-xl font-heading font-bold text-text-primary mb-2">
-              No comments yet
+              {t('noComments')}
             </h3>
             <p className="text-text-secondary">
-              Be the first to share your thoughts!
+              {t('beTheFirst')}
             </p>
           </div>
         )}
