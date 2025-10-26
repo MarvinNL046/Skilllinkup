@@ -1316,5 +1316,52 @@
       "viewAllButton": "View All Platforms",
       "readReviewsButton": "Read Reviews"
     }
+  },
+  "guidesPage": {
+    "metadata": {
+      "title": "Freelance Guides | SkillLinkup",
+      "description": "Discover our comprehensive guides and tutorials for freelancers. Learn everything about platforms, pricing, marketing and more."
+    },
+    "hero": {
+      "title": "Freelance Guides & Tutorials",
+      "subtitle": "Comprehensive guides to help you succeed as a freelancer. From beginner tips to advanced strategies."
+    },
+    "categories": {
+      "gettingStarted": {
+        "title": "Getting Started",
+        "description": "Start your freelance career with our beginner guides",
+        "linkText": "Read more →"
+      },
+      "pricingEarning": {
+        "title": "Pricing & Earning",
+        "description": "Optimize your rates and earn more",
+        "linkText": "Read more →"
+      },
+      "growthMarketing": {
+        "title": "Growth & Marketing",
+        "description": "Grow your business and find more clients",
+        "linkText": "Read more →"
+      }
+    },
+    "featured": {
+      "sectionTitle": "Featured Guide",
+      "readGuide": "Read guide",
+      "minRead": "min read"
+    },
+    "allGuides": {
+      "sectionTitle": "All Guides",
+      "guidesAvailable": "guides available",
+      "noGuidesTitle": "No guides found",
+      "noGuidesDescription": "We are working on adding new guides. Check back soon!"
+    },
+    "cta": {
+      "heading": "Don't miss any guide!",
+      "description": "Subscribe to our newsletter and receive the latest guides, tips and tutorials directly in your inbox.",
+      "viewAllButton": "View All Posts",
+      "subscribeButton": "Subscribe"
+    },
+    "meta": {
+      "authorFallback": "SkillLinkup"
+    }
   }
 }

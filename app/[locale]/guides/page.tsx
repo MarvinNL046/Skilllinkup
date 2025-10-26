@@ -1,22 +1,28 @@
-import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import { getTranslations } from 'next-intl/server';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { getPublishedPosts } from '@/lib/queries';
 import { Calendar, User, ArrowRight, BookOpen, Clock } from 'lucide-react';
 
-export const metadata: Metadata = {
-  title: 'Freelance Guides | SkillLinkup',
-  description: 'Discover our comprehensive guides and tutorials for freelancers. Learn everything about platforms, pricing, marketing and more.',
-};
-
 interface PageProps {
   params: Promise<{ locale: string }>;
 }
 
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'guidesPage.metadata' });
+
+  return {
+    title: t('title'),
+    description: t('description'),
+  };
+}
+
 export default async function GuidesPage({ params }: PageProps) {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'guidesPage' });
 
   // Fetch all posts with category "Guides"
   const allPosts = await getPublishedPosts(100, 0);
@@ -39,11 +45,10 @@ export default async function GuidesPage({ params }: PageProps) {
               </div>
 
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-                Freelance Guides & Tutorials
+                {t('hero.title')}
               </h1>
               <p className="text-xl text-gray-700 dark:text-gray-300">
-                Comprehensive guides to help you succeed as a freelancer.
-                From beginner tips to advanced strategies.
+                {t('hero.subtitle')}
               </p>
             </div>
           </div>
@@ -56,12 +61,12 @@ export default async function GuidesPage({ params }: PageProps) {
               <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
                 <span className="text-2xl">🚀</span>
               </div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Getting Started</h3>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('categories.gettingStarted.title')}</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
-                Start your freelance career with our beginner guides
+                {t('categories.gettingStarted.description')}
               </p>
               <Link href="#beginners" className="text-primary font-semibold text-sm hover:underline">
-                Read more →
+                {t('categories.gettingStarted.linkText')}
               </Link>
             </div>
 
@@ -69,12 +74,12 @@ export default async function GuidesPage({ params }: PageProps) {
               <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4">
                 <span className="text-2xl">💰</span>
               </div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Pricing & Earning</h3>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('categories.pricingEarning.title')}</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
-                Optimize your rates and earn more
+                {t('categories.pricingEarning.description')}
               </p>
               <Link href="#pricing" className="text-primary font-semibold text-sm hover:underline">
-                Read more →
+                {t('categories.pricingEarning.linkText')}
               </Link>
             </div>
 
@@ -82,12 +87,12 @@ export default async function GuidesPage({ params }: PageProps) {
               <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-4">
                 <span className="text-2xl">📈</span>
               </div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Growth & Marketing</h3>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('categories.growthMarketing.title')}</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
-                Grow your business and find more clients
+                {t('categories.growthMarketing.description')}
               </p>
               <Link href="#growth" className="text-primary font-semibold text-sm hover:underline">
-                Read more →
+                {t('categories.growthMarketing.linkText')}
               </Link>
             </div>
           </div>
@@ -95,7 +100,7 @@ export default async function GuidesPage({ params }: PageProps) {
           {/* Featured Guide */}
           {guidePosts.length > 0 && (
             <div className="mb-12">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Featured Guide</h2>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">{t('featured.sectionTitle')}</h2>
               <Link href={`/${locale}/post/${guidePosts[0].slug}`} className="block group">
                 <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all border border-gray-200 dark:border-slate-700">
                   <div className="md:flex">
@@ -136,12 +141,12 @@ export default async function GuidesPage({ params }: PageProps) {
                       <div className="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
                         <div className="flex items-center gap-2">
                           <User className="w-4 h-4" />
-                          <span>{guidePosts[0].author_name || 'SkillLinkup'}</span>
+                          <span>{guidePosts[0].author_name || t('meta.authorFallback')}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Calendar className="w-4 h-4" />
                           <span>
-                            {new Date(guidePosts[0].created_at).toLocaleDateString('en-US', {
+                            {new Date(guidePosts[0].created_at).toLocaleDateString(locale === 'nl' ? 'nl-NL' : 'en-US', {
                               day: 'numeric',
                               month: 'long',
                               year: 'numeric'
@@ -150,13 +155,13 @@ export default async function GuidesPage({ params }: PageProps) {
                         </div>
                         <div className="flex items-center gap-2">
                           <Clock className="w-4 h-4" />
-                          <span>5 min read</span>
+                          <span>5 {t('featured.minRead')}</span>
                         </div>
                       </div>
 
                       <div className="mt-6">
                         <span className="inline-flex items-center gap-2 text-primary font-semibold group-hover:gap-3 transition-all">
-                          Read guide
+                          {t('featured.readGuide')}
                           <ArrowRight className="w-5 h-5" />
                         </span>
                       </div>
@@ -170,19 +175,19 @@ export default async function GuidesPage({ params }: PageProps) {
           {/* All Guides Grid */}
           <div className="mb-12">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">All Guides</h2>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{t('allGuides.sectionTitle')}</h2>
               <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
                 <BookOpen className="w-4 h-4" />
-                <span>{guidePosts.length} guides available</span>
+                <span>{guidePosts.length} {t('allGuides.guidesAvailable')}</span>
               </div>
             </div>
 
             {guidePosts.length === 0 ? (
               <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-12 text-center border border-gray-200 dark:border-slate-700">
                 <BookOpen className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No guides found</h3>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('allGuides.noGuidesTitle')}</h3>
                 <p className="text-gray-600 dark:text-gray-300">
-                  We are working on adding new guides. Check back soon!
+                  {t('allGuides.noGuidesDescription')}
                 </p>
               </div>
             ) : (
@@ -232,12 +237,12 @@ export default async function GuidesPage({ params }: PageProps) {
                         <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mt-auto pt-4 border-t border-gray-100 dark:border-slate-700">
                           <div className="flex items-center gap-2">
                             <User className="w-4 h-4" />
-                            <span>{post.author_name || 'SkillLinkup'}</span>
+                            <span>{post.author_name || t('meta.authorFallback')}</span>
                           </div>
                           <div className="flex items-center gap-2">
                             <Calendar className="w-4 h-4" />
                             <span>
-                              {new Date(post.created_at).toLocaleDateString('en-US', {
+                              {new Date(post.created_at).toLocaleDateString(locale === 'nl' ? 'nl-NL' : 'en-US', {
                                 day: 'numeric',
                                 month: 'short'
                               })}
@@ -255,23 +260,23 @@ export default async function GuidesPage({ params }: PageProps) {
           {/* CTA Section */}
           <div className="bg-primary rounded-lg shadow-lg p-8 text-center text-white">
             <h2 className="text-2xl font-bold mb-4">
-              Don't miss any guide!
+              {t('cta.heading')}
             </h2>
             <p className="text-white/90 mb-6 max-w-2xl mx-auto">
-              Subscribe to our newsletter and receive the latest guides, tips and tutorials directly in your inbox.
+              {t('cta.description')}
             </p>
             <div className="flex items-center justify-center gap-4">
               <Link
-                href="/blog"
+                href={`/${locale}/blog`}
                 className="inline-flex items-center px-6 py-3 rounded-lg bg-white text-primary font-semibold hover:bg-gray-100 transition-colors"
               >
-                View All Posts
+                {t('cta.viewAllButton')}
               </Link>
               <Link
-                href="/#newsletter"
+                href={`/${locale}#newsletter`}
                 className="inline-flex items-center px-6 py-3 rounded-lg border-2 border-white text-white font-semibold hover:bg-white/10 transition-colors"
               >
-                Subscribe
+                {t('cta.subscribeButton')}
               </Link>
             </div>
           </div>

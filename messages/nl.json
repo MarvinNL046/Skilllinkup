@@ -1316,5 +1316,52 @@
       "viewAllButton": "Bekijk alle platforms",
       "readReviewsButton": "Lees recensies"
     }
+  },
+  "guidesPage": {
+    "metadata": {
+      "title": "Freelance gidsen | VaardigheidLinkup",
+      "description": "Ontdek onze uitgebreide handleidingen en tutorials voor freelancers. Leer alles over platforms, prijzen, marketing en meer."
+    },
+    "hero": {
+      "title": "Freelance gidsen en tutorials",
+      "subtitle": "Uitgebreide handleidingen om u te helpen succesvol te zijn als freelancer. Van beginnerstips tot geavanceerde strategieën."
+    },
+    "categories": {
+      "gettingStarted": {
+        "title": "Aan de slag",
+        "description": "Begin uw freelancecarrière met onze beginnersgidsen",
+        "linkText": "Lees meer →"
+      },
+      "pricingEarning": {
+        "title": "Prijzen en verdienen",
+        "description": "Optimaliseer uw tarieven en verdien meer",
+        "linkText": "Lees meer →"
+      },
+      "growthMarketing": {
+        "title": "Groei en marketing",
+        "description": "Laat uw bedrijf groeien en vind meer klanten",
+        "linkText": "Lees meer →"
+      }
+    },
+    "featured": {
+      "sectionTitle": "Aanbevolen gids",
+      "readGuide": "Gids lezen",
+      "minRead": "min gelezen"
+    },
+    "allGuides": {
+      "sectionTitle": "Alle gidsen",
+      "guidesAvailable": "gidsen beschikbaar",
+      "noGuidesTitle": "Geen gidsen gevonden",
+      "noGuidesDescription": "We werken aan het toevoegen van nieuwe handleidingen. Kom snel terug!"
+    },
+    "cta": {
+      "heading": "Mis geen enkele gids!",
+      "description": "Abonneer u op onze nieuwsbrief en ontvang de nieuwste handleidingen, tips en tutorials rechtstreeks in uw inbox.",
+      "viewAllButton": "Bekijk alle berichten",
+      "subscribeButton": "Abonneren"
+    },
+    "meta": {
+      "authorFallback": "VaardigheidLinkup"
+    }
   }
 }
