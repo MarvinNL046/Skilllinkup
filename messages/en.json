@@ -261,5 +261,49 @@
     "difficultyHard": "Hard",
     "metaTitle": "{name} Review 2025: Fees, Features & Pros/Cons - SkillLinkup",
     "metaDescription": "Read our comprehensive {name} review. Learn about fees, features, pros & cons."
+  },
+  "toolsPage": {
+    "metadata": {
+      "title": "Freelance Tools & Resources | SkillLinkup",
+      "description": "Discover useful tools and calculators for freelancers. Calculate your rates, track your time and more."
+    },
+    "hero": {
+      "title": "Freelance Tools & Resources",
+      "subtitle": "Useful tools and calculators to help you run your freelance business more efficiently."
+    },
+    "toolsSection": {
+      "title": "Free Freelance Tools",
+      "description": "Use our tools to calculate your rates, track your time and organize your business.",
+      "startButton": "Start tool →",
+      "comingSoon": "Coming soon"
+    },
+    "hardcodedTools": {
+      "timeTracker": {
+        "name": "Time Tracker",
+        "description": "Track your billable hours and generate reports for your clients"
+      },
+      "rateCalculator": {
+        "name": "Rate Calculator",
+        "description": "Calculate your ideal hourly rate based on your costs and goals"
+      },
+      "invoiceGenerator": {
+        "name": "Invoice Generator",
+        "description": "Create professional invoices with real-time preview, save, print and download as PDF"
+      }
+    },
+    "resourcesSection": {
+      "title": "Downloads & Resources",
+      "description": "Useful templates and guides to help you get started."
+    },
+    "emptyStates": {
+      "noTools": "No tools found. Check back soon!",
+      "noResources": "No resources found. Check back soon!"
+    },
+    "cta": {
+      "title": "Don't miss new tools!",
+      "description": "We're constantly working on new tools to make your freelance life easier. Sign up for updates.",
+      "guidesButton": "Read our guides",
+      "updatesButton": "Stay updated"
+    }
   }
 }

@@ -261,5 +261,49 @@
     "difficultyHard": "Moeilijk",
     "metaTitle": "{name} Review 2025: Kosten, Functies & Voor-/Nadelen - SkillLinkup",
     "metaDescription": "Lees onze uitgebreide {name} review. Meer informatie over kosten, functies, voor- en nadelen."
+  },
+  "toolsPage": {
+    "metadata": {
+      "title": "Freelance Tools en Bronnen | SkillLinkup",
+      "description": "Ontdek handige tools en rekenmachines voor freelancers. Bereken uw tarieven, houd uw tijd bij en meer."
+    },
+    "hero": {
+      "title": "Freelance Tools en Bronnen",
+      "subtitle": "Handige tools en rekenmachines waarmee u uw freelancebedrijf efficiënter kunt runnen."
+    },
+    "toolsSection": {
+      "title": "Gratis Freelance Hulpmiddelen",
+      "description": "Gebruik onze tools om uw tarieven te berekenen, uw tijd bij te houden en uw zaken te organiseren.",
+      "startButton": "Start tool →",
+      "comingSoon": "Binnenkort beschikbaar"
+    },
+    "hardcodedTools": {
+      "timeTracker": {
+        "name": "Tijdtracker",
+        "description": "Houd uw factureerbare uren bij en genereer rapporten voor uw klanten"
+      },
+      "rateCalculator": {
+        "name": "Tariefcalculator",
+        "description": "Bereken uw ideaal uurtarief op basis van uw kosten en doelstellingen"
+      },
+      "invoiceGenerator": {
+        "name": "Factuurgenerator",
+        "description": "Maak professionele facturen met realtime preview, sla op, print en download als PDF"
+      }
+    },
+    "resourcesSection": {
+      "title": "Downloads en Bronnen",
+      "description": "Handige sjablonen en handleidingen om u op weg te helpen."
+    },
+    "emptyStates": {
+      "noTools": "Geen tools gevonden. Kom snel terug!",
+      "noResources": "Geen bronnen gevonden. Kom snel terug!"
+    },
+    "cta": {
+      "title": "Mis Geen Nieuwe Tools!",
+      "description": "We werken voortdurend aan nieuwe tools om uw freelance leven gemakkelijker te maken. Meld u aan voor updates.",
+      "guidesButton": "Lees onze handleidingen",
+      "updatesButton": "Blijf op de hoogte"
+    }
   }
 }
