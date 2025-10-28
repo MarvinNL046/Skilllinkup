@@ -544,6 +544,94 @@ Sitemap automatically generates correct URLs based on existing content:
 - Meta titles and descriptions translated separately
 - URL structure: `/{locale}/{slug}` for consistent indexing
 
+## Ads Management System
+
+### Overview
+Unified ads management system for promoting internal products (MoneyBii) and affiliate partnerships across tools and blog pages.
+
+### Architecture
+
+**Main App** (Public-facing):
+- `components/AdWidget.tsx` - Client component for displaying ads
+- `app/api/ads/active/route.ts` - Edge API for fetching active ads
+- Placement-based ad targeting with random rotation
+- Date range filtering (start_date/end_date)
+- Legacy support via direct props (`adImage`, `adLink`)
+
+**Admin Dashboard** (Content Management):
+- `app/(dashboard)/ads/page.tsx` - Ads listing with filters
+- `app/(dashboard)/ads/new/page.tsx` - Create new ad form
+- `app/(dashboard)/ads/[id]/edit/page.tsx` - Edit existing ad
+- `app/api/ads/route.ts` - CRUD API endpoints
+- `app/api/upload-ad/route.ts` - Image upload with dual-folder pattern
+
+### Database Schema
+
+```sql
+CREATE TABLE ads (
+  id UUID PRIMARY KEY,
+  tenant_id UUID NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  image_url TEXT NOT NULL,
+  link_url TEXT NOT NULL,
+  placement VARCHAR(50) NOT NULL,  -- 'tools_listing', 'tools_detail', 'blog_sidebar'
+  is_active BOOLEAN DEFAULT true,
+  start_date TIMESTAMP,  -- Optional: ad becomes active
+  end_date TIMESTAMP,    -- Optional: ad becomes inactive
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+### Usage Pattern
+
+```typescript
+// In any page where you want to show ads
+import { AdWidget } from '@/components/AdWidget';
+
+export default function ToolsPage() {
+  return (
+    <div>
+      {/* Sidebar ad */}
+      <AdWidget placement="tools_listing" />
+    </div>
+  );
+}
+```
+
+### Placement Types
+
+- **tools_listing** - Tools overview page sidebar
+- **tools_detail** - Individual tool detail pages
+- **blog_sidebar** - Blog post sidebars
+- Extensible: Add new placements by creating new database entries
+
+### Image Upload
+
+Images are uploaded to **both** application folders:
+- `/public/images/ads/` (main app)
+- `../skillLinkup-admin/public/images/ads/` (admin)
+- Converted to WebP format (85% quality)
+- Sharp-based processing for optimal performance
+
+### Ad Rotation Logic
+
+```typescript
+// Fetches all active ads for placement
+// Filters by:
+// - is_active = true
+// - (start_date IS NULL OR start_date <= NOW())
+// - (end_date IS NULL OR end_date >= NOW())
+// Returns random ad from matching results
+```
+
+### Key Files
+
+- `drizzle/migrations/0008_add_ads_table.sql` - Database migration
+- `lib/queries.ts` - Ad CRUD functions (getActiveAds, getAllAds, createAd, etc.)
+- Admin: `components/AdWidget.tsx` (admin dashboard preview)
+- Main: `components/AdWidget.tsx` (public-facing display)
+
 ## Important Notes
 
 1. **Never destructure featureImg in function parameters** - crashes if undefined
