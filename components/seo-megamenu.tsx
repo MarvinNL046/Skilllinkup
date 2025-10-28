@@ -110,7 +110,7 @@ export function SeoMegaMenu({ isMobile = false, onLinkClick }: SeoMegaMenuProps)
                   </p>
                 </div>
                 <Link
-                  href="/seo"
+                  href="/resources"
                   onClick={handleLinkClick}
                   className="inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-dark px-4 py-2 text-sm font-heading font-semibold text-white transition-colors shadow-lg"
                 >
@@ -183,7 +183,7 @@ export function SeoMegaMenu({ isMobile = false, onLinkClick }: SeoMegaMenuProps)
           ))}
 
           <Link
-            href="/seo"
+            href="/resources"
             onClick={handleLinkClick}
             className="block text-sm font-semibold text-primary hover:text-primary-dark transition-colors py-2"
           >
