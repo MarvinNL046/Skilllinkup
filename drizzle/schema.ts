@@ -230,3 +230,18 @@ export const tools = pgTable('tools', {
 }, (table) => ({
   slugLocaleUnique: unique('tools_slug_locale_unique').on(table.slug, table.locale),
 }));
+
+// Ads Table
+export const ads = pgTable('ads', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  tenantId: uuid('tenant_id').references(() => tenants.id, { onDelete: 'cascade' }).notNull(),
+  title: varchar('title', { length: 255 }).notNull(),
+  imageUrl: text('image_url').notNull(),
+  linkUrl: text('link_url').notNull(),
+  placement: varchar('placement', { length: 50 }).notNull(), // 'tools_listing', 'tools_detail', 'blog_sidebar'
+  isActive: boolean('is_active').default(true),
+  startDate: timestamp('start_date'),
+  endDate: timestamp('end_date'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});

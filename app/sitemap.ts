@@ -1,6 +1,7 @@
 // app/sitemap.ts
 import type { MetadataRoute } from "next";
 import { getCategoriesCached, getPostsCached, getPlatformsCached } from "@/lib/sitemap-data";
+import { generateSeoSitemapEntries } from "@/lib/sitemap-seo";
 
 export const revalidate = 900; // extra veiligheid (15 min)
 
@@ -101,10 +102,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const postUrls = generateLocalizedUrls(enPosts, nlPosts, '/post', 0.8);
     const platformUrls = generateLocalizedUrls(enPlatforms, nlPlatforms, '/platforms', 0.8);
 
-    return [...staticRoutes, ...categoryUrls, ...postUrls, ...platformUrls];
+    // Add SEO landing pages (50+ pages)
+    const seoUrls = generateSeoSitemapEntries();
+
+    return [...staticRoutes, ...categoryUrls, ...postUrls, ...platformUrls, ...seoUrls];
   } catch (error) {
     console.error('Error generating sitemap:', error);
-    // Return at least static pages if database fails
-    return staticRoutes;
+    // Return at least static pages and SEO pages if database fails
+    const seoUrls = generateSeoSitemapEntries();
+    return [...staticRoutes, ...seoUrls];
   }
 }

@@ -337,7 +337,7 @@ export default async function PostPage({ params }: PostPageProps) {
                     />
 
                     {/* Advertisement - Only shows if configured */}
-                    <AdWidget adImage={post.ad_image} adLink={post.ad_link} />
+                    <AdWidget placement="blog_sidebar" adImage={post.ad_image} adLink={post.ad_link} />
                   </div>
                 </aside>
 

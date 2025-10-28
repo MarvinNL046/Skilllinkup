@@ -300,6 +300,17 @@
       "noTools": "No tools found. Check back soon!",
       "noResources": "No resources found. Check back soon!"
     },
+    "moneyBiiCta": {
+      "title": "Want More Business Tools?",
+      "description": "MoneyBii offers complete CRM, invoicing, quotes, and client management tools designed specifically for freelancers and small businesses.",
+      "features": {
+        "invoicing": "Professional invoicing & payments",
+        "quotes": "Quick quote generation",
+        "crm": "Client relationship management",
+        "reports": "Financial reports & insights"
+      },
+      "button": "Try MoneyBii for Free"
+    },
     "cta": {
       "title": "Don't miss new tools!",
       "description": "We're constantly working on new tools to make your freelance life easier. Sign up for updates.",

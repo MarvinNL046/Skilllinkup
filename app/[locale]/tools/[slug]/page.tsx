@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
+import { AdWidget } from '@/components/AdWidget';
 import { getToolBySlug, getToolsByCategory } from '@/lib/queries';
 import { Calculator, FileText, BarChart3, Clock, DollarSign, Users, Zap, Wrench, Eye, ArrowLeft, ExternalLink } from 'lucide-react';
 
@@ -209,7 +210,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
 
               {/* Related Tools */}
               {filteredRelated.length > 0 && (
-                <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-slate-700">
+                <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 mb-6 border border-gray-200 dark:border-slate-700">
                   <h3 className="font-bold text-gray-900 dark:text-white mb-4">Gerelateerde tools</h3>
                   <div className="space-y-4">
                     {filteredRelated.map((relatedTool) => {
@@ -246,6 +247,9 @@ export default async function ToolDetailPage({ params }: PageProps) {
                   </Link>
                 </div>
               )}
+
+              {/* Ad Widget for Tools Detail */}
+              <AdWidget placement="tools_detail" />
             </div>
           </div>
         </section>

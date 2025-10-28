@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
+import { AdWidget } from '@/components/AdWidget';
 import { getToolsByCategory } from '@/lib/queries';
 import { Wrench, Calculator, FileText, BarChart3, Clock, DollarSign, Users, Zap } from 'lucide-react';
 import * as Icons from 'lucide-react';
@@ -152,46 +153,53 @@ export default async function ToolsPage({ params }: PageProps) {
           </div>
 
           {tools.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-              {tools.map((tool) => {
-                const Icon = tool.icon && iconMap[tool.icon] ? iconMap[tool.icon] : Wrench;
-                return (
-                  <div
-                    key={tool.id}
-                    className="bg-white dark:bg-slate-800 rounded-lg shadow-md hover:shadow-xl transition-all overflow-hidden border border-gray-200 dark:border-slate-700"
-                  >
-                    <div className="p-6">
-                      <div
-                        className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
-                        style={{ backgroundColor: tool.color }}
-                      >
-                        <Icon className="w-6 h-6 text-white" />
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                        {tool.name}
-                      </h3>
-                      <p className="text-gray-600 dark:text-gray-300 mb-4">
-                        {tool.description}
-                      </p>
-                      {tool.is_available ? (
-                        <Link
-                          href={`/${locale}/tools/${tool.slug}`}
-                          className="inline-flex items-center gap-2 text-primary font-semibold hover:underline"
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                {tools.map((tool) => {
+                  const Icon = tool.icon && iconMap[tool.icon] ? iconMap[tool.icon] : Wrench;
+                  return (
+                    <div
+                      key={tool.id}
+                      className="bg-white dark:bg-slate-800 rounded-lg shadow-md hover:shadow-xl transition-all overflow-hidden border border-gray-200 dark:border-slate-700"
+                    >
+                      <div className="p-6">
+                        <div
+                          className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
+                          style={{ backgroundColor: tool.color }}
                         >
-                          {t('toolsSection.startButton')}
-                        </Link>
-                      ) : (
-                        <div className="flex items-center gap-2">
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
-                            {t('toolsSection.comingSoon')}
-                          </span>
+                          <Icon className="w-6 h-6 text-white" />
                         </div>
-                      )}
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                          {tool.name}
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-300 mb-4">
+                          {tool.description}
+                        </p>
+                        {tool.is_available ? (
+                          <Link
+                            href={`/${locale}/tools/${tool.slug}`}
+                            className="inline-flex items-center gap-2 text-primary font-semibold hover:underline"
+                          >
+                            {t('toolsSection.startButton')}
+                          </Link>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                              {t('toolsSection.comingSoon')}
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+
+              {/* Ad Widget for Tools Listing */}
+              <div className="mb-16 max-w-md mx-auto">
+                <AdWidget placement="tools_listing" />
+              </div>
+            </>
           ) : (
             <div className="text-center py-12 mb-16">
               <p className="text-lg text-gray-600 dark:text-gray-300">
@@ -236,10 +244,55 @@ export default async function ToolsPage({ params }: PageProps) {
               })}
             </div>
           ) : (
-            <div className="text-center py-12 mb-16">
-              <p className="text-lg text-gray-600 dark:text-gray-300">
-                {t('emptyStates.noResources')}
-              </p>
+            <div className="bg-gradient-to-br from-primary to-primary-dark rounded-xl shadow-xl p-8 md:p-12 mb-16">
+              <div className="max-w-4xl mx-auto text-center">
+                <div className="mb-6">
+                  <Zap className="w-16 h-16 text-white mx-auto mb-4" />
+                  <h3 className="text-3xl font-bold text-white mb-4">
+                    {t('moneyBiiCta.title')}
+                  </h3>
+                  <p className="text-xl text-white/90 mb-8">
+                    {t('moneyBiiCta.description')}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 text-left">
+                  <div className="flex items-start space-x-3 bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                    <FileText className="w-6 h-6 text-white flex-shrink-0 mt-1" />
+                    <div>
+                      <p className="text-white font-semibold">{t('moneyBiiCta.features.invoicing')}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3 bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                    <Calculator className="w-6 h-6 text-white flex-shrink-0 mt-1" />
+                    <div>
+                      <p className="text-white font-semibold">{t('moneyBiiCta.features.quotes')}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3 bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                    <Users className="w-6 h-6 text-white flex-shrink-0 mt-1" />
+                    <div>
+                      <p className="text-white font-semibold">{t('moneyBiiCta.features.crm')}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3 bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                    <BarChart3 className="w-6 h-6 text-white flex-shrink-0 mt-1" />
+                    <div>
+                      <p className="text-white font-semibold">{t('moneyBiiCta.features.reports')}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <Link
+                  href="https://go.skilllinkup.com/moneybii"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-white text-primary hover:bg-gray-100 px-8 py-4 rounded-lg font-bold text-lg transition-all shadow-lg hover:shadow-xl"
+                >
+                  {t('moneyBiiCta.button')}
+                  <Zap className="w-5 h-5" />
+                </Link>
+              </div>
             </div>
           )}
 

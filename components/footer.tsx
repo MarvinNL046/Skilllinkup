@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
+import { SEO_NAVIGATION } from "@/lib/seo-navigation-data";
 
 export function Footer() {
   const t = useTranslations();
@@ -14,6 +15,44 @@ export function Footer() {
   return (
     <footer className="border-t border-background-gray dark:border-gray-800 bg-background-light dark:bg-gray-900">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        {/* SEO Navigation Section */}
+        <div className="mb-12 pb-12 border-b border-background-gray dark:border-gray-800">
+          <h3 className="font-heading font-bold text-xl mb-6 text-text-primary dark:text-white">
+            Explore Freelance Resources
+          </h3>
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-5">
+            {SEO_NAVIGATION.map((pillar) => (
+              <div key={pillar.id}>
+                <h4 className="font-heading font-semibold mb-3 text-text-primary dark:text-white flex items-center gap-2">
+                  <span>{pillar.icon}</span>
+                  <span className="text-sm">{pillar.name}</span>
+                </h4>
+                <ul className="space-y-2 text-xs">
+                  {pillar.subPillars.slice(0, 3).map((subPillar) => (
+                    <li key={subPillar.slug}>
+                      <Link
+                        href={`/${locale}${subPillar.slug}`}
+                        className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors"
+                      >
+                        {subPillar.name}
+                      </Link>
+                    </li>
+                  ))}
+                  <li>
+                    <Link
+                      href={`/${locale}${pillar.slug}`}
+                      className="text-accent hover:text-accent-dark dark:text-accent dark:hover:text-accent-light transition-colors font-medium"
+                    >
+                      View all →
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Main Footer Navigation */}
         <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
           {/* Brand */}
           <div className="md:col-span-1">

@@ -305,6 +305,17 @@
       "description": "We werken voortdurend aan nieuwe tools om uw freelance leven gemakkelijker te maken. Meld u aan voor updates.",
       "guidesButton": "Lees onze handleidingen",
       "updatesButton": "Blijf op de hoogte"
+    },
+    "moneyBiiCta": {
+      "title": "Wil je Meer Zakelijke Tools?",
+      "description": "MoneyBii biedt complete CRM, facturatie, offertes en klantenbeheer tools speciaal ontworpen voor freelancers en kleine bedrijven.",
+      "features": {
+        "invoicing": "Professionele facturatie & betalingen",
+        "quotes": "Snelle offerte generatie",
+        "crm": "Klantrelatiebeheer",
+        "reports": "Financiële rapporten & inzichten"
+      },
+      "button": "Probeer MoneyBii Gratis"
     }
   },
   "timeTracker": {

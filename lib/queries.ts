@@ -914,3 +914,178 @@ export async function getPendingCommentsCount(): Promise<number> {
 
   return result[0]?.count || 0;
 }
+
+// ==========================================
+// Ads Queries
+// ==========================================
+
+export interface Ad {
+  id: string;
+  tenant_id: string;
+  title: string;
+  image_url: string;
+  link_url: string;
+  placement: string; // 'tools_listing' | 'tools_detail' | 'blog_sidebar'
+  is_active: boolean;
+  start_date: Date | null;
+  end_date: Date | null;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface AdInput {
+  tenant_id: string;
+  title: string;
+  image_url: string;
+  link_url: string;
+  placement: string;
+  is_active?: boolean;
+  start_date?: Date | null;
+  end_date?: Date | null;
+}
+
+/**
+ * Get active ads for a specific placement
+ * Filters by active status and date range (if set)
+ */
+export async function getActiveAds(placement: string): Promise<Ad[]> {
+  const now = new Date();
+  const ads = await sql`
+    SELECT
+      id,
+      tenant_id,
+      title,
+      image_url,
+      link_url,
+      placement,
+      is_active,
+      start_date,
+      end_date,
+      created_at,
+      updated_at
+    FROM ads
+    WHERE placement = ${placement}
+      AND is_active = true
+      AND (start_date IS NULL OR start_date <= ${now})
+      AND (end_date IS NULL OR end_date >= ${now})
+    ORDER BY created_at DESC;
+  `;
+
+  return ads as Ad[];
+}
+
+/**
+ * Get all ads for a tenant (admin use)
+ */
+export async function getAllAds(tenantId: string): Promise<Ad[]> {
+  const ads = await sql`
+    SELECT
+      id,
+      tenant_id,
+      title,
+      image_url,
+      link_url,
+      placement,
+      is_active,
+      start_date,
+      end_date,
+      created_at,
+      updated_at
+    FROM ads
+    WHERE tenant_id = ${tenantId}
+    ORDER BY created_at DESC;
+  `;
+
+  return ads as Ad[];
+}
+
+/**
+ * Get single ad by ID
+ */
+export async function getAdById(id: string): Promise<Ad | null> {
+  const ads = await sql`
+    SELECT
+      id,
+      tenant_id,
+      title,
+      image_url,
+      link_url,
+      placement,
+      is_active,
+      start_date,
+      end_date,
+      created_at,
+      updated_at
+    FROM ads
+    WHERE id = ${id}
+    LIMIT 1;
+  `;
+
+  return ads.length > 0 ? (ads[0] as Ad) : null;
+}
+
+/**
+ * Create new ad
+ */
+export async function createAd(data: AdInput): Promise<Ad> {
+  const ads = await sql`
+    INSERT INTO ads (
+      tenant_id,
+      title,
+      image_url,
+      link_url,
+      placement,
+      is_active,
+      start_date,
+      end_date
+    )
+    VALUES (
+      ${data.tenant_id},
+      ${data.title},
+      ${data.image_url},
+      ${data.link_url},
+      ${data.placement},
+      ${data.is_active ?? true},
+      ${data.start_date ?? null},
+      ${data.end_date ?? null}
+    )
+    RETURNING *;
+  `;
+
+  return ads[0] as Ad;
+}
+
+/**
+ * Update existing ad
+ */
+export async function updateAd(id: string, data: Partial<AdInput>): Promise<Ad> {
+  const ads = await sql`
+    UPDATE ads
+    SET
+      title = COALESCE(${data.title}, title),
+      image_url = COALESCE(${data.image_url}, image_url),
+      link_url = COALESCE(${data.link_url}, link_url),
+      placement = COALESCE(${data.placement}, placement),
+      is_active = COALESCE(${data.is_active}, is_active),
+      start_date = COALESCE(${data.start_date}, start_date),
+      end_date = COALESCE(${data.end_date}, end_date),
+      updated_at = NOW()
+    WHERE id = ${id}
+    RETURNING *;
+  `;
+
+  return ads[0] as Ad;
+}
+
+/**
+ * Delete ad
+ */
+export async function deleteAd(id: string): Promise<boolean> {
+  const result = await sql`
+    DELETE FROM ads
+    WHERE id = ${id}
+    RETURNING id;
+  `;
+
+  return result.length > 0;
+}

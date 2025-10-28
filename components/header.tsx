@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import ThemeToggle from "./ThemeToggle";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { SeoMegaMenu } from "./seo-megamenu";
 
 export function Header() {
   const t = useTranslations();
@@ -41,6 +42,7 @@ export function Header() {
             >
               {t('header.platforms')}
             </Link>
+            <SeoMegaMenu />
             <Link
               href="/reviews"
               className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors"
@@ -128,6 +130,7 @@ export function Header() {
               >
                 {t('header.platforms')}
               </Link>
+              <SeoMegaMenu isMobile onLinkClick={() => setMobileMenuOpen(false)} />
               <Link
                 href="/reviews"
                 className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent px-2 py-1"
