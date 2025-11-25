@@ -10,6 +10,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     return {
       title: "Upwork Gids 2025: Complete Platform Review voor Freelancers",
       description: "Complete Upwork handleiding voor Nederlandse freelancers. Leer tarievenstructuur, profiel optimalisatie en beproefde strategieën om opdrachten te winnen als ZZP'er.",
+      keywords: "upwork gids, upwork nederland, upwork freelancer, upwork tarieven, upwork profiel maken, ZZP upwork",
       openGraph: {
         title: "Upwork Gids 2025: Complete Platform Review voor Freelancers",
         description: "Complete Upwork handleiding voor Nederlandse freelancers. Leer tarievenstructuur, profiel optimalisatie en beproefde strategieën om opdrachten te winnen als ZZP'er.",
@@ -21,6 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: "Upwork Complete Guide: Features, Fees & Success Strategies 2025",
     description: "Master Upwork with our complete guide. Learn platform features, fee structures, profile optimization, and proven strategies to win high-paying clients consistently.",
+    keywords: "upwork guide, upwork fees, upwork profile optimization, upwork success strategies, upwork freelancing tips",
     openGraph: {
       title: "Upwork Complete Guide: Features, Fees & Success Strategies 2025",
       description: "Master Upwork with our complete guide. Learn platform features, fee structures, profile optimization, and proven strategies to win high-paying clients consistently.",

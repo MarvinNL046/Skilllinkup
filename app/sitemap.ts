@@ -1,45 +1,31 @@
 // app/sitemap.ts
 import type { MetadataRoute } from "next";
 import { getCategoriesCached, getPostsCached, getPlatformsCached } from "@/lib/sitemap-data";
-import { generateSeoSitemapEntries } from "@/lib/sitemap-seo";
+import { generateAutoSitemapEntries } from "@/lib/sitemap-auto";
 
-export const revalidate = 900; // extra veiligheid (15 min)
+/**
+ * AUTOMATIC SITEMAP GENERATOR
+ *
+ * WordPress-style: All pages are automatically discovered!
+ *
+ * Sources:
+ * 1. Auto-discovered static pages (scans /app/[locale]/ filesystem)
+ * 2. Database content (posts, platforms, categories)
+ *
+ * Just create a page anywhere in /app/[locale]/ and it's automatically in the sitemap!
+ */
 
+export const revalidate = 900; // Revalidate every 15 minutes
+
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://skilllinkup.com";
 const locales = ['en', 'nl'] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://skilllinkup.com";
-
-  // Generate static routes for each locale
-  const staticPages = [
-    { path: '/', priority: 1, changeFrequency: 'daily' as const },
-    { path: '/blog', priority: 0.9, changeFrequency: 'daily' as const },
-    { path: '/platforms', priority: 0.9, changeFrequency: 'weekly' as const },
-    { path: '/comparisons', priority: 0.9, changeFrequency: 'weekly' as const },
-    { path: '/reviews', priority: 0.9, changeFrequency: 'daily' as const },
-    { path: '/about', priority: 0.7, changeFrequency: 'monthly' as const },
-    { path: '/contact', priority: 0.5, changeFrequency: 'yearly' as const },
-    { path: '/privacy', priority: 0.3, changeFrequency: 'yearly' as const },
-    { path: '/terms', priority: 0.3, changeFrequency: 'yearly' as const },
-    { path: '/disclosure', priority: 0.3, changeFrequency: 'yearly' as const },
-  ];
-
-  const staticRoutes: MetadataRoute.Sitemap = staticPages.flatMap((page) =>
-    locales.map((locale) => ({
-      url: `${baseUrl}/${locale}${page.path === '/' ? '' : page.path}`,
-      lastModified: new Date(),
-      changeFrequency: page.changeFrequency,
-      priority: page.priority,
-      alternates: {
-        languages: Object.fromEntries(
-          locales.map((l) => [l, `${baseUrl}/${l}${page.path === '/' ? '' : page.path}`])
-        ),
-      },
-    }))
-  );
+  // 1. AUTO-DISCOVER all static pages from filesystem
+  const autoDiscoveredPages = generateAutoSitemapEntries();
 
   try {
-    // Fetch content per locale separately
+    // 2. Fetch DATABASE content per locale
     const [enCategories, nlCategories, enPosts, nlPosts, enPlatforms, nlPlatforms] = await Promise.all([
       getCategoriesCached('en'),
       getCategoriesCached('nl'),
@@ -49,8 +35,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       getPlatformsCached('nl'),
     ]);
 
-    // Helper to generate URLs only for existing content with smart alternates
-    const generateLocalizedUrls = (
+    // Helper to generate URLs for database content
+    const generateDatabaseUrls = (
       enItems: { slug: string; updated_at: string | Date }[],
       nlItems: { slug: string; updated_at: string | Date }[],
       pathPrefix: string,
@@ -66,7 +52,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           lastModified: new Date(item.updated_at),
           changeFrequency: "weekly" as const,
           priority,
-          // Only add alternates if NL version exists
           alternates: nlVersion ? {
             languages: {
               en: `${baseUrl}/en${pathPrefix}/${item.slug}`,
@@ -76,7 +61,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         });
       });
 
-      // Generate NL URLs (both NL-only and items with EN versions)
+      // Generate NL URLs
       nlItems.forEach((item) => {
         const enVersion = enItems.find((en) => en.slug === item.slug);
         urls.push({
@@ -84,7 +69,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           lastModified: new Date(item.updated_at),
           changeFrequency: "weekly" as const,
           priority,
-          // Only add alternates if EN version exists
           alternates: enVersion ? {
             languages: {
               en: `${baseUrl}/en${pathPrefix}/${item.slug}`,
@@ -97,19 +81,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       return urls;
     };
 
-    // Generate URLs only for existing content
-    const categoryUrls = generateLocalizedUrls(enCategories, nlCategories, '/category', 0.7);
-    const postUrls = generateLocalizedUrls(enPosts, nlPosts, '/post', 0.8);
-    const platformUrls = generateLocalizedUrls(enPlatforms, nlPlatforms, '/platforms', 0.8);
+    // Generate database content URLs
+    const categoryUrls = generateDatabaseUrls(enCategories, nlCategories, '/category', 0.7);
+    const postUrls = generateDatabaseUrls(enPosts, nlPosts, '/post', 0.8);
+    const platformUrls = generateDatabaseUrls(enPlatforms, nlPlatforms, '/platforms', 0.8);
 
-    // Add SEO landing pages (50+ pages)
-    const seoUrls = generateSeoSitemapEntries();
+    // Combine all sources
+    return [...autoDiscoveredPages, ...categoryUrls, ...postUrls, ...platformUrls];
 
-    return [...staticRoutes, ...categoryUrls, ...postUrls, ...platformUrls, ...seoUrls];
   } catch (error) {
     console.error('Error generating sitemap:', error);
-    // Return at least static pages and SEO pages if database fails
-    const seoUrls = generateSeoSitemapEntries();
-    return [...staticRoutes, ...seoUrls];
+    // Return at least auto-discovered pages if database fails
+    return autoDiscoveredPages;
   }
 }

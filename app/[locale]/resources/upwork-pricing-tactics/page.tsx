@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (locale === "nl") {
     return {
       title: "Maximaliseer Je Inkomsten op Upwork: Bewezen Prijsstrategieën (2025)",
-      description: "Verhoog je Upwork-inkomen met bewezen prijsstrategieën. Leer hoe je concurrerende tarieven instelt, omgaat met de 20% vergoeding en goed betaalde projecten wint op 's werelds grootste freelanceplatform.",
+      description: "Verhoog je Upwork-inkomen met bewezen prijsstrategieën. Leer concurrerende tarieven instellen en goed betaalde projecten winnen.",
       keywords: "upwork tarieven, upwork prijsstrategie, upwork inkomsten, upwork kosten, upwork prijzen instellen, upwork verdiensten maximaliseren",
       openGraph: {
         title: "Maximaliseer Je Inkomsten op Upwork: Bewezen Prijsstrategieën (2025)",
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: "Maximizing Your Earnings on Upwork: Proven Pricing Tactics (2025)",
-    description: "Increase your Upwork income with proven pricing strategies. Learn how to set competitive rates, handle the 20% fee, and win high-paying projects on the world's largest freelance platform.",
+    description: "Boost your Upwork income with proven pricing strategies. Learn to set competitive rates and win high-paying projects consistently.",
     keywords: "upwork pricing, upwork rates, upwork earnings, upwork fees, upwork pricing strategy, maximize upwork income",
     openGraph: {
       title: "Maximizing Your Earnings on Upwork: Proven Pricing Tactics (2025)",

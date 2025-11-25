@@ -15,6 +15,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: "Beste Freelance Platform voor Designers 2025: Volledige Gids",
       description: "Vergelijk Upwork, 99designs, Dribbble en Behance voor freelance designwerk. Vind het platform met de beste tarieven, projecten en portfolio exposure in Nederland.",
       keywords: "beste platform designers, freelance design sites, grafisch ontwerp platform, UI/UX freelance, 99designs vs upwork, design platforms Nederland",
+      openGraph: {
+        title: "Beste Freelance Platform voor Designers 2025: Volledige Gids",
+        description: "Vergelijk Upwork, 99designs, Dribbble en Behance voor freelance designwerk. Vind het beste platform voor designers.",
+        type: "article",
+        locale: "nl_NL",
+      },
     };
   }
 
@@ -22,6 +28,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: "Best Freelance Platform for Designers 2025: Complete Guide",
     description: "Compare Upwork, 99designs, Dribbble, and Behance for freelance design work. Find the platform that offers the best rates, projects, and portfolio exposure.",
     keywords: "best platform for designers, freelance design sites, graphic design platform, UI/UX freelance, 99designs vs upwork",
+    openGraph: {
+      title: "Best Freelance Platform for Designers 2025: Complete Guide",
+      description: "Compare Upwork, 99designs, Dribbble, and Behance for freelance design work. Find the best platform for designers.",
+      type: "article",
+      locale: "en_US",
+    },
   };
 }
 
@@ -528,8 +540,33 @@ export default async function BestPlatformDesignersPage({ params }: Props) {
     }
   };
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: locale === "nl"
+      ? "Beste Freelance Platform voor Designers 2025: Volledige Gids"
+      : "Best Freelance Platform for Designers 2025: Complete Guide",
+    description: locale === "nl"
+      ? "Vergelijk Upwork, 99designs, Dribbble en Behance voor freelance designwerk. Vind het platform met de beste tarieven, projecten en portfolio exposure."
+      : "Compare Upwork, 99designs, Dribbble, and Behance for freelance design work. Find the platform that offers the best rates, projects, and portfolio exposure.",
+    datePublished: "2025-01-15",
+    dateModified: "2025-01-15",
+    author: {
+      "@type": "Organization",
+      name: "SkillLinkup",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "SkillLinkup",
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Header />
       <main className="flex-1">
         {/* Hero Section */}

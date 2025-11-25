@@ -59,12 +59,12 @@ export function Hero() {
             </div>
             <div className="h-8 w-px bg-background-gray dark:bg-gray-700"></div>
             <div className="flex flex-col items-center gap-1">
-              <span className="font-heading font-bold text-2xl text-text-primary dark:text-white">4.9★</span>
+              <span className="font-heading font-bold text-2xl text-text-primary dark:text-white">{t('freeValue')}</span>
               <span className="text-text-muted dark:text-gray-400">{t('ratedLabel')}</span>
             </div>
             <div className="h-8 w-px bg-background-gray dark:bg-gray-700"></div>
             <div className="flex flex-col items-center gap-1">
-              <span className="font-heading font-bold text-2xl text-text-primary dark:text-white">1000+</span>
+              <span className="font-heading font-bold text-2xl text-text-primary dark:text-white">24/7</span>
               <span className="text-text-muted dark:text-gray-400">{t('helpedCount')}</span>
             </div>
           </div>

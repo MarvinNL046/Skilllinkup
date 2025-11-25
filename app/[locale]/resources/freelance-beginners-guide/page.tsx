@@ -14,6 +14,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return {
       title: "Complete Freelance Gids 2025: Van Nul naar Eerste Klant",
       description: "Start je freelance carrière met vertrouwen. Complete stap-voor-stap gids met profiel, offertes, prijzen en je eerste klant binnen 30 dagen.",
+      keywords: "freelance beginnen, ZZP starten, eerste freelance klant, freelance gids nederland, hoe word ik freelancer",
       openGraph: {
         title: "Complete Freelance Gids 2025: Van Nul naar Eerste Klant",
         description: "Start je freelance carrière met vertrouwen. Complete stap-voor-stap gids met profiel, offertes, prijzen en je eerste klant binnen 30 dagen.",
@@ -25,6 +26,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: "Complete Freelance Beginner's Guide 2025: Zero to First Client",
     description: "Start your freelance career with confidence. Step-by-step guide covering profiles, proposals, pricing, and landing your first client in 30 days.",
+    keywords: "freelance beginner guide, how to start freelancing, first freelance client, freelancing for beginners, freelance career start",
     openGraph: {
       title: "Complete Freelance Beginner's Guide 2025: Zero to First Client",
       description: "Start your freelance career with confidence. Step-by-step guide covering profiles, proposals, pricing, and landing your first client in 30 days.",

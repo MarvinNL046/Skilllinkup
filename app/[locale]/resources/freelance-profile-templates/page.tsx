@@ -13,6 +13,7 @@ export async function generateMetadata({ params }: PageProps) {
   return {
     title: "Winning Freelance Profile: Templates & Examples That Get Hired",
     description: "Copy-paste profile templates and real examples that attract clients. Professional bio formulas, headline strategies, and portfolio tips for freelancers.",
+    keywords: "freelance profile template, upwork profile examples, freelancer bio template, profile headline examples, freelance portfolio tips",
     openGraph: {
       title: "Winning Freelance Profile: Templates & Examples That Get Hired",
       description: "Copy-paste profile templates and real examples that attract clients. Professional bio formulas, headline strategies, and portfolio tips for freelancers.",

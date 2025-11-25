@@ -11,6 +11,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       title: "Upwork of Fiverr 2025: Welk Platform is het Beste voor Freelancers?",
       description: "Vergelijk Upwork en Fiverr: prijzen, commissies, projecttypes en welk freelance platform het beste past bij jouw carrière. Complete analyse voor 2025.",
       keywords: "upwork vs fiverr, freelance platform vergelijken, beste freelance site, upwork of fiverr, freelance marktplaats",
+      openGraph: {
+        title: "Upwork of Fiverr 2025: Welk Platform is het Beste?",
+        description: "Vergelijk Upwork en Fiverr: prijzen, commissies en projecttypes. Complete analyse voor 2025.",
+        type: "article",
+        locale: "nl_NL",
+      },
     };
   }
 
@@ -18,6 +24,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     title: "Upwork vs Fiverr 2025: Which Platform is Best for Your Career?",
     description: "Compare Upwork and Fiverr side-by-side. Detailed analysis of pricing, fees, features, and which platform suits your freelance career best.",
     keywords: "upwork vs fiverr, freelance platform comparison, best freelance site, upwork or fiverr, freelance marketplace",
+    openGraph: {
+      title: "Upwork vs Fiverr 2025: Which Platform is Best?",
+      description: "Compare Upwork and Fiverr side-by-side. Pricing, fees, features analysis.",
+      type: "article",
+      locale: "en_US",
+    },
   };
 }
 
@@ -278,8 +290,33 @@ export default async function UpworkVsFiverrPage({ params }: { params: Promise<{
     }
   };
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: locale === 'nl'
+      ? "Upwork of Fiverr 2025: Welk Platform is het Beste voor Freelancers?"
+      : "Upwork vs Fiverr 2025: Which Platform is Best for Your Career?",
+    description: locale === 'nl'
+      ? "Vergelijk Upwork en Fiverr: prijzen, commissies, projecttypes en welk freelance platform het beste past bij jouw carrière. Complete analyse voor 2025."
+      : "Compare Upwork and Fiverr side-by-side. Detailed analysis of pricing, fees, features, and which platform suits your freelance career best.",
+    datePublished: "2025-01-15",
+    dateModified: "2025-01-15",
+    author: {
+      "@type": "Organization",
+      name: "SkillLinkup",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "SkillLinkup",
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Header />
       <main className="flex-1">
         {/* Hero Section */}

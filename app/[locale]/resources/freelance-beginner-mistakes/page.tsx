@@ -13,6 +13,7 @@ export async function generateMetadata({ params }: PageProps) {
   return {
     title: "Top 10 Mistakes New Freelancers Make (And How to Avoid Them)",
     description: "Learn the costly mistakes 90% of new freelancers make and how to avoid them. Save months of frustration with this proven guide for beginners.",
+    keywords: "freelance mistakes to avoid, new freelancer tips, beginner freelance errors, common freelance problems, freelance pitfalls",
     openGraph: {
       title: "Top 10 Mistakes New Freelancers Make (And How to Avoid Them)",
       description: "Learn the costly mistakes 90% of new freelancers make and how to avoid them. Save months of frustration with this proven guide for beginners.",

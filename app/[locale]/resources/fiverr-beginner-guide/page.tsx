@@ -10,6 +10,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     return {
       title: "Fiverr voor Beginners: Maak een Winnend Verkopersprofiel 2025",
       description: "Volledige beginnersgids voor Fiverr succes. Leer hoe je een hoogconverterend verkopersprofiel maakt, gigs strategisch prijst en snel je eerste klanten binnenhaalt.",
+      keywords: "fiverr beginners gids, fiverr profiel maken, fiverr gig aanmaken, fiverr verkoper worden, fiverr tips nederland",
       openGraph: {
         title: "Fiverr voor Beginners: Maak een Winnend Verkopersprofiel 2025",
         description: "Volledige beginnersgids voor Fiverr succes. Leer hoe je een hoogconverterend verkopersprofiel maakt, gigs strategisch prijst en snel je eerste klanten binnenhaalt.",
@@ -22,6 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: "Fiverr for Beginners: Create a Winning Seller Profile in 2025",
     description: "Complete beginner's guide to Fiverr success. Learn how to create a high-converting seller profile, price gigs strategically, and land your first clients fast.",
+    keywords: "fiverr beginner guide, fiverr seller profile, fiverr gig creation, how to start on fiverr, fiverr tips 2025",
     openGraph: {
       title: "Fiverr for Beginners: Create a Winning Seller Profile in 2025",
       description: "Complete beginner's guide to Fiverr success. Learn how to create a high-converting seller profile, price gigs strategically, and land your first clients fast.",

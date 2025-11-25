@@ -13,6 +13,7 @@ export async function generateMetadata({ params }: PageProps) {
   return {
     title: "Freelance Platform Onboarding: Complete Step-by-Step Setup",
     description: "Master platform setup for Upwork, Fiverr, Freelancer, and more. Complete onboarding guide with screenshots, best practices, and optimization tips for beginners.",
+    keywords: "freelance platform setup, upwork account setup, fiverr onboarding, freelance profile creation, platform registration guide",
     openGraph: {
       title: "Freelance Platform Onboarding: Complete Step-by-Step Setup",
       description: "Master platform setup for Upwork, Fiverr, Freelancer, and more. Complete onboarding guide with screenshots, best practices, and optimization tips for beginners.",

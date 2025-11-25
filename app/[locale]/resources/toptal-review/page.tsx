@@ -13,10 +13,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (locale === 'nl') {
     return {
       title: "Toptal Review 2025: Is het Elite Netwerk de Moeite Waard?",
-      description: "Uitgebreide Toptal review over het strenge selectieproces, toegang tot elite klanten, premium tarieven, en of het exclusieve netwerk de inspanning waard is voor top freelancers.",
+      description: "Toptal review: streng selectieproces, elite klanten, premium tarieven. Is het exclusieve netwerk de moeite waard voor top freelancers?",
+      keywords: "toptal review, toptal ervaringen, toptal selectieproces, toptal tarieven, elite freelance netwerk",
       openGraph: {
         title: "Toptal Review 2025: Is het Elite Netwerk de Moeite Waard?",
-        description: "Uitgebreide Toptal review over het strenge selectieproces, toegang tot elite klanten, premium tarieven, en of het exclusieve netwerk de inspanning waard is voor top freelancers.",
+        description: "Toptal review: streng selectieproces, elite klanten, premium tarieven. Is het exclusieve netwerk de moeite waard voor top freelancers?",
         type: "article",
       },
     };
@@ -24,10 +25,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: "Toptal Review 2025: Is the Elite Network Worth the Application?",
-    description: "In-depth Toptal review covering the rigorous screening process, elite client access, premium rates, and whether the exclusive network is worth the effort for top freelancers.",
+    description: "Toptal review: rigorous screening, elite clients, premium rates. Is the exclusive network worth it for top freelancers?",
+    keywords: "toptal review, toptal screening process, toptal rates, toptal application, elite freelance network",
     openGraph: {
       title: "Toptal Review 2025: Is the Elite Network Worth the Application?",
-      description: "In-depth Toptal review covering the rigorous screening process, elite client access, premium rates, and whether the exclusive network is worth the effort for top freelancers.",
+      description: "Toptal review: rigorous screening, elite clients, premium rates. Is the exclusive network worth it for top freelancers?",
       type: "article",
     },
   };

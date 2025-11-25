@@ -15,6 +15,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return {
       title: 'Opvallen tussen concurrentie op freelance platforms in 2025',
       description: 'Ontdek bewezen strategieën om je te onderscheiden op drukke freelance platforms. Leer hoe top 1% freelancers premium klanten aantrekken en hogere tarieven vragen.',
+      keywords: 'opvallen freelance, onderscheiden upwork, freelance concurrentie, premium klanten freelance, freelance differentiatie',
       openGraph: {
         title: 'Opvallen tussen concurrentie op freelance platforms in 2025',
         description: 'Meester bewezen strategieën om je te onderscheiden op competitieve freelance markten. Leer hoe top 1% freelancers premium klanten aantrekken.',
@@ -26,6 +27,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: 'How to Stand Out on Crowded Freelance Platforms in 2025',
     description: 'Master proven strategies to differentiate yourself on competitive freelance marketplaces. Learn how top 1% freelancers attract premium clients and win more projects.',
+    keywords: 'stand out freelance, freelance differentiation, upwork competition, premium freelance clients, freelance positioning',
     openGraph: {
       title: 'How to Stand Out on Crowded Freelance Platforms in 2025',
       description: 'Master proven strategies to differentiate yourself on competitive freelance marketplaces. Learn how top 1% freelancers attract premium clients.',

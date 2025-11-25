@@ -50,9 +50,10 @@
       "subtitle": "Compare Upwork, Fiverr, Toptal, and 20+ platforms. Honest reviews to help you succeed.",
       "browsePlatforms": "Browse Platforms",
       "compare": "Compare",
-      "reviewsCount": "Reviews",
-      "ratedLabel": "Rated",
-      "helpedCount": "Helped"
+      "reviewsCount": "Platforms Reviewed",
+      "freeValue": "Free",
+      "ratedLabel": "Tools",
+      "helpedCount": "Helping Freelancers"
     },
     "howItWorks": {
       "title": "How It Works",
@@ -64,7 +65,7 @@
       "step3Title": "Make Your Choice",
       "step3Description": "Sign up for your chosen platform with confidence, armed with expert insights and real user experiences.",
       "ctaTitle": "Ready to Find Your Platform?",
-      "ctaDescription": "Join 1,000+ freelancers who found their perfect platform through our reviews",
+      "ctaDescription": "Find your perfect freelance platform through our expert reviews",
       "browsePlatforms": "Browse Platforms",
       "compareNow": "Compare Now"
     },
@@ -141,8 +142,8 @@
       "testimonial6Role": "Video Editor",
       "testimonial6Platform": "Found via PeoplePerHour Review",
       "testimonial6Quote": "Clear, unbiased reviews with actual data. No fluff, just facts. Exactly what I needed to make an informed decision about my freelance career.",
-      "stat1Value": "1,000+",
-      "stat1Label": "Happy Freelancers",
+      "stat1Value": "24/7",
+      "stat1Label": "Helping Freelancers",
       "stat2Value": "25+",
       "stat2Label": "Platforms Reviewed",
       "stat3Value": "4.9★",
@@ -160,7 +161,7 @@
     },
     "newsletter": {
       "title": "Get Weekly Freelance Tips",
-      "description": "Join 1,000+ freelancers receiving weekly platform reviews and insider tips.",
+      "description": "Get weekly platform reviews and insider tips delivered to your inbox.",
       "placeholder": "Enter your email",
       "subscribe": "Subscribe",
       "loading": "...",

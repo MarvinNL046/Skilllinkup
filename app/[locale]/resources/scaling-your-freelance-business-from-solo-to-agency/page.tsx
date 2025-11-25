@@ -14,6 +14,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: 'Scaling Your Freelance Business: From Solo to Agency',
     description: 'Strategic roadmap for scaling beyond solo freelancing. Learn how to build systems, hire strategically, and grow from $100K to $1M+ in annual revenue.',
+    keywords: 'scale freelance business, freelance to agency, grow freelance income, hire freelance team, freelance business growth',
     openGraph: {
       title: 'Scaling Your Freelance Business: From Solo to Agency',
       description: 'Master the transition from solo freelancer to agency owner. Proven strategies for $1M+ growth.',

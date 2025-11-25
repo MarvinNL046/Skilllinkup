@@ -9,7 +9,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   if (locale === 'nl') {
     return {
       title: "Prijsstrategieën voor Freelancers: Vast Tarief vs Uurtarief",
-      description: "Kies het juiste prijsmodel voor je freelance business. Vergelijk vast tarief, uurtarief, retainers en waarde-gebaseerde prijzen met echte voorbeelden en winstberekeningen.",
+      description: "Kies het juiste prijsmodel voor je freelance business. Vergelijk vast tarief, uurtarief, retainers en waarde-gebaseerde prijzen met voorbeelden.",
       keywords: "prijzen bepalen freelancer, vast tarief vs uurtarief, waarde-gebaseerde prijzen, freelance tariefmodellen, ZZP tarieven",
       openGraph: {
         title: "Prijsstrategieën voor Freelancers: Vast Tarief vs Uurtarief",
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
   return {
     title: "Freelance Pricing Strategies: Fixed-Price vs Hourly Billing",
-    description: "Choose the right pricing model for your freelance business. Compare fixed-price, hourly billing, retainers, and value-based pricing with real examples and profit calculations.",
+    description: "Choose the right pricing model for your freelance business. Compare fixed-price, hourly, retainers, and value-based pricing with real examples.",
     keywords: "freelance pricing strategies, fixed price vs hourly, value-based pricing, freelance billing models, project pricing",
     openGraph: {
       title: "Freelance Pricing Strategies: Fixed-Price vs Hourly Billing",

@@ -13,6 +13,7 @@ export async function generateMetadata({ params }: PageProps) {
   return {
     title: "First Freelance Proposal Guide: Templates That Get You Hired",
     description: "Learn how to write winning freelance proposals with proven templates, real examples, and strategies that convert 15-20% of submissions into paying clients.",
+    keywords: "freelance proposal template, how to write proposals, first freelance proposal, proposal examples, winning freelance bids",
     openGraph: {
       title: "First Freelance Proposal Guide: Templates That Get You Hired",
       description: "Learn how to write winning freelance proposals with proven templates, real examples, and strategies that convert 15-20% of submissions into paying clients.",

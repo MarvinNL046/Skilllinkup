@@ -14,6 +14,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: 'Building Long-Term Client Relationships on Freelance Platforms',
     description: 'Transform one-time projects into recurring revenue streams. Learn proven strategies for client retention that increase lifetime value by 400%+ on freelance platforms.',
+    keywords: 'freelance client retention, long-term clients, recurring freelance income, client relationships, freelance repeat business',
     openGraph: {
       title: 'Building Long-Term Client Relationships on Freelance Platforms',
       description: 'Master client retention strategies that transform one-time gigs into 6-figure partnerships.',

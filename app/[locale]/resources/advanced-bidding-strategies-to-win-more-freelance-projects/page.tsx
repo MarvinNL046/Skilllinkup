@@ -14,6 +14,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: 'Advanced Bidding Strategies to Win More Freelance Projects',
     description: 'Discover proven proposal tactics used by 6-figure freelancers. Learn how to craft winning bids that convert at 40%+ and secure premium clients consistently.',
+    keywords: 'freelance bidding strategies, winning proposals, freelance proposal tips, upwork bidding, freelance project acquisition',
     openGraph: {
       title: 'Advanced Bidding Strategies to Win More Freelance Projects',
       description: 'Master the proposal tactics that win premium projects. Proven strategies from 6-figure freelancers.',

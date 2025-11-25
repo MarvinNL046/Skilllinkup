@@ -14,6 +14,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: 'How to Get 5-Star Reviews on Every Freelance Project',
     description: 'Master the psychology and systems behind perfect client feedback. Learn the exact framework elite freelancers use to achieve 95%+ 5-star review rates consistently.',
+    keywords: 'freelance reviews, 5 star feedback, client testimonials, upwork reviews, freelance reputation management',
     openGraph: {
       title: 'How to Get 5-Star Reviews on Every Freelance Project',
       description: 'Proven tactics for perfect client reviews. The exact framework for 95%+ 5-star feedback rates.',

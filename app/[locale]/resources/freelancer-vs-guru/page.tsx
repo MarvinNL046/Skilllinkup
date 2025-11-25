@@ -17,6 +17,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: "Freelancer.com of Guru 2025: Functie-voor-functie Vergelijking",
       description: "Vergelijk Freelancer.com en Guru naast elkaar. Gedetailleerde analyse van kosten, SafePay, WorkRooms, en welk platform betere waarde biedt voor freelancers.",
       keywords: "freelancer.com of guru, freelance platforms vergelijken, guru workrooms, freelancer safepay, beste freelance site",
+      openGraph: {
+        title: "Freelancer.com of Guru 2025: Functie-voor-functie Vergelijking",
+        description: "Vergelijk Freelancer.com en Guru: kosten, SafePay, WorkRooms. Welk platform biedt de beste waarde?",
+        type: "article",
+        locale: "nl_NL",
+      },
     };
   }
 
@@ -24,6 +30,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: "Freelancer.com vs Guru 2025: Feature-by-Feature Comparison",
     description: "Compare Freelancer.com and Guru side-by-side. Detailed analysis of fees, SafePay, WorkRooms, and which platform offers better value for freelancers.",
     keywords: "freelancer.com vs guru, freelance platform comparison, guru workrooms, freelancer safepay, best freelance site",
+    openGraph: {
+      title: "Freelancer.com vs Guru 2025: Feature-by-Feature Comparison",
+      description: "Compare Freelancer.com and Guru: fees, SafePay, WorkRooms. Which platform offers better value?",
+      type: "article",
+      locale: "en_US",
+    },
   };
 }
 
@@ -389,8 +401,33 @@ export default async function FreelancerVsGuruPage({ params }: PageProps) {
 
   const t = content[locale as keyof typeof content] || content.en;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: locale === "nl"
+      ? "Freelancer.com of Guru 2025: Functie-voor-functie Vergelijking"
+      : "Freelancer.com vs Guru 2025: Feature-by-Feature Comparison",
+    description: locale === "nl"
+      ? "Vergelijk Freelancer.com en Guru naast elkaar. Gedetailleerde analyse van kosten, SafePay, WorkRooms, en welk platform betere waarde biedt voor freelancers."
+      : "Compare Freelancer.com and Guru side-by-side. Detailed analysis of fees, SafePay, WorkRooms, and which platform offers better value for freelancers.",
+    datePublished: "2025-01-15",
+    dateModified: "2025-01-15",
+    author: {
+      "@type": "Organization",
+      name: "SkillLinkup",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "SkillLinkup",
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Header />
       <main className="flex-1">
         {/* Hero Section */}

@@ -12,9 +12,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (locale === "nl") {
     return {
-      title: "Beste Platform voor Schrijvers 2025: Vergelijking Upwork, Fiverr, Contently",
-      description: "Vergelijk Upwork, Fiverr, Contently en WriterAccess voor freelance schrijvers. Ontdek welk platform de beste tarieven, projecten en kansen biedt voor contentwriters in Nederland.",
+      title: "Beste Platform voor Schrijvers 2025: Upwork vs Fiverr vs Contently",
+      description: "Vergelijk Upwork, Fiverr, Contently en WriterAccess voor freelance schrijvers. Ontdek welk platform de beste tarieven en kansen biedt voor writers.",
       keywords: "beste platform schrijvers, freelance schrijven platformen, contentwriters Nederland, upwork voor schrijvers, fiverr schrijven, freelance content platformen",
+      openGraph: {
+        title: "Beste Platform voor Schrijvers 2025: Upwork vs Fiverr vs Contently",
+        description: "Vergelijk Upwork, Fiverr, Contently en WriterAccess. Vind het beste platform voor freelance schrijvers.",
+        type: "article",
+        locale: "nl_NL",
+      },
     };
   }
 
@@ -22,6 +28,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: "Best Freelance Platform for Writers 2025: Detailed Comparison",
     description: "Compare Upwork, Fiverr, Contently, and WriterAccess for freelance writing. Discover which platform offers the best rates, projects, and opportunities for writers.",
     keywords: "best platform for writers, freelance writing sites, content writing platform, upwork for writers, fiverr writing",
+    openGraph: {
+      title: "Best Freelance Platform for Writers 2025: Detailed Comparison",
+      description: "Compare Upwork, Fiverr, Contently, and WriterAccess. Find the best platform for freelance writers.",
+      type: "article",
+      locale: "en_US",
+    },
   };
 }
 
@@ -444,8 +456,33 @@ export default async function BestPlatformWritersPage({ params }: Props) {
     },
   };
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: locale === "nl"
+      ? "Beste Platform voor Schrijvers 2025: Upwork vs Fiverr vs Contently"
+      : "Best Freelance Platform for Writers 2025: Detailed Comparison",
+    description: locale === "nl"
+      ? "Vergelijk Upwork, Fiverr, Contently en WriterAccess voor freelance schrijvers. Ontdek welk platform de beste tarieven en kansen biedt voor writers."
+      : "Compare Upwork, Fiverr, Contently, and WriterAccess for freelance writing. Discover which platform offers the best rates, projects, and opportunities for writers.",
+    datePublished: "2025-01-15",
+    dateModified: "2025-01-15",
+    author: {
+      "@type": "Organization",
+      name: "SkillLinkup",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "SkillLinkup",
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Header />
       <main className="flex-1">
         {/* Hero Section */}

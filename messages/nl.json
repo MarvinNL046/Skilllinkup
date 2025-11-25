@@ -50,9 +50,10 @@
       "subtitle": "Vergelijk Upwork, Fiverr, Toptal en 20+ platforms. Eerlijke reviews om je te helpen slagen.",
       "browsePlatforms": "Bekijk Platforms",
       "compare": "Vergelijk",
-      "reviewsCount": "Reviews",
-      "ratedLabel": "Beoordeeld",
-      "helpedCount": "Geholpen"
+      "reviewsCount": "Platforms Beoordeeld",
+      "freeValue": "Gratis",
+      "ratedLabel": "Tools",
+      "helpedCount": "Helpt Freelancers"
     },
     "howItWorks": {
       "title": "Hoe Het Werkt",
@@ -64,7 +65,7 @@
       "step3Title": "Maak Je Keuze",
       "step3Description": "Schrijf je met vertrouwen in voor jouw gekozen platform, gewapend met deskundige inzichten en echte gebruikerservaringen.",
       "ctaTitle": "Klaar Om Je Platform Te Vinden?",
-      "ctaDescription": "Sluit je aan bij 1.000+ freelancers die hun perfecte platform vonden via onze reviews",
+      "ctaDescription": "Vind jouw perfecte freelance platform via onze expert reviews",
       "browsePlatforms": "Bekijk Platforms",
       "compareNow": "Vergelijk Nu"
     },
@@ -141,8 +142,8 @@
       "testimonial6Role": "Video Editor",
       "testimonial6Platform": "Gevonden via PeoplePerHour Review",
       "testimonial6Quote": "Duidelijke, onbevooroordeelde reviews met echte gegevens. Geen opsmuk, alleen feiten. Precies wat ik nodig had om een weloverwogen beslissing te nemen over mijn freelance carrière.",
-      "stat1Value": "1.000+",
-      "stat1Label": "Blije Freelancers",
+      "stat1Value": "24/7",
+      "stat1Label": "Helpt Freelancers",
       "stat2Value": "25+",
       "stat2Label": "Platforms Beoordeeld",
       "stat3Value": "4.9★",
@@ -160,7 +161,7 @@
     },
     "newsletter": {
       "title": "Ontvang Wekelijkse Freelance Tips",
-      "description": "Sluit je aan bij 1.000+ freelancers die wekelijkse platform reviews en insider tips ontvangen.",
+      "description": "Ontvang wekelijkse platform reviews en insider tips in je inbox.",
       "placeholder": "Voer je e-mailadres in",
       "subscribe": "Abonneren",
       "loading": "...",
