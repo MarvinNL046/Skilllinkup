@@ -418,7 +418,7 @@ export default async function ToptalVsUpworkPage({ params }: { params: Promise<{
     headline: locale === 'nl' ? "Toptal of Upwork 2025: Elite Netwerk of Massa Marktplaats?" : "Toptal vs Upwork 2025: Elite Network or Mass Marketplace?",
     description: locale === 'nl' ? "Vergelijk Toptal's exclusieve 3% acceptatiegraad met Upwork's open marktplaats." : "Compare Toptal's exclusive 3% acceptance rate with Upwork's open marketplace.",
     inLanguage: locale === 'nl' ? "nl" : "en",
-    datePublished: "2025-01-01",
+    datePublished: "2025-01-15",
     dateModified: "2025-01-15",
   };
 

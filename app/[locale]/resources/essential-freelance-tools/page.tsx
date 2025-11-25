@@ -345,7 +345,7 @@ export default async function EssentialFreelanceToolsPage({ params }: PageProps)
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: siteUrl },
-      { '@type': 'ListItem', position: 2, name: 'SEO Guides', item: `${siteUrl}/seo` },
+      { '@type': 'ListItem', position: 2, name: 'Resources', item: `${siteUrl}/resources` },
       { '@type': 'ListItem', position: 3, name: locale === 'nl' ? 'Essentiële Freelance Tools' : 'Essential Freelance Tools' },
     ],
   };

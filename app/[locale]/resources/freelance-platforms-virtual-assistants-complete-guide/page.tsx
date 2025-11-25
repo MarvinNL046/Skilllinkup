@@ -407,8 +407,8 @@ export default async function FreelancePlatformsVirtualAssistantsCompleteGuide({
               "@type": "Organization",
               "name": "SkillLinkup"
             },
-            "datePublished": "2025-01-01",
-            "dateModified": "2025-01-01"
+            "datePublished": "2025-01-15",
+            "dateModified": "2025-01-15"
           })
         }} />
 

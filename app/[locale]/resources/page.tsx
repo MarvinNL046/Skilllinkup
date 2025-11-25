@@ -27,10 +27,10 @@ export async function generateMetadata({ params }: SeoIndexPageProps): Promise<M
       description: "Browse our complete library of 50+ expert freelance guides.",
     },
     alternates: {
-      canonical: `https://skilllinkup.com/${locale}/seo`,
+      canonical: `https://skilllinkup.com/${locale}/resources`,
       languages: {
-        en: "https://skilllinkup.com/en/seo",
-        nl: "https://skilllinkup.com/nl/seo",
+        en: "https://skilllinkup.com/en/resources",
+        nl: "https://skilllinkup.com/nl/resources",
       },
     },
   };
@@ -45,7 +45,7 @@ export default async function SeoIndexPage({ params }: SeoIndexPageProps) {
     "@type": "CollectionPage",
     name: "Complete Freelance Platform Guides",
     description: "Comprehensive library of 50+ expert freelance guides covering platform selection, pricing, success strategies, and more.",
-    url: `https://skilllinkup.com/${locale}/seo`,
+    url: `https://skilllinkup.com/${locale}/resources`,
     publisher: {
       "@type": "Organization",
       name: "SkillLinkup",
