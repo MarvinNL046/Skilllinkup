@@ -120,12 +120,12 @@ export default async function ChooseBestFreelancePlatform({ params }: { params: 
       title: 'Ga Verder Met Je Platform Onderzoek',
       links: [
         {
-          href: '/seo/beginner-vs-expert-platforms',
+          href: '/resources/beginner-vs-expert-platforms',
           title: 'Beginner vs. Expert Platformen Vergeleken',
           text: 'Gedetailleerde breakdown van platformverschillen per ervaringsniveau',
         },
         {
-          href: '/seo/key-factors-choosing-freelance-marketplace',
+          href: '/resources/key-factors-choosing-freelance-marketplace',
           title: '5 Belangrijke Factoren om te Overwegen',
           text: 'Essentiële criteria voor platformselectie naast ervaringsniveau',
         },
@@ -135,7 +135,7 @@ export default async function ChooseBestFreelancePlatform({ params }: { params: 
           text: 'Zij-aan-zij vergelijking van tarieven, functies en reviews',
         },
         {
-          href: '/seo/platform-selection-quiz',
+          href: '/resources/platform-selection-quiz',
           title: 'Doe Onze Platform Quiz',
           text: 'Vind je perfecte platform match in 2 minuten',
         },
@@ -227,12 +227,12 @@ export default async function ChooseBestFreelancePlatform({ params }: { params: 
       title: 'Continue Your Platform Research',
       links: [
         {
-          href: '/seo/beginner-vs-expert-platforms',
+          href: '/resources/beginner-vs-expert-platforms',
           title: 'Beginner vs. Expert Platforms Compared',
           text: 'Detailed breakdown of platform differences by experience level',
         },
         {
-          href: '/seo/key-factors-choosing-freelance-marketplace',
+          href: '/resources/key-factors-choosing-freelance-marketplace',
           title: '5 Key Factors to Consider',
           text: 'Essential criteria for platform selection beyond skill level',
         },
@@ -242,7 +242,7 @@ export default async function ChooseBestFreelancePlatform({ params }: { params: 
           text: 'Side-by-side comparison of fees, features, and reviews',
         },
         {
-          href: '/seo/platform-selection-quiz',
+          href: '/resources/platform-selection-quiz',
           title: 'Take Our Platform Quiz',
           text: 'Find your perfect platform match in 2 minutes',
         },

@@ -19,13 +19,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: 'Complete belastinggids voor ZZP\'ers met uitleg over BTW-aangifte, inkomstenbelasting, aftrekposten en voorlopige aanslag. Bespaar belasting en blijf compliant.',
       keywords: 'belastingen freelancer, BTW aangifte ZZP, inkomstenbelasting zzp\'er, voorlopige aanslag, aftrekposten zzp, belastingaangifte zelfstandige',
       alternates: {
-        canonical: 'https://skilllinkup.com/nl/seo/freelance-tax-guide',
+        canonical: 'https://skilllinkup.com/nl/resources/freelance-tax-guide',
       },
       openGraph: {
         title: 'Belastinggids voor Freelancers: BTW, Inkomstenbelasting & Voorlopige Aanslag',
         description: 'Beheers je belastingen als ZZP\'er met onze complete gids. Leer over BTW-aangifte, aftrekposten en voorlopige aanslag.',
         type: 'article',
-        url: 'https://skilllinkup.com/nl/seo/freelance-tax-guide',
+        url: 'https://skilllinkup.com/nl/resources/freelance-tax-guide',
         locale: 'nl_NL',
       },
     };
@@ -36,13 +36,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: 'Complete freelance tax guide covering deductions, quarterly payments, self-employment tax, and international considerations. Save money and stay compliant.',
     keywords: 'freelance taxes, self-employment tax, tax deductions, quarterly taxes, freelance accounting, 1099 taxes',
     alternates: {
-      canonical: 'https://skilllinkup.com/seo/freelance-tax-guide',
+      canonical: 'https://skilllinkup.com/resources/freelance-tax-guide',
     },
     openGraph: {
       title: 'Freelance Tax Guide: What You Need to Know (US & International)',
       description: 'Master freelance taxes with our complete guide. Learn about deductions, quarterly payments, and how to save money while staying compliant.',
       type: 'article',
-      url: 'https://skilllinkup.com/seo/freelance-tax-guide',
+      url: 'https://skilllinkup.com/resources/freelance-tax-guide',
       locale: 'en_US',
     },
   };
@@ -1019,14 +1019,14 @@ export default async function FreelanceTaxGuidePage({ params }: Props) {
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Link
-                      href={`/${locale}/seo/freelance-contracts-101`}
+                      href={`/${locale}/resources/freelance-contracts-101`}
                       className="inline-flex items-center gap-2 px-8 py-4 bg-accent hover:bg-accent-dark text-white font-heading font-semibold rounded-lg shadow-lg transition-all"
                     >
                       <FileText className="w-5 h-5" />
                       {content.cta2.button1}
                     </Link>
                     <Link
-                      href={`/${locale}/seo/freelance-invoicing-guide`}
+                      href={`/${locale}/resources/freelance-invoicing-guide`}
                       className="inline-flex items-center gap-2 px-8 py-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-heading font-semibold rounded-lg shadow border-2 border-gray-200 dark:border-gray-700 transition-all"
                     >
                       {content.cta2.button2}
@@ -1096,21 +1096,21 @@ export default async function FreelanceTaxGuidePage({ params }: Props) {
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Link
-                      href={`/${locale}/seo/freelance-invoicing-guide`}
+                      href={`/${locale}/resources/freelance-invoicing-guide`}
                       className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     >
                       <FileText className="w-6 h-6 text-primary" />
                       <span className="font-semibold text-gray-900 dark:text-white">{content.related.link1}</span>
                     </Link>
                     <Link
-                      href={`/${locale}/seo/managing-multiple-clients`}
+                      href={`/${locale}/resources/managing-multiple-clients`}
                       className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     >
                       <CheckCircle className="w-6 h-6 text-primary" />
                       <span className="font-semibold text-gray-900 dark:text-white">{content.related.link2}</span>
                     </Link>
                     <Link
-                      href={`/${locale}/seo/freelance-business-insurance`}
+                      href={`/${locale}/resources/freelance-business-insurance`}
                       className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     >
                       <AlertTriangle className="w-6 h-6 text-primary" />

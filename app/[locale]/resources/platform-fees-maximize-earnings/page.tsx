@@ -279,19 +279,19 @@ export default async function PlatformFeesMaximizeEarningsPage({
       title: "Gerelateerde Prijs Bronnen",
       resources: [
         {
-          href: "/seo/calculate-freelance-hourly-rate",
+          href: "/resources/calculate-freelance-hourly-rate",
           title: "Bereken Je Tarief",
           desc: "Leer de formule om je basistarief te berekenen vóór platformkosten",
           cta: "Lees Gids →",
         },
         {
-          href: "/seo/upwork-pricing-tactics",
+          href: "/resources/upwork-pricing-tactics",
           title: "Upwork Prijs Tactieken",
           desc: "Platform-specifieke strategieën om Upwork verdiensten te maximaliseren",
           cta: "Lees Gids →",
         },
         {
-          href: "/seo/negotiate-higher-rates",
+          href: "/resources/negotiate-higher-rates",
           title: "Onderhandel Hogere Tarieven",
           desc: "Beheers onderhandeling om verdiensten op elk platform te verhogen",
           cta: "Lees Gids →",
@@ -541,19 +541,19 @@ export default async function PlatformFeesMaximizeEarningsPage({
       title: "Related Pricing Resources",
       resources: [
         {
-          href: "/seo/calculate-freelance-hourly-rate",
+          href: "/resources/calculate-freelance-hourly-rate",
           title: "Calculate Your Rate",
           desc: "Learn the formula to calculate your base rate before platform fees",
           cta: "Read Guide →",
         },
         {
-          href: "/seo/upwork-pricing-tactics",
+          href: "/resources/upwork-pricing-tactics",
           title: "Upwork Pricing Tactics",
           desc: "Platform-specific strategies to maximize Upwork earnings",
           cta: "Read Guide →",
         },
         {
-          href: "/seo/negotiate-higher-rates",
+          href: "/resources/negotiate-higher-rates",
           title: "Negotiate Higher Rates",
           desc: "Master negotiation to increase earnings on any platform",
           cta: "Read Guide →",

@@ -734,7 +734,7 @@ If you need [service] that [desired outcome], let's talk. [Clear next step]. I [
               </h2>
               <div className="grid md:grid-cols-2 gap-6">
                 <Link
-                  href={`/${locale}/seo/freelance-beginners-guide`}
+                  href={`/${locale}/resources/freelance-beginners-guide`}
                   className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all group"
                 >
                   <h3 className="text-xl font-heading font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">
@@ -745,7 +745,7 @@ If you need [service] that [desired outcome], let's talk. [Clear next step]. I [
                   </p>
                 </Link>
                 <Link
-                  href={`/${locale}/seo/first-freelance-proposal`}
+                  href={`/${locale}/resources/first-freelance-proposal`}
                   className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all group"
                 >
                   <h3 className="text-xl font-heading font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">

@@ -13,13 +13,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       description: 'Leer professioneel facturen maken met gratis sjablonen en best practices. Ontdek wat je moet vermelden, betalingstermijnen en hoe je sneller betaald krijgt als freelancer.',
       keywords: 'facturen maken zzp, factuur sjabloon, factureren freelance, btw factuur, betalingstermijnen',
       alternates: {
-        canonical: 'https://skilllinkup.com/nl/seo/freelance-invoicing-guide',
+        canonical: 'https://skilllinkup.com/nl/resources/freelance-invoicing-guide',
       },
       openGraph: {
         title: 'Facturen maken als ZZP\'er: Sjablonen & Best Practices 2024',
         description: 'Leer professioneel facturen maken met gratis sjablonen en best practices. Ontdek hoe je sneller betaald krijgt.',
         type: 'article',
-        url: 'https://skilllinkup.com/nl/seo/freelance-invoicing-guide',
+        url: 'https://skilllinkup.com/nl/resources/freelance-invoicing-guide',
       },
     };
   }
@@ -29,13 +29,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     description: 'Master freelance invoicing with templates, best practices, and tools. Learn what to include, payment terms, and how to get paid faster as a freelancer.',
     keywords: 'freelance invoicing, invoice template, freelance payment, invoice best practices, freelance billing',
     alternates: {
-      canonical: 'https://skilllinkup.com/seo/freelance-invoicing-guide',
+      canonical: 'https://skilllinkup.com/resources/freelance-invoicing-guide',
     },
     openGraph: {
       title: 'Freelance Invoicing Guide: Templates & Best Practices 2024',
       description: 'Master freelance invoicing with templates, best practices, and tools. Learn what to include, payment terms, and how to get paid faster.',
       type: 'article',
-      url: 'https://skilllinkup.com/seo/freelance-invoicing-guide',
+      url: 'https://skilllinkup.com/resources/freelance-invoicing-guide',
     },
   };
 }
@@ -208,8 +208,8 @@ export default async function FreelanceInvoicingGuidePage({ params }: { params: 
     relatedResources: {
       title: "Gerelateerde Bronnen",
       links: [
-        { title: "Freelance Contracten 101", href: "/nl/seo/freelance-contracts-101" },
-        { title: "Meerdere Klanten Beheren", href: "/nl/seo/managing-multiple-clients" },
+        { title: "Freelance Contracten 101", href: "/nl/resources/freelance-contracts-101" },
+        { title: "Meerdere Klanten Beheren", href: "/nl/resources/managing-multiple-clients" },
         { title: "Gratis Freelance Tools", href: "/nl/tools" },
         { title: "Freelance Blog", href: "/nl/blog" }
       ]
@@ -379,8 +379,8 @@ export default async function FreelanceInvoicingGuidePage({ params }: { params: 
     relatedResources: {
       title: "Related Resources",
       links: [
-        { title: "Freelance Contracts 101", href: "/seo/freelance-contracts-101" },
-        { title: "Managing Multiple Clients", href: "/seo/managing-multiple-clients" },
+        { title: "Freelance Contracts 101", href: "/resources/freelance-contracts-101" },
+        { title: "Managing Multiple Clients", href: "/resources/managing-multiple-clients" },
         { title: "Free Freelance Tools", href: "/tools" },
         { title: "Freelance Blog", href: "/blog" }
       ]

@@ -293,9 +293,9 @@ export default async function KeyFactorsChoosingFreelanceMarketplace({
     relatedLinks: {
       title: 'Ga Verder met Je Platformonderzoek',
       links: [
-        { href: '/seo/choose-best-freelance-platform', title: 'Kies op Vaardigheidsniveau', desc: 'Match platformtier aan jouw ervaring' },
-        { href: '/seo/beginner-vs-expert-platforms', title: 'Beginner vs Expert', desc: 'Begrijp platformtier verschillen' },
-        { href: '/seo/multiple-freelance-platforms-pros-cons', title: 'Meerdere Platforms Strategie', desc: 'Moet je 2-3 platforms tegelijk gebruiken?' },
+        { href: '/resources/choose-best-freelance-platform', title: 'Kies op Vaardigheidsniveau', desc: 'Match platformtier aan jouw ervaring' },
+        { href: '/resources/beginner-vs-expert-platforms', title: 'Beginner vs Expert', desc: 'Begrijp platformtier verschillen' },
+        { href: '/resources/multiple-freelance-platforms-pros-cons', title: 'Meerdere Platforms Strategie', desc: 'Moet je 2-3 platforms tegelijk gebruiken?' },
         { href: '/platforms', title: 'Vergelijk Alle Platforms', desc: 'Zij-aan-zij vergelijkingstool' }
       ]
     }
@@ -550,9 +550,9 @@ export default async function KeyFactorsChoosingFreelanceMarketplace({
     relatedLinks: {
       title: 'Continue Your Platform Research',
       links: [
-        { href: '/seo/choose-best-freelance-platform', title: 'Choose by Skill Level', desc: 'Match platform tier to your experience' },
-        { href: '/seo/beginner-vs-expert-platforms', title: 'Beginner vs Expert', desc: 'Understand platform tier differences' },
-        { href: '/seo/multiple-freelance-platforms-pros-cons', title: 'Multiple Platforms Strategy', desc: 'Should you use 2-3 platforms simultaneously?' },
+        { href: '/resources/choose-best-freelance-platform', title: 'Choose by Skill Level', desc: 'Match platform tier to your experience' },
+        { href: '/resources/beginner-vs-expert-platforms', title: 'Beginner vs Expert', desc: 'Understand platform tier differences' },
+        { href: '/resources/multiple-freelance-platforms-pros-cons', title: 'Multiple Platforms Strategy', desc: 'Should you use 2-3 platforms simultaneously?' },
         { href: '/platforms', title: 'Compare All Platforms', desc: 'Side-by-side comparison tool' }
       ]
     }

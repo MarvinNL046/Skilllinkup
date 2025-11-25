@@ -680,7 +680,7 @@ export default async function UpworkVsFiverrPage({ params }: { params: Promise<{
               </h2>
               <div className="grid md:grid-cols-3 gap-4">
                 <Link
-                  href="/seo/toptal-vs-upwork"
+                  href="/resources/toptal-vs-upwork"
                   className="p-4 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-accent transition-colors"
                 >
                   <h3 className="font-heading font-semibold text-gray-900 dark:text-white mb-2">
@@ -691,7 +691,7 @@ export default async function UpworkVsFiverrPage({ params }: { params: Promise<{
                   </p>
                 </Link>
                 <Link
-                  href="/seo/freelancer-vs-guru"
+                  href="/resources/freelancer-vs-guru"
                   className="p-4 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-accent transition-colors"
                 >
                   <h3 className="font-heading font-semibold text-gray-900 dark:text-white mb-2">

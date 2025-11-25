@@ -386,7 +386,7 @@ export default async function OptimizingFreelanceProfileMaximumVisibility({ para
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Link
-                  href="/seo/how-to-write-proposals-that-win"
+                  href="/resources/how-to-write-proposals-that-win"
                   className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 hover:shadow-lg transition-all group"
                 >
                   <Award className="w-10 h-10 text-primary mb-3" />
@@ -398,7 +398,7 @@ export default async function OptimizingFreelanceProfileMaximumVisibility({ para
                   </p>
                 </Link>
                 <Link
-                  href="/seo/mastering-freelance-platform-algorithms"
+                  href="/resources/mastering-freelance-platform-algorithms"
                   className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 hover:shadow-lg transition-all group"
                 >
                   <TrendingUp className="w-10 h-10 text-accent mb-3" />
@@ -410,7 +410,7 @@ export default async function OptimizingFreelanceProfileMaximumVisibility({ para
                   </p>
                 </Link>
                 <Link
-                  href="/seo/building-portfolio-that-converts"
+                  href="/resources/building-portfolio-that-converts"
                   className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 hover:shadow-lg transition-all group"
                 >
                   <Star className="w-10 h-10 text-[#1e1541] dark:text-white mb-3" />

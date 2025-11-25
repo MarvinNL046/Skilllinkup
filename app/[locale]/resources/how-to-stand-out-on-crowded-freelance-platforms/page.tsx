@@ -439,7 +439,7 @@ export default async function StandOutOnFreelancePlatformsPage({ params }: PageP
               {content.relatedTitle}
             </h3>
             <div className="grid md:grid-cols-3 gap-6">
-              <Link href={`/${locale}/seo/advanced-bidding-strategies-to-win-more-freelance-projects`} className="group bg-gray-50 dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-all">
+              <Link href={`/${locale}/resources/advanced-bidding-strategies-to-win-more-freelance-projects`} className="group bg-gray-50 dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-all">
                 <h4 className="font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">
                   {content.related[0].title}
                 </h4>
@@ -447,7 +447,7 @@ export default async function StandOutOnFreelancePlatformsPage({ params }: PageP
                   {content.related[0].text}
                 </p>
               </Link>
-              <Link href={`/${locale}/seo/building-long-term-client-relationships-on-freelance-platforms`} className="group bg-gray-50 dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-all">
+              <Link href={`/${locale}/resources/building-long-term-client-relationships-on-freelance-platforms`} className="group bg-gray-50 dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-all">
                 <h4 className="font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">
                   {content.related[1].title}
                 </h4>
@@ -455,7 +455,7 @@ export default async function StandOutOnFreelancePlatformsPage({ params }: PageP
                   {content.related[1].text}
                 </p>
               </Link>
-              <Link href={`/${locale}/seo/how-to-get-5-star-reviews-on-every-freelance-project`} className="group bg-gray-50 dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-all">
+              <Link href={`/${locale}/resources/how-to-get-5-star-reviews-on-every-freelance-project`} className="group bg-gray-50 dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-all">
                 <h4 className="font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">
                   {content.related[2].title}
                 </h4>

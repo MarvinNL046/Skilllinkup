@@ -248,17 +248,17 @@ export default async function FreelancePricingStrategiesPage({ params }: { param
         {
           title: "Bereken Je Uurtarief",
           desc: "Gebruik onze bewezen formule om een winstgevend uurtarief vast te stellen",
-          link: `/${locale}/seo/calculate-freelance-hourly-rate`
+          link: `/${locale}/resources/calculate-freelance-hourly-rate`
         },
         {
           title: "Upwork Prijstactieken",
           desc: "Platform-specifieke strategieën om je verdiensten te maximaliseren",
-          link: `/${locale}/seo/upwork-pricing-tactics`
+          link: `/${locale}/resources/upwork-pricing-tactics`
         },
         {
           title: "Begrijp Platform Kosten",
           desc: "Prijs om netto verdienste te maximaliseren na fees",
-          link: `/${locale}/seo/platform-fees-maximize-earnings`
+          link: `/${locale}/resources/platform-fees-maximize-earnings`
         }
       ]
     },
@@ -479,17 +479,17 @@ export default async function FreelancePricingStrategiesPage({ params }: { param
         {
           title: "Calculate Your Hourly Rate",
           desc: "Use our proven formula to set a profitable hourly rate",
-          link: `/${locale}/seo/calculate-freelance-hourly-rate`
+          link: `/${locale}/resources/calculate-freelance-hourly-rate`
         },
         {
           title: "Upwork Pricing Tactics",
           desc: "Platform-specific strategies to maximize your earnings",
-          link: `/${locale}/seo/upwork-pricing-tactics`
+          link: `/${locale}/resources/upwork-pricing-tactics`
         },
         {
           title: "Understand Platform Fees",
           desc: "Price to maximize take-home pay after fees",
-          link: `/${locale}/seo/platform-fees-maximize-earnings`
+          link: `/${locale}/resources/platform-fees-maximize-earnings`
         }
       ]
     },

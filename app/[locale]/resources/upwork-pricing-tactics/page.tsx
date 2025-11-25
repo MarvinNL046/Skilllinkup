@@ -1059,7 +1059,7 @@ export default async function UpworkPricingTacticsPage({ params }: Props) {
               </h2>
 
               <div className="grid md:grid-cols-3 gap-6">
-                <Link href={`/${locale}/seo/calculate-freelance-hourly-rate`} className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-200 dark:border-gray-700">
+                <Link href={`/${locale}/resources/calculate-freelance-hourly-rate`} className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-200 dark:border-gray-700">
                   <h3 className="font-heading text-xl font-bold text-secondary dark:text-white mb-3">
                     {content.resource1Title}
                   </h3>
@@ -1071,7 +1071,7 @@ export default async function UpworkPricingTacticsPage({ params }: Props) {
                   </span>
                 </Link>
 
-                <Link href={`/${locale}/seo/negotiate-higher-rates`} className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-200 dark:border-gray-700">
+                <Link href={`/${locale}/resources/negotiate-higher-rates`} className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-200 dark:border-gray-700">
                   <h3 className="font-heading text-xl font-bold text-secondary dark:text-white mb-3">
                     {content.resource2Title}
                   </h3>
@@ -1083,7 +1083,7 @@ export default async function UpworkPricingTacticsPage({ params }: Props) {
                   </span>
                 </Link>
 
-                <Link href={`/${locale}/seo/platform-fees-maximize-earnings`} className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-200 dark:border-gray-700">
+                <Link href={`/${locale}/resources/platform-fees-maximize-earnings`} className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-200 dark:border-gray-700">
                   <h3 className="font-heading text-xl font-bold text-secondary dark:text-white mb-3">
                     {content.resource3Title}
                   </h3>

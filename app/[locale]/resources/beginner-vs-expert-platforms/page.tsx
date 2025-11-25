@@ -396,12 +396,12 @@ export default async function BeginnerVsExpertPlatforms({ params }: { params: Pr
       title: "Gerelateerde Platform Selectie Gidsen",
       links: [
         {
-          href: `/${locale}/seo/choose-best-freelance-platform`,
+          href: `/${locale}/resources/choose-best-freelance-platform`,
           title: "Hoe het Beste Platform te Kiezen",
           description: "Complete gids voor platformselectie op vaardigheids-niveau"
         },
         {
-          href: `/${locale}/seo/key-factors-choosing-freelance-marketplace`,
+          href: `/${locale}/resources/key-factors-choosing-freelance-marketplace`,
           title: "5 Belangrijke Selectiefactoren",
           description: "Essentiële criteria naast beginner vs expert onderscheid"
         },
@@ -411,7 +411,7 @@ export default async function BeginnerVsExpertPlatforms({ params }: { params: Pr
           description: "Zij-aan-zij vergelijking van 25+ platforms"
         },
         {
-          href: `/${locale}/seo/multiple-freelance-platforms-pros-cons`,
+          href: `/${locale}/resources/multiple-freelance-platforms-pros-cons`,
           title: "Meerdere Platforms Gebruiken",
           description: "Voor- en nadelen van multi-platform strategie"
         }
@@ -778,12 +778,12 @@ export default async function BeginnerVsExpertPlatforms({ params }: { params: Pr
       title: "Related Platform Selection Guides",
       links: [
         {
-          href: "/seo/choose-best-freelance-platform",
+          href: "/resources/choose-best-freelance-platform",
           title: "How to Choose the Best Platform",
           description: "Complete guide to platform selection by skill level"
         },
         {
-          href: "/seo/key-factors-choosing-freelance-marketplace",
+          href: "/resources/key-factors-choosing-freelance-marketplace",
           title: "5 Key Selection Factors",
           description: "Essential criteria beyond beginner vs expert distinction"
         },
@@ -793,7 +793,7 @@ export default async function BeginnerVsExpertPlatforms({ params }: { params: Pr
           description: "Side-by-side comparison of 25+ platforms"
         },
         {
-          href: "/seo/multiple-freelance-platforms-pros-cons",
+          href: "/resources/multiple-freelance-platforms-pros-cons",
           title: "Using Multiple Platforms",
           description: "Pros and cons of multi-platform strategy"
         }

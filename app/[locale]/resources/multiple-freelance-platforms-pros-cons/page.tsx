@@ -350,9 +350,9 @@ export default async function MultipleFreelancePlatformsProsConsPage({ params }:
     relatedLinks: {
       title: 'Gerelateerde Platform Selectie Gidsen',
       links: [
-        { href: '/seo/choose-best-freelance-platform', title: 'Hoe te Kiezen op Vaardighedenniveau', description: 'Match platformen aan je ervaring en expertise' },
-        { href: '/seo/beginner-vs-expert-platforms', title: 'Beginner vs Expert Platformen', description: 'Begrijp platform tier verschillen en progressie' },
-        { href: '/seo/key-factors-choosing-freelance-marketplace', title: '5 Belangrijke Selectiefactoren', description: 'Essentiële criteria voor platform evaluatie' },
+        { href: '/resources/choose-best-freelance-platform', title: 'Hoe te Kiezen op Vaardighedenniveau', description: 'Match platformen aan je ervaring en expertise' },
+        { href: '/resources/beginner-vs-expert-platforms', title: 'Beginner vs Expert Platformen', description: 'Begrijp platform tier verschillen en progressie' },
+        { href: '/resources/key-factors-choosing-freelance-marketplace', title: '5 Belangrijke Selectiefactoren', description: 'Essentiële criteria voor platform evaluatie' },
         { href: '/platforms', title: 'Vergelijk Alle Platformen', description: 'Naast-elkaar vergelijking van 25+ platformen' }
       ]
     }
@@ -668,9 +668,9 @@ export default async function MultipleFreelancePlatformsProsConsPage({ params }:
     relatedLinks: {
       title: 'Related Platform Selection Guides',
       links: [
-        { href: '/seo/choose-best-freelance-platform', title: 'How to Choose by Skill Level', description: 'Match platforms to your experience and expertise' },
-        { href: '/seo/beginner-vs-expert-platforms', title: 'Beginner vs Expert Platforms', description: 'Understand platform tier differences and progression' },
-        { href: '/seo/key-factors-choosing-freelance-marketplace', title: '5 Key Selection Factors', description: 'Essential criteria for platform evaluation' },
+        { href: '/resources/choose-best-freelance-platform', title: 'How to Choose by Skill Level', description: 'Match platforms to your experience and expertise' },
+        { href: '/resources/beginner-vs-expert-platforms', title: 'Beginner vs Expert Platforms', description: 'Understand platform tier differences and progression' },
+        { href: '/resources/key-factors-choosing-freelance-marketplace', title: '5 Key Selection Factors', description: 'Essential criteria for platform evaluation' },
         { href: '/platforms', title: 'Compare All Platforms', description: 'Side-by-side comparison of 25+ platforms' }
       ]
     }
@@ -1157,7 +1157,7 @@ export default async function MultipleFreelancePlatformsProsConsPage({ params }:
               {content.cta3.description}
             </p>
             <Link
-              href={`/${locale}/seo/platform-selection-quiz`}
+              href={`/${locale}/resources/platform-selection-quiz`}
               className="inline-block px-8 py-4 bg-[#1e1541] hover:bg-[#2a1f5c] text-white font-semibold rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
               {content.cta3.button}

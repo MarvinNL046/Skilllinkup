@@ -254,7 +254,7 @@ export default async function FreelancePlatformSetupPage({ params }: PageProps) 
                       <div className="flex-1">
                         <h3 className="text-xl font-heading font-bold text-gray-900 dark:text-white mb-3">Prepare Profile Materials</h3>
                         <p className="text-gray-700 dark:text-gray-300 mb-3">
-                          Have these ready to speed up onboarding (see our <Link href={`/${locale}/seo/freelance-profile-templates`} className="text-primary underline">profile guide</Link> for details):
+                          Have these ready to speed up onboarding (see our <Link href={`/${locale}/resources/freelance-profile-templates`} className="text-primary underline">profile guide</Link> for details):
                         </p>
                         <ul className="space-y-2 text-gray-700 dark:text-gray-300">
                           <li className="flex items-start gap-2">
@@ -335,7 +335,7 @@ export default async function FreelancePlatformSetupPage({ params }: PageProps) 
                           <li>• Start with client pain point or bold statement</li>
                           <li>• Include specific results with numbers when possible</li>
                           <li>• End with clear call-to-action</li>
-                          <li>• Use our <Link href={`/${locale}/seo/freelance-profile-templates`} className="text-primary underline">bio template</Link></li>
+                          <li>• Use our <Link href={`/${locale}/resources/freelance-profile-templates`} className="text-primary underline">bio template</Link></li>
                         </ul>
                       </div>
 
@@ -761,7 +761,7 @@ export default async function FreelancePlatformSetupPage({ params }: PageProps) 
                 <div className="mt-8 bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border-l-4 border-blue-400 dark:border-blue-500">
                   <p className="font-semibold text-gray-800 dark:text-gray-200 mb-2">💪 Next Step:</p>
                   <p className="text-gray-700 dark:text-gray-300 mb-3">
-                    Your profile is ready. Time to start applying! Follow our <Link href={`/${locale}/seo/first-freelance-proposal`} className="text-primary underline">proposal writing guide</Link> to craft applications that get hired.
+                    Your profile is ready. Time to start applying! Follow our <Link href={`/${locale}/resources/first-freelance-proposal`} className="text-primary underline">proposal writing guide</Link> to craft applications that get hired.
                   </p>
                   <p className="text-gray-700 dark:text-gray-300 text-sm">
                     Aim to send 5-10 proposals per day for your first week. Track your response rate and refine your approach.
@@ -785,7 +785,7 @@ export default async function FreelancePlatformSetupPage({ params }: PageProps) 
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
-                  href={`/${locale}/seo/freelance-beginners-guide`}
+                  href={`/${locale}/resources/freelance-beginners-guide`}
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-white text-secondary font-heading font-semibold hover:bg-gray-100 transition-all shadow-lg"
                 >
                   Read Beginner&apos;s Guide
@@ -816,7 +816,7 @@ export default async function FreelancePlatformSetupPage({ params }: PageProps) 
               </h2>
               <div className="grid md:grid-cols-2 gap-6">
                 <Link
-                  href={`/${locale}/seo/freelance-profile-templates`}
+                  href={`/${locale}/resources/freelance-profile-templates`}
                   className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all group"
                 >
                   <h3 className="text-xl font-heading font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">
@@ -827,7 +827,7 @@ export default async function FreelancePlatformSetupPage({ params }: PageProps) 
                   </p>
                 </Link>
                 <Link
-                  href={`/${locale}/seo/first-freelance-proposal`}
+                  href={`/${locale}/resources/first-freelance-proposal`}
                   className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all group"
                 >
                   <h3 className="text-xl font-heading font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">

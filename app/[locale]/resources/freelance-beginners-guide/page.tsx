@@ -447,7 +447,7 @@ export default async function FreelanceBeginnerGuidePage({ params }: PageProps) 
 
                 <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
                   {content.step3.linkText.split('creating winning freelance profiles')[0]}
-                  <Link href={`/${locale}/seo/freelance-profile-templates`} className="text-primary hover:text-primary/80 font-semibold underline decoration-2 decoration-primary/30 hover:decoration-primary">
+                  <Link href={`/${locale}/resources/freelance-profile-templates`} className="text-primary hover:text-primary/80 font-semibold underline decoration-2 decoration-primary/30 hover:decoration-primary">
                     {locale === 'nl' ? 'het maken van winnende freelance profielen' : 'creating winning freelance profiles'}
                   </Link>
                   {content.step3.linkText.split('creating winning freelance profiles')[1]}

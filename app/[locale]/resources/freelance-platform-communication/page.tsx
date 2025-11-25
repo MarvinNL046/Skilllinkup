@@ -540,7 +540,7 @@ export default async function FreelancePlatformCommunication({ params }: { param
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Link
-                  href={`/${locale}/seo/optimizing-freelance-profile-maximum-visibility`}
+                  href={`/${locale}/resources/optimizing-freelance-profile-maximum-visibility`}
                   className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 hover:shadow-lg transition-all group"
                 >
                   <Users className="w-10 h-10 text-primary mb-3" />
@@ -552,7 +552,7 @@ export default async function FreelancePlatformCommunication({ params }: { param
                   </p>
                 </Link>
                 <Link
-                  href={`/${locale}/seo/how-to-write-proposals-that-win`}
+                  href={`/${locale}/resources/how-to-write-proposals-that-win`}
                   className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 hover:shadow-lg transition-all group"
                 >
                   <Award className="w-10 h-10 text-accent mb-3" />
@@ -564,7 +564,7 @@ export default async function FreelancePlatformCommunication({ params }: { param
                   </p>
                 </Link>
                 <Link
-                  href={`/${locale}/seo/mastering-freelance-platform-algorithms`}
+                  href={`/${locale}/resources/mastering-freelance-platform-algorithms`}
                   className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 hover:shadow-lg transition-all group"
                 >
                   <ThumbsUp className="w-10 h-10 text-[#1e1541] dark:text-white mb-3" />

@@ -261,7 +261,7 @@ export default async function FreelanceBeginnerMistakesPage({ params }: PageProp
                   </div>
 
                   <p className="text-sm text-gray-600 dark:text-gray-400 italic">
-                    Learn the proven 4-part proposal formula in our guide: <Link href={`/${locale}/seo/first-freelance-proposal`} className="text-primary hover:text-primary/80 underline font-semibold">How to Write Your First Freelance Proposal</Link>
+                    Learn the proven 4-part proposal formula in our guide: <Link href={`/${locale}/resources/first-freelance-proposal`} className="text-primary hover:text-primary/80 underline font-semibold">How to Write Your First Freelance Proposal</Link>
                   </p>
                 </div>
               </div>
@@ -505,11 +505,11 @@ export default async function FreelanceBeginnerMistakesPage({ params }: PageProp
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-primary mt-1">☐</span>
-                        <span>Create proposal template following the <Link href={`/${locale}/seo/first-freelance-proposal`} className="text-primary underline">4-part formula</Link></span>
+                        <span>Create proposal template following the <Link href={`/${locale}/resources/first-freelance-proposal`} className="text-primary underline">4-part formula</Link></span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-primary mt-1">☐</span>
-                        <span>Update your <Link href={`/${locale}/seo/freelance-profile-templates`} className="text-primary underline">profile</Link> with results-focused bio</span>
+                        <span>Update your <Link href={`/${locale}/resources/freelance-profile-templates`} className="text-primary underline">profile</Link> with results-focused bio</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-primary mt-1">☐</span>
@@ -621,7 +621,7 @@ export default async function FreelanceBeginnerMistakesPage({ params }: PageProp
               </h2>
               <div className="grid md:grid-cols-2 gap-6">
                 <Link
-                  href={`/${locale}/seo/freelance-beginners-guide`}
+                  href={`/${locale}/resources/freelance-beginners-guide`}
                   className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all group"
                 >
                   <h3 className="text-xl font-heading font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">
@@ -632,7 +632,7 @@ export default async function FreelanceBeginnerMistakesPage({ params }: PageProp
                   </p>
                 </Link>
                 <Link
-                  href={`/${locale}/seo/freelance-platform-setup`}
+                  href={`/${locale}/resources/freelance-platform-setup`}
                   className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all group"
                 >
                   <h3 className="text-xl font-heading font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">

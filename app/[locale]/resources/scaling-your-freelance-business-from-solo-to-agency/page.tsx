@@ -931,7 +931,7 @@ export default async function ScalingFreelanceBusinessPage({ params }: PageProps
               Complete Your Freelance Mastery
             </h3>
             <div className="grid md:grid-cols-3 gap-6">
-              <Link href={`/${locale}/seo/building-long-term-client-relationships-on-freelance-platforms`} className="group bg-gray-50 dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-all">
+              <Link href={`/${locale}/resources/building-long-term-client-relationships-on-freelance-platforms`} className="group bg-gray-50 dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-all">
                 <h4 className="font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">
                   Build Long-Term Client Relationships
                 </h4>
@@ -939,7 +939,7 @@ export default async function ScalingFreelanceBusinessPage({ params }: PageProps
                   Foundation for sustainable agency growth
                 </p>
               </Link>
-              <Link href={`/${locale}/seo/how-to-get-5-star-reviews-on-every-freelance-project`} className="group bg-gray-50 dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-all">
+              <Link href={`/${locale}/resources/how-to-get-5-star-reviews-on-every-freelance-project`} className="group bg-gray-50 dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-all">
                 <h4 className="font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">
                   Get 5-Star Reviews Every Time
                 </h4>
@@ -947,7 +947,7 @@ export default async function ScalingFreelanceBusinessPage({ params }: PageProps
                   Reputation that supports premium agency pricing
                 </p>
               </Link>
-              <Link href={`/${locale}/seo/advanced-bidding-strategies-to-win-more-freelance-projects`} className="group bg-gray-50 dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-all">
+              <Link href={`/${locale}/resources/advanced-bidding-strategies-to-win-more-freelance-projects`} className="group bg-gray-50 dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-all">
                 <h4 className="font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">
                   Advanced Bidding Strategies
                 </h4>

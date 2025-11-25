@@ -11,7 +11,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
-  const pageUrl = `${siteUrl}/${locale}/seo/freelance-accounting-software`;
+  const pageUrl = `${siteUrl}/${locale}/resources/freelance-accounting-software`;
 
   return {
     title: 'Freelance Accounting Software: Track Income, Expenses, and Taxes',

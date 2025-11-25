@@ -238,19 +238,19 @@ export default async function CalculateFreelanceHourlyRatePage({ params }: { par
           {
             title: "Vast Bedrag vs Uurtarief",
             text: "Leer wanneer je elk prijsmodel gebruikt voor maximale winstgevendheid",
-            href: "/seo/freelance-pricing-strategies",
+            href: "/resources/freelance-pricing-strategies",
             cta: "Lees Gids →"
           },
           {
             title: "Hogere Tarieven Onderhandelen",
             text: "Beproefde tactieken om je inkomsten te verhogen zonder klanten te verliezen",
-            href: "/seo/negotiate-higher-rates",
+            href: "/resources/negotiate-higher-rates",
             cta: "Lees Gids →"
           },
           {
             title: "Maximaliseer Netto-inkomen",
             text: "Begrijp platformkosten en prijs om je inkomsten te maximaliseren",
-            href: "/seo/platform-fees-maximize-earnings",
+            href: "/resources/platform-fees-maximize-earnings",
             cta: "Lees Gids →"
           }
         ]
@@ -464,19 +464,19 @@ export default async function CalculateFreelanceHourlyRatePage({ params }: { par
           {
             title: "Fixed-Price vs Hourly Billing",
             text: "Learn when to use each pricing model for maximum profitability",
-            href: "/seo/freelance-pricing-strategies",
+            href: "/resources/freelance-pricing-strategies",
             cta: "Read Guide →"
           },
           {
             title: "Negotiate Higher Rates",
             text: "Proven tactics to increase your earnings without losing clients",
-            href: "/seo/negotiate-higher-rates",
+            href: "/resources/negotiate-higher-rates",
             cta: "Read Guide →"
           },
           {
             title: "Maximize Take-Home Pay",
             text: "Understand platform fees and price to maximize your earnings",
-            href: "/seo/platform-fees-maximize-earnings",
+            href: "/resources/platform-fees-maximize-earnings",
             cta: "Read Guide →"
           }
         ]

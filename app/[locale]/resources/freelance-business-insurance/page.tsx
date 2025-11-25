@@ -17,13 +17,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: 'Leer welke verzekeringen ZZP\'ers nodig hebben: AOV, aansprakelijkheid, beroepsaansprakelijkheid. Vergelijk kosten, dekking en bepaal of verzekering de moeite waard is.',
       keywords: 'verzekering ZZP, AOV verzekering, arbeidsongeschiktheidsverzekering, aansprakelijkheidsverzekering freelancer, beroepsaansprakelijkheid, WIA verzekering, cyber verzekering',
       alternates: {
-        canonical: 'https://skilllinkup.com/nl/seo/freelance-business-insurance',
+        canonical: 'https://skilllinkup.com/nl/resources/freelance-business-insurance',
       },
       openGraph: {
         title: 'Verzekering voor ZZP\'ers: Complete Gids 2024',
         description: 'Uitgebreide gids over verzekeringen voor ZZP\'ers. Leer welke dekking je nodig hebt en of het de investering waard is.',
         type: 'article',
-        url: 'https://skilllinkup.com/nl/seo/freelance-business-insurance',
+        url: 'https://skilllinkup.com/nl/resources/freelance-business-insurance',
         locale: 'nl_NL',
       },
     };
@@ -34,13 +34,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     description: 'Learn which insurance freelancers need including liability, E&O, and health insurance. Compare costs, coverage, and determine if insurance is worth it for your business.',
     keywords: 'freelance insurance, business insurance, liability insurance, E&O insurance, freelance health insurance',
     alternates: {
-      canonical: 'https://skilllinkup.com/seo/freelance-business-insurance',
+      canonical: 'https://skilllinkup.com/resources/freelance-business-insurance',
     },
     openGraph: {
       title: 'Freelance Business Insurance: Do You Need It? Complete Guide',
       description: 'Comprehensive guide to freelance business insurance. Learn what coverage you need and whether it is worth the investment.',
       type: 'article',
-      url: 'https://skilllinkup.com/seo/freelance-business-insurance',
+      url: 'https://skilllinkup.com/resources/freelance-business-insurance',
     },
   };
 }
@@ -555,7 +555,7 @@ export default async function FreelanceBusinessInsurancePage({ params }: PagePro
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
-                  href={`/${locale}/seo/freelance-contracts-101`}
+                  href={`/${locale}/resources/freelance-contracts-101`}
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary hover:bg-primary-dark text-white font-heading font-semibold rounded-lg shadow-lg transition-all hover:shadow-xl"
                 >
                   <FileText className="w-5 h-5" />
@@ -857,7 +857,7 @@ export default async function FreelanceBusinessInsurancePage({ params }: PagePro
                     {content.cta1Text}
                   </p>
                   <Link
-                    href={`/${locale}/seo/freelance-contracts-101`}
+                    href={`/${locale}/resources/freelance-contracts-101`}
                     className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary hover:bg-gray-100 font-heading font-semibold rounded-lg shadow-lg transition-all"
                   >
                     <FileText className="w-5 h-5" />
@@ -976,7 +976,7 @@ export default async function FreelanceBusinessInsurancePage({ params }: PagePro
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Link
-                      href={`/${locale}/seo/freelance-tax-guide`}
+                      href={`/${locale}/resources/freelance-tax-guide`}
                       className="inline-flex items-center gap-2 px-8 py-4 bg-accent hover:bg-accent-dark text-white font-heading font-semibold rounded-lg shadow-lg transition-all"
                     >
                       <CheckCircle className="w-5 h-5" />
@@ -1031,21 +1031,21 @@ export default async function FreelanceBusinessInsurancePage({ params }: PagePro
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Link
-                      href={`/${locale}/seo/freelance-contracts-101`}
+                      href={`/${locale}/resources/freelance-contracts-101`}
                       className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     >
                       <FileText className="w-6 h-6 text-primary" />
                       <span className="font-semibold text-gray-900 dark:text-white">{content.relatedContract}</span>
                     </Link>
                     <Link
-                      href={`/${locale}/seo/freelance-tax-guide`}
+                      href={`/${locale}/resources/freelance-tax-guide`}
                       className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     >
                       <DollarSign className="w-6 h-6 text-primary" />
                       <span className="font-semibold text-gray-900 dark:text-white">{content.relatedTax}</span>
                     </Link>
                     <Link
-                      href={`/${locale}/seo/managing-multiple-clients`}
+                      href={`/${locale}/resources/managing-multiple-clients`}
                       className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     >
                       <CheckCircle className="w-6 h-6 text-primary" />

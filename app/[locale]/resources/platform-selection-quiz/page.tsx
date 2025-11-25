@@ -245,8 +245,8 @@ export default async function PlatformSelectionQuizPage({
       title: 'Nog Niet Klaar voor de Quiz?',
       subtitle: 'Leer meer over platform selectiefactoren voordat je de quiz doet?.',
       links: [
-        { href: `/${locale}/seo/choose-best-freelance-platform`, text: 'Platform Selectie Gids →' },
-        { href: `/${locale}/seo/key-factors-choosing-freelance-marketplace`, text: '5 Belangrijke Selectiefactoren →' },
+        { href: `/${locale}/resources/choose-best-freelance-platform`, text: 'Platform Selectie Gids →' },
+        { href: `/${locale}/resources/key-factors-choosing-freelance-marketplace`, text: '5 Belangrijke Selectiefactoren →' },
       ],
     },
     faq: {
@@ -287,9 +287,9 @@ export default async function PlatformSelectionQuizPage({
     relatedLinks: {
       title: 'Meer Platform Selectie Resources',
       links: [
-        { href: `/${locale}/seo/choose-best-freelance-platform`, title: 'Hoe te Kiezen op Vaardigheidsniveau', desc: 'Complete gids voor platform selectie' },
-        { href: `/${locale}/seo/beginner-vs-expert-platforms`, title: 'Beginner vs Expert Platforms', desc: 'Begrijp platform tier verschillen' },
-        { href: `/${locale}/seo/key-factors-choosing-freelance-marketplace`, title: '5 Belangrijke Selectiefactoren', desc: 'Kritieke factoren voor platform beslissingen' },
+        { href: `/${locale}/resources/choose-best-freelance-platform`, title: 'Hoe te Kiezen op Vaardigheidsniveau', desc: 'Complete gids voor platform selectie' },
+        { href: `/${locale}/resources/beginner-vs-expert-platforms`, title: 'Beginner vs Expert Platforms', desc: 'Begrijp platform tier verschillen' },
+        { href: `/${locale}/resources/key-factors-choosing-freelance-marketplace`, title: '5 Belangrijke Selectiefactoren', desc: 'Kritieke factoren voor platform beslissingen' },
         { href: `/${locale}/platforms`, title: 'Vergelijk Alle Platforms', desc: 'Kant-aan-kant vergelijkingstool' },
       ],
     },
@@ -496,8 +496,8 @@ export default async function PlatformSelectionQuizPage({
       title: 'Not Ready for the Quiz Yet?',
       subtitle: 'Learn more about platform selection factors before taking the quiz?.',
       links: [
-        { href: `/${locale}/seo/choose-best-freelance-platform`, text: 'Platform Selection Guide →' },
-        { href: `/${locale}/seo/key-factors-choosing-freelance-marketplace`, text: '5 Key Selection Factors →' },
+        { href: `/${locale}/resources/choose-best-freelance-platform`, text: 'Platform Selection Guide →' },
+        { href: `/${locale}/resources/key-factors-choosing-freelance-marketplace`, text: '5 Key Selection Factors →' },
       ],
     },
     faq: {
@@ -538,9 +538,9 @@ export default async function PlatformSelectionQuizPage({
     relatedLinks: {
       title: 'More Platform Selection Resources',
       links: [
-        { href: `/${locale}/seo/choose-best-freelance-platform`, title: 'How to Choose by Skill Level', desc: 'Complete guide to platform selection' },
-        { href: `/${locale}/seo/beginner-vs-expert-platforms`, title: 'Beginner vs Expert Platforms', desc: 'Understand platform tier differences' },
-        { href: `/${locale}/seo/key-factors-choosing-freelance-marketplace`, title: '5 Key Selection Factors', desc: 'Critical factors for platform decisions' },
+        { href: `/${locale}/resources/choose-best-freelance-platform`, title: 'How to Choose by Skill Level', desc: 'Complete guide to platform selection' },
+        { href: `/${locale}/resources/beginner-vs-expert-platforms`, title: 'Beginner vs Expert Platforms', desc: 'Understand platform tier differences' },
+        { href: `/${locale}/resources/key-factors-choosing-freelance-marketplace`, title: '5 Key Selection Factors', desc: 'Critical factors for platform decisions' },
         { href: `/${locale}/platforms`, title: 'Compare All Platforms', desc: 'Side-by-side comparison tool' },
       ],
     },

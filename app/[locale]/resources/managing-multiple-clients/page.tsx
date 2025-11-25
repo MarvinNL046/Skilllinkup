@@ -17,13 +17,13 @@ export async function generateMetadata({
       description: 'Leer hoe je succesvol meerdere freelance klanten beheert met bewezen organisatiesystemen, tijdsmanagementstrategieën en productiviteitstools.',
       keywords: 'meerdere klanten beheren, freelance organisatie, tijdsmanagement, productiviteitstools, klanten management, klanten management freelance, tijd indelen ZZP',
       alternates: {
-        canonical: 'https://skilllinkup.com/nl/seo/managing-multiple-clients',
+        canonical: 'https://skilllinkup.com/nl/resources/managing-multiple-clients',
       },
       openGraph: {
         title: 'Meerdere Klanten Beheren: Organisatie & Tijdsmanagement Tips',
         description: 'Beheers de kunst van het beheren van meerdere freelance klanten met organisatiesystemen en tijdsmanagementstrategieën die werken.',
         type: 'article',
-        url: 'https://skilllinkup.com/nl/seo/managing-multiple-clients',
+        url: 'https://skilllinkup.com/nl/resources/managing-multiple-clients',
         locale: 'nl_NL',
       },
     };
@@ -34,13 +34,13 @@ export async function generateMetadata({
     description: 'Learn how to successfully manage multiple freelance clients with proven organization systems, time management strategies, and productivity tools.',
     keywords: 'managing multiple clients, freelance organization, time management, productivity tools, client management',
     alternates: {
-      canonical: 'https://skilllinkup.com/seo/managing-multiple-clients',
+      canonical: 'https://skilllinkup.com/resources/managing-multiple-clients',
     },
     openGraph: {
       title: 'Managing Multiple Clients: Organization & Time Management Tips',
       description: 'Master the art of managing multiple freelance clients with organization systems and time management strategies that work.',
       type: 'article',
-      url: 'https://skilllinkup.com/seo/managing-multiple-clients',
+      url: 'https://skilllinkup.com/resources/managing-multiple-clients',
     },
   };
 }
@@ -358,8 +358,8 @@ export default async function ManagingMultipleClientsPage({
     relatedResources: {
       title: 'Gerelateerde Bronnen',
       links: [
-        { href: '/seo/freelance-contracts-101', icon: 'FileText', text: 'Freelance Contracten 101' },
-        { href: '/seo/freelance-tax-guide', icon: 'CheckCircle', text: 'Freelance Belasting Gids' },
+        { href: '/resources/freelance-contracts-101', icon: 'FileText', text: 'Freelance Contracten 101' },
+        { href: '/resources/freelance-tax-guide', icon: 'CheckCircle', text: 'Freelance Belasting Gids' },
         { href: '/tools/time-tracker', icon: 'Clock', text: 'Gratis Time Tracker' },
         { href: '/tools', icon: 'Zap', text: 'Alle Zakelijke Tools' },
       ],
@@ -669,8 +669,8 @@ export default async function ManagingMultipleClientsPage({
     relatedResources: {
       title: 'Related Resources',
       links: [
-        { href: '/seo/freelance-contracts-101', icon: 'FileText', text: 'Freelance Contracts 101' },
-        { href: '/seo/freelance-tax-guide', icon: 'CheckCircle', text: 'Freelance Tax Guide' },
+        { href: '/resources/freelance-contracts-101', icon: 'FileText', text: 'Freelance Contracts 101' },
+        { href: '/resources/freelance-tax-guide', icon: 'CheckCircle', text: 'Freelance Tax Guide' },
         { href: '/tools/time-tracker', icon: 'Clock', text: 'Free Time Tracker' },
         { href: '/tools', icon: 'Zap', text: 'All Business Tools' },
       ],
@@ -956,14 +956,14 @@ export default async function ManagingMultipleClientsPage({
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Link
-                      href={`/${locale}/seo/freelance-contracts-101`}
+                      href={`/${locale}/resources/freelance-contracts-101`}
                       className="inline-flex items-center gap-2 px-8 py-4 bg-accent hover:bg-accent-dark text-white font-heading font-semibold rounded-lg shadow-lg transition-all"
                     >
                       <FileText className="w-5 h-5" />
                       {content.ctaContracts.button1}
                     </Link>
                     <Link
-                      href={`/${locale}/seo/freelance-invoicing-guide`}
+                      href={`/${locale}/resources/freelance-invoicing-guide`}
                       className="inline-flex items-center gap-2 px-8 py-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-heading font-semibold rounded-lg shadow border-2 border-gray-200 dark:border-gray-700 transition-all"
                     >
                       {content.ctaContracts.button2}

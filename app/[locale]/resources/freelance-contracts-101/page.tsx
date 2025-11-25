@@ -13,13 +13,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       description: 'Leer hoe je effectieve freelance contracten opstelt die zowel jou als je klanten beschermen. Inclusief essentiële clausules, sjablonen en juridische best practices voor ZZP\'ers.',
       keywords: 'contracten opstellen freelance, algemene voorwaarden zzp, freelance overeenkomst nederland, zelfstandigen contract, juridische bescherming zzp',
       alternates: {
-        canonical: 'https://skilllinkup.com/nl/seo/freelance-contracts-101',
+        canonical: 'https://skilllinkup.com/nl/resources/freelance-contracts-101',
       },
       openGraph: {
         title: 'Freelance Contracten Opstellen: Bescherm Jezelf en Je Klanten 2024',
         description: 'Master freelance contracten met sjablonen en best practices. Leer essentiële clausules om je werk te beschermen en betaling te garanderen.',
         type: 'article',
-        url: 'https://skilllinkup.com/nl/seo/freelance-contracts-101',
+        url: 'https://skilllinkup.com/nl/resources/freelance-contracts-101',
       },
     };
   }
@@ -29,13 +29,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     description: 'Learn how to create effective freelance contracts that protect both you and your clients. Includes essential clauses, templates, and legal best practices.',
     keywords: 'freelance contract, contract template, freelance agreement, legal protection, freelance terms',
     alternates: {
-      canonical: 'https://skilllinkup.com/seo/freelance-contracts-101',
+      canonical: 'https://skilllinkup.com/resources/freelance-contracts-101',
     },
     openGraph: {
       title: 'Freelance Contracts 101: Protect Yourself and Your Clients',
       description: 'Master freelance contracts with templates and best practices. Learn essential clauses to protect your work and ensure payment.',
       type: 'article',
-      url: 'https://skilllinkup.com/seo/freelance-contracts-101',
+      url: 'https://skilllinkup.com/resources/freelance-contracts-101',
     },
   };
 }
@@ -289,9 +289,9 @@ export default async function FreelanceContractsGuidePage({ params }: { params: 
     relatedResources: {
       title: 'Gerelateerde Bronnen',
       links: [
-        { href: '/seo/freelance-invoicing-guide', label: 'Freelance Facturatie Gids' },
-        { href: '/seo/freelance-tax-guide', label: 'Freelance Belasting Gids' },
-        { href: '/seo/freelance-business-insurance', label: 'Zakelijke Verzekering Gids' },
+        { href: '/resources/freelance-invoicing-guide', label: 'Freelance Facturatie Gids' },
+        { href: '/resources/freelance-tax-guide', label: 'Freelance Belasting Gids' },
+        { href: '/resources/freelance-business-insurance', label: 'Zakelijke Verzekering Gids' },
         { href: '/tools', label: 'Gratis Zakelijke Tools' },
       ],
     },
@@ -541,9 +541,9 @@ export default async function FreelanceContractsGuidePage({ params }: { params: 
     relatedResources: {
       title: 'Related Resources',
       links: [
-        { href: '/seo/freelance-invoicing-guide', label: 'Freelance Invoicing Guide' },
-        { href: '/seo/freelance-tax-guide', label: 'Freelance Tax Guide' },
-        { href: '/seo/freelance-business-insurance', label: 'Business Insurance Guide' },
+        { href: '/resources/freelance-invoicing-guide', label: 'Freelance Invoicing Guide' },
+        { href: '/resources/freelance-tax-guide', label: 'Freelance Tax Guide' },
+        { href: '/resources/freelance-business-insurance', label: 'Business Insurance Guide' },
         { href: '/tools', label: 'Free Business Tools' },
       ],
     },
@@ -872,14 +872,14 @@ export default async function FreelanceContractsGuidePage({ params }: { params: 
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Link
-                      href={`/${locale}/seo/managing-multiple-clients`}
+                      href={`/${locale}/resources/managing-multiple-clients`}
                       className="inline-flex items-center gap-2 px-8 py-4 bg-accent hover:bg-accent-dark text-white font-heading font-semibold rounded-lg shadow-lg transition-all"
                     >
                       <CheckCircle className="w-5 h-5" />
                       {content.ctaBox2.cta1}
                     </Link>
                     <Link
-                      href={`/${locale}/seo/freelance-invoicing-guide`}
+                      href={`/${locale}/resources/freelance-invoicing-guide`}
                       className="inline-flex items-center gap-2 px-8 py-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-heading font-semibold rounded-lg shadow border-2 border-gray-200 dark:border-gray-700 transition-all"
                     >
                       {content.ctaBox2.cta2}

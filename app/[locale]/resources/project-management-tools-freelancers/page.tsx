@@ -11,7 +11,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
-  const pageUrl = `${siteUrl}/${locale}/seo/project-management-tools-freelancers`;
+  const pageUrl = `${siteUrl}/${locale}/resources/project-management-tools-freelancers`;
 
   return {
     title: 'Project Management Tools for Freelancers: Boost Your Productivity',

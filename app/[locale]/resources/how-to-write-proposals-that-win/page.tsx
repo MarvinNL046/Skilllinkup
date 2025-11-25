@@ -975,7 +975,7 @@ Best regards,
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Link
-                  href={`/${locale}/seo/optimizing-freelance-profile-maximum-visibility`}
+                  href={`/${locale}/resources/optimizing-freelance-profile-maximum-visibility`}
                   className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 hover:shadow-lg transition-all group"
                 >
                   <Target className="w-10 h-10 text-primary mb-3" />
@@ -987,7 +987,7 @@ Best regards,
                   </p>
                 </Link>
                 <Link
-                  href={`/${locale}/seo/mastering-freelance-platform-algorithms`}
+                  href={`/${locale}/resources/mastering-freelance-platform-algorithms`}
                   className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 hover:shadow-lg transition-all group"
                 >
                   <TrendingUp className="w-10 h-10 text-accent mb-3" />
@@ -999,7 +999,7 @@ Best regards,
                   </p>
                 </Link>
                 <Link
-                  href={`/${locale}/seo/freelance-platform-communication`}
+                  href={`/${locale}/resources/freelance-platform-communication`}
                   className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 hover:shadow-lg transition-all group"
                 >
                   <MessageSquare className="w-10 h-10 text-[#1e1541] dark:text-white mb-3" />

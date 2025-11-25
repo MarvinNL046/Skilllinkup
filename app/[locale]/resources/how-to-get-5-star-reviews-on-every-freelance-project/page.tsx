@@ -813,7 +813,7 @@ export default async function Get5StarReviewsPage({ params }: PageProps) {
               Continue Your Freelance Mastery
             </h3>
             <div className="grid md:grid-cols-3 gap-6">
-              <Link href={`/${locale}/seo/building-long-term-client-relationships-on-freelance-platforms`} className="group bg-gray-50 dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-all">
+              <Link href={`/${locale}/resources/building-long-term-client-relationships-on-freelance-platforms`} className="group bg-gray-50 dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-all">
                 <h4 className="font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">
                   Build Long-Term Client Relationships
                 </h4>
@@ -821,7 +821,7 @@ export default async function Get5StarReviewsPage({ params }: PageProps) {
                   Transform satisfied clients into recurring revenue streams
                 </p>
               </Link>
-              <Link href={`/${locale}/seo/advanced-bidding-strategies-to-win-more-freelance-projects`} className="group bg-gray-50 dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-all">
+              <Link href={`/${locale}/resources/advanced-bidding-strategies-to-win-more-freelance-projects`} className="group bg-gray-50 dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-all">
                 <h4 className="font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">
                   Advanced Bidding Strategies
                 </h4>
@@ -829,7 +829,7 @@ export default async function Get5StarReviewsPage({ params }: PageProps) {
                   Win more premium projects with strategic proposals
                 </p>
               </Link>
-              <Link href={`/${locale}/seo/scaling-your-freelance-business-from-solo-to-agency`} className="group bg-gray-50 dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-all">
+              <Link href={`/${locale}/resources/scaling-your-freelance-business-from-solo-to-agency`} className="group bg-gray-50 dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-all">
                 <h4 className="font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">
                   Scale from Solo to Agency
                 </h4>

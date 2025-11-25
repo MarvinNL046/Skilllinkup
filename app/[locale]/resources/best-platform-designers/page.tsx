@@ -979,7 +979,7 @@ export default async function BestPlatformDesignersPage({ params }: Props) {
               </h2>
               <div className="grid md:grid-cols-3 gap-4">
                 <Link
-                  href={`/${locale}/seo/best-platform-writers`}
+                  href={`/${locale}/resources/best-platform-writers`}
                   className="p-4 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-accent transition-colors"
                 >
                   <h3 className="font-heading font-semibold text-gray-900 dark:text-white mb-2">
@@ -990,7 +990,7 @@ export default async function BestPlatformDesignersPage({ params }: Props) {
                   </p>
                 </Link>
                 <Link
-                  href={`/${locale}/seo/upwork-vs-fiverr`}
+                  href={`/${locale}/resources/upwork-vs-fiverr`}
                   className="p-4 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-accent transition-colors"
                 >
                   <h3 className="font-heading font-semibold text-gray-900 dark:text-white mb-2">
@@ -1001,7 +1001,7 @@ export default async function BestPlatformDesignersPage({ params }: Props) {
                   </p>
                 </Link>
                 <Link
-                  href={`/${locale}/seo/toptal-vs-upwork`}
+                  href={`/${locale}/resources/toptal-vs-upwork`}
                   className="p-4 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-accent transition-colors"
                 >
                   <h3 className="font-heading font-semibold text-gray-900 dark:text-white mb-2">
