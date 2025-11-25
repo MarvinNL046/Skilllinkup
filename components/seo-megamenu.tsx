@@ -191,9 +191,9 @@ export function SeoMegaMenu({ isMobile = false, onLinkClick }: SeoMegaMenuProps)
         {isOpen && (
           <div
             ref={menuRef}
-            className="absolute left-1/2 -translate-x-1/2 mt-2 w-screen max-w-7xl bg-white dark:bg-gray-900 border border-background-gray dark:border-gray-800 rounded-lg shadow-xl z-50"
+            className="absolute left-1/2 -translate-x-1/2 mt-2 w-[95vw] max-w-7xl bg-white dark:bg-gray-900 border border-background-gray dark:border-gray-800 rounded-lg shadow-xl z-50 overflow-hidden"
           >
-            <div className="grid grid-cols-5 gap-4 p-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-4 md:p-6 max-h-[70vh] overflow-y-auto">
               {SEO_NAVIGATION.map((pillar) => (
                 <div key={pillar.id} className="space-y-3">
                   <div className="flex items-center gap-2 pb-2 border-b border-background-gray dark:border-gray-800">
