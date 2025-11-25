@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from 'next-intl';
+import { trackConversion } from '@/lib/analytics';
 
 export function Newsletter() {
   const t = useTranslations('homepage.newsletter');
@@ -28,6 +29,10 @@ export function Newsletter() {
         setStatus("success");
         setMessage(t('successMessage'));
         setEmail("");
+        // Track successful newsletter signup
+        trackConversion('newsletter_signup', {
+          location: 'newsletter_section',
+        });
       } else {
         setStatus("error");
         setMessage(data.message || t('errorMessage'));

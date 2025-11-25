@@ -70,6 +70,7 @@ export interface Platform {
   description: string | null;
   logo_url: string | null;
   website_url: string | null;
+  affiliate_link: string | null;
   rating: number;
   category: string;
   fees: string | null;
@@ -512,6 +513,7 @@ export async function getPlatformBySlug(slug: string, locale = 'nl'): Promise<Pl
       description,
       logo_url,
       website_url,
+      affiliate_link,
       rating,
       category,
       fees,
@@ -523,7 +525,9 @@ export async function getPlatformBySlug(slug: string, locale = 'nl'): Promise<Pl
       features,
       status,
       published_at,
-      created_at
+      created_at,
+      COALESCE(work_type, 'remote') as work_type,
+      COALESCE(countries, ARRAY['Worldwide']::TEXT[]) as countries
     FROM platforms
     WHERE slug = ${slug}
       AND status = 'published'

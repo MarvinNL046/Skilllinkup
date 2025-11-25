@@ -6,6 +6,7 @@ import { getPlatformBySlug, getPublishedPlatforms } from "@/lib/queries";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Newsletter } from "@/components/newsletter";
+import { AffiliateButton } from "@/components/affiliate-button";
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -316,18 +317,19 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                   )}
 
                   {/* Website Link */}
-                  {platform.website_url && (
-                    <a
-                      href={platform.website_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-primary hover:text-primary-dark dark:text-accent-light dark:hover:text-accent font-semibold transition-colors"
+                  {(platform.affiliate_link || platform.website_url) && (
+                    <AffiliateButton
+                      platformId={platform.id}
+                      platformName={platform.name}
+                      affiliateLink={platform.affiliate_link}
+                      websiteUrl={platform.website_url}
+                      variant="secondary"
                     >
                       {t('visitWebsite')}
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
-                    </a>
+                    </AffiliateButton>
                   )}
                 </div>
               </div>
@@ -445,7 +447,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                   )}
 
                   {/* CTA Section */}
-                  {platform.website_url && (
+                  {(platform.affiliate_link || platform.website_url) && (
                     <section className="bg-gradient-to-r from-primary to-primary-dark dark:from-accent dark:to-accent-dark rounded-lg p-8 text-center text-white shadow-xl">
                       <h2 className="text-2xl font-heading font-bold mb-3 text-white">
                         {t('readyToGetStarted', { name: platform.name })}
@@ -453,17 +455,21 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                       <p className="text-white/90 mb-6 max-w-2xl mx-auto">
                         {t('joinThousands')}
                       </p>
-                      <a
-                        href={platform.website_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-2 rounded-lg bg-white hover:bg-gray-100 dark:bg-gray-900 dark:hover:bg-gray-800 px-8 py-3 font-heading font-semibold text-primary dark:text-accent-light transition-all shadow-lg"
+                      <AffiliateButton
+                        platformId={platform.id}
+                        platformName={platform.name}
+                        affiliateLink={platform.affiliate_link}
+                        websiteUrl={platform.website_url}
+                        variant="primary"
                       >
                         {t('visitPlatform')}
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
-                      </a>
+                      </AffiliateButton>
+                      <p className="mt-4 text-xs text-white/60">
+                        {platform.affiliate_link && '* Affiliate link'}
+                      </p>
                     </section>
                   )}
                 </div>
@@ -504,15 +510,18 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                           </dd>
                         </div>
                       </dl>
-                      {platform.website_url && (
-                        <a
-                          href={platform.website_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="mt-6 inline-flex items-center justify-center w-full rounded-lg bg-primary hover:bg-primary-dark dark:bg-accent dark:hover:bg-accent-dark px-4 py-2.5 text-sm font-heading font-semibold text-white transition-all shadow-md"
-                        >
-                          {t('visitPlatform')}
-                        </a>
+                      {(platform.affiliate_link || platform.website_url) && (
+                        <div className="mt-6">
+                          <AffiliateButton
+                            platformId={platform.id}
+                            platformName={platform.name}
+                            affiliateLink={platform.affiliate_link}
+                            websiteUrl={platform.website_url}
+                            variant="sidebar"
+                          >
+                            {t('visitPlatform')}
+                          </AffiliateButton>
+                        </div>
                       )}
                     </div>
 

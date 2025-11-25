@@ -1442,5 +1442,149 @@
     },
     "minRead": "min read",
     "views": "views"
+  },
+  "resourcesPage": {
+    "badge": "55+ Expert Guides",
+    "title": "Complete Freelance Platform",
+    "titleHighlight": "Guides Library",
+    "subtitle": "Everything you need to succeed as a freelancer. From choosing the right platform to scaling your business, we've got you covered.",
+    "browseAllGuides": "Browse All Guides",
+    "comparePlatforms": "Compare Platforms",
+    "stats": {
+      "expertGuides": "Expert Guides",
+      "topicCategories": "Topic Categories",
+      "platformsCovered": "Platforms Covered",
+      "freeContent": "Free Content"
+    },
+    "cta": {
+      "title": "Get Weekly Freelance Tips",
+      "subtitle": "Join 10,000+ freelancers receiving expert tips, platform updates, and success strategies every week.",
+      "button": "Subscribe to Newsletter"
+    },
+    "meta": {
+      "title": "Complete Freelance Platform Guides - 55+ Expert Resources | SkillLinkup",
+      "description": "Browse our complete library of 55+ expert freelance guides. Platform selection, pricing strategies, success tips, and platform-specific tutorials to help you thrive as a freelancer.",
+      "keywords": "freelance guides, platform selection, freelance tips, upwork guide, fiverr guide, freelance success, pricing strategies, freelance tools, platform comparisons",
+      "ogTitle": "Complete Freelance Platform Guides - 55+ Expert Resources",
+      "ogDescription": "Browse our complete library of 55+ expert freelance guides covering everything from platform selection to success strategies.",
+      "twitterDescription": "Browse our complete library of 55+ expert freelance guides."
+    },
+    "comprehensiveGuides": "comprehensive guides",
+    "readGuide": "Read Guide",
+    "viewAllGuides": "View All Guides",
+    "browseAll": "Browse All 55+ Freelance Guides",
+    "expertInsights": "Expert insights to help you succeed on any platform"
+  },
+  "seoNavigation": {
+    "guides": "Guides",
+    "categories": {
+      "platformSelection": {
+        "name": "Platform Selection",
+        "guides": {
+          "chooseBestPlatform": { "name": "Choose Best Platform", "description": "Complete guide to finding your ideal platform" },
+          "beginnerVsExpert": { "name": "Beginner vs Expert", "description": "Platforms matched to your experience level" },
+          "keySelectionFactors": { "name": "Key Selection Factors", "description": "What to look for when choosing" },
+          "multiplePlatforms": { "name": "Multiple Platforms", "description": "Pros and cons of using multiple sites" },
+          "platformQuiz": { "name": "Platform Quiz", "description": "Interactive quiz to find your match" }
+        }
+      },
+      "platformReviews": {
+        "name": "Platform Reviews",
+        "guides": {
+          "whatIsUpwork": { "name": "What is Upwork?", "description": "Complete introduction to Upwork" },
+          "whatIsToptal": { "name": "What is Toptal?", "description": "Elite talent network explained" },
+          "upworkGuide": { "name": "Upwork Guide", "description": "Everything you need to know about Upwork" },
+          "fiverrBeginners": { "name": "Fiverr for Beginners", "description": "Start selling on Fiverr today" },
+          "toptalReview": { "name": "Toptal Review", "description": "Elite freelancers platform deep dive" },
+          "isToptalLegit": { "name": "Is Toptal Legit?", "description": "Trust, verification & real experiences" },
+          "freelancerCom": { "name": "Freelancer.com", "description": "Complete Freelancer.com analysis" },
+          "guruPlatform": { "name": "Guru Platform", "description": "Guru platform detailed review" }
+        }
+      },
+      "pricingEarnings": {
+        "name": "Pricing & Earnings",
+        "guides": {
+          "calculateRates": { "name": "Calculate Rates", "description": "Find your perfect hourly rate" },
+          "pricingStrategies": { "name": "Pricing Strategies", "description": "Advanced pricing techniques" },
+          "upworkPricing": { "name": "Upwork Pricing", "description": "Complete Upwork fee structure 2025" },
+          "toptalPricing": { "name": "Toptal Pricing", "description": "Toptal rates & business model" },
+          "99designsPricing": { "name": "99designs Pricing", "description": "Design contest & project costs" },
+          "upworkPricingTactics": { "name": "Upwork Pricing Tactics", "description": "Upwork-specific pricing tips" },
+          "negotiateRates": { "name": "Negotiate Rates", "description": "How to ask for more money" },
+          "maximizeEarnings": { "name": "Maximize Earnings", "description": "Beat platform fees and earn more" }
+        }
+      },
+      "gettingStarted": {
+        "name": "Getting Started",
+        "guides": {
+          "beginnersGuide": { "name": "Beginner's Guide", "description": "Your first steps as a freelancer" },
+          "toptalForBeginners": { "name": "Toptal for Beginners", "description": "Can beginners join Toptal?" },
+          "profileTemplates": { "name": "Profile Templates", "description": "Copy-paste profile templates" },
+          "firstProposal": { "name": "First Proposal", "description": "Write proposals that win" },
+          "avoidMistakes": { "name": "Avoid Mistakes", "description": "Common mistakes to avoid" },
+          "platformSetup": { "name": "Platform Setup", "description": "Set up your accounts correctly" }
+        }
+      },
+      "toolsProductivity": {
+        "name": "Tools & Productivity",
+        "guides": {
+          "essentialTools": { "name": "Essential Tools", "description": "Must-have tools for freelancers" },
+          "timeTracking": { "name": "Time Tracking", "description": "Track your time effectively" },
+          "invoiceGenerator": { "name": "Invoice Generator", "description": "Create professional invoices" },
+          "projectManagement": { "name": "Project Management", "description": "Manage projects like a pro" },
+          "accountingSoftware": { "name": "Accounting Software", "description": "Handle your finances" }
+        }
+      },
+      "platformComparisons": {
+        "name": "Platform Comparisons",
+        "guides": {
+          "upworkVsFiverr": { "name": "Upwork vs Fiverr", "description": "Which platform is better?" },
+          "toptalVsUpwork": { "name": "Toptal vs Upwork", "description": "Premium vs mainstream" },
+          "freelancerVsGuru": { "name": "Freelancer vs Guru", "description": "Head-to-head comparison" },
+          "bestForWriters": { "name": "Best for Writers", "description": "Top platforms for content creators" },
+          "bestForDesigners": { "name": "Best for Designers", "description": "Where designers thrive" }
+        }
+      },
+      "successStrategies": {
+        "name": "Success Strategies",
+        "guides": {
+          "standOut": { "name": "Stand Out", "description": "Get noticed on busy platforms" },
+          "biddingStrategies": { "name": "Bidding Strategies", "description": "Win more projects with smart bidding" },
+          "clientRelationships": { "name": "Client Relationships", "description": "Build lasting client partnerships" },
+          "fiveStarReviews": { "name": "5-Star Reviews", "description": "Consistently earn perfect ratings" },
+          "scaleYourBusiness": { "name": "Scale Your Business", "description": "Grow from solo to agency" }
+        }
+      },
+      "nicheGuides": {
+        "name": "Niche Guides",
+        "guides": {
+          "forDevelopers": { "name": "For Developers", "description": "Best platforms for web developers" },
+          "forDesigners": { "name": "For Designers", "description": "Where designers find work" },
+          "forWriters": { "name": "For Writers", "description": "Top writing platforms" },
+          "forVAs": { "name": "For VAs", "description": "Virtual assistant opportunities" },
+          "forMarketers": { "name": "For Marketers", "description": "Marketing consultant platforms" }
+        }
+      },
+      "businessManagement": {
+        "name": "Business Management",
+        "guides": {
+          "invoicing": { "name": "Invoicing", "description": "Professional invoicing practices" },
+          "taxes": { "name": "Taxes", "description": "Navigate freelance taxes" },
+          "contracts": { "name": "Contracts", "description": "Protect yourself with contracts" },
+          "multipleClients": { "name": "Multiple Clients", "description": "Juggle multiple projects" },
+          "insurance": { "name": "Insurance", "description": "Do you need insurance?" }
+        }
+      },
+      "bestPractices": {
+        "name": "Best Practices",
+        "guides": {
+          "profileOptimization": { "name": "Profile Optimization", "description": "Get found by clients" },
+          "winningProposals": { "name": "Winning Proposals", "description": "Proposals that convert" },
+          "platformAlgorithms": { "name": "Platform Algorithms", "description": "Hack the algorithm" },
+          "portfolioBuilding": { "name": "Portfolio Building", "description": "Showcase your best work" },
+          "clientCommunication": { "name": "Client Communication", "description": "Impress clients with communication" }
+        }
+      }
+    }
   }
 }

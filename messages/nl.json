@@ -1442,5 +1442,149 @@
     },
     "minRead": "min lezen",
     "views": "weergaven"
+  },
+  "resourcesPage": {
+    "badge": "55+ Expertgidsen",
+    "title": "Complete Freelance Platform",
+    "titleHighlight": "Gidsenbibliotheek",
+    "subtitle": "Alles wat je nodig hebt om te slagen als freelancer. Van het kiezen van het juiste platform tot het opschalen van je bedrijf.",
+    "browseAllGuides": "Bekijk Alle Gidsen",
+    "comparePlatforms": "Vergelijk Platforms",
+    "stats": {
+      "expertGuides": "Expertgidsen",
+      "topicCategories": "Onderwerpcategorieën",
+      "platformsCovered": "Platforms Beoordeeld",
+      "freeContent": "Gratis Content"
+    },
+    "cta": {
+      "title": "Ontvang Wekelijkse Freelance Tips",
+      "subtitle": "Sluit je aan bij 10.000+ freelancers die wekelijks expert tips, platformupdates en succesvolle strategieën ontvangen.",
+      "button": "Abonneer op Nieuwsbrief"
+    },
+    "meta": {
+      "title": "Complete Freelance Platform Gidsen - 55+ Expert Resources | SkillLinkup",
+      "description": "Bekijk onze complete bibliotheek van 55+ expert freelance gidsen. Platform selectie, prijsstrategieën, succestips en platformspecifieke tutorials om te slagen als freelancer.",
+      "keywords": "freelance gidsen, platform selectie, freelance tips, upwork gids, fiverr gids, freelance succes, prijsstrategieën, freelance tools, platform vergelijkingen",
+      "ogTitle": "Complete Freelance Platform Gidsen - 55+ Expert Resources",
+      "ogDescription": "Bekijk onze complete bibliotheek van 55+ expert freelance gidsen over alles van platform selectie tot succesvolle strategieën.",
+      "twitterDescription": "Bekijk onze complete bibliotheek van 55+ expert freelance gidsen."
+    },
+    "comprehensiveGuides": "uitgebreide gidsen",
+    "readGuide": "Lees Gids",
+    "viewAllGuides": "Bekijk Alle Gidsen",
+    "browseAll": "Bekijk Alle 55+ Freelance Gidsen",
+    "expertInsights": "Expert inzichten om je te helpen slagen op elk platform"
+  },
+  "seoNavigation": {
+    "guides": "Gidsen",
+    "categories": {
+      "platformSelection": {
+        "name": "Platform Selectie",
+        "guides": {
+          "chooseBestPlatform": { "name": "Kies het Beste Platform", "description": "Complete gids om jouw ideale platform te vinden" },
+          "beginnerVsExpert": { "name": "Beginner vs Expert", "description": "Platforms afgestemd op jouw ervaringsniveau" },
+          "keySelectionFactors": { "name": "Belangrijke Keuzefactoren", "description": "Waar je op moet letten bij het kiezen" },
+          "multiplePlatforms": { "name": "Meerdere Platforms", "description": "Voor- en nadelen van meerdere sites gebruiken" },
+          "platformQuiz": { "name": "Platform Quiz", "description": "Interactieve quiz om jouw match te vinden" }
+        }
+      },
+      "platformReviews": {
+        "name": "Platform Reviews",
+        "guides": {
+          "whatIsUpwork": { "name": "Wat is Upwork?", "description": "Complete introductie tot Upwork" },
+          "whatIsToptal": { "name": "Wat is Toptal?", "description": "Elite talentnetwerk uitgelegd" },
+          "upworkGuide": { "name": "Upwork Gids", "description": "Alles wat je moet weten over Upwork" },
+          "fiverrBeginners": { "name": "Fiverr voor Beginners", "description": "Start vandaag nog met verkopen op Fiverr" },
+          "toptalReview": { "name": "Toptal Review", "description": "Elite freelancers platform diepgaand bekeken" },
+          "isToptalLegit": { "name": "Is Toptal Betrouwbaar?", "description": "Vertrouwen, verificatie & echte ervaringen" },
+          "freelancerCom": { "name": "Freelancer.com", "description": "Complete Freelancer.com analyse" },
+          "guruPlatform": { "name": "Guru Platform", "description": "Guru platform gedetailleerde review" }
+        }
+      },
+      "pricingEarnings": {
+        "name": "Prijzen & Inkomsten",
+        "guides": {
+          "calculateRates": { "name": "Bereken Tarieven", "description": "Vind jouw perfecte uurtarief" },
+          "pricingStrategies": { "name": "Prijsstrategieën", "description": "Geavanceerde prijstechnieken" },
+          "upworkPricing": { "name": "Upwork Prijzen", "description": "Complete Upwork kostenstructuur 2025" },
+          "toptalPricing": { "name": "Toptal Prijzen", "description": "Toptal tarieven & bedrijfsmodel" },
+          "99designsPricing": { "name": "99designs Prijzen", "description": "Design wedstrijd & projectkosten" },
+          "upworkPricingTactics": { "name": "Upwork Prijstactieken", "description": "Upwork-specifieke prijstips" },
+          "negotiateRates": { "name": "Onderhandel Tarieven", "description": "Hoe je om meer geld vraagt" },
+          "maximizeEarnings": { "name": "Maximaliseer Inkomsten", "description": "Versla platformkosten en verdien meer" }
+        }
+      },
+      "gettingStarted": {
+        "name": "Aan de Slag",
+        "guides": {
+          "beginnersGuide": { "name": "Beginnersgids", "description": "Jouw eerste stappen als freelancer" },
+          "toptalForBeginners": { "name": "Toptal voor Beginners", "description": "Kunnen beginners bij Toptal?" },
+          "profileTemplates": { "name": "Profiel Templates", "description": "Kopieer-en-plak profiel templates" },
+          "firstProposal": { "name": "Eerste Voorstel", "description": "Schrijf voorstellen die winnen" },
+          "avoidMistakes": { "name": "Vermijd Fouten", "description": "Veelgemaakte fouten vermijden" },
+          "platformSetup": { "name": "Platform Setup", "description": "Stel je accounts correct in" }
+        }
+      },
+      "toolsProductivity": {
+        "name": "Tools & Productiviteit",
+        "guides": {
+          "essentialTools": { "name": "Essentiële Tools", "description": "Must-have tools voor freelancers" },
+          "timeTracking": { "name": "Urenregistratie", "description": "Volg je tijd effectief" },
+          "invoiceGenerator": { "name": "Factuur Generator", "description": "Maak professionele facturen" },
+          "projectManagement": { "name": "Projectmanagement", "description": "Beheer projecten als een pro" },
+          "accountingSoftware": { "name": "Boekhoudsoftware", "description": "Beheer je financiën" }
+        }
+      },
+      "platformComparisons": {
+        "name": "Platform Vergelijkingen",
+        "guides": {
+          "upworkVsFiverr": { "name": "Upwork vs Fiverr", "description": "Welk platform is beter?" },
+          "toptalVsUpwork": { "name": "Toptal vs Upwork", "description": "Premium vs mainstream" },
+          "freelancerVsGuru": { "name": "Freelancer vs Guru", "description": "Directe vergelijking" },
+          "bestForWriters": { "name": "Beste voor Schrijvers", "description": "Top platforms voor content creators" },
+          "bestForDesigners": { "name": "Beste voor Designers", "description": "Waar designers gedijen" }
+        }
+      },
+      "successStrategies": {
+        "name": "Successtrategieën",
+        "guides": {
+          "standOut": { "name": "Val Op", "description": "Word opgemerkt op drukke platforms" },
+          "biddingStrategies": { "name": "Biedstrategieën", "description": "Win meer projecten met slim bieden" },
+          "clientRelationships": { "name": "Klantrelaties", "description": "Bouw duurzame klantpartnerschappen" },
+          "fiveStarReviews": { "name": "5-Sterren Reviews", "description": "Verdien consequent perfecte beoordelingen" },
+          "scaleYourBusiness": { "name": "Schaal je Bedrijf", "description": "Groei van solo naar bureau" }
+        }
+      },
+      "nicheGuides": {
+        "name": "Niche Gidsen",
+        "guides": {
+          "forDevelopers": { "name": "Voor Developers", "description": "Beste platforms voor webdevelopers" },
+          "forDesigners": { "name": "Voor Designers", "description": "Waar designers werk vinden" },
+          "forWriters": { "name": "Voor Schrijvers", "description": "Top schrijfplatforms" },
+          "forVAs": { "name": "Voor VA's", "description": "Virtueel assistent mogelijkheden" },
+          "forMarketers": { "name": "Voor Marketeers", "description": "Marketing consultant platforms" }
+        }
+      },
+      "businessManagement": {
+        "name": "Bedrijfsbeheer",
+        "guides": {
+          "invoicing": { "name": "Factureren", "description": "Professionele facturatiepraktijken" },
+          "taxes": { "name": "Belastingen", "description": "Navigeer freelance belastingen" },
+          "contracts": { "name": "Contracten", "description": "Bescherm jezelf met contracten" },
+          "multipleClients": { "name": "Meerdere Klanten", "description": "Beheer meerdere projecten" },
+          "insurance": { "name": "Verzekeringen", "description": "Heb je een verzekering nodig?" }
+        }
+      },
+      "bestPractices": {
+        "name": "Best Practices",
+        "guides": {
+          "profileOptimization": { "name": "Profiel Optimalisatie", "description": "Word gevonden door klanten" },
+          "winningProposals": { "name": "Winnende Voorstellen", "description": "Voorstellen die converteren" },
+          "platformAlgorithms": { "name": "Platform Algoritmes", "description": "Hack het algoritme" },
+          "portfolioBuilding": { "name": "Portfolio Opbouwen", "description": "Toon je beste werk" },
+          "clientCommunication": { "name": "Klantcommunicatie", "description": "Imponeer klanten met communicatie" }
+        }
+      }
+    }
   }
 }
