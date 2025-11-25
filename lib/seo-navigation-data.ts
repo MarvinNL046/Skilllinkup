@@ -35,9 +35,12 @@ export const SEO_NAVIGATION: Pillar[] = [
     slug: "/resources",
     icon: "⭐",
     subPillars: [
+      { name: "What is Upwork?", slug: "/resources/what-is-upwork", description: "Complete introduction to Upwork" },
+      { name: "What is Toptal?", slug: "/resources/what-is-toptal", description: "Elite talent network explained" },
       { name: "Upwork Guide", slug: "/resources/upwork-complete-guide", description: "Everything you need to know about Upwork" },
       { name: "Fiverr for Beginners", slug: "/resources/fiverr-beginner-guide", description: "Start selling on Fiverr today" },
       { name: "Toptal Review", slug: "/resources/toptal-review", description: "Elite freelancers platform deep dive" },
+      { name: "Is Toptal Legit?", slug: "/resources/is-toptal-legit", description: "Trust, verification & real experiences" },
       { name: "Freelancer.com", slug: "/resources/freelancer-platform-deep-dive", description: "Complete Freelancer.com analysis" },
       { name: "Guru Platform", slug: "/resources/guru-platform-analysis", description: "Guru platform detailed review" },
     ],
@@ -50,7 +53,10 @@ export const SEO_NAVIGATION: Pillar[] = [
     subPillars: [
       { name: "Calculate Rates", slug: "/resources/calculate-freelance-hourly-rate", description: "Find your perfect hourly rate" },
       { name: "Pricing Strategies", slug: "/resources/freelance-pricing-strategies", description: "Advanced pricing techniques" },
-      { name: "Upwork Pricing", slug: "/resources/upwork-pricing-tactics", description: "Upwork-specific pricing tips" },
+      { name: "Upwork Pricing", slug: "/resources/upwork-pricing", description: "Complete Upwork fee structure 2025" },
+      { name: "Toptal Pricing", slug: "/resources/toptal-pricing", description: "Toptal rates & business model" },
+      { name: "99designs Pricing", slug: "/resources/99designs-pricing", description: "Design contest & project costs" },
+      { name: "Upwork Pricing Tactics", slug: "/resources/upwork-pricing-tactics", description: "Upwork-specific pricing tips" },
       { name: "Negotiate Rates", slug: "/resources/negotiate-higher-rates", description: "How to ask for more money" },
       { name: "Maximize Earnings", slug: "/resources/platform-fees-maximize-earnings", description: "Beat platform fees and earn more" },
     ],
@@ -62,6 +68,7 @@ export const SEO_NAVIGATION: Pillar[] = [
     icon: "🚀",
     subPillars: [
       { name: "Beginner's Guide", slug: "/resources/freelance-beginners-guide", description: "Your first steps as a freelancer" },
+      { name: "Toptal for Beginners", slug: "/resources/toptal-for-beginners", description: "Can beginners join Toptal?" },
       { name: "Profile Templates", slug: "/resources/freelance-profile-templates", description: "Copy-paste profile templates" },
       { name: "First Proposal", slug: "/resources/first-freelance-proposal", description: "Write proposals that win" },
       { name: "Avoid Mistakes", slug: "/resources/freelance-beginner-mistakes", description: "Common mistakes to avoid" },

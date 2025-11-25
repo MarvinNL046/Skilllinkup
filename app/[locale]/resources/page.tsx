@@ -12,19 +12,19 @@ export async function generateMetadata({ params }: SeoIndexPageProps): Promise<M
   const { locale } = await params;
 
   return {
-    title: "Complete Freelance Platform Guides - 50+ Expert Resources | SkillLinkup",
-    description: "Browse our complete library of 50+ expert freelance guides. Platform selection, pricing strategies, success tips, and platform-specific tutorials to help you thrive as a freelancer.",
+    title: "Complete Freelance Platform Guides - 55+ Expert Resources | SkillLinkup",
+    description: "Browse our complete library of 55+ expert freelance guides. Platform selection, pricing strategies, success tips, and platform-specific tutorials to help you thrive as a freelancer.",
     keywords: "freelance guides, platform selection, freelance tips, upwork guide, fiverr guide, freelance success, pricing strategies, freelance tools, platform comparisons",
     openGraph: {
-      title: "Complete Freelance Platform Guides - 50+ Expert Resources",
-      description: "Browse our complete library of 50+ expert freelance guides covering everything from platform selection to success strategies.",
+      title: "Complete Freelance Platform Guides - 55+ Expert Resources",
+      description: "Browse our complete library of 55+ expert freelance guides covering everything from platform selection to success strategies.",
       type: "website",
       locale: locale,
     },
     twitter: {
       card: "summary_large_image",
-      title: "Complete Freelance Platform Guides - 50+ Expert Resources",
-      description: "Browse our complete library of 50+ expert freelance guides.",
+      title: "Complete Freelance Platform Guides - 55+ Expert Resources",
+      description: "Browse our complete library of 55+ expert freelance guides.",
     },
     alternates: {
       canonical: `https://skilllinkup.com/${locale}/resources`,
@@ -44,7 +44,7 @@ export default async function SeoIndexPage({ params }: SeoIndexPageProps) {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     name: "Complete Freelance Platform Guides",
-    description: "Comprehensive library of 50+ expert freelance guides covering platform selection, pricing, success strategies, and more.",
+    description: "Comprehensive library of 55+ expert freelance guides covering platform selection, pricing, success strategies, and more.",
     url: `https://skilllinkup.com/${locale}/resources`,
     publisher: {
       "@type": "Organization",
@@ -56,7 +56,7 @@ export default async function SeoIndexPage({ params }: SeoIndexPageProps) {
     },
     mainEntity: {
       "@type": "ItemList",
-      numberOfItems: 50,
+      numberOfItems: 57,
       itemListElement: SEO_NAVIGATION.flatMap((pillar, pillarIndex) =>
         pillar.subPillars.map((sub, subIndex) => ({
           "@type": "ListItem",
@@ -91,7 +91,7 @@ export default async function SeoIndexPage({ params }: SeoIndexPageProps) {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
                 </span>
-                50+ Expert Guides
+                55+ Expert Guides
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-text-primary dark:text-white mb-6">
@@ -132,7 +132,7 @@ export default async function SeoIndexPage({ params }: SeoIndexPageProps) {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               <div className="text-center">
-                <div className="text-4xl font-heading font-bold text-primary dark:text-primary-light mb-2">50+</div>
+                <div className="text-4xl font-heading font-bold text-primary dark:text-primary-light mb-2">55+</div>
                 <div className="text-sm text-text-secondary dark:text-gray-400">Expert Guides</div>
               </div>
               <div className="text-center">
