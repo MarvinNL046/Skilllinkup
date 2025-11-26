@@ -8,6 +8,10 @@ import { Cpu, TrendingUp, Target, CheckCircle, ArrowRight, Zap, Bell, Award, Bar
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'mastering-freelance-platform-algorithms';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === 'nl') {
     return {
       title: 'Beheers Freelance Platform Algoritmes: Krijg Meer Job Uitnodigingen',
@@ -16,7 +20,28 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       openGraph: {
         title: 'Beheers Freelance Platform Algoritmes: Krijg Meer Job Uitnodigingen',
         description: 'Verhoog job uitnodigingen met 200% door te begrijpen hoe Upwork, Fiverr en Freelancer algoritmes profielen ranken.',
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Beheers Freelance Platform Algoritmes' }],
+        locale: 'nl_NL',
         type: 'article',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Beheers Freelance Platform Algoritmes',
+        description: 'Verhoog job uitnodigingen met 200% door platform algoritmes te begrijpen.',
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
       },
     };
   }
@@ -28,7 +53,28 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     openGraph: {
       title: 'Master Freelance Platform Algorithms: Get More Job Invites',
       description: 'Boost job invites by 200% by understanding how Upwork, Fiverr, and Freelancer algorithms rank profiles.',
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Master Freelance Platform Algorithms' }],
+      locale: 'en_US',
       type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Master Freelance Platform Algorithms',
+      description: 'Boost job invites by 200% by understanding platform algorithms.',
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

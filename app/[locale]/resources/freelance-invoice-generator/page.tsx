@@ -10,20 +10,42 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
+  const slug = 'freelance-invoice-generator';
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
-  const pageUrl = `${siteUrl}/${locale}/resources/freelance-invoice-generator`;
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
 
   return {
     title: 'Freelance Invoice Generator: Create Professional Invoices in Minutes',
     description: 'Free invoice generator for freelancers. Create, customize, and download professional invoices as PDF. Add logo, calculate taxes, and get paid faster.',
     keywords: 'invoice generator, freelance invoice, create invoice, PDF invoice, invoice template',
-    alternates: { canonical: pageUrl },
     openGraph: {
       title: 'Free Invoice Generator for Freelancers',
       description: 'Create professional invoices in minutes. Free, no signup required.',
       url: pageUrl,
       siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Free Invoice Generator for Freelancers' }],
+      locale: locale === 'nl' ? 'nl_NL' : 'en_US',
       type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Freelance Invoice Generator: Create Professional Invoices in Minutes',
+      description: 'Free invoice generator for freelancers. Create, customize, and download professional invoices as PDF.',
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: {
+        'en': `${siteUrl}/en/resources/${slug}`,
+        'nl': `${siteUrl}/nl/resources/${slug}`,
+      },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

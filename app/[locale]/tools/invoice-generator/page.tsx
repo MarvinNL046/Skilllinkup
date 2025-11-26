@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
+import { MoneyBiiPromo } from '@/components/MoneyBiiPromo';
 import {
   FileText,
   Plus,
@@ -1064,6 +1065,11 @@ export default function InvoiceGeneratorPage() {
             </div>
           </div>
         )}
+
+        {/* MoneyBii Promo */}
+        <div className="container mx-auto px-4 py-8">
+          <MoneyBiiPromo variant="subtle" />
+        </div>
       </main>
       <Footer />
     </>

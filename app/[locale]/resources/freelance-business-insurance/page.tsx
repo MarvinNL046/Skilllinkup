@@ -11,20 +11,56 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'freelance-business-insurance';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === 'nl') {
     return {
       title: 'Verzekering voor ZZP: Heb je het nodig? Complete Gids',
       description: 'Leer welke verzekeringen ZZP\'ers nodig hebben: AOV, aansprakelijkheid, beroepsaansprakelijkheid. Vergelijk kosten, dekking en bepaal of verzekering de moeite waard is.',
       keywords: 'verzekering ZZP, AOV verzekering, arbeidsongeschiktheidsverzekering, aansprakelijkheidsverzekering freelancer, beroepsaansprakelijkheid, WIA verzekering, cyber verzekering',
-      alternates: {
-        canonical: 'https://skilllinkup.com/nl/resources/freelance-business-insurance',
-      },
       openGraph: {
         title: 'Verzekering voor ZZP\'ers: Complete Gids 2024',
         description: 'Uitgebreide gids over verzekeringen voor ZZP\'ers. Leer welke dekking je nodig hebt en of het de investering waard is.',
-        type: 'article',
-        url: 'https://skilllinkup.com/nl/resources/freelance-business-insurance',
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [
+          {
+            url: `${siteUrl}/images/og/resources-og.png`,
+            width: 1200,
+            height: 630,
+            alt: 'Verzekering voor ZZP\'ers: Complete Gids 2024',
+          }
+        ],
         locale: 'nl_NL',
+        type: 'article',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Verzekering voor ZZP: Heb je het nodig? Complete Gids',
+        description: 'Leer welke verzekeringen ZZP\'ers nodig hebben: AOV, aansprakelijkheid, beroepsaansprakelijkheid. Vergelijk kosten, dekking en bepaal of verzekering de moeite waard is.',
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: {
+          'en': `${siteUrl}/en/resources/${slug}`,
+          'nl': `${siteUrl}/nl/resources/${slug}`,
+        },
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          'max-video-preview': -1,
+          'max-image-preview': 'large',
+          'max-snippet': -1,
+        },
       },
     };
   }
@@ -33,14 +69,47 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: 'Freelance Business Insurance: Do You Need It? Complete Guide',
     description: 'Learn which insurance freelancers need including liability, E&O, and health insurance. Compare costs, coverage, and determine if insurance is worth it for your business.',
     keywords: 'freelance insurance, business insurance, liability insurance, E&O insurance, freelance health insurance',
-    alternates: {
-      canonical: 'https://skilllinkup.com/resources/freelance-business-insurance',
-    },
     openGraph: {
       title: 'Freelance Business Insurance: Do You Need It? Complete Guide',
       description: 'Comprehensive guide to freelance business insurance. Learn what coverage you need and whether it is worth the investment.',
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [
+        {
+          url: `${siteUrl}/images/og/resources-og.png`,
+          width: 1200,
+          height: 630,
+          alt: 'Freelance Business Insurance: Do You Need It? Complete Guide',
+        }
+      ],
+      locale: 'en_US',
       type: 'article',
-      url: 'https://skilllinkup.com/resources/freelance-business-insurance',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Freelance Business Insurance: Do You Need It? Complete Guide',
+      description: 'Learn which insurance freelancers need including liability, E&O, and health insurance. Compare costs, coverage, and determine if insurance is worth it for your business.',
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: {
+        'en': `${siteUrl}/en/resources/${slug}`,
+        'nl': `${siteUrl}/nl/resources/${slug}`,
+      },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
   };
 }

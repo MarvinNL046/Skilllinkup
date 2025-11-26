@@ -8,6 +8,10 @@ import { Code, Laptop, Zap, CheckCircle, ArrowRight, Star, TrendingUp, Shield, A
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'best-freelance-platforms-web-developers-2025';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === 'nl') {
     return {
       title: 'Beste Freelance Platforms voor Developers in 2025 | SkillLinkup',
@@ -16,7 +20,27 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       openGraph: {
         title: 'Beste Freelance Platforms voor Web Developers in 2025',
         description: 'Vergelijk top freelance platforms voor webdevelopers. Vind goedbetaalde projecten en bouw je programmeercarrière op.',
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Beste Freelance Platforms voor Web Developers in 2025' }],
+        locale: 'nl_NL',
         type: 'article',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Beste Freelance Platforms voor Web Developers in 2025',
+        description: 'Vergelijk top freelance platforms voor webdevelopers. Vind goedbetaalde projecten en bouw je programmeercarrière op.',
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+      },
+      robots: {
+        index: true, follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
       },
     };
   }
@@ -28,7 +52,27 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     openGraph: {
       title: 'Best Freelance Platforms for Web Developers in 2025',
       description: 'Compare top freelance platforms for web developers. Find high-paying projects and build your coding career.',
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Best Freelance Platforms for Web Developers in 2025' }],
+      locale: 'en_US',
       type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Best Freelance Platforms for Web Developers in 2025',
+      description: 'Compare top freelance platforms for web developers. Find high-paying projects and build your coding career.',
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+    },
+    robots: {
+      index: true, follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

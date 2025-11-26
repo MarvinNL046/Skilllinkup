@@ -10,6 +10,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'platform-fees-maximize-earnings';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === "nl") {
     return {
       title: "Platformkosten Begrijpen: Prijs Optimaal om Netto Verdiensten te Maximaliseren (2025)",
@@ -18,7 +22,31 @@ export async function generateMetadata({
       openGraph: {
         title: "Platformkosten Begrijpen: Prijs Optimaal om Netto Verdiensten te Maximaliseren (2025)",
         description: "Leer hoe platformkosten je inkomen beïnvloeden en ontdek prijsstrategieën om je netto verdiensten te maximaliseren op alle belangrijke platforms.",
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Platformkosten Begrijpen: Prijs Optimaal om Netto Verdiensten te Maximaliseren' }],
+        locale: 'nl_NL',
         type: "article",
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Platformkosten Begrijpen: Prijs Optimaal om Netto Verdiensten te Maximaliseren (2025)',
+        description: 'Complete uitleg van freelance platformkosten en hoe je je diensten moet prijzen om verdiensten te maximaliseren.',
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: {
+          'en': `${siteUrl}/en/resources/${slug}`,
+          'nl': `${siteUrl}/nl/resources/${slug}`,
+        },
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
       },
     };
   }
@@ -30,7 +58,31 @@ export async function generateMetadata({
     openGraph: {
       title: "Understanding Platform Fees: Price to Maximize Take-Home Pay (2025)",
       description: "Learn how platform fees impact your income and discover pricing strategies to maximize your take-home pay across all major platforms.",
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Understanding Platform Fees: Price to Maximize Take-Home Pay (2025)' }],
+      locale: 'en_US',
       type: "article",
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Understanding Platform Fees: Price to Maximize Take-Home Pay (2025)',
+      description: 'Complete breakdown of freelance platform fees and how to price your services to maximize earnings.',
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: {
+        'en': `${siteUrl}/en/resources/${slug}`,
+        'nl': `${siteUrl}/nl/resources/${slug}`,
+      },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

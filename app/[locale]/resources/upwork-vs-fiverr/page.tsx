@@ -6,6 +6,10 @@ import { Metadata } from "next";
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'upwork-vs-fiverr';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === 'nl') {
     return {
       title: "Upwork of Fiverr 2025: Welk Platform is het Beste voor Freelancers?",
@@ -14,8 +18,27 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       openGraph: {
         title: "Upwork of Fiverr 2025: Welk Platform is het Beste?",
         description: "Vergelijk Upwork en Fiverr: prijzen, commissies en projecttypes. Complete analyse voor 2025.",
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Upwork vs Fiverr Vergelijking' }],
+        locale: 'nl_NL',
         type: "article",
-        locale: "nl_NL",
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: "Upwork of Fiverr 2025: Welk Platform is het Beste?",
+        description: "Vergelijk Upwork en Fiverr: prijzen, commissies en projecttypes.",
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+      },
+      robots: {
+        index: true, follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
       },
     };
   }
@@ -27,8 +50,27 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     openGraph: {
       title: "Upwork vs Fiverr 2025: Which Platform is Best?",
       description: "Compare Upwork and Fiverr side-by-side. Pricing, fees, features analysis.",
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Upwork vs Fiverr Comparison' }],
+      locale: 'en_US',
       type: "article",
-      locale: "en_US",
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: "Upwork vs Fiverr 2025: Which Platform is Best?",
+      description: "Compare Upwork and Fiverr side-by-side. Pricing, fees, features analysis.",
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+    },
+    robots: {
+      index: true, follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

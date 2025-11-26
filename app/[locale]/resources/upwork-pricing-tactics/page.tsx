@@ -10,6 +10,10 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'upwork-pricing-tactics';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === "nl") {
     return {
       title: "Maximaliseer Je Inkomsten op Upwork: Bewezen Prijsstrategieën (2025)",
@@ -18,7 +22,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       openGraph: {
         title: "Maximaliseer Je Inkomsten op Upwork: Bewezen Prijsstrategieën (2025)",
         description: "Beheers Upwork-prijzen met tactieken die worden gebruikt door top-beoordeelde freelancers. Win meer projecten en verdien meer per uur.",
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Maximaliseer Je Inkomsten op Upwork' }],
+        locale: 'nl_NL',
         type: "article",
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: "Maximaliseer Je Inkomsten op Upwork: Bewezen Prijsstrategieën (2025)",
+        description: "Verhoog je Upwork-inkomen met bewezen prijsstrategieën. Leer concurrerende tarieven instellen en goed betaalde projecten winnen.",
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+      },
+      robots: {
+        index: true, follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
       },
     };
   }
@@ -30,7 +54,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: "Maximizing Your Earnings on Upwork: Proven Pricing Tactics (2025)",
       description: "Master Upwork pricing with tactics used by top-rated freelancers. Win more projects and earn more per hour.",
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Maximizing Your Earnings on Upwork' }],
+      locale: 'en_US',
       type: "article",
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: "Maximizing Your Earnings on Upwork: Proven Pricing Tactics (2025)",
+      description: "Boost your Upwork income with proven pricing strategies. Learn to set competitive rates and win high-paying projects consistently.",
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+    },
+    robots: {
+      index: true, follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

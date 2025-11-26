@@ -10,28 +10,43 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
+  const slug = 'essential-freelance-tools';
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
-  const pageUrl = `${siteUrl}/${locale}/resources/essential-freelance-tools`;
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
 
   if (locale === 'nl') {
     return {
       title: 'Essentiële Freelance Tools voor ZZP\'ers en Zelfstandigen 2025',
       description: 'Ontdek de must-have freelance tools voor productiviteit, factureren, urenregistratie en projectmanagement. Complete gids voor het opbouwen van je freelance toolkit.',
       keywords: 'freelance tools, productiviteitstools, urenregistratie, factureringssoftware, projectmanagement zzp',
-      alternates: {
-        canonical: pageUrl,
-      },
       openGraph: {
         title: 'Essentiële Freelance Tools voor ZZP\'ers en Zelfstandigen',
         description: 'Complete gids voor must-have freelance tools voor productiviteit en succes.',
         url: pageUrl,
         siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Essentiële Freelance Tools voor ZZP\'ers en Zelfstandigen' }],
+        locale: 'nl_NL',
         type: 'article',
       },
       twitter: {
         card: 'summary_large_image',
         title: 'Essentiële Freelance Tools voor ZZP\'ers',
         description: 'Complete gids voor must-have freelance tools voor productiviteit.',
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: {
+          'en': `${siteUrl}/en/resources/${slug}`,
+          'nl': `${siteUrl}/nl/resources/${slug}`,
+        },
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
       },
     };
   }
@@ -40,20 +55,34 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: 'Essential Freelance Tools Every Independent Worker Needs in 2025',
     description: 'Discover must-have freelance tools for productivity, invoicing, time tracking, and project management. Complete guide to building your essential freelance toolkit.',
     keywords: 'freelance tools, productivity tools, time tracking, invoicing software, project management',
-    alternates: {
-      canonical: pageUrl,
-    },
     openGraph: {
       title: 'Essential Freelance Tools Every Independent Worker Needs',
       description: 'Complete guide to must-have freelance tools for productivity and success.',
       url: pageUrl,
       siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Essential Freelance Tools Every Independent Worker Needs' }],
+      locale: 'en_US',
       type: 'article',
     },
     twitter: {
       card: 'summary_large_image',
       title: 'Essential Freelance Tools Every Independent Worker Needs',
       description: 'Complete guide to must-have freelance tools for productivity and success.',
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: {
+        'en': `${siteUrl}/en/resources/${slug}`,
+        'nl': `${siteUrl}/nl/resources/${slug}`,
+      },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

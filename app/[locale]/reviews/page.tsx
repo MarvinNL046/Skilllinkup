@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { Metadata } from "next";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { ReviewAvatar } from "@/components/ReviewAvatar";
@@ -9,19 +10,59 @@ interface PageProps {
   params: Promise<{ locale: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'reviewsPage.metadata' });
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/reviews`;
 
   return {
     title: t('title'),
     description: t('description'),
+    keywords: t('keywords'),
+    openGraph: {
+      title: t('ogTitle'),
+      description: t('ogDescription'),
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/reviews-og.png`, width: 1200, height: 630, alt: t('ogImageAlt') }],
+      locale: locale === 'nl' ? 'nl_NL' : 'en_US',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: t('twitterTitle'),
+      description: t('twitterDescription'),
+      images: [`${siteUrl}/images/og/reviews-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: {
+        'en': `${siteUrl}/en/reviews`,
+        'nl': `${siteUrl}/nl/reviews`,
+      },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
   };
 }
 
 export default async function ReviewsPage({ params }: PageProps) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'reviewsPage' });
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
 
   let reviews: Awaited<ReturnType<typeof getApprovedReviews>> = [];
 
@@ -38,8 +79,71 @@ export default async function ReviewsPage({ params }: PageProps) {
     : 0;
   const verifiedCount = reviews.filter(r => r.verified).length;
 
+  // Structured data for SEO
+  const aggregateRatingSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: locale === 'nl' ? 'Freelance Platform Reviews' : 'Freelance Platform Reviews',
+    description: locale === 'nl'
+      ? 'Lees authentieke reviews van freelancers over hun ervaringen op verschillende freelance platforms.'
+      : 'Read authentic reviews from freelancers about their experiences on various freelance platforms.',
+    url: `${siteUrl}/${locale}/reviews`,
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: reviews.slice(0, 10).map((review, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'Review',
+          author: {
+            '@type': 'Person',
+            name: review.user_name,
+          },
+          reviewRating: {
+            '@type': 'Rating',
+            ratingValue: Number(review.overall_rating),
+            bestRating: 5,
+            worstRating: 1,
+          },
+          reviewBody: review.content,
+          itemReviewed: {
+            '@type': 'Product',
+            name: review.platform_name || 'Freelance Platform',
+          },
+        },
+      })),
+    },
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: `${siteUrl}/${locale}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: locale === 'nl' ? 'Reviews' : 'Reviews',
+        item: `${siteUrl}/${locale}/reviews`,
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aggregateRatingSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <Header />
       <main className="flex-1">
         {/* Page Header */}

@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { getPublishedPosts, getFeaturedPosts, getTopRatedPlatforms, getTrendingPosts } from "@/lib/queries";
 import { Header } from "@/components/header";
 import { Hero } from "@/components/hero";
@@ -17,6 +19,55 @@ export const dynamic = 'force-dynamic';
 
 interface HomePageProps {
   params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: HomePageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'homePage.metadata' });
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}`;
+
+  return {
+    title: t('title'),
+    description: t('description'),
+    keywords: t('keywords'),
+    openGraph: {
+      title: t('ogTitle'),
+      description: t('ogDescription'),
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/home-og.png`, width: 1200, height: 630, alt: t('ogImageAlt') }],
+      locale: locale === 'nl' ? 'nl_NL' : 'en_US',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: t('twitterTitle'),
+      description: t('twitterDescription'),
+      images: [`${siteUrl}/images/og/home-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: {
+        'en': `${siteUrl}/en`,
+        'nl': `${siteUrl}/nl`,
+      },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
+  };
 }
 
 export default async function HomePage({ params }: HomePageProps) {
@@ -44,29 +95,62 @@ export default async function HomePage({ params }: HomePageProps) {
     console.error('❌ Error fetching data:', error);
   }
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+
   // Schema.org JSON-LD structured data for SEO
-  const jsonLd = {
+  const websiteSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'SkillLinkup',
-    url: 'https://skilllinkup.com',
-    description: 'Compare and discover the best freelance platforms for your skills. Honest reviews, detailed comparisons, and expert insights.',
+    url: siteUrl,
+    description: locale === 'nl'
+      ? 'Vergelijk en ontdek de beste freelance platforms voor jouw vaardigheden. Eerlijke reviews, gedetailleerde vergelijkingen en expert inzichten.'
+      : 'Compare and discover the best freelance platforms for your skills. Honest reviews, detailed comparisons, and expert insights.',
+    inLanguage: locale === 'nl' ? 'nl-NL' : 'en-US',
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: 'https://skilllinkup.com/search?q={search_term_string}'
+        urlTemplate: `${siteUrl}/${locale}/search?q={search_term_string}`
       },
       'query-input': 'required name=search_term_string'
     },
     publisher: {
       '@type': 'Organization',
       name: 'SkillLinkup',
+      url: siteUrl,
       logo: {
         '@type': 'ImageObject',
-        url: 'https://skilllinkup.com/images/logo/skilllinkup-transparant-rozepunt.webp'
+        url: `${siteUrl}/images/logo/skilllinkup-transparant-rozepunt.webp`
       }
     }
+  };
+
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'SkillLinkup',
+    url: siteUrl,
+    logo: `${siteUrl}/images/logo/skilllinkup-transparant-rozepunt.webp`,
+    description: locale === 'nl'
+      ? 'Het ultieme platform om freelance platforms te vergelijken en te ontdekken.'
+      : 'The ultimate platform to compare and discover freelance platforms.',
+    sameAs: [
+      'https://twitter.com/SkillLinkup',
+    ],
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: `${siteUrl}/${locale}`,
+      },
+    ],
   };
 
   return (
@@ -74,7 +158,15 @@ export default async function HomePage({ params }: HomePageProps) {
       {/* Schema.org JSON-LD */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
       <Header />

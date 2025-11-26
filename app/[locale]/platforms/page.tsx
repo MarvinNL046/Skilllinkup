@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { getPublishedPlatforms, getPlatformCategories } from "@/lib/queries";
@@ -11,13 +12,69 @@ interface PlatformsPageProps {
   params: Promise<{ locale: string }>;
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'platformsPage' });
+  const t = await getTranslations({ locale, namespace: 'platformsPage.metadata' });
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/platforms`;
 
   return {
-    title: `${t('title')} - SkillLinkup`,
-    description: t('subtitle', { count: '' }).replace('+ platforms', 'platforms'),
+    title: t('title'),
+    description: t('description'),
+
+    // Keywords
+    keywords: t('keywords'),
+
+    // Canonical URL with language alternates
+    alternates: {
+      canonical: pageUrl,
+      languages: {
+        'en': `${siteUrl}/en/platforms`,
+        'nl': `${siteUrl}/nl/platforms`,
+      },
+    },
+
+    // Open Graph (Facebook, LinkedIn, etc.)
+    openGraph: {
+      title: t('title'),
+      description: t('description'),
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [
+        {
+          url: `${siteUrl}/images/og/platforms-og.png`,
+          width: 1200,
+          height: 630,
+          alt: t('ogImageAlt'),
+        }
+      ],
+      locale: locale === 'nl' ? 'nl_NL' : 'en_US',
+      type: 'website',
+    },
+
+    // Twitter Card
+    twitter: {
+      card: 'summary_large_image',
+      title: t('title'),
+      description: t('description'),
+      images: [`${siteUrl}/images/og/platforms-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+
+    // Robots
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
   };
 }
 
@@ -41,8 +98,69 @@ export default async function PlatformsPage({ params }: PlatformsPageProps) {
     ...platformCategories,
   ];
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+
+  // Structured data for SEO
+  const platformsListSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: locale === 'nl' ? 'Freelance Platforms Vergelijken' : 'Compare Freelance Platforms',
+    description: locale === 'nl'
+      ? 'Ontdek en vergelijk de beste freelance platforms. Vind het perfecte platform voor jouw vaardigheden.'
+      : 'Discover and compare the best freelance platforms. Find the perfect platform for your skills.',
+    url: `${siteUrl}/${locale}/platforms`,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: platforms.length,
+      itemListElement: platforms.slice(0, 20).map((platform: any, index: number) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'Product',
+          name: platform.name,
+          description: platform.tagline || platform.description,
+          url: `${siteUrl}/${locale}/platforms/${platform.slug}`,
+          aggregateRating: platform.rating ? {
+            '@type': 'AggregateRating',
+            ratingValue: Number(platform.rating).toFixed(1),
+            bestRating: 5,
+            worstRating: 1,
+            reviewCount: platform.review_count || 0,
+          } : undefined,
+        },
+      })),
+    },
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: `${siteUrl}/${locale}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: locale === 'nl' ? 'Platforms' : 'Platforms',
+        item: `${siteUrl}/${locale}/platforms`,
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(platformsListSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <Header />
       <main className="flex-1">
         {/* Page Header */}

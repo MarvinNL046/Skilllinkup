@@ -627,7 +627,7 @@ export async function getApprovedReviews(limit = 50, offset = 0): Promise<Review
 }
 
 // Query: Get reviews by platform ID (SAFE)
-export async function getReviewsByPlatform(platformId: string, limit = 10): Promise<Review[]> {
+export async function getReviewsByPlatform(platformId: string, limit = 10, locale = 'en'): Promise<Review[]> {
   const reviews = await sql`
     SELECT
       r.id,
@@ -650,11 +650,13 @@ export async function getReviewsByPlatform(platformId: string, limit = 10): Prom
       r.verified,
       r.helpful_count,
       r.status,
+      r.locale,
       r.created_at,
       r.updated_at
     FROM reviews r
     WHERE r.platform_id = ${platformId}
       AND r.status = 'approved'
+      AND r.locale = ${locale}
     ORDER BY r.created_at DESC
     LIMIT ${limit};
   `;

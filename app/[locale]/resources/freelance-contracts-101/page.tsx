@@ -7,19 +7,56 @@ import { FileText, Shield, CheckCircle, AlertTriangle, Download } from 'lucide-r
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'freelance-contracts-101';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === 'nl') {
     return {
       title: 'Freelance Contracten Opstellen: Bescherm Jezelf en Je Klanten 2024',
       description: 'Leer hoe je effectieve freelance contracten opstelt die zowel jou als je klanten beschermen. Inclusief essentiële clausules, sjablonen en juridische best practices voor ZZP\'ers.',
       keywords: 'contracten opstellen freelance, algemene voorwaarden zzp, freelance overeenkomst nederland, zelfstandigen contract, juridische bescherming zzp',
-      alternates: {
-        canonical: 'https://skilllinkup.com/nl/resources/freelance-contracts-101',
-      },
       openGraph: {
         title: 'Freelance Contracten Opstellen: Bescherm Jezelf en Je Klanten 2024',
         description: 'Master freelance contracten met sjablonen en best practices. Leer essentiële clausules om je werk te beschermen en betaling te garanderen.',
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [
+          {
+            url: `${siteUrl}/images/og/resources-og.png`,
+            width: 1200,
+            height: 630,
+            alt: 'Freelance Contracten Opstellen: Bescherm Jezelf en Je Klanten 2024',
+          }
+        ],
+        locale: 'nl_NL',
         type: 'article',
-        url: 'https://skilllinkup.com/nl/resources/freelance-contracts-101',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Freelance Contracten Opstellen: Bescherm Jezelf en Je Klanten 2024',
+        description: 'Leer hoe je effectieve freelance contracten opstelt die zowel jou als je klanten beschermen. Inclusief essentiële clausules, sjablonen en juridische best practices voor ZZP\'ers.',
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: {
+          'en': `${siteUrl}/en/resources/${slug}`,
+          'nl': `${siteUrl}/nl/resources/${slug}`,
+        },
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          'max-video-preview': -1,
+          'max-image-preview': 'large',
+          'max-snippet': -1,
+        },
       },
     };
   }
@@ -28,14 +65,47 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     title: 'Freelance Contracts 101: Protect Yourself and Your Clients',
     description: 'Learn how to create effective freelance contracts that protect both you and your clients. Includes essential clauses, templates, and legal best practices.',
     keywords: 'freelance contract, contract template, freelance agreement, legal protection, freelance terms',
-    alternates: {
-      canonical: 'https://skilllinkup.com/resources/freelance-contracts-101',
-    },
     openGraph: {
       title: 'Freelance Contracts 101: Protect Yourself and Your Clients',
       description: 'Master freelance contracts with templates and best practices. Learn essential clauses to protect your work and ensure payment.',
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [
+        {
+          url: `${siteUrl}/images/og/resources-og.png`,
+          width: 1200,
+          height: 630,
+          alt: 'Freelance Contracts 101: Protect Yourself and Your Clients',
+        }
+      ],
+      locale: 'en_US',
       type: 'article',
-      url: 'https://skilllinkup.com/resources/freelance-contracts-101',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Freelance Contracts 101: Protect Yourself and Your Clients',
+      description: 'Learn how to create effective freelance contracts that protect both you and your clients. Includes essential clauses, templates, and legal best practices.',
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: {
+        'en': `${siteUrl}/en/resources/${slug}`,
+        'nl': `${siteUrl}/nl/resources/${slug}`,
+      },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
   };
 }

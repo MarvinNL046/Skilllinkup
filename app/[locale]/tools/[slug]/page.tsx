@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { AdWidget } from '@/components/AdWidget';
@@ -20,28 +21,90 @@ const iconMap: { [key: string]: any } = {
 
 interface PageProps {
   params: Promise<{
+    locale: string;
     slug: string;
   }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
+  const { locale, slug } = await params;
+  const t = await getTranslations({ locale, namespace: 'toolDetailPage.metadata' });
   const tool = await getToolBySlug(slug);
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/tools/${slug}`;
 
   if (!tool) {
     return {
-      title: 'Tool niet gevonden | SkillLinkup',
+      title: t('notFoundTitle'),
     };
   }
 
+  const title = `${tool.name} - ${t('titleSuffix')} | SkillLinkup`;
+  const description = tool.description || t('defaultDescription', { toolName: tool.name });
+  const category = tool.category || 'freelance';
+
   return {
-    title: `${tool.name} | SkillLinkup`,
-    description: tool.description || `Ontdek ${tool.name} - een handige tool voor freelancers`,
+    title,
+    description,
+
+    // Keywords based on tool
+    keywords: `${tool.name}, freelance ${category}, ${category} tool, freelancer hulpmiddelen, zzp tools`,
+
+    // Canonical URL with language alternates
+    alternates: {
+      canonical: pageUrl,
+      languages: {
+        'en': `${siteUrl}/en/tools/${slug}`,
+        'nl': `${siteUrl}/nl/tools/${slug}`,
+      },
+    },
+
+    // Open Graph
+    openGraph: {
+      title,
+      description,
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [
+        {
+          url: `${siteUrl}/images/og/tools-og.png`,
+          width: 1200,
+          height: 630,
+          alt: `${tool.name} - SkillLinkup`,
+        }
+      ],
+      locale: locale === 'nl' ? 'nl_NL' : 'en_US',
+      type: 'website',
+    },
+
+    // Twitter Card
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [`${siteUrl}/images/og/tools-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+
+    // Robots
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
   };
 }
 
 export default async function ToolDetailPage({ params }: PageProps) {
-  const { slug } = await params;
+  const { locale, slug } = await params;
   const tool = await getToolBySlug(slug);
 
   if (!tool) {
@@ -54,8 +117,65 @@ export default async function ToolDetailPage({ params }: PageProps) {
 
   const Icon = tool.icon && iconMap[tool.icon] ? iconMap[tool.icon] : Wrench;
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+
+  // Structured data for SEO
+  const toolSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: tool.name,
+    description: tool.description,
+    url: `${siteUrl}/${locale}/tools/${slug}`,
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web Browser',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'EUR',
+      availability: tool.is_available ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder',
+    },
+    provider: {
+      '@type': 'Organization',
+      name: 'SkillLinkup',
+      url: siteUrl,
+    },
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: `${siteUrl}/${locale}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Tools',
+        item: `${siteUrl}/${locale}/tools`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: tool.name,
+        item: `${siteUrl}/${locale}/tools/${slug}`,
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(toolSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <Header />
       <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
         {/* Breadcrumb */}

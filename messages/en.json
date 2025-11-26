@@ -1,4 +1,32 @@
 {
+  "homePage": {
+    "metadata": {
+      "title": "SkillLinkup - Compare Freelance Platforms & Find the Best for You",
+      "description": "Compare and discover the best freelance platforms for your skills. Honest reviews, detailed comparisons, and expert insights for freelancers.",
+      "keywords": "compare freelance platforms, best freelance websites, upwork alternative, fiverr review, freelance platform comparison, freelance marketplace, find freelance work",
+      "ogTitle": "SkillLinkup - The #1 Freelance Platform Comparison Site",
+      "ogDescription": "Discover which freelance platform is right for you. Compare rates, reviews, and features of 50+ platforms.",
+      "ogImageAlt": "SkillLinkup - Compare Freelance Platforms",
+      "twitterTitle": "Compare Freelance Platforms | SkillLinkup",
+      "twitterDescription": "Find the perfect freelance platform for your skills. Reviews, comparisons, and expert tips."
+    }
+  },
+  "moneyBiiPromo": {
+    "subtle": {
+      "text": "Want all your tools in one platform? Try MoneyBii - invoicing, quotes and more!",
+      "cta": "Try Free"
+    },
+    "banner": {
+      "title": "Upgrade to MoneyBii",
+      "text": "All the freelance tools you need in one professional platform. Invoicing, quotes, client management and more.",
+      "cta": "Start Free"
+    },
+    "sidebar": {
+      "text": "All tools in one platform? Try MoneyBii for free!",
+      "cta": "View MoneyBii"
+    },
+    "comingSoon": "Coming Soon"
+  },
   "header": {
     "home": "Home",
     "platforms": "Platforms",
@@ -12,6 +40,8 @@
   },
   "footer": {
     "slogan": "Your trusted guide to finding the perfect freelance platform for your skills.",
+    "exploreResources": "Explore Freelance Resources",
+    "viewAll": "View all →",
     "platforms": "Platforms",
     "resources": "Resources",
     "company": "Company",
@@ -233,7 +263,13 @@
   "platformsPage": {
     "title": "All Freelance Platforms",
     "subtitle": "Compare {count}+ platforms to find the perfect match for your skills and goals",
-    "allPlatformsCategory": "All Platforms"
+    "allPlatformsCategory": "All Platforms",
+    "metadata": {
+      "title": "Best Freelance Platforms 2025 - Compare & Find Your Perfect Match",
+      "description": "Discover and compare the best freelance platforms in 2025. Find the perfect platform for your skills - from Upwork and Fiverr to specialized marketplaces. Expert reviews, fees comparison, and honest ratings.",
+      "keywords": "freelance platforms, best freelance sites, freelance marketplaces, Upwork alternatives, Fiverr alternatives, freelance jobs, remote work platforms, find freelance work, freelance comparison",
+      "ogImageAlt": "Compare Freelance Platforms - SkillLinkup"
+    }
   },
   "platformDetail": {
     "home": "Home",
@@ -264,10 +300,19 @@
     "metaTitle": "{name} Review 2025: Fees, Features & Pros/Cons - SkillLinkup",
     "metaDescription": "Read our comprehensive {name} review. Learn about fees, features, pros & cons."
   },
+  "toolDetailPage": {
+    "metadata": {
+      "notFoundTitle": "Tool Not Found | SkillLinkup",
+      "titleSuffix": "Free Freelance Tool",
+      "defaultDescription": "Discover {toolName} - a free tool to help you manage your freelance business more efficiently."
+    }
+  },
   "toolsPage": {
     "metadata": {
-      "title": "Freelance Tools & Resources | SkillLinkup",
-      "description": "Discover useful tools and calculators for freelancers. Calculate your rates, track your time and more."
+      "title": "Free Freelance Tools & Calculators | SkillLinkup",
+      "description": "Discover free tools and calculators for freelancers. Calculate your rates, track your time, create invoices, and manage your freelance business more efficiently.",
+      "keywords": "freelance tools, freelancer calculator, rate calculator, time tracker, invoice generator, freelance resources, freelancer software, business tools",
+      "ogImageAlt": "SkillLinkup - Free Freelance Tools & Resources"
     },
     "hero": {
       "title": "Freelance Tools & Resources",
@@ -291,6 +336,18 @@
       "invoiceGenerator": {
         "name": "Invoice Generator",
         "description": "Create professional invoices with real-time preview, save, print and download as PDF"
+      },
+      "incomeTracker": {
+        "name": "Income Tracker",
+        "description": "Track your income and expenses per month and year"
+      },
+      "projectPriceCalculator": {
+        "name": "Project Price Calculator",
+        "description": "Calculate the price for your project based on estimated hours"
+      },
+      "clientManager": {
+        "name": "Client Manager",
+        "description": "Manage your clients and contact information in one place"
       }
     },
     "resourcesSection": {
@@ -310,7 +367,8 @@
         "crm": "Client relationship management",
         "reports": "Financial reports & insights"
       },
-      "button": "Try MoneyBii for Free"
+      "button": "Try MoneyBii for Free",
+      "comingSoon": "Coming Soon"
     },
     "cta": {
       "title": "Don't miss new tools!",
@@ -320,6 +378,12 @@
     }
   },
   "timeTracker": {
+    "metadata": {
+      "title": "Free Time Tracker for Freelancers | Track Billable Hours | SkillLinkup",
+      "description": "Track your billable hours, manage projects, and calculate earnings automatically. Our free time tracker helps freelancers stay organized and get paid accurately.",
+      "keywords": "time tracker, billable hours tracker, freelance time tracking, project time tracker, hourly rate calculator, freelancer productivity, time management",
+      "ogImageAlt": "SkillLinkup Time Tracker - Track Billable Hours for Freelancers"
+    },
     "breadcrumb": {
       "home": "Home",
       "tools": "Tools",
@@ -404,7 +468,236 @@
       "filename": "time-tracker-export"
     }
   },
+  "projectPriceCalculator": {
+    "metadata": {
+      "title": "Free Project Price Calculator | Estimate Project Costs | SkillLinkup",
+      "description": "Calculate accurate project prices based on estimated hours, task complexity, and buffer time. Our free calculator helps freelancers quote projects confidently.",
+      "keywords": "project price calculator, freelance quote calculator, project estimate tool, freelance pricing, project cost estimator, hourly rate calculator, freelance quote",
+      "ogImageAlt": "SkillLinkup Project Price Calculator - Estimate Project Costs"
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "tools": "Tools",
+      "projectPriceCalculator": "Project Price Calculator"
+    },
+    "hero": {
+      "title": "Project Price Calculator",
+      "subtitle": "Calculate the total price for your project based on estimated hours, task complexity, and buffer for unexpected work."
+    },
+    "settings": {
+      "title": "Your Settings",
+      "hourlyRate": "Your Hourly Rate",
+      "hourlyRateHelp": "Your standard hourly rate",
+      "buffer": "Buffer Percentage",
+      "bufferHelp": "Extra buffer for scope changes"
+    },
+    "tasks": {
+      "title": "Project Tasks",
+      "taskName": "Task Name",
+      "taskPlaceholder": "Task",
+      "hours": "Hours",
+      "hoursPlaceholder": "Hours",
+      "complexity": "Complexity",
+      "complexitySimple": "Simple",
+      "complexityMedium": "Medium",
+      "complexityComplex": "Complex",
+      "addNew": "Add New Task",
+      "newTaskPlaceholder": "Task name...",
+      "addButton": "Add",
+      "defaultName": "Untitled Task"
+    },
+    "results": {
+      "title": "Project Quote",
+      "totalPrice": "Total Project Price",
+      "baseHours": "Base Hours",
+      "adjustedHours": "Adjusted Hours",
+      "basePrice": "Base Price",
+      "buffer": "Buffer",
+      "hoursUnit": "hours",
+      "timeEstimate": "Time Estimate",
+      "days": "workdays (8h)",
+      "weeks": "weeks (40h)",
+      "readyMessage": "Your quote is ready! Share this with your client.",
+      "addTasksMessage": "Add tasks with hours to see your quote."
+    },
+    "tips": {
+      "title": "Tips for Accurate Estimates",
+      "tip1": "Break down large tasks into smaller, estimable pieces",
+      "tip2": "Add 15-20% buffer for unexpected issues and revisions",
+      "tip3": "Complex tasks often take longer than expected",
+      "tip4": "Include time for communication, meetings, and admin"
+    },
+    "cta": {
+      "title": "Need to Calculate Your Hourly Rate?",
+      "description": "Use our Rate Calculator to determine your ideal hourly rate based on your income goals and expenses.",
+      "rateCalculatorButton": "Rate Calculator",
+      "allToolsButton": "All Tools"
+    }
+  },
+  "clientManager": {
+    "metadata": {
+      "title": "MoneyBii - Accounting Software for Freelancers | Invoices & Quotes | SkillLinkup",
+      "description": "Complete accounting software for freelancers. Create professional invoices, quotes, manage clients, and track finances. Try MoneyBii - the all-in-one freelance business solution.",
+      "keywords": "freelance accounting software, invoice software freelancers, quote generator, client management, MoneyBii, freelance bookkeeping, business management, freelancer invoicing",
+      "ogImageAlt": "MoneyBii - Complete Accounting Software for Freelancers"
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "tools": "Tools",
+      "clientManager": "Client Manager"
+    },
+    "hero": {
+      "title": "Complete Accounting Software for Freelancers",
+      "subtitle": "Invoicing, quotes, client management, and financial reports in one platform. Similar to FreshBooks, but built specifically for freelancers.",
+      "ctaButton": "Try MoneyBii Free"
+    },
+    "preview": {
+      "title": "See What's Possible",
+      "subtitle": "A professional CRM system designed specifically for freelancers",
+      "mockTitle": "Client Overview",
+      "demoLabel": "Preview",
+      "table": {
+        "client": "Client",
+        "email": "Email",
+        "phone": "Phone",
+        "projects": "Projects",
+        "status": "Status"
+      },
+      "statusActive": "Active",
+      "statusPending": "Pending",
+      "unlockMessage": "Want full access to professional client management?",
+      "unlockButton": "Get Started with MoneyBii"
+    },
+    "featuresSection": {
+      "title": "Everything You Need",
+      "subtitle": "MoneyBii offers all the tools you need to manage your freelance business professionally",
+      "comingSoonBadge": "Coming Soon",
+      "comingSoonTitle": "New Features in Development"
+    },
+    "features": {
+      "contacts": {
+        "title": "Contact Management",
+        "description": "Store and organize all your client information in one place"
+      },
+      "invoicing": {
+        "title": "Professional Invoicing",
+        "description": "Create and send professional invoices in seconds"
+      },
+      "quotes": {
+        "title": "Quote Generation",
+        "description": "Generate professional quotes quickly and convert them to invoices"
+      },
+      "reports": {
+        "title": "Financial Reports",
+        "description": "Get insights into your income, expenses, and profitability"
+      },
+      "timeTracking": {
+        "title": "Time Tracking",
+        "description": "Track billable hours and link them directly to invoices"
+      },
+      "multiCurrency": {
+        "title": "Multi-Currency",
+        "description": "Work with international clients in their preferred currency"
+      },
+      "emailMarketing": {
+        "title": "Email Marketing",
+        "description": "Automated newsletters and marketing campaigns to your clients"
+      },
+      "automation": {
+        "title": "Workflow Automation",
+        "description": "Automate recurring tasks like reminders and follow-ups"
+      }
+    },
+    "benefits": {
+      "item1": "Complete CRM system for freelancers",
+      "item2": "Professional invoicing and quoting",
+      "item3": "Automatic payment reminders",
+      "item4": "Financial insights and reports",
+      "item5": "Time tracking integration",
+      "item6": "Cloud-based - access anywhere"
+    },
+    "moneybii": {
+      "title": "Ready to Streamline Your Business?",
+      "description": "MoneyBii is the complete accounting software for freelancers. Similar to FreshBooks, but designed specifically for independent professionals. Invoicing, quotes, client management, and coming soon: marketing automation.",
+      "ctaButton": "Start Free Trial",
+      "freeTrialNote": "No credit card required • Free 14-day trial",
+      "badges": {
+        "secure": "100% Secure",
+        "support": "24/7 Support",
+        "rating": "4.9★ Rating",
+        "users": "10K+ Users"
+      }
+    },
+    "backToTools": "Back to Tools"
+  },
+  "incomeTracker": {
+    "metadata": {
+      "title": "Free Income Tracker for Freelancers | Track Earnings & Expenses | SkillLinkup",
+      "description": "Track your freelance income and expenses by month and year. Get insights into your earnings, identify trends, and manage your finances more effectively.",
+      "keywords": "income tracker, freelance income tracker, expense tracker, earnings tracker, freelance finances, income management, financial tracking, freelancer bookkeeping",
+      "ogImageAlt": "SkillLinkup Income Tracker - Track Freelance Income & Expenses"
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "tools": "Tools",
+      "incomeTracker": "Income Tracker"
+    },
+    "hero": {
+      "title": "Income Tracker",
+      "subtitle": "Track your income and expenses per month and year. Get insights into your freelance earnings and spending patterns."
+    },
+    "navigation": {
+      "month": "Month",
+      "year": "Year"
+    },
+    "summary": {
+      "income": "Income",
+      "expenses": "Expenses",
+      "net": "Net Result"
+    },
+    "actions": {
+      "addIncome": "Add Income",
+      "addExpense": "Add Expense"
+    },
+    "transactions": {
+      "title": "Transactions",
+      "empty": "No transactions for this period. Add your first income or expense!",
+      "noDescription": "No description"
+    },
+    "breakdown": {
+      "title": "Category Breakdown",
+      "empty": "No data to display yet."
+    },
+    "yearOverview": {
+      "title": "Year Overview"
+    },
+    "modal": {
+      "titleEdit": "Edit Transaction",
+      "titleAddIncome": "Add Income",
+      "titleAddExpense": "Add Expense",
+      "income": "Income",
+      "expense": "Expense",
+      "labelAmount": "Amount",
+      "labelCategory": "Category",
+      "selectCategory": "Select a category...",
+      "labelDate": "Date",
+      "labelDescription": "Description",
+      "placeholderDescription": "What is this for?",
+      "buttonAdd": "Add",
+      "buttonUpdate": "Update",
+      "buttonCancel": "Cancel"
+    },
+    "confirmations": {
+      "deleteTransaction": "Are you sure you want to delete this transaction?"
+    }
+  },
   "rateCalculator": {
+    "metadata": {
+      "title": "Free Freelance Rate Calculator | Calculate Your Hourly Rate | SkillLinkup",
+      "description": "Calculate your ideal freelance hourly rate based on income goals, expenses, taxes, and billable hours. Our free calculator helps you price your services profitably.",
+      "keywords": "freelance rate calculator, hourly rate calculator, freelance pricing, consultant rate calculator, freelance income calculator, pricing calculator, freelancer rates",
+      "ogImageAlt": "SkillLinkup Rate Calculator - Calculate Your Freelance Hourly Rate"
+    },
     "breadcrumb": {
       "home": "Home",
       "tools": "Tools",
@@ -611,6 +904,12 @@
     }
   },
   "invoiceGenerator": {
+    "metadata": {
+      "title": "Free Invoice Generator | Create Professional Invoices | SkillLinkup",
+      "description": "Create professional invoices for free. Add your logo, customize details, and download as PDF. Our invoice generator is perfect for freelancers and small businesses.",
+      "keywords": "free invoice generator, invoice maker, create invoice online, freelance invoice template, professional invoice, invoice PDF generator, billing software",
+      "ogImageAlt": "SkillLinkup Invoice Generator - Create Professional Invoices Free"
+    },
     "breadcrumb": {
       "home": "Home",
       "tools": "Tools",
@@ -1296,8 +1595,14 @@
   },
   "comparisonsPage": {
     "metadata": {
-      "title": "Platform Comparisons | SkillLinkup",
-      "description": "Compare the best freelance platforms and find the perfect platform for your skills."
+      "title": "Compare Freelance Platforms 2025 | Upwork vs Fiverr vs Toptal | SkillLinkup",
+      "description": "Compare 20+ freelance platforms by fees, ratings, and specializations. Find the best platform for your skills with our interactive comparison table.",
+      "keywords": "freelance platform comparison, upwork vs fiverr, toptal comparison, compare freelance fees, best freelance platform 2025, platform ratings, freelancer rates comparison",
+      "ogTitle": "Compare 20+ Freelance Platforms - Find Your Perfect Match",
+      "ogDescription": "Interactive comparison table with fees, ratings, and specializations. Discover which freelance platform is the best fit for you.",
+      "ogImageAlt": "Freelance Platform Comparisons - SkillLinkup",
+      "twitterTitle": "Compare Freelance Platforms 2025 | SkillLinkup",
+      "twitterDescription": "Compare Upwork, Fiverr, Toptal and more. View fees, ratings and find the perfect platform for your freelance career."
     },
     "hero": {
       "title": "Compare Freelance Platforms",
@@ -1317,6 +1622,13 @@
       "emptyCategory": "-",
       "viewButton": "View",
       "visitButton": "Visit →"
+    },
+    "sort": {
+      "label": "Sort by",
+      "rating": "Rating",
+      "name": "Name",
+      "commission": "Commission",
+      "reviews": "Reviews"
     },
     "stats": {
       "totalPlatforms": "Total Platforms",
@@ -1379,8 +1691,14 @@
   },
   "reviewsPage": {
     "metadata": {
-      "title": "Platform Reviews - SkillLinkup",
-      "description": "Read authentic reviews from freelancers about their experiences on various platforms."
+      "title": "Freelance Platform Reviews & Experiences 2025 | SkillLinkup",
+      "description": "Read 100+ authentic reviews from freelancers about Upwork, Fiverr, Toptal and other platforms. Discover honest experiences, ratings and tips from real users.",
+      "keywords": "freelance platform reviews, upwork reviews, fiverr experiences, toptal ratings, freelancer reviews, platform comparisons, freelance experiences",
+      "ogTitle": "Freelance Platform Reviews & Experiences 2025",
+      "ogDescription": "100+ authentic reviews from freelancers. Find out which platform suits you best based on real experiences.",
+      "ogImageAlt": "Freelance Platform Reviews - SkillLinkup",
+      "twitterTitle": "Freelance Platform Reviews 2025 | SkillLinkup",
+      "twitterDescription": "Read honest reviews from freelancers about Upwork, Fiverr, Toptal and more. Make the right choice!"
     },
     "hero": {
       "title": "Platform Reviews",
@@ -1408,8 +1726,14 @@
   },
   "blogPage": {
     "metadata": {
-      "title": "Blog - SkillLinkup",
-      "description": "Read our latest articles about freelance platforms, tips, and industry insights."
+      "title": "Freelance Blog - Tips, Guides & Insights | SkillLinkup",
+      "description": "Discover tips, guides and insights for freelancers. Learn how to earn more, find better clients and freelance successfully.",
+      "keywords": "freelance blog, freelancer tips, freelance guides, platform reviews, freelance income, freelancing advice",
+      "ogTitle": "Freelance Blog - Tips & Guides for Freelancers",
+      "ogDescription": "Expert tips, platform reviews and practical guides to succeed as a freelancer.",
+      "ogImageAlt": "SkillLinkup Freelance Blog",
+      "twitterTitle": "Freelance Blog | SkillLinkup",
+      "twitterDescription": "The best tips and guides for freelancers. Discover how to freelance successfully."
     },
     "hero": {
       "title": "Blog & Resources",
@@ -1474,6 +1798,64 @@
     "viewAllGuides": "View All Guides",
     "browseAll": "Browse All 55+ Freelance Guides",
     "expertInsights": "Expert insights to help you succeed on any platform"
+  },
+  "reviewForm": {
+    "thankYou": "Thank You!",
+    "reviewSubmitted": "Your review has been submitted and is pending approval.",
+    "yourName": "Your Name",
+    "namePlaceholder": "e.g., John Doe",
+    "yourRole": "Your Role (optional)",
+    "rolePlaceholder": "e.g., Web Developer",
+    "ratings": "Rate Your Experience",
+    "overallRating": "Overall Rating",
+    "easeOfUse": "Ease of Use",
+    "support": "Customer Support",
+    "valueForMoney": "Value for Money",
+    "reviewTitle": "Review Title",
+    "titlePlaceholder": "Summarize your experience with {platform}",
+    "yourReview": "Your Review",
+    "contentPlaceholder": "Share your experience. What did you like or dislike? Would you recommend this platform?",
+    "pros": "What you liked",
+    "cons": "What could be better",
+    "pro": "Pro",
+    "con": "Con",
+    "projectType": "Project Type",
+    "selectProjectType": "Select project type",
+    "projectTypes": {
+      "webDev": "Web Development",
+      "design": "Design",
+      "writing": "Writing",
+      "marketing": "Marketing",
+      "va": "Virtual Assistant",
+      "other": "Other"
+    },
+    "earningsRange": "Earnings Range",
+    "selectEarnings": "Select earnings",
+    "yearsExperience": "Years on Platform",
+    "selectYears": "Select years",
+    "year": "year",
+    "years": "years",
+    "submitting": "Submitting...",
+    "submitReview": "Submit Review"
+  },
+  "platformReviews": {
+    "userReviews": "User Reviews",
+    "writeReview": "Write a Review",
+    "cancelReview": "Cancel",
+    "shareExperience": "Share your experience with {platform}",
+    "reviews": "reviews",
+    "ratingBreakdown": "Rating Breakdown",
+    "easeOfUse": "Ease of Use",
+    "support": "Support",
+    "value": "Value",
+    "noReviews": "No Reviews Yet",
+    "beFirst": "Be the first to share your experience with {platform}!",
+    "writeFirstReview": "Write the First Review",
+    "verified": "Verified",
+    "pros": "Pros",
+    "cons": "Cons",
+    "yearsExp": "years experience",
+    "helpful": "helpful"
   },
   "seoNavigation": {
     "guides": "Guides",

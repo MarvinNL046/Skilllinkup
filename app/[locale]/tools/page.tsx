@@ -16,9 +16,65 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'toolsPage.metadata' });
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/tools`;
+
   return {
     title: t('title'),
     description: t('description'),
+
+    // Keywords
+    keywords: t('keywords'),
+
+    // Canonical URL with language alternates
+    alternates: {
+      canonical: pageUrl,
+      languages: {
+        'en': `${siteUrl}/en/tools`,
+        'nl': `${siteUrl}/nl/tools`,
+      },
+    },
+
+    // Open Graph (Facebook, LinkedIn, etc.)
+    openGraph: {
+      title: t('title'),
+      description: t('description'),
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [
+        {
+          url: `${siteUrl}/images/og/tools-og.png`,
+          width: 1200,
+          height: 630,
+          alt: t('ogImageAlt'),
+        }
+      ],
+      locale: locale === 'nl' ? 'nl_NL' : 'en_US',
+      type: 'website',
+    },
+
+    // Twitter Card
+    twitter: {
+      card: 'summary_large_image',
+      title: t('title'),
+      description: t('description'),
+      images: [`${siteUrl}/images/og/tools-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+
+    // Robots
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
   };
 }
 
@@ -103,22 +159,138 @@ export default async function ToolsPage({ params }: PageProps) {
       created_at: new Date(),
       updated_at: new Date(),
     },
+    {
+      id: 'income-tracker-temp',
+      owner_id: 'system',
+      name: t('hardcodedTools.incomeTracker.name'),
+      slug: 'income-tracker',
+      description: t('hardcodedTools.incomeTracker.description'),
+      category: 'tool',
+      icon: 'BarChart3',
+      color: '#F59E0B',
+      tool_url: `/${locale}/tools/income-tracker`,
+      is_available: true,
+      featured: true,
+      sort_order: 4,
+      views: 0,
+      status: 'published',
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    {
+      id: 'project-price-calculator-temp',
+      owner_id: 'system',
+      name: t('hardcodedTools.projectPriceCalculator.name'),
+      slug: 'project-price-calculator',
+      description: t('hardcodedTools.projectPriceCalculator.description'),
+      category: 'tool',
+      icon: 'DollarSign',
+      color: '#EF4444',
+      tool_url: `/${locale}/tools/project-price-calculator`,
+      is_available: true,
+      featured: true,
+      sort_order: 5,
+      views: 0,
+      status: 'published',
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    // Client Manager temporarily disabled - MoneyBii not yet ready
+    // {
+    //   id: 'client-manager-temp',
+    //   owner_id: 'system',
+    //   name: t('hardcodedTools.clientManager.name'),
+    //   slug: 'client-manager',
+    //   description: t('hardcodedTools.clientManager.description'),
+    //   category: 'tool',
+    //   icon: 'Users',
+    //   color: '#06B6D4',
+    //   tool_url: `/${locale}/tools/client-manager`,
+    //   is_available: true,
+    //   featured: false,
+    //   sort_order: 6,
+    //   views: 0,
+    //   status: 'published',
+    //   created_at: new Date(),
+    //   updated_at: new Date(),
+    // },
   ];
 
-  // Use hardcoded tools if database is empty
-  if (tools.length === 0) {
-    tools = hardcodedTools as any;
-  } else {
-    // Check if time-tracker exists in database
-    const hasTimeTracker = tools.some(t => t.slug === 'time-tracker');
-    if (!hasTimeTracker) {
-      // Add time tracker to beginning of array
-      tools = [hardcodedTools[0] as any, ...tools];
-    }
-  }
+  // Merge hardcoded tools with database tools
+  // Always use hardcoded tools, add any database tools that aren't in the hardcoded list
+  const hardcodedSlugs = hardcodedTools.map(t => t.slug);
+  const databaseOnlyTools = tools.filter(t => !hardcodedSlugs.includes(t.slug));
+
+  // Temporarily hidden tools (MoneyBii not ready yet)
+  const hiddenSlugs = ['client-manager'];
+
+  tools = [...hardcodedTools as any, ...databaseOnlyTools].filter(
+    t => !hiddenSlugs.includes(t.slug)
+  );
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+
+  // Structured data for SEO
+  const toolsListSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: locale === 'nl' ? 'Gratis Freelance Tools' : 'Free Freelance Tools',
+    description: locale === 'nl'
+      ? 'Gratis tools voor freelancers: urenregistratie, facturatie, uurtarief calculator en meer.'
+      : 'Free tools for freelancers: time tracking, invoicing, rate calculator and more.',
+    url: `${siteUrl}/${locale}/tools`,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: tools.length,
+      itemListElement: tools.map((tool: any, index: number) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'SoftwareApplication',
+          name: tool.name,
+          description: tool.description,
+          url: `${siteUrl}/${locale}/tools/${tool.slug}`,
+          applicationCategory: 'BusinessApplication',
+          operatingSystem: 'Web Browser',
+          offers: {
+            '@type': 'Offer',
+            price: '0',
+            priceCurrency: 'EUR',
+          },
+        },
+      })),
+    },
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: `${siteUrl}/${locale}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: locale === 'nl' ? 'Tools' : 'Tools',
+        item: `${siteUrl}/${locale}/tools`,
+      },
+    ],
+  };
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(toolsListSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <Header />
       <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
         {/* Hero Section */}
@@ -283,15 +455,13 @@ export default async function ToolsPage({ params }: PageProps) {
                   </div>
                 </div>
 
-                <Link
-                  href="https://go.skilllinkup.com/moneybii"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-white text-primary hover:bg-gray-100 px-8 py-4 rounded-lg font-bold text-lg transition-all shadow-lg hover:shadow-xl"
+{/* MoneyBii launch button - temporarily disabled until product is ready */}
+                <div
+                  className="inline-flex items-center gap-2 bg-white/80 text-gray-500 px-8 py-4 rounded-lg font-bold text-lg shadow-lg cursor-not-allowed"
                 >
-                  {t('moneyBiiCta.button')}
+                  {t('moneyBiiCta.comingSoon')}
                   <Zap className="w-5 h-5" />
-                </Link>
+                </div>
               </div>
             </div>
           )}

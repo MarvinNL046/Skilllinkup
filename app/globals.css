@@ -45,12 +45,12 @@
     @apply text-gray-300;
   }
 
-  /* Links - Keep primary pink, adjust hover (but exclude buttons/CTAs) */
-  .dark a:not(.bg-primary):not(.bg-secondary):not(.bg-accent) {
+  /* Links - Keep primary pink, adjust hover (but exclude buttons/CTAs with explicit colors) */
+  .dark a:not(.bg-primary):not(.bg-secondary):not(.bg-accent):not([class*="text-white"]):not([class*="!text-"]) {
     @apply text-primary-light;
   }
 
-  .dark a:not(.bg-primary):not(.bg-secondary):not(.bg-accent):hover {
+  .dark a:not(.bg-primary):not(.bg-secondary):not(.bg-accent):not([class*="text-white"]):not([class*="!text-"]):hover {
     @apply text-primary;
     opacity: 0.9;
   }

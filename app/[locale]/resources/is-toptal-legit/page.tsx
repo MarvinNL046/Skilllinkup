@@ -10,6 +10,10 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'is-toptal-legit';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === 'nl') {
     return {
       title: "Is Toptal Betrouwbaar? Eerlijke Review van het Elite Freelance Netwerk",
@@ -17,8 +21,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       keywords: "is toptal legit, toptal betrouwbaar, toptal scam, toptal legitimate, toptal trustworthy, toptal echt, toptal BBB beoordeling",
       openGraph: {
         title: "Is Toptal Betrouwbaar? Eerlijke Review van het Elite Freelance Netwerk",
-        description: "Is Toptal legit? JA - BBB A+ beoordeling, 4.0/5 Trustpilot (2.095 reviews), sinds 2010, Fortune 500 klanten (J.P. Morgan, Airbnb, Shopify). Leer over betalingsbetrouwbaarheid en hoe je namaak oplichting herkent.",
+        description: "Is Toptal legit? JA - BBB A+ beoordeling, 4.0/5 Trustpilot (2.095 reviews), sinds 2010, Fortune 500 klanten.",
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Is Toptal Betrouwbaar?' }],
+        locale: 'nl_NL',
         type: "article",
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: "Is Toptal Betrouwbaar? Eerlijke Review van het Elite Freelance Netwerk",
+        description: "Is Toptal legit? JA - BBB A+ beoordeling, 4.0/5 Trustpilot.",
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+      },
+      robots: {
+        index: true, follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
       },
     };
   }
@@ -29,8 +53,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     keywords: "is toptal legit, is toptal a legit company, toptal scam, toptal legitimate, toptal trustworthy, toptal real, toptal BBB rating",
     openGraph: {
       title: "Is Toptal Legit? Honest Review of the Elite Freelance Network",
-      description: "Is Toptal a legit company? YES - BBB A+ rating, 4.0/5 Trustpilot (2,095 reviews), founded 2010, Fortune 500 clients (J.P. Morgan, Airbnb, Shopify). Learn about payment reliability and how to spot impersonation scams.",
+      description: "Is Toptal a legit company? YES - BBB A+ rating, 4.0/5 Trustpilot (2,095 reviews), Fortune 500 clients.",
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Is Toptal Legit?' }],
+      locale: 'en_US',
       type: "article",
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: "Is Toptal Legit? Honest Review of the Elite Freelance Network",
+      description: "Is Toptal a legit company? YES - BBB A+ rating, 4.0/5 Trustpilot.",
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+    },
+    robots: {
+      index: true, follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

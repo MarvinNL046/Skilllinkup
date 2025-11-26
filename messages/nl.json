@@ -1,4 +1,32 @@
 {
+  "homePage": {
+    "metadata": {
+      "title": "SkillLinkup - Vergelijk Freelance Platforms & Vind de Beste voor Jou",
+      "description": "Vergelijk en ontdek de beste freelance platforms voor jouw vaardigheden. Eerlijke reviews, gedetailleerde vergelijkingen en expert inzichten voor freelancers.",
+      "keywords": "freelance platforms vergelijken, beste freelance websites, upwork alternatief, fiverr review, freelance platform vergelijking, zzp platforms, freelance werk vinden",
+      "ogTitle": "SkillLinkup - De #1 Freelance Platform Vergelijker",
+      "ogDescription": "Ontdek welk freelance platform het beste bij jou past. Vergelijk tarieven, reviews en functies van 50+ platforms.",
+      "ogImageAlt": "SkillLinkup - Vergelijk Freelance Platforms",
+      "twitterTitle": "Vergelijk Freelance Platforms | SkillLinkup",
+      "twitterDescription": "Vind het perfecte freelance platform voor jouw skills. Reviews, vergelijkingen en expert tips."
+    }
+  },
+  "moneyBiiPromo": {
+    "subtle": {
+      "text": "Wil je al je tools in één platform? Probeer MoneyBii - facturatie, offertes en meer!",
+      "cta": "Probeer Gratis"
+    },
+    "banner": {
+      "title": "Upgrade naar MoneyBii",
+      "text": "Alle freelance tools die je nodig hebt in één professioneel platform. Facturatie, offertes, klantenbeheer en meer.",
+      "cta": "Start Gratis"
+    },
+    "sidebar": {
+      "text": "Alle tools in één platform? Probeer MoneyBii gratis!",
+      "cta": "Bekijk MoneyBii"
+    },
+    "comingSoon": "Binnenkort beschikbaar"
+  },
   "header": {
     "home": "Home",
     "platforms": "Platforms",
@@ -12,6 +40,8 @@
   },
   "footer": {
     "slogan": "Jouw vertrouwde gids voor het vinden van het perfecte freelance platform voor jouw vaardigheden.",
+    "exploreResources": "Ontdek Freelance Bronnen",
+    "viewAll": "Bekijk alles →",
     "platforms": "Platforms",
     "resources": "Bronnen",
     "company": "Bedrijf",
@@ -233,7 +263,13 @@
   "platformsPage": {
     "title": "Alle Freelance Platforms",
     "subtitle": "Vergelijk {count}+ platforms om de perfecte match voor jouw vaardigheden en doelen te vinden",
-    "allPlatformsCategory": "Alle Platforms"
+    "allPlatformsCategory": "Alle Platforms",
+    "metadata": {
+      "title": "Beste Freelance Platforms 2025 - Vergelijk & Vind Jouw Perfecte Match",
+      "description": "Ontdek en vergelijk de beste freelance platforms in 2025. Vind het perfecte platform voor jouw vaardigheden - van Upwork en Fiverr tot gespecialiseerde marktplaatsen. Deskundige reviews, vergelijking van kosten en eerlijke beoordelingen.",
+      "keywords": "freelance platforms, beste freelance sites, freelance marktplaatsen, Upwork alternatieven, Fiverr alternatieven, freelance opdrachten, thuiswerk platforms, freelance werk vinden, zzp platforms, freelancer vergelijking",
+      "ogImageAlt": "Vergelijk Freelance Platforms - SkillLinkup"
+    }
   },
   "platformDetail": {
     "home": "Home",
@@ -264,10 +300,19 @@
     "metaTitle": "{name} Review 2025: Kosten, Functies & Voor-/Nadelen - SkillLinkup",
     "metaDescription": "Lees onze uitgebreide {name} review. Meer informatie over kosten, functies, voor- en nadelen."
   },
+  "toolDetailPage": {
+    "metadata": {
+      "notFoundTitle": "Tool Niet Gevonden | SkillLinkup",
+      "titleSuffix": "Gratis Freelance Tool",
+      "defaultDescription": "Ontdek {toolName} - een gratis tool om je freelance bedrijf efficiënter te beheren."
+    }
+  },
   "toolsPage": {
     "metadata": {
-      "title": "Freelance Tools en Bronnen | SkillLinkup",
-      "description": "Ontdek handige tools en rekenmachines voor freelancers. Bereken uw tarieven, houd uw tijd bij en meer."
+      "title": "Gratis Freelance Tools & Rekenmachines | SkillLinkup",
+      "description": "Ontdek gratis tools en rekenmachines voor freelancers. Bereken je tarieven, houd je tijd bij, maak facturen, en beheer je freelance bedrijf efficiënter.",
+      "keywords": "freelance tools, freelancer rekenmachine, uurtarief calculator, tijdregistratie, factuur generator, freelance bronnen, zzp tools, zakelijke tools",
+      "ogImageAlt": "SkillLinkup - Gratis Freelance Tools & Bronnen"
     },
     "hero": {
       "title": "Freelance Tools en Bronnen",
@@ -291,6 +336,18 @@
       "invoiceGenerator": {
         "name": "Factuurgenerator",
         "description": "Maak professionele facturen met realtime preview, sla op, print en download als PDF"
+      },
+      "incomeTracker": {
+        "name": "Inkomstentracker",
+        "description": "Volg uw inkomsten en uitgaven per maand en jaar"
+      },
+      "projectPriceCalculator": {
+        "name": "Projectprijscalculator",
+        "description": "Bereken de prijs voor uw project op basis van geschatte uren"
+      },
+      "clientManager": {
+        "name": "Klantenbeheer",
+        "description": "Beheer uw klanten en contactgegevens op één plek"
       }
     },
     "resourcesSection": {
@@ -316,10 +373,17 @@
         "crm": "Klantrelatiebeheer",
         "reports": "Financiële rapporten & inzichten"
       },
-      "button": "Probeer MoneyBii Gratis"
+      "button": "Probeer MoneyBii Gratis",
+      "comingSoon": "Binnenkort beschikbaar"
     }
   },
   "timeTracker": {
+    "metadata": {
+      "title": "Gratis Tijdregistratie voor Freelancers | Declarabele Uren Bijhouden | SkillLinkup",
+      "description": "Houd je declarabele uren bij, beheer projecten, en bereken inkomsten automatisch. Onze gratis tijdtracker helpt freelancers georganiseerd te blijven en correct betaald te worden.",
+      "keywords": "tijdregistratie, urenregistratie freelancer, declarabele uren, project tijdregistratie, uurtarief berekenen, freelancer productiviteit, tijdbeheer",
+      "ogImageAlt": "SkillLinkup Tijdtracker - Declarabele Uren Bijhouden voor Freelancers"
+    },
     "breadcrumb": {
       "home": "Thuis",
       "tools": "Hulpmiddelen",
@@ -404,7 +468,236 @@
       "filename": "tijdtracker-export"
     }
   },
+  "projectPriceCalculator": {
+    "metadata": {
+      "title": "Gratis Projectprijscalculator | Bereken Projectkosten | SkillLinkup",
+      "description": "Bereken accurate projectprijzen op basis van geschatte uren, taakcomplexiteit en buffertijd. Onze gratis calculator helpt freelancers om projecten met vertrouwen te offreren.",
+      "keywords": "projectprijs calculator, freelance offerte calculator, project schatting tool, freelance pricing, project kosten calculator, uurtarief berekenen, freelance offerte",
+      "ogImageAlt": "SkillLinkup Projectprijscalculator - Bereken Projectkosten"
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "tools": "Tools",
+      "projectPriceCalculator": "Projectprijscalculator"
+    },
+    "hero": {
+      "title": "Projectprijscalculator",
+      "subtitle": "Bereken de totale prijs voor uw project op basis van geschatte uren, taakcomplexiteit en buffer voor onverwacht werk."
+    },
+    "settings": {
+      "title": "Uw Instellingen",
+      "hourlyRate": "Uw Uurtarief",
+      "hourlyRateHelp": "Uw standaard uurtarief",
+      "buffer": "Buffer Percentage",
+      "bufferHelp": "Extra buffer voor scope wijzigingen"
+    },
+    "tasks": {
+      "title": "Projecttaken",
+      "taskName": "Taaknaam",
+      "taskPlaceholder": "Taak",
+      "hours": "Uren",
+      "hoursPlaceholder": "Uren",
+      "complexity": "Complexiteit",
+      "complexitySimple": "Eenvoudig",
+      "complexityMedium": "Gemiddeld",
+      "complexityComplex": "Complex",
+      "addNew": "Nieuwe Taak Toevoegen",
+      "newTaskPlaceholder": "Taaknaam...",
+      "addButton": "Toevoegen",
+      "defaultName": "Naamloze Taak"
+    },
+    "results": {
+      "title": "Projectofferte",
+      "totalPrice": "Totale Projectprijs",
+      "baseHours": "Basis Uren",
+      "adjustedHours": "Aangepaste Uren",
+      "basePrice": "Basisprijs",
+      "buffer": "Buffer",
+      "hoursUnit": "uren",
+      "timeEstimate": "Tijdschatting",
+      "days": "werkdagen (8u)",
+      "weeks": "weken (40u)",
+      "readyMessage": "Uw offerte is klaar! Deel dit met uw klant.",
+      "addTasksMessage": "Voeg taken met uren toe om uw offerte te zien."
+    },
+    "tips": {
+      "title": "Tips voor Nauwkeurige Schattingen",
+      "tip1": "Verdeel grote taken in kleinere, schatbare onderdelen",
+      "tip2": "Voeg 15-20% buffer toe voor onverwachte problemen en revisies",
+      "tip3": "Complexe taken duren vaak langer dan verwacht",
+      "tip4": "Neem tijd mee voor communicatie, vergaderingen en administratie"
+    },
+    "cta": {
+      "title": "Moet U Uw Uurtarief Berekenen?",
+      "description": "Gebruik onze Tariefcalculator om uw ideale uurtarief te bepalen op basis van uw inkomensdoelen en uitgaven.",
+      "rateCalculatorButton": "Tariefcalculator",
+      "allToolsButton": "Alle Tools"
+    }
+  },
+  "clientManager": {
+    "metadata": {
+      "title": "MoneyBii - Boekhoudpakket voor Freelancers | Facturen & Offertes | SkillLinkup",
+      "description": "Compleet boekhoudpakket voor freelancers. Maak professionele facturen, offertes, beheer klanten en houd je financiën bij. Probeer MoneyBii - de alles-in-één zakelijke oplossing.",
+      "keywords": "freelance boekhoudpakket, facturatie software freelancers, offerte generator, klantenbeheer, MoneyBii, zzp boekhouding, bedrijfsbeheer, freelancer facturatie",
+      "ogImageAlt": "MoneyBii - Compleet Boekhoudpakket voor Freelancers"
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "tools": "Tools",
+      "clientManager": "Klantenbeheer"
+    },
+    "hero": {
+      "title": "Compleet Boekhoudpakket voor Freelancers",
+      "subtitle": "Facturatie, offertes, klantenbeheer en financiële rapportages in één platform. Vergelijkbaar met Moneybird, maar speciaal voor freelancers.",
+      "ctaButton": "Probeer MoneyBii Gratis"
+    },
+    "preview": {
+      "title": "Bekijk de Mogelijkheden",
+      "subtitle": "Een professioneel CRM-systeem speciaal ontworpen voor freelancers",
+      "mockTitle": "Klanten Overzicht",
+      "demoLabel": "Preview",
+      "table": {
+        "client": "Klant",
+        "email": "E-mail",
+        "phone": "Telefoon",
+        "projects": "Projecten",
+        "status": "Status"
+      },
+      "statusActive": "Actief",
+      "statusPending": "In afwachting",
+      "unlockMessage": "Wilt u volledige toegang tot professioneel klantenbeheer?",
+      "unlockButton": "Start met MoneyBii"
+    },
+    "featuresSection": {
+      "title": "Alles Wat U Nodig Heeft",
+      "subtitle": "MoneyBii biedt alle tools die u nodig heeft om uw freelance bedrijf professioneel te beheren",
+      "comingSoonBadge": "Binnenkort Beschikbaar",
+      "comingSoonTitle": "Nieuwe Functies in Ontwikkeling"
+    },
+    "features": {
+      "contacts": {
+        "title": "Contactbeheer",
+        "description": "Bewaar en organiseer al uw klantinformatie op één plek"
+      },
+      "invoicing": {
+        "title": "Professionele Facturatie",
+        "description": "Maak en verstuur professionele facturen in seconden"
+      },
+      "quotes": {
+        "title": "Offerte Generatie",
+        "description": "Genereer snel professionele offertes en zet ze om naar facturen"
+      },
+      "reports": {
+        "title": "Financiële Rapporten",
+        "description": "Krijg inzicht in uw inkomsten, uitgaven en winstgevendheid"
+      },
+      "timeTracking": {
+        "title": "Tijdregistratie",
+        "description": "Registreer factureerbare uren en koppel ze direct aan facturen"
+      },
+      "multiCurrency": {
+        "title": "Multi-Valuta",
+        "description": "Werk met internationale klanten in hun voorkeursvaluta"
+      },
+      "emailMarketing": {
+        "title": "E-mail Marketing",
+        "description": "Automatische nieuwsbrieven en marketing campagnes naar uw klanten"
+      },
+      "automation": {
+        "title": "Workflow Automatisering",
+        "description": "Automatiseer terugkerende taken zoals herinneringen en follow-ups"
+      }
+    },
+    "benefits": {
+      "item1": "Compleet CRM-systeem voor freelancers",
+      "item2": "Professionele facturatie en offertes",
+      "item3": "Automatische betalingsherinneringen",
+      "item4": "Financiële inzichten en rapporten",
+      "item5": "Tijdregistratie integratie",
+      "item6": "Cloud-gebaseerd - toegang overal"
+    },
+    "moneybii": {
+      "title": "Klaar om Uw Administratie te Stroomlijnen?",
+      "description": "MoneyBii is het complete boekhoudpakket voor freelancers. Vergelijkbaar met Moneybird, maar speciaal ontworpen voor ZZP'ers en kleine ondernemers. Facturatie, offertes, klantenbeheer en binnenkort ook marketing automatisering.",
+      "ctaButton": "Start Gratis Proefperiode",
+      "freeTrialNote": "Geen creditcard nodig • Gratis 14 dagen proberen",
+      "badges": {
+        "secure": "100% Veilig",
+        "support": "24/7 Support",
+        "rating": "4.9★ Beoordeling",
+        "users": "10K+ Gebruikers"
+      }
+    },
+    "backToTools": "Terug naar Tools"
+  },
+  "incomeTracker": {
+    "metadata": {
+      "title": "Gratis Inkomstentracker voor Freelancers | Inkomsten & Uitgaven Bijhouden | SkillLinkup",
+      "description": "Houd je freelance inkomsten en uitgaven bij per maand en jaar. Krijg inzicht in je verdiensten, identificeer trends, en beheer je financiën effectiever.",
+      "keywords": "inkomstentracker, freelance inkomsten tracker, uitgaventracker, verdiensten tracker, freelance financiën, inkomstenbeheer, financiële tracking, zzp boekhouding",
+      "ogImageAlt": "SkillLinkup Inkomstentracker - Freelance Inkomsten & Uitgaven Bijhouden"
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "tools": "Tools",
+      "incomeTracker": "Inkomstentracker"
+    },
+    "hero": {
+      "title": "Inkomstentracker",
+      "subtitle": "Volg uw inkomsten en uitgaven per maand en jaar. Krijg inzicht in uw freelance verdiensten en bestedingspatronen."
+    },
+    "navigation": {
+      "month": "Maand",
+      "year": "Jaar"
+    },
+    "summary": {
+      "income": "Inkomsten",
+      "expenses": "Uitgaven",
+      "net": "Netto Resultaat"
+    },
+    "actions": {
+      "addIncome": "Inkomst Toevoegen",
+      "addExpense": "Uitgave Toevoegen"
+    },
+    "transactions": {
+      "title": "Transacties",
+      "empty": "Geen transacties voor deze periode. Voeg uw eerste inkomst of uitgave toe!",
+      "noDescription": "Geen omschrijving"
+    },
+    "breakdown": {
+      "title": "Categorie Overzicht",
+      "empty": "Nog geen gegevens om te tonen."
+    },
+    "yearOverview": {
+      "title": "Jaaroverzicht"
+    },
+    "modal": {
+      "titleEdit": "Transactie Bewerken",
+      "titleAddIncome": "Inkomst Toevoegen",
+      "titleAddExpense": "Uitgave Toevoegen",
+      "income": "Inkomst",
+      "expense": "Uitgave",
+      "labelAmount": "Bedrag",
+      "labelCategory": "Categorie",
+      "selectCategory": "Selecteer een categorie...",
+      "labelDate": "Datum",
+      "labelDescription": "Omschrijving",
+      "placeholderDescription": "Waarvoor is dit?",
+      "buttonAdd": "Toevoegen",
+      "buttonUpdate": "Bijwerken",
+      "buttonCancel": "Annuleren"
+    },
+    "confirmations": {
+      "deleteTransaction": "Weet u zeker dat u deze transactie wilt verwijderen?"
+    }
+  },
   "rateCalculator": {
+    "metadata": {
+      "title": "Freelance Tariefcalculator - Bereken Je Ideale Uurtarief | SkillLinkup",
+      "description": "Bereken je ideale freelance uurtarief op basis van je gewenste inkomen, kosten en beschikbare uren. Gratis calculator met realistische tariefberekening voor ZZP'ers.",
+      "keywords": "tariefcalculator, uurtarief berekenen, freelance tarief, zzp tarief, freelance uurtarief, tariefberekening freelancer, hoeveel vragen per uur",
+      "ogImageAlt": "SkillLinkup Freelance Tariefcalculator - Bereken je ideale uurtarief"
+    },
     "breadcrumb": {
       "home": "Thuis",
       "tools": "Hulpmiddelen",
@@ -611,6 +904,12 @@
     }
   },
   "invoiceGenerator": {
+    "metadata": {
+      "title": "Gratis Factuurgenerator - Maak Professionele Facturen | SkillLinkup",
+      "description": "Maak gratis professionele facturen met onze online factuurgenerator. Download als PDF, pas aan met je logo en verstuur direct. Perfect voor ZZP'ers en freelancers.",
+      "keywords": "factuurgenerator, factuur maken gratis, online facturen, pdf factuur, gratis factuur software, zzp factuur, freelance factuur template",
+      "ogImageAlt": "SkillLinkup Factuurgenerator - Maak gratis professionele facturen"
+    },
     "breadcrumb": {
       "home": "Thuis",
       "tools": "Hulpmiddelen",
@@ -1296,8 +1595,14 @@
   },
   "comparisonsPage": {
     "metadata": {
-      "title": "Platformvergelijkingen | SkillLinkup",
-      "description": "Vergelijk de beste freelanceplatforms en vind het perfecte platform voor jouw vaardigheden."
+      "title": "Vergelijk Freelance Platforms 2025 | Upwork vs Fiverr vs Toptal | SkillLinkup",
+      "description": "Vergelijk 20+ freelance platforms op commissies, beoordelingen en specialisaties. Vind het beste platform voor jouw vaardigheden met onze interactieve vergelijkingstabel.",
+      "keywords": "freelance platform vergelijking, upwork vs fiverr, toptal vergelijking, freelance commissies vergelijken, beste freelance platform 2025, platform beoordelingen, freelancer tarieven vergelijken",
+      "ogTitle": "Vergelijk 20+ Freelance Platforms - Vind Jouw Perfecte Match",
+      "ogDescription": "Interactieve vergelijkingstabel met commissies, beoordelingen en specialisaties. Ontdek welk freelance platform het beste bij jou past.",
+      "ogImageAlt": "Freelance Platform Vergelijkingen - SkillLinkup",
+      "twitterTitle": "Vergelijk Freelance Platforms 2025 | SkillLinkup",
+      "twitterDescription": "Vergelijk Upwork, Fiverr, Toptal en meer. Bekijk commissies, ratings en vind het perfecte platform voor jouw freelance carrière."
     },
     "hero": {
       "title": "Vergelijk freelanceplatforms",
@@ -1317,6 +1622,13 @@
       "emptyCategory": "-",
       "viewButton": "Weergave",
       "visitButton": "Bezoek →"
+    },
+    "sort": {
+      "label": "Sorteer op",
+      "rating": "Beoordeling",
+      "name": "Naam",
+      "commission": "Commissie",
+      "reviews": "Recensies"
     },
     "stats": {
       "totalPlatforms": "Totaal platforms",
@@ -1379,8 +1691,14 @@
   },
   "reviewsPage": {
     "metadata": {
-      "title": "Platformrecensies - SkillLinkup",
-      "description": "Lees authentieke reviews van freelancers over hun ervaringen op verschillende platforms."
+      "title": "Freelance Platform Reviews & Ervaringen 2025 | SkillLinkup",
+      "description": "Lees 100+ authentieke reviews van freelancers over Upwork, Fiverr, Toptal en andere platforms. Ontdek eerlijke ervaringen, beoordelingen en tips van echte gebruikers.",
+      "keywords": "freelance platform reviews, upwork ervaringen, fiverr reviews, toptal beoordelingen, freelancer recensies, platform vergelijkingen, freelance ervaringen Nederland",
+      "ogTitle": "Freelance Platform Reviews & Ervaringen 2025",
+      "ogDescription": "100+ authentieke reviews van freelancers. Ontdek welk platform het beste bij jou past op basis van echte ervaringen.",
+      "ogImageAlt": "Freelance Platform Reviews - SkillLinkup",
+      "twitterTitle": "Freelance Platform Reviews 2025 | SkillLinkup",
+      "twitterDescription": "Lees eerlijke reviews van freelancers over Upwork, Fiverr, Toptal en meer. Maak de juiste keuze!"
     },
     "hero": {
       "title": "Platformrecensies",
@@ -1408,8 +1726,14 @@
   },
   "blogPage": {
     "metadata": {
-      "title": "Blog - SkillLinkup",
-      "description": "Lees onze nieuwste artikelen over freelanceplatforms, tips en branche-inzichten."
+      "title": "Freelance Blog - Tips, Guides & Inzichten | SkillLinkup",
+      "description": "Ontdek tips, handleidingen en inzichten voor freelancers. Leer hoe je meer verdient, betere klanten vindt en succesvol freelancet.",
+      "keywords": "freelance blog, freelancer tips, zzp tips, freelance guides, platform reviews, freelance verdienen",
+      "ogTitle": "Freelance Blog - Tips & Guides voor Freelancers",
+      "ogDescription": "Expert tips, platform reviews en praktische handleidingen om te slagen als freelancer.",
+      "ogImageAlt": "SkillLinkup Freelance Blog",
+      "twitterTitle": "Freelance Blog | SkillLinkup",
+      "twitterDescription": "De beste tips en guides voor freelancers. Ontdek hoe je succesvol freelancet."
     },
     "hero": {
       "title": "Blog en bronnen",
@@ -1474,6 +1798,64 @@
     "viewAllGuides": "Bekijk Alle Gidsen",
     "browseAll": "Bekijk Alle 55+ Freelance Gidsen",
     "expertInsights": "Expert inzichten om je te helpen slagen op elk platform"
+  },
+  "reviewForm": {
+    "thankYou": "Bedankt!",
+    "reviewSubmitted": "Je review is ingediend en wacht op goedkeuring.",
+    "yourName": "Je Naam",
+    "namePlaceholder": "bijv. Jan Jansen",
+    "yourRole": "Je Rol (optioneel)",
+    "rolePlaceholder": "bijv. Web Developer",
+    "ratings": "Beoordeel Je Ervaring",
+    "overallRating": "Algemene Beoordeling",
+    "easeOfUse": "Gebruiksgemak",
+    "support": "Klantenservice",
+    "valueForMoney": "Prijs-kwaliteit",
+    "reviewTitle": "Review Titel",
+    "titlePlaceholder": "Vat je ervaring met {platform} samen",
+    "yourReview": "Je Review",
+    "contentPlaceholder": "Deel je ervaring. Wat vond je goed of minder? Zou je dit platform aanbevelen?",
+    "pros": "Wat je goed vond",
+    "cons": "Wat beter kon",
+    "pro": "Pluspunt",
+    "con": "Minpunt",
+    "projectType": "Type Project",
+    "selectProjectType": "Selecteer projecttype",
+    "projectTypes": {
+      "webDev": "Webontwikkeling",
+      "design": "Design",
+      "writing": "Schrijven",
+      "marketing": "Marketing",
+      "va": "Virtueel Assistent",
+      "other": "Anders"
+    },
+    "earningsRange": "Inkomsten Bereik",
+    "selectEarnings": "Selecteer inkomsten",
+    "yearsExperience": "Jaren op Platform",
+    "selectYears": "Selecteer jaren",
+    "year": "jaar",
+    "years": "jaar",
+    "submitting": "Verzenden...",
+    "submitReview": "Review Versturen"
+  },
+  "platformReviews": {
+    "userReviews": "Gebruikersreviews",
+    "writeReview": "Schrijf een Review",
+    "cancelReview": "Annuleren",
+    "shareExperience": "Deel je ervaring met {platform}",
+    "reviews": "reviews",
+    "ratingBreakdown": "Beoordeling Overzicht",
+    "easeOfUse": "Gebruiksgemak",
+    "support": "Support",
+    "value": "Waarde",
+    "noReviews": "Nog Geen Reviews",
+    "beFirst": "Wees de eerste die een ervaring deelt met {platform}!",
+    "writeFirstReview": "Schrijf de Eerste Review",
+    "verified": "Geverifieerd",
+    "pros": "Pluspunten",
+    "cons": "Minpunten",
+    "yearsExp": "jaar ervaring",
+    "helpful": "nuttig"
   },
   "seoNavigation": {
     "guides": "Gidsen",

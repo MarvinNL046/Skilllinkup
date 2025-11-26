@@ -8,6 +8,10 @@ import { Eye, TrendingUp, Award, Star, Target, CheckCircle, ArrowRight, Zap, Sea
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'optimizing-freelance-profile-maximum-visibility';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === 'nl') {
     return {
       title: 'Freelance Profiel Optimaliseren voor Maximale Zichtbaarheid',
@@ -16,7 +20,28 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       openGraph: {
         title: 'Freelance Profiel Optimaliseren voor Maximale Zichtbaarheid',
         description: 'Verhoog je freelance profielweergaven met 300% met bewezen optimalisatiestrategieën en platform-specifieke SEO-tactieken.',
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Freelance Profiel Optimaliseren' }],
+        locale: 'nl_NL',
         type: 'article',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Freelance Profiel Optimaliseren voor Maximale Zichtbaarheid',
+        description: 'Verhoog profielweergaven met 300% met bewezen optimalisatiestrategieën.',
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
       },
     };
   }
@@ -28,7 +53,28 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     openGraph: {
       title: 'Optimize Your Freelance Profile for Maximum Visibility',
       description: 'Boost your freelance profile views by 300% with proven optimization strategies and platform-specific SEO tactics.',
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Optimize Your Freelance Profile' }],
+      locale: 'en_US',
       type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Optimize Your Freelance Profile for Maximum Visibility',
+      description: 'Boost profile views by 300% with proven optimization strategies.',
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

@@ -2,11 +2,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { getPlatformBySlug, getPublishedPlatforms } from "@/lib/queries";
+import { getPlatformBySlug, getPublishedPlatforms, getReviewsByPlatform } from "@/lib/queries";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Newsletter } from "@/components/newsletter";
 import { AffiliateButton } from "@/components/affiliate-button";
+import { PlatformReviews } from "@/components/PlatformReviews";
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -30,7 +31,7 @@ export async function generateMetadata({ params }: PlatformPageProps) {
     }
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
-    const platformUrl = `${siteUrl}/platforms/${platform.slug}`;
+    const platformUrl = `${siteUrl}/${locale}/platforms/${platform.slug}`;
     const imageUrl = platform.logo_url?.startsWith('http')
       ? platform.logo_url
       : `${siteUrl}${platform.logo_url}`;
@@ -52,9 +53,13 @@ export async function generateMetadata({ params }: PlatformPageProps) {
       // Keywords
       keywords: `${platform.name}, ${platform.name} review, ${platform.name} fees, freelance platform, ${platform.category}, ${platform.difficulty}`,
 
-      // Canonical URL
+      // Canonical URL with language alternates
       alternates: {
         canonical: platformUrl,
+        languages: {
+          'en': `${siteUrl}/en/platforms/${slug}`,
+          'nl': `${siteUrl}/nl/platforms/${slug}`,
+        },
       },
 
       // Open Graph (Facebook, LinkedIn, etc.)
@@ -71,7 +76,7 @@ export async function generateMetadata({ params }: PlatformPageProps) {
             alt: `${platform.name} logo`,
           }
         ] : [],
-        locale: 'en_US',
+        locale: locale === 'nl' ? 'nl_NL' : 'en_US',
         type: 'website',
       },
 
@@ -110,6 +115,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
   const t = await getTranslations('platformDetail');
   let platform;
   let relatedPlatforms: Awaited<ReturnType<typeof getPublishedPlatforms>> = [];
+  let platformReviews: Awaited<ReturnType<typeof getReviewsByPlatform>> = [];
 
   try {
     platform = await getPlatformBySlug(slug, locale);
@@ -123,6 +129,9 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
     relatedPlatforms = allPlatforms
       .filter((p) => p.category === platform.category && p.id !== platform.id)
       .slice(0, 3);
+
+    // Get reviews for this platform (filtered by locale)
+    platformReviews = await getReviewsByPlatform(platform.id, 20, locale);
   } catch (error) {
     console.error('Error fetching platform:', error);
     notFound();
@@ -130,7 +139,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
 
   // Schema.org structured data
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
-  const platformUrl = `${siteUrl}/platforms/${platform.slug}`;
+  const platformUrl = `${siteUrl}/${locale}/platforms/${platform.slug}`;
   const imageUrl = platform.logo_url?.startsWith('http')
     ? platform.logo_url
     : `${siteUrl}${platform.logo_url}`;
@@ -172,13 +181,13 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: siteUrl,
+        item: `${siteUrl}/${locale}`,
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Platforms',
-        item: `${siteUrl}/platforms`,
+        item: `${siteUrl}/${locale}/platforms`,
       },
       {
         '@type': 'ListItem',
@@ -472,6 +481,33 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                       </p>
                     </section>
                   )}
+
+                  {/* User Reviews Section */}
+                  <PlatformReviews
+                    platformId={platform.id}
+                    platformName={platform.name}
+                    locale={locale}
+                    reviews={platformReviews.map(r => ({
+                      id: r.id,
+                      user_name: r.user_name,
+                      user_avatar: r.user_avatar,
+                      user_role: r.user_role,
+                      title: r.title,
+                      content: r.content,
+                      overall_rating: Number(r.overall_rating),
+                      ease_of_use_rating: Number(r.ease_of_use_rating),
+                      support_rating: Number(r.support_rating),
+                      value_rating: Number(r.value_rating),
+                      pros: r.pros || [],
+                      cons: r.cons || [],
+                      project_type: r.project_type,
+                      earnings_range: r.earnings_range,
+                      years_experience: r.years_experience,
+                      verified: r.verified,
+                      helpful_count: r.helpful_count,
+                      created_at: r.created_at ? r.created_at.toISOString() : new Date().toISOString(),
+                    }))}
+                  />
                 </div>
 
                 {/* Sidebar */}

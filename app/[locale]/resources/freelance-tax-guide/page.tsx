@@ -13,20 +13,39 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'freelance-tax-guide';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === 'nl') {
     return {
       title: 'Belastinggids voor Freelancers: BTW, Inkomstenbelasting & Voorlopige Aanslag',
       description: 'Complete belastinggids voor ZZP\'ers met uitleg over BTW-aangifte, inkomstenbelasting, aftrekposten en voorlopige aanslag. Bespaar belasting en blijf compliant.',
       keywords: 'belastingen freelancer, BTW aangifte ZZP, inkomstenbelasting zzp\'er, voorlopige aanslag, aftrekposten zzp, belastingaangifte zelfstandige',
-      alternates: {
-        canonical: 'https://skilllinkup.com/nl/resources/freelance-tax-guide',
-      },
       openGraph: {
         title: 'Belastinggids voor Freelancers: BTW, Inkomstenbelasting & Voorlopige Aanslag',
         description: 'Beheers je belastingen als ZZP\'er met onze complete gids. Leer over BTW-aangifte, aftrekposten en voorlopige aanslag.',
-        type: 'article',
-        url: 'https://skilllinkup.com/nl/resources/freelance-tax-guide',
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Belastinggids voor Freelancers' }],
         locale: 'nl_NL',
+        type: 'article',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Belastinggids voor Freelancers: BTW, Inkomstenbelasting & Voorlopige Aanslag',
+        description: 'Beheers je belastingen als ZZP\'er met onze complete gids. Leer over BTW-aangifte, aftrekposten en voorlopige aanslag.',
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+      },
+      robots: {
+        index: true, follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
       },
     };
   }
@@ -35,15 +54,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: 'Freelance Tax Guide: What You Need to Know (US & International)',
     description: 'Complete freelance tax guide covering deductions, quarterly payments, self-employment tax, and international considerations. Save money and stay compliant.',
     keywords: 'freelance taxes, self-employment tax, tax deductions, quarterly taxes, freelance accounting, 1099 taxes',
-    alternates: {
-      canonical: 'https://skilllinkup.com/resources/freelance-tax-guide',
-    },
     openGraph: {
       title: 'Freelance Tax Guide: What You Need to Know (US & International)',
       description: 'Master freelance taxes with our complete guide. Learn about deductions, quarterly payments, and how to save money while staying compliant.',
-      type: 'article',
-      url: 'https://skilllinkup.com/resources/freelance-tax-guide',
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Freelance Tax Guide' }],
       locale: 'en_US',
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Freelance Tax Guide: What You Need to Know (US & International)',
+      description: 'Master freelance taxes with our complete guide. Learn about deductions, quarterly payments, and how to save money while staying compliant.',
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+    },
+    robots: {
+      index: true, follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

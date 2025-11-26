@@ -8,6 +8,10 @@ import { Target, TrendingUp, Zap, CheckCircle, ArrowRight, Star, Award, BarChart
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'best-freelance-platforms-marketing-consultants';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === 'nl') {
     return {
       title: 'Beste Freelance Platforms voor Marketing Consultants 2025',
@@ -16,7 +20,27 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       openGraph: {
         title: 'Beste Freelance Platforms voor Marketing Consultants 2025',
         description: 'Ontdek premium platforms voor marketing consultants. Bouw een bloeiende consultancy praktijk met hoogwaardige klanten.',
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Marketing Consultant Platforms' }],
+        locale: 'nl_NL',
         type: 'article',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Beste Freelance Platforms voor Marketing Consultants 2025',
+        description: 'Ontdek premium platforms voor marketing consultants.',
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+      },
+      robots: {
+        index: true, follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
       },
     };
   }
@@ -28,7 +52,27 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     openGraph: {
       title: 'Best Freelance Platforms for Marketing Consultants 2025',
       description: 'Discover premium platforms for marketing consultants. Build a thriving consulting practice with high-value clients.',
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Marketing Consultant Platforms' }],
+      locale: 'en_US',
       type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Best Freelance Platforms for Marketing Consultants 2025',
+      description: 'Discover premium platforms for marketing consultants.',
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+    },
+    robots: {
+      index: true, follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

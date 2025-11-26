@@ -10,6 +10,10 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'upwork-pricing';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === 'nl') {
     return {
       title: "Upwork Prijzen 2025: Complete Kostengids voor Freelancers & Opdrachtgevers",
@@ -18,7 +22,44 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       openGraph: {
         title: "Upwork Prijzen 2025: Complete Kostengids voor Freelancers & Opdrachtgevers",
         description: "Complete Upwork prijzengids 2025: Variabel 0-15% freelancer tarief per contract, $0.15 Connects, Freelancer Plus €19.99/maand, client fees tot 7.99%, en tips om kosten te verlagen.",
-        type: "article",
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [
+          {
+            url: `${siteUrl}/images/og/resources-og.png`,
+            width: 1200,
+            height: 630,
+            alt: 'Upwork Prijzen 2025: Complete Kostengids voor Freelancers & Opdrachtgevers',
+          }
+        ],
+        locale: 'nl_NL',
+        type: 'article',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: "Upwork Prijzen 2025: Complete Kostengids voor Freelancers & Opdrachtgevers",
+        description: "Complete Upwork prijzengids 2025: Variabel 0-15% freelancer tarief per contract, $0.15 Connects, Freelancer Plus €19.99/maand, client fees tot 7.99%, en tips om kosten te verlagen.",
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: {
+          'en': `${siteUrl}/en/resources/${slug}`,
+          'nl': `${siteUrl}/nl/resources/${slug}`,
+        },
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          'max-video-preview': -1,
+          'max-image-preview': 'large',
+          'max-snippet': -1,
+        },
       },
     };
   }
@@ -30,7 +71,44 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: "Upwork Pricing 2025: Complete Fee Guide for Freelancers & Clients",
       description: "Complete Upwork pricing guide 2025: Variable 0-15% freelancer fee per contract, $0.15 Connects, Freelancer Plus $19.99/month, client fees up to 7.99%, and tips to reduce fees.",
-      type: "article",
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [
+        {
+          url: `${siteUrl}/images/og/resources-og.png`,
+          width: 1200,
+          height: 630,
+          alt: 'Upwork Pricing 2025: Complete Fee Guide for Freelancers & Clients',
+        }
+      ],
+      locale: 'en_US',
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: "Upwork Pricing 2025: Complete Fee Guide for Freelancers & Clients",
+      description: "Complete Upwork pricing guide 2025: Variable 0-15% freelancer fee per contract, $0.15 Connects, Freelancer Plus $19.99/month, client fees up to 7.99%, and tips to reduce fees.",
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: {
+        'en': `${siteUrl}/en/resources/${slug}`,
+        'nl': `${siteUrl}/nl/resources/${slug}`,
+      },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
   };
 }

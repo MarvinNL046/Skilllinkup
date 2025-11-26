@@ -8,15 +8,39 @@ import { PenTool, BookOpen, Zap, CheckCircle, ArrowRight, Star, TrendingUp, Awar
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'best-platforms-freelance-writers-content-creators';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === 'nl') {
     return {
       title: 'Beste Platformen voor Freelance Schrijvers & Content Creators',
       description: 'Ontdek top freelance platforms voor schrijvers en contentmakers in 2025. Vergelijk tarieven, opdrachttypes en vind platformen die kwaliteit waarderen en eerlijk betalen.',
+      keywords: 'freelance schrijfplatforms, content schrijven, blog schrijven, copywriting platforms, freelance schrijvers',
       openGraph: {
         title: 'Beste Platformen voor Freelance Schrijvers 2025',
         description: 'Vind de beste schrijfplatformen die jouw expertise waarderen. Vergelijk tarieven en bouw een bloeiende schrijfcarrière.',
-        type: 'article',
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Beste Platformen voor Freelance Schrijvers' }],
         locale: 'nl_NL',
+        type: 'article',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Beste Platformen voor Freelance Schrijvers 2025',
+        description: 'Vind de beste schrijfplatformen die jouw expertise waarderen. Vergelijk tarieven.',
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+      },
+      robots: {
+        index: true, follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
       },
     };
   }
@@ -28,7 +52,27 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     openGraph: {
       title: 'Best Platforms for Freelance Writers & Content Creators 2025',
       description: 'Find the best marketplaces for freelance writers. Compare rates, project types, and build a thriving writing career.',
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Best Platforms for Freelance Writers' }],
+      locale: 'en_US',
       type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Best Platforms for Freelance Writers & Content Creators 2025',
+      description: 'Find the best marketplaces for freelance writers. Compare rates and project types.',
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+    },
+    robots: {
+      index: true, follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

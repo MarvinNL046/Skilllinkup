@@ -10,6 +10,10 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'multiple-freelance-platforms-pros-cons';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === 'nl') {
     return {
       title: 'Meerdere Freelance Platformen Gebruiken? Complete Voor- en Nadelen Analyse',
@@ -18,7 +22,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       openGraph: {
         title: 'Meerdere Freelance Platformen Gebruiken? Complete Voor- en Nadelen Analyse',
         description: 'Ontdek of het gebruik van meerdere freelance platformen voor jou geschikt is met onze complete voor- en nadelen analyse.',
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Meerdere Freelance Platformen' }],
+        locale: 'nl_NL',
         type: 'article',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Meerdere Freelance Platformen Gebruiken?',
+        description: 'Ontdek of het gebruik van meerdere freelance platformen voor jou geschikt is.',
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+      },
+      robots: {
+        index: true, follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
       },
     };
   }
@@ -30,7 +54,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: 'Should You Use Multiple Freelance Platforms? Complete Pros & Cons Analysis',
       description: 'Discover if using multiple freelance platforms is right for you with our complete pros and cons analysis.',
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Multiple Freelance Platforms' }],
+      locale: 'en_US',
       type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Should You Use Multiple Freelance Platforms?',
+      description: 'Discover if using multiple freelance platforms is right for you.',
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+    },
+    robots: {
+      index: true, follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

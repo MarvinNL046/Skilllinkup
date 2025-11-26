@@ -10,6 +10,10 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'toptal-review';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === 'nl') {
     return {
       title: "Toptal Review 2025: Is het Elite Netwerk de Moeite Waard?",
@@ -18,8 +22,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       openGraph: {
         title: "Toptal Review 2025: Is het Elite Netwerk de Moeite Waard?",
         description: "Toptal review: streng selectieproces, elite klanten, premium tarieven. Is het exclusieve netwerk de moeite waard voor top freelancers?",
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Toptal Review 2025: Is het Elite Netwerk de Moeite Waard?' }],
+        locale: 'nl_NL',
         type: "article",
       },
+      twitter: { card: 'summary_large_image', title: 'Toptal Review 2025: Is het Elite Netwerk de Moeite Waard?', description: 'Toptal review: streng selectieproces, elite klanten, premium tarieven. Is het exclusieve netwerk de moeite waard voor top freelancers?', images: [`${siteUrl}/images/og/resources-og.png`], creator: '@SkillLinkup', site: '@SkillLinkup' },
+      alternates: { canonical: pageUrl, languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` } },
+      robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 } },
     };
   }
 
@@ -30,8 +41,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: "Toptal Review 2025: Is the Elite Network Worth the Application?",
       description: "Toptal review: rigorous screening, elite clients, premium rates. Is the exclusive network worth it for top freelancers?",
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Toptal Review 2025: Is the Elite Network Worth the Application?' }],
+      locale: 'en_US',
       type: "article",
     },
+    twitter: { card: 'summary_large_image', title: 'Toptal Review 2025: Is the Elite Network Worth the Application?', description: 'Toptal review: rigorous screening, elite clients, premium rates. Is the exclusive network worth it for top freelancers?', images: [`${siteUrl}/images/og/resources-og.png`], creator: '@SkillLinkup', site: '@SkillLinkup' },
+    alternates: { canonical: pageUrl, languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` } },
+    robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 } },
   };
 }
 

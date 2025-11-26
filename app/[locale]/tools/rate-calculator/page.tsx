@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
+import { MoneyBiiPromo } from '@/components/MoneyBiiPromo';
 import { Calculator, ArrowLeft, Info, DollarSign, Clock, TrendingUp, Calendar } from 'lucide-react';
 
 export default function RateCalculatorPage() {
@@ -622,6 +623,11 @@ export default function RateCalculatorPage() {
             </div>
           </div>
         </section>
+
+        {/* MoneyBii Promo */}
+        <div className="container mx-auto px-4 py-8">
+          <MoneyBiiPromo variant="subtle" />
+        </div>
       </main>
       <Footer />
     </>

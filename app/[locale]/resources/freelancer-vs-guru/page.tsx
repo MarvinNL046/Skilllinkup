@@ -12,6 +12,10 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'freelancer-vs-guru';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === "nl") {
     return {
       title: "Freelancer.com of Guru 2025: Functie-voor-functie Vergelijking",
@@ -20,8 +24,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       openGraph: {
         title: "Freelancer.com of Guru 2025: Functie-voor-functie Vergelijking",
         description: "Vergelijk Freelancer.com en Guru: kosten, SafePay, WorkRooms. Welk platform biedt de beste waarde?",
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Freelancer.com of Guru Vergelijking' }],
+        locale: 'nl_NL',
         type: "article",
-        locale: "nl_NL",
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: "Freelancer.com of Guru 2025: Functie-voor-functie Vergelijking",
+        description: "Vergelijk Freelancer.com en Guru naast elkaar. Gedetailleerde analyse van kosten, SafePay, WorkRooms.",
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+      },
+      robots: {
+        index: true, follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
       },
     };
   }
@@ -33,8 +56,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title: "Freelancer.com vs Guru 2025: Feature-by-Feature Comparison",
       description: "Compare Freelancer.com and Guru: fees, SafePay, WorkRooms. Which platform offers better value?",
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Freelancer.com vs Guru Comparison' }],
+      locale: 'en_US',
       type: "article",
-      locale: "en_US",
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: "Freelancer.com vs Guru 2025: Feature-by-Feature Comparison",
+      description: "Compare Freelancer.com and Guru side-by-side. Detailed analysis of fees, SafePay, WorkRooms.",
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+    },
+    robots: {
+      index: true, follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

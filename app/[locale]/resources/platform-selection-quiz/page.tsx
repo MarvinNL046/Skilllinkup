@@ -10,27 +10,73 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'platform-selection-quiz';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === 'nl') {
     return {
       title: 'Freelance Platform Selectie Quiz: Vind Jouw Perfecte Match in 2 Minuten',
-      description: 'Doe onze gratis interactieve quiz en ontdek welk freelance platform het beste past bij jouw vaardigheden, ervaring en doelen?. Krijg direct gepersonaliseerde aanbevelingen?.',
+      description: 'Doe onze gratis interactieve quiz en ontdek welk freelance platform het beste past bij jouw vaardigheden, ervaring en doelen. Krijg direct gepersonaliseerde aanbevelingen.',
       keywords: 'freelance platform quiz, platform selectietool, beste freelance platform vinden, platform aanbeveling, freelance platform zoeker, beste platform vinden test',
       openGraph: {
         title: 'Freelance Platform Selectie Quiz: Vind Jouw Perfecte Match',
-        description: 'Doe onze gratis quiz en ontdek welk freelance platform het beste past bij jouw vaardigheden en doelen?. Krijg gepersonaliseerde aanbevelingen?.',
+        description: 'Doe onze gratis quiz en ontdek welk freelance platform het beste past bij jouw vaardigheden en doelen. Krijg gepersonaliseerde aanbevelingen.',
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Freelance Platform Selectie Quiz' }],
+        locale: 'nl_NL',
         type: 'article',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Freelance Platform Selectie Quiz',
+        description: 'Vind jouw perfecte freelance platform match in 2 minuten met onze gratis quiz.',
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
       },
     };
   }
 
   return {
     title: 'Freelance Platform Selection Quiz: Find Your Perfect Match in 2 Minutes',
-    description: 'Take our free interactive quiz to discover which freelance platform matches your skills, experience, and goals?. Get personalized recommendations instantly?.',
+    description: 'Take our free interactive quiz to discover which freelance platform matches your skills, experience, and goals. Get personalized recommendations instantly.',
     keywords: 'freelance platform quiz, platform selection tool, find best freelance platform, platform recommendation, freelance platform finder',
     openGraph: {
       title: 'Freelance Platform Selection Quiz: Find Your Perfect Match',
-      description: 'Take our free quiz to discover which freelance platform matches your skills and goals?. Get personalized recommendations?.',
+      description: 'Take our free quiz to discover which freelance platform matches your skills and goals. Get personalized recommendations.',
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Freelance Platform Selection Quiz' }],
+      locale: 'en_US',
       type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Freelance Platform Selection Quiz',
+      description: 'Find your perfect freelance platform match in 2 minutes with our free quiz.',
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

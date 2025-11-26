@@ -19,15 +19,59 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const category = await getCategoryBySlug(slug, locale);
   const t = await getTranslations({ locale, namespace: 'categoryPage' });
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/category/${slug}`;
+
   if (!category) {
     return {
       title: t('notFound'),
     };
   }
 
+  const title = `${category.name} - Freelance Artikelen | SkillLinkup`;
+  const description = category.description || (locale === 'nl'
+    ? `Bekijk alle ${category.post_count || 0} artikelen in de categorie ${category.name}. Tips en guides voor freelancers.`
+    : `Browse all ${category.post_count || 0} articles in the ${category.name} category. Tips and guides for freelancers.`);
+
   return {
-    title: `${category.name} | SkillLinkup`,
-    description: category.description || `Browse all posts in ${category.name} category`,
+    title,
+    description,
+    keywords: `${category.name}, freelance ${category.name.toLowerCase()}, ${locale === 'nl' ? 'freelance tips, zzp artikelen' : 'freelance tips, freelancer articles'}`,
+    openGraph: {
+      title,
+      description,
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/blog-og.png`, width: 1200, height: 630, alt: `${category.name} - SkillLinkup` }],
+      locale: locale === 'nl' ? 'nl_NL' : 'en_US',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [`${siteUrl}/images/og/blog-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: {
+        'en': `${siteUrl}/en/category/${slug}`,
+        'nl': `${siteUrl}/nl/category/${slug}`,
+      },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
   };
 }
 
@@ -44,8 +88,68 @@ export default async function CategoryPage({ params }: PageProps) {
   const posts = await getPostsByCategory(slug, 50, locale);
   const t = await getTranslations({ locale, namespace: 'categoryPage' });
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+
+  // Structured data for SEO
+  const categorySchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: category.name,
+    description: category.description || `Articles in the ${category.name} category`,
+    url: `${siteUrl}/${locale}/category/${slug}`,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: posts.length,
+      itemListElement: posts.slice(0, 10).map((post: any, index: number) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'BlogPosting',
+          headline: post.title,
+          description: post.excerpt,
+          url: `${siteUrl}/${locale}/post/${post.slug}`,
+          datePublished: post.published_at ? new Date(post.published_at).toISOString() : undefined,
+          image: post.feature_img ? `${siteUrl}${post.feature_img}` : undefined,
+        },
+      })),
+    },
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: `${siteUrl}/${locale}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Blog',
+        item: `${siteUrl}/${locale}/blog`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: category.name,
+        item: `${siteUrl}/${locale}/category/${slug}`,
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(categorySchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <Header />
       <main className="flex-1">
         {/* Page Header */}

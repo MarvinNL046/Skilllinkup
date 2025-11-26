@@ -6,6 +6,10 @@ import { Footer } from "@/components/footer";
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'freelance-pricing-strategies';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === 'nl') {
     return {
       title: "Prijsstrategieën voor Freelancers: Vast Tarief vs Uurtarief",
@@ -14,8 +18,31 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       openGraph: {
         title: "Prijsstrategieën voor Freelancers: Vast Tarief vs Uurtarief",
         description: "Beheers freelance prijsmodellen. Leer wanneer je vast tarief, uurtarief, retainer of waarde-gebaseerde prijzen gebruikt voor maximale winst.",
-        type: "article",
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Prijsstrategieën voor Freelancers: Vast Tarief vs Uurtarief' }],
         locale: "nl_NL",
+        type: "article",
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Prijsstrategieën voor Freelancers: Vast Tarief vs Uurtarief',
+        description: 'Kies het juiste prijsmodel voor je freelance business. Vergelijk vast tarief, uurtarief, retainers.',
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: {
+          'en': `${siteUrl}/en/resources/${slug}`,
+          'nl': `${siteUrl}/nl/resources/${slug}`,
+        },
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
       },
     };
   }
@@ -27,8 +54,31 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     openGraph: {
       title: "Freelance Pricing Strategies: Fixed-Price vs Hourly Billing",
       description: "Master freelance pricing models. Learn when to use fixed-price, hourly, retainer, or value-based pricing for maximum profitability.",
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Freelance Pricing Strategies: Fixed-Price vs Hourly Billing' }],
+      locale: 'en_US',
       type: "article",
-      locale: "en_US",
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Freelance Pricing Strategies: Fixed-Price vs Hourly Billing',
+      description: 'Choose the right pricing model for your freelance business. Compare fixed-price, hourly, retainers.',
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: {
+        'en': `${siteUrl}/en/resources/${slug}`,
+        'nl': `${siteUrl}/nl/resources/${slug}`,
+      },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

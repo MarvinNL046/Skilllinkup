@@ -12,6 +12,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'freelance-platforms-virtual-assistants-complete-guide';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === 'nl') {
     return {
       title: 'Freelance Platforms voor Virtual Assistants: Volledige Gids 2025',
@@ -20,7 +24,27 @@ export async function generateMetadata({
       openGraph: {
         title: 'Beste Freelance Platforms voor Virtual Assistants 2025',
         description: 'Complete gids voor het vinden van premium VA opdrachten. Vergelijk platforms, tarieven en bouw een bloeiende virtueel assistent carrière.',
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Beste Freelance Platforms voor Virtual Assistants 2025' }],
+        locale: 'nl_NL',
         type: 'article',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Beste Freelance Platforms voor Virtual Assistants 2025',
+        description: 'Complete gids voor het vinden van premium VA opdrachten. Vergelijk platforms, tarieven en bouw een bloeiende virtueel assistent carrière.',
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+      },
+      robots: {
+        index: true, follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
       },
     };
   }
@@ -32,7 +56,27 @@ export async function generateMetadata({
     openGraph: {
       title: 'Best Freelance Platforms for Virtual Assistants 2025',
       description: 'Complete guide to finding premium VA opportunities. Compare platforms, rates, and build a thriving virtual assistant career.',
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Best Freelance Platforms for Virtual Assistants 2025' }],
+      locale: 'en_US',
       type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Best Freelance Platforms for Virtual Assistants 2025',
+      description: 'Complete guide to finding premium VA opportunities. Compare platforms, rates, and build a thriving virtual assistant career.',
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+    },
+    robots: {
+      index: true, follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

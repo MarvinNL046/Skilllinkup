@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Metadata } from 'next';
 import { getPublishedPosts, getCategories } from "@/lib/queries";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -12,13 +13,52 @@ interface BlogPageProps {
   params: Promise<{ locale: string }>;
 }
 
-export async function generateMetadata({ params }: BlogPageProps) {
+export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'blogPage.metadata' });
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/blog`;
 
   return {
     title: t('title'),
     description: t('description'),
+    keywords: t('keywords'),
+    openGraph: {
+      title: t('ogTitle'),
+      description: t('ogDescription'),
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/blog-og.png`, width: 1200, height: 630, alt: t('ogImageAlt') }],
+      locale: locale === 'nl' ? 'nl_NL' : 'en_US',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: t('twitterTitle'),
+      description: t('twitterDescription'),
+      images: [`${siteUrl}/images/og/blog-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: {
+        'en': `${siteUrl}/en/blog`,
+        'nl': `${siteUrl}/nl/blog`,
+      },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
   };
 }
 
@@ -36,8 +76,61 @@ export default async function BlogPage({ params }: BlogPageProps) {
     console.error('Error fetching data:', error);
   }
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+
+  // Structured data for SEO
+  const blogSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: locale === 'nl' ? 'SkillLinkup Blog - Freelance Tips & Guides' : 'SkillLinkup Blog - Freelance Tips & Guides',
+    description: locale === 'nl'
+      ? 'Tips, handleidingen en inzichten voor freelancers. Leer hoe je succesvol freelancet.'
+      : 'Tips, guides and insights for freelancers. Learn how to freelance successfully.',
+    url: `${siteUrl}/${locale}/blog`,
+    publisher: {
+      '@type': 'Organization',
+      name: 'SkillLinkup',
+      url: siteUrl,
+    },
+    blogPost: posts.slice(0, 10).map((post: any) => ({
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description: post.excerpt,
+      url: `${siteUrl}/${locale}/post/${post.slug}`,
+      datePublished: post.published_at ? new Date(post.published_at).toISOString() : undefined,
+      image: post.feature_img ? `${siteUrl}${post.feature_img}` : undefined,
+    })),
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: `${siteUrl}/${locale}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Blog',
+        item: `${siteUrl}/${locale}/blog`,
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <Header />
       <main className="flex-1">
         {/* Page Header */}

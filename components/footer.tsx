@@ -6,6 +6,20 @@ import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { SEO_NAVIGATION } from "@/lib/seo-navigation-data";
 
+// Mapping between SEO_NAVIGATION ids and translation keys
+const CATEGORY_TRANSLATION_KEYS: Record<number, { category: string; guides: string[] }> = {
+  1: { category: 'platformSelection', guides: ['chooseBestPlatform', 'beginnerVsExpert', 'keySelectionFactors'] },
+  2: { category: 'platformReviews', guides: ['whatIsUpwork', 'whatIsToptal', 'upworkGuide'] },
+  3: { category: 'pricingEarnings', guides: ['calculateRates', 'pricingStrategies', 'upworkPricing'] },
+  4: { category: 'gettingStarted', guides: ['beginnersGuide', 'toptalForBeginners', 'profileTemplates'] },
+  5: { category: 'toolsProductivity', guides: ['essentialTools', 'timeTracking', 'invoiceGenerator'] },
+  6: { category: 'platformComparisons', guides: ['upworkVsFiverr', 'toptalVsUpwork', 'freelancerVsGuru'] },
+  7: { category: 'successStrategies', guides: ['standOut', 'biddingStrategies', 'clientRelationships'] },
+  8: { category: 'nicheGuides', guides: ['forDevelopers', 'forDesigners', 'forWriters'] },
+  9: { category: 'businessManagement', guides: ['invoicing', 'taxes', 'contracts'] },
+  10: { category: 'bestPractices', guides: ['profileOptimization', 'winningProposals', 'platformAlgorithms'] },
+};
+
 export function Footer() {
   const t = useTranslations();
   const params = useParams();
@@ -18,37 +32,51 @@ export function Footer() {
         {/* SEO Navigation Section */}
         <div className="mb-12 pb-12 border-b border-background-gray dark:border-gray-800">
           <h3 className="font-heading font-bold text-xl mb-6 text-text-primary dark:text-white">
-            Explore Freelance Resources
+            {t('footer.exploreResources')}
           </h3>
           <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-5">
-            {SEO_NAVIGATION.map((pillar) => (
-              <div key={pillar.id}>
-                <h4 className="font-heading font-semibold mb-3 text-text-primary dark:text-white flex items-center gap-2">
-                  <span>{pillar.icon}</span>
-                  <span className="text-sm">{pillar.name}</span>
-                </h4>
-                <ul className="space-y-2 text-xs">
-                  {pillar.subPillars.slice(0, 3).map((subPillar) => (
-                    <li key={subPillar.slug}>
+            {SEO_NAVIGATION.map((pillar) => {
+              const translationKey = CATEGORY_TRANSLATION_KEYS[pillar.id];
+              const categoryName = translationKey
+                ? t(`seoNavigation.categories.${translationKey.category}.name`)
+                : pillar.name;
+
+              return (
+                <div key={pillar.id}>
+                  <h4 className="font-heading font-semibold mb-3 text-text-primary dark:text-white flex items-center gap-2">
+                    <span>{pillar.icon}</span>
+                    <span className="text-sm">{categoryName}</span>
+                  </h4>
+                  <ul className="space-y-2 text-xs">
+                    {pillar.subPillars.slice(0, 3).map((subPillar, index) => {
+                      const guideKey = translationKey?.guides[index];
+                      const guideName = guideKey
+                        ? t(`seoNavigation.categories.${translationKey.category}.guides.${guideKey}.name`)
+                        : subPillar.name;
+
+                      return (
+                        <li key={subPillar.slug}>
+                          <Link
+                            href={`/${locale}${subPillar.slug}`}
+                            className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors"
+                          >
+                            {guideName}
+                          </Link>
+                        </li>
+                      );
+                    })}
+                    <li>
                       <Link
-                        href={`/${locale}${subPillar.slug}`}
-                        className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors"
+                        href={`/${locale}${pillar.slug}`}
+                        className="text-accent hover:text-accent-dark dark:text-accent dark:hover:text-accent-light transition-colors font-medium"
                       >
-                        {subPillar.name}
+                        {t('footer.viewAll')}
                       </Link>
                     </li>
-                  ))}
-                  <li>
-                    <Link
-                      href={`/${locale}${pillar.slug}`}
-                      className="text-accent hover:text-accent-dark dark:text-accent dark:hover:text-accent-light transition-colors font-medium"
-                    >
-                      View all →
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            ))}
+                  </ul>
+                </div>
+              );
+            })}
           </div>
         </div>
 

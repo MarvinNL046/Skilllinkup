@@ -11,6 +11,44 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'advanced-bidding-strategies-to-win-more-freelance-projects';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
+  if (locale === 'nl') {
+    return {
+      title: 'Geavanceerde Biedstrategieën om Meer Freelance Projecten te Winnen',
+      description: 'Ontdek bewezen voorstel tactieken van 6-figure freelancers. Leer hoe je winnende biedingen schrijft met 40%+ conversie en premium klanten aantrekt.',
+      keywords: 'freelance biedstrategieën, winnende voorstellen, freelance voorstel tips, upwork bieden, freelance projectacquisitie',
+      openGraph: {
+        title: 'Geavanceerde Biedstrategieën om Meer Freelance Projecten te Winnen',
+        description: 'Beheers voorstel tactieken die premium projecten winnen. Bewezen strategieën van 6-figure freelancers.',
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Geavanceerde Biedstrategieën voor Freelancers' }],
+        locale: 'nl_NL',
+        type: 'article',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Geavanceerde Biedstrategieën voor Freelancers',
+        description: 'Beheers voorstel tactieken die premium projecten winnen met 40%+ conversie.',
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
+      },
+    };
+  }
+
   return {
     title: 'Advanced Bidding Strategies to Win More Freelance Projects',
     description: 'Discover proven proposal tactics used by 6-figure freelancers. Learn how to craft winning bids that convert at 40%+ and secure premium clients consistently.',
@@ -18,7 +56,28 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title: 'Advanced Bidding Strategies to Win More Freelance Projects',
       description: 'Master the proposal tactics that win premium projects. Proven strategies from 6-figure freelancers.',
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Advanced Bidding Strategies for Freelancers' }],
+      locale: 'en_US',
       type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Advanced Bidding Strategies for Freelancers',
+      description: 'Master the proposal tactics that win premium projects with 40%+ conversion.',
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

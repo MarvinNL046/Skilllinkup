@@ -10,20 +10,74 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
+
+  const slug = 'project-management-tools-freelancers';
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
-  const pageUrl = `${siteUrl}/${locale}/resources/project-management-tools-freelancers`;
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
+  if (locale === 'nl') {
+    return {
+      title: 'Projectmanagement Tools voor Freelancers: Verhoog Je Productiviteit',
+      description: 'Vergelijk de beste projectmanagement tools voor freelancers. Organiseer taken, beheer deadlines en werk samen met klanten via Trello, Asana, Notion en meer.',
+      keywords: 'projectmanagement, freelance productiviteit, taakbeheer, Trello, Asana, Notion',
+      openGraph: {
+        title: 'Beste Projectmanagement Tools voor Freelancers',
+        description: 'Verhoog je productiviteit met top projectmanagement tools ontworpen voor freelancers.',
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Projectmanagement Tools voor Freelancers' }],
+        locale: 'nl_NL',
+        type: 'article',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Beste Projectmanagement Tools voor Freelancers',
+        description: 'Vergelijk Trello, Asana, Notion en meer voor freelance productiviteit.',
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
+      },
+    };
+  }
 
   return {
     title: 'Project Management Tools for Freelancers: Boost Your Productivity',
     description: 'Compare the best project management tools for freelancers. Organize tasks, manage deadlines, and collaborate with clients using Trello, Asana, Notion, and more.',
     keywords: 'project management, freelance productivity, task management, Trello, Asana, Notion',
-    alternates: { canonical: pageUrl },
     openGraph: {
       title: 'Best Project Management Tools for Freelancers',
       description: 'Boost productivity with top project management tools designed for freelancers.',
       url: pageUrl,
       siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Project Management Tools for Freelancers' }],
+      locale: 'en_US',
       type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Best Project Management Tools for Freelancers',
+      description: 'Compare Trello, Asana, Notion and more for freelance productivity.',
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

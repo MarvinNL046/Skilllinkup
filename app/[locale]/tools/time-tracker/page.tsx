@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
+import { MoneyBiiPromo } from '@/components/MoneyBiiPromo';
 import {
   Clock,
   Play,
@@ -1003,6 +1004,11 @@ export default function TimeTrackerPage() {
             </div>
           </div>
         )}
+
+        {/* MoneyBii Promo */}
+        <div className="container mx-auto px-4 py-8">
+          <MoneyBiiPromo variant="subtle" />
+        </div>
       </main>
       <Footer />
     </>

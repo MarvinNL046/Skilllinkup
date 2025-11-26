@@ -11,6 +11,10 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'how-to-get-5-star-reviews-on-every-freelance-project';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   return {
     title: 'How to Get 5-Star Reviews on Every Freelance Project',
     description: 'Master the psychology and systems behind perfect client feedback. Learn the exact framework elite freelancers use to achieve 95%+ 5-star review rates consistently.',
@@ -18,7 +22,44 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title: 'How to Get 5-Star Reviews on Every Freelance Project',
       description: 'Proven tactics for perfect client reviews. The exact framework for 95%+ 5-star feedback rates.',
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [
+        {
+          url: `${siteUrl}/images/og/resources-og.png`,
+          width: 1200,
+          height: 630,
+          alt: 'How to Get 5-Star Reviews on Every Freelance Project',
+        }
+      ],
+      locale: locale === 'nl' ? 'nl_NL' : 'en_US',
       type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'How to Get 5-Star Reviews on Every Freelance Project',
+      description: 'Master the psychology and systems behind perfect client feedback. Learn the exact framework elite freelancers use to achieve 95%+ 5-star review rates consistently.',
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: {
+        'en': `${siteUrl}/en/resources/${slug}`,
+        'nl': `${siteUrl}/nl/resources/${slug}`,
+      },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
   };
 }

@@ -98,26 +98,61 @@ export async function generateMetadata({ params }: SeoIndexPageProps): Promise<M
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "resourcesPage" });
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources`;
+
   return {
     title: t("meta.title"),
     description: t("meta.description"),
     keywords: t("meta.keywords"),
+
+    // Open Graph (Facebook, LinkedIn, etc.)
     openGraph: {
       title: t("meta.ogTitle"),
       description: t("meta.ogDescription"),
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [
+        {
+          url: `${siteUrl}/images/og/resources-og.png`,
+          width: 1200,
+          height: 630,
+          alt: t("meta.ogTitle"),
+        }
+      ],
+      locale: locale === 'nl' ? 'nl_NL' : 'en_US',
       type: "website",
-      locale: locale,
     },
+
+    // Twitter Card
     twitter: {
       card: "summary_large_image",
       title: t("meta.ogTitle"),
       description: t("meta.twitterDescription"),
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
     },
+
+    // Canonical URL with language alternates
     alternates: {
-      canonical: `https://skilllinkup.com/${locale}/resources`,
+      canonical: pageUrl,
       languages: {
-        en: "https://skilllinkup.com/en/resources",
-        nl: "https://skilllinkup.com/nl/resources",
+        'en': `${siteUrl}/en/resources`,
+        'nl': `${siteUrl}/nl/resources`,
+      },
+    },
+
+    // Robots
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
       },
     },
   };

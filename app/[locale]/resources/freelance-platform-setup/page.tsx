@@ -10,6 +10,10 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps) {
   const { locale } = await params;
 
+  const slug = 'freelance-platform-setup';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   return {
     title: "Freelance Platform Onboarding: Complete Step-by-Step Setup",
     description: "Master platform setup for Upwork, Fiverr, Freelancer, and more. Complete onboarding guide with screenshots, best practices, and optimization tips for beginners.",
@@ -17,7 +21,44 @@ export async function generateMetadata({ params }: PageProps) {
     openGraph: {
       title: "Freelance Platform Onboarding: Complete Step-by-Step Setup",
       description: "Master platform setup for Upwork, Fiverr, Freelancer, and more. Complete onboarding guide with screenshots, best practices, and optimization tips for beginners.",
-      type: "article",
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [
+        {
+          url: `${siteUrl}/images/og/resources-og.png`,
+          width: 1200,
+          height: 630,
+          alt: 'Freelance Platform Onboarding: Complete Step-by-Step Setup',
+        }
+      ],
+      locale: locale === 'nl' ? 'nl_NL' : 'en_US',
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: "Freelance Platform Onboarding: Complete Step-by-Step Setup",
+      description: "Master platform setup for Upwork, Fiverr, Freelancer, and more. Complete onboarding guide with screenshots, best practices, and optimization tips for beginners.",
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: {
+        'en': `${siteUrl}/en/resources/${slug}`,
+        'nl': `${siteUrl}/nl/resources/${slug}`,
+      },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
   };
 }

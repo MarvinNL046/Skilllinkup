@@ -11,6 +11,10 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'scaling-your-freelance-business-from-solo-to-agency';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   return {
     title: 'Scaling Your Freelance Business: From Solo to Agency',
     description: 'Strategic roadmap for scaling beyond solo freelancing. Learn how to build systems, hire strategically, and grow from $100K to $1M+ in annual revenue.',
@@ -18,7 +22,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title: 'Scaling Your Freelance Business: From Solo to Agency',
       description: 'Master the transition from solo freelancer to agency owner. Proven strategies for $1M+ growth.',
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Scaling Your Freelance Business: From Solo to Agency' }],
+      locale: locale === 'nl' ? 'nl_NL' : 'en_US',
       type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Scaling Your Freelance Business: From Solo to Agency',
+      description: 'Master the transition from solo freelancer to agency owner. Proven strategies for $1M+ growth.',
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+    },
+    robots: {
+      index: true, follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

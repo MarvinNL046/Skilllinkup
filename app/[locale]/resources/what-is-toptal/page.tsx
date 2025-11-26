@@ -10,6 +10,10 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'what-is-toptal';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === 'nl') {
     return {
       title: "Wat is Toptal? Complete Gids voor het Elite Freelance Netwerk",
@@ -18,7 +22,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       openGraph: {
         title: "Wat is Toptal? Complete Gids voor het Elite Freelance Netwerk",
         description: "Ontdek wat Toptal is: het meest exclusieve freelance netwerk met slechts 3% acceptatie. Leer hoe matching werkt, welke freelancers worden geaccepteerd en waarom het anders is.",
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Wat is Toptal?' }],
+        locale: 'nl_NL',
         type: "article",
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: "Wat is Toptal? Complete Gids voor het Elite Freelance Netwerk",
+        description: "Ontdek wat Toptal is: het meest exclusieve freelance netwerk met slechts 3% acceptatie. Leer hoe matching werkt, welke freelancers worden geaccepteerd en waarom het anders is.",
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+      },
+      robots: {
+        index: true, follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
       },
     };
   }
@@ -30,7 +54,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: "What is Toptal? Complete Guide to the Elite Freelance Network",
       description: "Discover what Toptal is: the most exclusive freelance network accepting only the top 3%. Learn how matching works, who gets accepted, and what makes it different.",
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'What is Toptal?' }],
+      locale: 'en_US',
       type: "article",
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: "What is Toptal? Complete Guide to the Elite Freelance Network",
+      description: "Discover what Toptal is: the most exclusive freelance network accepting only the top 3%. Learn how matching works, who gets accepted, and what makes it different.",
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+    },
+    robots: {
+      index: true, follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

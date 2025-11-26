@@ -10,6 +10,10 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps) {
   const { locale } = await params;
 
+  const slug = 'freelance-beginner-mistakes';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   return {
     title: "Top 10 Mistakes New Freelancers Make (And How to Avoid Them)",
     description: "Learn the costly mistakes 90% of new freelancers make and how to avoid them. Save months of frustration with this proven guide for beginners.",
@@ -17,7 +21,44 @@ export async function generateMetadata({ params }: PageProps) {
     openGraph: {
       title: "Top 10 Mistakes New Freelancers Make (And How to Avoid Them)",
       description: "Learn the costly mistakes 90% of new freelancers make and how to avoid them. Save months of frustration with this proven guide for beginners.",
-      type: "article",
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [
+        {
+          url: `${siteUrl}/images/og/resources-og.png`,
+          width: 1200,
+          height: 630,
+          alt: 'Top 10 Mistakes New Freelancers Make (And How to Avoid Them)',
+        }
+      ],
+      locale: locale === 'nl' ? 'nl_NL' : 'en_US',
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: "Top 10 Mistakes New Freelancers Make (And How to Avoid Them)",
+      description: "Learn the costly mistakes 90% of new freelancers make and how to avoid them. Save months of frustration with this proven guide for beginners.",
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: {
+        'en': `${siteUrl}/en/resources/${slug}`,
+        'nl': `${siteUrl}/nl/resources/${slug}`,
+      },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
   };
 }

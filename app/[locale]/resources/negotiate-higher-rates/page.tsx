@@ -10,6 +10,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'negotiate-higher-rates';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === "nl") {
     return {
       title: "Hoger Tarief Onderhandelen als Freelancer (2025 Gids)",
@@ -18,7 +22,27 @@ export async function generateMetadata({
       openGraph: {
         title: "Hoger Tarief Onderhandelen als Freelancer (2025 Gids)",
         description: "Bewezen onderhandelingstactieken om je freelance tarief met 30-50% te verhogen zonder klanten te verliezen. Inclusief scripts en templates.",
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Hoger Tarief Onderhandelen als Freelancer' }],
+        locale: 'nl_NL',
         type: "article",
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: "Hoger Tarief Onderhandelen als Freelancer (2025 Gids)",
+        description: "Bewezen onderhandelingstactieken om je freelance tarief met 30-50% te verhogen zonder klanten te verliezen. Inclusief scripts en templates.",
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+      },
+      robots: {
+        index: true, follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
       },
     };
   }
@@ -30,7 +54,27 @@ export async function generateMetadata({
     openGraph: {
       title: "How to Negotiate Higher Rates on Freelance Platforms (2025 Guide)",
       description: "Proven negotiation tactics to raise your freelance rates by 30-50% without losing clients. Includes scripts and templates.",
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'How to Negotiate Higher Rates on Freelance Platforms' }],
+      locale: 'en_US',
       type: "article",
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: "How to Negotiate Higher Rates on Freelance Platforms (2025 Guide)",
+      description: "Proven negotiation tactics to raise your freelance rates by 30-50% without losing clients. Includes scripts and templates.",
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+    },
+    robots: {
+      index: true, follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }

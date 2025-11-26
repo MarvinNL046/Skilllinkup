@@ -10,6 +10,10 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'guru-platform-analysis';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === "nl") {
     return {
       title: "Guru Platform Analyse 2025: Prijzen, Features & Ideale Gebruikers",
@@ -17,7 +21,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       openGraph: {
         title: "Guru Platform Analyse 2025: Prijzen, Features & Ideale Gebruikers",
         description: "Complete Guru.com analyse met SafePay escrow, WorkRooms samenwerking, prijsstructuur, en voor welke freelancers dit professionele platform het meest geschikt is.",
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Guru Platform Analyse 2025' }],
+        locale: 'nl_NL',
         type: "article",
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Guru Platform Analyse 2025',
+        description: 'Complete Guru.com analyse met SafePay escrow, WorkRooms en prijsstructuur.',
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
       },
       keywords: ["Guru platform review", "Guru freelance Nederland", "Guru platform analyse", "SafePay escrow", "WorkRooms", "Guru prijzen", "freelance platform", "professioneel platform"],
     };
@@ -29,7 +54,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: "Guru Platform Analysis 2025: Pricing, Features & Ideal Users",
       description: "Complete Guru.com analysis covering SafePay escrow, WorkRooms collaboration, pricing tiers, and which freelancers benefit most from this professional platform.",
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Guru Platform Analysis 2025' }],
+      locale: 'en_US',
       type: "article",
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Guru Platform Analysis 2025',
+      description: 'Complete Guru.com analysis covering SafePay escrow, WorkRooms and pricing tiers.',
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
     keywords: ["Guru platform review", "Guru freelance", "Guru platform analysis", "SafePay escrow", "WorkRooms", "Guru pricing", "freelance platform", "professional platform"],
   };

@@ -10,6 +10,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
 
+  const slug = 'freelancer-platform-deep-dive';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+  const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
+
   if (locale === "nl") {
     return {
       title: "Freelancer.com Review 2025: Diepgaande Platform Analyse & Winnende Strategieën | SkillLinkup",
@@ -18,8 +22,27 @@ export async function generateMetadata({
       openGraph: {
         title: "Freelancer.com Review 2025: Platform Analyse & Winnende Strategieën",
         description: "Complete gids over Freelancer.com contests, mijlpaalbetalingen, lidmaatschapsniveaus en bewezen biedstrategieën voor freelancers.",
+        url: pageUrl,
+        siteName: 'SkillLinkup',
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Freelancer.com Review' }],
+        locale: 'nl_NL',
         type: "article",
-        locale: "nl_NL",
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: "Freelancer.com Review 2025: Platform Analyse & Winnende Strategieën",
+        description: "Complete gids over Freelancer.com contests, mijlpaalbetalingen en lidmaatschapsniveaus.",
+        images: [`${siteUrl}/images/og/resources-og.png`],
+        creator: '@SkillLinkup',
+        site: '@SkillLinkup',
+      },
+      alternates: {
+        canonical: pageUrl,
+        languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+      },
+      robots: {
+        index: true, follow: true,
+        googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
       },
     };
   }
@@ -31,8 +54,27 @@ export async function generateMetadata({
     openGraph: {
       title: "Freelancer.com Deep Dive: Platform Features & Best Practices 2025",
       description: "Complete guide to Freelancer.com covering contests, milestone payments, membership tiers, bidding strategies, and proven tactics to win projects consistently.",
+      url: pageUrl,
+      siteName: 'SkillLinkup',
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Freelancer.com Deep Dive' }],
+      locale: 'en_US',
       type: "article",
-      locale: "en_US",
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: "Freelancer.com Deep Dive: Platform Features & Best Practices 2025",
+      description: "Complete guide to Freelancer.com covering contests, milestone payments, membership tiers.",
+      images: [`${siteUrl}/images/og/resources-og.png`],
+      creator: '@SkillLinkup',
+      site: '@SkillLinkup',
+    },
+    alternates: {
+      canonical: pageUrl,
+      languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` },
+    },
+    robots: {
+      index: true, follow: true,
+      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
   };
 }
