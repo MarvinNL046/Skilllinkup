@@ -238,7 +238,7 @@ export default async function SeoIndexPage({ params }: SeoIndexPageProps) {
                   {t("browseAllGuides")}
                 </Link>
                 <Link
-                  href="/platforms"
+                  href={`/${locale}/platforms`}
                   className="inline-flex items-center justify-center rounded-lg bg-white dark:bg-gray-800 hover:bg-background-light dark:hover:bg-gray-700 px-8 py-3 text-base font-heading font-semibold text-text-primary dark:text-white border border-background-gray dark:border-gray-700 transition-colors"
                 >
                   {t("comparePlatforms")}
@@ -302,7 +302,7 @@ export default async function SeoIndexPage({ params }: SeoIndexPageProps) {
                       return (
                         <Link
                           key={sub.slug}
-                          href={sub.slug}
+                          href={`/${locale}${sub.slug}`}
                           className="group block bg-white dark:bg-gray-900 rounded-lg border border-background-gray dark:border-gray-700 hover:border-primary dark:hover:border-primary transition-all hover:shadow-lg p-6"
                         >
                           <h3 className="text-lg font-heading font-semibold text-text-primary dark:text-white group-hover:text-primary dark:group-hover:text-primary transition-colors mb-2">
@@ -343,7 +343,7 @@ export default async function SeoIndexPage({ params }: SeoIndexPageProps) {
                 {t("cta.subtitle")}
               </p>
               <Link
-                href="/newsletter"
+                href={`/${locale}/newsletter`}
                 className="inline-flex items-center justify-center rounded-lg bg-white hover:bg-background-light px-8 py-3 text-base font-heading font-semibold text-primary transition-colors shadow-lg"
               >
                 {t("cta.button")}

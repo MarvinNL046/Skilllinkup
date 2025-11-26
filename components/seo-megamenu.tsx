@@ -208,7 +208,7 @@ export function SeoMegaMenu({ isMobile = false, onLinkClick }: SeoMegaMenuProps)
                       return (
                         <li key={sub.slug}>
                           <Link
-                            href={sub.slug}
+                            href={`/${locale}${sub.slug}`}
                             onClick={handleLinkClick}
                             className="block text-xs text-text-secondary dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors group"
                           >
@@ -295,7 +295,7 @@ export function SeoMegaMenu({ isMobile = false, onLinkClick }: SeoMegaMenuProps)
                     return (
                       <li key={sub.slug}>
                         <Link
-                          href={sub.slug}
+                          href={`/${locale}${sub.slug}`}
                           onClick={handleLinkClick}
                           className="block text-xs text-text-secondary dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors py-1"
                         >
