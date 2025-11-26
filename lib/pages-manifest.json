@@ -1,0 +1,388 @@
+{
+  "generated": "2025-11-26T16:15:42.243Z",
+  "homepage": {
+    "lastModified": "2025-10-25T17:51:33.431Z"
+  },
+  "pages": [
+    {
+      "path": "/about",
+      "lastModified": "2025-10-26T12:55:07.870Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/blog",
+      "lastModified": "2025-10-26T14:27:01.572Z",
+      "hasSubpages": true
+    },
+    {
+      "path": "/blog/category",
+      "lastModified": "2025-10-25T20:11:50.085Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/category",
+      "lastModified": "2025-10-25T17:39:02.854Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/comparisons",
+      "lastModified": "2025-10-26T14:01:48.444Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/contact",
+      "lastModified": "2025-10-26T13:13:28.021Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/disclosure",
+      "lastModified": "2025-10-26T13:23:28.981Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/faq",
+      "lastModified": "2025-10-26T13:44:09.382Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/guides",
+      "lastModified": "2025-10-26T14:15:03.574Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/newsletter",
+      "lastModified": "2025-10-26T13:55:04.842Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/platforms",
+      "lastModified": "2025-10-26T09:34:48.166Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/privacy",
+      "lastModified": "2025-10-26T13:22:44.154Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources",
+      "lastModified": "2025-11-25T18:31:10.689Z",
+      "hasSubpages": true
+    },
+    {
+      "path": "/resources/99designs-pricing",
+      "lastModified": "2025-11-25T17:21:33.235Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/advanced-bidding-strategies-to-win-more-freelance-projects",
+      "lastModified": "2025-11-25T06:56:43.933Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/beginner-vs-expert-platforms",
+      "lastModified": "2025-11-25T06:38:30.669Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/best-freelance-platforms-marketing-consultants",
+      "lastModified": "2025-11-25T06:38:30.670Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/best-freelance-platforms-web-developers-2025",
+      "lastModified": "2025-11-25T06:38:30.660Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/best-platform-designers",
+      "lastModified": "2025-11-25T06:59:39.378Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/best-platform-writers",
+      "lastModified": "2025-11-25T06:59:39.596Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/best-platforms-freelance-writers-content-creators",
+      "lastModified": "2025-11-25T06:38:30.668Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/best-time-tracking-tools-freelancers",
+      "lastModified": "2025-11-25T06:38:30.690Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/building-long-term-client-relationships-on-freelance-platforms",
+      "lastModified": "2025-11-25T06:56:44.073Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/building-portfolio-that-converts",
+      "lastModified": "2025-11-25T06:38:30.626Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/calculate-freelance-hourly-rate",
+      "lastModified": "2025-11-25T06:38:30.688Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/choose-best-freelance-platform",
+      "lastModified": "2025-11-25T06:38:30.634Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/essential-freelance-tools",
+      "lastModified": "2025-11-25T06:38:53.392Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/first-freelance-proposal",
+      "lastModified": "2025-11-25T06:56:44.236Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/fiverr-beginner-guide",
+      "lastModified": "2025-11-25T06:57:06.658Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/freelance-accounting-software",
+      "lastModified": "2025-11-25T06:38:30.629Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/freelance-beginner-mistakes",
+      "lastModified": "2025-11-25T06:57:06.840Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/freelance-beginners-guide",
+      "lastModified": "2025-11-25T06:57:07.134Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/freelance-business-insurance",
+      "lastModified": "2025-11-25T06:38:30.628Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/freelance-contracts-101",
+      "lastModified": "2025-11-25T06:38:30.630Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/freelance-invoice-generator",
+      "lastModified": "2025-11-25T06:38:30.646Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/freelance-invoicing-guide",
+      "lastModified": "2025-11-25T06:38:30.659Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/freelance-platform-communication",
+      "lastModified": "2025-11-25T06:38:30.666Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/freelance-platform-setup",
+      "lastModified": "2025-11-25T06:57:26.390Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/freelance-platforms-virtual-assistants-complete-guide",
+      "lastModified": "2025-11-25T06:38:30.657Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/freelance-pricing-strategies",
+      "lastModified": "2025-11-25T06:54:48.304Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/freelance-profile-templates",
+      "lastModified": "2025-11-25T06:57:26.504Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/freelance-tax-guide",
+      "lastModified": "2025-11-25T06:38:30.652Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/freelancer-platform-deep-dive",
+      "lastModified": "2025-11-25T06:38:30.665Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/freelancer-vs-guru",
+      "lastModified": "2025-11-25T06:59:39.855Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/guru-platform-analysis",
+      "lastModified": "2025-11-25T06:38:30.683Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/how-to-get-5-star-reviews-on-every-freelance-project",
+      "lastModified": "2025-11-25T06:57:26.671Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/how-to-stand-out-on-crowded-freelance-platforms",
+      "lastModified": "2025-11-25T06:57:57.416Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/how-to-write-proposals-that-win",
+      "lastModified": "2025-11-25T06:38:30.639Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/is-toptal-legit",
+      "lastModified": "2025-11-25T17:22:01.961Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/key-factors-choosing-freelance-marketplace",
+      "lastModified": "2025-11-25T06:38:30.684Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/managing-multiple-clients",
+      "lastModified": "2025-11-25T06:38:30.671Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/mastering-freelance-platform-algorithms",
+      "lastModified": "2025-11-25T06:38:30.675Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/multiple-freelance-platforms-pros-cons",
+      "lastModified": "2025-11-25T06:38:30.674Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/negotiate-higher-rates",
+      "lastModified": "2025-11-25T06:38:30.654Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/optimizing-freelance-profile-maximum-visibility",
+      "lastModified": "2025-11-25T06:38:30.678Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/platform-fees-maximize-earnings",
+      "lastModified": "2025-11-25T06:38:30.648Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/platform-selection-quiz",
+      "lastModified": "2025-11-25T06:38:30.680Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/project-management-tools-freelancers",
+      "lastModified": "2025-11-25T06:38:30.679Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/scaling-your-freelance-business-from-solo-to-agency",
+      "lastModified": "2025-11-25T06:57:57.594Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/top-freelance-platforms-graphic-designers-creatives",
+      "lastModified": "2025-11-25T06:38:30.691Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/toptal-for-beginners",
+      "lastModified": "2025-11-25T17:21:08.924Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/toptal-pricing",
+      "lastModified": "2025-11-25T17:24:26.855Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/toptal-review",
+      "lastModified": "2025-11-25T06:57:57.908Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/toptal-vs-upwork",
+      "lastModified": "2025-11-25T06:38:30.636Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/upwork-complete-guide",
+      "lastModified": "2025-11-25T06:57:58.378Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/upwork-pricing",
+      "lastModified": "2025-11-25T17:25:25.216Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/upwork-pricing-tactics",
+      "lastModified": "2025-11-25T06:54:49.176Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/upwork-vs-fiverr",
+      "lastModified": "2025-11-25T06:59:40.205Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/what-is-toptal",
+      "lastModified": "2025-11-25T17:20:33.942Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/resources/what-is-upwork",
+      "lastModified": "2025-11-25T17:20:31.996Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/reviews",
+      "lastModified": "2025-10-26T14:18:36.852Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/terms",
+      "lastModified": "2025-10-26T13:23:07.039Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/tools",
+      "lastModified": "2025-10-28T19:19:36.127Z",
+      "hasSubpages": true
+    },
+    {
+      "path": "/tools/invoice-generator",
+      "lastModified": "2025-10-26T12:38:59.561Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/tools/rate-calculator",
+      "lastModified": "2025-10-26T12:25:15.363Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/tools/time-tracker",
+      "lastModified": "2025-10-26T11:51:12.610Z",
+      "hasSubpages": false
+    }
+  ]
+}
