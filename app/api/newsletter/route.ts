@@ -1,17 +1,45 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { render } from "@react-email/render";
+import { WelcomeEmail } from "@/emails/welcome";
+import type { Locale } from "@/emails/translations";
 
 // Use Edge runtime for production deployment
 export const runtime = 'edge';
 
+// Localized messages
+const messages = {
+  en: {
+    invalidEmail: "Please provide a valid email address.",
+    serviceUnavailable: "The newsletter service is temporarily unavailable. Please try again later.",
+    subscribeError: "Failed to subscribe",
+    success: "Successfully subscribed!",
+    generalError: "An error occurred. Please try again later.",
+    emailSubject: "Welcome to SkillLinkup!",
+  },
+  nl: {
+    invalidEmail: "Vul een geldig e-mailadres in.",
+    serviceUnavailable: "De nieuwsbrief service is tijdelijk niet beschikbaar. Probeer het later opnieuw.",
+    subscribeError: "Aanmelden mislukt",
+    success: "Je bent succesvol aangemeld!",
+    generalError: "Er is een fout opgetreden. Probeer het later opnieuw.",
+    emailSubject: "Welkom bij SkillLinkup!",
+  },
+};
+
 export async function POST(request: Request) {
   try {
-    const { email } = await request.json();
+    const body = await request.json();
+    const { email, locale: requestLocale } = body;
+
+    // Determine locale (default to 'en' if not provided or invalid)
+    const locale: Locale = (requestLocale === 'nl' || requestLocale === 'en') ? requestLocale : 'en';
+    const t = messages[locale];
 
     // Validate email
     if (!email || !email.includes("@")) {
       return NextResponse.json(
-        { message: "Please provide a valid email address." },
+        { message: t.invalidEmail },
         { status: 400 }
       );
     }
@@ -23,7 +51,7 @@ export async function POST(request: Request) {
     if (!RESEND_KEY) {
       console.error("[Newsletter] Resend API key not configured");
       return NextResponse.json(
-        { message: "De nieuwsbrief service is tijdelijk niet beschikbaar. Probeer het later opnieuw." },
+        { message: t.serviceUnavailable },
         { status: 503 }
       );
     }
@@ -31,7 +59,7 @@ export async function POST(request: Request) {
     if (!AUDIENCE_ID) {
       console.error("[Newsletter] Resend Audience ID not configured");
       return NextResponse.json(
-        { message: "De nieuwsbrief service is tijdelijk niet beschikbaar. Probeer het later opnieuw." },
+        { message: t.serviceUnavailable },
         { status: 503 }
       );
     }
@@ -40,48 +68,40 @@ export async function POST(request: Request) {
     const resend = new Resend(RESEND_KEY);
 
     // Subscribe to newsletter using Resend
-    // Note: You'll need to set up a contact list in Resend first
+    // Store locale as metadata for future mailings
     const data = await resend.contacts.create({
       email: email,
       audienceId: AUDIENCE_ID,
+      // Note: Resend doesn't support custom fields yet, but when they do:
+      // customFields: { locale: locale },
     });
 
     if (data.error) {
       console.error("Resend error:", data.error);
       return NextResponse.json(
-        { message: data.error.message || "Failed to subscribe" },
+        { message: data.error.message || t.subscribeError },
         { status: 500 }
       );
     }
 
-    // Send welcome email
+    // Render the welcome email template with locale
+    const emailHtml = await render(WelcomeEmail({ email, locale }));
+
+    // Send welcome email in the user's language
     await resend.emails.send({
       from: "SkillLinkup <newsletter@skilllinkup.com>",
       to: email,
-      subject: "Welcome to SkillLinkup Newsletter!",
-      html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1 style="color: #2563eb;">Welcome to SkillLinkup!</h1>
-          <p>Thanks for subscribing to our newsletter. You'll now receive:</p>
-          <ul>
-            <li>Weekly platform reviews and comparisons</li>
-            <li>Freelancing tips and success stories</li>
-            <li>Exclusive insights and insider knowledge</li>
-          </ul>
-          <p>We're excited to help you find the perfect freelance platform!</p>
-          <p style="color: #666; font-size: 14px; margin-top: 32px;">
-            If you didn't subscribe to this list, you can safely ignore this email.
-          </p>
-        </div>
-      `,
+      subject: t.emailSubject,
+      html: emailHtml,
     });
 
     return NextResponse.json(
-      { message: "Successfully subscribed!" },
+      { message: t.success },
       { status: 200 }
     );
   } catch (error) {
     console.error("Newsletter subscription error:", error);
+    // Default to English for catch-all errors
     return NextResponse.json(
       { message: "An error occurred. Please try again later." },
       { status: 500 }

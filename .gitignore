@@ -55,3 +55,6 @@ scripts/test-*.js
 scripts/test-*.ts
 scripts/check-*.mjs
 scripts/verify-*.mjs
+
+# Email previews (generated files)
+email-previews/
