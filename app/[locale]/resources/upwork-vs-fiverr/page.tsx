@@ -12,12 +12,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
   if (locale === 'nl') {
     return {
-      title: "Upwork of Fiverr 2025: Welk Platform is het Beste voor Freelancers?",
-      description: "Vergelijk Upwork en Fiverr: prijzen, commissies, projecttypes en welk freelance platform het beste past bij jouw carrière. Complete analyse voor 2025.",
+      title: "Upwork of Fiverr 2026: Welk Platform is het Beste voor Freelancers?",
+      description: "Vergelijk Upwork en Fiverr: prijzen, commissies, projecttypes en welk freelance platform het beste past bij jouw carrière. Complete analyse voor 2026.",
       keywords: "upwork vs fiverr, freelance platform vergelijken, beste freelance site, upwork of fiverr, freelance marktplaats",
       openGraph: {
-        title: "Upwork of Fiverr 2025: Welk Platform is het Beste?",
-        description: "Vergelijk Upwork en Fiverr: prijzen, commissies en projecttypes. Complete analyse voor 2025.",
+        title: "Upwork of Fiverr 2026: Welk Platform is het Beste?",
+        description: "Vergelijk Upwork en Fiverr: prijzen, commissies en projecttypes. Complete analyse voor 2026.",
         url: pageUrl,
         siteName: 'SkillLinkup',
         images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Upwork vs Fiverr Vergelijking' }],
@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       },
       twitter: {
         card: 'summary_large_image',
-        title: "Upwork of Fiverr 2025: Welk Platform is het Beste?",
+        title: "Upwork of Fiverr 2026: Welk Platform is het Beste?",
         description: "Vergelijk Upwork en Fiverr: prijzen, commissies en projecttypes.",
         images: [`${siteUrl}/images/og/resources-og.png`],
         creator: '@SkillLinkup',
@@ -44,11 +44,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 
   return {
-    title: "Upwork vs Fiverr 2025: Which Platform is Best for Your Career?",
+    title: "Upwork vs Fiverr 2026: Which Platform is Best for Your Career?",
     description: "Compare Upwork and Fiverr side-by-side. Detailed analysis of pricing, fees, features, and which platform suits your freelance career best.",
     keywords: "upwork vs fiverr, freelance platform comparison, best freelance site, upwork or fiverr, freelance marketplace",
     openGraph: {
-      title: "Upwork vs Fiverr 2025: Which Platform is Best?",
+      title: "Upwork vs Fiverr 2026: Which Platform is Best?",
       description: "Compare Upwork and Fiverr side-by-side. Pricing, fees, features analysis.",
       url: pageUrl,
       siteName: 'SkillLinkup',
@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     },
     twitter: {
       card: 'summary_large_image',
-      title: "Upwork vs Fiverr 2025: Which Platform is Best?",
+      title: "Upwork vs Fiverr 2026: Which Platform is Best?",
       description: "Compare Upwork and Fiverr side-by-side. Pricing, fees, features analysis.",
       images: [`${siteUrl}/images/og/resources-og.png`],
       creator: '@SkillLinkup',
@@ -336,13 +336,13 @@ export default async function UpworkVsFiverrPage({ params }: { params: Promise<{
     "@context": "https://schema.org",
     "@type": "Article",
     headline: locale === 'nl'
-      ? "Upwork of Fiverr 2025: Welk Platform is het Beste voor Freelancers?"
-      : "Upwork vs Fiverr 2025: Which Platform is Best for Your Career?",
+      ? "Upwork of Fiverr 2026: Welk Platform is het Beste voor Freelancers?"
+      : "Upwork vs Fiverr 2026: Which Platform is Best for Your Career?",
     description: locale === 'nl'
-      ? "Vergelijk Upwork en Fiverr: prijzen, commissies, projecttypes en welk freelance platform het beste past bij jouw carrière. Complete analyse voor 2025."
+      ? "Vergelijk Upwork en Fiverr: prijzen, commissies, projecttypes en welk freelance platform het beste past bij jouw carrière. Complete analyse voor 2026."
       : "Compare Upwork and Fiverr side-by-side. Detailed analysis of pricing, fees, features, and which platform suits your freelance career best.",
-    datePublished: "2025-01-15",
-    dateModified: "2025-01-15",
+    datePublished: "2026-01-15",
+    dateModified: "2026-01-15",
     author: {
       "@type": "Organization",
       name: "SkillLinkup",

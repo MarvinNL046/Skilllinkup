@@ -12,11 +12,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
   if (locale === 'nl') {
     return {
-      title: 'Beginners vs Expert Freelance Platforms: Complete Vergelijking 2025',
+      title: 'Beginners vs Expert Freelance Platforms: Complete Vergelijking 2026',
       description: 'Vergelijk beginnersvriendelijke platforms (Fiverr, Freelancer) met expertplatforms (Toptal, Gun.io). Ontdek kosten, selectieprocedures en welk niveau bij jouw vaardigheden past.',
       keywords: 'beginner freelance platforms, expert freelance platforms, Fiverr vs Toptal, freelance platform niveaus, platform vergelijking per vaardigheid',
       openGraph: {
-        title: 'Beginners vs Expert Freelance Platforms: Complete Vergelijking 2025',
+        title: 'Beginners vs Expert Freelance Platforms: Complete Vergelijking 2026',
         description: 'Vergelijk beginnersvriendelijke platforms met expertplatforms. Ontdek kosten, selectieprocedures en welk niveau bij jouw vaardigheden past.',
         url: pageUrl,
         siteName: 'SkillLinkup',
@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       },
       twitter: {
         card: 'summary_large_image',
-        title: 'Beginners vs Expert Freelance Platforms: Complete Vergelijking 2025',
+        title: 'Beginners vs Expert Freelance Platforms: Complete Vergelijking 2026',
         description: 'Vergelijk beginnersvriendelijke platforms met expertplatforms.',
         images: [`${siteUrl}/images/og/resources-og.png`],
         creator: '@SkillLinkup',
@@ -44,11 +44,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 
   return {
-    title: 'Beginner vs Expert Freelance Platforms: Complete Comparison 2025',
+    title: 'Beginner vs Expert Freelance Platforms: Complete Comparison 2026',
     description: 'Compare beginner-friendly platforms (Fiverr, Freelancer) vs expert platforms (Toptal, Gun.io). Discover fees, vetting processes, and which level matches your skills.',
     keywords: 'beginner freelance platforms, expert freelance platforms, Fiverr vs Toptal, freelance platform tiers, platform comparison by skill level',
     openGraph: {
-      title: 'Beginner vs Expert Freelance Platforms: Complete Comparison 2025',
+      title: 'Beginner vs Expert Freelance Platforms: Complete Comparison 2026',
       description: 'Compare beginner-friendly platforms vs expert platforms. Discover fees, vetting processes, and which level matches your skills.',
       url: pageUrl,
       siteName: 'SkillLinkup',
@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Beginner vs Expert Freelance Platforms: Complete Comparison 2025',
+      title: 'Beginner vs Expert Freelance Platforms: Complete Comparison 2026',
       description: 'Compare beginner-friendly platforms vs expert platforms.',
       images: [`${siteUrl}/images/og/resources-og.png`],
       creator: '@SkillLinkup',
@@ -847,7 +847,7 @@ export default async function BeginnerVsExpertPlatforms({ params }: { params: Pr
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    headline: locale === 'nl' ? 'Beginner vs Expert Freelance Platforms: Complete Vergelijking 2025' : 'Beginner vs Expert Freelance Platforms: Complete Comparison 2025',
+    headline: locale === 'nl' ? 'Beginner vs Expert Freelance Platforms: Complete Vergelijking 2026' : 'Beginner vs Expert Freelance Platforms: Complete Comparison 2026',
     description: locale === 'nl' ? 'Gedetailleerde vergelijking van beginnersvriendelijke en expert freelance platforms inclusief selectieprocessen, kosten en verdienpotentieel.' : 'Detailed comparison of beginner-friendly and expert freelance platforms including vetting processes, fees, and earning potential.',
     author: {
       '@type': 'Organization',
@@ -861,8 +861,8 @@ export default async function BeginnerVsExpertPlatforms({ params }: { params: Pr
         url: 'https://skilllinkup.com/images/logo/skilllinkup-transparant-rozepunt.webp',
       },
     },
-    datePublished: '2025-01-15',
-    dateModified: '2025-01-15',
+    datePublished: '2026-01-15',
+    dateModified: '2026-01-15',
     inLanguage: locale === 'nl' ? 'nl' : 'en',
   };
 

@@ -12,11 +12,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
   if (locale === 'nl') {
     return {
-      title: "Toptal of Upwork 2025: Elite Netwerk of Massa Marktplaats?",
+      title: "Toptal of Upwork 2026: Elite Netwerk of Massa Marktplaats?",
       description: "Vergelijk Toptal's exclusieve 3% acceptatiegraad met Upwork's open marktplaats. Welk platform levert betere klanten en hogere tarieven op?",
       keywords: "toptal of upwork, elite freelance platform, toptal review, upwork vergelijking, premium freelance werk",
       openGraph: {
-        title: "Toptal of Upwork 2025: Elite Netwerk of Massa Marktplaats?",
+        title: "Toptal of Upwork 2026: Elite Netwerk of Massa Marktplaats?",
         description: "Vergelijk Toptal's exclusieve 3% acceptatiegraad met Upwork's open marktplaats.",
         url: pageUrl,
         siteName: 'SkillLinkup',
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
             url: `${siteUrl}/images/og/resources-og.png`,
             width: 1200,
             height: 630,
-            alt: "Toptal of Upwork 2025: Elite Netwerk of Massa Marktplaats?",
+            alt: "Toptal of Upwork 2026: Elite Netwerk of Massa Marktplaats?",
           }
         ],
         locale: 'nl_NL',
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       },
       twitter: {
         card: 'summary_large_image',
-        title: "Toptal of Upwork 2025: Elite Netwerk of Massa Marktplaats?",
+        title: "Toptal of Upwork 2026: Elite Netwerk of Massa Marktplaats?",
         description: "Vergelijk Toptal's exclusieve 3% acceptatiegraad met Upwork's open marktplaats. Welk platform levert betere klanten en hogere tarieven op?",
         images: [`${siteUrl}/images/og/resources-og.png`],
         creator: '@SkillLinkup',
@@ -61,11 +61,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 
   return {
-    title: "Toptal vs Upwork 2025: Elite Network or Mass Marketplace?",
+    title: "Toptal vs Upwork 2026: Elite Network or Mass Marketplace?",
     description: "Compare Toptal's exclusive 3% acceptance rate with Upwork's open marketplace. Which platform delivers better clients and higher rates?",
     keywords: "toptal vs upwork, elite freelance platform, toptal review, upwork comparison, premium freelance work",
     openGraph: {
-      title: "Toptal vs Upwork 2025: Elite Network or Mass Marketplace?",
+      title: "Toptal vs Upwork 2026: Elite Network or Mass Marketplace?",
       description: "Compare Toptal's exclusive 3% acceptance rate with Upwork's open marketplace. Which platform delivers better clients and higher rates?",
       url: pageUrl,
       siteName: 'SkillLinkup',
@@ -74,7 +74,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
           url: `${siteUrl}/images/og/resources-og.png`,
           width: 1200,
           height: 630,
-          alt: "Toptal vs Upwork 2025: Elite Network or Mass Marketplace?",
+          alt: "Toptal vs Upwork 2026: Elite Network or Mass Marketplace?",
         }
       ],
       locale: 'en_US',
@@ -82,7 +82,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     },
     twitter: {
       card: 'summary_large_image',
-      title: "Toptal vs Upwork 2025: Elite Network or Mass Marketplace?",
+      title: "Toptal vs Upwork 2026: Elite Network or Mass Marketplace?",
       description: "Compare Toptal's exclusive 3% acceptance rate with Upwork's open marketplace. Which platform delivers better clients and higher rates?",
       images: [`${siteUrl}/images/og/resources-og.png`],
       creator: '@SkillLinkup',
@@ -497,11 +497,11 @@ export default async function ToptalVsUpworkPage({ params }: { params: Promise<{
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: locale === 'nl' ? "Toptal of Upwork 2025: Elite Netwerk of Massa Marktplaats?" : "Toptal vs Upwork 2025: Elite Network or Mass Marketplace?",
+    headline: locale === 'nl' ? "Toptal of Upwork 2026: Elite Netwerk of Massa Marktplaats?" : "Toptal vs Upwork 2026: Elite Network or Mass Marketplace?",
     description: locale === 'nl' ? "Vergelijk Toptal's exclusieve 3% acceptatiegraad met Upwork's open marktplaats." : "Compare Toptal's exclusive 3% acceptance rate with Upwork's open marketplace.",
     inLanguage: locale === 'nl' ? "nl" : "en",
-    datePublished: "2025-01-15",
-    dateModified: "2025-01-15",
+    datePublished: "2026-01-15",
+    dateModified: "2026-01-15",
   };
 
   return (

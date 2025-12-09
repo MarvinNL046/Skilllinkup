@@ -16,20 +16,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (locale === "nl") {
     return {
-      title: "Guru Platform Analyse 2025: Prijzen, Features & Ideale Gebruikers",
+      title: "Guru Platform Analyse 2026: Prijzen, Features & Ideale Gebruikers",
       description: "Complete Guru.com analyse met SafePay escrow, WorkRooms samenwerking, prijsstructuur, en voor welke freelancers dit professionele platform het meest geschikt is.",
       openGraph: {
-        title: "Guru Platform Analyse 2025: Prijzen, Features & Ideale Gebruikers",
+        title: "Guru Platform Analyse 2026: Prijzen, Features & Ideale Gebruikers",
         description: "Complete Guru.com analyse met SafePay escrow, WorkRooms samenwerking, prijsstructuur, en voor welke freelancers dit professionele platform het meest geschikt is.",
         url: pageUrl,
         siteName: 'SkillLinkup',
-        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Guru Platform Analyse 2025' }],
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Guru Platform Analyse 2026' }],
         locale: 'nl_NL',
         type: "article",
       },
       twitter: {
         card: 'summary_large_image',
-        title: 'Guru Platform Analyse 2025',
+        title: 'Guru Platform Analyse 2026',
         description: 'Complete Guru.com analyse met SafePay escrow, WorkRooms en prijsstructuur.',
         images: [`${siteUrl}/images/og/resources-og.png`],
         creator: '@SkillLinkup',
@@ -49,20 +49,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: "Guru Platform Analysis 2025: Pricing, Features & Ideal Users",
+    title: "Guru Platform Analysis 2026: Pricing, Features & Ideal Users",
     description: "Complete Guru.com analysis covering SafePay escrow, WorkRooms collaboration, pricing tiers, and which freelancers benefit most from this professional platform.",
     openGraph: {
-      title: "Guru Platform Analysis 2025: Pricing, Features & Ideal Users",
+      title: "Guru Platform Analysis 2026: Pricing, Features & Ideal Users",
       description: "Complete Guru.com analysis covering SafePay escrow, WorkRooms collaboration, pricing tiers, and which freelancers benefit most from this professional platform.",
       url: pageUrl,
       siteName: 'SkillLinkup',
-      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Guru Platform Analysis 2025' }],
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Guru Platform Analysis 2026' }],
       locale: 'en_US',
       type: "article",
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Guru Platform Analysis 2025',
+      title: 'Guru Platform Analysis 2026',
       description: 'Complete Guru.com analysis covering SafePay escrow, WorkRooms and pricing tiers.',
       images: [`${siteUrl}/images/og/resources-og.png`],
       creator: '@SkillLinkup',
@@ -651,8 +651,8 @@ export default async function GuruPlatformAnalysisPage({ params }: Props) {
         "url": "https://skilllinkup.com/images/logo/skilllinkup-transparant-rozepunt.webp"
       }
     },
-    "datePublished": "2025-01-15",
-    "dateModified": "2025-01-15"
+    "datePublished": "2026-01-15",
+    "dateModified": "2026-01-15"
   };
 
   return (

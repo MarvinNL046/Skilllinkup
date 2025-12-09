@@ -16,11 +16,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (locale === "nl") {
     return {
-      title: "Maximaliseer Je Inkomsten op Upwork: Bewezen Prijsstrategieën (2025)",
+      title: "Maximaliseer Je Inkomsten op Upwork: Bewezen Prijsstrategieën (2026)",
       description: "Verhoog je Upwork-inkomen met bewezen prijsstrategieën. Leer concurrerende tarieven instellen en goed betaalde projecten winnen.",
       keywords: "upwork tarieven, upwork prijsstrategie, upwork inkomsten, upwork kosten, upwork prijzen instellen, upwork verdiensten maximaliseren",
       openGraph: {
-        title: "Maximaliseer Je Inkomsten op Upwork: Bewezen Prijsstrategieën (2025)",
+        title: "Maximaliseer Je Inkomsten op Upwork: Bewezen Prijsstrategieën (2026)",
         description: "Beheers Upwork-prijzen met tactieken die worden gebruikt door top-beoordeelde freelancers. Win meer projecten en verdien meer per uur.",
         url: pageUrl,
         siteName: 'SkillLinkup',
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
       twitter: {
         card: 'summary_large_image',
-        title: "Maximaliseer Je Inkomsten op Upwork: Bewezen Prijsstrategieën (2025)",
+        title: "Maximaliseer Je Inkomsten op Upwork: Bewezen Prijsstrategieën (2026)",
         description: "Verhoog je Upwork-inkomen met bewezen prijsstrategieën. Leer concurrerende tarieven instellen en goed betaalde projecten winnen.",
         images: [`${siteUrl}/images/og/resources-og.png`],
         creator: '@SkillLinkup',
@@ -48,11 +48,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: "Maximizing Your Earnings on Upwork: Proven Pricing Tactics (2025)",
+    title: "Maximizing Your Earnings on Upwork: Proven Pricing Tactics (2026)",
     description: "Boost your Upwork income with proven pricing strategies. Learn to set competitive rates and win high-paying projects consistently.",
     keywords: "upwork pricing, upwork rates, upwork earnings, upwork fees, upwork pricing strategy, maximize upwork income",
     openGraph: {
-      title: "Maximizing Your Earnings on Upwork: Proven Pricing Tactics (2025)",
+      title: "Maximizing Your Earnings on Upwork: Proven Pricing Tactics (2026)",
       description: "Master Upwork pricing with tactics used by top-rated freelancers. Win more projects and earn more per hour.",
       url: pageUrl,
       siteName: 'SkillLinkup',
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: "Maximizing Your Earnings on Upwork: Proven Pricing Tactics (2025)",
+      title: "Maximizing Your Earnings on Upwork: Proven Pricing Tactics (2026)",
       description: "Boost your Upwork income with proven pricing strategies. Learn to set competitive rates and win high-paying projects consistently.",
       images: [`${siteUrl}/images/og/resources-og.png`],
       creator: '@SkillLinkup',
@@ -489,8 +489,8 @@ export default async function UpworkPricingTacticsPage({ params }: Props) {
         "url": "https://skilllinkup.com/images/logo/skilllinkup-transparant-rozepunt.webp"
       }
     },
-    "datePublished": "2025-01-15",
-    "dateModified": "2025-01-15"
+    "datePublished": "2026-01-15",
+    "dateModified": "2026-01-15"
   };
 
   return (

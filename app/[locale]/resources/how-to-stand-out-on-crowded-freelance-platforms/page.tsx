@@ -17,38 +17,38 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (locale === 'nl') {
     return {
-      title: 'Opvallen tussen concurrentie op freelance platforms in 2025',
+      title: 'Opvallen tussen concurrentie op freelance platforms in 2026',
       description: 'Ontdek bewezen strategieën om je te onderscheiden op drukke freelance platforms. Leer hoe top 1% freelancers premium klanten aantrekken en hogere tarieven vragen.',
       keywords: 'opvallen freelance, onderscheiden upwork, freelance concurrentie, premium klanten freelance, freelance differentiatie',
       openGraph: {
-        title: 'Opvallen tussen concurrentie op freelance platforms in 2025',
+        title: 'Opvallen tussen concurrentie op freelance platforms in 2026',
         description: 'Meester bewezen strategieën om je te onderscheiden op competitieve freelance markten. Leer hoe top 1% freelancers premium klanten aantrekken.',
         url: pageUrl,
         siteName: 'SkillLinkup',
-        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Opvallen tussen concurrentie op freelance platforms in 2025' }],
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Opvallen tussen concurrentie op freelance platforms in 2026' }],
         locale: 'nl_NL',
         type: 'article',
       },
-      twitter: { card: 'summary_large_image', title: 'Opvallen tussen concurrentie op freelance platforms in 2025', description: 'Meester bewezen strategieën om je te onderscheiden op competitieve freelance markten. Leer hoe top 1% freelancers premium klanten aantrekken.', images: [`${siteUrl}/images/og/resources-og.png`], creator: '@SkillLinkup', site: '@SkillLinkup' },
+      twitter: { card: 'summary_large_image', title: 'Opvallen tussen concurrentie op freelance platforms in 2026', description: 'Meester bewezen strategieën om je te onderscheiden op competitieve freelance markten. Leer hoe top 1% freelancers premium klanten aantrekken.', images: [`${siteUrl}/images/og/resources-og.png`], creator: '@SkillLinkup', site: '@SkillLinkup' },
       alternates: { canonical: pageUrl, languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` } },
       robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 } },
     };
   }
 
   return {
-    title: 'How to Stand Out on Crowded Freelance Platforms in 2025',
+    title: 'How to Stand Out on Crowded Freelance Platforms in 2026',
     description: 'Master proven strategies to differentiate yourself on competitive freelance marketplaces. Learn how top 1% freelancers attract premium clients and win more projects.',
     keywords: 'stand out freelance, freelance differentiation, upwork competition, premium freelance clients, freelance positioning',
     openGraph: {
-      title: 'How to Stand Out on Crowded Freelance Platforms in 2025',
+      title: 'How to Stand Out on Crowded Freelance Platforms in 2026',
       description: 'Master proven strategies to differentiate yourself on competitive freelance marketplaces. Learn how top 1% freelancers attract premium clients.',
       url: pageUrl,
       siteName: 'SkillLinkup',
-      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'How to Stand Out on Crowded Freelance Platforms in 2025' }],
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'How to Stand Out on Crowded Freelance Platforms in 2026' }],
       locale: 'en_US',
       type: 'article',
     },
-    twitter: { card: 'summary_large_image', title: 'How to Stand Out on Crowded Freelance Platforms in 2025', description: 'Master proven strategies to differentiate yourself on competitive freelance marketplaces. Learn how top 1% freelancers attract premium clients.', images: [`${siteUrl}/images/og/resources-og.png`], creator: '@SkillLinkup', site: '@SkillLinkup' },
+    twitter: { card: 'summary_large_image', title: 'How to Stand Out on Crowded Freelance Platforms in 2026', description: 'Master proven strategies to differentiate yourself on competitive freelance marketplaces. Learn how top 1% freelancers attract premium clients.', images: [`${siteUrl}/images/og/resources-og.png`], creator: '@SkillLinkup', site: '@SkillLinkup' },
     alternates: { canonical: pageUrl, languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` } },
     robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 } },
   };
@@ -214,8 +214,8 @@ export default async function StandOutOnFreelancePlatformsPage({ params }: PageP
         url: 'https://skilllinkup.com/logo.png',
       },
     },
-    datePublished: '2025-01-15',
-    dateModified: '2025-01-15',
+    datePublished: '2026-01-15',
+    dateModified: '2026-01-15',
   };
 
   return (

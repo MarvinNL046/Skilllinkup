@@ -97,7 +97,7 @@ export default async function ProjectManagementToolsPage({ params }: PageProps) 
       name: 'SkillLinkup',
       logo: { '@type': 'ImageObject', url: `${siteUrl}/images/logo/skilllinkup-transparant-rozepunt.webp` },
     },
-    datePublished: '2025-01-15',
+    datePublished: '2026-01-15',
   };
 
   return (
@@ -372,7 +372,7 @@ export default async function ProjectManagementToolsPage({ params }: PageProps) 
 
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">2. Use Consistent Naming</h3>
                   <p className="text-gray-700 dark:text-gray-300 mb-4">
-                    Develop naming conventions for projects and tasks. Example: "[Client Name] - Project Name" or "2025-Q1-ClientName-ProjectType"
+                    Develop naming conventions for projects and tasks. Example: "[Client Name] - Project Name" or "2026-Q1-ClientName-ProjectType"
                   </p>
 
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">3. Set Realistic Deadlines</h3>

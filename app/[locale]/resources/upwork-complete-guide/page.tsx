@@ -12,21 +12,21 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
   if (locale === 'nl') {
     return {
-      title: "Upwork Gids 2025: Complete Platform Review voor Freelancers",
+      title: "Upwork Gids 2026: Complete Platform Review voor Freelancers",
       description: "Complete Upwork handleiding voor Nederlandse freelancers. Leer tarievenstructuur, profiel optimalisatie en beproefde strategieën om opdrachten te winnen als ZZP'er.",
       keywords: "upwork gids, upwork nederland, upwork freelancer, upwork tarieven, upwork profiel maken, ZZP upwork",
       openGraph: {
-        title: "Upwork Gids 2025: Complete Platform Review voor Freelancers",
+        title: "Upwork Gids 2026: Complete Platform Review voor Freelancers",
         description: "Complete Upwork handleiding voor Nederlandse freelancers. Leer tarievenstructuur, profiel optimalisatie en beproefde strategieën om opdrachten te winnen als ZZP'er.",
         url: pageUrl,
         siteName: 'SkillLinkup',
-        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Upwork Gids 2025: Complete Platform Review voor Freelancers' }],
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Upwork Gids 2026: Complete Platform Review voor Freelancers' }],
         locale: 'nl_NL',
         type: "article",
       },
       twitter: {
         card: 'summary_large_image',
-        title: 'Upwork Gids 2025: Complete Platform Review voor Freelancers',
+        title: 'Upwork Gids 2026: Complete Platform Review voor Freelancers',
         description: 'Complete Upwork handleiding voor Nederlandse freelancers. Leer tarievenstructuur, profiel optimalisatie.',
         images: [`${siteUrl}/images/og/resources-og.png`],
         creator: '@SkillLinkup',
@@ -48,21 +48,21 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 
   return {
-    title: "Upwork Complete Guide: Features, Fees & Success Strategies 2025",
+    title: "Upwork Complete Guide: Features, Fees & Success Strategies 2026",
     description: "Master Upwork with our complete guide. Learn platform features, fee structures, profile optimization, and proven strategies to win high-paying clients consistently.",
     keywords: "upwork guide, upwork fees, upwork profile optimization, upwork success strategies, upwork freelancing tips",
     openGraph: {
-      title: "Upwork Complete Guide: Features, Fees & Success Strategies 2025",
+      title: "Upwork Complete Guide: Features, Fees & Success Strategies 2026",
       description: "Master Upwork with our complete guide. Learn platform features, fee structures, profile optimization, and proven strategies to win high-paying clients consistently.",
       url: pageUrl,
       siteName: 'SkillLinkup',
-      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Upwork Complete Guide: Features, Fees & Success Strategies 2025' }],
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Upwork Complete Guide: Features, Fees & Success Strategies 2026' }],
       locale: 'en_US',
       type: "article",
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Upwork Complete Guide: Features, Fees & Success Strategies 2025',
+      title: 'Upwork Complete Guide: Features, Fees & Success Strategies 2026',
       description: 'Master Upwork with our complete guide. Learn platform features, fee structures, profile optimization.',
       images: [`${siteUrl}/images/og/resources-og.png`],
       creator: '@SkillLinkup',
@@ -483,8 +483,8 @@ export default async function UpworkCompleteGuidePage({ params }: { params: Prom
         "url": "https://skilllinkup.com/images/logo/skilllinkup-transparant-rozepunt.webp"
       }
     },
-    "datePublished": "2025-01-15",
-    "dateModified": "2025-01-15",
+    "datePublished": "2026-01-15",
+    "dateModified": "2026-01-15",
     "inLanguage": locale
   };
 

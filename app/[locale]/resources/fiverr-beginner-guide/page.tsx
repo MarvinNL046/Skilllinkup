@@ -12,21 +12,21 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
   if (locale === 'nl') {
     return {
-      title: "Fiverr voor Beginners: Maak een Winnend Verkopersprofiel 2025",
+      title: "Fiverr voor Beginners: Maak een Winnend Verkopersprofiel 2026",
       description: "Volledige beginnersgids voor Fiverr succes. Leer hoe je een hoogconverterend verkopersprofiel maakt, gigs strategisch prijst en snel je eerste klanten binnenhaalt.",
       keywords: "fiverr beginners gids, fiverr profiel maken, fiverr gig aanmaken, fiverr verkoper worden, fiverr tips nederland",
       openGraph: {
-        title: "Fiverr voor Beginners: Maak een Winnend Verkopersprofiel 2025",
+        title: "Fiverr voor Beginners: Maak een Winnend Verkopersprofiel 2026",
         description: "Volledige beginnersgids voor Fiverr succes. Leer hoe je een hoogconverterend verkopersprofiel maakt, gigs strategisch prijst en snel je eerste klanten binnenhaalt.",
         url: pageUrl,
         siteName: 'SkillLinkup',
-        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Fiverr voor Beginners: Maak een Winnend Verkopersprofiel 2025' }],
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Fiverr voor Beginners: Maak een Winnend Verkopersprofiel 2026' }],
         locale: "nl_NL",
         type: "article",
       },
       twitter: {
         card: 'summary_large_image',
-        title: 'Fiverr voor Beginners: Maak een Winnend Verkopersprofiel 2025',
+        title: 'Fiverr voor Beginners: Maak een Winnend Verkopersprofiel 2026',
         description: 'Volledige beginnersgids voor Fiverr succes. Leer hoe je een hoogconverterend verkopersprofiel maakt.',
         images: [`${siteUrl}/images/og/resources-og.png`],
         creator: '@SkillLinkup',
@@ -48,21 +48,21 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 
   return {
-    title: "Fiverr for Beginners: Create a Winning Seller Profile in 2025",
+    title: "Fiverr for Beginners: Create a Winning Seller Profile in 2026",
     description: "Complete beginner's guide to Fiverr success. Learn how to create a high-converting seller profile, price gigs strategically, and land your first clients fast.",
-    keywords: "fiverr beginner guide, fiverr seller profile, fiverr gig creation, how to start on fiverr, fiverr tips 2025",
+    keywords: "fiverr beginner guide, fiverr seller profile, fiverr gig creation, how to start on fiverr, fiverr tips 2026",
     openGraph: {
-      title: "Fiverr for Beginners: Create a Winning Seller Profile in 2025",
+      title: "Fiverr for Beginners: Create a Winning Seller Profile in 2026",
       description: "Complete beginner's guide to Fiverr success. Learn how to create a high-converting seller profile, price gigs strategically, and land your first clients fast.",
       url: pageUrl,
       siteName: 'SkillLinkup',
-      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Fiverr for Beginners: Create a Winning Seller Profile in 2025' }],
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Fiverr for Beginners: Create a Winning Seller Profile in 2026' }],
       locale: 'en_US',
       type: "article",
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Fiverr for Beginners: Create a Winning Seller Profile in 2025',
+      title: 'Fiverr for Beginners: Create a Winning Seller Profile in 2026',
       description: "Complete beginner's guide to Fiverr success. Learn how to create a high-converting seller profile.",
       images: [`${siteUrl}/images/og/resources-og.png`],
       creator: '@SkillLinkup',
@@ -518,8 +518,8 @@ export default async function FiverrBeginnerGuidePage({ params }: { params: Prom
         "url": "https://skilllinkup.com/images/logo/skilllinkup-transparant-rozepunt.webp"
       }
     },
-    "datePublished": "2025-01-15",
-    "dateModified": "2025-01-15"
+    "datePublished": "2026-01-15",
+    "dateModified": "2026-01-15"
   };
 
   return (

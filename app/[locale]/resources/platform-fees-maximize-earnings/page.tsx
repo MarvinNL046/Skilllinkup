@@ -16,11 +16,11 @@ export async function generateMetadata({
 
   if (locale === "nl") {
     return {
-      title: "Platformkosten Begrijpen: Prijs Optimaal om Netto Verdiensten te Maximaliseren (2025)",
+      title: "Platformkosten Begrijpen: Prijs Optimaal om Netto Verdiensten te Maximaliseren (2026)",
       description: "Complete uitleg van freelance platformkosten en hoe je je diensten moet prijzen om verdiensten te maximaliseren. Vergelijk Upwork, Fiverr, Freelancer en 10+ platforms met echte berekeningen.",
       keywords: "freelance platformkosten, upwork kosten, fiverr kosten, freelancer kosten, platform commissie, maximaliseer freelance verdiensten, freelance netto verdiensten",
       openGraph: {
-        title: "Platformkosten Begrijpen: Prijs Optimaal om Netto Verdiensten te Maximaliseren (2025)",
+        title: "Platformkosten Begrijpen: Prijs Optimaal om Netto Verdiensten te Maximaliseren (2026)",
         description: "Leer hoe platformkosten je inkomen beïnvloeden en ontdek prijsstrategieën om je netto verdiensten te maximaliseren op alle belangrijke platforms.",
         url: pageUrl,
         siteName: 'SkillLinkup',
@@ -30,7 +30,7 @@ export async function generateMetadata({
       },
       twitter: {
         card: 'summary_large_image',
-        title: 'Platformkosten Begrijpen: Prijs Optimaal om Netto Verdiensten te Maximaliseren (2025)',
+        title: 'Platformkosten Begrijpen: Prijs Optimaal om Netto Verdiensten te Maximaliseren (2026)',
         description: 'Complete uitleg van freelance platformkosten en hoe je je diensten moet prijzen om verdiensten te maximaliseren.',
         images: [`${siteUrl}/images/og/resources-og.png`],
         creator: '@SkillLinkup',
@@ -52,21 +52,21 @@ export async function generateMetadata({
   }
 
   return {
-    title: "Understanding Platform Fees: Price to Maximize Take-Home Pay (2025)",
+    title: "Understanding Platform Fees: Price to Maximize Take-Home Pay (2026)",
     description: "Complete breakdown of freelance platform fees and how to price your services to maximize earnings. Compare Upwork, Fiverr, Freelancer, and 10+ platforms with real calculations.",
     keywords: "freelance platform fees, upwork fees, fiverr fees, freelancer fees, platform commission, maximize freelance earnings, freelance take-home pay",
     openGraph: {
-      title: "Understanding Platform Fees: Price to Maximize Take-Home Pay (2025)",
+      title: "Understanding Platform Fees: Price to Maximize Take-Home Pay (2026)",
       description: "Learn how platform fees impact your income and discover pricing strategies to maximize your take-home pay across all major platforms.",
       url: pageUrl,
       siteName: 'SkillLinkup',
-      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Understanding Platform Fees: Price to Maximize Take-Home Pay (2025)' }],
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Understanding Platform Fees: Price to Maximize Take-Home Pay (2026)' }],
       locale: 'en_US',
       type: "article",
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Understanding Platform Fees: Price to Maximize Take-Home Pay (2025)',
+      title: 'Understanding Platform Fees: Price to Maximize Take-Home Pay (2026)',
       description: 'Complete breakdown of freelance platform fees and how to price your services to maximize earnings.',
       images: [`${siteUrl}/images/og/resources-og.png`],
       creator: '@SkillLinkup',
@@ -95,7 +95,7 @@ export default async function PlatformFeesMaximizeEarningsPage({
   const { locale } = await params;
 
   const content = locale === "nl" ? {
-    badge: "Platformkosten Vergelijking 2025",
+    badge: "Platformkosten Vergelijking 2026",
     title: "Platformkosten Begrijpen: Hoe te Prijzen om Netto Verdiensten te Maximaliseren",
     subtitle: "Platformkosten kunnen 5-30% van je verdiensten opslokken. Leer precies hoe elk platform rekent en hoe je strategisch prijst om je inkomen te maximaliseren.",
     ctaPlatforms: "Vergelijk Alle Platforms",
@@ -103,7 +103,7 @@ export default async function PlatformFeesMaximizeEarningsPage({
     intro: "Elk freelance platform neemt een deel van je verdiensten - het is de prijs voor toegang tot hun klantenbestand, betalingsverwerking en platformfuncties. Maar deze kosten variëren enorm, van 5% tot 30%, en het begrijpen ervan is essentieel om je diensten winstgevend te prijzen. Deze gids ontleedt de kostenstructuren van alle belangrijke platforms en toont je precies hoe je moet prijzen om je netto verdiensten te maximaliseren.",
 
     sectionComparison: {
-      title: "Complete Platformkosten Vergelijking (2025)",
+      title: "Complete Platformkosten Vergelijking (2026)",
       headers: {
         platform: "Platform",
         structure: "Kostenstructuur",
@@ -357,7 +357,7 @@ export default async function PlatformFeesMaximizeEarningsPage({
       button: "Vergelijk Alle Platforms",
     },
   } : {
-    badge: "Platform Fee Comparison 2025",
+    badge: "Platform Fee Comparison 2026",
     title: "Understanding Platform Fees: How to Price to Maximize Take-Home Pay",
     subtitle: "Platform fees can eat up 5-30% of your earnings. Learn exactly how each platform charges and how to price strategically to maximize your income.",
     ctaPlatforms: "Compare All Platforms",
@@ -365,7 +365,7 @@ export default async function PlatformFeesMaximizeEarningsPage({
     intro: "Every freelance platform takes a cut of your earnings—it's the cost of access to their client base, payment processing, and platform features. But these fees vary wildly, from 5% to 30%, and understanding them is critical to pricing your services profitably. This guide breaks down the fee structures of all major platforms and shows you exactly how to price to maximize your take-home pay.",
 
     sectionComparison: {
-      title: "Complete Platform Fee Comparison (2025)",
+      title: "Complete Platform Fee Comparison (2026)",
       headers: {
         platform: "Platform",
         structure: "Fee Structure",
@@ -637,8 +637,8 @@ export default async function PlatformFeesMaximizeEarningsPage({
         "url": "https://skilllinkup.com/images/logo/skilllinkup-transparant-rozepunt.webp"
       }
     },
-    "datePublished": "2025-01-15",
-    "dateModified": "2025-01-15"
+    "datePublished": "2026-01-15",
+    "dateModified": "2026-01-15"
   };
 
   return (

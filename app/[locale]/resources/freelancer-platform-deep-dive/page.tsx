@@ -16,11 +16,11 @@ export async function generateMetadata({
 
   if (locale === "nl") {
     return {
-      title: "Freelancer.com Review 2025: Diepgaande Platform Analyse & Winnende Strategieën | SkillLinkup",
+      title: "Freelancer.com Review 2026: Diepgaande Platform Analyse & Winnende Strategieën | SkillLinkup",
       description: "Complete gids over Freelancer.com contests, mijlpaalbetalingen, lidmaatschapsniveaus, biedstrategieën en bewezen tactieken om consistent projecten te winnen. €6B+ uitgekeerd aan 50M+ gebruikers.",
       keywords: "Freelancer.com review, Freelancer platform analyse Nederland, Freelancer.com gids, freelance biedstrategieën, Freelancer.com prijzen, Freelancer.com contests, Freelancer.com mijlpalen, Freelancer.com lidmaatschap",
       openGraph: {
-        title: "Freelancer.com Review 2025: Platform Analyse & Winnende Strategieën",
+        title: "Freelancer.com Review 2026: Platform Analyse & Winnende Strategieën",
         description: "Complete gids over Freelancer.com contests, mijlpaalbetalingen, lidmaatschapsniveaus en bewezen biedstrategieën voor freelancers.",
         url: pageUrl,
         siteName: 'SkillLinkup',
@@ -30,7 +30,7 @@ export async function generateMetadata({
       },
       twitter: {
         card: 'summary_large_image',
-        title: "Freelancer.com Review 2025: Platform Analyse & Winnende Strategieën",
+        title: "Freelancer.com Review 2026: Platform Analyse & Winnende Strategieën",
         description: "Complete gids over Freelancer.com contests, mijlpaalbetalingen en lidmaatschapsniveaus.",
         images: [`${siteUrl}/images/og/resources-og.png`],
         creator: '@SkillLinkup',
@@ -48,11 +48,11 @@ export async function generateMetadata({
   }
 
   return {
-    title: "Freelancer.com Deep Dive: Platform Features & Best Practices 2025 | SkillLinkup",
+    title: "Freelancer.com Deep Dive: Platform Features & Best Practices 2026 | SkillLinkup",
     description: "Complete guide to Freelancer.com covering contests, milestone payments, membership tiers, bidding strategies, and proven tactics to win projects consistently. $6B+ paid out to 50M+ users.",
     keywords: "Freelancer.com review, Freelancer platform analysis, Freelancer.com guide, freelance bidding strategies, Freelancer.com pricing, Freelancer.com contests, Freelancer.com milestones, Freelancer.com membership",
     openGraph: {
-      title: "Freelancer.com Deep Dive: Platform Features & Best Practices 2025",
+      title: "Freelancer.com Deep Dive: Platform Features & Best Practices 2026",
       description: "Complete guide to Freelancer.com covering contests, milestone payments, membership tiers, bidding strategies, and proven tactics to win projects consistently.",
       url: pageUrl,
       siteName: 'SkillLinkup',
@@ -62,7 +62,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: 'summary_large_image',
-      title: "Freelancer.com Deep Dive: Platform Features & Best Practices 2025",
+      title: "Freelancer.com Deep Dive: Platform Features & Best Practices 2026",
       description: "Complete guide to Freelancer.com covering contests, milestone payments, membership tiers.",
       images: [`${siteUrl}/images/og/resources-og.png`],
       creator: '@SkillLinkup',
@@ -518,8 +518,8 @@ export default async function FreelancerPlatformDeepDivePage({
         "url": "https://skilllinkup.com/images/logo/skilllinkup-transparant-rozepunt.webp"
       }
     },
-    "datePublished": "2025-01-15",
-    "dateModified": "2025-01-15",
+    "datePublished": "2026-01-15",
+    "dateModified": "2026-01-15",
     "inLanguage": locale === "nl" ? "nl-NL" : "en-US"
   };
 

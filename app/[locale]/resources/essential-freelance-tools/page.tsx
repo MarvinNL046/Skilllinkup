@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (locale === 'nl') {
     return {
-      title: 'Essentiële Freelance Tools voor ZZP\'ers en Zelfstandigen 2025',
+      title: 'Essentiële Freelance Tools voor ZZP\'ers en Zelfstandigen 2026',
       description: 'Ontdek de must-have freelance tools voor productiviteit, factureren, urenregistratie en projectmanagement. Complete gids voor het opbouwen van je freelance toolkit.',
       keywords: 'freelance tools, productiviteitstools, urenregistratie, factureringssoftware, projectmanagement zzp',
       openGraph: {
@@ -52,7 +52,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: 'Essential Freelance Tools Every Independent Worker Needs in 2025',
+    title: 'Essential Freelance Tools Every Independent Worker Needs in 2026',
     description: 'Discover must-have freelance tools for productivity, invoicing, time tracking, and project management. Complete guide to building your essential freelance toolkit.',
     keywords: 'freelance tools, productivity tools, time tracking, invoicing software, project management',
     openGraph: {
@@ -94,7 +94,7 @@ export default async function EssentialFreelanceToolsPage({ params }: PageProps)
   const content = locale === 'nl' ? {
     hero: {
       title: "Essentiële Freelance Tools voor Iedere Zelfstandige",
-      intro: "Bouw je perfecte freelance toolkit met deze must-have tools voor productiviteit, klantenbeheer en bedrijfsgroei in 2025.",
+      intro: "Bouw je perfecte freelance toolkit met deze must-have tools voor productiviteit, klantenbeheer en bedrijfsgroei in 2026.",
       cta1: "Probeer Onze Gratis Tools",
       cta2: "Start Urenregistratie"
     },
@@ -221,7 +221,7 @@ export default async function EssentialFreelanceToolsPage({ params }: PageProps)
   } : {
     hero: {
       title: "Essential Freelance Tools Every Independent Worker Needs",
-      intro: "Build your perfect freelance toolkit with these must-have tools for productivity, client management, and business growth in 2025.",
+      intro: "Build your perfect freelance toolkit with these must-have tools for productivity, client management, and business growth in 2026.",
       cta1: "Try Our Free Tools",
       cta2: "Track Time Now"
     },
@@ -351,7 +351,7 @@ export default async function EssentialFreelanceToolsPage({ params }: PageProps)
   const articleSchema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    headline: locale === 'nl' ? 'Essentiële Freelance Tools voor ZZP\'ers en Zelfstandigen 2025' : 'Essential Freelance Tools Every Independent Worker Needs in 2025',
+    headline: locale === 'nl' ? 'Essentiële Freelance Tools voor ZZP\'ers en Zelfstandigen 2026' : 'Essential Freelance Tools Every Independent Worker Needs in 2026',
     description: locale === 'nl' ? 'Ontdek de must-have freelance tools voor productiviteit, factureren, urenregistratie en projectmanagement.' : 'Discover must-have freelance tools for productivity, invoicing, time tracking, and project management.',
     author: {
       '@type': 'Organization',
@@ -365,8 +365,8 @@ export default async function EssentialFreelanceToolsPage({ params }: PageProps)
         url: `${siteUrl}/images/logo/skilllinkup-transparant-rozepunt.webp`,
       },
     },
-    datePublished: '2025-01-15',
-    dateModified: '2025-01-15',
+    datePublished: '2026-01-15',
+    dateModified: '2026-01-15',
   };
 
   const breadcrumbSchema = {

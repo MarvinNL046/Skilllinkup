@@ -16,38 +16,38 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (locale === "nl") {
     return {
-      title: "Beste Platform voor Schrijvers 2025: Upwork vs Fiverr vs Contently",
+      title: "Beste Platform voor Schrijvers 2026: Upwork vs Fiverr vs Contently",
       description: "Vergelijk Upwork, Fiverr, Contently en WriterAccess voor freelance schrijvers. Ontdek welk platform de beste tarieven en kansen biedt voor writers.",
       keywords: "beste platform schrijvers, freelance schrijven platformen, contentwriters Nederland, upwork voor schrijvers, fiverr schrijven, freelance content platformen",
       openGraph: {
-        title: "Beste Platform voor Schrijvers 2025: Upwork vs Fiverr vs Contently",
+        title: "Beste Platform voor Schrijvers 2026: Upwork vs Fiverr vs Contently",
         description: "Vergelijk Upwork, Fiverr, Contently en WriterAccess. Vind het beste platform voor freelance schrijvers.",
         url: pageUrl,
         siteName: 'SkillLinkup',
-        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Beste Platform voor Schrijvers 2025: Upwork vs Fiverr vs Contently' }],
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Beste Platform voor Schrijvers 2026: Upwork vs Fiverr vs Contently' }],
         locale: "nl_NL",
         type: "article",
       },
-      twitter: { card: 'summary_large_image', title: 'Beste Platform voor Schrijvers 2025: Upwork vs Fiverr vs Contently', description: 'Vergelijk Upwork, Fiverr, Contently en WriterAccess. Vind het beste platform voor freelance schrijvers.', images: [`${siteUrl}/images/og/resources-og.png`], creator: '@SkillLinkup', site: '@SkillLinkup' },
+      twitter: { card: 'summary_large_image', title: 'Beste Platform voor Schrijvers 2026: Upwork vs Fiverr vs Contently', description: 'Vergelijk Upwork, Fiverr, Contently en WriterAccess. Vind het beste platform voor freelance schrijvers.', images: [`${siteUrl}/images/og/resources-og.png`], creator: '@SkillLinkup', site: '@SkillLinkup' },
       alternates: { canonical: pageUrl, languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` } },
       robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 } },
     };
   }
 
   return {
-    title: "Best Freelance Platform for Writers 2025: Detailed Comparison",
+    title: "Best Freelance Platform for Writers 2026: Detailed Comparison",
     description: "Compare Upwork, Fiverr, Contently, and WriterAccess for freelance writing. Discover which platform offers the best rates, projects, and opportunities for writers.",
     keywords: "best platform for writers, freelance writing sites, content writing platform, upwork for writers, fiverr writing",
     openGraph: {
-      title: "Best Freelance Platform for Writers 2025: Detailed Comparison",
+      title: "Best Freelance Platform for Writers 2026: Detailed Comparison",
       description: "Compare Upwork, Fiverr, Contently, and WriterAccess. Find the best platform for freelance writers.",
       url: pageUrl,
       siteName: 'SkillLinkup',
-      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Best Freelance Platform for Writers 2025: Detailed Comparison' }],
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Best Freelance Platform for Writers 2026: Detailed Comparison' }],
       locale: "en_US",
       type: "article",
     },
-    twitter: { card: 'summary_large_image', title: 'Best Freelance Platform for Writers 2025: Detailed Comparison', description: 'Compare Upwork, Fiverr, Contently, and WriterAccess. Find the best platform for freelance writers.', images: [`${siteUrl}/images/og/resources-og.png`], creator: '@SkillLinkup', site: '@SkillLinkup' },
+    twitter: { card: 'summary_large_image', title: 'Best Freelance Platform for Writers 2026: Detailed Comparison', description: 'Compare Upwork, Fiverr, Contently, and WriterAccess. Find the best platform for freelance writers.', images: [`${siteUrl}/images/og/resources-og.png`], creator: '@SkillLinkup', site: '@SkillLinkup' },
     alternates: { canonical: pageUrl, languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` } },
     robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 } },
   };
@@ -59,7 +59,7 @@ export default async function BestPlatformWritersPage({ params }: Props) {
   const content = locale === "nl" ? {
     hero: {
       title: "Beste Freelance Platform voor Schrijvers: Uitgebreide Vergelijking",
-      description: "Vergelijk Upwork, Fiverr, Contently en WriterAccess om het platform te vinden dat jouw schrijfinkomsten en carrièregroei in 2025 maximaliseert.",
+      description: "Vergelijk Upwork, Fiverr, Contently en WriterAccess om het platform te vinden dat jouw schrijfinkomsten en carrièregroei in 2026 maximaliseert.",
       cta1: "Bekijk Alle Platforms",
       cta2: "Lees Reviews",
     },
@@ -252,7 +252,7 @@ export default async function BestPlatformWritersPage({ params }: Props) {
       title: "Gerelateerde Platform Vergelijkingen",
       designers: {
         title: "Beste Platform voor Ontwerpers",
-        description: "2025 ontwerpplatform vergelijkingsgids",
+        description: "2026 ontwerpplatform vergelijkingsgids",
       },
       upworkVsFiverr: {
         title: "Upwork vs Fiverr",
@@ -266,7 +266,7 @@ export default async function BestPlatformWritersPage({ params }: Props) {
   } : {
     hero: {
       title: "Best Freelance Platform for Writers: Detailed Comparison",
-      description: "Compare Upwork, Fiverr, Contently, and WriterAccess to find the platform that maximizes your writing income and career growth in 2025.",
+      description: "Compare Upwork, Fiverr, Contently, and WriterAccess to find the platform that maximizes your writing income and career growth in 2026.",
       cta1: "View All Platforms",
       cta2: "Read Reviews",
     },
@@ -459,7 +459,7 @@ export default async function BestPlatformWritersPage({ params }: Props) {
       title: "Related Platform Comparisons",
       designers: {
         title: "Best Platform for Designers",
-        description: "2025 design platform comparison guide",
+        description: "2026 design platform comparison guide",
       },
       upworkVsFiverr: {
         title: "Upwork vs Fiverr",
@@ -476,13 +476,13 @@ export default async function BestPlatformWritersPage({ params }: Props) {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: locale === "nl"
-      ? "Beste Platform voor Schrijvers 2025: Upwork vs Fiverr vs Contently"
-      : "Best Freelance Platform for Writers 2025: Detailed Comparison",
+      ? "Beste Platform voor Schrijvers 2026: Upwork vs Fiverr vs Contently"
+      : "Best Freelance Platform for Writers 2026: Detailed Comparison",
     description: locale === "nl"
       ? "Vergelijk Upwork, Fiverr, Contently en WriterAccess voor freelance schrijvers. Ontdek welk platform de beste tarieven en kansen biedt voor writers."
       : "Compare Upwork, Fiverr, Contently, and WriterAccess for freelance writing. Discover which platform offers the best rates, projects, and opportunities for writers.",
-    datePublished: "2025-01-15",
-    dateModified: "2025-01-15",
+    datePublished: "2026-01-15",
+    dateModified: "2026-01-15",
     author: {
       "@type": "Organization",
       name: "SkillLinkup",

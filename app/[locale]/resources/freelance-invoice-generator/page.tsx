@@ -65,7 +65,7 @@ export default async function InvoiceGeneratorPage({ params }: PageProps) {
       name: 'SkillLinkup',
       logo: { '@type': 'ImageObject', url: `${siteUrl}/images/logo/skilllinkup-transparant-rozepunt.webp` },
     },
-    datePublished: '2025-01-15',
+    datePublished: '2026-01-15',
   };
 
   return (
@@ -267,7 +267,7 @@ export default async function InvoiceGeneratorPage({ params }: PageProps) {
                   Date-Based System
                 </h3>
                 <p className="text-gray-700 dark:text-gray-300 mb-4">
-                  Example: INV-2025-001, INV-2025-002
+                  Example: INV-2026-001, INV-2026-002
                 </p>
                 <p className="text-gray-700 dark:text-gray-300 mb-6">
                   Includes year for easy yearly reconciliation. Resets each year.
@@ -432,7 +432,7 @@ export default async function InvoiceGeneratorPage({ params }: PageProps) {
                 </p>
                 <ul className="list-disc pl-6 mb-6 text-gray-700 dark:text-gray-300 space-y-2">
                   <li><strong>Digital folders:</strong> Create folders by year and client</li>
-                  <li><strong>Naming convention:</strong> Use consistent file names like "2025-001-ClientName.pdf"</li>
+                  <li><strong>Naming convention:</strong> Use consistent file names like "2026-001-ClientName.pdf"</li>
                   <li><strong>Backup:</strong> Store copies in cloud storage (Google Drive, Dropbox)</li>
                   <li><strong>Spreadsheet tracker:</strong> Maintain a simple spreadsheet of all invoices with status</li>
                   <li><strong>Retention:</strong> Keep invoices for at least 7 years for tax purposes</li>

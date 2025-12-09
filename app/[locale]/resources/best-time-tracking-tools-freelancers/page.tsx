@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const pageUrl = `${siteUrl}/${locale}/resources/${slug}`;
 
   return {
-    title: 'Best Time Tracking Tools for Freelancers (Free and Paid) 2025',
+    title: 'Best Time Tracking Tools for Freelancers (Free and Paid) 2026',
     description: 'Compare the best time tracking tools for freelancers. Find free and paid options with features like invoicing integration, project tracking, and detailed reporting.',
     keywords: 'time tracking, freelance timer, billable hours, time tracker app, productivity tools',
     openGraph: {
@@ -41,7 +41,7 @@ export default async function TimeTrackingToolsPage({ params }: PageProps) {
   const articleSchema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    headline: 'Best Time Tracking Tools for Freelancers (Free and Paid) 2025',
+    headline: 'Best Time Tracking Tools for Freelancers (Free and Paid) 2026',
     description: 'Compare the best time tracking tools for freelancers.',
     author: { '@type': 'Organization', name: 'SkillLinkup' },
     publisher: {
@@ -49,7 +49,7 @@ export default async function TimeTrackingToolsPage({ params }: PageProps) {
       name: 'SkillLinkup',
       logo: { '@type': 'ImageObject', url: `${siteUrl}/images/logo/skilllinkup-transparant-rozepunt.webp` },
     },
-    datePublished: '2025-01-15',
+    datePublished: '2026-01-15',
   };
 
   return (

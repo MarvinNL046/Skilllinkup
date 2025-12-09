@@ -18,11 +18,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (locale === "nl") {
     return {
-      title: "Freelancer.com of Guru 2025: Functie-voor-functie Vergelijking",
+      title: "Freelancer.com of Guru 2026: Functie-voor-functie Vergelijking",
       description: "Vergelijk Freelancer.com en Guru naast elkaar. Gedetailleerde analyse van kosten, SafePay, WorkRooms, en welk platform betere waarde biedt voor freelancers.",
       keywords: "freelancer.com of guru, freelance platforms vergelijken, guru workrooms, freelancer safepay, beste freelance site",
       openGraph: {
-        title: "Freelancer.com of Guru 2025: Functie-voor-functie Vergelijking",
+        title: "Freelancer.com of Guru 2026: Functie-voor-functie Vergelijking",
         description: "Vergelijk Freelancer.com en Guru: kosten, SafePay, WorkRooms. Welk platform biedt de beste waarde?",
         url: pageUrl,
         siteName: 'SkillLinkup',
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       },
       twitter: {
         card: 'summary_large_image',
-        title: "Freelancer.com of Guru 2025: Functie-voor-functie Vergelijking",
+        title: "Freelancer.com of Guru 2026: Functie-voor-functie Vergelijking",
         description: "Vergelijk Freelancer.com en Guru naast elkaar. Gedetailleerde analyse van kosten, SafePay, WorkRooms.",
         images: [`${siteUrl}/images/og/resources-og.png`],
         creator: '@SkillLinkup',
@@ -50,11 +50,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: "Freelancer.com vs Guru 2025: Feature-by-Feature Comparison",
+    title: "Freelancer.com vs Guru 2026: Feature-by-Feature Comparison",
     description: "Compare Freelancer.com and Guru side-by-side. Detailed analysis of fees, SafePay, WorkRooms, and which platform offers better value for freelancers.",
     keywords: "freelancer.com vs guru, freelance platform comparison, guru workrooms, freelancer safepay, best freelance site",
     openGraph: {
-      title: "Freelancer.com vs Guru 2025: Feature-by-Feature Comparison",
+      title: "Freelancer.com vs Guru 2026: Feature-by-Feature Comparison",
       description: "Compare Freelancer.com and Guru: fees, SafePay, WorkRooms. Which platform offers better value?",
       url: pageUrl,
       siteName: 'SkillLinkup',
@@ -64,7 +64,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     twitter: {
       card: 'summary_large_image',
-      title: "Freelancer.com vs Guru 2025: Feature-by-Feature Comparison",
+      title: "Freelancer.com vs Guru 2026: Feature-by-Feature Comparison",
       description: "Compare Freelancer.com and Guru side-by-side. Detailed analysis of fees, SafePay, WorkRooms.",
       images: [`${siteUrl}/images/og/resources-og.png`],
       creator: '@SkillLinkup',
@@ -88,7 +88,7 @@ export default async function FreelancerVsGuruPage({ params }: PageProps) {
     en: {
       hero: {
         title: "Freelancer.com vs. Guru: Feature-by-Feature Comparison",
-        subtitle: "Compare two veteran freelance platforms to determine which offers better fees, project management tools, and earning potential in 2025.",
+        subtitle: "Compare two veteran freelance platforms to determine which offers better fees, project management tools, and earning potential in 2026.",
         viewPlatforms: "View All Platforms",
         readReviews: "Read Reviews"
       },
@@ -257,7 +257,7 @@ export default async function FreelancerVsGuruPage({ params }: PageProps) {
         upwork: "Upwork vs Fiverr",
         upworkDesc: "Compare the two largest platforms",
         designers: "Best Platform for Designers",
-        designersDesc: "2025 design platform comparison",
+        designersDesc: "2026 design platform comparison",
         tools: "Freelance Tools",
         toolsDesc: "Essential tools for freelancers"
       }
@@ -265,7 +265,7 @@ export default async function FreelancerVsGuruPage({ params }: PageProps) {
     nl: {
       hero: {
         title: "Freelancer.com of Guru: Functie-voor-functie Vergelijking",
-        subtitle: "Vergelijk twee gevestigde freelance platforms om te bepalen welke betere kosten, projectmanagement tools en verdieningsmogelijkheden biedt in 2025.",
+        subtitle: "Vergelijk twee gevestigde freelance platforms om te bepalen welke betere kosten, projectmanagement tools en verdieningsmogelijkheden biedt in 2026.",
         viewPlatforms: "Alle Platforms Bekijken",
         readReviews: "Reviews Lezen"
       },
@@ -434,7 +434,7 @@ export default async function FreelancerVsGuruPage({ params }: PageProps) {
         upwork: "Upwork of Fiverr",
         upworkDesc: "Vergelijk de twee grootste platforms",
         designers: "Best Platform voor Ontwerpers",
-        designersDesc: "2025 ontwerp platform vergelijking",
+        designersDesc: "2026 ontwerp platform vergelijking",
         tools: "Freelance Tools",
         toolsDesc: "Essentiële tools voor freelancers"
       }
@@ -447,13 +447,13 @@ export default async function FreelancerVsGuruPage({ params }: PageProps) {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: locale === "nl"
-      ? "Freelancer.com of Guru 2025: Functie-voor-functie Vergelijking"
-      : "Freelancer.com vs Guru 2025: Feature-by-Feature Comparison",
+      ? "Freelancer.com of Guru 2026: Functie-voor-functie Vergelijking"
+      : "Freelancer.com vs Guru 2026: Feature-by-Feature Comparison",
     description: locale === "nl"
       ? "Vergelijk Freelancer.com en Guru naast elkaar. Gedetailleerde analyse van kosten, SafePay, WorkRooms, en welk platform betere waarde biedt voor freelancers."
       : "Compare Freelancer.com and Guru side-by-side. Detailed analysis of fees, SafePay, WorkRooms, and which platform offers better value for freelancers.",
-    datePublished: "2025-01-15",
-    dateModified: "2025-01-15",
+    datePublished: "2026-01-15",
+    dateModified: "2026-01-15",
     author: {
       "@type": "Organization",
       name: "SkillLinkup",

@@ -115,13 +115,13 @@ export default async function ChooseBestFreelancePlatform({ params }: { params: 
   const content = locale === 'nl' ? {
     hero: {
       h1: 'Beste Freelance Platform Kiezen voor Jouw Ervaringsniveau',
-      intro: 'Vind het perfecte freelance platform dat bij jouw ervaring, vaardigheden en inkomstensdoelen past in 2025',
+      intro: 'Vind het perfecte freelance platform dat bij jouw ervaring, vaardigheden en inkomstensdoelen past in 2026',
     },
     jsonLd: {
       headline: 'Beste Freelance Platform Kiezen voor Jouw Ervaringsniveau',
       description: 'Uitgebreide gids om het juiste freelance platform te kiezen op basis van je ervaringsniveau, vaardigheden en carrièredoelen.',
     },
-    intro: 'Het kiezen van het juiste freelance platform kan je freelance carrière maken of breken. Met meer dan 25 platformen beschikbaar in 2025, elk gericht op verschillende ervaringsniveaus en specialisaties, kan de beslissing overweldigend aanvoelen. Deze uitgebreide gids helpt je het perfecte platform te selecteren op basis van je huidige ervaringsniveau, ervaring en carrière-aspiraties.',
+    intro: 'Het kiezen van het juiste freelance platform kan je freelance carrière maken of breken. Met meer dan 25 platformen beschikbaar in 2026, elk gericht op verschillende ervaringsniveaus en specialisaties, kan de beslissing overweldigend aanvoelen. Deze uitgebreide gids helpt je het perfecte platform te selecteren op basis van je huidige ervaringsniveau, ervaring en carrière-aspiraties.',
     cta1: {
       title: 'Klaar om Jouw Perfecte Platform te Vinden?',
       text: 'Vergelijk 25+ freelance platformen naast elkaar. Bekijk tarieven, betalingsvoorwaarden en gebruikersreviews op één plek.',
@@ -222,13 +222,13 @@ export default async function ChooseBestFreelancePlatform({ params }: { params: 
   } : {
     hero: {
       h1: 'How to Choose the Best Freelance Platform for Your Skill Level',
-      intro: 'Find the perfect freelance marketplace that matches your experience, skills, and income goals in 2025',
+      intro: 'Find the perfect freelance marketplace that matches your experience, skills, and income goals in 2026',
     },
     jsonLd: {
       headline: 'How to Choose the Best Freelance Platform for Your Skill Level',
       description: 'Comprehensive guide to choosing the right freelance platform based on your experience level, skills, and career goals.',
     },
-    intro: 'Choosing the right freelance platform can make or break your freelancing career. With over 25 platforms available in 2025, each catering to different skill levels and specializations, the decision might feel overwhelming. This comprehensive guide will help you select the perfect platform based on your current skill level, experience, and career aspirations.',
+    intro: 'Choosing the right freelance platform can make or break your freelancing career. With over 25 platforms available in 2026, each catering to different skill levels and specializations, the decision might feel overwhelming. This comprehensive guide will help you select the perfect platform based on your current skill level, experience, and career aspirations.',
     cta1: {
       title: 'Ready to Find Your Perfect Platform?',
       text: 'Compare 25+ freelance platforms side-by-side. See fees, payment terms, and user reviews all in one place.',
@@ -345,8 +345,8 @@ export default async function ChooseBestFreelancePlatform({ params }: { params: 
         url: 'https://skilllinkup.com/images/logo/skilllinkup-transparant-rozepunt.webp',
       },
     },
-    datePublished: '2025-01-15',
-    dateModified: '2025-01-15',
+    datePublished: '2026-01-15',
+    dateModified: '2026-01-15',
   };
 
   return (

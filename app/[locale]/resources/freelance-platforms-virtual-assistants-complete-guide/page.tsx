@@ -18,21 +18,21 @@ export async function generateMetadata({
 
   if (locale === 'nl') {
     return {
-      title: 'Freelance Platforms voor Virtual Assistants: Volledige Gids 2025',
+      title: 'Freelance Platforms voor Virtual Assistants: Volledige Gids 2026',
       description: 'Vind de beste freelance platforms voor virtuele assistenten in Nederland. Vergelijk tarieven, klanttypes en ontdek marktplaatsen met stabiel werk voor VA professionals.',
       keywords: 'virtueel assistent platforms, VA opdrachten Nederland, administratieve freelance werk, remote assistent werk',
       openGraph: {
-        title: 'Beste Freelance Platforms voor Virtual Assistants 2025',
+        title: 'Beste Freelance Platforms voor Virtual Assistants 2026',
         description: 'Complete gids voor het vinden van premium VA opdrachten. Vergelijk platforms, tarieven en bouw een bloeiende virtueel assistent carrière.',
         url: pageUrl,
         siteName: 'SkillLinkup',
-        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Beste Freelance Platforms voor Virtual Assistants 2025' }],
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Beste Freelance Platforms voor Virtual Assistants 2026' }],
         locale: 'nl_NL',
         type: 'article',
       },
       twitter: {
         card: 'summary_large_image',
-        title: 'Beste Freelance Platforms voor Virtual Assistants 2025',
+        title: 'Beste Freelance Platforms voor Virtual Assistants 2026',
         description: 'Complete gids voor het vinden van premium VA opdrachten. Vergelijk platforms, tarieven en bouw een bloeiende virtueel assistent carrière.',
         images: [`${siteUrl}/images/og/resources-og.png`],
         creator: '@SkillLinkup',
@@ -51,20 +51,20 @@ export async function generateMetadata({
 
   return {
     title: 'Freelance Platforms for Virtual Assistants: Complete Guide',
-    description: 'Find the best freelance platforms for virtual assistants in 2025. Compare rates, client types, and discover marketplaces offering steady work for VA professionals.',
+    description: 'Find the best freelance platforms for virtual assistants in 2026. Compare rates, client types, and discover marketplaces offering steady work for VA professionals.',
     keywords: 'virtual assistant platforms, VA freelance sites, remote assistant jobs, executive assistant marketplace',
     openGraph: {
-      title: 'Best Freelance Platforms for Virtual Assistants 2025',
+      title: 'Best Freelance Platforms for Virtual Assistants 2026',
       description: 'Complete guide to finding premium VA opportunities. Compare platforms, rates, and build a thriving virtual assistant career.',
       url: pageUrl,
       siteName: 'SkillLinkup',
-      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Best Freelance Platforms for Virtual Assistants 2025' }],
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Best Freelance Platforms for Virtual Assistants 2026' }],
       locale: 'en_US',
       type: 'article',
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Best Freelance Platforms for Virtual Assistants 2025',
+      title: 'Best Freelance Platforms for Virtual Assistants 2026',
       description: 'Complete guide to finding premium VA opportunities. Compare platforms, rates, and build a thriving virtual assistant career.',
       images: [`${siteUrl}/images/og/resources-og.png`],
       creator: '@SkillLinkup',
@@ -97,12 +97,12 @@ export default async function FreelancePlatformsVirtualAssistantsCompleteGuide({
     },
     intro: {
       title: 'Waarom Platform Keuze Belangrijk is voor Virtual Assistants',
-      p1: 'De virtueel assistent industrie is geëxplodeerd in 2025, met bedrijven wereldwijd op zoek naar gekwalificeerde remote ondersteuningsprofessionals. Echter, niet alle freelance platforms bedienen VAs even goed. Sommige behandelen virtuele assistenten als goedkope arbeid en bieden armzalige lonen voor geschoold werk. Andere erkennen VAs als waardevolle professionals die eerlijke compensatie, stabiele klanten en kansen voor specialisatie en carrièregroei verdienen.',
+      p1: 'De virtueel assistent industrie is geëxplodeerd in 2026, met bedrijven wereldwijd op zoek naar gekwalificeerde remote ondersteuningsprofessionals. Echter, niet alle freelance platforms bedienen VAs even goed. Sommige behandelen virtuele assistenten als goedkope arbeid en bieden armzalige lonen voor geschoold werk. Andere erkennen VAs als waardevolle professionals die eerlijke compensatie, stabiele klanten en kansen voor specialisatie en carrièregroei verdienen.',
       p2: 'Deze uitgebreide gids onderzoekt de beste freelance platforms voor virtuele assistenten in alle specialisaties: algemene administratieve ondersteuning, executive assistentie, klantenservice, social media management, projectcoördinatie en gespecialiseerde VA niches. We vergelijken betalingsstructuren, klantkwaliteit, werkstabiliteit en de ondersteuningssystemen die VAs helpen duurzame carrières op te bouwen in plaats van alleen van project naar project te overleven.',
       stat1: '250+ Platforms',
       stat1Desc: 'Vergeleken voor VA mogelijkheden',
       stat2: '€15-75/uur',
-      stat2Desc: 'Typisch VA tarief bereik in 2025',
+      stat2Desc: 'Typisch VA tarief bereik in 2026',
       stat3: 'Langdurige Klanten',
       stat3Desc: 'Stabiel werk is het doel',
     },
@@ -159,9 +159,9 @@ export default async function FreelancePlatformsVirtualAssistantsCompleteGuide({
       },
     },
     pricing: {
-      title: 'Virtual Assistant Tarief Structuren in 2025',
+      title: 'Virtual Assistant Tarief Structuren in 2026',
       intro: 'Virtual assistant tarieven variëren aanzienlijk op basis van specialisatie, ervaring, aangeboden diensten en klantindustrie. Het begrijpen van markttarieven helpt je competitief te prijzen terwijl je eerlijke compensatie voor je expertise en tijd waarborgt.',
-      subtitle: '2025 VA Tarief Benchmarks per Specialisatie',
+      subtitle: '2026 VA Tarief Benchmarks per Specialisatie',
       rate1: 'Algemene Administratieve Ondersteuning: €15-30/uur voor e-mailbeheer, planning, data-invoer, basisonderzoek',
       rate2: 'Executive Assistentie: €35-75/uur voor C-level ondersteuning, strategische coördinatie, complexe planning',
       rate3: 'Gespecialiseerde VAs: €30-60/uur voor social media management, e-commerce ondersteuning, boekhouding',
@@ -249,12 +249,12 @@ export default async function FreelancePlatformsVirtualAssistantsCompleteGuide({
     },
     intro: {
       title: 'Why Platform Choice Matters for Virtual Assistants',
-      p1: 'The virtual assistant industry has exploded in 2025, with businesses worldwide seeking skilled remote support professionals. However, not all freelance platforms serve VAs equally well. Some treat virtual assistants as commodity labor, offering poverty wages for skilled work. Others recognize VAs as valuable professionals deserving fair compensation, steady clients, and opportunities for specialization and career growth.',
+      p1: 'The virtual assistant industry has exploded in 2026, with businesses worldwide seeking skilled remote support professionals. However, not all freelance platforms serve VAs equally well. Some treat virtual assistants as commodity labor, offering poverty wages for skilled work. Others recognize VAs as valuable professionals deserving fair compensation, steady clients, and opportunities for specialization and career growth.',
       p2: 'This comprehensive guide examines the best freelance platforms for virtual assistants across all specializations: general administrative support, executive assistance, customer service, social media management, project coordination, and specialized VA niches. We\'ll compare payment structures, client quality, work stability, and the support systems that help VAs build sustainable careers rather than just surviving project-to-project.',
       stat1: '250+ Platforms',
       stat1Desc: 'Compared for VA opportunities',
       stat2: '$15-75/hr',
-      stat2Desc: 'Typical VA rate range in 2025',
+      stat2Desc: 'Typical VA rate range in 2026',
       stat3: 'Long-Term Clients',
       stat3Desc: 'Steady work is the goal',
     },
@@ -311,9 +311,9 @@ export default async function FreelancePlatformsVirtualAssistantsCompleteGuide({
       },
     },
     pricing: {
-      title: 'Virtual Assistant Rate Structures in 2025',
+      title: 'Virtual Assistant Rate Structures in 2026',
       intro: 'Virtual assistant rates vary significantly based on specialization, experience, services offered, and client industry. Understanding market rates helps you price competitively while ensuring fair compensation for your expertise and time.',
-      subtitle: '2025 VA Rate Benchmarks by Specialization',
+      subtitle: '2026 VA Rate Benchmarks by Specialization',
       rate1: 'General Administrative Support: $15-30/hour for email management, scheduling, data entry, basic research',
       rate2: 'Executive Assistance: $35-75/hour for C-level support, strategic coordination, complex scheduling',
       rate3: 'Specialized VAs: $30-60/hour for social media management, e-commerce support, bookkeeping',
@@ -451,8 +451,8 @@ export default async function FreelancePlatformsVirtualAssistantsCompleteGuide({
               "@type": "Organization",
               "name": "SkillLinkup"
             },
-            "datePublished": "2025-01-15",
-            "dateModified": "2025-01-15"
+            "datePublished": "2026-01-15",
+            "dateModified": "2026-01-15"
           })
         }} />
 

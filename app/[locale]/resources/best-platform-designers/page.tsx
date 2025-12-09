@@ -16,21 +16,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (locale === "nl") {
     return {
-      title: "Beste Freelance Platform voor Designers 2025: Volledige Gids",
+      title: "Beste Freelance Platform voor Designers 2026: Volledige Gids",
       description: "Vergelijk Upwork, 99designs, Dribbble en Behance voor freelance designwerk. Vind het platform met de beste tarieven, projecten en portfolio exposure in Nederland.",
       keywords: "beste platform designers, freelance design sites, grafisch ontwerp platform, UI/UX freelance, 99designs vs upwork, design platforms Nederland",
       openGraph: {
-        title: "Beste Freelance Platform voor Designers 2025: Volledige Gids",
+        title: "Beste Freelance Platform voor Designers 2026: Volledige Gids",
         description: "Vergelijk Upwork, 99designs, Dribbble en Behance voor freelance designwerk. Vind het beste platform voor designers.",
         url: pageUrl,
         siteName: 'SkillLinkup',
-        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Beste Freelance Platform voor Designers 2025' }],
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Beste Freelance Platform voor Designers 2026' }],
         type: "article",
         locale: "nl_NL",
       },
       twitter: {
         card: 'summary_large_image',
-        title: 'Beste Freelance Platform voor Designers 2025',
+        title: 'Beste Freelance Platform voor Designers 2026',
         description: 'Vergelijk Upwork, 99designs, Dribbble en Behance voor freelance designwerk.',
         images: [`${siteUrl}/images/og/resources-og.png`],
         creator: '@SkillLinkup',
@@ -49,21 +49,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: "Best Freelance Platform for Designers 2025: Complete Guide",
+    title: "Best Freelance Platform for Designers 2026: Complete Guide",
     description: "Compare Upwork, 99designs, Dribbble, and Behance for freelance design work. Find the platform that offers the best rates, projects, and portfolio exposure.",
     keywords: "best platform for designers, freelance design sites, graphic design platform, UI/UX freelance, 99designs vs upwork",
     openGraph: {
-      title: "Best Freelance Platform for Designers 2025: Complete Guide",
+      title: "Best Freelance Platform for Designers 2026: Complete Guide",
       description: "Compare Upwork, 99designs, Dribbble, and Behance for freelance design work. Find the best platform for designers.",
       url: pageUrl,
       siteName: 'SkillLinkup',
-      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Best Freelance Platform for Designers 2025' }],
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Best Freelance Platform for Designers 2026' }],
       type: "article",
       locale: "en_US",
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Best Freelance Platform for Designers 2025',
+      title: 'Best Freelance Platform for Designers 2026',
       description: 'Compare Upwork, 99designs, Dribbble, and Behance for freelance design work.',
       images: [`${siteUrl}/images/og/resources-og.png`],
       creator: '@SkillLinkup',
@@ -86,7 +86,7 @@ export default async function BestPlatformDesignersPage({ params }: Props) {
 
   const content = locale === "nl" ? {
     hero: {
-      title: "Beste Freelance Platform voor Designers: 2025 Vergelijkingsgids",
+      title: "Beste Freelance Platform voor Designers: 2026 Vergelijkingsgids",
       description: "Vergelijk Upwork, 99designs, Dribbble, Behance en Toptal om het platform te vinden dat jouw design-inkomen maximaliseert en jouw creatieve portfolio onder de aandacht brengt.",
       cta1: "Bekijk Alle Platforms",
       cta2: "Lees Reviews"
@@ -335,7 +335,7 @@ export default async function BestPlatformDesignersPage({ params }: Props) {
     }
   } : {
     hero: {
-      title: "Best Freelance Platform for Designers: 2025 Comparison Guide",
+      title: "Best Freelance Platform for Designers: 2026 Comparison Guide",
       description: "Compare Upwork, 99designs, Dribbble, Behance, and Toptal to find the platform that maximizes your design income and showcases your creative portfolio.",
       cta1: "View All Platforms",
       cta2: "Read Reviews"
@@ -588,13 +588,13 @@ export default async function BestPlatformDesignersPage({ params }: Props) {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: locale === "nl"
-      ? "Beste Freelance Platform voor Designers 2025: Volledige Gids"
-      : "Best Freelance Platform for Designers 2025: Complete Guide",
+      ? "Beste Freelance Platform voor Designers 2026: Volledige Gids"
+      : "Best Freelance Platform for Designers 2026: Complete Guide",
     description: locale === "nl"
       ? "Vergelijk Upwork, 99designs, Dribbble en Behance voor freelance designwerk. Vind het platform met de beste tarieven, projecten en portfolio exposure."
       : "Compare Upwork, 99designs, Dribbble, and Behance for freelance design work. Find the platform that offers the best rates, projects, and portfolio exposure.",
-    datePublished: "2025-01-15",
-    dateModified: "2025-01-15",
+    datePublished: "2026-01-15",
+    dateModified: "2026-01-15",
     author: {
       "@type": "Organization",
       name: "SkillLinkup",

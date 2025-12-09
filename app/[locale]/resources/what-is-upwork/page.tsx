@@ -120,12 +120,12 @@ export default async function WhatIsUpworkPage({ params }: Props) {
     category6: "Boekhouding & Financiën",
     category6Jobs: "Boekhouding, financiële planning, belastingvoorbereiding, bedrijfsanalyse, Excel/spreadsheet werk",
     feeStructureTitle: "Hoeveel Kost Upwork? (Tariefstructuur Uitgelegd)",
-    freelancerFeesTitle: "Tarieven voor Freelancers (Update Mei 2025)",
+    freelancerFeesTitle: "Tarieven voor Freelancers (Update Mei 2026)",
     freelancerFeesIntro: "Upwork gebruikt nu een variabel servicetarief van 0% tot 15% gebaseerd op je activiteit en inkomsten:",
     feeFirst500: "Variabel tariefstructuur:",
     feeNext500: "Freelancer servicetarief:",
     feeAbove10k: "Op basis van prestaties:",
-    feeExample: "Let op: Tariefstructuur Gewijzigd in Mei 2025",
+    feeExample: "Let op: Tariefstructuur Gewijzigd in Mei 2026",
     feeExampleText: "Upwork gebruikt nu een variabel 0-15% tarief gebaseerd op je activiteit. Het oude gestapelde systeem (hieronder ter referentie) is niet meer van toepassing:",
     feeCalc1: "OUD: Eerste €500 × 20% =",
     feeCalc2: "OUD: Volgende €9.500 × 10% =",
@@ -139,7 +139,7 @@ export default async function WhatIsUpworkPage({ params }: Props) {
     costMembershipText: "€49,99/maand voor extra connects, verhoogde zichtbaarheid, exclusieve zoekmogelijkheden",
     costWithdrawal: "Opnametarieven:",
     costWithdrawalText: "Gratis eerste opname/maand, daarna €1-€30 afhankelijk van methode",
-    clientCostsTitle: "Kosten voor Klanten (Update Mei 2025)",
+    clientCostsTitle: "Kosten voor Klanten (Update Mei 2026)",
     clientCostsText: "Klanten betalen een marktplaatstarief tot 7,99% boven op wat ze aan freelancers betalen. Het exacte tarief hangt af van hun uitgaven en accounttype. Betalingsbescherming is inbegrepen voor uurlooncontracten met Upwork's time tracking tool.",
     prosConsTitle: "Voordelen & Nadelen van Upwork",
     prosTitle: "Voordelen",
@@ -267,12 +267,12 @@ export default async function WhatIsUpworkPage({ params }: Props) {
     category6: "Accounting & Finance",
     category6Jobs: "Bookkeeping, financial planning, tax preparation, business analysis, Excel/spreadsheet work",
     feeStructureTitle: "How Much Does Upwork Cost? (Fee Structure Explained)",
-    freelancerFeesTitle: "Fees for Freelancers (Updated May 2025)",
+    freelancerFeesTitle: "Fees for Freelancers (Updated May 2026)",
     freelancerFeesIntro: "Upwork now uses a variable service fee ranging from 0% to 15% based on your activity and earnings:",
     feeFirst500: "Variable fee structure:",
     feeNext500: "Freelancer service fee:",
     feeAbove10k: "Based on performance:",
-    feeExample: "Note: Fee Structure Changed in May 2025",
+    feeExample: "Note: Fee Structure Changed in May 2026",
     feeExampleText: "Upwork now uses a variable 0-15% fee based on your activity. The old tiered system (shown below for reference) no longer applies:",
     feeCalc1: "OLD: First $500 × 20% =",
     feeCalc2: "OLD: Next $9,500 × 10% =",
@@ -286,7 +286,7 @@ export default async function WhatIsUpworkPage({ params }: Props) {
     costMembershipText: "$49.99/month for extra connects, boosted visibility, exclusive search options",
     costWithdrawal: "Withdrawal Fees:",
     costWithdrawalText: "Free first withdrawal/month, then $1-$30 depending on method",
-    clientCostsTitle: "Costs for Clients (Updated May 2025)",
+    clientCostsTitle: "Costs for Clients (Updated May 2026)",
     clientCostsText: "Clients pay a marketplace fee that ranges up to 7.99% on top of what they pay freelancers. The exact fee depends on their spending and account type. Payment protection is included for hourly contracts with Upwork's time tracking tool.",
     prosConsTitle: "Pros & Cons of Upwork",
     prosTitle: "Pros",
@@ -395,8 +395,8 @@ export default async function WhatIsUpworkPage({ params }: Props) {
         "url": "https://skilllinkup.com/images/logo/skilllinkup-transparant-rozepunt.webp"
       }
     },
-    "datePublished": "2025-01-25",
-    "dateModified": "2025-11-25"
+    "datePublished": "2026-01-25",
+    "dateModified": "2026-11-25"
   };
 
   const currencySymbol = locale === 'nl' ? '€' : '$';

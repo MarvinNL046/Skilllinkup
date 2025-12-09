@@ -201,8 +201,8 @@ export default async function IsToptalLegitPage({ params }: Props) {
     concern5Answer: "JA - Toptal geeft minimale details waarom je werd afgewezen. Dit is frustrerend maar standaardpraktijk in hoogvolume screening. Niet scam, gewoon frustrerende beleid.",
     knownIssues: "Bekende Problemen & Juridische Controverses",
     knownIssuesIntro: "Hoewel Toptal legitiem is, zijn er enkele juridische controverses geweest:",
-    lawsuit2025: "2025 Rechtszaak - Denis Grosz 'Takedown Plot'",
-    lawsuit2025Text: "In 2025 oordeelde een jury dat Denis Grosz een 'takedown plot' tegen Toptal had georkestreerd. Deze rechtszaak bevestigt Toptal's legitimiteit - een scam zou geen juridische actie ondernemen.",
+    lawsuit2026: "2026 Rechtszaak - Denis Grosz 'Takedown Plot'",
+    lawsuit2026Text: "In 2026 oordeelde een jury dat Denis Grosz een 'takedown plot' tegen Toptal had georkestreerd. Deze rechtszaak bevestigt Toptal's legitimiteit - een scam zou geen juridische actie ondernemen.",
     lawsuitAndela: "Rechtszaak vs Andela",
     lawsuitAndelaText: "Toptal heeft handelsgeheimbeschuldigingen ingediend tegen concurrent Andela. Dit is typische zakelijke geschillen, geen bewijs van illegitimiteit.",
     qualityVariance: "Prijzen & Kwaliteitsklachten",
@@ -353,8 +353,8 @@ export default async function IsToptalLegitPage({ params }: Props) {
     concern5Answer: "YES - Toptal provides minimal details on why you were rejected. This is frustrating but standard practice in high-volume screening. Not scam, just frustrating policy.",
     knownIssues: "Known Issues & Legal Controversies",
     knownIssuesIntro: "While Toptal is legitimate, there have been some legal controversies:",
-    lawsuit2025: "2025 Lawsuit - Denis Grosz 'Takedown Plot'",
-    lawsuit2025Text: "In 2025, a jury found that Denis Grosz orchestrated a 'takedown plot' against Toptal. This lawsuit confirms Toptal's legitimacy - a scam wouldn't pursue legal action.",
+    lawsuit2026: "2026 Lawsuit - Denis Grosz 'Takedown Plot'",
+    lawsuit2026Text: "In 2026, a jury found that Denis Grosz orchestrated a 'takedown plot' against Toptal. This lawsuit confirms Toptal's legitimacy - a scam wouldn't pursue legal action.",
     lawsuitAndela: "Lawsuit vs Andela",
     lawsuitAndelaText: "Toptal filed trade secret allegations against competitor Andela. This is typical business litigation, not evidence of illegitimacy.",
     qualityVariance: "Pricing & Quality Complaints",
@@ -405,8 +405,8 @@ export default async function IsToptalLegitPage({ params }: Props) {
         "url": "https://skilllinkup.com/images/logo/skilllinkup-transparant-rozepunt.webp"
       }
     },
-    "datePublished": "2025-01-25",
-    "dateModified": "2025-01-25"
+    "datePublished": "2026-01-25",
+    "dateModified": "2026-01-25"
   };
 
   return (
@@ -784,10 +784,10 @@ export default async function IsToptalLegitPage({ params }: Props) {
                   <div className="space-y-6">
                     <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-6 border-l-4 border-blue-500">
                       <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white mb-3">
-                        {content.lawsuit2025}
+                        {content.lawsuit2026}
                       </h3>
                       <p className="text-sm text-gray-700 dark:text-gray-300">
-                        {content.lawsuit2025Text}
+                        {content.lawsuit2026Text}
                       </p>
                     </div>
 

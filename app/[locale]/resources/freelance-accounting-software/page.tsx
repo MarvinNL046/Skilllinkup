@@ -79,7 +79,7 @@ export default async function AccountingSoftwarePage({ params }: PageProps) {
       name: 'SkillLinkup',
       logo: { '@type': 'ImageObject', url: `${siteUrl}/images/logo/skilllinkup-transparant-rozepunt.webp` },
     },
-    datePublished: '2025-01-15',
+    datePublished: '2026-01-15',
   };
 
   return (

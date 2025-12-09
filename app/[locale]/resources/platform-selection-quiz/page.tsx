@@ -98,7 +98,7 @@ export default async function PlatformSelectionQuizPage({
         { text: '100% gratis' },
       ],
     },
-    intro: 'Met 25+ freelance platforms beschikbaar in 2025, kan het overweldigend zijn om de juiste te kiezen?. Deze gratis, wetenschappelijk onderbouwde quiz analyseert jouw ervaringsniveau, inkomensdoelen, werkvoorkeuren en specialisatie om de 1-3 platforms aan te bevelen die het beste bij jouw unieke situatie passen?. Duurt slechts 2 minuten en geeft direct gepersonaliseerde aanbevelingen?.',
+    intro: 'Met 25+ freelance platforms beschikbaar in 2026, kan het overweldigend zijn om de juiste te kiezen?. Deze gratis, wetenschappelijk onderbouwde quiz analyseert jouw ervaringsniveau, inkomensdoelen, werkvoorkeuren en specialisatie om de 1-3 platforms aan te bevelen die het beste bij jouw unieke situatie passen?. Duurt slechts 2 minuten en geeft direct gepersonaliseerde aanbevelingen?.',
     benefits: {
       title: 'Waarom Deze Quiz?',
       items: [
@@ -349,7 +349,7 @@ export default async function PlatformSelectionQuizPage({
         { text: '100% free' },
       ],
     },
-    intro: 'With 25+ freelance platforms available in 2025, choosing the right one can feel overwhelming?. This free, science-backed quiz analyzes your experience level, income goals, work preferences, and skill specialization to recommend the 1-3 platforms that best match your unique situation?. Takes just 2 minutes and provides instant, personalized recommendations?.',
+    intro: 'With 25+ freelance platforms available in 2026, choosing the right one can feel overwhelming?. This free, science-backed quiz analyzes your experience level, income goals, work preferences, and skill specialization to recommend the 1-3 platforms that best match your unique situation?. Takes just 2 minutes and provides instant, personalized recommendations?.',
     benefits: {
       title: 'Why This Quiz?',
       items: [
@@ -613,8 +613,8 @@ export default async function PlatformSelectionQuizPage({
         url: 'https://skilllinkup?.com/images/logo/skilllinkup-transparant-rozepunt?.webp',
       },
     },
-    datePublished: '2025-01-15',
-    dateModified: '2025-01-15',
+    datePublished: '2026-01-15',
+    dateModified: '2026-01-15',
   };
 
   return (

@@ -22,15 +22,15 @@ export async function generateMetadata({
       description: 'Vind de beste freelance platforms voor grafisch ontwerpers, illustrators en creatieve professionals. Vergelijk portfolio\'s, tarieven en opdrachtgevers op top platforms.',
       keywords: 'freelance grafisch ontwerp platforms, creatieve freelance sites, design marktplaats, illustratie platforms, platforms grafisch ontwerpers, design freelance Nederland, creatieve opdrachten vinden',
       openGraph: {
-        title: 'Top Freelance Platforms voor Grafisch Ontwerpers & Creatieven 2025',
+        title: 'Top Freelance Platforms voor Grafisch Ontwerpers & Creatieven 2026',
         description: 'Ontdek waar top grafisch ontwerpers en creatieve professionals hoogwaardige projecten vinden en bloeiende freelance carrières opbouwen.',
         url: pageUrl,
         siteName: 'SkillLinkup',
-        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Top Freelance Platforms voor Grafisch Ontwerpers & Creatieven 2025' }],
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Top Freelance Platforms voor Grafisch Ontwerpers & Creatieven 2026' }],
         locale: 'nl_NL',
         type: 'article',
       },
-      twitter: { card: 'summary_large_image', title: 'Top Freelance Platforms voor Grafisch Ontwerpers & Creatieven 2025', description: 'Ontdek waar top grafisch ontwerpers en creatieve professionals hoogwaardige projecten vinden en bloeiende freelance carrières opbouwen.', images: [`${siteUrl}/images/og/resources-og.png`], creator: '@SkillLinkup', site: '@SkillLinkup' },
+      twitter: { card: 'summary_large_image', title: 'Top Freelance Platforms voor Grafisch Ontwerpers & Creatieven 2026', description: 'Ontdek waar top grafisch ontwerpers en creatieve professionals hoogwaardige projecten vinden en bloeiende freelance carrières opbouwen.', images: [`${siteUrl}/images/og/resources-og.png`], creator: '@SkillLinkup', site: '@SkillLinkup' },
       alternates: { canonical: pageUrl, languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` } },
       robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 } },
     };
@@ -41,15 +41,15 @@ export async function generateMetadata({
     description: 'Find the best freelance platforms for graphic designers, illustrators, and creative professionals. Compare portfolios, rates, and client quality across top marketplaces.',
     keywords: 'freelance graphic design platforms, creative freelance sites, design marketplace, illustration platforms',
     openGraph: {
-      title: 'Top Freelance Platforms for Graphic Designers & Creatives 2025',
+      title: 'Top Freelance Platforms for Graphic Designers & Creatives 2026',
       description: 'Discover where top graphic designers and creative professionals find high-quality projects and build thriving freelance careers.',
       url: pageUrl,
       siteName: 'SkillLinkup',
-      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Top Freelance Platforms for Graphic Designers & Creatives 2025' }],
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Top Freelance Platforms for Graphic Designers & Creatives 2026' }],
       locale: 'en_US',
       type: 'article',
     },
-    twitter: { card: 'summary_large_image', title: 'Top Freelance Platforms for Graphic Designers & Creatives 2025', description: 'Discover where top graphic designers and creative professionals find high-quality projects and build thriving freelance careers.', images: [`${siteUrl}/images/og/resources-og.png`], creator: '@SkillLinkup', site: '@SkillLinkup' },
+    twitter: { card: 'summary_large_image', title: 'Top Freelance Platforms for Graphic Designers & Creatives 2026', description: 'Discover where top graphic designers and creative professionals find high-quality projects and build thriving freelance careers.', images: [`${siteUrl}/images/og/resources-og.png`], creator: '@SkillLinkup', site: '@SkillLinkup' },
     alternates: { canonical: pageUrl, languages: { 'en': `${siteUrl}/en/resources/${slug}`, 'nl': `${siteUrl}/nl/resources/${slug}` } },
     robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 } },
   };
@@ -71,12 +71,12 @@ export default async function TopFreelancePlatformsGraphicDesignersCreatives({
     },
     intro: {
       title: 'Het Perfecte Platform Vinden voor Jouw Creatieve Werk',
-      p1: 'Als grafisch ontwerper of creatieve professional in 2025 bepaalt jouw keuze van freelance platform je hele carrièretraject. De juiste marktplaats toont jouw artistieke visie, verbindt je met opdrachtgevers die kwaliteitsdesign waarderen, en biedt eerlijke vergoeding voor jouw creatieve expertise. Of je nu gespecialiseerd bent in branding, illustratie, UI/UX design of motion graphics, verschillende platforms bedienen verschillende creatieve niches en opdrachtgevertypes.',
+      p1: 'Als grafisch ontwerper of creatieve professional in 2026 bepaalt jouw keuze van freelance platform je hele carrièretraject. De juiste marktplaats toont jouw artistieke visie, verbindt je met opdrachtgevers die kwaliteitsdesign waarderen, en biedt eerlijke vergoeding voor jouw creatieve expertise. Of je nu gespecialiseerd bent in branding, illustratie, UI/UX design of motion graphics, verschillende platforms bedienen verschillende creatieve niches en opdrachtgevertypes.',
       p2: 'Deze uitgebreide gids verkent de top freelance platforms voor grafisch ontwerpers en creatieve professionals. We vergelijken portfolio presentatieopties, projecttypes, prijsstructuren en de kwaliteit van creatieve briefings die je kunt verwachten. Van platforms die artistieke vrijheid benadrukken tot platforms gericht op commercieel design, we helpen je de marktplaatsen te identificeren die aansluiten bij jouw creatieve stijl en zakelijke doelen.',
       stat1Title: '200+ Platforms',
       stat1Desc: 'Gespecialiseerd voor creatieve professionals',
       stat2Title: '€30-140/uur',
-      stat2Desc: 'Gemiddelde ontwerpertarieven in 2025',
+      stat2Desc: 'Gemiddelde ontwerpertarieven in 2026',
       stat3Title: 'Portfolio Eerst',
       stat3Desc: 'Visuele showcase is het belangrijkst'
     },
@@ -217,12 +217,12 @@ export default async function TopFreelancePlatformsGraphicDesignersCreatives({
     },
     intro: {
       title: 'Finding the Perfect Platform for Your Creative Work',
-      p1: 'As a graphic designer or creative professional in 2025, your freelance platform choice shapes your entire career trajectory. The right marketplace showcases your artistic vision, connects you with clients who appreciate quality design, and provides fair compensation for your creative expertise. Whether you specialize in branding, illustration, UI/UX design, or motion graphics, different platforms cater to different creative niches and client types.',
+      p1: 'As a graphic designer or creative professional in 2026, your freelance platform choice shapes your entire career trajectory. The right marketplace showcases your artistic vision, connects you with clients who appreciate quality design, and provides fair compensation for your creative expertise. Whether you specialize in branding, illustration, UI/UX design, or motion graphics, different platforms cater to different creative niches and client types.',
       p2: 'This comprehensive guide explores the top freelance platforms for graphic designers and creative professionals. We\'ll compare portfolio presentation options, project types, pricing structures, and the quality of creative briefs you can expect. From platforms emphasizing artistic freedom to those focused on commercial design, we\'ll help you identify the marketplaces that align with your creative style and business goals.',
       stat1Title: '200+ Platforms',
       stat1Desc: 'Specialized for creative professionals',
       stat2Title: '$35-150/hr',
-      stat2Desc: 'Average designer rates in 2025',
+      stat2Desc: 'Average designer rates in 2026',
       stat3Title: 'Portfolio First',
       stat3Desc: 'Visual showcase matters most'
     },
@@ -413,8 +413,8 @@ export default async function TopFreelancePlatformsGraphicDesignersCreatives({
               "@type": "Organization",
               "name": "SkillLinkup"
             },
-            "datePublished": "2025-01-15",
-            "dateModified": "2025-01-15"
+            "datePublished": "2026-01-15",
+            "dateModified": "2026-01-15"
           })
         }} />
 

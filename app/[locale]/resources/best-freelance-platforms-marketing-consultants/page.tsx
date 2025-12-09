@@ -14,11 +14,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
   if (locale === 'nl') {
     return {
-      title: 'Beste Freelance Platforms voor Marketing Consultants 2025',
+      title: 'Beste Freelance Platforms voor Marketing Consultants 2026',
       description: 'Ontdek de beste freelance platforms voor marketing consultants en strategen. Vergelijk tarieven, klanttypes en vind marketplaces waar marketing expertise premium tarieven oplevert.',
       keywords: 'marketing consultant platforms, freelance marketing strategie, online marketing ZZP, marketing consultant marketplace',
       openGraph: {
-        title: 'Beste Freelance Platforms voor Marketing Consultants 2025',
+        title: 'Beste Freelance Platforms voor Marketing Consultants 2026',
         description: 'Ontdek premium platforms voor marketing consultants. Bouw een bloeiende consultancy praktijk met hoogwaardige klanten.',
         url: pageUrl,
         siteName: 'SkillLinkup',
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       },
       twitter: {
         card: 'summary_large_image',
-        title: 'Beste Freelance Platforms voor Marketing Consultants 2025',
+        title: 'Beste Freelance Platforms voor Marketing Consultants 2026',
         description: 'Ontdek premium platforms voor marketing consultants.',
         images: [`${siteUrl}/images/og/resources-og.png`],
         creator: '@SkillLinkup',
@@ -46,11 +46,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 
   return {
-    title: 'Best Freelance Platforms for Marketing Consultants 2025',
+    title: 'Best Freelance Platforms for Marketing Consultants 2026',
     description: 'Find top freelance platforms for marketing consultants and strategists. Compare rates, client types, and discover marketplaces where marketing expertise commands premium rates.',
     keywords: 'marketing consultant platforms, freelance marketing strategist, digital marketing freelance, marketing consultant marketplace',
     openGraph: {
-      title: 'Best Freelance Platforms for Marketing Consultants 2025',
+      title: 'Best Freelance Platforms for Marketing Consultants 2026',
       description: 'Discover premium platforms for marketing consultants. Build a thriving consulting practice with high-value clients.',
       url: pageUrl,
       siteName: 'SkillLinkup',
@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Best Freelance Platforms for Marketing Consultants 2025',
+      title: 'Best Freelance Platforms for Marketing Consultants 2026',
       description: 'Discover premium platforms for marketing consultants.',
       images: [`${siteUrl}/images/og/resources-og.png`],
       creator: '@SkillLinkup',
@@ -89,12 +89,12 @@ export default async function BestFreelancePlatformsMarketingConsultants({ param
     },
     intro: {
       title: "Waarom Marketing Consultants Gespecialiseerde Platforms Nodig Hebben",
-      p1: "Marketing consultancy in 2025 is fundamenteel anders dan tactische uitvoering. Als marketing consultant bied je strategische begeleiding, ontwikkel je uitgebreide marketingplannen en lever je meetbare bedrijfsresultaten. Toch behandelen veel freelance platforms marketing consultants als taakuitvoerders, en verbinden ze hen met klanten die goedkope social media posts zoeken in plaats van strategische partnerships. Het juiste platform begrijpt dit onderscheid en verbindt consultants met klanten die strategische expertise waarderen.",
+      p1: "Marketing consultancy in 2026 is fundamenteel anders dan tactische uitvoering. Als marketing consultant bied je strategische begeleiding, ontwikkel je uitgebreide marketingplannen en lever je meetbare bedrijfsresultaten. Toch behandelen veel freelance platforms marketing consultants als taakuitvoerders, en verbinden ze hen met klanten die goedkope social media posts zoeken in plaats van strategische partnerships. Het juiste platform begrijpt dit onderscheid en verbindt consultants met klanten die strategische expertise waarderen.",
       p2: "Deze uitgebreide gids onderzoekt de beste freelance platforms voor marketing consultants in diverse specialisaties: groeistrategie, merkpositionering, digitale marketingstrategie, marketing analytics en optimalisatie, en go-to-market planning. We vergelijken hoe platforms klanten screenen, waarde-gebaseerde prijsstelling ondersteunen, strategische relaties faciliteren en consultants helpen zich te positioneren als experts in plaats van commodity service providers.",
       stat1: "150+ Platforms",
       stat1desc: "Geanalyseerd op consultancy kansen",
       stat2: "€100-500/uur",
-      stat2desc: "Consultancy tariefbereik in 2025",
+      stat2desc: "Consultancy tariefbereik in 2026",
       stat3: "Strategie Eerst",
       stat3desc: "Premium klanten waarderen expertise"
     },
@@ -151,7 +151,7 @@ export default async function BestFreelancePlatformsMarketingConsultants({ param
       }
     },
     pricing: {
-      title: "Marketing Consultant Prijsmodellen in 2025",
+      title: "Marketing Consultant Prijsmodellen in 2026",
       intro: "Marketing consultants hebben meerdere prijsopties naast uurtarieven. De meest succesvolle consultants gebruiken waarde-gebaseerde en project-gebaseerde prijsstelling die hen compenseert voor expertise en resultaten in plaats van geïnvesteerde tijd. Je prijsmodel moet de strategische waarde weerspiegelen die je biedt en de bedrijfsresultaten die je mogelijk maakt.",
       structuresTitle: "Marketing Consultant Prijsstructuren",
       structure1: "Uurconsultancy: €100-300/uur voor mid-level specialisten, €300-500+/uur voor senior strategen en fractional CMOs",
@@ -240,12 +240,12 @@ export default async function BestFreelancePlatformsMarketingConsultants({ param
     },
     intro: {
       title: "Why Marketing Consultants Need Specialized Platforms",
-      p1: "Marketing consulting in 2025 is fundamentally different from tactical execution work. As a marketing consultant, you provide strategic guidance, develop comprehensive marketing plans, and deliver measurable business results. Yet many freelance platforms treat marketing consultants like task executors, connecting them with clients seeking cheap social media posts rather than strategic partnerships. The right platform understands this distinction and connects consultants with clients who value strategic expertise.",
+      p1: "Marketing consulting in 2026 is fundamentally different from tactical execution work. As a marketing consultant, you provide strategic guidance, develop comprehensive marketing plans, and deliver measurable business results. Yet many freelance platforms treat marketing consultants like task executors, connecting them with clients seeking cheap social media posts rather than strategic partnerships. The right platform understands this distinction and connects consultants with clients who value strategic expertise.",
       p2: "This comprehensive guide examines the best freelance platforms for marketing consultants across specializations: growth strategy, brand positioning, digital marketing strategy, marketing analytics and optimization, and go-to-market planning. We'll compare how platforms vet clients, support value-based pricing, facilitate strategic relationships, and help consultants position themselves as experts rather than commodity service providers.",
       stat1: "150+ Platforms",
       stat1desc: "Analyzed for consulting opportunities",
       stat2: "$100-500/hr",
-      stat2desc: "Consulting rate range in 2025",
+      stat2desc: "Consulting rate range in 2026",
       stat3: "Strategy First",
       stat3desc: "Premium clients value expertise"
     },
@@ -302,7 +302,7 @@ export default async function BestFreelancePlatformsMarketingConsultants({ param
       }
     },
     pricing: {
-      title: "Marketing Consultant Pricing Models in 2025",
+      title: "Marketing Consultant Pricing Models in 2026",
       intro: "Marketing consultants have multiple pricing options beyond hourly rates. The most successful consultants use value-based and project-based pricing that compensates them for expertise and results rather than time invested. Your pricing model should reflect the strategic value you provide and the business outcomes you enable.",
       structuresTitle: "Marketing Consultant Pricing Structures",
       structure1: "Hourly Consulting: $100-300/hour for mid-level specialists, $300-500+/hour for senior strategists and fractional CMOs",
@@ -441,8 +441,8 @@ export default async function BestFreelancePlatformsMarketingConsultants({ param
               "@type": "Organization",
               "name": "SkillLinkup"
             },
-            "datePublished": "2025-01-15",
-            "dateModified": "2025-01-15"
+            "datePublished": "2026-01-15",
+            "dateModified": "2026-01-15"
           })
         }} />
 

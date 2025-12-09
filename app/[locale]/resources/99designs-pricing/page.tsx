@@ -16,21 +16,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (locale === "nl") {
     return {
-      title: "99designs Prijzen 2025: Complete Kostengids voor Logo & Design Wedstrijden",
+      title: "99designs Prijzen 2026: Complete Kostengids voor Logo & Design Wedstrijden",
       description: "Gedetailleerde 99designs prijzengids: Bronze €279, Silver €465, Gold €745, Platinum €1.117 voor logo's. Contest vs 1-op-1 projecten, ontwerper uitbetalingen 60-70%, en alternatieven.",
       keywords: "99designs prijzen, 99designs kosten, 99designs logo prijs, 99designs tarieven, design contest pricing, 99designs fees",
       openGraph: {
-        title: "99designs Prijzen 2025: Complete Kostengids voor Logo & Design Wedstrijden",
+        title: "99designs Prijzen 2026: Complete Kostengids voor Logo & Design Wedstrijden",
         description: "Volledige uitsplitsing van 99designs prijzen, wat je krijgt bij elke tier, en hoe het werkt voor ontwerpers en klanten.",
         url: pageUrl,
         siteName: 'SkillLinkup',
-        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: '99designs Prijzen 2025: Complete Kostengids voor Logo & Design Wedstrijden' }],
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: '99designs Prijzen 2026: Complete Kostengids voor Logo & Design Wedstrijden' }],
         locale: 'nl_NL',
         type: "article",
       },
       twitter: {
         card: 'summary_large_image',
-        title: '99designs Prijzen 2025: Complete Kostengids voor Logo & Design Wedstrijden',
+        title: '99designs Prijzen 2026: Complete Kostengids voor Logo & Design Wedstrijden',
         description: 'Gedetailleerde 99designs prijzengids: Bronze €279, Silver €465, Gold €745, Platinum €1.117 voor logos.',
         images: [`${siteUrl}/images/og/resources-og.png`],
         creator: '@SkillLinkup',
@@ -52,21 +52,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: "99designs Pricing 2025: Complete Cost Guide for Logo & Design Contests",
+    title: "99designs Pricing 2026: Complete Cost Guide for Logo & Design Contests",
     description: "Detailed 99designs pricing guide: Bronze $299, Silver $499, Gold $799, Platinum $1,199 for logos. Contest vs 1-to-1 projects, designer payouts 60-70%, and alternatives.",
     keywords: "99designs pricing, 99designs cost, 99designs logo price, 99designs fees, design contest pricing, 99designs rates",
     openGraph: {
-      title: "99designs Pricing 2025: Complete Cost Guide for Logo & Design Contests",
+      title: "99designs Pricing 2026: Complete Cost Guide for Logo & Design Contests",
       description: "Complete breakdown of 99designs pricing, what you get at each tier, and how it works for designers and clients.",
       url: pageUrl,
       siteName: 'SkillLinkup',
-      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: '99designs Pricing 2025: Complete Cost Guide for Logo & Design Contests' }],
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: '99designs Pricing 2026: Complete Cost Guide for Logo & Design Contests' }],
       locale: 'en_US',
       type: "article",
     },
     twitter: {
       card: 'summary_large_image',
-      title: '99designs Pricing 2025: Complete Cost Guide for Logo & Design Contests',
+      title: '99designs Pricing 2026: Complete Cost Guide for Logo & Design Contests',
       description: 'Detailed 99designs pricing guide: Bronze $299, Silver $499, Gold $799, Platinum $1,199 for logos.',
       images: [`${siteUrl}/images/og/resources-og.png`],
       creator: '@SkillLinkup',
@@ -92,7 +92,7 @@ export default async function NinetyNineDesignsPricingPage({ params }: Props) {
 
   const content = locale === "nl" ? {
     badge: "99designs Prijzengids",
-    title: "99designs Prijzen 2025: Complete Kostengids voor Logo & Design Wedstrijden",
+    title: "99designs Prijzen 2026: Complete Kostengids voor Logo & Design Wedstrijden",
     subtitle: "Begrijp de volledige kostenstructuur van 99designs, van Bronze tot Platinum pakketten, ontwerper uitbetalingen, en of design wedstrijden de investering waard zijn.",
     cta1: "Vergelijk Designplatforms",
     cta2: "Bekijk Alternatieven",
@@ -298,7 +298,7 @@ export default async function NinetyNineDesignsPricingPage({ params }: Props) {
     getWeeklyInsights: "Krijg Wekelijkse Inzichten"
   } : {
     badge: "99designs Pricing Guide",
-    title: "99designs Pricing 2025: Complete Cost Guide for Logo & Design Contests",
+    title: "99designs Pricing 2026: Complete Cost Guide for Logo & Design Contests",
     subtitle: "Understand the full cost structure of 99designs, from Bronze to Platinum packages, designer payouts, and whether design contests are worth the investment.",
     cta1: "Compare Design Platforms",
     cta2: "See Alternatives",
@@ -508,8 +508,8 @@ export default async function NinetyNineDesignsPricingPage({ params }: Props) {
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": locale === "nl"
-      ? "99designs Prijzen 2025: Complete Kostengids voor Logo & Design Wedstrijden"
-      : "99designs Pricing 2025: Complete Cost Guide for Logo & Design Contests",
+      ? "99designs Prijzen 2026: Complete Kostengids voor Logo & Design Wedstrijden"
+      : "99designs Pricing 2026: Complete Cost Guide for Logo & Design Contests",
     "description": locale === "nl"
       ? "Volledige uitsplitsing van 99designs prijzen, wat je krijgt bij elke tier, ontwerper uitbetalingen, en of design wedstrijden de investering waard zijn."
       : "Complete breakdown of 99designs pricing, what you get at each tier, designer payouts, and whether design contests are worth the investment.",
@@ -525,8 +525,8 @@ export default async function NinetyNineDesignsPricingPage({ params }: Props) {
         "url": "https://skilllinkup.com/images/logo/skilllinkup-transparant-rozepunt.webp"
       }
     },
-    "datePublished": "2025-01-15",
-    "dateModified": "2025-01-15"
+    "datePublished": "2026-01-15",
+    "dateModified": "2026-01-15"
   };
 
   return (

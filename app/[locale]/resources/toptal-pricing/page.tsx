@@ -16,22 +16,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (locale === 'nl') {
     return {
-      title: "Toptal Kosten 2025: Hoeveel Kost Toptal? Complete Tarievengids",
-      description: "Hoeveel kost Toptal? Complete gids 2025: ontwikkelaars $60-150+/uur, ontwerpers $50-160/uur, 0% kosten voor freelancers, 30-50% client markup, $500 deposit en betaalvoorwaarden.",
+      title: "Toptal Kosten 2026: Hoeveel Kost Toptal? Complete Tarievengids",
+      description: "Hoeveel kost Toptal? Complete gids 2026: ontwikkelaars $60-150+/uur, ontwerpers $50-160/uur, 0% kosten voor freelancers, 30-50% client markup, $500 deposit en betaalvoorwaarden.",
       keywords: "toptal kosten, toptal tarieven, hoeveel kost toptal, toptal uurtarief, toptal prijzen, toptal fees",
       openGraph: {
-        title: "Toptal Kosten 2025: Hoeveel Kost Toptal? Complete Tarievengids",
-        description: "Hoeveel kost Toptal? Complete gids 2025: ontwikkelaars $60-150+/uur, ontwerpers $50-160/uur, 0% kosten voor freelancers, 30-50% client markup, $500 deposit en betaalvoorwaarden.",
+        title: "Toptal Kosten 2026: Hoeveel Kost Toptal? Complete Tarievengids",
+        description: "Hoeveel kost Toptal? Complete gids 2026: ontwikkelaars $60-150+/uur, ontwerpers $50-160/uur, 0% kosten voor freelancers, 30-50% client markup, $500 deposit en betaalvoorwaarden.",
         url: pageUrl,
         siteName: 'SkillLinkup',
-        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Toptal Kosten 2025: Hoeveel Kost Toptal? Complete Tarievengids' }],
+        images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Toptal Kosten 2026: Hoeveel Kost Toptal? Complete Tarievengids' }],
         locale: 'nl_NL',
         type: 'article',
       },
       twitter: {
         card: 'summary_large_image',
-        title: 'Toptal Kosten 2025: Hoeveel Kost Toptal? Complete Tarievengids',
-        description: 'Hoeveel kost Toptal? Complete gids 2025: ontwikkelaars $60-150+/uur, ontwerpers $50-160/uur, 0% kosten voor freelancers.',
+        title: 'Toptal Kosten 2026: Hoeveel Kost Toptal? Complete Tarievengids',
+        description: 'Hoeveel kost Toptal? Complete gids 2026: ontwikkelaars $60-150+/uur, ontwerpers $50-160/uur, 0% kosten voor freelancers.',
         images: [`${siteUrl}/images/og/resources-og.png`],
         creator: '@SkillLinkup',
         site: '@SkillLinkup',
@@ -52,22 +52,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: "Toptal Pricing 2025: How Much Does Toptal Cost? Complete Rate Guide",
-    description: "How much does Toptal cost? Complete guide 2025: developers $60-150+/hr, designers $50-160/hr, 0% freelancer fees, 30-50% client markup, $500 deposit & payment terms.",
+    title: "Toptal Pricing 2026: How Much Does Toptal Cost? Complete Rate Guide",
+    description: "How much does Toptal cost? Complete guide 2026: developers $60-150+/hr, designers $50-160/hr, 0% freelancer fees, 30-50% client markup, $500 deposit & payment terms.",
     keywords: "toptal pricing, toptal cost, toptal rates, toptal hourly rate, toptal fees, how much does toptal cost",
     openGraph: {
-      title: "Toptal Pricing 2025: How Much Does Toptal Cost? Complete Rate Guide",
-      description: "How much does Toptal cost? Complete guide 2025: developers $60-150+/hr, designers $50-160/hr, 0% freelancer fees, 30-50% client markup, $500 deposit & payment terms.",
+      title: "Toptal Pricing 2026: How Much Does Toptal Cost? Complete Rate Guide",
+      description: "How much does Toptal cost? Complete guide 2026: developers $60-150+/hr, designers $50-160/hr, 0% freelancer fees, 30-50% client markup, $500 deposit & payment terms.",
       url: pageUrl,
       siteName: 'SkillLinkup',
-      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Toptal Pricing 2025: How Much Does Toptal Cost? Complete Rate Guide' }],
+      images: [{ url: `${siteUrl}/images/og/resources-og.png`, width: 1200, height: 630, alt: 'Toptal Pricing 2026: How Much Does Toptal Cost? Complete Rate Guide' }],
       locale: 'en_US',
       type: 'article',
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Toptal Pricing 2025: How Much Does Toptal Cost? Complete Rate Guide',
-      description: 'How much does Toptal cost? Complete guide 2025: developers $60-150+/hr, designers $50-160/hr, 0% freelancer fees.',
+      title: 'Toptal Pricing 2026: How Much Does Toptal Cost? Complete Rate Guide',
+      description: 'How much does Toptal cost? Complete guide 2026: developers $60-150+/hr, designers $50-160/hr, 0% freelancer fees.',
       images: [`${siteUrl}/images/og/resources-og.png`],
       creator: '@SkillLinkup',
       site: '@SkillLinkup',
@@ -91,7 +91,7 @@ export default async function ToptalPricingPage({ params }: Props) {
   const { locale } = await params;
 
   const content = locale === 'nl' ? {
-    badge: "Toptal Tarieven & Kosten 2025",
+    badge: "Toptal Tarieven & Kosten 2026",
     title: "Hoeveel Kost Toptal? Complete Prijzengids Voor Freelancers en Klanten",
     subtitle: "Ontdek Toptal's volledige kostenstructuur: uurtarieven voor ontwikkelaars ($60-150+/uur), ontwerpers ($50-160/uur), 0% freelancer commissie, 30-50% client markup, $500 deposit, $79/maand platform fee, en betaalvoorwaarden (Net 10).",
     cta1: "Vergelijk Platform Tarieven",
@@ -264,7 +264,7 @@ export default async function ToptalPricingPage({ params }: Props) {
     browsePlatforms: "Bekijk Alle Platforms",
     getInsights: "Krijg Wekelijkse Inzichten"
   } : {
-    badge: "Toptal Rates & Pricing 2025",
+    badge: "Toptal Rates & Pricing 2026",
     title: "How Much Does Toptal Cost? Complete Pricing Guide for Freelancers & Clients",
     subtitle: "Discover Toptal's full pricing breakdown: hourly rates for developers ($60-150+/hr), designers ($50-160/hr), 0% freelancer commission, 30-50% client markup, $500 deposit, $79/month platform fee, and payment terms (Net 10).",
     cta1: "Compare Platform Rates",
@@ -441,7 +441,7 @@ export default async function ToptalPricingPage({ params }: Props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": locale === 'nl' ? "Toptal Kosten 2025: Hoeveel Kost Toptal?" : "Toptal Pricing 2025: How Much Does Toptal Cost?",
+    "headline": locale === 'nl' ? "Toptal Kosten 2026: Hoeveel Kost Toptal?" : "Toptal Pricing 2026: How Much Does Toptal Cost?",
     "description": locale === 'nl' ? "Complete gids over Toptal tarieven, kosten en prijsstructuur voor freelancers en klanten." : "Complete guide to Toptal rates, costs, and pricing structure for freelancers and clients.",
     "author": {
       "@type": "Organization",
@@ -455,8 +455,8 @@ export default async function ToptalPricingPage({ params }: Props) {
         "url": "https://skilllinkup.com/images/logo/skilllinkup-transparant-rozepunt.webp"
       }
     },
-    "datePublished": "2025-01-15",
-    "dateModified": "2025-01-15"
+    "datePublished": "2026-01-15",
+    "dateModified": "2026-01-15"
   };
 
   return (

@@ -16,11 +16,11 @@ export async function generateMetadata({
 
   if (locale === "nl") {
     return {
-      title: "Hoger Tarief Onderhandelen als Freelancer (2025 Gids)",
+      title: "Hoger Tarief Onderhandelen als Freelancer (2026 Gids)",
       description: "Meester tariefonderhandeling met bewezen scripts en tactieken. Leer wanneer en hoe je je freelance tarief verhoogt zonder klanten te verliezen. Inclusief kant-en-klare templates.",
       keywords: "hoger tarief onderhandelen, meer verdienen freelance, tarief verhogen ZZP, freelance tarief onderhandeling, uurtarief verhogen",
       openGraph: {
-        title: "Hoger Tarief Onderhandelen als Freelancer (2025 Gids)",
+        title: "Hoger Tarief Onderhandelen als Freelancer (2026 Gids)",
         description: "Bewezen onderhandelingstactieken om je freelance tarief met 30-50% te verhogen zonder klanten te verliezen. Inclusief scripts en templates.",
         url: pageUrl,
         siteName: 'SkillLinkup',
@@ -30,7 +30,7 @@ export async function generateMetadata({
       },
       twitter: {
         card: 'summary_large_image',
-        title: "Hoger Tarief Onderhandelen als Freelancer (2025 Gids)",
+        title: "Hoger Tarief Onderhandelen als Freelancer (2026 Gids)",
         description: "Bewezen onderhandelingstactieken om je freelance tarief met 30-50% te verhogen zonder klanten te verliezen. Inclusief scripts en templates.",
         images: [`${siteUrl}/images/og/resources-og.png`],
         creator: '@SkillLinkup',
@@ -48,11 +48,11 @@ export async function generateMetadata({
   }
 
   return {
-    title: "How to Negotiate Higher Rates on Freelance Platforms (2025 Guide)",
+    title: "How to Negotiate Higher Rates on Freelance Platforms (2026 Guide)",
     description: "Master rate negotiation with proven scripts and tactics. Learn when and how to raise your freelance rates without losing clients. Includes word-for-word templates.",
     keywords: "negotiate freelance rates, raise freelance rates, freelance rate negotiation, increase hourly rate, freelance pricing negotiation",
     openGraph: {
-      title: "How to Negotiate Higher Rates on Freelance Platforms (2025 Guide)",
+      title: "How to Negotiate Higher Rates on Freelance Platforms (2026 Guide)",
       description: "Proven negotiation tactics to raise your freelance rates by 30-50% without losing clients. Includes scripts and templates.",
       url: pageUrl,
       siteName: 'SkillLinkup',
@@ -62,7 +62,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: 'summary_large_image',
-      title: "How to Negotiate Higher Rates on Freelance Platforms (2025 Guide)",
+      title: "How to Negotiate Higher Rates on Freelance Platforms (2026 Guide)",
       description: "Proven negotiation tactics to raise your freelance rates by 30-50% without losing clients. Includes scripts and templates.",
       images: [`${siteUrl}/images/og/resources-og.png`],
       creator: '@SkillLinkup',
@@ -462,8 +462,8 @@ Best regards,`,
         "url": "https://skilllinkup.com/images/logo/skilllinkup-transparant-rozepunt.webp"
       }
     },
-    "datePublished": "2025-01-15",
-    "dateModified": "2025-01-15"
+    "datePublished": "2026-01-15",
+    "dateModified": "2026-01-15"
   };
 
   return (

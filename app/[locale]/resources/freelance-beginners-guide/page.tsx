@@ -16,11 +16,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (locale === 'nl') {
     return {
-      title: "Complete Freelance Gids 2025: Van Nul naar Eerste Klant",
+      title: "Complete Freelance Gids 2026: Van Nul naar Eerste Klant",
       description: "Start je freelance carrière met vertrouwen. Complete stap-voor-stap gids met profiel, offertes, prijzen en je eerste klant binnen 30 dagen.",
       keywords: "freelance beginnen, ZZP starten, eerste freelance klant, freelance gids nederland, hoe word ik freelancer",
       openGraph: {
-        title: "Complete Freelance Gids 2025: Van Nul naar Eerste Klant",
+        title: "Complete Freelance Gids 2026: Van Nul naar Eerste Klant",
         description: "Start je freelance carrière met vertrouwen. Complete stap-voor-stap gids met profiel, offertes, prijzen en je eerste klant binnen 30 dagen.",
         url: pageUrl,
         siteName: 'SkillLinkup',
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       },
       twitter: {
         card: 'summary_large_image',
-        title: "Complete Freelance Gids 2025: Van Nul naar Eerste Klant",
+        title: "Complete Freelance Gids 2026: Van Nul naar Eerste Klant",
         description: "Start je freelance carrière met vertrouwen. Complete stap-voor-stap gids met profiel, offertes, prijzen.",
         images: [`${siteUrl}/images/og/resources-og.png`],
         creator: '@SkillLinkup',
@@ -48,11 +48,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: "Complete Freelance Beginner's Guide 2025: Zero to First Client",
+    title: "Complete Freelance Beginner's Guide 2026: Zero to First Client",
     description: "Start your freelance career with confidence. Step-by-step guide covering profiles, proposals, pricing, and landing your first client in 30 days.",
     keywords: "freelance beginner guide, how to start freelancing, first freelance client, freelancing for beginners, freelance career start",
     openGraph: {
-      title: "Complete Freelance Beginner's Guide 2025: Zero to First Client",
+      title: "Complete Freelance Beginner's Guide 2026: Zero to First Client",
       description: "Start your freelance career with confidence. Step-by-step guide covering profiles, proposals, pricing, and landing your first client in 30 days.",
       url: pageUrl,
       siteName: 'SkillLinkup',
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     twitter: {
       card: 'summary_large_image',
-      title: "Complete Freelance Beginner's Guide 2025: Zero to First Client",
+      title: "Complete Freelance Beginner's Guide 2026: Zero to First Client",
       description: "Start your freelance career with confidence. Step-by-step guide covering profiles, proposals, pricing.",
       images: [`${siteUrl}/images/og/resources-og.png`],
       creator: '@SkillLinkup',
@@ -102,8 +102,8 @@ export default async function FreelanceBeginnerGuidePage({ params }: PageProps) 
       ]
     },
     intro: {
-      title: "Waarom Freelancen in 2025?",
-      p1: "De freelance economie is nog nooit zo sterk geweest. In 2025 werken wereldwijd meer dan 100 miljoen mensen als freelancer. Maar verder dan de indrukwekkende cijfers biedt freelancen iets waardevols: vrijheid.",
+      title: "Waarom Freelancen in 2026?",
+      p1: "De freelance economie is nog nooit zo sterk geweest. In 2026 werken wereldwijd meer dan 100 miljoen mensen als freelancer. Maar verder dan de indrukwekkende cijfers biedt freelancen iets waardevols: vrijheid.",
       p2: "Vrijheid om je klanten te kiezen. Vrijheid om je tarieven te bepalen. Vrijheid om overal te werken. Of je nu wilt ontsnappen aan de 9-tot-5, je inkomen wilt aanvullen of een fulltime bedrijf wilt bouwen, freelancen biedt een bewezen pad naar financiële onafhankelijkheid.",
       p3: "Deze gids is speciaal ontworpen voor absolute beginners—mensen die nog nooit gefreelanced hebben maar online geld willen verdienen. We nemen je mee door elke stap, van het kiezen van je niche tot het binnenhalen van je eerste betalende klant binnen 30 dagen."
     },
@@ -131,7 +131,7 @@ export default async function FreelanceBeginnerGuidePage({ params }: PageProps) 
         { title: "Eerlijke betalingsbescherming:", desc: "Escrow systemen die je verdiensten beschermen" },
         { title: "Lage toegangsdrempel:", desc: "Je hebt geen enorme portfolio nodig om te beginnen" }
       ],
-      platformsTitle: "Top Platforms voor Beginners in 2025:",
+      platformsTitle: "Top Platforms voor Beginners in 2026:",
       platforms: [
         { name: "Freelance.nl", desc: "Grootste Nederlandse klantenbasis, alle vaardigheidsniveaus. 10% platformkosten." },
         { name: "Upwork", desc: "Grootste internationale klantenbasis, portfolio opbouwen. 10% platformkosten." },
@@ -184,8 +184,8 @@ export default async function FreelanceBeginnerGuidePage({ params }: PageProps) 
       "description": "Uitgebreide gids voor absolute beginners die hun freelance carrière starten, met alle stappen van het opzetten van profielen tot het binnenhalen van de eerste klant.",
       "author": { "@type": "Organization", "name": "SkillLinkup" },
       "publisher": { "@type": "Organization", "name": "SkillLinkup", "logo": { "@type": "ImageObject", "url": "https://skillLinkup.com/logo.png" } },
-      "datePublished": "2025-01-15",
-      "dateModified": "2025-01-15"
+      "datePublished": "2026-01-15",
+      "dateModified": "2026-01-15"
     }
   } : {
     hero: {
@@ -207,8 +207,8 @@ export default async function FreelanceBeginnerGuidePage({ params }: PageProps) 
       ]
     },
     intro: {
-      title: "Why Start Freelancing in 2025?",
-      p1: "The freelance economy has never been stronger. In 2025, over 73 million Americans work as freelancers, contributing $1.4 trillion to the economy. But beyond the impressive numbers, freelancing offers something more valuable: freedom.",
+      title: "Why Start Freelancing in 2026?",
+      p1: "The freelance economy has never been stronger. In 2026, over 73 million Americans work as freelancers, contributing $1.4 trillion to the economy. But beyond the impressive numbers, freelancing offers something more valuable: freedom.",
       p2: "Freedom to choose your clients. Freedom to set your rates. Freedom to work from anywhere. Whether you're looking to escape the 9-to-5 grind, supplement your income, or build a full-time business, freelancing provides a proven path to financial independence.",
       p3: "This guide is designed specifically for absolute beginners—people who have never freelanced before but want to start earning money online. We'll walk you through every single step, from choosing your niche to landing your first paying client within 30 days."
     },
@@ -236,7 +236,7 @@ export default async function FreelanceBeginnerGuidePage({ params }: PageProps) 
         { title: "Fair payment protection:", desc: "Escrow systems that protect your earnings" },
         { title: "Low barrier to entry:", desc: "You don't need a huge portfolio to start" }
       ],
-      platformsTitle: "Top Platforms for Beginners in 2025:",
+      platformsTitle: "Top Platforms for Beginners in 2026:",
       platforms: [
         { name: "Upwork", desc: "Largest client base, all skill levels, excellent for building portfolio. 10% platform fee." },
         { name: "Fiverr", desc: "Service-based model, you set fixed prices. Great for creative services. 20% platform fee." },
@@ -289,8 +289,8 @@ export default async function FreelanceBeginnerGuidePage({ params }: PageProps) 
       "description": "Comprehensive guide for absolute beginners starting their freelance career, covering everything from setting up profiles to landing the first client.",
       "author": { "@type": "Organization", "name": "SkillLinkup" },
       "publisher": { "@type": "Organization", "name": "SkillLinkup", "logo": { "@type": "ImageObject", "url": "https://skillLinkup.com/logo.png" } },
-      "datePublished": "2025-01-15",
-      "dateModified": "2025-01-15"
+      "datePublished": "2026-01-15",
+      "dateModified": "2026-01-15"
     }
   };
 

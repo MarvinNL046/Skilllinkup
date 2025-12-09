@@ -15,10 +15,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   if (locale === 'nl') {
     return {
       title: 'Beste Platformen voor Freelance Schrijvers & Content Creators',
-      description: 'Ontdek top freelance platforms voor schrijvers en contentmakers in 2025. Vergelijk tarieven, opdrachttypes en vind platformen die kwaliteit waarderen en eerlijk betalen.',
+      description: 'Ontdek top freelance platforms voor schrijvers en contentmakers in 2026. Vergelijk tarieven, opdrachttypes en vind platformen die kwaliteit waarderen en eerlijk betalen.',
       keywords: 'freelance schrijfplatforms, content schrijven, blog schrijven, copywriting platforms, freelance schrijvers',
       openGraph: {
-        title: 'Beste Platformen voor Freelance Schrijvers 2025',
+        title: 'Beste Platformen voor Freelance Schrijvers 2026',
         description: 'Vind de beste schrijfplatformen die jouw expertise waarderen. Vergelijk tarieven en bouw een bloeiende schrijfcarrière.',
         url: pageUrl,
         siteName: 'SkillLinkup',
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       },
       twitter: {
         card: 'summary_large_image',
-        title: 'Beste Platformen voor Freelance Schrijvers 2025',
+        title: 'Beste Platformen voor Freelance Schrijvers 2026',
         description: 'Vind de beste schrijfplatformen die jouw expertise waarderen. Vergelijk tarieven.',
         images: [`${siteUrl}/images/og/resources-og.png`],
         creator: '@SkillLinkup',
@@ -47,10 +47,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
   return {
     title: 'Best Platforms for Freelance Writers & Content Creators',
-    description: 'Discover top freelance writing platforms for content creators in 2025. Compare rates, content types, and find marketplaces that value quality writing and pay fairly.',
+    description: 'Discover top freelance writing platforms for content creators in 2026. Compare rates, content types, and find marketplaces that value quality writing and pay fairly.',
     keywords: 'freelance writing platforms, content writing jobs, blog writing marketplace, copywriting platforms',
     openGraph: {
-      title: 'Best Platforms for Freelance Writers & Content Creators 2025',
+      title: 'Best Platforms for Freelance Writers & Content Creators 2026',
       description: 'Find the best marketplaces for freelance writers. Compare rates, project types, and build a thriving writing career.',
       url: pageUrl,
       siteName: 'SkillLinkup',
@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Best Platforms for Freelance Writers & Content Creators 2025',
+      title: 'Best Platforms for Freelance Writers & Content Creators 2026',
       description: 'Find the best marketplaces for freelance writers. Compare rates and project types.',
       images: [`${siteUrl}/images/og/resources-og.png`],
       creator: '@SkillLinkup',
@@ -91,12 +91,12 @@ export default async function BestPlatformsFreelanceWritersContentCreators({ par
     introduction: {
       title: 'Waarom de Juiste Platform Keuze Belangrijk Is',
       content: [
-        'De freelance schrijfmarkt in 2025 biedt ongekende kansen voor getalenteerde schrijvers en contentmakers. Niet alle platformen waarderen kwaliteitsschrijven echter gelijk. Sommige betalen centjes per woord en behandelen schrijvers als contentmachines. Andere herkennen schrijven als strategische bedrijfsinvestering en compenseren eerlijk. Jouw platformkeuze bepaalt niet alleen je inkomen, maar ook je carrière traject, creatieve vervulling en professionele groei.',
+        'De freelance schrijfmarkt in 2026 biedt ongekende kansen voor getalenteerde schrijvers en contentmakers. Niet alle platformen waarderen kwaliteitsschrijven echter gelijk. Sommige betalen centjes per woord en behandelen schrijvers als contentmachines. Andere herkennen schrijven als strategische bedrijfsinvestering en compenseren eerlijk. Jouw platformkeuze bepaalt niet alleen je inkomen, maar ook je carrière traject, creatieve vervulling en professionele groei.',
         'Deze uitgebreide gids onderzoekt de beste freelance schrijfplatformen voor verschillende niches: blogcontent, copywriting, technisch schrijven, journalistiek en creatief schrijven. We vergelijken betalingsstructuren (per woord, per project, retainer), redactionele ondersteuning, eigendomsrechten en de kwaliteit van klanten die je kunt verwachten.',
       ],
       stats: [
         { label: '300+ Platformen', value: 'Geanalyseerd voor schrijfopdrachten' },
-        { label: '€0,10-€2/woord', value: 'Gemiddeld tarief in 2025' },
+        { label: '€0,10-€2/woord', value: 'Gemiddeld tarief in 2026' },
         { label: 'Kwaliteit Eerst', value: 'Premium platformen waarderen expertise' },
       ],
     },
@@ -149,7 +149,7 @@ export default async function BestPlatformsFreelanceWritersContentCreators({ par
       },
     ],
     rates: {
-      title: 'Freelance Schrijftarieven in 2025 Begrijpen',
+      title: 'Freelance Schrijftarieven in 2026 Begrijpen',
       intro: 'Schrijftarieven variëren dramatisch op basis van contenttype, specialisatie, klantindustrie en platform. Markttarieven begrijpen helpt je competitief te prijzen terwijl je eerlijke compensatie voor je expertise garandeert.',
       benchmarks: [
         { type: 'Blogcontent (Algemeen)', rate: '€0,05-€0,25/woord of €50-€250 per 1000-woord post' },
@@ -229,12 +229,12 @@ export default async function BestPlatformsFreelanceWritersContentCreators({ par
     introduction: {
       title: 'Why Choosing the Right Writing Platform Matters',
       content: [
-        'The freelance writing landscape in 2025 offers unprecedented opportunities for talented writers and content creators. However, not all platforms value quality writing equally. Some pay pennies per word, treating writers as content machines. Others recognize writing as strategic business investment and compensate fairly. Your platform choice determines not just your income, but your career trajectory, creative fulfillment, and professional growth.',
+        'The freelance writing landscape in 2026 offers unprecedented opportunities for talented writers and content creators. However, not all platforms value quality writing equally. Some pay pennies per word, treating writers as content machines. Others recognize writing as strategic business investment and compensate fairly. Your platform choice determines not just your income, but your career trajectory, creative fulfillment, and professional growth.',
         'This comprehensive guide examines the best freelance writing platforms across multiple niches: blog content, copywriting, technical writing, journalism, and creative writing. We\'ll compare payment structures (per word, per project, retainer), editorial support, content ownership rights, and the quality of clients you can expect.',
       ],
       stats: [
         { label: '300+ Platforms', value: 'Analyzed for writing opportunities' },
-        { label: '$0.10-$2/word', value: 'Typical rate range in 2025' },
+        { label: '$0.10-$2/word', value: 'Typical rate range in 2026' },
         { label: 'Quality First', value: 'Premium platforms value expertise' },
       ],
     },
@@ -287,7 +287,7 @@ export default async function BestPlatformsFreelanceWritersContentCreators({ par
       },
     ],
     rates: {
-      title: 'Understanding Freelance Writing Rates in 2025',
+      title: 'Understanding Freelance Writing Rates in 2026',
       intro: 'Writing rates vary dramatically based on content type, specialization, client industry, and platform. Understanding market rates helps you price competitively while ensuring fair compensation for your expertise.',
       benchmarks: [
         { type: 'Blog Content (General)', rate: '$0.05-$0.25/word or $50-$250 per 1000-word post' },
@@ -363,8 +363,8 @@ export default async function BestPlatformsFreelanceWritersContentCreators({ par
     "@type": "Article",
     headline: locale === 'nl' ? "Beste Platformen voor Freelance Schrijvers en Content Creators" : "Best Platforms for Freelance Writers and Content Creators",
     description: locale === 'nl'
-      ? "Ontdek top freelance platforms voor schrijvers en contentmakers in 2025. Vergelijk tarieven en vind platformen die kwaliteit waarderen."
-      : "Discover top freelance writing platforms for content creators in 2025. Compare rates, content types, and find marketplaces that value quality writing.",
+      ? "Ontdek top freelance platforms voor schrijvers en contentmakers in 2026. Vergelijk tarieven en vind platformen die kwaliteit waarderen."
+      : "Discover top freelance writing platforms for content creators in 2026. Compare rates, content types, and find marketplaces that value quality writing.",
     inLanguage: locale === 'nl' ? 'nl' : 'en',
     author: {
       "@type": "Organization",
@@ -374,8 +374,8 @@ export default async function BestPlatformsFreelanceWritersContentCreators({ par
       "@type": "Organization",
       "name": "SkillLinkup"
     },
-    datePublished: "2025-01-15",
-    dateModified: "2025-01-15"
+    datePublished: "2026-01-15",
+    dateModified: "2026-01-15"
   };
 
   return (

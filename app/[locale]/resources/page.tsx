@@ -75,7 +75,7 @@ const SLUG_TO_KEY: Record<string, { category: string; guide: string }> = {
   "/resources/how-to-get-5-star-reviews-on-every-freelance-project": { category: "successStrategies", guide: "fiveStarReviews" },
   "/resources/scaling-your-freelance-business-from-solo-to-agency": { category: "successStrategies", guide: "scaleYourBusiness" },
   // Niche Guides
-  "/resources/best-freelance-platforms-web-developers-2025": { category: "nicheGuides", guide: "forDevelopers" },
+  "/resources/best-freelance-platforms-web-developers-2026": { category: "nicheGuides", guide: "forDevelopers" },
   "/resources/top-freelance-platforms-graphic-designers-creatives": { category: "nicheGuides", guide: "forDesigners" },
   "/resources/best-platforms-freelance-writers-content-creators": { category: "nicheGuides", guide: "forWriters" },
   "/resources/freelance-platforms-virtual-assistants-complete-guide": { category: "nicheGuides", guide: "forVAs" },

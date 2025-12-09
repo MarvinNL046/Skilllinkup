@@ -16,12 +16,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (locale === 'nl') {
     return {
-      title: "Upwork Prijzen 2025: Complete Kostengids voor Freelancers & Opdrachtgevers",
-      description: "Complete Upwork prijzengids 2025: Variabel 0-15% freelancer tarief per contract, $0.15 Connects, Freelancer Plus €19.99/maand, client fees tot 7.99%, en tips om kosten te verlagen.",
-      keywords: "upwork prijzen 2025, upwork kosten, upwork tarief, upwork service fee, upwork connects prijs, upwork freelancer plus",
+      title: "Upwork Prijzen 2026: Complete Kostengids voor Freelancers & Opdrachtgevers",
+      description: "Complete Upwork prijzengids 2026: Variabel 0-15% freelancer tarief per contract, $0.15 Connects, Freelancer Plus €19.99/maand, client fees tot 7.99%, en tips om kosten te verlagen.",
+      keywords: "upwork prijzen 2026, upwork kosten, upwork tarief, upwork service fee, upwork connects prijs, upwork freelancer plus",
       openGraph: {
-        title: "Upwork Prijzen 2025: Complete Kostengids voor Freelancers & Opdrachtgevers",
-        description: "Complete Upwork prijzengids 2025: Variabel 0-15% freelancer tarief per contract, $0.15 Connects, Freelancer Plus €19.99/maand, client fees tot 7.99%, en tips om kosten te verlagen.",
+        title: "Upwork Prijzen 2026: Complete Kostengids voor Freelancers & Opdrachtgevers",
+        description: "Complete Upwork prijzengids 2026: Variabel 0-15% freelancer tarief per contract, $0.15 Connects, Freelancer Plus €19.99/maand, client fees tot 7.99%, en tips om kosten te verlagen.",
         url: pageUrl,
         siteName: 'SkillLinkup',
         images: [
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             url: `${siteUrl}/images/og/resources-og.png`,
             width: 1200,
             height: 630,
-            alt: 'Upwork Prijzen 2025: Complete Kostengids voor Freelancers & Opdrachtgevers',
+            alt: 'Upwork Prijzen 2026: Complete Kostengids voor Freelancers & Opdrachtgevers',
           }
         ],
         locale: 'nl_NL',
@@ -37,8 +37,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
       twitter: {
         card: 'summary_large_image',
-        title: "Upwork Prijzen 2025: Complete Kostengids voor Freelancers & Opdrachtgevers",
-        description: "Complete Upwork prijzengids 2025: Variabel 0-15% freelancer tarief per contract, $0.15 Connects, Freelancer Plus €19.99/maand, client fees tot 7.99%, en tips om kosten te verlagen.",
+        title: "Upwork Prijzen 2026: Complete Kostengids voor Freelancers & Opdrachtgevers",
+        description: "Complete Upwork prijzengids 2026: Variabel 0-15% freelancer tarief per contract, $0.15 Connects, Freelancer Plus €19.99/maand, client fees tot 7.99%, en tips om kosten te verlagen.",
         images: [`${siteUrl}/images/og/resources-og.png`],
         creator: '@SkillLinkup',
         site: '@SkillLinkup',
@@ -65,12 +65,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: "Upwork Pricing 2025: Complete Fee Guide for Freelancers & Clients",
-    description: "Complete Upwork pricing guide 2025: Variable 0-15% freelancer fee per contract, $0.15 Connects, Freelancer Plus $19.99/month, client fees up to 7.99%, and tips to reduce fees.",
-    keywords: "upwork pricing 2025, upwork fees, upwork cost, upwork service fee, upwork connects price, upwork freelancer plus",
+    title: "Upwork Pricing 2026: Complete Fee Guide for Freelancers & Clients",
+    description: "Complete Upwork pricing guide 2026: Variable 0-15% freelancer fee per contract, $0.15 Connects, Freelancer Plus $19.99/month, client fees up to 7.99%, and tips to reduce fees.",
+    keywords: "upwork pricing 2026, upwork fees, upwork cost, upwork service fee, upwork connects price, upwork freelancer plus",
     openGraph: {
-      title: "Upwork Pricing 2025: Complete Fee Guide for Freelancers & Clients",
-      description: "Complete Upwork pricing guide 2025: Variable 0-15% freelancer fee per contract, $0.15 Connects, Freelancer Plus $19.99/month, client fees up to 7.99%, and tips to reduce fees.",
+      title: "Upwork Pricing 2026: Complete Fee Guide for Freelancers & Clients",
+      description: "Complete Upwork pricing guide 2026: Variable 0-15% freelancer fee per contract, $0.15 Connects, Freelancer Plus $19.99/month, client fees up to 7.99%, and tips to reduce fees.",
       url: pageUrl,
       siteName: 'SkillLinkup',
       images: [
@@ -78,7 +78,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           url: `${siteUrl}/images/og/resources-og.png`,
           width: 1200,
           height: 630,
-          alt: 'Upwork Pricing 2025: Complete Fee Guide for Freelancers & Clients',
+          alt: 'Upwork Pricing 2026: Complete Fee Guide for Freelancers & Clients',
         }
       ],
       locale: 'en_US',
@@ -86,8 +86,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: "Upwork Pricing 2025: Complete Fee Guide for Freelancers & Clients",
-      description: "Complete Upwork pricing guide 2025: Variable 0-15% freelancer fee per contract, $0.15 Connects, Freelancer Plus $19.99/month, client fees up to 7.99%, and tips to reduce fees.",
+      title: "Upwork Pricing 2026: Complete Fee Guide for Freelancers & Clients",
+      description: "Complete Upwork pricing guide 2026: Variable 0-15% freelancer fee per contract, $0.15 Connects, Freelancer Plus $19.99/month, client fees up to 7.99%, and tips to reduce fees.",
       images: [`${siteUrl}/images/og/resources-og.png`],
       creator: '@SkillLinkup',
       site: '@SkillLinkup',
@@ -118,8 +118,8 @@ export default async function UpworkPricingPage({ params }: Props) {
 
   const content = locale === 'nl' ? {
     badge: "Complete Prijzengids",
-    title: "Upwork Prijzen 2025: Complete Kostengids voor Freelancers & Opdrachtgevers",
-    subtitle: "Vanaf 1 mei 2025 gebruikt Upwork een nieuw variabel tariefmodel. We leggen het nieuwe 0-15% tarief per contract, het Connects-systeem, betalingskosten, en Freelancer Plus (€19.99/maand) uit, plus strategieën om uw kosten te verlagen.",
+    title: "Upwork Prijzen 2026: Complete Kostengids voor Freelancers & Opdrachtgevers",
+    subtitle: "Vanaf 1 mei 2026 gebruikt Upwork een nieuw variabel tariefmodel. We leggen het nieuwe 0-15% tarief per contract, het Connects-systeem, betalingskosten, en Freelancer Plus (€19.99/maand) uit, plus strategieën om uw kosten te verlagen.",
     cta1: "Vergelijk Platform Kosten",
     cta2: "Bereken Uw Tarief",
     overallPricing: "Prijsoverzicht",
@@ -127,8 +127,8 @@ export default async function UpworkPricingPage({ params }: Props) {
     clientFees: "Opdrachtgever Kosten",
     connectsCost: "Connects Kosten",
     subscriptionValue: "Abonnement Waarde",
-    whatIsUpworkPricing: "Hoe Werkt Upwork Prijzen? (Nieuw sinds 1 Mei 2025)",
-    whatIsUpworkPricingText: "Upwork heeft op 1 mei 2025 een revolutionair nieuw tariefmodel geïntroduceerd. Het oude sliding scale systeem (20%-10%-5%) is vervangen door een variabel tarief van 0-15% per contract, gebaseerd op project complexiteit, urgentie, client geschiedenis, en type contract. Freelancers betalen ook $0.15 per Connect om te bieden, terwijl opdrachtgevers tot 7.99% marketplace fee betalen.",
+    whatIsUpworkPricing: "Hoe Werkt Upwork Prijzen? (Nieuw sinds 1 Mei 2026)",
+    whatIsUpworkPricingText: "Upwork heeft op 1 mei 2026 een revolutionair nieuw tariefmodel geïntroduceerd. Het oude sliding scale systeem (20%-10%-5%) is vervangen door een variabel tarief van 0-15% per contract, gebaseerd op project complexiteit, urgentie, client geschiedenis, en type contract. Freelancers betalen ook $0.15 per Connect om te bieden, terwijl opdrachtgevers tot 7.99% marketplace fee betalen.",
     freelancersPayFor: "Freelancers Betalen Voor:",
     clientsPayFor: "Opdrachtgevers Betalen Voor:",
     freelancerCosts: [
@@ -143,8 +143,8 @@ export default async function UpworkPricingPage({ params }: Props) {
       { title: "Talent Scout (Optioneel):", text: "Van $499/maand voor gepersonaliseerde talentmatching" },
       { title: "Enterprise (Optioneel):", text: "10% flat fee voor enterprise clients" }
     ],
-    freelancerFeeStructure: "Upwork Freelancer Fee Structuur 2025: Variabel Tarief Model",
-    freelancerFeeIntro: "Sinds 1 mei 2025 gebruikt Upwork een revolutionair nieuw variabel tariefsysteem dat het oude sliding scale model vervangt. Het tarief varieert van 0-15% per individueel contract op basis van meerdere factoren:",
+    freelancerFeeStructure: "Upwork Freelancer Fee Structuur 2026: Variabel Tarief Model",
+    freelancerFeeIntro: "Sinds 1 mei 2026 gebruikt Upwork een revolutionair nieuw variabel tariefsysteem dat het oude sliding scale model vervangt. Het tarief varieert van 0-15% per individueel contract op basis van meerdere factoren:",
     tier1Title: "Standaard Contracten: 0-15% Variabel",
     tier1Text: "Voor de meeste contracten bepaalt Upwork een variabel tarief tussen 0-15% gebaseerd op: (1) Project complexiteit - eenvoudiger werk = hogere fees, (2) Urgentie - spoedeisende projecten = hogere fees, (3) Client geschiedenis - nieuwe clients vs. terugkerende clients, (4) Contract grootte - grotere contracten kunnen lagere fees krijgen. Het exacte percentage wordt per contract bepaald en getoond voordat u accepteert.",
     tier1Fee: "Service Fee:",
@@ -170,9 +170,9 @@ export default async function UpworkPricingPage({ params }: Props) {
     ctaMidButton: "Gratis Rate Calculator",
     connectsSystem: "Het Connects Systeem: Betalen om te Bieden",
     connectsIntro: "Upwork gebruikt een 'Connects'-systeem waarbij freelancers Connects uitgeven om voorstel in te dienen. Dit ontmoedigt spam voorstel en helpt opdrachtgevers relevante aanbiedingen te ontvangen:",
-    connectsPricing: "Connects Prijzen 2025",
+    connectsPricing: "Connects Prijzen 2026",
     connectsPricingText: "Connects worden gratis verkregen of gekocht in bundels:",
-    freeConnects: "Gratis Connects (Nieuw in 2025)",
+    freeConnects: "Gratis Connects (Nieuw in 2026)",
     freeConnectsText: "40 Connects bij signup | 10 Connects/maand recurring | 30 Connects per badge earned | Max 200 Connects balance",
     purchasedConnects: "Gekochte Connects",
     purchasedConnectsText: "$0.15 per Connect (beschikbaar in bundels van 10, 20, 40, 60, 80, maximum 200 Connects balance)",
@@ -186,15 +186,15 @@ export default async function UpworkPricingPage({ params }: Props) {
     standardJobsText: "Middelgrote projecten, ongoing contracten, $100-500 budget",
     complexJobs: "Complexe Jobs (12-16 Connects)",
     complexJobsText: "Grote projecten, $1.000+ budget, lang-termijn contracten, gespecialiseerde vaardigheden",
-    connectsTips: "Slimme Tips om Connects te Besparen (2025 Update)",
+    connectsTips: "Slimme Tips om Connects te Besparen (2026 Update)",
     connectsTipsList: [
       { title: "Verdien Gratis Connects via Badges:", text: "Elke badge geeft 30 gratis Connects—focus op Rising Talent, Top Rated, Top Rated Plus badges" },
       { title: "Gebruik Freelancer Plus Strategisch:", text: "$19.99/maand krijg je 100 Connects (90+10)—breakevenpoint is 7 voorstel/maand, plus 0% fee op Direct Contracts" },
       { title: "Focus op Any Hire & Direct Invites:", text: "Deze gebruiken geen Connects EN hebben 0% service fee—optimaliseer uw profiel voor invites" },
       { title: "Prioriteer Hoge-Waarde Jobs:", text: "Spendeer meer Connects op grote contracten waar de ROI rechtvaardig is" }
     ],
-    clientFeesExplained: "Opdrachtgever Fees 2025: Wat Werkgevers Betalen",
-    clientFeesIntro: "Terwijl freelancers het grootste deel van de aandacht krijgen, betalen opdrachtgevers ook voor het gebruik van Upwork. In 2025 zijn de client fees herzien naar een variabel model:",
+    clientFeesExplained: "Opdrachtgever Fees 2026: Wat Werkgevers Betalen",
+    clientFeesIntro: "Terwijl freelancers het grootste deel van de aandacht krijgen, betalen opdrachtgevers ook voor het gebruik van Upwork. In 2026 zijn de client fees herzien naar een variabel model:",
     marketplaceFee: "Marketplace Fee (Tot 7.99%)",
     marketplaceFeeText: "Alle betalingen aan freelancers omvatten een marketplace fee van tot 7.99%. US clients die met US bank account betalen betalen 3%. Voor een $1.000 project betaalt een internationale client met creditcard ~$1.079 totaal. Deze fee dekt Upwork's escrow service, dispute resolution, betalingsverwerking, en platformonderhoud.",
     marketplaceFeeExample: "Voorbeeld: $1.000 project → $79 marketplace fee (max) → $1.079 totaal | US bank: $30 (3%)",
@@ -208,9 +208,9 @@ export default async function UpworkPricingPage({ params }: Props) {
     paypalFeeText: "Varieert per land en bedrag",
     contractToHireFee: "Contract-to-Hire Conversie Fee",
     contractToHireFeeText: "Als een opdrachtgever een Upwork freelancer buiten het platform aanneemt binnen 24 maanden, wordt een conversie fee van $2.999 of 15% van hun 12-maanden inkomsten via Upwork (wat hoger is) in rekening gebracht. Deze fee ontmoedigt circumvention van Upwork's platform.",
-    freelancerPlusBreakdown: "Freelancer Plus 2025: Is $19.99/Maand de Moeite Waard?",
-    freelancerPlusIntro: "Upwork's Freelancer Plus abonnement kost $19.99/maand (prijsverhoging vanaf 2025) en biedt krachtige voordelen. Of het waardevol is hangt af van hoeveel u biedt en of u Direct Contracts wint:",
-    plusBenefits: "Freelancer Plus Voordelen (2025 Update)",
+    freelancerPlusBreakdown: "Freelancer Plus 2026: Is $19.99/Maand de Moeite Waard?",
+    freelancerPlusIntro: "Upwork's Freelancer Plus abonnement kost $19.99/maand (prijsverhoging vanaf 2026) en biedt krachtige voordelen. Of het waardevol is hangt af van hoeveel u biedt en of u Direct Contracts wint:",
+    plusBenefits: "Freelancer Plus Voordelen (2026 Update)",
     plusBenefitsList: [
       { title: "100 Connects/Maand (90 + 10 recurring)", text: "Waarde van $15/maand—alleen dit dekt 75% van de abonnementskosten" },
       { title: "0% Service Fee op Direct Contracts", text: "De grootste waarde! Als u Direct Contracts wint, betaalt u 0% fee—dit kan duizenden dollars besparen" },
@@ -219,7 +219,7 @@ export default async function UpworkPricingPage({ params }: Props) {
       { title: "Custom Profile URL", text: "Aangepaste URL voor eenvoudiger delen en branding (bijv. upwork.com/fl/yourname)" },
       { title: "Profiel Badge", text: "Visuele badge toont commitment aan platform en professionaliteit" }
     ],
-    worthItCalculation: "Is Freelancer Plus het Waard? (2025 Berekening)",
+    worthItCalculation: "Is Freelancer Plus het Waard? (2026 Berekening)",
     worthItCalculationText: "Laten we het uitrekenen op basis van uw biedgewoonten en Direct Contracts:",
     lowBidder: "Lage Bieder (1-5 voorstel/maand, geen Direct Contracts)",
     lowBidderText: "Waarschijnlijk niet waard—u gebruikt slechts $7.50 aan Connects, tenzij u Uma AI echt nodig heeft",
@@ -227,18 +227,18 @@ export default async function UpworkPricingPage({ params }: Props) {
     moderateBidderText: "Breakevenpoint is ~7 voorstel/maand (100 Connects = $15 waarde). Waardevol als u Uma AI + concurrent visibility gebruikt",
     activeBidder: "Actieve Bieder of Direct Contract Focus (15+ voorstel OF 1+ Direct Contract/maand)",
     activeBidderText: "Absoluut waard—100 gratis Connects + 0% fee op Direct Contracts = enorme besparing. Eén $1.000 Direct Contract bespaart $100-150 in fees!",
-    withdrawalFees: "Opname Kosten 2025: Uw Geld Krijgen",
-    withdrawalIntro: "Zodra u op Upwork verdient, moet u uw geld opnemen. Kosten variëren aanzienlijk per methode (2025 update):",
-    withdrawalMethods: "Opname Methoden & Kosten (2025)",
+    withdrawalFees: "Opname Kosten 2026: Uw Geld Krijgen",
+    withdrawalIntro: "Zodra u op Upwork verdient, moet u uw geld opnemen. Kosten variëren aanzienlijk per methode (2026 update):",
+    withdrawalMethods: "Opname Methoden & Kosten (2026)",
     directToUSBank: "US Bank Account (ACH) - GRATIS!",
-    directToUSBankText: "GRATIS voor alle US bank transfers via ACH (grote verbetering in 2025, voorheen $0.99)",
+    directToUSBankText: "GRATIS voor alle US bank transfers via ACH (grote verbetering in 2026, voorheen $0.99)",
     payoneer: "Local Bank Transfer",
     payoneerText: "$0.99 per transactie voor lokale bank transfers (niet-US)",
     paypalWithdrawal: "PayPal of Instant Pay",
     paypalWithdrawalText: "$2.00 fee per transactie voor PayPal opnames of Instant Pay (verhoging van $1.00)",
     wireTransfer: "Wire Transfer",
     wireTransferText: "$50 fee per transactie (alleen voor zeer grote bedragen, verhoging van $30)",
-    smartWithdrawalStrategy: "Slimme Opname Strategie 2025",
+    smartWithdrawalStrategy: "Slimme Opname Strategie 2026",
     smartWithdrawalStrategyText: "Voor US freelancers is de keuze simpel—gebruik GRATIS ACH transfers! Internationale freelancers moeten local bank transfer ($0.99) gebruiken en minder frequente, grotere opnames doen. Vermijd PayPal ($2) en vooral wire transfer ($50) tenzij absoluut noodzakelijk.",
     realWorldExamples: "Real-World Prijsvoorbeelden: Hoeveel Verdient U Werkelijk?",
     realWorldIntro: "Laten we bekijken wat freelancers daadwerkelijk netto verdienen na alle Upwork fees, Connects-kosten, en opnames:",
@@ -323,8 +323,8 @@ export default async function UpworkPricingPage({ params }: Props) {
     getWeeklyInsights: "Krijg Wekelijkse Inzichten"
   } : {
     badge: "Complete Pricing Guide",
-    title: "Upwork Pricing 2025: Complete Fee Guide for Freelancers & Clients",
-    subtitle: "As of May 1, 2025, Upwork uses a revolutionary new variable fee model. We break down the new 0-15% per-contract fee, Connects system, payment fees, Freelancer Plus ($19.99/month), and share strategies to reduce your costs.",
+    title: "Upwork Pricing 2026: Complete Fee Guide for Freelancers & Clients",
+    subtitle: "As of May 1, 2026, Upwork uses a revolutionary new variable fee model. We break down the new 0-15% per-contract fee, Connects system, payment fees, Freelancer Plus ($19.99/month), and share strategies to reduce your costs.",
     cta1: "Compare Platform Costs",
     cta2: "Calculate Your Rate",
     overallPricing: "Pricing Overview",
@@ -332,8 +332,8 @@ export default async function UpworkPricingPage({ params }: Props) {
     clientFees: "Client Fees",
     connectsCost: "Connects Cost",
     subscriptionValue: "Subscription Value",
-    whatIsUpworkPricing: "How Does Upwork Pricing Work? (New as of May 1, 2025)",
-    whatIsUpworkPricingText: "Upwork introduced a revolutionary new pricing model on May 1, 2025. The old sliding scale system (20%-10%-5%) has been replaced with a variable fee of 0-15% per contract, based on project complexity, urgency, client history, and contract type. Freelancers also pay $0.15 per Connect to bid, while clients pay up to 7.99% marketplace fee.",
+    whatIsUpworkPricing: "How Does Upwork Pricing Work? (New as of May 1, 2026)",
+    whatIsUpworkPricingText: "Upwork introduced a revolutionary new pricing model on May 1, 2026. The old sliding scale system (20%-10%-5%) has been replaced with a variable fee of 0-15% per contract, based on project complexity, urgency, client history, and contract type. Freelancers also pay $0.15 per Connect to bid, while clients pay up to 7.99% marketplace fee.",
     freelancersPayFor: "Freelancers Pay For:",
     clientsPayFor: "Clients Pay For:",
     freelancerCosts: [
@@ -348,8 +348,8 @@ export default async function UpworkPricingPage({ params }: Props) {
       { title: "Talent Scout (Optional):", text: "From $499/month for personalized talent matching" },
       { title: "Enterprise (Optional):", text: "10% flat fee for enterprise clients" }
     ],
-    freelancerFeeStructure: "Upwork Freelancer Fee Structure 2025: Variable Fee Model",
-    freelancerFeeIntro: "As of May 1, 2025, Upwork uses a revolutionary new variable fee system that replaces the old sliding scale model. Fees range from 0-15% per individual contract based on multiple factors:",
+    freelancerFeeStructure: "Upwork Freelancer Fee Structure 2026: Variable Fee Model",
+    freelancerFeeIntro: "As of May 1, 2026, Upwork uses a revolutionary new variable fee system that replaces the old sliding scale model. Fees range from 0-15% per individual contract based on multiple factors:",
     tier1Title: "Standard Contracts: 0-15% Variable",
     tier1Text: "For most contracts, Upwork determines a variable fee between 0-15% based on: (1) Project complexity - simpler work = higher fees, (2) Urgency - rush projects = higher fees, (3) Client history - new vs. returning clients, (4) Contract size - larger contracts may get lower fees. The exact percentage is shown before you accept.",
     tier1Fee: "Service Fee:",
@@ -375,9 +375,9 @@ export default async function UpworkPricingPage({ params }: Props) {
     ctaMidButton: "Free Rate Calculator",
     connectsSystem: "The Connects System: Paying to Bid",
     connectsIntro: "Upwork uses a 'Connects' system where freelancers spend Connects to submit proposals. This discourages spam proposals and helps clients receive relevant bids:",
-    connectsPricing: "Connects Pricing 2025",
+    connectsPricing: "Connects Pricing 2026",
     connectsPricingText: "Connects are earned free or purchased in bundles:",
-    freeConnects: "Free Connects (New in 2025)",
+    freeConnects: "Free Connects (New in 2026)",
     freeConnectsText: "40 Connects on signup | 10 Connects/month recurring | 30 Connects per badge earned | Max 200 Connects balance",
     purchasedConnects: "Purchased Connects",
     purchasedConnectsText: "$0.15 per Connect (available in bundles of 10, 20, 40, 60, 80, maximum 200 Connects balance)",
@@ -391,15 +391,15 @@ export default async function UpworkPricingPage({ params }: Props) {
     standardJobsText: "Mid-size projects, ongoing contracts, $100-500 budget",
     complexJobs: "Complex Jobs (12-16 Connects)",
     complexJobsText: "Large projects, $1,000+ budget, long-term contracts, specialized skills",
-    connectsTips: "Smart Tips to Save Connects (2025 Update)",
+    connectsTips: "Smart Tips to Save Connects (2026 Update)",
     connectsTipsList: [
       { title: "Earn Free Connects via Badges:", text: "Each badge gives 30 free Connects—focus on Rising Talent, Top Rated, Top Rated Plus badges" },
       { title: "Use Freelancer Plus Strategically:", text: "$19.99/month gets you 100 Connects (90+10)—breakeven is 7 proposals/month, plus 0% fee on Direct Contracts" },
       { title: "Focus on Any Hire & Direct Invites:", text: "These don't use Connects AND have 0% service fee—optimize your profile for invites" },
       { title: "Prioritize High-Value Jobs:", text: "Spend more Connects on large contracts where the ROI justifies it" }
     ],
-    clientFeesExplained: "Client Fees 2025: What Employers Pay",
-    clientFeesIntro: "While freelancers get most of the attention, clients also pay to use Upwork. In 2025, client fees were revised to a variable model:",
+    clientFeesExplained: "Client Fees 2026: What Employers Pay",
+    clientFeesIntro: "While freelancers get most of the attention, clients also pay to use Upwork. In 2026, client fees were revised to a variable model:",
     marketplaceFee: "Marketplace Fee (Up to 7.99%)",
     marketplaceFeeText: "All payments to freelancers include a marketplace fee of up to 7.99%. US clients paying with US bank accounts pay 3%. For a $1,000 project, an international client with credit card pays ~$1,079 total. This fee covers Upwork's escrow service, dispute resolution, payment processing, and platform maintenance.",
     marketplaceFeeExample: "Example: $1,000 project → $79 marketplace fee (max) → $1,079 total | US bank: $30 (3%)",
@@ -413,9 +413,9 @@ export default async function UpworkPricingPage({ params }: Props) {
     paypalFeeText: "Varies by country and amount",
     contractToHireFee: "Contract-to-Hire Conversion Fee",
     contractToHireFeeText: "If a client hires an Upwork freelancer outside the platform within 24 months, a conversion fee of $2,999 or 15% of their 12-month Upwork earnings (whichever is higher) is charged. This fee discourages circumventing Upwork's platform.",
-    freelancerPlusBreakdown: "Freelancer Plus 2025: Is $19.99/Month Worth It?",
-    freelancerPlusIntro: "Upwork's Freelancer Plus subscription costs $19.99/month (price increase from 2025) and offers powerful benefits. Whether it's valuable depends on how much you bid and whether you win Direct Contracts:",
-    plusBenefits: "Freelancer Plus Benefits (2025 Update)",
+    freelancerPlusBreakdown: "Freelancer Plus 2026: Is $19.99/Month Worth It?",
+    freelancerPlusIntro: "Upwork's Freelancer Plus subscription costs $19.99/month (price increase from 2026) and offers powerful benefits. Whether it's valuable depends on how much you bid and whether you win Direct Contracts:",
+    plusBenefits: "Freelancer Plus Benefits (2026 Update)",
     plusBenefitsList: [
       { title: "100 Connects/Month (90 + 10 recurring)", text: "Worth $15/month—this alone covers 75% of the subscription cost" },
       { title: "0% Service Fee on Direct Contracts", text: "The biggest value! If you win Direct Contracts, you pay 0% fee—this can save thousands of dollars" },
@@ -424,7 +424,7 @@ export default async function UpworkPricingPage({ params }: Props) {
       { title: "Custom Profile URL", text: "Custom URL for easier sharing and branding (e.g., upwork.com/fl/yourname)" },
       { title: "Profile Badge", text: "Visual badge shows commitment to platform and professionalism" }
     ],
-    worthItCalculation: "Is Freelancer Plus Worth It? (2025 Calculation)",
+    worthItCalculation: "Is Freelancer Plus Worth It? (2026 Calculation)",
     worthItCalculationText: "Let's break it down based on your bidding habits and Direct Contracts:",
     lowBidder: "Low Bidder (1-5 proposals/month, no Direct Contracts)",
     lowBidderText: "Probably not worth it—you're only using $7.50 in Connects, unless you really need Uma AI",
@@ -432,18 +432,18 @@ export default async function UpworkPricingPage({ params }: Props) {
     moderateBidderText: "Breakeven is ~7 proposals/month (100 Connects = $15 value). Valuable if you use Uma AI + competitor visibility",
     activeBidder: "Active Bidder or Direct Contract Focus (15+ proposals OR 1+ Direct Contract/month)",
     activeBidderText: "Absolutely worth it—100 free Connects + 0% fee on Direct Contracts = huge savings. One $1,000 Direct Contract saves $100-150 in fees!",
-    withdrawalFees: "Withdrawal Fees 2025: Getting Your Money",
-    withdrawalIntro: "Once you've earned on Upwork, you need to withdraw your money. Fees vary significantly by method (2025 update):",
-    withdrawalMethods: "Withdrawal Methods & Fees (2025)",
+    withdrawalFees: "Withdrawal Fees 2026: Getting Your Money",
+    withdrawalIntro: "Once you've earned on Upwork, you need to withdraw your money. Fees vary significantly by method (2026 update):",
+    withdrawalMethods: "Withdrawal Methods & Fees (2026)",
     directToUSBank: "US Bank Account (ACH) - FREE!",
-    directToUSBankText: "FREE for all US bank transfers via ACH (huge improvement in 2025, previously $0.99)",
+    directToUSBankText: "FREE for all US bank transfers via ACH (huge improvement in 2026, previously $0.99)",
     payoneer: "Local Bank Transfer",
     payoneerText: "$0.99 per transaction for local bank transfers (non-US)",
     paypalWithdrawal: "PayPal or Instant Pay",
     paypalWithdrawalText: "$2.00 fee per transaction for PayPal withdrawals or Instant Pay (increase from $1.00)",
     wireTransfer: "Wire Transfer",
     wireTransferText: "$50 fee per transaction (only for very large amounts, increase from $30)",
-    smartWithdrawalStrategy: "Smart Withdrawal Strategy 2025",
+    smartWithdrawalStrategy: "Smart Withdrawal Strategy 2026",
     smartWithdrawalStrategyText: "For US freelancers, the choice is simple—use FREE ACH transfers! International freelancers should use local bank transfer ($0.99) and do less frequent, larger withdrawals. Avoid PayPal ($2) and especially wire transfer ($50) unless absolutely necessary.",
     realWorldExamples: "Real-World Pricing Examples: How Much Do You Actually Earn?",
     realWorldIntro: "Let's look at what freelancers actually net after all Upwork fees, Connects costs, and withdrawals:",
@@ -531,8 +531,8 @@ export default async function UpworkPricingPage({ params }: Props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": locale === 'nl' ? "Upwork Prijzen 2025: Complete Kostengids voor Freelancers & Opdrachtgevers" : "Upwork Pricing 2025: Complete Fee Guide for Freelancers & Clients",
-    "description": locale === 'nl' ? "Complete Upwork prijzengids 2025: Variabel 0-15% tarief per contract, $0.15 Connects, Freelancer Plus €19.99/maand, client fees tot 7.99%, en strategieën om kosten te verlagen." : "Complete Upwork pricing guide 2025: Variable 0-15% fee per contract, $0.15 Connects, Freelancer Plus $19.99/month, client fees up to 7.99%, and strategies to reduce costs.",
+    "headline": locale === 'nl' ? "Upwork Prijzen 2026: Complete Kostengids voor Freelancers & Opdrachtgevers" : "Upwork Pricing 2026: Complete Fee Guide for Freelancers & Clients",
+    "description": locale === 'nl' ? "Complete Upwork prijzengids 2026: Variabel 0-15% tarief per contract, $0.15 Connects, Freelancer Plus €19.99/maand, client fees tot 7.99%, en strategieën om kosten te verlagen." : "Complete Upwork pricing guide 2026: Variable 0-15% fee per contract, $0.15 Connects, Freelancer Plus $19.99/month, client fees up to 7.99%, and strategies to reduce costs.",
     "author": {
       "@type": "Organization",
       "name": "SkillLinkup"
@@ -545,8 +545,8 @@ export default async function UpworkPricingPage({ params }: Props) {
         "url": "https://skilllinkup.com/images/logo/skilllinkup-transparant-rozepunt.webp"
       }
     },
-    "datePublished": "2025-01-25",
-    "dateModified": "2025-01-25"
+    "datePublished": "2026-01-25",
+    "dateModified": "2026-01-25"
   };
 
   return (
@@ -1168,7 +1168,7 @@ export default async function UpworkPricingPage({ params }: Props) {
                   <div className="space-y-4">
                     <div className="bg-gradient-to-r from-primary/10 to-primary/5 dark:from-primary/20 dark:to-primary/10 rounded-lg p-4 border-l-4 border-primary">
                       <div className="flex items-center justify-between">
-                        <span className="font-heading font-bold text-gray-900 dark:text-white">Upwork 2025</span>
+                        <span className="font-heading font-bold text-gray-900 dark:text-white">Upwork 2026</span>
                         <span className="text-primary font-bold">0-15% variable per contract</span>
                       </div>
                     </div>
