@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { SEO_NAVIGATION } from "@/lib/seo-navigation-data";
+import { SEO_NAVIGATION, getLocalizedSlug, getLocalizedSubPillarSlug } from "@/lib/seo-navigation-data";
 
 // Mapping between SEO_NAVIGATION ids and translation keys
 const CATEGORY_TRANSLATION_KEYS: Record<number, { category: string; guides: string[] }> = {
@@ -57,7 +57,7 @@ export function Footer() {
                       return (
                         <li key={subPillar.slug}>
                           <Link
-                            href={`/${locale}${subPillar.slug}`}
+                            href={`/${locale}${getLocalizedSubPillarSlug(subPillar, locale)}`}
                             className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors"
                           >
                             {guideName}
@@ -67,7 +67,7 @@ export function Footer() {
                     })}
                     <li>
                       <Link
-                        href={`/${locale}${pillar.slug}`}
+                        href={`/${locale}${getLocalizedSlug(pillar, locale)}`}
                         className="text-accent hover:text-accent-dark dark:text-accent dark:hover:text-accent-light transition-colors font-medium"
                       >
                         {t('footer.viewAll')}
@@ -130,7 +130,7 @@ export function Footer() {
             <h3 className="font-heading font-bold mb-4 text-text-primary dark:text-white">{t('footer.resources')}</h3>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link href={`/${locale}/guides`} className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
+                <Link href={`/${locale}/${locale === 'nl' ? 'gids' : 'guides'}`} className="text-text-secondary hover:text-accent dark:text-gray-400 dark:hover:text-accent transition-colors">
                   {t('footer.guidesTutorials')}
                 </Link>
               </li>

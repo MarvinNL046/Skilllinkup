@@ -39,18 +39,18 @@ function getPriority(pagePath: string): number {
   // Homepage
   if (pagePath === '/') return 1.0;
 
-  // Top-level important pages
-  if (['/platforms', '/blog', '/comparisons', '/reviews', '/tools'].includes(pagePath)) {
+  // Top-level important pages (including guides overview)
+  if (['/platforms', '/blog', '/comparisons', '/reviews', '/tools', '/gids', '/guides'].includes(pagePath)) {
     return 0.9;
   }
 
   // Pricing and "what is" pages (high SEO value)
-  if (pagePath.includes('pricing') || pagePath.includes('what-is-')) {
+  if (pagePath.includes('pricing') || pagePath.includes('what-is-') || pagePath.includes('wat-is-')) {
     return 0.9;
   }
 
   // Complete guides and main reviews
-  if (pagePath.includes('complete-guide') || pagePath.includes('review')) {
+  if (pagePath.includes('complete-guide') || pagePath.includes('review') || pagePath.includes('honest-review')) {
     return 0.85;
   }
 
@@ -64,7 +64,18 @@ function getPriority(pagePath: string): number {
     return 0.8;
   }
 
-  // Resource/guide pages
+  // SEO guide pages (gids/*)
+  if (pagePath.startsWith('/gids/')) {
+    // Pillar pages (e.g., /gids/platform-reviews)
+    const segments = pagePath.split('/').filter(Boolean);
+    if (segments.length === 2) {
+      return 0.85; // Pillar overview pages
+    }
+    // Sub-pillar pages (individual guides)
+    return 0.8;
+  }
+
+  // Resource/guide pages (legacy)
   if (pagePath.startsWith('/resources/')) {
     return 0.75;
   }
@@ -93,13 +104,23 @@ function getChangeFrequency(pagePath: string): 'daily' | 'weekly' | 'monthly' | 
   }
 
   // Pricing pages change frequently
-  if (pagePath.includes('pricing') || pagePath.includes('cost')) {
+  if (pagePath.includes('pricing') || pagePath.includes('cost') || pagePath.includes('kosten')) {
     return 'weekly';
   }
 
   // Platform listings and comparisons
   if (['/platforms', '/comparisons'].includes(pagePath) || pagePath.includes('-vs-')) {
     return 'weekly';
+  }
+
+  // Guide overview pages (updated frequently with new content)
+  if (['/gids', '/guides'].includes(pagePath)) {
+    return 'weekly';
+  }
+
+  // SEO guide pages - updated monthly
+  if (pagePath.startsWith('/gids/')) {
+    return 'monthly';
   }
 
   // Tool pages
@@ -113,12 +134,24 @@ function getChangeFrequency(pagePath: string): 'daily' | 'weekly' | 'monthly' | 
   }
 
   // Tax/insurance content
-  if (pagePath.includes('tax') || pagePath.includes('insurance')) {
+  if (pagePath.includes('tax') || pagePath.includes('insurance') || pagePath.includes('belasting')) {
     return 'yearly';
   }
 
   // Default
   return 'monthly';
+}
+
+/**
+ * Get locale-aware path for sitemap
+ * Converts /gids/* to /guides/* for English locale
+ */
+function getLocalizedPath(pagePath: string, locale: string): string {
+  // For English locale, use /guides instead of /gids
+  if (locale === 'en' && pagePath.startsWith('/gids')) {
+    return pagePath.replace('/gids', '/guides');
+  }
+  return pagePath;
 }
 
 /**
@@ -149,14 +182,17 @@ export function generateAutoSitemapEntries(): MetadataRoute.Sitemap {
     const changeFrequency = getChangeFrequency(page.path);
 
     locales.forEach((locale) => {
+      // Get locale-aware path (en uses /guides, nl uses /gids)
+      const localizedPath = getLocalizedPath(page.path, locale);
+
       sitemapEntries.push({
-        url: `${baseUrl}/${locale}${page.path}`,
+        url: `${baseUrl}/${locale}${localizedPath}`,
         lastModified: new Date(page.lastModified),
         changeFrequency,
         priority,
         alternates: {
           languages: Object.fromEntries(
-            locales.map((l) => [l, `${baseUrl}/${l}${page.path}`])
+            locales.map((l) => [l, `${baseUrl}/${l}${getLocalizedPath(page.path, l)}`])
           ),
         },
       });

@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, text, timestamp, integer, boolean, jsonb, pgPolicy, unique } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, text, timestamp, integer, boolean, jsonb, pgPolicy, unique, decimal } from 'drizzle-orm/pg-core';
 import { sql, relations } from 'drizzle-orm';
 
 // Tenants Table
@@ -245,3 +245,100 @@ export const ads = pgTable('ads', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
+
+// SEO Pages Table - Generated landing pages for SEO
+export const seoPages = pgTable('seo_pages', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  tenantId: uuid('tenant_id').references(() => tenants.id, { onDelete: 'cascade' }).notNull(),
+
+  // Content
+  title: varchar('title', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 500 }).notNull(),
+  metaTitle: varchar('meta_title', { length: 70 }),
+  metaDescription: varchar('meta_description', { length: 170 }),
+  h1: varchar('h1', { length: 255 }),
+  content: text('content').notNull(),
+  excerpt: text('excerpt'),
+
+  // Organization
+  pillarId: integer('pillar_id').notNull(),
+  pillarName: varchar('pillar_name', { length: 255 }).notNull(),
+  pillarSlug: varchar('pillar_slug', { length: 255 }).notNull(),
+  subpillarIndex: integer('subpillar_index').notNull(),
+
+  // SEO
+  keywords: jsonb('keywords').default([]),
+  schemaMarkup: jsonb('schema_markup'),
+  canonicalUrl: text('canonical_url'),
+
+  // Internal linking
+  internalLinks: jsonb('internal_links').default([]),
+
+  // Localization
+  locale: varchar('locale', { length: 5 }).default('nl').notNull(),
+  alternateUrls: jsonb('alternate_urls').default({}),
+
+  // Status
+  status: varchar('status', { length: 50 }).default('draft').notNull(),
+  publishedAt: timestamp('published_at'),
+
+  // Metrics
+  views: integer('views').default(0),
+  conversions: integer('conversions').default(0),
+
+  // Metadata
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  slugLocaleUnique: unique('seo_pages_slug_locale_unique').on(table.slug, table.locale),
+}));
+
+// SEO CTAs Table - Conversion tracking for landing pages
+export const seoCtas = pgTable('seo_ctas', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  tenantId: uuid('tenant_id').references(() => tenants.id, { onDelete: 'cascade' }).notNull(),
+  pageId: uuid('page_id').references(() => seoPages.id, { onDelete: 'cascade' }).notNull(),
+
+  // CTA Content
+  ctaText: varchar('cta_text', { length: 255 }).notNull(),
+  ctaType: varchar('cta_type', { length: 50 }).notNull(), // 'primary', 'secondary', 'tertiary'
+  ctaAction: text('cta_action').notNull(), // URL or action identifier
+  ctaPosition: varchar('cta_position', { length: 50 }).notNull(), // 'top', 'middle', 'bottom'
+
+  // Context
+  contextText: text('context_text'),
+  buttonStyle: varchar('button_style', { length: 100 }),
+
+  // Tracking
+  clicks: integer('clicks').default(0),
+  conversions: integer('conversions').default(0),
+  conversionRate: decimal('conversion_rate', { precision: 5, scale: 2 }).default('0'),
+
+  // A/B Testing
+  variant: varchar('variant', { length: 50 }).default('default'),
+  isActive: boolean('is_active').default(true),
+
+  // Metadata
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// SEO Pages Relations
+export const seoPagesRelations = relations(seoPages, ({ one, many }) => ({
+  tenant: one(tenants, {
+    fields: [seoPages.tenantId],
+    references: [tenants.id],
+  }),
+  ctas: many(seoCtas),
+}));
+
+export const seoCtasRelations = relations(seoCtas, ({ one }) => ({
+  page: one(seoPages, {
+    fields: [seoCtas.pageId],
+    references: [seoPages.id],
+  }),
+  tenant: one(tenants, {
+    fields: [seoCtas.tenantId],
+    references: [tenants.id],
+  }),
+}));

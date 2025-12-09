@@ -1,156 +1,347 @@
 // SEO Navigation Data
 // Shared between server and client components
+// Uses /guides for English and /gids for Dutch
 
 export interface SubPillar {
   name: string;
-  slug: string;
+  nameNl: string;
+  slug: string; // English slug
+  slugNl: string; // Dutch slug
   description: string;
 }
 
 export interface Pillar {
   id: number;
   name: string;
-  slug: string;
+  nameNl: string;
+  slug: string; // English: /guides
+  slugNl: string; // Dutch: /gids
   icon: string;
   subPillars: SubPillar[];
+}
+
+// Helper function to get locale-aware slug
+export function getLocalizedSlug(pillar: Pillar, locale: string): string {
+  return locale === 'nl' ? pillar.slugNl : pillar.slug;
+}
+
+export function getLocalizedSubPillarSlug(subPillar: SubPillar, locale: string): string {
+  return locale === 'nl' ? subPillar.slugNl : subPillar.slug;
+}
+
+export function getLocalizedName(item: { name: string; nameNl: string }, locale: string): string {
+  return locale === 'nl' ? item.nameNl : item.name;
 }
 
 export const SEO_NAVIGATION: Pillar[] = [
   {
     id: 1,
     name: "Platform Selection",
-    slug: "/resources",
+    nameNl: "Platform Selectie",
+    slug: "/guides/platform-selectie",
+    slugNl: "/gids/platform-selectie",
     icon: "🎯",
     subPillars: [
-      { name: "Choose Best Platform", slug: "/resources/choose-best-freelance-platform", description: "Complete guide to finding your ideal platform" },
-      { name: "Beginner vs Expert", slug: "/resources/beginner-vs-expert-platforms", description: "Platforms matched to your experience level" },
-      { name: "Key Selection Factors", slug: "/resources/key-factors-choosing-freelance-marketplace", description: "What to look for when choosing" },
-      { name: "Multiple Platforms", slug: "/resources/multiple-freelance-platforms-pros-cons", description: "Pros and cons of using multiple sites" },
-      { name: "Platform Quiz", slug: "/resources/platform-selection-quiz", description: "Interactive quiz to find your match" },
+      {
+        name: "Choose Best Platform",
+        nameNl: "Beste Platform Kiezen",
+        slug: "/guides/platform-selectie/beste-freelance-platform-kiezen",
+        slugNl: "/gids/platform-selectie/beste-freelance-platform-kiezen",
+        description: "Complete guide to finding your ideal platform"
+      },
+      {
+        name: "Beginner vs Expert",
+        nameNl: "Beginner vs Expert",
+        slug: "/guides/platform-selectie/beginner-vs-expert-platforms",
+        slugNl: "/gids/platform-selectie/beginner-vs-expert-platforms",
+        description: "Platforms matched to your experience level"
+      },
+      {
+        name: "Key Selection Factors",
+        nameNl: "Belangrijke Selectiefactoren",
+        slug: "/guides/platform-selectie/belangrijke-selectiefactoren",
+        slugNl: "/gids/platform-selectie/belangrijke-selectiefactoren",
+        description: "What to look for when choosing"
+      },
     ],
   },
   {
     id: 2,
     name: "Platform Reviews",
-    slug: "/resources",
+    nameNl: "Platform Reviews",
+    slug: "/guides/platform-reviews",
+    slugNl: "/gids/platform-reviews",
     icon: "⭐",
     subPillars: [
-      { name: "What is Upwork?", slug: "/resources/what-is-upwork", description: "Complete introduction to Upwork" },
-      { name: "What is Toptal?", slug: "/resources/what-is-toptal", description: "Elite talent network explained" },
-      { name: "Upwork Guide", slug: "/resources/upwork-complete-guide", description: "Everything you need to know about Upwork" },
-      { name: "Fiverr for Beginners", slug: "/resources/fiverr-beginner-guide", description: "Start selling on Fiverr today" },
-      { name: "Toptal Review", slug: "/resources/toptal-review", description: "Elite freelancers platform deep dive" },
-      { name: "Is Toptal Legit?", slug: "/resources/is-toptal-legit", description: "Trust, verification & real experiences" },
-      { name: "Freelancer.com", slug: "/resources/freelancer-platform-deep-dive", description: "Complete Freelancer.com analysis" },
-      { name: "Guru Platform", slug: "/resources/guru-platform-analysis", description: "Guru platform detailed review" },
+      {
+        name: "What is Upwork?",
+        nameNl: "Wat is Upwork?",
+        slug: "/guides/platform-reviews/upwork-honest-review-2026",
+        slugNl: "/gids/platform-reviews/wat-is-upwork",
+        description: "Complete introduction to Upwork"
+      },
+      {
+        name: "What is Toptal?",
+        nameNl: "Wat is Toptal?",
+        slug: "/guides/platform-reviews/toptal-worth-it",
+        slugNl: "/gids/platform-reviews/wat-is-toptal",
+        description: "Elite talent network explained"
+      },
+      {
+        name: "Fiverr Guide",
+        nameNl: "Fiverr Gids",
+        slug: "/guides/platform-reviews/fiverr-pros-cons-deep-dive",
+        slugNl: "/gids/platform-reviews/fiverr-beginners-gids",
+        description: "Everything you need to know about Fiverr"
+      },
     ],
   },
   {
     id: 3,
     name: "Pricing & Earnings",
-    slug: "/resources",
+    nameNl: "Prijzen & Verdienen",
+    slug: "/guides/prijzen-verdienen",
+    slugNl: "/gids/prijzen-verdienen",
     icon: "💰",
     subPillars: [
-      { name: "Calculate Rates", slug: "/resources/calculate-freelance-hourly-rate", description: "Find your perfect hourly rate" },
-      { name: "Pricing Strategies", slug: "/resources/freelance-pricing-strategies", description: "Advanced pricing techniques" },
-      { name: "Upwork Pricing", slug: "/resources/upwork-pricing", description: "Complete Upwork fee structure 2025" },
-      { name: "Toptal Pricing", slug: "/resources/toptal-pricing", description: "Toptal rates & business model" },
-      { name: "99designs Pricing", slug: "/resources/99designs-pricing", description: "Design contest & project costs" },
-      { name: "Upwork Pricing Tactics", slug: "/resources/upwork-pricing-tactics", description: "Upwork-specific pricing tips" },
-      { name: "Negotiate Rates", slug: "/resources/negotiate-higher-rates", description: "How to ask for more money" },
-      { name: "Maximize Earnings", slug: "/resources/platform-fees-maximize-earnings", description: "Beat platform fees and earn more" },
+      {
+        name: "Calculate Rates",
+        nameNl: "Uurtarief Berekenen",
+        slug: "/guides/prijzen-verdienen/freelance-rate-calculator-guide",
+        slugNl: "/gids/prijzen-verdienen/freelance-uurtarief-berekenen",
+        description: "Find your perfect hourly rate"
+      },
+      {
+        name: "Pricing Strategies",
+        nameNl: "Prijsstrategieën",
+        slug: "/guides/prijzen-verdienen/value-based-pricing-freelancers",
+        slugNl: "/gids/prijzen-verdienen/freelance-prijsstrategieen",
+        description: "Advanced pricing techniques"
+      },
+      {
+        name: "Platform Fees",
+        nameNl: "Platform Kosten",
+        slug: "/guides/prijzen-verdienen/platform-fee-optimization",
+        slugNl: "/gids/prijzen-verdienen/upwork-kosten",
+        description: "Minimize fees and maximize earnings"
+      },
     ],
   },
   {
     id: 4,
     name: "Getting Started",
-    slug: "/resources",
+    nameNl: "Aan de Slag",
+    slug: "/guides/aan-de-slag",
+    slugNl: "/gids/aan-de-slag",
     icon: "🚀",
     subPillars: [
-      { name: "Beginner's Guide", slug: "/resources/freelance-beginners-guide", description: "Your first steps as a freelancer" },
-      { name: "Toptal for Beginners", slug: "/resources/toptal-for-beginners", description: "Can beginners join Toptal?" },
-      { name: "Profile Templates", slug: "/resources/freelance-profile-templates", description: "Copy-paste profile templates" },
-      { name: "First Proposal", slug: "/resources/first-freelance-proposal", description: "Write proposals that win" },
-      { name: "Avoid Mistakes", slug: "/resources/freelance-beginner-mistakes", description: "Common mistakes to avoid" },
-      { name: "Platform Setup", slug: "/resources/freelance-platform-setup", description: "Set up your accounts correctly" },
+      {
+        name: "Beginner's Guide",
+        nameNl: "Beginners Gids",
+        slug: "/guides/aan-de-slag/first-client-in-30-days",
+        slugNl: "/gids/aan-de-slag/freelance-beginners-gids",
+        description: "Your first steps as a freelancer"
+      },
+      {
+        name: "Portfolio Building",
+        nameNl: "Profiel Templates",
+        slug: "/guides/aan-de-slag/freelance-portfolio-from-scratch",
+        slugNl: "/gids/aan-de-slag/freelance-profiel-templates",
+        description: "Build a stunning portfolio"
+      },
+      {
+        name: "First Proposal",
+        nameNl: "Eerste Voorstel",
+        slug: "/guides/aan-de-slag/profile-optimization-secrets",
+        slugNl: "/gids/aan-de-slag/eerste-freelance-voorstel",
+        description: "Write proposals that win"
+      },
     ],
   },
   {
     id: 5,
     name: "Tools & Productivity",
-    slug: "/resources",
+    nameNl: "Tools & Productiviteit",
+    slug: "/guides/tools-productiviteit",
+    slugNl: "/gids/tools-productiviteit",
     icon: "🛠️",
     subPillars: [
-      { name: "Essential Tools", slug: "/resources/essential-freelance-tools", description: "Must-have tools for freelancers" },
-      { name: "Time Tracking", slug: "/resources/best-time-tracking-tools-freelancers", description: "Track your time effectively" },
-      { name: "Invoice Generator", slug: "/resources/freelance-invoice-generator", description: "Create professional invoices" },
-      { name: "Project Management", slug: "/resources/project-management-tools-freelancers", description: "Manage projects like a pro" },
-      { name: "Accounting Software", slug: "/resources/freelance-accounting-software", description: "Handle your finances" },
+      {
+        name: "Essential Tools",
+        nameNl: "Essentiële Tools",
+        slug: "/guides/tools-productiviteit/ai-tools-for-freelancers",
+        slugNl: "/gids/tools-productiviteit/essentiele-freelance-tools",
+        description: "Must-have tools for freelancers"
+      },
+      {
+        name: "Time Tracking",
+        nameNl: "Tijdregistratie",
+        slug: "/guides/tools-productiviteit/productivity-systems-freelancers",
+        slugNl: "/gids/tools-productiviteit/beste-tijdregistratie-tools",
+        description: "Track your time effectively"
+      },
+      {
+        name: "Automation",
+        nameNl: "Automatisering",
+        slug: "/guides/tools-productiviteit/automation-workflows-freelance",
+        slugNl: "/gids/tools-productiviteit/projectmanagement-tools",
+        description: "Automate your workflow"
+      },
     ],
   },
   {
     id: 6,
     name: "Platform Comparisons",
-    slug: "/resources",
+    nameNl: "Platform Vergelijkingen",
+    slug: "/guides/platform-vergelijkingen",
+    slugNl: "/gids/platform-vergelijkingen",
     icon: "⚖️",
     subPillars: [
-      { name: "Upwork vs Fiverr", slug: "/resources/upwork-vs-fiverr", description: "Which platform is better?" },
-      { name: "Toptal vs Upwork", slug: "/resources/toptal-vs-upwork", description: "Premium vs mainstream" },
-      { name: "Freelancer vs Guru", slug: "/resources/freelancer-vs-guru", description: "Head-to-head comparison" },
-      { name: "Best for Writers", slug: "/resources/best-platform-writers", description: "Top platforms for content creators" },
-      { name: "Best for Designers", slug: "/resources/best-platform-designers", description: "Where designers thrive" },
+      {
+        name: "Upwork vs Fiverr",
+        nameNl: "Upwork vs Fiverr",
+        slug: "/guides/platform-vergelijkingen/upwork-vs-fiverr",
+        slugNl: "/gids/platform-vergelijkingen/upwork-vs-fiverr",
+        description: "Which platform is better?"
+      },
+      {
+        name: "Toptal vs Upwork",
+        nameNl: "Toptal vs Upwork",
+        slug: "/guides/platform-vergelijkingen/upwork-vs-toptal-detailed",
+        slugNl: "/gids/platform-vergelijkingen/toptal-vs-upwork",
+        description: "Premium vs mainstream"
+      },
+      {
+        name: "Best for Designers",
+        nameNl: "Beste voor Designers",
+        slug: "/guides/platform-vergelijkingen/best-platforms-by-skill",
+        slugNl: "/gids/platform-vergelijkingen/beste-platform-designers",
+        description: "Where designers thrive"
+      },
     ],
   },
   {
     id: 7,
     name: "Success Strategies",
-    slug: "/resources",
+    nameNl: "Succes Strategieën",
+    slug: "/guides/succes-strategieen",
+    slugNl: "/gids/succes-strategieen",
     icon: "🎓",
     subPillars: [
-      { name: "Stand Out", slug: "/resources/how-to-stand-out-on-crowded-freelance-platforms", description: "Get noticed on busy platforms" },
-      { name: "Bidding Strategies", slug: "/resources/advanced-bidding-strategies-to-win-more-freelance-projects", description: "Win more projects with smart bidding" },
-      { name: "Client Relationships", slug: "/resources/building-long-term-client-relationships-on-freelance-platforms", description: "Build lasting client partnerships" },
-      { name: "5-Star Reviews", slug: "/resources/how-to-get-5-star-reviews-on-every-freelance-project", description: "Consistently earn perfect ratings" },
-      { name: "Scale Your Business", slug: "/resources/scaling-your-freelance-business-from-solo-to-agency", description: "Grow from solo to agency" },
+      {
+        name: "Stand Out",
+        nameNl: "Opvallen",
+        slug: "/guides/succes-strategieen/top-rated-freelancer-secrets",
+        slugNl: "/gids/succes-strategieen/opvallen-op-freelance-platforms",
+        description: "Get noticed on busy platforms"
+      },
+      {
+        name: "Winning Proposals",
+        nameNl: "Winnende Voorstellen",
+        slug: "/guides/succes-strategieen/winning-proposals-templates",
+        slugNl: "/gids/succes-strategieen/geavanceerde-biedstrategieen",
+        description: "Win more projects"
+      },
+      {
+        name: "Client Retention",
+        nameNl: "Klantrelaties",
+        slug: "/guides/succes-strategieen/client-retention-strategies",
+        slugNl: "/gids/succes-strategieen/langdurige-klantrelaties",
+        description: "Build lasting partnerships"
+      },
     ],
   },
   {
     id: 8,
     name: "Niche Guides",
-    slug: "/resources",
+    nameNl: "Niche Gidsen",
+    slug: "/guides/niche-gidsen",
+    slugNl: "/gids/niche-gidsen",
     icon: "💼",
     subPillars: [
-      { name: "For Developers", slug: "/resources/best-freelance-platforms-web-developers-2025", description: "Best platforms for web developers" },
-      { name: "For Designers", slug: "/resources/top-freelance-platforms-graphic-designers-creatives", description: "Where designers find work" },
-      { name: "For Writers", slug: "/resources/best-platforms-freelance-writers-content-creators", description: "Top writing platforms" },
-      { name: "For VAs", slug: "/resources/freelance-platforms-virtual-assistants-complete-guide", description: "Virtual assistant opportunities" },
-      { name: "For Marketers", slug: "/resources/best-freelance-platforms-marketing-consultants", description: "Marketing consultant platforms" },
+      {
+        name: "For Developers",
+        nameNl: "Voor Developers",
+        slug: "/guides/niche-gidsen/platforms-for-developers-2026",
+        slugNl: "/gids/niche-gidsen/beste-platforms-webdevelopers",
+        description: "Best platforms for web developers"
+      },
+      {
+        name: "For Designers",
+        nameNl: "Voor Designers",
+        slug: "/guides/niche-gidsen/video-editor-freelance-guide",
+        slugNl: "/gids/niche-gidsen/beste-platforms-grafisch-designers",
+        description: "Where designers find work"
+      },
+      {
+        name: "For Writers",
+        nameNl: "Voor Schrijvers",
+        slug: "/guides/niche-gidsen/platforms-for-copywriters",
+        slugNl: "/gids/niche-gidsen/beste-platforms-schrijvers",
+        description: "Top writing platforms"
+      },
     ],
   },
   {
     id: 9,
     name: "Business Management",
-    slug: "/resources",
+    nameNl: "Zakelijk Beheer",
+    slug: "/guides/zakelijk-beheer",
+    slugNl: "/gids/zakelijk-beheer",
     icon: "📊",
     subPillars: [
-      { name: "Invoicing", slug: "/resources/freelance-invoicing-guide", description: "Professional invoicing practices" },
-      { name: "Taxes", slug: "/resources/freelance-tax-guide", description: "Navigate freelance taxes" },
-      { name: "Contracts", slug: "/resources/freelance-contracts-101", description: "Protect yourself with contracts" },
-      { name: "Multiple Clients", slug: "/resources/managing-multiple-clients", description: "Juggle multiple projects" },
-      { name: "Insurance", slug: "/resources/freelance-business-insurance", description: "Do you need insurance?" },
+      {
+        name: "Invoicing",
+        nameNl: "Factureren",
+        slug: "/guides/zakelijk-beheer/invoicing-best-practices",
+        slugNl: "/gids/zakelijk-beheer/freelance-factureren-gids",
+        description: "Professional invoicing practices"
+      },
+      {
+        name: "Taxes",
+        nameNl: "Belastingen",
+        slug: "/guides/zakelijk-beheer/freelance-taxes-international",
+        slugNl: "/gids/zakelijk-beheer/freelance-belasting-gids",
+        description: "Navigate freelance taxes"
+      },
+      {
+        name: "Contracts",
+        nameNl: "Contracten",
+        slug: "/guides/zakelijk-beheer/freelance-legal-structure",
+        slugNl: "/gids/zakelijk-beheer/freelance-contracten-101",
+        description: "Protect yourself with contracts"
+      },
     ],
   },
   {
     id: 10,
     name: "Best Practices",
-    slug: "/resources",
+    nameNl: "Best Practices",
+    slug: "/guides/best-practices",
+    slugNl: "/gids/best-practices",
     icon: "✨",
     subPillars: [
-      { name: "Profile Optimization", slug: "/resources/optimizing-freelance-profile-maximum-visibility", description: "Get found by clients" },
-      { name: "Winning Proposals", slug: "/resources/how-to-write-proposals-that-win", description: "Proposals that convert" },
-      { name: "Platform Algorithms", slug: "/resources/mastering-freelance-platform-algorithms", description: "Hack the algorithm" },
-      { name: "Portfolio Building", slug: "/resources/building-portfolio-that-converts", description: "Showcase your best work" },
-      { name: "Client Communication", slug: "/resources/freelance-platform-communication", description: "Impress clients with communication" },
+      {
+        name: "Avoid Burnout",
+        nameNl: "Profiel Optimaliseren",
+        slug: "/guides/best-practices/avoiding-freelance-burnout",
+        slugNl: "/gids/best-practices/profiel-optimaliseren",
+        description: "Self-care for freelancers"
+      },
+      {
+        name: "Work-Life Balance",
+        nameNl: "Winnende Voorstellen",
+        slug: "/guides/best-practices/work-life-balance-remote",
+        slugNl: "/gids/best-practices/winnende-voorstellen-schrijven",
+        description: "Balance work and life"
+      },
+      {
+        name: "Networking",
+        nameNl: "Platform Algoritmes",
+        slug: "/guides/best-practices/freelance-networking-strategies",
+        slugNl: "/gids/best-practices/platform-algoritmes-beheersen",
+        description: "Build your network"
+      },
     ],
   },
 ];

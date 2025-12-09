@@ -23,6 +23,8 @@
     "db:import-platforms": "npx tsx scripts/import-platforms.ts",
     "db:import-tools": "npx tsx scripts/import-tools.ts",
     "db:translate-platforms": "node scripts/translate-platforms.mjs",
+    "db:migrate-seo": "node scripts/run-migration-0009.mjs",
+    "db:seed-seo": "node scripts/seed-seo-pages.mjs",
     "email:preview": "npx tsx scripts/preview-emails.ts"
   },
   "dependencies": {

@@ -1,5 +1,8 @@
 import createMiddleware from 'next-intl/middleware';
 
+// Note: /en/guides to /en/gids rewrites are handled in next.config.js
+// This middleware only handles locale detection and routing
+
 export default createMiddleware({
   // All supported locales
   locales: ['en', 'nl'],
@@ -23,7 +26,7 @@ export const config = {
     // Match root path
     '/',
 
-    // Match all paths with supported locales
+    // Match all paths with supported locales (including /en/guides which gets rewritten)
     '/(en|nl)/:path*',
 
     // Exclude specific paths (negative lookahead)

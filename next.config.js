@@ -41,6 +41,25 @@ const nextConfig = {
       },
     ]
   },
+
+  // URL rewrites for locale-specific paths
+  // English uses /guides, Dutch uses /gids, both serve from /gids routes
+  async rewrites() {
+    return {
+      beforeFiles: [
+        // Rewrite /en/guides to /en/gids (overview page)
+        {
+          source: '/en/guides',
+          destination: '/en/gids',
+        },
+        // Rewrite /en/guides/:path* to /en/gids/:path* (sub-pages)
+        {
+          source: '/en/guides/:path*',
+          destination: '/en/gids/:path*',
+        },
+      ],
+    }
+  },
 }
 
 module.exports = withNextIntl(nextConfig);

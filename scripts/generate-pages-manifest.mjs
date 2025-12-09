@@ -37,6 +37,7 @@ const SKIP_PATTERNS = [
 
 /**
  * Recursively discover all pages in a directory
+ * Now also scans directories without page.tsx for nested pages (e.g., /gids/platform-reviews/*)
  */
 function discoverPages(dir, basePath = '') {
   const pages = [];
@@ -82,11 +83,12 @@ function discoverPages(dir, basePath = '') {
           lastModified,
           hasSubpages,
         });
-
-        // Recursively discover subpages
-        const subPages = discoverPages(fullPath, urlPath);
-        pages.push(...subPages);
       }
+
+      // ALWAYS recursively scan subdirectories, even if parent has no page.tsx
+      // This ensures we find pages like /gids/platform-reviews/upwork-honest-review-2026
+      const subPages = discoverPages(fullPath, urlPath);
+      pages.push(...subPages);
     }
   } catch (error) {
     console.error(`Error scanning directory ${dir}:`, error);
