@@ -3,7 +3,7 @@ import { drizzle } from 'drizzle-orm/neon-http';
 import { neon } from '@neondatabase/serverless';
 import * as schema from '../drizzle/schema';
 
-// Use DATABASE_URL for local development and Netlify production
+// Use DATABASE_URL for local development and production
 const connectionString = process.env.DATABASE_URL || process.env.NETLIFY_DATABASE_URL || '';
 
 if (!connectionString) {

@@ -7,9 +7,8 @@ const nextConfig = {
   reactStrictMode: true,
   basePath: process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_BASEPATH : "",
 
-  // Image optimization configuration
+  // Image optimization configuration (Vercel provides built-in optimization)
   images: {
-    unoptimized: true, // Disable image optimization for Netlify
     remotePatterns: [
       {
         protocol: 'https',
@@ -19,17 +18,16 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'cdn.skilllinkup.com',
       },
-      // Add other external image domains as needed
-      // Example: unsplash, cloudinary, etc.
     ],
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
 
-  // CORS headers
+  // Headers: CORS + Security + Cache
   async headers() {
     return [
+      // CORS headers for API routes (admin dashboard access)
       {
         source: '/api/:path*',
         headers: [
@@ -39,7 +37,30 @@ const nextConfig = {
           { key: 'Access-Control-Allow-Headers', value: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization' },
         ],
       },
-    ]
+      // Security headers (all pages)
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+        ],
+      },
+      // Cache static assets (immutable)
+      {
+        source: '/images/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+      {
+        source: '/fonts/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+    ];
   },
 
   // URL rewrites for locale-specific paths
@@ -47,12 +68,10 @@ const nextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
-        // Rewrite /en/guides to /en/gids (overview page)
         {
           source: '/en/guides',
           destination: '/en/gids',
         },
-        // Rewrite /en/guides/:path* to /en/gids/:path* (sub-pages)
         {
           source: '/en/guides/:path*',
           destination: '/en/gids/:path*',

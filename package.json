@@ -44,7 +44,6 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@netlify/plugin-nextjs": "^5.13.5",
     "@playwright/test": "^1.55.1",
     "@tailwindcss/typography": "^0.5.19",
     "@types/node": "^20",

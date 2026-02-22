@@ -12,7 +12,7 @@ export async function GET(request: Request) {
   try {
     // Edge Functions provide geo data automatically
     const geo = {
-      // Netlify Edge Functions provide these headers
+      // Vercel Edge Runtime provides these headers
       country: request.headers.get('x-country') || 'unknown',
       region: request.headers.get('x-subdivision-code') || 'unknown',
       city: request.headers.get('x-city') || 'unknown',
