@@ -3,14 +3,21 @@ const nextConfig = {
   reactStrictMode: true,
   basePath: process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_BASEPATH : "",
 
-  // Image optimization configuration
+  // Image optimization (Vercel provides built-in optimization)
   images: {
-    unoptimized: true, // Disable image optimization for Netlify
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.skilllinkup.com',
+      },
+    ],
+    formats: ['image/avif', 'image/webp'],
   },
 
-  // CORS headers
+  // Headers: CORS + Security
   async headers() {
     return [
+      // CORS headers for API routes
       {
         source: '/api/:path*',
         headers: [
@@ -20,9 +27,18 @@ const nextConfig = {
           { key: 'Access-Control-Allow-Headers', value: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization' },
         ],
       },
-    ]
+      // Security headers (all pages)
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+        ],
+      },
+    ];
   },
 }
 
 module.exports = nextConfig
-
