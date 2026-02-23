@@ -2018,7 +2018,27 @@
     "reviews": "beoordelingen",
     "orders": "opdrachten",
     "clearFilters": "Filters Wissen",
-    "showingResults": "{count} resultaten"
+    "showingResults": "{count} resultaten",
+    "gigDetail": {
+      "aboutSeller": "Over de Verkoper",
+      "orderNow": "Nu Bestellen",
+      "contactSeller": "Contact Verkoper",
+      "delivery": "Levertijd",
+      "days": "dagen",
+      "revisions": "Revisies",
+      "features": "Inclusief",
+      "description": "Beschrijving",
+      "reviews": "Beoordelingen",
+      "noReviews": "Nog geen beoordelingen",
+      "relatedGigs": "Gerelateerde Diensten",
+      "basic": "Basis",
+      "standard": "Standaard",
+      "premium": "Premium",
+      "completedOrders": "bestellingen afgerond",
+      "memberSince": "Lid sinds",
+      "responseTime": "Reactietijd",
+      "hours": "uur"
+    }
   },
   "freelancers": {
     "title": "Vind Freelancers",

@@ -2018,7 +2018,27 @@
     "reviews": "reviews",
     "orders": "orders",
     "clearFilters": "Clear Filters",
-    "showingResults": "Showing {count} results"
+    "showingResults": "Showing {count} results",
+    "gigDetail": {
+      "aboutSeller": "About the Seller",
+      "orderNow": "Order Now",
+      "contactSeller": "Contact Seller",
+      "delivery": "Delivery",
+      "days": "days",
+      "revisions": "Revisions",
+      "features": "Features included",
+      "description": "Description",
+      "reviews": "Reviews",
+      "noReviews": "No reviews yet",
+      "relatedGigs": "Related Gigs",
+      "basic": "Basic",
+      "standard": "Standard",
+      "premium": "Premium",
+      "completedOrders": "orders completed",
+      "memberSince": "Member since",
+      "responseTime": "Response time",
+      "hours": "hours"
+    }
   },
   "freelancers": {
     "title": "Find Freelancers",
