@@ -2382,5 +2382,20 @@
     "approved": "Goedgekeurd",
     "noMilestones": "Nog geen mijlpalen aangemaakt",
     "clientCreatePrompt": "Maak mijlpalen aan om het project op te delen in leverbare fases."
+  },
+  "localServices": {
+    "title": "Lokale Diensten",
+    "heroTitle": "Vind Lokale Freelancers Bij Jou In De Buurt",
+    "heroSubtitle": "Maak contact met vakkundige professionals in jouw regio",
+    "searchPlaceholder": "Voer stad of postcode in...",
+    "radius": "Zoekradius",
+    "km": "km",
+    "useMyLocation": "Gebruik mijn locatie",
+    "searching": "Zoeken...",
+    "noResults": "Geen freelancers gevonden in dit gebied",
+    "tryLargerRadius": "Probeer de zoekradius te vergroten",
+    "kmAway": "km afstand",
+    "popularCategories": "Populaire Lokale Diensten",
+    "results": "resultaten gevonden"
   }
 }

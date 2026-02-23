@@ -2382,5 +2382,20 @@
     "approved": "Approved",
     "noMilestones": "No milestones created yet",
     "clientCreatePrompt": "Create milestones to break down the project into deliverable phases."
+  },
+  "localServices": {
+    "title": "Local Services",
+    "heroTitle": "Find Local Freelancers Near You",
+    "heroSubtitle": "Connect with skilled professionals in your area",
+    "searchPlaceholder": "Enter city or postcode...",
+    "radius": "Search Radius",
+    "km": "km",
+    "useMyLocation": "Use my location",
+    "searching": "Searching...",
+    "noResults": "No freelancers found in this area",
+    "tryLargerRadius": "Try increasing your search radius",
+    "kmAway": "km away",
+    "popularCategories": "Popular Local Services",
+    "results": "results found"
   }
 }
