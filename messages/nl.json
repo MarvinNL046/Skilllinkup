@@ -1968,5 +1968,26 @@
         }
       }
     }
+  },
+  "auth": {
+    "signIn": "Inloggen",
+    "signUp": "Registreren",
+    "email": "E-mailadres",
+    "password": "Wachtwoord",
+    "confirmPassword": "Bevestig wachtwoord",
+    "fullName": "Volledige naam",
+    "continueWithGoogle": "Doorgaan met Google",
+    "or": "of",
+    "noAccount": "Nog geen account?",
+    "hasAccount": "Heb je al een account?",
+    "signUpAs": "Registreer als",
+    "client": "Opdrachtgever",
+    "clientDesc": "Ik wil freelancers inhuren",
+    "freelancer": "Freelancer",
+    "freelancerDesc": "Ik wil mijn diensten aanbieden",
+    "passwordMismatch": "Wachtwoorden komen niet overeen",
+    "signUpSuccess": "Account aangemaakt! Log nu in.",
+    "invalidCredentials": "Ongeldig e-mailadres of wachtwoord",
+    "emailExists": "Dit e-mailadres is al geregistreerd"
   }
 }
