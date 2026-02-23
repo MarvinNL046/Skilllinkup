@@ -2297,5 +2297,20 @@
     "deliverySuccess": "Bestelling succesvol geleverd!",
     "approveSuccess": "Bestelling goedgekeurd! Betaling is vrijgegeven.",
     "revisionSuccess": "Revisie succesvol aangevraagd."
+  },
+  "messages": {
+    "title": "Berichten",
+    "noConversations": "Nog geen gesprekken",
+    "noConversationsDesc": "Start een gesprek door contact op te nemen met een freelancer of opdrachtgever.",
+    "searchConversations": "Gesprekken zoeken...",
+    "typeMessage": "Typ een bericht...",
+    "send": "Versturen",
+    "you": "Jij",
+    "today": "Vandaag",
+    "yesterday": "Gisteren",
+    "online": "Online",
+    "selectConversation": "Selecteer een gesprek om te chatten",
+    "newMessage": "Nieuw Bericht",
+    "unread": "ongelezen"
   }
 }

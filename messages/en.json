@@ -2297,5 +2297,20 @@
     "deliverySuccess": "Order delivered successfully!",
     "approveSuccess": "Order approved! Payment has been released.",
     "revisionSuccess": "Revision requested successfully."
+  },
+  "messages": {
+    "title": "Messages",
+    "noConversations": "No conversations yet",
+    "noConversationsDesc": "Start a conversation by contacting a freelancer or client.",
+    "searchConversations": "Search conversations...",
+    "typeMessage": "Type a message...",
+    "send": "Send",
+    "you": "You",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "online": "Online",
+    "selectConversation": "Select a conversation to start chatting",
+    "newMessage": "New Message",
+    "unread": "unread"
   }
 }
