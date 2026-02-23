@@ -200,6 +200,14 @@
       "errorMessage": "Something went wrong. Please try again.",
       "failedMessage": "Failed to subscribe. Please try again later.",
       "trustBadge": "No spam. Unsubscribe anytime."
+    },
+    "marketplace": {
+      "title": "Popular Freelance Services",
+      "subtitle": "Hire talented professionals for your next project",
+      "browseAll": "Browse All Services",
+      "topCategories": "Top Categories",
+      "startHiring": "Start Hiring Freelancers",
+      "noGigsYet": "Marketplace coming soon! Browse our freelancer categories."
     }
   },
   "platformFilters": {

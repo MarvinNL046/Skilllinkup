@@ -200,6 +200,14 @@
       "errorMessage": "Er is iets misgegaan. Probeer het opnieuw.",
       "failedMessage": "Inschrijving mislukt. Probeer het later opnieuw.",
       "trustBadge": "Geen spam. Uitschrijven is altijd mogelijk."
+    },
+    "marketplace": {
+      "title": "Populaire Freelance Diensten",
+      "subtitle": "Huur getalenteerde professionals voor je volgende project",
+      "browseAll": "Alle Diensten Bekijken",
+      "topCategories": "Top Categorieën",
+      "startHiring": "Begin met het Inhuren van Freelancers",
+      "noGigsYet": "Marktplaats binnenkort beschikbaar! Bekijk onze freelancer categorieën."
     }
   },
   "platformFilters": {

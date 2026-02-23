@@ -97,10 +97,11 @@ async function _getMarketplaceCategorySlugs(): Promise<MarketplaceCategoryRow[]>
 }
 
 // ============================================================
-// Cache + tags zodat revalidateTag('sitemap') deze data ongeldig kan maken
-// Note: Cache keys now include locale for separate caching
+// Cache + tags
 // ============================================================
 
+// Cache + tags zodat revalidateTag('sitemap') deze data ongeldig kan maken
+// Note: Cache keys now include locale for separate caching
 export const getPostsCached = (locale: string) =>
   unstable_cache(_getPosts, [`sitemap:posts:${locale}`], {
     tags: ["sitemap"],
