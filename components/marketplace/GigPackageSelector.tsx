@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Check, Clock, RefreshCw, MessageCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { AuthGate } from '@/components/AuthGate';
 
 interface GigPackage {
   id: string;
@@ -157,19 +158,23 @@ export function GigPackageSelector({
 
         {/* CTA buttons */}
         <div className="space-y-2 pt-2">
-          <Link
-            href={checkoutHref}
-            className="block w-full text-center py-3 px-4 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg transition-colors duration-200 text-sm"
-          >
-            {t('gigDetail.orderNow')} — {formatCurrency(activePackage.price, activePackage.currency)}
-          </Link>
-          <Link
-            href={contactHref}
-            className="flex items-center justify-center gap-2 w-full py-2.5 px-4 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary font-medium rounded-lg transition-colors duration-200 text-sm"
-          >
-            <MessageCircle className="w-4 h-4" />
-            {t('gigDetail.contactSeller')}
-          </Link>
+          <AuthGate>
+            <Link
+              href={checkoutHref}
+              className="block w-full text-center py-3 px-4 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg transition-colors duration-200 text-sm"
+            >
+              {t('gigDetail.orderNow')} — {formatCurrency(activePackage.price, activePackage.currency)}
+            </Link>
+          </AuthGate>
+          <AuthGate>
+            <Link
+              href={contactHref}
+              className="flex items-center justify-center gap-2 w-full py-2.5 px-4 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary font-medium rounded-lg transition-colors duration-200 text-sm"
+            >
+              <MessageCircle className="w-4 h-4" />
+              {t('gigDetail.contactSeller')}
+            </Link>
+          </AuthGate>
         </div>
       </div>
     </div>

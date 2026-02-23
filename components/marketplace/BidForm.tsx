@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Send, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { AuthGate } from '@/components/AuthGate';
 
 interface BidFormProps {
   projectId: string;
@@ -165,23 +166,25 @@ export function BidForm({ projectId, currency = 'EUR' }: BidFormProps) {
       )}
 
       {/* Submit */}
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-      >
-        {loading ? (
-          <>
-            <Loader2 className="w-4 h-4 animate-spin" />
-            Submitting...
-          </>
-        ) : (
-          <>
-            <Send className="w-4 h-4" />
-            {t('submitBid')}
-          </>
-        )}
-      </button>
+      <AuthGate>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Submitting...
+            </>
+          ) : (
+            <>
+              <Send className="w-4 h-4" />
+              {t('submitBid')}
+            </>
+          )}
+        </button>
+      </AuthGate>
     </form>
   );
 }

@@ -12,6 +12,7 @@ import {
   Calendar,
   Tag,
 } from 'lucide-react';
+import { AuthGate } from '@/components/AuthGate';
 
 interface Category {
   id: string;
@@ -281,23 +282,25 @@ export function QuoteRequestForm({ categories, locale }: QuoteRequestFormProps) 
       )}
 
       {/* Submit */}
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-      >
-        {loading ? (
-          <>
-            <Loader2 className="w-4 h-4 animate-spin" />
-            {t('submitting')}
-          </>
-        ) : (
-          <>
-            <Send className="w-4 h-4" />
-            {t('submitRequest')}
-          </>
-        )}
-      </button>
+      <AuthGate>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              {t('submitting')}
+            </>
+          ) : (
+            <>
+              <Send className="w-4 h-4" />
+              {t('submitRequest')}
+            </>
+          )}
+        </button>
+      </AuthGate>
     </form>
   );
 }

@@ -2590,5 +2590,11 @@
     "openedOn": "Opened on",
     "resolvedOn": "Resolved on",
     "existingDispute": "A dispute is already open for this order"
+  },
+  "authGate": {
+    "title": "Create an account to continue",
+    "description": "Sign up for free to order services, contact freelancers, and manage your projects on SkillLinkup.",
+    "signUp": "Create Free Account",
+    "signIn": "Already have an account? Sign in"
   }
 }

@@ -2590,5 +2590,11 @@
     "openedOn": "Geopend op",
     "resolvedOn": "Opgelost op",
     "existingDispute": "Er is al een geschil geopend voor deze bestelling"
+  },
+  "authGate": {
+    "title": "Maak een account aan om verder te gaan",
+    "description": "Registreer gratis om diensten te bestellen, freelancers te contacteren en je projecten te beheren op SkillLinkup.",
+    "signUp": "Gratis Account Aanmaken",
+    "signIn": "Heb je al een account? Inloggen"
   }
 }
