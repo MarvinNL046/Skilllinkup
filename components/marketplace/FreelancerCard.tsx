@@ -6,6 +6,7 @@ import { Star, MapPin, CheckCircle, Clock } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { safeImage, safeText, safeArray, safeNumber } from '@/lib/safe';
 import type { FreelancerProfile } from '@/lib/marketplace-queries';
+import { FreelancerBadges } from '@/components/marketplace/FreelancerBadges';
 
 interface FreelancerCardProps {
   freelancer: FreelancerProfile;
@@ -78,6 +79,22 @@ export function FreelancerCard({ freelancer }: FreelancerCardProps) {
               </p>
             )}
           </div>
+        </div>
+
+        {/* Badges Row */}
+        <div className="mb-3">
+          <FreelancerBadges
+            profile={{
+              is_verified: freelancer.is_verified,
+              rating_average: safeNumber(freelancer.rating_average, 0),
+              rating_count: safeNumber(freelancer.rating_count, 0),
+              total_orders: safeNumber(freelancer.total_orders, 0),
+              completion_rate: safeNumber(freelancer.completion_rate, 0),
+              created_at: freelancer.created_at,
+            }}
+            locale={locale}
+            layout="inline"
+          />
         </div>
 
         {/* Rating Row */}
