@@ -43,6 +43,12 @@ export function Header() {
             >
               {t('header.platforms')}
             </Link>
+            <Link
+              href={`/${locale}/marketplace`}
+              className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors"
+            >
+              {t('header.marketplace')}
+            </Link>
             <SeoMegaMenu />
             <Link
               href={`/${locale}/reviews`}
@@ -130,6 +136,13 @@ export function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {t('header.platforms')}
+              </Link>
+              <Link
+                href={`/${locale}/marketplace`}
+                className="text-sm font-medium text-text-secondary dark:text-gray-300 hover:text-accent dark:hover:text-accent px-2 py-1"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {t('header.marketplace')}
               </Link>
               <SeoMegaMenu isMobile onLinkClick={() => setMobileMenuOpen(false)} />
               <Link
