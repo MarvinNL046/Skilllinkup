@@ -7,7 +7,7 @@
  *   - accounts          (Auth.js OAuth account links)
  *   - sessions          (Auth.js user sessions)
  *   - verification_tokens (Auth.js email verification)
- *   - users extensions  (user_type, image, email_verified_at columns + indexes)
+ *   - users extensions  (user_type, image, email_verified columns + indexes)
  *   - freelancer_profiles
  *   - marketplace_categories
  *   - skills
@@ -35,11 +35,43 @@ async function run() {
   );
   const migration = readFileSync(migrationPath, 'utf-8');
 
-  // Split by semicolons, handling $$ blocks for functions
-  const statements = migration
-    .split(';')
-    .map(s => s.trim())
-    .filter(s => s.length > 0 && !s.startsWith('--'));
+  // Split by semicolons, but preserve $$ function bodies
+  const statements = [];
+  let current = '';
+  let inDollarBlock = false;
+
+  for (const line of migration.split('\n')) {
+    const trimmed = line.trim();
+    if (trimmed.startsWith('--') && !current.trim()) continue;
+
+    if (trimmed.includes('$$') && !inDollarBlock) {
+      inDollarBlock = true;
+      current += line + '\n';
+      // Check if $$ opens AND closes on same line (e.g., $$ language 'plpgsql')
+      const count = (line.match(/\$\$/g) || []).length;
+      if (count >= 2) inDollarBlock = false;
+      continue;
+    }
+
+    if (inDollarBlock) {
+      current += line + '\n';
+      if (trimmed.includes('$$')) inDollarBlock = false;
+      continue;
+    }
+
+    // Normal mode: split on semicolons
+    current += line + '\n';
+    if (trimmed.endsWith(';')) {
+      const stmt = current.trim().replace(/;$/, '').trim();
+      if (stmt.length > 0) statements.push(stmt);
+      current = '';
+    }
+  }
+
+  // Handle any remaining statement
+  if (current.trim().replace(/;$/, '').trim().length > 0) {
+    statements.push(current.trim().replace(/;$/, '').trim());
+  }
 
   let successCount = 0;
   let skipCount = 0;
@@ -81,7 +113,7 @@ async function run() {
     console.log('  - accounts                (Auth.js OAuth links)');
     console.log('  - sessions                (Auth.js sessions)');
     console.log('  - verification_tokens     (Auth.js email verification)');
-    console.log('  - users                   (added user_type, image, email_verified_at)');
+    console.log('  - users                   (added user_type, image, email_verified)');
     console.log('  - freelancer_profiles     (freelancer marketplace profiles)');
     console.log('  - marketplace_categories  (service categories)');
     console.log('  - skills                  (skill taxonomy)');

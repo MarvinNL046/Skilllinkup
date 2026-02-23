@@ -36,11 +36,40 @@ async function run() {
   );
   const migration = readFileSync(migrationPath, 'utf-8');
 
-  // Split by semicolons, handling $$ blocks for functions
-  const statements = migration
-    .split(';')
-    .map(s => s.trim())
-    .filter(s => s.length > 0 && !s.startsWith('--'));
+  // Split by semicolons, but preserve $$ function bodies
+  const statements = [];
+  let current = '';
+  let inDollarBlock = false;
+
+  for (const line of migration.split('\n')) {
+    const trimmed = line.trim();
+    if (trimmed.startsWith('--') && !current.trim()) continue;
+
+    if (trimmed.includes('$$') && !inDollarBlock) {
+      inDollarBlock = true;
+      current += line + '\n';
+      const count = (line.match(/\$\$/g) || []).length;
+      if (count >= 2) inDollarBlock = false;
+      continue;
+    }
+
+    if (inDollarBlock) {
+      current += line + '\n';
+      if (trimmed.includes('$$')) inDollarBlock = false;
+      continue;
+    }
+
+    current += line + '\n';
+    if (trimmed.endsWith(';')) {
+      const stmt = current.trim().replace(/;$/, '').trim();
+      if (stmt.length > 0) statements.push(stmt);
+      current = '';
+    }
+  }
+
+  if (current.trim().replace(/;$/, '').trim().length > 0) {
+    statements.push(current.trim().replace(/;$/, '').trim());
+  }
 
   let successCount = 0;
   let skipCount = 0;

@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS verification_tokens (
 
 ALTER TABLE users ADD COLUMN IF NOT EXISTS user_type VARCHAR(20) DEFAULT 'client';
 ALTER TABLE users ADD COLUMN IF NOT EXISTS image TEXT;
-ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verified_at TIMESTAMP;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verified TIMESTAMP;
 
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_users_type ON users(user_type);
