@@ -250,7 +250,7 @@ export async function getPublishedGigs(
       g.status,
       COALESCE(
         (
-          SELECT ARRAY_AGG(gi.url ORDER BY gi.sort_order ASC)
+          SELECT ARRAY_AGG(gi.image_url ORDER BY gi.sort_order ASC)
           FROM gig_images gi
           WHERE gi.gig_id = g.id
           LIMIT 1
@@ -326,7 +326,7 @@ export async function getGigBySlug(
       g.status,
       COALESCE(
         (
-          SELECT ARRAY_AGG(gi.url ORDER BY gi.sort_order ASC)
+          SELECT ARRAY_AGG(gi.image_url ORDER BY gi.sort_order ASC)
           FROM gig_images gi
           WHERE gi.gig_id = g.id
         ),
@@ -367,7 +367,7 @@ export async function getGigBySlug(
   // Fetch all images with alt text
   const allImages = await sql`
     SELECT
-      gi.url,
+      gi.image_url,
       COALESCE(gi.alt, '') AS alt
     FROM gig_images gi
     WHERE gi.gig_id = ${gig.id}
@@ -432,7 +432,7 @@ export async function getGigsByFreelancer(
       g.status,
       COALESCE(
         (
-          SELECT ARRAY_AGG(gi.url ORDER BY gi.sort_order ASC)
+          SELECT ARRAY_AGG(gi.image_url ORDER BY gi.sort_order ASC)
           FROM gig_images gi
           WHERE gi.gig_id = g.id
           LIMIT 1
