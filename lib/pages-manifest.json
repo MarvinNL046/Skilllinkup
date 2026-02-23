@@ -1,12 +1,22 @@
 {
-  "generated": "2026-02-22T11:47:02.185Z",
+  "generated": "2026-02-23T16:52:19.018Z",
   "homepage": {
-    "lastModified": "2026-02-20T16:09:56.062Z"
+    "lastModified": "2026-02-23T16:52:18.899Z"
   },
   "pages": [
     {
       "path": "/about",
       "lastModified": "2026-02-20T16:09:56.047Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/auth/signin",
+      "lastModified": "2026-02-23T14:43:31.708Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/auth/signup",
+      "lastModified": "2026-02-23T14:43:35.097Z",
       "hasSubpages": false
     },
     {
@@ -32,6 +42,71 @@
     {
       "path": "/contact",
       "lastModified": "2026-02-20T16:09:56.047Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/messages",
+      "lastModified": "2026-02-23T16:09:41.066Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/orders",
+      "lastModified": "2026-02-23T15:29:59.727Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/projects",
+      "lastModified": "2026-02-23T16:17:34.266Z",
+      "hasSubpages": true
+    },
+    {
+      "path": "/dashboard/projects/new",
+      "lastModified": "2026-02-23T16:17:47.262Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/seller",
+      "lastModified": "2026-02-23T14:58:35.130Z",
+      "hasSubpages": true
+    },
+    {
+      "path": "/dashboard/seller/earnings",
+      "lastModified": "2026-02-23T15:44:02.778Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/seller/gigs",
+      "lastModified": "2026-02-23T15:06:54.917Z",
+      "hasSubpages": true
+    },
+    {
+      "path": "/dashboard/seller/gigs/new",
+      "lastModified": "2026-02-23T15:07:07.125Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/seller/messages",
+      "lastModified": "2026-02-23T16:09:05.170Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/seller/orders",
+      "lastModified": "2026-02-23T15:31:03.766Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/seller/profile",
+      "lastModified": "2026-02-23T14:56:17.235Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/seller/quotes",
+      "lastModified": "2026-02-23T16:33:34.005Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/seller/stripe",
+      "lastModified": "2026-02-23T15:18:16.456Z",
       "hasSubpages": false
     },
     {
@@ -527,6 +602,36 @@
     {
       "path": "/guides",
       "lastModified": "2026-02-20T16:09:56.061Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/marketplace",
+      "lastModified": "2026-02-23T14:47:14.844Z",
+      "hasSubpages": true
+    },
+    {
+      "path": "/marketplace/freelancers",
+      "lastModified": "2026-02-23T14:47:33.272Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/marketplace/gigs",
+      "lastModified": "2026-02-23T14:47:46.245Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/marketplace/local",
+      "lastModified": "2026-02-23T16:31:27.646Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/marketplace/projects",
+      "lastModified": "2026-02-23T16:15:13.611Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/marketplace/quote-request",
+      "lastModified": "2026-02-23T16:31:45.731Z",
       "hasSubpages": false
     },
     {

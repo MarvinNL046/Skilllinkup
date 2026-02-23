@@ -5,11 +5,12 @@ import { NextResponse } from "next/server";
  * SITEMAP INDEX - Professional Multi-Sitemap Architecture
  *
  * This generates a sitemap index that references individual sitemaps:
- * - /sitemap-pages.xml     → Static pages (home, about, tools, etc.)
- * - /sitemap-blog.xml      → Blog posts from database
- * - /sitemap-platforms.xml → Platform reviews from database
- * - /sitemap-guides-en.xml → English guides (/guides/*)
- * - /sitemap-guides-nl.xml → Dutch guides (/gids/*)
+ * - /sitemap-pages.xml       → Static pages (home, about, tools, etc.)
+ * - /sitemap-blog.xml        → Blog posts from database
+ * - /sitemap-platforms.xml   → Platform reviews from database
+ * - /sitemap-guides-en.xml   → English guides (/guides/*)
+ * - /sitemap-guides-nl.xml   → Dutch guides (/gids/*)
+ * - /sitemap-marketplace.xml → Marketplace pages, gigs, projects, categories
  *
  * Benefits:
  * - Google can crawl sections independently
@@ -31,6 +32,7 @@ export async function GET() {
     { url: "sitemap-platforms.xml", lastmod: now },
     { url: "sitemap-guides-en.xml", lastmod: now },
     { url: "sitemap-guides-nl.xml", lastmod: now },
+    { url: "sitemap-marketplace.xml", lastmod: now },
   ];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
