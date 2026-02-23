@@ -2061,5 +2061,49 @@
     "contactFreelancer": "Contact",
     "noFreelancers": "Geen freelancers gevonden",
     "viewProfile": "Bekijk Profiel"
+  },
+  "dashboard": {
+    "seller": {
+      "title": "Verkoper Dashboard",
+      "overview": "Overzicht",
+      "profile": "Profiel",
+      "gigs": "Mijn Diensten",
+      "orders": "Bestellingen",
+      "earnings": "Inkomsten",
+      "messages": "Berichten",
+      "analytics": "Statistieken",
+      "welcome": "Welkom terug",
+      "profileSetup": "Vul je profiel aan om te beginnen met verkopen",
+      "profileComplete": "Profiel compleet",
+      "totalEarnings": "Totale Inkomsten",
+      "activeOrders": "Actieve Bestellingen",
+      "completionRate": "Voltooiingspercentage",
+      "avgRating": "Gemiddelde Beoordeling"
+    },
+    "profileForm": {
+      "displayName": "Weergavenaam",
+      "tagline": "Slogan",
+      "taglinePlaceholder": "Korte beschrijving van je diensten",
+      "bio": "Bio",
+      "bioPlaceholder": "Vertel klanten over jezelf, je ervaring en vaardigheden...",
+      "hourlyRate": "Uurtarief (EUR)",
+      "workType": "Werktype",
+      "remote": "Op afstand",
+      "local": "Lokaal",
+      "hybrid": "Hybride",
+      "city": "Stad",
+      "country": "Land",
+      "postcode": "Postcode",
+      "serviceRadius": "Werkgebied (km)",
+      "skills": "Vaardigheden",
+      "skillsPlaceholder": "Typ een vaardigheid en druk op Enter",
+      "languages": "Talen",
+      "websiteUrl": "Website URL",
+      "linkedinUrl": "LinkedIn URL",
+      "saveProfile": "Profiel Opslaan",
+      "saving": "Opslaan...",
+      "saved": "Profiel succesvol opgeslagen!",
+      "error": "Profiel opslaan mislukt. Probeer het opnieuw."
+    }
   }
 }

@@ -2061,5 +2061,49 @@
     "contactFreelancer": "Contact",
     "noFreelancers": "No freelancers found",
     "viewProfile": "View Profile"
+  },
+  "dashboard": {
+    "seller": {
+      "title": "Seller Dashboard",
+      "overview": "Overview",
+      "profile": "Profile",
+      "gigs": "My Gigs",
+      "orders": "Orders",
+      "earnings": "Earnings",
+      "messages": "Messages",
+      "analytics": "Analytics",
+      "welcome": "Welcome back",
+      "profileSetup": "Complete your profile to start selling",
+      "profileComplete": "Profile complete",
+      "totalEarnings": "Total Earnings",
+      "activeOrders": "Active Orders",
+      "completionRate": "Completion Rate",
+      "avgRating": "Average Rating"
+    },
+    "profileForm": {
+      "displayName": "Display Name",
+      "tagline": "Tagline",
+      "taglinePlaceholder": "Short description of your services",
+      "bio": "Bio",
+      "bioPlaceholder": "Tell clients about yourself, your experience, and skills...",
+      "hourlyRate": "Hourly Rate (EUR)",
+      "workType": "Work Type",
+      "remote": "Remote",
+      "local": "Local",
+      "hybrid": "Hybrid",
+      "city": "City",
+      "country": "Country",
+      "postcode": "Postcode",
+      "serviceRadius": "Service Radius (km)",
+      "skills": "Skills",
+      "skillsPlaceholder": "Type a skill and press Enter",
+      "languages": "Languages",
+      "websiteUrl": "Website URL",
+      "linkedinUrl": "LinkedIn URL",
+      "saveProfile": "Save Profile",
+      "saving": "Saving...",
+      "saved": "Profile saved successfully!",
+      "error": "Failed to save profile. Please try again."
+    }
   }
 }
