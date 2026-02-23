@@ -2184,5 +2184,29 @@
       "views": "Views",
       "orders": "Orders"
     }
+  },
+  "checkout": {
+    "title": "Checkout",
+    "orderSummary": "Order Summary",
+    "package": "Package",
+    "delivery": "Delivery",
+    "days": "days",
+    "revisions": "revisions",
+    "subtotal": "Subtotal",
+    "serviceFee": "Service Fee",
+    "total": "Total",
+    "requirements": "Requirements for the Seller",
+    "requirementsPlaceholder": "Describe what you need in detail...",
+    "payNow": "Pay Now",
+    "processing": "Processing...",
+    "paymentSecure": "Your payment is secure and held in escrow until you approve the delivery.",
+    "escrowInfo": "Escrow Protection",
+    "escrowDesc": "Your payment is held safely until you're satisfied with the work. If there's an issue, you can request a revision or open a dispute.",
+    "success": "Payment Successful!",
+    "successDesc": "Your order has been created. The freelancer will start working on your project.",
+    "viewOrder": "View Order",
+    "backToGig": "Back to Gig",
+    "error": "Payment failed. Please try again.",
+    "selectPackage": "Please select a package to continue."
   }
 }

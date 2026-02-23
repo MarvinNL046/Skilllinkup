@@ -2184,5 +2184,29 @@
       "views": "Weergaven",
       "orders": "Bestellingen"
     }
+  },
+  "checkout": {
+    "title": "Afrekenen",
+    "orderSummary": "Bestelling Overzicht",
+    "package": "Pakket",
+    "delivery": "Levertijd",
+    "days": "dagen",
+    "revisions": "revisies",
+    "subtotal": "Subtotaal",
+    "serviceFee": "Servicekosten",
+    "total": "Totaal",
+    "requirements": "Vereisten voor de Verkoper",
+    "requirementsPlaceholder": "Beschrijf in detail wat je nodig hebt...",
+    "payNow": "Nu Betalen",
+    "processing": "Verwerken...",
+    "paymentSecure": "Je betaling is veilig en wordt vastgehouden in escrow totdat je de levering goedkeurt.",
+    "escrowInfo": "Escrow Bescherming",
+    "escrowDesc": "Je betaling wordt veilig bewaard totdat je tevreden bent met het werk. Bij problemen kun je een revisie aanvragen of een geschil openen.",
+    "success": "Betaling Geslaagd!",
+    "successDesc": "Je bestelling is aangemaakt. De freelancer zal beginnen met je project.",
+    "viewOrder": "Bestelling Bekijken",
+    "backToGig": "Terug naar Dienst",
+    "error": "Betaling mislukt. Probeer het opnieuw.",
+    "selectPackage": "Selecteer een pakket om door te gaan."
   }
 }
