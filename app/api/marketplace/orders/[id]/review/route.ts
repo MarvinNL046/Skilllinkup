@@ -107,7 +107,7 @@ export async function GET(
           AND mr.reviewer_id != ${user.id}
         LIMIT 1
       `;
-      otherReview = otherRows.length > 0 ? otherRows[0] : null;
+      otherReview = otherRows.length > 0 ? (otherRows[0] as Record<string, unknown>) : null;
     }
 
     return NextResponse.json(
