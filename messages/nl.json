@@ -1,13 +1,25 @@
 {
   "homePage": {
     "metadata": {
-      "title": "SkillLinkup - Vergelijk Freelance Platforms & Vind de Beste voor Jou",
+      "title": "SkillLinkup - Vind & Huur Top Freelancers voor Elk Project",
+      "description": "Huur getalenteerde freelancers in voor webontwikkeling, design, schrijven, marketing en meer. Vergelijk diensten, lees reviews en krijg je project gedaan.",
+      "keywords": "freelancers inhuren, freelance marktplaats, freelancers vinden, webontwikkeling, grafisch ontwerp, content schrijven, digitale marketing, freelance diensten",
+      "ogTitle": "SkillLinkup - De Freelance Marktplaats Waar Talent en Kansen Samenkomen",
+      "ogDescription": "Vind en huur top freelancers voor elk project. Bekijk diensten, vergelijk tarieven en werk samen met betrouwbare professionals.",
+      "ogImageAlt": "SkillLinkup - Freelance Marktplaats",
+      "twitterTitle": "Huur Top Freelancers | SkillLinkup Marktplaats",
+      "twitterDescription": "Vind de perfecte freelancer voor jouw project. Bekijk diensten, vergelijk tarieven en huur met vertrouwen."
+    }
+  },
+  "platformsOverviewPage": {
+    "metadata": {
+      "title": "Freelance Platform Reviews & Vergelijkingen | SkillLinkup",
       "description": "Vergelijk en ontdek de beste freelance platforms voor jouw vaardigheden. Eerlijke reviews, gedetailleerde vergelijkingen en expert inzichten voor freelancers.",
-      "keywords": "freelance platforms vergelijken, beste freelance websites, upwork alternatief, fiverr review, freelance platform vergelijking, zzp platforms, freelance werk vinden",
-      "ogTitle": "SkillLinkup - De #1 Freelance Platform Vergelijker",
+      "keywords": "freelance platforms vergelijken, beste freelance websites, upwork alternatief, fiverr review, freelance platform vergelijking, zzp platforms",
+      "ogTitle": "SkillLinkup - Freelance Platform Reviews & Vergelijkingen",
       "ogDescription": "Ontdek welk freelance platform het beste bij jou past. Vergelijk tarieven, reviews en functies van 50+ platforms.",
       "ogImageAlt": "SkillLinkup - Vergelijk Freelance Platforms",
-      "twitterTitle": "Vergelijk Freelance Platforms | SkillLinkup",
+      "twitterTitle": "Freelance Platform Reviews | SkillLinkup",
       "twitterDescription": "Vind het perfecte freelance platform voor jouw skills. Reviews, vergelijkingen en expert tips."
     }
   },
@@ -37,7 +49,8 @@
     "blog": "Blog",
     "about": "Over Ons",
     "contact": "Contact",
-    "subscribe": "Abonneren"
+    "subscribe": "Abonneren",
+    "signUp": "Aanmelden"
   },
   "footer": {
     "slogan": "Jouw vertrouwde gids voor het vinden van het perfecte freelance platform voor jouw vaardigheden.",
@@ -208,6 +221,58 @@
       "topCategories": "Top Categorieën",
       "startHiring": "Begin met het Inhuren van Freelancers",
       "noGigsYet": "Marktplaats binnenkort beschikbaar! Bekijk onze freelancer categorieën."
+    },
+    "marketplaceHero": {
+      "badge": "Betrouwbare Freelance Marktplaats",
+      "title": "Vind de Juiste",
+      "titleHighlight": "Freelancer",
+      "subtitle": "Bekijk duizenden vaardige professionals die klaar staan om jouw project tot leven te brengen. Van webontwikkeling tot design, schrijven en meer.",
+      "searchPlaceholder": "Welke dienst zoek je?",
+      "searchButton": "Zoeken",
+      "popular": "Populair"
+    },
+    "categoryGrid": {
+      "title": "Blader op Categorie",
+      "subtitle": "Vind de juiste dienst voor jouw behoeften in alle hoofdcategorieën",
+      "services": "diensten"
+    },
+    "featuredGigs": {
+      "title": "Uitgelichte Diensten",
+      "subtitle": "Topbeoordeelde diensten geselecteerd door ons team",
+      "browseAll": "Bekijk Alles",
+      "noGigsYet": "Nieuwe diensten worden dagelijks toegevoegd. Kom snel terug!",
+      "exploreMarketplace": "Verken Marktplaats"
+    },
+    "marketplaceHowItWorks": {
+      "title": "Hoe Het Werkt",
+      "subtitle": "Krijg je project gedaan in drie eenvoudige stappen",
+      "step1Title": "Beschrijf Je Project",
+      "step1Description": "Vertel ons wat je nodig hebt. Bekijk diensten of plaats een projectomschrijving en laat freelancers naar jou toekomen.",
+      "step2Title": "Vergelijk & Kies",
+      "step2Description": "Bekijk profielen, beoordelingen en portfolio's. Vergelijk offertes en kies de perfecte match voor jouw project.",
+      "step3Title": "Werk Samen & Betaal Veilig",
+      "step3Description": "Werk samen met ingebouwde berichten en mijlpalen. Betaal veilig via onze escrow-bescherming.",
+      "browseServices": "Bekijk Diensten",
+      "postProject": "Plaats een Project"
+    },
+    "featuredFreelancers": {
+      "title": "Top Freelancers",
+      "subtitle": "Werk met geverifieerde professionals die kwaliteit leveren",
+      "viewAll": "Bekijk Alle Freelancers",
+      "noFreelancersYet": "Getalenteerde freelancers melden zich dagelijks aan. Kom snel terug!",
+      "exploreFreelancers": "Verken Freelancers"
+    },
+    "trustStats": {
+      "freelancers": "Freelancers",
+      "services": "Beschikbare Diensten",
+      "satisfaction": "Klanttevredenheid",
+      "orders": "Projecten Afgerond"
+    },
+    "ctaBanner": {
+      "title": "Klaar om te Beginnen?",
+      "subtitle": "Sluit je aan bij duizenden bedrijven en freelancers die al samen groeien op SkillLinkup.",
+      "signUp": "Gratis Aanmelden",
+      "browseServices": "Bekijk Diensten"
     }
   },
   "platformFilters": {

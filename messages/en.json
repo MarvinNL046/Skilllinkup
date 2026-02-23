@@ -1,13 +1,25 @@
 {
   "homePage": {
     "metadata": {
-      "title": "SkillLinkup - Compare Freelance Platforms & Find the Best for You",
+      "title": "SkillLinkup - Find & Hire Top Freelancers for Any Project",
+      "description": "Hire talented freelancers for web development, design, writing, marketing, and more. Compare services, read reviews, and get your project done.",
+      "keywords": "hire freelancers, freelance marketplace, find freelancers, web development, graphic design, content writing, digital marketing, freelance services",
+      "ogTitle": "SkillLinkup - The Freelance Marketplace Where Talent Meets Opportunity",
+      "ogDescription": "Find and hire top freelancers for any project. Browse services, compare rates, and collaborate with trusted professionals.",
+      "ogImageAlt": "SkillLinkup - Freelance Marketplace",
+      "twitterTitle": "Hire Top Freelancers | SkillLinkup Marketplace",
+      "twitterDescription": "Find the perfect freelancer for your project. Browse services, compare rates, and hire with confidence."
+    }
+  },
+  "platformsOverviewPage": {
+    "metadata": {
+      "title": "Freelance Platform Reviews & Comparisons | SkillLinkup",
       "description": "Compare and discover the best freelance platforms for your skills. Honest reviews, detailed comparisons, and expert insights for freelancers.",
-      "keywords": "compare freelance platforms, best freelance websites, upwork alternative, fiverr review, freelance platform comparison, freelance marketplace, find freelance work",
-      "ogTitle": "SkillLinkup - The #1 Freelance Platform Comparison Site",
+      "keywords": "compare freelance platforms, best freelance websites, upwork alternative, fiverr review, freelance platform comparison, freelance marketplace",
+      "ogTitle": "SkillLinkup - Freelance Platform Reviews & Comparisons",
       "ogDescription": "Discover which freelance platform is right for you. Compare rates, reviews, and features of 50+ platforms.",
       "ogImageAlt": "SkillLinkup - Compare Freelance Platforms",
-      "twitterTitle": "Compare Freelance Platforms | SkillLinkup",
+      "twitterTitle": "Freelance Platform Reviews | SkillLinkup",
       "twitterDescription": "Find the perfect freelance platform for your skills. Reviews, comparisons, and expert tips."
     }
   },
@@ -37,7 +49,8 @@
     "blog": "Blog",
     "about": "About",
     "contact": "Contact",
-    "subscribe": "Subscribe"
+    "subscribe": "Subscribe",
+    "signUp": "Sign Up"
   },
   "footer": {
     "slogan": "Your trusted guide to finding the perfect freelance platform for your skills.",
@@ -208,6 +221,58 @@
       "topCategories": "Top Categories",
       "startHiring": "Start Hiring Freelancers",
       "noGigsYet": "Marketplace coming soon! Browse our freelancer categories."
+    },
+    "marketplaceHero": {
+      "badge": "Trusted Freelance Marketplace",
+      "title": "Find the Right",
+      "titleHighlight": "Freelancer",
+      "subtitle": "Browse thousands of skilled professionals ready to bring your project to life. From web development to design, writing and beyond.",
+      "searchPlaceholder": "What service are you looking for?",
+      "searchButton": "Search",
+      "popular": "Popular"
+    },
+    "categoryGrid": {
+      "title": "Browse by Category",
+      "subtitle": "Find the right service for your needs across all major categories",
+      "services": "services"
+    },
+    "featuredGigs": {
+      "title": "Featured Services",
+      "subtitle": "Top-rated services chosen by our team",
+      "browseAll": "Browse All",
+      "noGigsYet": "New services are being added daily. Check back soon!",
+      "exploreMarketplace": "Explore Marketplace"
+    },
+    "marketplaceHowItWorks": {
+      "title": "How It Works",
+      "subtitle": "Get your project done in three simple steps",
+      "step1Title": "Describe Your Project",
+      "step1Description": "Tell us what you need. Browse services or post a project brief and let freelancers come to you.",
+      "step2Title": "Compare & Choose",
+      "step2Description": "Review profiles, ratings, and portfolios. Compare quotes and pick the perfect match for your project.",
+      "step3Title": "Collaborate & Pay Safely",
+      "step3Description": "Work together with built-in messaging and milestones. Pay securely through our escrow protection.",
+      "browseServices": "Browse Services",
+      "postProject": "Post a Project"
+    },
+    "featuredFreelancers": {
+      "title": "Top Freelancers",
+      "subtitle": "Work with verified professionals who deliver quality results",
+      "viewAll": "View All Freelancers",
+      "noFreelancersYet": "Talented freelancers are joining daily. Check back soon!",
+      "exploreFreelancers": "Explore Freelancers"
+    },
+    "trustStats": {
+      "freelancers": "Freelancers",
+      "services": "Services Available",
+      "satisfaction": "Client Satisfaction",
+      "orders": "Projects Completed"
+    },
+    "ctaBanner": {
+      "title": "Ready to Get Started?",
+      "subtitle": "Join thousands of businesses and freelancers already growing together on SkillLinkup.",
+      "signUp": "Sign Up Free",
+      "browseServices": "Browse Services"
     }
   },
   "platformFilters": {
