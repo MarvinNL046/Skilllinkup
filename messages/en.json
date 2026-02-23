@@ -2358,5 +2358,29 @@
     "addSkill": "Add required skills",
     "publishing": "Publishing...",
     "published": "Project published!"
+  },
+  "milestones": {
+    "title": "Milestones",
+    "progress": "Progress",
+    "createMilestones": "Create Milestones",
+    "addMilestone": "Add Milestone",
+    "removeMilestone": "Remove",
+    "milestoneTitle": "Milestone Title",
+    "description": "Description",
+    "amount": "Amount (EUR)",
+    "dueDate": "Due Date",
+    "totalAmount": "Total",
+    "remainingAmount": "Remaining",
+    "amountMismatch": "Total must equal order amount",
+    "saveMilestones": "Save Milestones",
+    "saving": "Saving...",
+    "markDelivered": "Mark as Delivered",
+    "approve": "Approve Delivery",
+    "pending": "Pending",
+    "active": "Active",
+    "delivered": "Delivered",
+    "approved": "Approved",
+    "noMilestones": "No milestones created yet",
+    "clientCreatePrompt": "Create milestones to break down the project into deliverable phases."
   }
 }

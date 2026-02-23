@@ -2358,5 +2358,29 @@
     "addSkill": "Voeg vereiste vaardigheden toe",
     "publishing": "Publiceren...",
     "published": "Project gepubliceerd!"
+  },
+  "milestones": {
+    "title": "Mijlpalen",
+    "progress": "Voortgang",
+    "createMilestones": "Mijlpalen Aanmaken",
+    "addMilestone": "Mijlpaal Toevoegen",
+    "removeMilestone": "Verwijderen",
+    "milestoneTitle": "Mijlpaal Titel",
+    "description": "Beschrijving",
+    "amount": "Bedrag (EUR)",
+    "dueDate": "Deadline",
+    "totalAmount": "Totaal",
+    "remainingAmount": "Resterend",
+    "amountMismatch": "Totaal moet gelijk zijn aan het orderbedrag",
+    "saveMilestones": "Mijlpalen Opslaan",
+    "saving": "Opslaan...",
+    "markDelivered": "Markeer als Opgeleverd",
+    "approve": "Oplevering Goedkeuren",
+    "pending": "In Wacht",
+    "active": "Actief",
+    "delivered": "Opgeleverd",
+    "approved": "Goedgekeurd",
+    "noMilestones": "Nog geen mijlpalen aangemaakt",
+    "clientCreatePrompt": "Maak mijlpalen aan om het project op te delen in leverbare fases."
   }
 }
