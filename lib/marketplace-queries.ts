@@ -845,6 +845,52 @@ export async function getOrdersByUser(
   }
 }
 
+// ============================================================
+// Review Queries
+// ============================================================
+
+export interface FreelancerReview {
+  id: string;
+  reviewer_id: string;
+  reviewee_id: string;
+  reviewer_role: string;
+  overall_rating: number;
+  communication_rating: number | null;
+  quality_rating: number | null;
+  timeliness_rating: number | null;
+  value_rating: number | null;
+  content: string | null;
+  is_public: boolean;
+  created_at: string;
+  reviewer_name: string;
+  reviewer_avatar: string | null;
+  order_title: string | null;
+}
+
+/**
+ * Get public reviews for a freelancer by their freelancer_profiles.id.
+ * Only returns reviews where is_public = true (both parties reviewed).
+ */
+export async function getFreelancerReviews(
+  freelancerId: string,
+  limit = 10,
+  offset = 0
+): Promise<FreelancerReview[]> {
+  return await sql`
+    SELECT mr.*, u.name AS reviewer_name, u.image AS reviewer_avatar,
+      o.title AS order_title
+    FROM marketplace_reviews mr
+    JOIN users u ON mr.reviewer_id = u.id
+    JOIN orders o ON mr.order_id = o.id
+    WHERE mr.reviewee_id = (
+      SELECT user_id FROM freelancer_profiles WHERE id = ${freelancerId} LIMIT 1
+    )
+    AND mr.is_public = true
+    ORDER BY mr.created_at DESC
+    LIMIT ${limit} OFFSET ${offset}
+  ` as FreelancerReview[];
+}
+
 /**
  * Get a single order by ID, with an auth check that the requesting user
  * is either the client or the freelancer on the order.
