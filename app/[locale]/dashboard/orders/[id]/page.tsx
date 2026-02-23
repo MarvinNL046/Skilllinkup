@@ -1,0 +1,27 @@
+import { redirect } from 'next/navigation';
+import { getCurrentUser } from '@/lib/auth-helpers';
+import { getOrderById } from '@/lib/marketplace-queries';
+import { ClientOrderDetailClient } from './ClientOrderDetailClient';
+
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
+interface PageProps {
+  params: Promise<{ locale: string; id: string }>;
+}
+
+export default async function ClientOrderDetailPage({ params }: PageProps) {
+  const { locale, id } = await params;
+
+  const user = await getCurrentUser();
+  if (!user) {
+    redirect(`/${locale}/auth/signin`);
+  }
+
+  const order = await getOrderById(id, user.id);
+  if (!order) {
+    redirect(`/${locale}/dashboard/orders`);
+  }
+
+  return <ClientOrderDetailClient order={order} locale={locale} />;
+}
