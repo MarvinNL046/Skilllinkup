@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { Search, MessageSquare } from 'lucide-react';
 import { useSocket } from '@/components/providers/SocketProvider';
@@ -88,19 +88,25 @@ export function ConversationList({
  onSelectConversation,
 }: ConversationListProps) {
  const t = useTranslations('messages');
- const { socket, isConnected } = useSocket();
+ const { socket, isConnected, connectionFailed } = useSocket();
  const [conversations, setConversations] = useState<Conversation[]>([]);
  const [searchQuery, setSearchQuery] = useState('');
  const [loading, setLoading] = useState(true);
 
+ const pollErrorCount = useRef(0);
+
  const fetchConversations = useCallback(async () =>{
  try {
  const res = await fetch('/api/messages/conversations', { cache: 'no-store' });
- if (!res.ok) return;
+ if (!res.ok) {
+ pollErrorCount.current++;
+ return;
+ }
+ pollErrorCount.current = 0;
  const data = (await res.json()) as { conversations: Conversation[] };
  setConversations(data.conversations ?? []);
  } catch {
- // silently ignore network errors
+ pollErrorCount.current++;
  } finally {
  setLoading(false);
  }
@@ -165,12 +171,19 @@ export function ConversationList({
  };
  }, [isConnected, socket, activeConversationId]);
 
- // Fallback polling when socket is disconnected (every 6 sec)
+ // Fallback polling when socket is disconnected
+ // - If socket completely failed: poll slowly (60s) to avoid hammering server
+ // - If socket just disconnected: poll at moderate rate (15s)
+ // - Stop polling entirely after 5 consecutive errors
  useEffect(() =>{
  if (isConnected) return;
- const interval = setInterval(fetchConversations, 6000);
- return () =>clearInterval(interval);
- }, [isConnected, fetchConversations]);
+ const interval = connectionFailed ? 60000 : 15000;
+ const timer = setInterval(() =>{
+ if (pollErrorCount.current >= 5) return;
+ fetchConversations();
+ }, interval);
+ return () =>clearInterval(timer);
+ }, [isConnected, connectionFailed, fetchConversations]);
 
  const filtered = conversations.filter(
  (c) =>

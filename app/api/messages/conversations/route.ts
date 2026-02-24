@@ -53,31 +53,53 @@ export async function GET() {
  ORDER BY c.last_message_at DESC NULLS LAST, c.created_at DESC
  `;
 
- const conversations = rows.map((row) =>({
+ const conversations = rows.map((row) =>{
+ let createdAtIso: string;
+ try {
+ createdAtIso = row.created_at ? new Date(row.created_at as string).toISOString() : new Date().toISOString();
+ } catch {
+ createdAtIso = new Date().toISOString();
+ }
+
+ let lastMessageAtIso: string | null = null;
+ try {
+ if (row.last_message_at) {
+ lastMessageAtIso = new Date(row.last_message_at as string).toISOString();
+ }
+ } catch {
+ // ignore bad date
+ }
+
+ let isOnline = false;
+ try {
+ if (row.other_user_last_active) {
+ isOnline = Date.now() - new Date(row.other_user_last_active as string).getTime() < 2 * 60 * 1000;
+ }
+ } catch {
+ // ignore bad date
+ }
+
+ return {
  id: String(row.id ?? ''),
  orderId: row.order_id ? String(row.order_id) : null,
  projectId: row.project_id ? String(row.project_id) : null,
  participant1: String(row.participant_1 ?? ''),
  participant2: String(row.participant_2 ?? ''),
- lastMessageAt: row.last_message_at
- ? new Date(row.last_message_at as string).toISOString()
- : null,
+ lastMessageAt: lastMessageAtIso,
  lastMessagePreview: row.last_message_preview
  ? String(row.last_message_preview)
  : null,
  unreadCount: Number(row.my_unread_count ?? 0),
  status: String(row.status ?? 'active'),
- createdAt: new Date(row.created_at as string).toISOString(),
+ createdAt: createdAtIso,
  otherUser: {
  id: row.other_user_id ? String(row.other_user_id) : '',
  name: String(row.other_user_name ?? 'Unknown'),
  image: row.other_user_image ? String(row.other_user_image) : null,
- isOnline: !!(
- row.other_user_last_active &&
- Date.now() - new Date(row.other_user_last_active as string).getTime() < 2 * 60 * 1000
- ),
+ isOnline,
  },
- }));
+ };
+ });
 
  return NextResponse.json({ conversations });
  } catch (err) {

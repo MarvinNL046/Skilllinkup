@@ -1,17 +1,20 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, useCallback, useRef, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, useRef, type ReactNode } from "react";
 import { socket } from "@/lib/socket-client";
 import type { Socket } from "socket.io-client";
 
 interface SocketContextValue {
  socket: Socket;
  isConnected: boolean;
+ /** True when all reconnect attempts are exhausted */
+ connectionFailed: boolean;
 }
 
 const SocketContext = createContext<SocketContextValue>({
  socket,
  isConnected: false,
+ connectionFailed: false,
 });
 
 export function useSocket() {
@@ -24,13 +27,15 @@ interface SocketProviderProps {
 
 export function SocketProvider({ children }: SocketProviderProps) {
  const [isConnected, setIsConnected] = useState(false);
+ const [connectionFailed, setConnectionFailed] = useState(false);
  const reconnectAttempts = useRef(0);
- const maxReconnectAttempts = 10;
+ const maxReconnectAttempts = 3;
 
  useEffect(() =>{
  function onConnect() {
  console.log("[socket] Connected");
  setIsConnected(true);
+ setConnectionFailed(false);
  reconnectAttempts.current = 0;
  }
 
@@ -40,18 +45,24 @@ export function SocketProvider({ children }: SocketProviderProps) {
  }
 
  function onConnectError(err: Error) {
- console.warn("[socket] Connection error:", err.message);
  setIsConnected(false);
 
- // Exponential backoff reconnect
  if (reconnectAttempts.current < maxReconnectAttempts) {
- const delay = Math.min(1000 * Math.pow(2, reconnectAttempts.current), 30000);
+ // Only log the first error to avoid console spam
+ if (reconnectAttempts.current === 0) {
+ console.warn("[socket] Connection error:", err.message, "— will retry up to", maxReconnectAttempts, "times");
+ }
+ const delay = Math.min(2000 * Math.pow(2, reconnectAttempts.current), 30000);
  reconnectAttempts.current++;
  setTimeout(() =>{
  if (!socket.connected) {
  socket.connect();
  }
  }, delay);
+ } else {
+ // Give up — stop retrying to avoid request spam
+ console.warn("[socket] Gave up after", maxReconnectAttempts, "attempts. Real-time updates unavailable.");
+ setConnectionFailed(true);
  }
  }
 
@@ -73,7 +84,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
  }, []);
 
  return (
- <SocketContext.Provider value={{ socket, isConnected }}>
+ <SocketContext.Provider value={{ socket, isConnected, connectionFailed }}>
  {children}
  </SocketContext.Provider>
  );
