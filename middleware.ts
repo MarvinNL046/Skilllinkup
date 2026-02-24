@@ -30,6 +30,6 @@ export const config = {
     '/(en|nl)/:path*',
 
     // Exclude specific paths (negative lookahead)
-    '/((?!api|_next|_vercel|images|fonts|favicon.ico|robots.txt|sitemap.xml|.*\\..*).*)'
+    '/((?!api|_next|_vercel|handler|images|fonts|favicon.ico|robots.txt|sitemap.xml|.*\\..*).*)'
   ]
 };

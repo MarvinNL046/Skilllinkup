@@ -1,10 +1,67 @@
-import { auth } from '@/lib/auth';
+import { stackServerApp } from '@/lib/stack';
 import { sql } from '@/lib/db';
 
+/**
+ * Get the current user from Stack Auth session and sync with local DB.
+ * Returns the same shape as the old NextAuth-based helper:
+ * { id, email, name, image, userType, tenantId }
+ */
 export async function getCurrentUser() {
-  const session = await auth();
-  if (!session?.user?.id) return null;
-  return session.user;
+  const stackUser = await stackServerApp.getUser();
+  if (!stackUser) return null;
+
+  // Look up user in local DB by email (primary) or Stack Auth ID
+  const email = stackUser.primaryEmail;
+  if (!email) return null;
+
+  const existing = await sql`
+    SELECT id, email, name, image, user_type, tenant_id
+    FROM users WHERE email = ${email} LIMIT 1
+  `;
+
+  if (existing.length > 0) {
+    const u = existing[0];
+    return {
+      id: u.id,
+      email: u.email,
+      name: u.name || stackUser.displayName,
+      image: u.image || stackUser.profileImageUrl,
+      userType: u.user_type,
+      tenantId: u.tenant_id,
+    };
+  }
+
+  // Auto-create local user on first Stack Auth login
+  const tenants = await sql`SELECT id FROM tenants LIMIT 1`;
+  const tenantId = tenants[0]?.id;
+
+  await sql`
+    INSERT INTO users (email, name, image, user_type, tenant_id, role, email_verified)
+    VALUES (
+      ${email},
+      ${stackUser.displayName || email.split('@')[0]},
+      ${stackUser.profileImageUrl || null},
+      'client',
+      ${tenantId},
+      'author',
+      NOW()
+    )
+  `;
+
+  const created = await sql`
+    SELECT id, email, name, image, user_type, tenant_id
+    FROM users WHERE email = ${email} LIMIT 1
+  `;
+
+  const u = created[0];
+  return {
+    id: u.id,
+    email: u.email,
+    name: u.name,
+    image: u.image,
+    userType: u.user_type,
+    tenantId: u.tenant_id,
+  };
 }
 
 export async function requireAuth() {

@@ -5,9 +5,6 @@
 "use strict";
 
 const { createServer } = require("node:http");
-const { webcrypto } = require("node:crypto");
-const crypto = webcrypto; // Use Web Crypto API (available in Node 15+)
-const nodeCrypto = require("node:crypto");
 
 const next = require("next");
 const { Server } = require("socket.io");
@@ -38,155 +35,40 @@ if (!sql) {
   );
 }
 
-// ─── JWE helpers (Auth.js v5 uses A256CBC-HS512 with 'dir' key management) ───
-//
-// Compact JWE format: BASE64URL(header).BASE64URL(encryptedKey).BASE64URL(iv).BASE64URL(ciphertext).BASE64URL(tag)
-// With 'dir': encryptedKey segment is empty.
-// A256CBC-HS512 key derivation: HKDF-SHA-256 → 512 bits:
-//   first 32 bytes = MAC key (HMAC-SHA-512 key)
-//   last  32 bytes = encryption key (AES-256-CBC key)
-// Tag = first 32 bytes of HMAC-SHA-512(ASCII(header) || IV || ciphertext || AL)
-// where AL = big-endian 64-bit length of ASCII(header) in bits.
+// ─── Stack Auth session verification ─────────────────────────────────────────
+// Verifies Stack Auth access token by calling the Stack Auth API.
 
-function b64urlDecode(str) {
-  // Base64url → Buffer
-  const b64 = str.replace(/-/g, "+").replace(/_/g, "/");
-  return Buffer.from(b64, "base64");
-}
+const STACK_PROJECT_ID = process.env.NEXT_PUBLIC_STACK_PROJECT_ID;
+const STACK_SECRET_KEY = process.env.STACK_SECRET_SERVER_KEY;
+const STACK_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY;
 
-async function deriveJweKeys(secret) {
-  const encoder = new TextEncoder();
-  const rawKey = encoder.encode(secret);
+async function verifyStackAuthSession(accessToken) {
+  if (!STACK_PROJECT_ID || !STACK_SECRET_KEY) {
+    throw new Error("Stack Auth env vars not configured");
+  }
 
-  const importedKey = await crypto.subtle.importKey(
-    "raw",
-    rawKey,
-    { name: "HKDF" },
-    false,
-    ["deriveBits"]
-  );
-
-  // Derive 512 bits (64 bytes) using HKDF-SHA-256 with empty salt and Auth.js info string
-  const derivedBits = await crypto.subtle.deriveBits(
-    {
-      name: "HKDF",
-      hash: "SHA-256",
-      salt: new Uint8Array(0),
-      info: new TextEncoder().encode("NextAuth.js Generated Encryption Key"),
+  // Call Stack Auth API to get the current user from the access token
+  const response = await fetch("https://api.stack-auth.com/api/v1/users/me", {
+    headers: {
+      "x-stack-project-id": STACK_PROJECT_ID,
+      "x-stack-publishable-client-key": STACK_PUBLISHABLE_KEY || "",
+      "x-stack-secret-server-key": STACK_SECRET_KEY,
+      "x-stack-access-token": accessToken,
+      "Content-Type": "application/json",
     },
-    importedKey,
-    512
-  );
+  });
 
-  const fullKey = new Uint8Array(derivedBits);
-  return {
-    macKey: fullKey.slice(0, 32),  // HMAC-SHA-512 key (first 256 bits)
-    encKey: fullKey.slice(32, 64), // AES-256-CBC key  (last  256 bits)
-  };
-}
-
-async function decryptJWT(token, secret) {
-  try {
-    const parts = token.split(".");
-    if (parts.length !== 5) {
-      console.warn("[socket-auth] Token is not compact JWE (expected 5 parts)");
-      return null;
-    }
-
-    const [headerB64, , ivB64, ciphertextB64, tagB64] = parts;
-    // encryptedKey (parts[1]) is empty for 'dir' key management - ignored
-
-    // Decode header to check algorithm
-    let header;
-    try {
-      header = JSON.parse(b64urlDecode(headerB64).toString("utf8"));
-    } catch {
-      console.warn("[socket-auth] Failed to parse JWE header");
-      return null;
-    }
-
-    if (header.alg !== "dir" || header.enc !== "A256CBC-HS512") {
-      console.warn(
-        "[socket-auth] Unexpected JWE algorithm/enc:",
-        header.alg,
-        header.enc
-      );
-      return null;
-    }
-
-    const { macKey, encKey } = await deriveJweKeys(secret);
-
-    const iv = b64urlDecode(ivB64);
-    const ciphertext = b64urlDecode(ciphertextB64);
-    const tag = b64urlDecode(tagB64);
-
-    // ── HMAC tag verification ──────────────────────────────────────────────────
-    // AAD for A256CBC-HS512 compact JWE = ASCII bytes of the header segment
-    const headerBytes = Buffer.from(headerB64, "ascii");
-
-    // AL = big-endian uint64 of (headerBytes.length * 8)
-    const al = Buffer.alloc(8);
-    const headerBitLen = BigInt(headerBytes.length * 8);
-    al.writeBigUInt64BE(headerBitLen);
-
-    // HMAC input = headerBytes || IV || ciphertext || AL
-    const hmacInput = Buffer.concat([headerBytes, iv, ciphertext, al]);
-
-    const hmacKey = await crypto.subtle.importKey(
-      "raw",
-      macKey,
-      { name: "HMAC", hash: "SHA-512" },
-      false,
-      ["sign"]
-    );
-
-    const signatureBuffer = await crypto.subtle.sign("HMAC", hmacKey, hmacInput);
-    const signature = new Uint8Array(signatureBuffer);
-
-    // Per RFC 7518 §5.2.2.4: authentication tag = first (keylen/2) bytes of HMAC output
-    // For A256CBC-HS512: macKey is 32 bytes, tag length = 32 bytes (T_LEN = MAC_KEY_LEN)
-    const expectedTag = signature.slice(0, 32);
-
-    if (
-      tag.length !== 32 ||
-      !nodeCrypto.timingSafeEqual(Buffer.from(tag), Buffer.from(expectedTag))
-    ) {
-      console.warn("[socket-auth] HMAC tag mismatch - token tampered or wrong secret");
-      return null;
-    }
-
-    // ── AES-256-CBC decryption ─────────────────────────────────────────────────
-    const aesKey = await crypto.subtle.importKey(
-      "raw",
-      encKey,
-      { name: "AES-CBC" },
-      false,
-      ["decrypt"]
-    );
-
-    const decryptedBuffer = await crypto.subtle.decrypt(
-      { name: "AES-CBC", iv },
-      aesKey,
-      ciphertext
-    );
-
-    const payload = JSON.parse(new TextDecoder().decode(decryptedBuffer));
-    return payload;
-  } catch (err) {
-    console.error("[socket-auth] JWT decode error:", err.message);
+  if (!response.ok) {
     return null;
   }
+
+  return response.json();
 }
 
 // ─── Socket.io Auth middleware ────────────────────────────────────────────────
 
 async function authenticateSocket(socket, next) {
   try {
-    const authSecret = process.env.AUTH_SECRET;
-    if (!authSecret) {
-      return next(new Error("AUTH_SECRET not configured on server"));
-    }
-
     // Parse cookies from the upgrade request
     const cookieHeader = socket.handshake.headers.cookie || "";
     const cookies = Object.fromEntries(
@@ -199,38 +81,47 @@ async function authenticateSocket(socket, next) {
       })
     );
 
-    // Auth.js v5 cookie names (secure prefix in production, plain in dev)
+    // Stack Auth stores access token in cookie
     const rawToken =
-      cookies["__Secure-authjs.session-token"] ||
-      cookies["authjs.session-token"] ||
-      cookies["__Secure-next-auth.session-token"] ||
-      cookies["next-auth.session-token"] ||
+      cookies["stack-token-access-token__" + (STACK_PROJECT_ID || "")] ||
+      cookies["stack-token-access-token"] ||
+      // Also check handshake auth (client can pass token explicitly)
+      socket.handshake.auth?.accessToken ||
       null;
 
     if (!rawToken) {
-      return next(new Error("No session token in cookies"));
+      return next(new Error("No Stack Auth session token in cookies"));
     }
 
-    // Cookie value may be URL-encoded
     const token = decodeURIComponent(rawToken);
+    const stackUser = await verifyStackAuthSession(token);
 
-    const decoded = await decryptJWT(token, authSecret);
-    if (!decoded) {
-      return next(new Error("Invalid or expired session token"));
+    if (!stackUser || !stackUser.primary_email) {
+      return next(new Error("Invalid or expired Stack Auth session"));
     }
 
-    // Auth.js stores userId in token.userId (set in jwt callback in lib/auth.ts)
-    const userId = decoded.userId || decoded.sub;
-    if (!userId) {
-      return next(new Error("Session token has no user identifier"));
+    // Look up local user by email
+    if (!sql) {
+      return next(new Error("Database not available"));
     }
+
+    const localUsers = await sql`
+      SELECT id, email, name, image, user_type, tenant_id
+      FROM users WHERE email = ${stackUser.primary_email} LIMIT 1
+    `;
+
+    if (localUsers.length === 0) {
+      return next(new Error("User not found in database. Please log in via the web app first."));
+    }
+
+    const localUser = localUsers[0];
 
     // Attach user data to socket for use in event handlers
-    socket.data.userId = String(userId);
-    socket.data.email = decoded.email || null;
-    socket.data.name = decoded.name || null;
-    socket.data.tenantId = decoded.tenantId || null;
-    socket.data.userType = decoded.userType || null;
+    socket.data.userId = String(localUser.id);
+    socket.data.email = localUser.email || null;
+    socket.data.name = localUser.name || stackUser.display_name || null;
+    socket.data.tenantId = localUser.tenant_id || null;
+    socket.data.userType = localUser.user_type || null;
 
     return next();
   } catch (err) {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+import { useUser } from '@stackframe/stack';
 import { useState, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
@@ -12,7 +12,7 @@ interface AuthGateProps {
 }
 
 export function AuthGate({ children }: AuthGateProps) {
-  const { data: session } = useSession();
+  const user = useUser();
   const [showModal, setShowModal] = useState(false);
   const t = useTranslations('authGate');
   const params = useParams();
@@ -20,13 +20,13 @@ export function AuthGate({ children }: AuthGateProps) {
 
   const handleClick = useCallback(
     (e: React.MouseEvent) => {
-      if (!session) {
+      if (!user) {
         e.preventDefault();
         e.stopPropagation();
         setShowModal(true);
       }
     },
-    [session],
+    [user],
   );
 
   const currentUrl = typeof window !== 'undefined' ? window.location.pathname : '';
@@ -88,14 +88,14 @@ export function AuthGate({ children }: AuthGateProps) {
 
               <div className="space-y-3">
                 <Link
-                  href={`/${locale}/auth/signup${currentUrl ? `?callbackUrl=${encodeURIComponent(currentUrl)}` : ''}`}
+                  href={`/handler/sign-up${currentUrl ? `?after_auth_return_to=${encodeURIComponent(currentUrl)}` : ''}`}
                   className="block w-full py-3 px-4 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg transition-colors text-sm text-center"
                   onClick={() => setShowModal(false)}
                 >
                   {t('signUp')}
                 </Link>
                 <Link
-                  href={`/${locale}/auth/signin${currentUrl ? `?callbackUrl=${encodeURIComponent(currentUrl)}` : ''}`}
+                  href={`/handler/sign-in${currentUrl ? `?after_auth_return_to=${encodeURIComponent(currentUrl)}` : ''}`}
                   className="block w-full py-3 px-4 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary font-medium rounded-lg transition-colors text-sm text-center"
                   onClick={() => setShowModal(false)}
                 >

@@ -1,22 +1,12 @@
 {
-  "generated": "2026-02-24T10:23:53.108Z",
+  "generated": "2026-02-24T11:09:07.138Z",
   "homepage": {
-    "lastModified": "2026-02-23T17:30:21.741Z"
+    "lastModified": "2026-02-24T10:42:55.595Z"
   },
   "pages": [
     {
       "path": "/about",
       "lastModified": "2026-02-20T16:09:56.047Z",
-      "hasSubpages": false
-    },
-    {
-      "path": "/auth/signin",
-      "lastModified": "2026-02-23T14:43:31.708Z",
-      "hasSubpages": false
-    },
-    {
-      "path": "/auth/signup",
-      "lastModified": "2026-02-23T14:43:35.097Z",
       "hasSubpages": false
     },
     {
@@ -46,67 +36,67 @@
     },
     {
       "path": "/dashboard/messages",
-      "lastModified": "2026-02-23T16:09:41.066Z",
+      "lastModified": "2026-02-24T10:42:55.592Z",
       "hasSubpages": false
     },
     {
       "path": "/dashboard/orders",
-      "lastModified": "2026-02-23T15:29:59.727Z",
+      "lastModified": "2026-02-24T10:42:55.592Z",
       "hasSubpages": false
     },
     {
       "path": "/dashboard/projects",
-      "lastModified": "2026-02-23T16:17:34.266Z",
+      "lastModified": "2026-02-24T10:42:55.593Z",
       "hasSubpages": true
     },
     {
       "path": "/dashboard/projects/new",
-      "lastModified": "2026-02-23T16:17:47.262Z",
+      "lastModified": "2026-02-24T10:42:55.593Z",
       "hasSubpages": false
     },
     {
       "path": "/dashboard/seller",
-      "lastModified": "2026-02-23T14:58:35.130Z",
+      "lastModified": "2026-02-24T10:42:55.593Z",
       "hasSubpages": true
     },
     {
       "path": "/dashboard/seller/earnings",
-      "lastModified": "2026-02-23T15:44:02.778Z",
+      "lastModified": "2026-02-24T10:42:55.593Z",
       "hasSubpages": false
     },
     {
       "path": "/dashboard/seller/gigs",
-      "lastModified": "2026-02-23T15:06:54.917Z",
+      "lastModified": "2026-02-24T10:42:55.593Z",
       "hasSubpages": true
     },
     {
       "path": "/dashboard/seller/gigs/new",
-      "lastModified": "2026-02-23T15:07:07.125Z",
+      "lastModified": "2026-02-24T10:42:55.593Z",
       "hasSubpages": false
     },
     {
       "path": "/dashboard/seller/messages",
-      "lastModified": "2026-02-23T16:09:05.170Z",
+      "lastModified": "2026-02-24T10:42:55.593Z",
       "hasSubpages": false
     },
     {
       "path": "/dashboard/seller/orders",
-      "lastModified": "2026-02-23T15:31:03.766Z",
+      "lastModified": "2026-02-24T10:42:55.593Z",
       "hasSubpages": false
     },
     {
       "path": "/dashboard/seller/profile",
-      "lastModified": "2026-02-23T14:56:17.235Z",
+      "lastModified": "2026-02-24T10:42:55.594Z",
       "hasSubpages": false
     },
     {
       "path": "/dashboard/seller/quotes",
-      "lastModified": "2026-02-23T16:33:34.005Z",
+      "lastModified": "2026-02-24T10:42:55.594Z",
       "hasSubpages": false
     },
     {
       "path": "/dashboard/seller/stripe",
-      "lastModified": "2026-02-23T15:18:16.456Z",
+      "lastModified": "2026-02-24T10:42:55.594Z",
       "hasSubpages": false
     },
     {
@@ -606,32 +596,32 @@
     },
     {
       "path": "/marketplace",
-      "lastModified": "2026-02-23T14:47:14.844Z",
+      "lastModified": "2026-02-24T10:42:55.595Z",
       "hasSubpages": true
     },
     {
       "path": "/marketplace/freelancers",
-      "lastModified": "2026-02-23T14:47:33.272Z",
+      "lastModified": "2026-02-24T10:42:55.594Z",
       "hasSubpages": false
     },
     {
       "path": "/marketplace/gigs",
-      "lastModified": "2026-02-23T14:47:46.245Z",
+      "lastModified": "2026-02-24T10:42:55.595Z",
       "hasSubpages": false
     },
     {
       "path": "/marketplace/local",
-      "lastModified": "2026-02-23T16:31:27.646Z",
+      "lastModified": "2026-02-24T10:42:55.595Z",
       "hasSubpages": false
     },
     {
       "path": "/marketplace/projects",
-      "lastModified": "2026-02-23T16:15:13.611Z",
+      "lastModified": "2026-02-24T10:42:55.595Z",
       "hasSubpages": false
     },
     {
       "path": "/marketplace/quote-request",
-      "lastModified": "2026-02-23T16:31:45.731Z",
+      "lastModified": "2026-02-24T10:42:55.595Z",
       "hasSubpages": false
     },
     {
@@ -646,7 +636,7 @@
     },
     {
       "path": "/platforms-overview",
-      "lastModified": "2026-02-23T17:27:51.574Z",
+      "lastModified": "2026-02-24T10:42:55.595Z",
       "hasSubpages": false
     },
     {

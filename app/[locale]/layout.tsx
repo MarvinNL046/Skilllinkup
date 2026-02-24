@@ -6,8 +6,8 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { NextIntlClientProvider } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { locales } from '@/i18n/request';
-import { auth } from '@/lib/auth';
-import { SessionProvider } from 'next-auth/react';
+import { StackProvider, StackTheme } from "@stackframe/stack";
+import { stackApp } from '@/lib/stack-client';
 
 // Generate locale-specific metadata
 export async function generateMetadata({
@@ -111,9 +111,6 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  // Get session for SessionProvider
-  const session = await auth();
-
   return (
     <>
       {/* Google Tag Manager */}
@@ -148,16 +145,18 @@ export default async function LocaleLayout({
         />
       </noscript>
 
-      <SessionProvider session={session}>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <ThemeProvider>
-            <div className="min-h-screen flex flex-col">
-              {children}
-            </div>
-            <BackToTop />
-          </ThemeProvider>
-        </NextIntlClientProvider>
-      </SessionProvider>
+      <StackProvider app={stackApp}>
+        <StackTheme>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <ThemeProvider>
+              <div className="min-h-screen flex flex-col">
+                {children}
+              </div>
+              <BackToTop />
+            </ThemeProvider>
+          </NextIntlClientProvider>
+        </StackTheme>
+      </StackProvider>
     </>
   );
 }
