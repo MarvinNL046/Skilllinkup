@@ -76,10 +76,16 @@ export function Header() {
  </Link>
  </nav>
 
- {/* CTA Button */}
+ {/* Auth Buttons */}
  <div className="hidden md:flex items-center gap-3">
  <LanguageSwitcher />
  <ThemeToggle />
+ <Link
+ href="/handler/sign-in"
+ className="inline-flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm font-heading font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+ >
+ {t('header.signIn')}
+ </Link>
  <Link
  href="/handler/sign-up"
  className="inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-dark px-4 py-2 text-sm font-heading font-semibold text-white transition-colors shadow-lg"
@@ -173,13 +179,22 @@ export function Header() {
  >
  {t('header.about')}
  </Link>
+ <div className="flex gap-3 mt-2">
+ <Link
+ href="/handler/sign-in"
+ className="flex-1 inline-flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm font-heading font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+ onClick={() =>setMobileMenuOpen(false)}
+ >
+ {t('header.signIn')}
+ </Link>
  <Link
  href="/handler/sign-up"
- className="inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-dark px-4 py-2 text-sm font-heading font-semibold text-white mt-2 shadow-lg"
+ className="flex-1 inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-dark px-4 py-2 text-sm font-heading font-semibold text-white shadow-lg"
  onClick={() =>setMobileMenuOpen(false)}
  >
  {t('header.signUp')}
  </Link>
+ </div>
  <div className="flex justify-center gap-3 mt-4">
  <LanguageSwitcher />
  <ThemeToggle />
