@@ -17,7 +17,8 @@ require("dotenv").config({ path: ".env" });
 // ─── Config ───────────────────────────────────────────────────────────────────
 
 const dev = process.env.NODE_ENV !== "production";
-const hostname = process.env.HOSTNAME || "0.0.0.0";
+// Use HOST (not HOSTNAME — Docker sets HOSTNAME to container ID which breaks binding)
+const hostname = process.env.HOST || "0.0.0.0";
 const port = parseInt(process.env.PORT || "3000", 10);
 
 // ─── Database (separate from Next.js "server-only" lib/db.ts) ─────────────────
