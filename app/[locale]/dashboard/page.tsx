@@ -2,7 +2,6 @@ import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/auth-helpers';
 
 export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
 
 interface PageProps {
   params: Promise<{ locale: string }>;

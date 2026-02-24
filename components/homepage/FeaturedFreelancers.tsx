@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ArrowRight, Users } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { FreelancerCard } from '@/components/marketplace/FreelancerCard';
-import type { FreelancerProfile } from '@/lib/marketplace-queries';
+import type { FreelancerProfile } from '@/types/marketplace';
 
 interface FeaturedFreelancersProps {
  freelancers: FreelancerProfile[];

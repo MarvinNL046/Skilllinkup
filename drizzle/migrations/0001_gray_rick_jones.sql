@@ -1,1 +1,0 @@
-ALTER TABLE "posts" ADD COLUMN "ad_code" text;

@@ -1,7 +1,8 @@
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { Metadata } from 'next';
-import { getPublishedPlatforms } from '@/lib/queries';
+import { fetchQuery } from 'convex/nextjs';
+import { api } from '@/convex/_generated/api';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { ComparisonTable } from '@/components/ComparisonTable';
@@ -64,11 +65,27 @@ export default async function ComparisonsPage({ params }: PageProps) {
  const t = await getTranslations({ locale, namespace: 'comparisonsPage' });
  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
 
- const platforms = await getPublishedPlatforms(100);
+ const rawPlatforms = await fetchQuery(api.platforms.list, { locale, limit: 100 });
+
+ // Map Convex camelCase to snake_case expected by ComparisonTable
+ const platforms = rawPlatforms.map((p) => ({
+   id: p._id,
+   name: p.name,
+   slug: p.slug,
+   tagline: (p as any).tagline ?? null,
+   logo_url: p.logoUrl ?? null,
+   fees: p.fees ?? null,
+   rating: p.rating ?? null,
+   review_count: (p as any).reviewCount ?? null,
+   category: p.category ?? null,
+   affiliate_link: p.affiliateLink ?? null,
+   website_url: p.websiteUrl ?? null,
+   commission_rate: (p as any).commissionRate ?? null,
+ }));
 
  // Calculate statistics for structured data
- const avgRating = platforms.length >0
- ? platforms.reduce((sum: number, p: any) =>sum + Number(p.rating || 0), 0) / platforms.length
+ const avgRating = platforms.length > 0
+ ? platforms.reduce((sum, p) => sum + Number(p.rating || 0), 0) / platforms.length
  : 0;
 
  // Structured data for SEO
@@ -83,13 +100,13 @@ export default async function ComparisonsPage({ params }: PageProps) {
  mainEntity: {
  '@type': 'ItemList',
  numberOfItems: platforms.length,
- itemListElement: platforms.slice(0, 10).map((platform: any, index: number) =>({
+ itemListElement: platforms.slice(0, 10).map((platform, index) =>({
  '@type': 'ListItem',
  position: index + 1,
  item: {
  '@type': 'Product',
  name: platform.name,
- description: platform.tagline || platform.description,
+ description: platform.tagline,
  url: `${siteUrl}/${locale}/platforms/${platform.slug}`,
  aggregateRating: platform.rating ? {
  '@type': 'AggregateRating',
@@ -153,7 +170,7 @@ export default async function ComparisonsPage({ params }: PageProps) {
  <ComparisonTable platforms={platforms} locale={locale} />
 
  {/* Stats Section */}
- {platforms.length >0 && (
+ {platforms.length > 0 && (
  <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
  <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
  <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
@@ -169,7 +186,7 @@ export default async function ComparisonsPage({ params }: PageProps) {
  </div>
  <div className="text-3xl font-bold text-green-600 dark:text-green-400">
  {(
- platforms.reduce((sum: number, p: any) =>sum + Number(p.commission_rate || 0), 0) /
+ platforms.reduce((sum, p) => sum + Number(p.commission_rate || 0), 0) /
  platforms.length
  ).toFixed(1)}
  %
@@ -181,7 +198,7 @@ export default async function ComparisonsPage({ params }: PageProps) {
  </div>
  <div className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">
  {(
- platforms.reduce((sum: number, p: any) =>sum + Number(p.rating || 0), 0) /
+ platforms.reduce((sum, p) => sum + Number(p.rating || 0), 0) /
  platforms.length
  ).toFixed(1)}
  <span className="text-lg ml-1">★</span>

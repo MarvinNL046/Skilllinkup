@@ -1,67 +1,34 @@
-import { getStackServerApp } from '@/lib/stack';
-import { sql } from '@/lib/db';
+import { auth, currentUser } from '@clerk/nextjs/server';
 
 /**
- * Get the current user from Stack Auth session and sync with local DB.
- * Returns the same shape as the old NextAuth-based helper:
- * { id, email, name, image, userType, tenantId }
+ * Get the current user from Clerk session.
+ * Returns user info from Clerk (server-side).
+ *
+ * NOTE: After Convex migration is complete, this will be replaced
+ * with Convex queries. During transition, this provides the same
+ * interface as the old Stack Auth helper.
  */
 export async function getCurrentUser() {
   try {
-    const stackUser = await getStackServerApp().getUser();
-    if (!stackUser) return null;
+    const { userId } = await auth();
+    if (!userId) return null;
 
-    const email = stackUser.primaryEmail;
+    const clerkUser = await currentUser();
+    if (!clerkUser) return null;
+
+    const email = clerkUser.emailAddresses[0]?.emailAddress;
     if (!email) return null;
 
-    const existing = await sql`
-      SELECT id, email, name, image, user_type, tenant_id
-      FROM users WHERE email = ${email} LIMIT 1
-    `;
-
-    if (existing.length > 0) {
-      const u = existing[0];
-      return {
-        id: u.id,
-        email: u.email,
-        name: u.name || stackUser.displayName,
-        image: u.image || stackUser.profileImageUrl,
-        userType: u.user_type,
-        tenantId: u.tenant_id,
-      };
-    }
-
-    // Auto-create local user on first Stack Auth login
-    const tenants = await sql`SELECT id FROM tenants LIMIT 1`;
-    const tenantId = tenants[0]?.id;
-
-    await sql`
-      INSERT INTO users (email, name, password_hash, image, user_type, tenant_id, role, email_verified)
-      VALUES (
-        ${email},
-        ${stackUser.displayName || email.split('@')[0]},
-        'stack-auth-managed',
-        ${stackUser.profileImageUrl || null},
-        'client',
-        ${tenantId},
-        'author',
-        true
-      )
-    `;
-
-    const created = await sql`
-      SELECT id, email, name, image, user_type, tenant_id
-      FROM users WHERE email = ${email} LIMIT 1
-    `;
-
-    const u = created[0];
     return {
-      id: u.id,
-      email: u.email,
-      name: u.name,
-      image: u.image,
-      userType: u.user_type,
-      tenantId: u.tenant_id,
+      id: userId,
+      email,
+      name: clerkUser.firstName
+        ? `${clerkUser.firstName} ${clerkUser.lastName || ''}`.trim()
+        : email.split('@')[0],
+      image: clerkUser.imageUrl || null,
+      // userType will come from Convex once migration is complete
+      userType: (clerkUser.publicMetadata?.userType as string) || 'client',
+      tenantId: null, // Will be resolved via Convex
     };
   } catch (e) {
     console.error('[auth-helpers] getCurrentUser error:', e);
@@ -77,10 +44,9 @@ export async function requireAuth() {
 
 export async function requireFreelancer() {
   const user = await requireAuth();
-  const profiles = await sql`
-    SELECT id, status, stripe_onboarding_complete
-    FROM freelancer_profiles WHERE user_id = ${user.id} AND status = 'active' LIMIT 1
-  `;
-  if (profiles.length === 0) throw new Error('No active freelancer profile');
-  return { user, profile: profiles[0] };
+  // TODO: Check freelancer profile in Convex once migration is complete
+  if (user.userType !== 'freelancer') {
+    throw new Error('No active freelancer profile');
+  }
+  return { user, profile: { id: user.id, status: 'active', stripe_onboarding_complete: false } };
 }

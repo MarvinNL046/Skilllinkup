@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getPostBySlug, getPublishedPosts, getCommentsByPost } from "@/lib/queries";
+import { fetchQuery } from "convex/nextjs";
+import { api } from "@/convex/_generated/api";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Newsletter } from "@/components/newsletter";
@@ -11,7 +12,6 @@ import { TableOfContents } from "@/components/TableOfContents";
 import { AdWidget } from "@/components/AdWidget";
 import { QuickInfoWidget } from "@/components/QuickInfoWidget";
 
-export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 interface PostPageProps {
@@ -24,13 +24,27 @@ interface PostPageProps {
 export async function generateMetadata({ params }: PostPageProps) {
  try {
  const { slug, locale } = await params;
- const post = await getPostBySlug(slug, locale);
+ const raw = await fetchQuery(api.posts.getBySlug, { slug, locale });
 
- if (!post) {
+ if (!raw) {
  return {
  title: "Post Not Found - SkillLinkup",
  };
  }
+
+ // Map Convex camelCase fields to snake_case shape expected by JSX
+ const post = {
+ ...raw,
+ id: raw._id,
+ feature_img: raw.featureImg ?? null,
+ published_at: raw.publishedAt ? new Date(raw.publishedAt).toISOString() : null,
+ read_time: raw.readTime ?? null,
+ meta_title: raw.metaTitle ?? null,
+ meta_description: raw.metaDescription ?? null,
+ author_name: raw.authorName ?? raw.author?.name ?? null,
+ category_name: raw.category?.name ?? null,
+ category_slug: raw.category?.slug ?? null,
+ };
 
  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
  const postUrl = `${siteUrl}/post/${post.slug}`;
@@ -107,24 +121,123 @@ export async function generateMetadata({ params }: PostPageProps) {
 
 export default async function PostPage({ params }: PostPageProps) {
  const { slug, locale } = await params;
- let post;
- let relatedPosts: Awaited<ReturnType<typeof getPublishedPosts>>= [];
- let comments: Awaited<ReturnType<typeof getCommentsByPost>>= [];
+
+ let post: {
+  id: string;
+  _id: string;
+  slug: string;
+  title: string;
+  excerpt?: string | null;
+  content: string;
+  feature_img: string | null;
+  published_at: string | null;
+  read_time: number | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  author_name: string | null;
+  category_name: string | null;
+  category_slug: string | null;
+  tags?: string[] | null;
+  views?: number | null;
+  status: string;
+  updated_at?: string | null;
+  ad_image?: string | null;
+  ad_link?: string | null;
+  platform_type?: string | null;
+  fee_structure?: string | null;
+  difficulty_level?: string | null;
+  best_for?: string | null;
+ } | null = null;
+
+ let relatedPosts: Array<{
+  id: string;
+  slug: string;
+  title: string;
+  excerpt?: string | null;
+  feature_img: string | null;
+ }> = [];
+
+ let comments: Array<{
+  _id: string;
+  postId: string;
+  authorName: string;
+  authorEmail: string;
+  authorWebsite?: string;
+  content: string;
+  status: string;
+  createdAt: number;
+  id: string;
+  author_name: string;
+  created_at: Date;
+ }> = [];
 
  try {
- post = await getPostBySlug(slug, locale);
+ const raw = await fetchQuery(api.posts.getBySlug, { slug, locale });
 
- if (!post) {
+ if (!raw) {
  notFound();
  }
 
+ // Map Convex camelCase fields to snake_case shape expected by JSX
+ post = {
+ ...raw,
+ id: raw._id as string,
+ feature_img: raw.featureImg ?? null,
+ published_at: raw.publishedAt ? new Date(raw.publishedAt).toISOString() : null,
+ updated_at: raw.updatedAt ? new Date(raw.updatedAt).toISOString() : null,
+ read_time: raw.readTime ?? null,
+ meta_title: raw.metaTitle ?? null,
+ meta_description: raw.metaDescription ?? null,
+ author_name: raw.authorName ?? (raw.author as any)?.name ?? null,
+ category_name: (raw.category as any)?.name ?? null,
+ category_slug: (raw.category as any)?.slug ?? null,
+ ad_image: raw.adImage ?? null,
+ ad_link: raw.adLink ?? null,
+ // Fields not in schema but may be used by JSX widgets:
+ platform_type: null,
+ fee_structure: null,
+ difficulty_level: null,
+ best_for: null,
+ };
+
  // Get related posts from same category
- relatedPosts = await getPublishedPosts(3, 0, locale);
+ const rawRelated = await fetchQuery(api.posts.list, { locale, limit: 3 });
+ relatedPosts = rawRelated
+ .filter((p) => p._id !== raw._id)
+ .slice(0, 3)
+ .map((p) => ({
+ id: p._id as string,
+ slug: p.slug,
+ title: p.title,
+ excerpt: p.excerpt ?? null,
+ feature_img: p.featureImg ?? null,
+ }));
 
  // Get comments for this post
- comments = await getCommentsByPost(post.id);
+ // Comments getByPost requires a Convex Id type; cast via string coercion
+ const rawComments = await fetchQuery(api.comments.getByPost, {
+ postId: raw._id as any,
+ });
+ comments = rawComments.map((c) => ({
+ _id: c._id as string,
+ postId: c.postId as string,
+ authorName: c.authorName,
+ authorEmail: c.authorEmail,
+ authorWebsite: c.authorWebsite,
+ content: c.content,
+ status: c.status,
+ createdAt: c.createdAt,
+ // Fields expected by CommentSection component
+ id: c._id as string,
+ author_name: c.authorName,
+ created_at: new Date(c.createdAt),
+ }));
  } catch (error) {
  console.error('Error fetching post:', error);
+ notFound();
+ }
+
+ if (!post) {
  notFound();
  }
 

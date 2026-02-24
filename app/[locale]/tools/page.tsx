@@ -3,7 +3,8 @@ import Link from 'next/link';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { AdWidget } from '@/components/AdWidget';
-import { getToolsByCategory } from '@/lib/queries';
+import { fetchQuery } from "convex/nextjs";
+import { api } from "@/convex/_generated/api";
 import { Wrench, Calculator, FileText, BarChart3, Clock, DollarSign, Users, Zap } from 'lucide-react';
 import * as Icons from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
@@ -93,12 +94,12 @@ export default async function ToolsPage({ params }: PageProps) {
  const { locale } = await params;
  const t = await getTranslations({ locale, namespace: 'toolsPage' });
 
- let tools: Awaited<ReturnType<typeof getToolsByCategory>>= [];
- let resources: Awaited<ReturnType<typeof getToolsByCategory>>= [];
+ let tools: any[] = [];
+ let resources: any[] = [];
 
  try {
- tools = await getToolsByCategory('tool', locale);
- resources = await getToolsByCategory('resource', locale);
+ tools = await fetchQuery(api.tools.getByCategory, { category: 'tool', locale });
+ resources = await fetchQuery(api.tools.getByCategory, { category: 'resource', locale });
  } catch (error) {
  console.error('Error fetching tools:', error);
  }

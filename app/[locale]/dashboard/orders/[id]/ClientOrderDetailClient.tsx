@@ -15,7 +15,7 @@ import {
  Calendar,
 } from 'lucide-react';
 import { OrderTimeline } from '@/components/dashboard/OrderTimeline';
-import type { OrderSummary } from '@/lib/marketplace-queries';
+import type { OrderSummary } from '@/types/marketplace';
 
 interface ExtendedOrder extends OrderSummary {
  revision_count?: number;

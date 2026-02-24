@@ -2,14 +2,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { getPlatformBySlug, getPublishedPlatforms, getReviewsByPlatform } from "@/lib/queries";
+import { fetchQuery } from "convex/nextjs";
+import { api } from "@/convex/_generated/api";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Newsletter } from "@/components/newsletter";
 import { AffiliateButton } from "@/components/affiliate-button";
 import { PlatformReviews } from "@/components/PlatformReviews";
 
-export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 interface PlatformPageProps {
@@ -22,13 +22,23 @@ interface PlatformPageProps {
 export async function generateMetadata({ params }: PlatformPageProps) {
  try {
  const { slug, locale } = await params;
- const platform = await getPlatformBySlug(slug, locale);
+ const raw = await fetchQuery(api.platforms.getBySlug, { slug, locale });
 
- if (!platform) {
+ if (!raw) {
  return {
  title: "Platform Not Found - SkillLinkup",
  };
  }
+
+ // Map Convex camelCase fields to snake_case shape
+ const platform = {
+ ...raw,
+ id: raw._id as string,
+ logo_url: raw.logoUrl ?? null,
+ website_url: raw.websiteUrl ?? null,
+ affiliate_link: raw.affiliateLink ?? null,
+ work_type: raw.workType ?? null,
+ };
 
  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
  const platformUrl = `${siteUrl}/${locale}/platforms/${platform.slug}`;
@@ -113,27 +123,123 @@ export async function generateMetadata({ params }: PlatformPageProps) {
 export default async function PlatformPage({ params }: PlatformPageProps) {
  const { slug, locale } = await params;
  const t = await getTranslations('platformDetail');
- let platform;
- let relatedPlatforms: Awaited<ReturnType<typeof getPublishedPlatforms>>= [];
- let platformReviews: Awaited<ReturnType<typeof getReviewsByPlatform>>= [];
+
+ type MappedPlatform = {
+  id: string;
+  _id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  logo_url: string | null;
+  website_url: string | null;
+  affiliate_link: string | null;
+  work_type: string | null;
+  rating: number;
+  category: string;
+  fees?: string | null;
+  difficulty: string;
+  featured?: boolean | null;
+  pros?: string[] | null;
+  cons?: string[] | null;
+  features?: string[] | null;
+  status?: string | null;
+  countries?: string[] | null;
+ };
+
+ type MappedReview = {
+  id: string;
+  user_name: string;
+  user_avatar: string | null;
+  user_role: string | null;
+  title: string;
+  content: string;
+  overall_rating: number;
+  ease_of_use_rating: number;
+  support_rating: number;
+  value_rating: number;
+  pros: string[];
+  cons: string[];
+  project_type: string | null;
+  earnings_range: string | null;
+  years_experience: number | null;
+  verified: boolean;
+  helpful_count: number;
+  created_at: string;
+ };
+
+ let platform: MappedPlatform | null = null;
+ let relatedPlatforms: MappedPlatform[] = [];
+ let platformReviews: MappedReview[] = [];
 
  try {
- platform = await getPlatformBySlug(slug, locale);
+ const raw = await fetchQuery(api.platforms.getBySlug, { slug, locale });
 
- if (!platform) {
+ if (!raw) {
  notFound();
  }
 
- // Get related platforms from same category
- const allPlatforms = await getPublishedPlatforms(50, locale);
- relatedPlatforms = allPlatforms
- .filter((p) =>p.category === platform.category && p.id !== platform.id)
- .slice(0, 3);
+ // Map Convex camelCase fields to snake_case shape expected by JSX
+ platform = {
+ ...raw,
+ id: raw._id as string,
+ logo_url: raw.logoUrl ?? null,
+ website_url: raw.websiteUrl ?? null,
+ affiliate_link: raw.affiliateLink ?? null,
+ work_type: raw.workType ?? null,
+ rating: raw.rating ?? 0,
+ category: raw.category ?? '',
+ difficulty: raw.difficulty ?? 'Medium',
+ };
 
- // Get reviews for this platform (filtered by locale)
- platformReviews = await getReviewsByPlatform(platform.id, 20, locale);
+ // Get related platforms from same category
+ const allRaw = await fetchQuery(api.platforms.list, { locale, limit: 50 });
+ relatedPlatforms = allRaw
+ .filter((p) => p.category === platform!.category && p._id !== raw._id)
+ .slice(0, 3)
+ .map((p) => ({
+ ...p,
+ id: p._id as string,
+ logo_url: p.logoUrl ?? null,
+ website_url: p.websiteUrl ?? null,
+ affiliate_link: p.affiliateLink ?? null,
+ work_type: p.workType ?? null,
+ rating: p.rating ?? 0,
+ category: p.category ?? '',
+ difficulty: p.difficulty ?? 'Medium',
+ }));
+
+ // Get reviews for this platform
+ const rawReviews = await fetchQuery(api.platformReviews.getByPlatform, {
+ platformId: raw._id as any,
+ limit: 20,
+ });
+
+ platformReviews = rawReviews.map((r) => ({
+ id: r._id as string,
+ user_name: r.userName ?? 'Anonymous',
+ user_avatar: r.userAvatar ?? null,
+ user_role: r.userRole ?? null,
+ title: r.title,
+ content: r.content,
+ overall_rating: Number(r.overallRating),
+ ease_of_use_rating: r.easeOfUseRating != null ? Number(r.easeOfUseRating) : 0,
+ support_rating: r.supportRating != null ? Number(r.supportRating) : 0,
+ value_rating: r.valueRating != null ? Number(r.valueRating) : 0,
+ pros: r.pros ?? [],
+ cons: r.cons ?? [],
+ project_type: r.projectType ?? null,
+ earnings_range: r.earningsRange ?? null,
+ years_experience: r.yearsExperience ?? null,
+ verified: r.verified ?? false,
+ helpful_count: r.helpfulCount ?? 0,
+ created_at: new Date(r.createdAt).toISOString(),
+ }));
  } catch (error) {
  console.error('Error fetching platform:', error);
+ notFound();
+ }
+
+ if (!platform) {
  notFound();
  }
 
@@ -487,26 +593,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
  platformId={platform.id}
  platformName={platform.name}
  locale={locale}
- reviews={platformReviews.map(r =>({
- id: r.id,
- user_name: r.user_name,
- user_avatar: r.user_avatar,
- user_role: r.user_role,
- title: r.title,
- content: r.content,
- overall_rating: Number(r.overall_rating),
- ease_of_use_rating: Number(r.ease_of_use_rating),
- support_rating: Number(r.support_rating),
- value_rating: Number(r.value_rating),
- pros: r.pros || [],
- cons: r.cons || [],
- project_type: r.project_type,
- earnings_range: r.earnings_range,
- years_experience: r.years_experience,
- verified: r.verified,
- helpful_count: r.helpful_count,
- created_at: r.created_at ? r.created_at.toISOString() : new Date().toISOString(),
- }))}
+ reviews={platformReviews}
  />
  </div>
 

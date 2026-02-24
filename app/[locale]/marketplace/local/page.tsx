@@ -13,7 +13,6 @@ import {
 import { LocationSearch } from '@/components/marketplace/LocationSearch';
 
 export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
 
 interface LocalPageProps {
  params: Promise<{ locale: string }>;

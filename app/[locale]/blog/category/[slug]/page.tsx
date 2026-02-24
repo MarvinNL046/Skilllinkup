@@ -4,10 +4,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
-import { getCategoryBySlug, getPostsByCategory } from '@/lib/queries';
+import { fetchQuery } from 'convex/nextjs';
+import { api } from '@/convex/_generated/api';
 
 export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
 
 interface PageProps {
  params: Promise<{ locale: string; slug: string }>;
@@ -15,13 +15,19 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata>{
  const { slug, locale } = await params;
- const category = await getCategoryBySlug(slug, locale);
+ const raw = await fetchQuery(api.categories.getBySlug, { slug, locale });
 
- if (!category) {
+ if (!raw) {
  return {
  title: 'Category Not Found | SkillLinkup',
  };
  }
+
+ const category = {
+   name: raw.name,
+   description: raw.description ?? null,
+   post_count: (raw as any).postCount ?? 0,
+ };
 
  return {
  title: `${category.name} | SkillLinkup`,
@@ -33,13 +39,33 @@ export default async function CategoryPage({ params }: PageProps) {
  const { slug, locale } = await params;
 
  // Fetch category and posts
- const category = await getCategoryBySlug(slug, locale);
+ const rawCategory = await fetchQuery(api.categories.getBySlug, { slug, locale });
 
- if (!category) {
+ if (!rawCategory) {
  notFound();
  }
 
- const posts = await getPostsByCategory(slug, 50, locale);
+ const category = {
+   name: rawCategory.name,
+   description: rawCategory.description ?? null,
+   color: (rawCategory as any).color ?? null,
+   post_count: (rawCategory as any).postCount ?? 0,
+ };
+
+ const rawPosts = await fetchQuery(api.posts.getByCategory, { categorySlug: slug, locale, limit: 50 });
+
+ const posts = rawPosts.map((post) => ({
+   id: post._id,
+   title: post.title,
+   slug: post.slug,
+   excerpt: post.excerpt ?? null,
+   feature_img: post.featureImg ?? null,
+   read_time: post.readTime ?? null,
+   views: post.views ?? null,
+   published_at: post.publishedAt ? new Date(post.publishedAt).toISOString() : null,
+   category_name: post.category?.name ?? null,
+   created_at: post.createdAt,
+ }));
 
  return (
  <>

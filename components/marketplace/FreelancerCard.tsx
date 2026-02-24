@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Star, MapPin, CheckCircle, Clock } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { safeImage, safeText, safeArray, safeNumber } from '@/lib/safe';
-import type { FreelancerProfile } from '@/lib/marketplace-queries';
+import type { FreelancerProfile } from '@/types/marketplace';
 import { FreelancerBadges } from '@/components/marketplace/FreelancerBadges';
 
 interface FreelancerCardProps {

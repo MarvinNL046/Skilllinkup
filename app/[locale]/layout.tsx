@@ -6,8 +6,8 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { NextIntlClientProvider } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { locales } from '@/i18n/request';
-import { StackProvider, StackTheme } from "@stackframe/stack";
-import { getStackApp } from '@/lib/stack-client';
+import { ClerkProvider } from "@clerk/nextjs";
+import ConvexClientProvider from "@/components/ConvexClientProvider";
 
 // Generate locale-specific metadata
 export async function generateMetadata({
@@ -145,8 +145,8 @@ export default async function LocaleLayout({
  />
  </noscript>
 
- <StackProvider app={getStackApp()}>
- <StackTheme>
+ <ClerkProvider>
+ <ConvexClientProvider>
  <NextIntlClientProvider locale={locale} messages={messages}>
  <ThemeProvider>
  <div className="min-h-screen flex flex-col">
@@ -155,8 +155,8 @@ export default async function LocaleLayout({
  <BackToTop />
  </ThemeProvider>
  </NextIntlClientProvider>
- </StackTheme>
- </StackProvider>
+ </ConvexClientProvider>
+ </ClerkProvider>
  </>
  );
 }

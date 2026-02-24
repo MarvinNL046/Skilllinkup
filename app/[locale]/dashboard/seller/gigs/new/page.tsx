@@ -1,12 +1,10 @@
 import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { getCurrentUser } from '@/lib/auth-helpers';
-import { getMarketplaceCategories } from '@/lib/marketplace-queries';
+import { fetchQuery } from "convex/nextjs";
+import { api } from "@/convex/_generated/api";
 import { GigWizard, SerializableCategory } from '@/components/dashboard/GigWizard';
-import type { MarketplaceCategory } from '@/lib/marketplace-queries';
-
-export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
+import type { MarketplaceCategory } from '@/types/marketplace';
 
 interface PageProps {
  params: Promise<{ locale: string }>;
@@ -35,7 +33,30 @@ export default async function NewGigPage({ params }: PageProps) {
  redirect('/handler/sign-in');
  }
 
- const categories = await getMarketplaceCategories(locale);
+ const rawCategories = await fetchQuery(api.marketplace.categories.list, { locale });
+ // Map Convex camelCase to snake_case expected by MarketplaceCategory type
+ const categories: MarketplaceCategory[] = rawCategories.map((cat: any) => ({
+ id: cat._id,
+ name: cat.name,
+ slug: cat.slug,
+ description: cat.description ?? null,
+ icon: cat.icon ?? null,
+ image_url: cat.imageUrl ?? null,
+ parent_id: cat.parentId ?? null,
+ service_type: cat.serviceType ?? 'gig',
+ gig_count: 0,
+ children: cat.children?.map((child: any) => ({
+ id: child._id,
+ name: child.name,
+ slug: child.slug,
+ description: child.description ?? null,
+ icon: child.icon ?? null,
+ image_url: child.imageUrl ?? null,
+ parent_id: child.parentId ?? null,
+ service_type: child.serviceType ?? 'gig',
+ gig_count: 0,
+ })),
+ }));
  const serializedCategories = categories.map(serializeCategory);
 
  return (

@@ -5,7 +5,8 @@ import { getTranslations } from 'next-intl/server';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { AdWidget } from '@/components/AdWidget';
-import { getToolBySlug, getToolsByCategory } from '@/lib/queries';
+import { fetchQuery } from "convex/nextjs";
+import { api } from "@/convex/_generated/api";
 import { Calculator, FileText, BarChart3, Clock, DollarSign, Users, Zap, Wrench, Eye, ArrowLeft, ExternalLink } from 'lucide-react';
 
 // Icon mapping for lucide-react
@@ -29,7 +30,8 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata>{
  const { locale, slug } = await params;
  const t = await getTranslations({ locale, namespace: 'toolDetailPage.metadata' });
- const tool = await getToolBySlug(slug);
+ const rawTool = await fetchQuery(api.tools.getBySlug, { slug, locale });
+ const tool = rawTool ? { ...rawTool, tool_url: rawTool.toolUrl, is_available: rawTool.isAvailable } : null;
 
  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
  const pageUrl = `${siteUrl}/${locale}/tools/${slug}`;
@@ -105,15 +107,24 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ToolDetailPage({ params }: PageProps) {
  const { locale, slug } = await params;
- const tool = await getToolBySlug(slug);
-
- if (!tool) {
+ const rawTool = await fetchQuery(api.tools.getBySlug, { slug, locale });
+ if (!rawTool) {
  notFound();
  }
+ const tool = {
+ ...rawTool,
+ tool_url: rawTool.toolUrl,
+ is_available: rawTool.isAvailable,
+ };
 
  // Get related tools from same category
- const relatedTools = await getToolsByCategory(tool.category);
- const filteredRelated = relatedTools.filter(t =>t.id !== tool.id).slice(0, 3);
+ const rawRelated = await fetchQuery(api.tools.getByCategory, { category: tool.category, locale });
+ const relatedTools = rawRelated.map((r: any) => ({
+ ...r,
+ tool_url: r.toolUrl,
+ is_available: r.isAvailable,
+ }));
+ const filteredRelated = relatedTools.filter((t: any) =>t._id !== rawTool._id).slice(0, 3);
 
  const Icon = tool.icon && iconMap[tool.icon] ? iconMap[tool.icon] : Wrench;
 
@@ -337,7 +348,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
  const RelatedIcon = relatedTool.icon && iconMap[relatedTool.icon] ? iconMap[relatedTool.icon] : Wrench;
  return (
  <Link
- key={relatedTool.id}
+ key={relatedTool._id}
  href={`/tools/${relatedTool.slug}`}
  className="flex items-start gap-3 group"
  >

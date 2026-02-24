@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { stripe } from '@/lib/stripe';
-import { sql } from '@/lib/db';
-import {
- createOrder,
- createNotification,
-} from '@/lib/marketplace-queries';
+import { fetchQuery, fetchMutation } from 'convex/nextjs';
+import { api } from '@/convex/_generated/api';
+import { Id } from '@/convex/_generated/dataModel';
 import { sendEmailAsync } from '@/lib/send-email';
-import { getUserContact } from '@/lib/get-user-email';
 import { OrderConfirmationEmail } from '@/emails/order-confirmation';
 import { NewOrderEmail } from '@/emails/new-order';
 import { PaymentFailedEmail } from '@/emails/payment-failed';
@@ -18,301 +15,303 @@ export const dynamic = 'force-dynamic';
 // POST /api/stripe/webhook
 // Handles incoming Stripe webhook events for payment processing.
 export async function POST(request: NextRequest) {
- // Get raw body text for signature verification — MUST use text(), not json()
- const rawBody = await request.text();
- const signature = request.headers.get('stripe-signature');
+  // Get raw body text for signature verification — MUST use text(), not json()
+  const rawBody = await request.text();
+  const signature = request.headers.get('stripe-signature');
 
- if (!signature) {
- return NextResponse.json(
- { error: 'Missing stripe-signature header' },
- { status: 400 }
- );
- }
+  if (!signature) {
+    return NextResponse.json(
+      { error: 'Missing stripe-signature header' },
+      { status: 400 }
+    );
+  }
 
- const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
- if (!webhookSecret) {
- console.error('STRIPE_WEBHOOK_SECRET is not configured');
- return NextResponse.json(
- { error: 'Webhook secret not configured' },
- { status: 500 }
- );
- }
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    console.error('STRIPE_WEBHOOK_SECRET is not configured');
+    return NextResponse.json(
+      { error: 'Webhook secret not configured' },
+      { status: 500 }
+    );
+  }
 
- // Verify webhook signature
- let event: Stripe.Event;
- try {
- event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
- } catch (err) {
- console.error('Stripe webhook signature verification failed:', err);
- return NextResponse.json(
- { error: 'Invalid webhook signature' },
- { status: 400 }
- );
- }
+  // Verify webhook signature
+  let event: Stripe.Event;
+  try {
+    event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
+  } catch (err) {
+    console.error('Stripe webhook signature verification failed:', err);
+    return NextResponse.json(
+      { error: 'Invalid webhook signature' },
+      { status: 400 }
+    );
+  }
 
- // Handle events
- try {
- switch (event.type) {
- case 'payment_intent.succeeded': {
- const paymentIntent = event.data.object as Stripe.PaymentIntent;
- await handlePaymentIntentSucceeded(paymentIntent);
- break;
- }
+  // Handle events
+  try {
+    switch (event.type) {
+      case 'payment_intent.succeeded': {
+        const paymentIntent = event.data.object as Stripe.PaymentIntent;
+        await handlePaymentIntentSucceeded(paymentIntent);
+        break;
+      }
 
- case 'payment_intent.payment_failed': {
- const paymentIntent = event.data.object as Stripe.PaymentIntent;
- await handlePaymentIntentFailed(paymentIntent);
- break;
- }
+      case 'payment_intent.payment_failed': {
+        const paymentIntent = event.data.object as Stripe.PaymentIntent;
+        await handlePaymentIntentFailed(paymentIntent);
+        break;
+      }
 
- default:
- // Ignore unhandled event types
- break;
- }
- } catch (err) {
- console.error(`Error handling Stripe event ${event.type}:`, err);
- // Return 200 to prevent Stripe from retrying on our application errors
- // Log internally for investigation
- return NextResponse.json(
- { error: 'Event handling failed', received: true },
- { status: 200 }
- );
- }
+      default:
+        // Ignore unhandled event types
+        break;
+    }
+  } catch (err) {
+    console.error(`Error handling Stripe event ${event.type}:`, err);
+    // Return 200 to prevent Stripe from retrying on our application errors
+    // Log internally for investigation
+    return NextResponse.json(
+      { error: 'Event handling failed', received: true },
+      { status: 200 }
+    );
+  }
 
- return NextResponse.json({ received: true });
+  return NextResponse.json({ received: true });
+}
+
+/**
+ * Look up a Convex user by their Clerk/Stack Auth ID.
+ * Returns null if not found.
+ */
+async function getConvexUserByClerkId(clerkId: string) {
+  try {
+    return await fetchQuery(api.users.getByStackAuthId, { stackAuthId: clerkId });
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Get user contact info (email, name) for sending emails.
+ */
+async function getUserContact(convexUserId: Id<'users'>) {
+  try {
+    return await fetchQuery(api.users.getContact, { userId: convexUserId });
+  } catch {
+    return null;
+  }
 }
 
 async function handlePaymentIntentSucceeded(
- paymentIntent: Stripe.PaymentIntent
-): Promise<void>{
- const metadata = paymentIntent.metadata;
+  paymentIntent: Stripe.PaymentIntent
+): Promise<void> {
+  const metadata = paymentIntent.metadata;
 
- const gigId = metadata.gig_id;
- const packageId = metadata.package_id;
- const clientId = metadata.client_id;
- const freelancerId = metadata.freelancer_id;
- const platformFee = parseFloat(metadata.platform_fee || '0');
- const requirements = metadata.requirements || '';
- const deliveryDays = parseInt(metadata.delivery_days || '7', 10);
- const gigTitle = metadata.gig_title || 'Service';
- const packageTitle = metadata.package_title || '';
+  const gigId = metadata.gig_id;
+  const packageId = metadata.package_id;
+  // client_id is a Clerk user ID (stackAuthId)
+  const clientClerkId = metadata.client_id;
+  // freelancer_profile_id is a Convex Id<"freelancerProfiles">
+  const freelancerProfileId = metadata.freelancer_profile_id;
+  const platformFee = parseFloat(metadata.platform_fee || '0');
+  const requirements = metadata.requirements || '';
+  const deliveryDays = parseInt(metadata.delivery_days || '7', 10);
+  const gigTitle = metadata.gig_title || 'Service';
+  const packageTitle = metadata.package_title || '';
 
- if (!gigId || !clientId || !freelancerId) {
- console.error(
- 'payment_intent.succeeded: missing required metadata fields',
- { gigId, clientId, freelancerId }
- );
- return;
- }
+  if (!gigId || !clientClerkId || !freelancerProfileId) {
+    console.error(
+      'payment_intent.succeeded: missing required metadata fields',
+      { gigId, clientClerkId, freelancerProfileId }
+    );
+    return;
+  }
 
- // Check if an order already exists for this PaymentIntent (idempotency guard)
- const existingOrders = await sql`
- SELECT id FROM orders
- WHERE stripe_payment_intent_id = ${paymentIntent.id}
- LIMIT 1
- `;
+  // Check if an order already exists for this PaymentIntent (idempotency guard)
+  const existingOrder = await fetchQuery(
+    api.marketplace.orders.getByStripePaymentIntentId,
+    { stripePaymentIntentId: paymentIntent.id }
+  );
 
- if (existingOrders && existingOrders.length >0) {
- // Order already created — this is a duplicate webhook delivery, ignore
- return;
- }
+  if (existingOrder) {
+    // Order already created — this is a duplicate webhook delivery, ignore
+    return;
+  }
 
- // Determine the currency and amount from the PaymentIntent
- const currency = paymentIntent.currency.toUpperCase();
- const amount = paymentIntent.amount / 100; // convert from cents
+  // Determine the currency and amount from the PaymentIntent
+  const currency = paymentIntent.currency.toUpperCase();
+  const amount = paymentIntent.amount / 100; // convert from cents
 
- // Create the order
- const order = await createOrder({
- gig_id: gigId,
- package_id: packageId,
- client_id: clientId,
- freelancer_id: freelancerId,
- order_type: 'gig',
- title: packageTitle ? `${gigTitle} – ${packageTitle}` : gigTitle,
- amount,
- currency,
- delivery_days: deliveryDays,
- });
+  // Resolve the Convex user ID for the client from their Clerk ID
+  const clientConvexUser = await getConvexUserByClerkId(clientClerkId);
+  if (!clientConvexUser) {
+    console.error(
+      'payment_intent.succeeded: could not find Convex user for client Clerk ID',
+      clientClerkId
+    );
+    return;
+  }
 
- // Update the order with the PaymentIntent ID and escrow status
- await sql`
- UPDATE orders
- SET
- stripe_payment_intent_id = ${paymentIntent.id},
- escrow_status = 'held',
- status = 'in_progress',
- requirements = ${requirements},
- updated_at = NOW()
- WHERE id = ${order.id}
- `;
+  const clientConvexId = clientConvexUser._id as Id<'users'>;
 
- // Get the tenant_id for the transaction (use the client's tenant or a default)
- const tenantRows = await sql`
- SELECT tenant_id FROM users WHERE id = ${clientId} LIMIT 1
- `;
- const tenantId = (tenantRows[0]?.tenant_id as string | null) ?? null;
+  // Get the freelancer profile to find their Convex user ID
+  const freelancerProfile = await fetchQuery(
+    api.marketplace.freelancers.getById,
+    { profileId: freelancerProfileId as Id<'freelancerProfiles'> }
+  );
 
- // Create transaction record
- if (tenantId) {
- await sql`
- INSERT INTO transactions (
- tenant_id,
- order_id,
- payer_id,
- payee_id,
- amount,
- platform_fee,
- currency,
- transaction_type,
- stripe_payment_intent_id,
- status,
- description
- ) VALUES (
- ${tenantId},
- ${order.id},
- ${clientId},
- ${freelancerId},
- ${amount},
- ${platformFee},
- ${currency},
- 'payment',
- ${paymentIntent.id},
- 'completed',
- ${'Payment for: ' + (packageTitle ? `${gigTitle} – ${packageTitle}` : gigTitle)}
- )
- `;
- } else {
- // Insert transaction without tenant_id if not available
- await sql`
- INSERT INTO transactions (
- order_id,
- payer_id,
- payee_id,
- amount,
- platform_fee,
- currency,
- transaction_type,
- stripe_payment_intent_id,
- status,
- description
- ) VALUES (
- ${order.id},
- ${clientId},
- ${freelancerId},
- ${amount},
- ${platformFee},
- ${currency},
- 'payment',
- ${paymentIntent.id},
- 'completed',
- ${'Payment for: ' + (packageTitle ? `${gigTitle} – ${packageTitle}` : gigTitle)}
- )
- `;
- }
+  if (!freelancerProfile) {
+    console.error(
+      'payment_intent.succeeded: could not find freelancer profile',
+      freelancerProfileId
+    );
+    return;
+  }
 
- // Resolve the client's user_id for notification if freelancerId is a profile ID
- const freelancerUserRows = await sql`
- SELECT user_id FROM freelancer_profiles WHERE id = ${freelancerId} LIMIT 1
- `;
- const freelancerUserId = (freelancerUserRows[0]?.user_id as string | null) ?? freelancerId;
+  const freelancerConvexUserId = freelancerProfile.userId as Id<'users'>;
 
- // Notify the client that their order has been created
- await createNotification(
- clientId,
- 'order_created',
- 'Order Confirmed',
- `Your order "${order.order_number}" has been placed successfully. The freelancer will start working shortly.`,
- `/en/orders/${order.id}`,
- { order_id: order.id, order_number: order.order_number }
- );
+  // Create the order via Convex mutation
+  const orderTitle = packageTitle ? `${gigTitle} – ${packageTitle}` : gigTitle;
 
- // Notify the freelancer about the new order
- await createNotification(
- freelancerUserId,
- 'new_order',
- 'New Order Received',
- `You have a new order "${order.order_number}" for "${gigTitle}". Please start working on it.`,
- `/en/orders/${order.id}`,
- { order_id: order.id, order_number: order.order_number, gig_id: gigId }
- );
+  const orderId = await fetchMutation(api.marketplace.orders.create, {
+    orderType: 'gig',
+    title: orderTitle,
+    amount,
+    currency,
+    deliveryDays,
+    clientId: clientConvexId,
+    freelancerId: freelancerProfileId as Id<'freelancerProfiles'>,
+    gigId: gigId as Id<'gigs'>,
+    gigPackageId: packageId as Id<'gigPackages'>,
+  });
 
- // Send order confirmation email to client
- const orderTitle = packageTitle ? `${gigTitle} – ${packageTitle}` : gigTitle;
- const clientContact = await getUserContact(clientId);
- if (clientContact) {
- sendEmailAsync({
- to: clientContact.email,
- subject: `Order Confirmed: ${order.order_number}`,
- react: OrderConfirmationEmail({
- clientName: clientContact.name,
- orderNumber: order.order_number,
- orderTitle,
- amount,
- currency,
- deliveryDays,
- orderId: order.id,
- }),
- });
- }
+  // Update the order with PaymentIntent ID, escrow status, and requirements
+  await fetchMutation(api.marketplace.orders.updateStripePayment, {
+    orderId: orderId as Id<'orders'>,
+    stripePaymentIntentId: paymentIntent.id,
+    requirements: requirements || undefined,
+  });
 
- // Send new order email to freelancer
- const freelancerContact = await getUserContact(freelancerUserId);
- if (freelancerContact) {
- sendEmailAsync({
- to: freelancerContact.email,
- subject: `New Order: ${order.order_number}`,
- react: NewOrderEmail({
- freelancerName: freelancerContact.name,
- orderNumber: order.order_number,
- orderTitle,
- amount,
- currency,
- deliveryDays,
- orderId: order.id,
- }),
- });
- }
+  // Create transaction record
+  await fetchMutation(api.marketplace.orders.createTransaction, {
+    orderId: orderId as Id<'orders'>,
+    payerId: clientConvexId,
+    payeeId: freelancerConvexUserId,
+    amount,
+    platformFee,
+    currency,
+    stripePaymentIntentId: paymentIntent.id,
+    description: `Payment for: ${orderTitle}`,
+  });
+
+  // We need the order number for notifications and emails.
+  // Fetch the created order to get its orderNumber.
+  const createdOrder = await fetchQuery(api.marketplace.orders.getByStripePaymentIntentId, {
+    stripePaymentIntentId: paymentIntent.id,
+  });
+  const orderNumber = createdOrder?.orderNumber ?? String(orderId);
+  const orderIdStr = String(orderId);
+
+  // Notify the client that their order has been created
+  await fetchMutation(api.marketplace.notifications.create, {
+    userId: clientConvexId,
+    type: 'order_created',
+    title: 'Order Confirmed',
+    body: `Your order "${orderNumber}" has been placed successfully. The freelancer will start working shortly.`,
+    link: `/en/orders/${orderIdStr}`,
+    metadata: { order_id: orderIdStr, order_number: orderNumber },
+  });
+
+  // Notify the freelancer about the new order
+  await fetchMutation(api.marketplace.notifications.create, {
+    userId: freelancerConvexUserId,
+    type: 'new_order',
+    title: 'New Order Received',
+    body: `You have a new order "${orderNumber}" for "${gigTitle}". Please start working on it.`,
+    link: `/en/orders/${orderIdStr}`,
+    metadata: { order_id: orderIdStr, order_number: orderNumber, gig_id: gigId },
+  });
+
+  // Send order confirmation email to client
+  const clientContact = await getUserContact(clientConvexId);
+  if (clientContact) {
+    sendEmailAsync({
+      to: clientContact.email,
+      subject: `Order Confirmed: ${orderNumber}`,
+      react: OrderConfirmationEmail({
+        clientName: clientContact.name,
+        orderNumber,
+        orderTitle,
+        amount,
+        currency,
+        deliveryDays,
+        orderId: orderIdStr,
+      }),
+    });
+  }
+
+  // Send new order email to freelancer
+  const freelancerContact = await getUserContact(freelancerConvexUserId);
+  if (freelancerContact) {
+    sendEmailAsync({
+      to: freelancerContact.email,
+      subject: `New Order: ${orderNumber}`,
+      react: NewOrderEmail({
+        freelancerName: freelancerContact.name,
+        orderNumber,
+        orderTitle,
+        amount,
+        currency,
+        deliveryDays,
+        orderId: orderIdStr,
+      }),
+    });
+  }
 }
 
 async function handlePaymentIntentFailed(
- paymentIntent: Stripe.PaymentIntent
-): Promise<void>{
- const metadata = paymentIntent.metadata;
- const clientId = metadata.client_id;
- const gigTitle = metadata.gig_title || 'Service';
+  paymentIntent: Stripe.PaymentIntent
+): Promise<void> {
+  const metadata = paymentIntent.metadata;
+  const clientClerkId = metadata.client_id;
+  const gigTitle = metadata.gig_title || 'Service';
 
- console.error('payment_intent.payment_failed:', {
- paymentIntentId: paymentIntent.id,
- clientId,
- lastPaymentError: paymentIntent.last_payment_error?.message,
- });
+  console.error('payment_intent.payment_failed:', {
+    paymentIntentId: paymentIntent.id,
+    clientClerkId,
+    lastPaymentError: paymentIntent.last_payment_error?.message,
+  });
 
- // Notify the client about the payment failure if we have their ID
- if (clientId) {
- try {
- await createNotification(
- clientId,
- 'payment_failed',
- 'Payment Failed',
- `Your payment for "${gigTitle}" could not be processed. Please try again.`,
- undefined,
- { payment_intent_id: paymentIntent.id }
- );
- } catch (notifErr) {
- console.error('Failed to send payment failure notification:', notifErr);
- }
+  // Notify the client about the payment failure if we have their ID
+  if (clientClerkId) {
+    try {
+      const clientConvexUser = await getConvexUserByClerkId(clientClerkId);
+      if (clientConvexUser) {
+        const clientConvexId = clientConvexUser._id as Id<'users'>;
 
- // Send payment failed email
- const clientContact = await getUserContact(clientId);
- if (clientContact) {
- sendEmailAsync({
- to: clientContact.email,
- subject: 'Payment Failed - SkillLinkup',
- react: PaymentFailedEmail({
- clientName: clientContact.name,
- gigTitle,
- }),
- });
- }
- }
+        await fetchMutation(api.marketplace.notifications.create, {
+          userId: clientConvexId,
+          type: 'payment_failed',
+          title: 'Payment Failed',
+          body: `Your payment for "${gigTitle}" could not be processed. Please try again.`,
+          metadata: { payment_intent_id: paymentIntent.id },
+        });
+
+        // Send payment failed email
+        const clientContact = await getUserContact(clientConvexId);
+        if (clientContact) {
+          sendEmailAsync({
+            to: clientContact.email,
+            subject: 'Payment Failed - SkillLinkup',
+            react: PaymentFailedEmail({
+              clientName: clientContact.name,
+              gigTitle,
+            }),
+          });
+        }
+      }
+    } catch (notifErr) {
+      console.error('Failed to send payment failure notification:', notifErr);
+    }
+  }
 }

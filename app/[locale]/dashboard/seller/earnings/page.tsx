@@ -1,158 +1,172 @@
 import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
-import { getCurrentUser } from '@/lib/auth-helpers';
-import { sql } from '@/lib/db';
+import { fetchQuery } from 'convex/nextjs';
+import { api } from '@/convex/_generated/api';
+import { auth } from '@clerk/nextjs/server';
 import { EarningsOverview, MonthlyDataPoint } from '@/components/dashboard/EarningsOverview';
 import { TransactionList, Transaction } from '@/components/dashboard/TransactionList';
 
 export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
 
 interface PageProps {
- params: Promise<{ locale: string }>;
+  params: Promise<{ locale: string }>;
 }
 
 export default async function SellerEarningsPage({ params }: PageProps) {
- const { locale } = await params;
- const t = await getTranslations('dashboard.earnings');
+  const { locale } = await params;
+  const t = await getTranslations('dashboard.earnings');
 
- const user = await getCurrentUser();
- if (!user) {
- redirect('/handler/sign-in');
- }
+  const { getToken, userId: clerkId } = await auth();
+  if (!clerkId) {
+    redirect('/sign-in');
+  }
 
- // Get freelancer profile
- const profileRows = await sql`
- SELECT id, total_earnings
- FROM freelancer_profiles
- WHERE user_id = ${user.id}
- LIMIT 1
- `;
+  const token = await getToken({ template: 'convex' });
 
- // Default empty data when no profile exists
- let pendingBalance = 0;
- let availableBalance = 0;
- let totalEarned = 0;
- let thisMonth = 0;
- let monthlyData: MonthlyDataPoint[] = [];
- let transactions: Transaction[] = [];
+  // Fetch Convex user by Clerk ID
+  const convexUser = await fetchQuery(
+    api.users.getByClerkId,
+    { clerkId },
+    { token: token ?? undefined }
+  );
 
- if (profileRows && profileRows.length >0) {
- const profile = profileRows[0];
- const profileId = profile.id as string;
+  let pendingBalance = 0;
+  let availableBalance = 0;
+  let totalEarned = 0;
+  let thisMonth = 0;
+  let monthlyData: MonthlyDataPoint[] = [];
+  let transactions: Transaction[] = [];
 
- // Pending balance: escrow held for in-progress orders
- const pendingRows = await sql`
- SELECT COALESCE(SUM(freelancer_earnings), 0) AS total
- FROM orders
- WHERE freelancer_id = ${profileId}
- AND status IN ('active', 'delivered', 'revision')
- AND escrow_status = 'held'
- `;
- pendingBalance = Number(pendingRows[0]?.total ?? 0);
+  if (convexUser) {
+    // Fetch freelancer profile
+    const profile = await fetchQuery(
+      api.marketplace.freelancers.getByUserId,
+      { userId: convexUser._id },
+      { token: token ?? undefined }
+    );
 
- // Available balance: released escrow from completed orders
- const availableRows = await sql`
- SELECT COALESCE(SUM(freelancer_earnings), 0) AS total
- FROM orders
- WHERE freelancer_id = ${profileId}
- AND status = 'completed'
- AND escrow_status = 'released'
- `;
- availableBalance = Number(availableRows[0]?.total ?? 0);
+    if (profile) {
+      // Use totalEarnings from the profile document
+      totalEarned = profile.totalEarnings ?? 0;
 
- // Total lifetime earnings from profile
- totalEarned = Number(profile.total_earnings ?? 0);
+      // Fetch all orders for this freelancer to compute balances
+      const allOrders = await fetchQuery(
+        api.marketplace.orders.getByUser,
+        { userId: convexUser._id, role: 'freelancer', limit: 500 },
+        { token: token ?? undefined }
+      );
 
- // This month
- const thisMonthRows = await sql`
- SELECT COALESCE(SUM(freelancer_earnings), 0) AS total
- FROM orders
- WHERE freelancer_id = ${profileId}
- AND status = 'completed'
- AND completed_at >= DATE_TRUNC('month', NOW())
- `;
- thisMonth = Number(thisMonthRows[0]?.total ?? 0);
+      // Pending balance: escrow held for in-progress orders
+      pendingBalance = allOrders
+        .filter(
+          (o) =>
+            ['active', 'delivered', 'revision_requested'].includes(o.status) &&
+            o.escrowStatus === 'held'
+        )
+        .reduce((sum, o) => sum + (o.freelancerEarnings ?? 0), 0);
 
- // Monthly chart: last 6 months
- const monthlyRows = await sql`
- SELECT
- TO_CHAR(DATE_TRUNC('month', completed_at), 'YYYY-MM') AS month,
- TO_CHAR(DATE_TRUNC('month', completed_at), 'Mon YYYY') AS month_label,
- COALESCE(SUM(freelancer_earnings), 0) AS total
- FROM orders
- WHERE freelancer_id = ${profileId}
- AND status = 'completed'
- AND completed_at >= DATE_TRUNC('month', NOW()) - INTERVAL '5 months'
- GROUP BY DATE_TRUNC('month', completed_at)
- ORDER BY DATE_TRUNC('month', completed_at) ASC
- `;
+      // Available balance: released escrow from completed orders
+      availableBalance = allOrders
+        .filter((o) => o.status === 'completed' && o.escrowStatus === 'released')
+        .reduce((sum, o) => sum + (o.freelancerEarnings ?? 0), 0);
 
- monthlyData = monthlyRows.map((row) =>({
- month: String(row.month ?? ''),
- monthLabel: String(row.month_label ?? ''),
- total: Number(row.total ?? 0),
- }));
+      // This month earnings
+      const startOfMonth = new Date();
+      startOfMonth.setDate(1);
+      startOfMonth.setHours(0, 0, 0, 0);
+      const startOfMonthMs = startOfMonth.getTime();
 
- // Recent transactions
- const transactionRows = await sql`
- SELECT
- t.id,
- t.order_id,
- t.amount,
- t.platform_fee,
- t.transaction_type,
- t.status,
- t.created_at,
- COALESCE(o.order_number, '') AS order_number,
- COALESCE(o.title, '') AS order_title
- FROM transactions t
- LEFT JOIN orders o ON t.order_id = o.id
- WHERE t.payee_id = ${user.id}
- ORDER BY t.created_at DESC
- LIMIT 50
- `;
+      thisMonth = allOrders
+        .filter(
+          (o) =>
+            o.status === 'completed' &&
+            o.completedAt !== undefined &&
+            o.completedAt !== null &&
+            (o.completedAt as number) >= startOfMonthMs
+        )
+        .reduce((sum, o) => sum + (o.freelancerEarnings ?? 0), 0);
 
- transactions = transactionRows.map((row) =>({
- id: String(row.id ?? ''),
- orderId: row.order_id ? String(row.order_id) : null,
- orderNumber: String(row.order_number ?? ''),
- orderTitle: String(row.order_title ?? ''),
- amount: Number(row.amount ?? 0),
- platformFee: Number(row.platform_fee ?? 0),
- transactionType: String(row.transaction_type ?? 'payment'),
- status: String(row.status ?? 'completed'),
- createdAt: row.created_at
- ? new Date(row.created_at as string).toISOString()
- : new Date().toISOString(),
- }));
- }
+      // Monthly chart: last 6 months
+      const sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
+      sixMonthsAgo.setDate(1);
+      sixMonthsAgo.setHours(0, 0, 0, 0);
+      const sixMonthsAgoMs = sixMonthsAgo.getTime();
 
- return (
- <div className="p-6 lg:p-8 max-w-6xl mx-auto w-full">
- {/* Page header */}
- <div className="mb-8">
- <h1 className="text-2xl font-heading font-bold text-gray-900 dark:text-white">
- {t('title')}
- </h1>
- <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
- {t('overview')}
- </p>
- </div>
+      const completedOrders = allOrders.filter(
+        (o) =>
+          o.status === 'completed' &&
+          o.completedAt !== undefined &&
+          o.completedAt !== null &&
+          (o.completedAt as number) >= sixMonthsAgoMs
+      );
 
- {/* Earnings stats and chart */}
- <div className="mb-8">
- <EarningsOverview
- pendingBalance={pendingBalance}
- availableBalance={availableBalance}
- totalEarned={totalEarned}
- thisMonth={thisMonth}
- monthlyData={monthlyData}
- />
- </div>
+      // Aggregate by month
+      const monthMap = new Map<string, { label: string; total: number }>();
+      for (const order of completedOrders) {
+        const date = new Date(order.completedAt as number);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const key = `${year}-${month}`;
+        const label = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        const existing = monthMap.get(key);
+        if (existing) {
+          existing.total += order.freelancerEarnings ?? 0;
+        } else {
+          monthMap.set(key, { label, total: order.freelancerEarnings ?? 0 });
+        }
+      }
 
- {/* Transaction history */}
- <TransactionList transactions={transactions} />
- </div>
- );
+      monthlyData = Array.from(monthMap.entries())
+        .sort((a, b) => a[0].localeCompare(b[0]))
+        .map(([month, { label, total }]) => ({
+          month,
+          monthLabel: label,
+          total,
+        }));
+
+      // Build transactions from completed orders (no dedicated transactions table query yet)
+      transactions = allOrders
+        .slice(0, 50)
+        .map((order) => ({
+          id: order._id as string,
+          orderId: order._id as string,
+          orderNumber: order.orderNumber,
+          orderTitle: order.title,
+          amount: order.amount,
+          platformFee: order.platformFee,
+          transactionType: 'payment',
+          status: order.status === 'completed' ? 'completed' : 'pending',
+          createdAt: new Date(order.createdAt).toISOString(),
+        }));
+    }
+  }
+
+  return (
+    <div className="p-6 lg:p-8 max-w-6xl mx-auto w-full">
+      {/* Page header */}
+      <div className="mb-8">
+        <h1 className="text-2xl font-heading font-bold text-gray-900 dark:text-white">
+          {t('title')}
+        </h1>
+        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          {t('overview')}
+        </p>
+      </div>
+
+      {/* Earnings stats and chart */}
+      <div className="mb-8">
+        <EarningsOverview
+          pendingBalance={pendingBalance}
+          availableBalance={availableBalance}
+          totalEarned={totalEarned}
+          thisMonth={thisMonth}
+          monthlyData={monthlyData}
+        />
+      </div>
+
+      {/* Transaction history */}
+      <TransactionList transactions={transactions} />
+    </div>
+  );
 }

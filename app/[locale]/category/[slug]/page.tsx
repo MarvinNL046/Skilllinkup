@@ -5,10 +5,10 @@ import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
-import { getCategoryBySlug, getPostsByCategory } from '@/lib/queries';
+import { fetchQuery } from 'convex/nextjs';
+import { api } from '@/convex/_generated/api';
 
 export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
 
 interface PageProps {
  params: Promise<{ locale: string; slug: string }>;
@@ -16,33 +16,34 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata>{
  const { slug, locale } = await params;
- const category = await getCategoryBySlug(slug, locale);
+ const raw = await fetchQuery(api.categories.getBySlug, { slug, locale });
  const t = await getTranslations({ locale, namespace: 'categoryPage' });
 
  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
  const pageUrl = `${siteUrl}/${locale}/category/${slug}`;
 
- if (!category) {
+ if (!raw) {
  return {
  title: t('notFound'),
  };
  }
 
- const title = `${category.name} - Freelance Artikelen | SkillLinkup`;
- const description = category.description || (locale === 'nl'
- ? `Bekijk alle ${category.post_count || 0} artikelen in de categorie ${category.name}. Tips en guides voor freelancers.`
- : `Browse all ${category.post_count || 0} articles in the ${category.name} category. Tips and guides for freelancers.`);
+ const postCount = (raw as any).postCount ?? 0;
+ const title = `${raw.name} - Freelance Artikelen | SkillLinkup`;
+ const description = raw.description || (locale === 'nl'
+ ? `Bekijk alle ${postCount} artikelen in de categorie ${raw.name}. Tips en guides voor freelancers.`
+ : `Browse all ${postCount} articles in the ${raw.name} category. Tips and guides for freelancers.`);
 
  return {
  title,
  description,
- keywords: `${category.name}, freelance ${category.name.toLowerCase()}, ${locale === 'nl' ? 'freelance tips, zzp artikelen' : 'freelance tips, freelancer articles'}`,
+ keywords: `${raw.name}, freelance ${raw.name.toLowerCase()}, ${locale === 'nl' ? 'freelance tips, zzp artikelen' : 'freelance tips, freelancer articles'}`,
  openGraph: {
  title,
  description,
  url: pageUrl,
  siteName: 'SkillLinkup',
- images: [{ url: `${siteUrl}/images/og/blog-og.png`, width: 1200, height: 630, alt: `${category.name} - SkillLinkup` }],
+ images: [{ url: `${siteUrl}/images/og/blog-og.png`, width: 1200, height: 630, alt: `${raw.name} - SkillLinkup` }],
  locale: locale === 'nl' ? 'nl_NL' : 'en_US',
  type: 'website',
  },
@@ -79,16 +80,36 @@ export default async function CategoryPage({ params }: PageProps) {
  const { slug, locale } = await params;
 
  // Fetch category and posts
- const category = await getCategoryBySlug(slug, locale);
+ const rawCategory = await fetchQuery(api.categories.getBySlug, { slug, locale });
 
- if (!category) {
+ if (!rawCategory) {
  notFound();
  }
 
- const posts = await getPostsByCategory(slug, 50, locale);
+ const rawPosts = await fetchQuery(api.posts.getByCategory, { categorySlug: slug, locale, limit: 50 });
  const t = await getTranslations({ locale, namespace: 'categoryPage' });
 
  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
+
+ const category = {
+   name: rawCategory.name,
+   description: rawCategory.description ?? null,
+   color: (rawCategory as any).color ?? null,
+   post_count: (rawCategory as any).postCount ?? 0,
+ };
+
+ const posts = rawPosts.map((post) => ({
+   id: post._id,
+   title: post.title,
+   slug: post.slug,
+   excerpt: post.excerpt ?? null,
+   feature_img: post.featureImg ?? null,
+   read_time: post.readTime ?? null,
+   views: post.views ?? null,
+   published_at: post.publishedAt ? new Date(post.publishedAt).toISOString() : null,
+   category_name: post.category?.name ?? null,
+   created_at: post.createdAt,
+ }));
 
  // Structured data for SEO
  const categorySchema = {

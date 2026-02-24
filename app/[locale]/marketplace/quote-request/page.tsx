@@ -1,12 +1,12 @@
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { ChevronRight, FileText } from 'lucide-react';
-import { sql } from '@/lib/db';
+import { fetchQuery } from 'convex/nextjs';
+import { api } from '@/convex/_generated/api';
 import { getCurrentUser } from '@/lib/auth-helpers';
 import { QuoteRequestForm } from '@/components/marketplace/QuoteRequestForm';
 
 export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
 
 interface PageProps {
  params: Promise<{ locale: string }>;
@@ -27,12 +27,25 @@ export default async function QuoteRequestPage({ params }: PageProps) {
  // Fetch all marketplace categories (both remote and local)
  let categories: Category[] = [];
  try {
- const rows = await sql`
- SELECT id, COALESCE(name, '') AS name, COALESCE(slug, '') AS slug
- FROM marketplace_categories
- ORDER BY name ASC
- `;
- categories = rows as Category[];
+ const rawCategories = await fetchQuery(api.marketplace.categories.list, { locale });
+
+ // Flatten the tree structure to a flat list
+ function flattenCategories(nodes: typeof rawCategories): Category[] {
+ const result: Category[] = [];
+ for (const node of nodes) {
+ result.push({
+ id: node._id,
+ name: node.name,
+ slug: node.slug,
+ });
+ if ((node as any).children && (node as any).children.length > 0) {
+ result.push(...flattenCategories((node as any).children));
+ }
+ }
+ return result;
+ }
+
+ categories = flattenCategories(rawCategories).sort((a, b) => a.name.localeCompare(b.name));
  } catch (error) {
  console.error('Error fetching categories:', error);
  }

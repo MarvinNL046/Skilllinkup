@@ -1,9 +1,0 @@
-[build]
-builder = "nixpacks"
-buildCommand = "npm run build"
-
-[deploy]
-startCommand = "node server.js"
-healthcheckPath = "/"
-restartPolicyType = "on_failure"
-restartPolicyMaxRetries = 10

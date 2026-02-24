@@ -1,12 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Metadata } from 'next';
-import { getPublishedPosts, getCategories } from "@/lib/queries";
+import { fetchQuery } from "convex/nextjs";
+import { api } from "@/convex/_generated/api";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { getTranslations } from 'next-intl/server';
 
-export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 interface BlogPageProps {
@@ -66,12 +66,33 @@ export default async function BlogPage({ params }: BlogPageProps) {
  const { locale } = await params;
  const t = await getTranslations({ locale, namespace: 'blogPage' });
 
- let posts: Awaited<ReturnType<typeof getPublishedPosts>>= [];
- let categories: Awaited<ReturnType<typeof getCategories>>= [];
+ let posts: any[] = [];
+ let categories: any[] = [];
 
  try {
- posts = await getPublishedPosts(12, 0, locale);
- categories = await getCategories(locale);
+ const postsResult = await fetchQuery(api.posts.list, { locale, limit: 12 });
+ posts = postsResult.map((post: any) => ({
+ id: post._id,
+ title: post.title,
+ slug: post.slug,
+ excerpt: post.excerpt ?? '',
+ feature_img: post.featureImg ?? null,
+ published_at: post.publishedAt ? new Date(post.publishedAt).toISOString() : null,
+ views: post.views ?? 0,
+ read_time: post.readTime ?? null,
+ category_name: post.category?.name ?? null,
+ category_slug: post.category?.slug ?? null,
+ category_color: post.category?.color ?? '#666',
+ }));
+
+ const categoriesResult = await fetchQuery(api.categories.list, { locale });
+ categories = categoriesResult.map((cat: any) => ({
+ id: cat._id,
+ name: cat.name,
+ slug: cat.slug,
+ color: cat.color ?? '#666',
+ post_count: cat.postCount ?? 0,
+ }));
  } catch (error) {
  console.error('Error fetching data:', error);
  }

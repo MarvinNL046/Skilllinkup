@@ -2,11 +2,11 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
-import { getCategories } from '@/lib/queries';
 import { FolderOpen, ArrowRight } from 'lucide-react';
+import { fetchQuery } from 'convex/nextjs';
+import { api } from '@/convex/_generated/api';
 
 export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
 
 export const metadata: Metadata = {
  title: 'Browse Categories | SkillLinkup',
@@ -14,7 +14,15 @@ export const metadata: Metadata = {
 };
 
 export default async function CategoriesPage() {
- const categories = await getCategories();
+ const rawCategories = await fetchQuery(api.categories.list, { locale: 'en' });
+
+ const categories = rawCategories.map((cat) => ({
+   id: cat._id,
+   name: cat.name,
+   slug: cat.slug,
+   description: cat.description ?? null,
+   post_count: (cat as any).postCount ?? 0,
+ }));
 
  return (
  <>
@@ -66,7 +74,7 @@ export default async function CategoriesPage() {
  </div>
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
- {categories.map((category: any) =>(
+ {categories.map((category) =>(
  <Link
  key={category.id}
  href={`/category/${category.slug}`}

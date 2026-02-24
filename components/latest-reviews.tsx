@@ -3,7 +3,19 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useLocale, useTranslations } from 'next-intl';
-import type { Post } from "../lib/queries";
+interface Post {
+ id: string;
+ title: string;
+ slug: string;
+ excerpt: string | null;
+ feature_img: string | null;
+ category_name: string | null;
+ published_at: Date | null;
+ views: number;
+ read_time: number | null;
+ author_name: string | null;
+ tags?: string[];
+}
 
 interface LatestReviewsProps {
  posts: Post[];

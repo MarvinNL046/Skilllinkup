@@ -3,7 +3,8 @@ import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
-import { getPublishedPosts } from '@/lib/queries';
+import { fetchQuery } from 'convex/nextjs';
+import { api } from '@/convex/_generated/api';
 import { Calendar, User, ArrowRight, BookOpen, Clock } from 'lucide-react';
 
 interface PageProps {
@@ -25,8 +26,22 @@ export default async function GuidesPage({ params }: PageProps) {
  const t = await getTranslations({ locale, namespace: 'guidesPage' });
 
  // Fetch all posts with category "Guides"
- const allPosts = await getPublishedPosts(100, 0);
- const guidePosts = allPosts.filter((post: any) =>
+ const rawPosts = await fetchQuery(api.posts.list, { locale, limit: 100 });
+
+ // Map Convex camelCase to snake_case expected by JSX
+ const allPosts = rawPosts.map((post) => ({
+   id: post._id,
+   title: post.title,
+   slug: post.slug,
+   excerpt: post.excerpt ?? null,
+   feature_img: post.featureImg ?? null,
+   author_name: post.authorName ?? (post.author as any)?.name ?? null,
+   category_name: post.category?.name ?? null,
+   created_at: new Date(post.createdAt).toISOString(),
+   read_time: post.readTime ?? null,
+ }));
+
+ const guidePosts = allPosts.filter((post) =>
  post.category_name?.toLowerCase().includes('guide')
  );
 
@@ -59,7 +74,7 @@ export default async function GuidesPage({ params }: PageProps) {
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
  <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow border border-gray-200 dark:border-slate-700">
  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
- 
+
  </div>
  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('categories.gettingStarted.title')}</h3>
  <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
@@ -72,7 +87,7 @@ export default async function GuidesPage({ params }: PageProps) {
 
  <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow border border-gray-200 dark:border-slate-700">
  <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4">
- 
+
  </div>
  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('categories.pricingEarning.title')}</h3>
  <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
@@ -85,7 +100,7 @@ export default async function GuidesPage({ params }: PageProps) {
 
  <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow border border-gray-200 dark:border-slate-700">
  <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-4">
- 
+
  </div>
  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('categories.growthMarketing.title')}</h3>
  <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
@@ -98,7 +113,7 @@ export default async function GuidesPage({ params }: PageProps) {
  </div>
 
  {/* Featured Guide */}
- {guidePosts.length >0 && (
+ {guidePosts.length > 0 && (
  <div className="mb-12">
  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">{t('featured.sectionTitle')}</h2>
  <Link href={`/${locale}/post/${guidePosts[0].slug}`} className="block group">
@@ -115,7 +130,7 @@ export default async function GuidesPage({ params }: PageProps) {
  />
  ) : (
  <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
- 
+
  </div>
  )}
  </div>
@@ -192,7 +207,7 @@ export default async function GuidesPage({ params }: PageProps) {
  </div>
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
- {guidePosts.slice(1).map((post: any) =>(
+ {guidePosts.slice(1).map((post) =>(
  <Link
  key={post.id}
  href={`/${locale}/post/${post.slug}`}
@@ -211,7 +226,7 @@ export default async function GuidesPage({ params }: PageProps) {
  </div>
  ) : (
  <div className="h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
- 
+
  </div>
  )}
 

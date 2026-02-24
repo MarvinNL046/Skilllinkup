@@ -4,7 +4,8 @@ import { Metadata } from "next";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { ReviewAvatar } from "@/components/ReviewAvatar";
-import { getApprovedReviews } from "@/lib/queries";
+import { fetchQuery } from "convex/nextjs";
+import { api } from "@/convex/_generated/api";
 
 interface PageProps {
  params: Promise<{ locale: string }>;
@@ -64,20 +65,39 @@ export default async function ReviewsPage({ params }: PageProps) {
  const t = await getTranslations({ locale, namespace: 'reviewsPage' });
  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skilllinkup.com';
 
- let reviews: Awaited<ReturnType<typeof getApprovedReviews>>= [];
+ let rawReviews: Awaited<ReturnType<typeof fetchQuery<typeof api.platformReviews.getApproved>>> = [];
 
  try {
- reviews = await getApprovedReviews(50, 0);
+ rawReviews = await fetchQuery(api.platformReviews.getApproved, { limit: 50 });
  } catch (error) {
  console.error('Error fetching reviews:', error);
  }
 
+ // Map Convex camelCase to snake_case expected by JSX
+ const reviews = rawReviews.map((r) => ({
+   id: r._id,
+   user_name: r.userName ?? 'Anonymous',
+   user_avatar: r.userAvatar ?? null,
+   user_role: r.userRole ?? null,
+   title: r.title,
+   content: r.content,
+   overall_rating: r.overallRating,
+   pros: r.pros ?? [],
+   cons: r.cons ?? [],
+   verified: r.verified ?? false,
+   helpful_count: r.helpfulCount ?? 0,
+   years_experience: r.yearsExperience ?? null,
+   earnings_range: r.earningsRange ?? null,
+   platform_name: (r as any).platformName ?? null,
+   platform_slug: (r as any).platformSlug ?? null,
+ }));
+
  // Calculate statistics
  const totalReviews = reviews.length;
- const averageRating = reviews.length >0
- ? reviews.reduce((sum, r) =>sum + Number(r.overall_rating), 0) / reviews.length
+ const averageRating = reviews.length > 0
+ ? reviews.reduce((sum, r) => sum + Number(r.overall_rating), 0) / reviews.length
  : 0;
- const verifiedCount = reviews.filter(r =>r.verified).length;
+ const verifiedCount = reviews.filter(r => r.verified).length;
 
  // Structured data for SEO
  const aggregateRatingSchema = {
@@ -256,9 +276,9 @@ export default async function ReviewsPage({ params }: PageProps) {
  </p>
 
  {/* Pros and Cons */}
- {(review.pros.length >0 || review.cons.length >0) && (
+ {(review.pros.length > 0 || review.cons.length > 0) && (
  <div className="grid grid-cols-2 gap-3 mb-4">
- {review.pros.length >0 && (
+ {review.pros.length > 0 && (
  <div>
  <div className="flex items-center gap-1 mb-2">
  <span className="text-green-500">✓</span>
@@ -278,7 +298,7 @@ export default async function ReviewsPage({ params }: PageProps) {
  </ul>
  </div>
  )}
- {review.cons.length >0 && (
+ {review.cons.length > 0 && (
  <div>
  <div className="flex items-center gap-1 mb-2">
  <span className="text-red-500">✗</span>

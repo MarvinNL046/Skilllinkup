@@ -2,10 +2,10 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
-import { getCategories } from '@/lib/queries';
+import { fetchQuery } from 'convex/nextjs';
+import { api } from '@/convex/_generated/api';
 
 export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
 
 interface PageProps {
  params: Promise<{ locale: string }>;
@@ -24,7 +24,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function CategoriesPage({ params }: PageProps) {
  const { locale } = await params;
- const categories = await getCategories(locale);
+ const rawCategories = await fetchQuery(api.categories.list, { locale });
+
+ // Map Convex camelCase to snake_case expected by JSX
+ const categories = rawCategories.map((cat) => ({
+   id: cat._id,
+   name: cat.name,
+   slug: cat.slug,
+   description: cat.description ?? null,
+   color: (cat as any).color ?? null,
+   post_count: (cat as any).postCount ?? 0,
+ }));
 
  return (
  <>

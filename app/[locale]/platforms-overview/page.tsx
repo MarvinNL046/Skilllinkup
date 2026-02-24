@@ -1,8 +1,65 @@
-import Link from "next/link";
 import { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
-import { getPublishedPosts, getFeaturedPosts, getTopRatedPlatforms, getTrendingPosts } from "@/lib/queries";
-import { sql } from "@/lib/db";
+import { fetchQuery } from "convex/nextjs";
+import { api } from "@/convex/_generated/api";
+// Local type definitions (previously imported from lib/queries)
+interface Post {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: string;
+  feature_img: string | null;
+  post_format: string;
+  status: string;
+  published_at: Date | null;
+  updated_at: Date | null;
+  views: number;
+  read_time: number | null;
+  featured: boolean;
+  sticky: boolean;
+  created_at: Date;
+  author_id: string | null;
+  author_name: string | null;
+  author_email: string | null;
+  author_avatar: string | null;
+  category_id: string | null;
+  category_name: string | null;
+  category_slug: string | null;
+  tags: string[];
+  meta_title: string | null;
+  meta_description: string | null;
+  ad_image: string | null;
+  ad_link: string | null;
+  platform_type: string | null;
+  fee_structure: string | null;
+  difficulty_level: string | null;
+  best_for: string | null;
+}
+
+interface Platform {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  logo_url: string | null;
+  website_url: string | null;
+  affiliate_link: string | null;
+  rating: number;
+  category: string;
+  fees: string | null;
+  difficulty: string;
+  color: string;
+  featured: boolean;
+  pros: string[];
+  cons: string[];
+  features: string[];
+  status: string;
+  published_at: Date | null;
+  created_at: Date;
+  work_type: string;
+  countries: string[];
+}
 import { Header } from "@/components/header";
 import { Hero } from "@/components/hero";
 import { FeaturedPlatforms } from "@/components/featured-platforms";
@@ -16,7 +73,6 @@ import { Newsletter } from "@/components/newsletter";
 import { Footer } from "@/components/footer";
 import { PopularServices } from "@/components/popular-services";
 
-export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 interface PlatformsOverviewPageProps {
@@ -75,11 +131,6 @@ export async function generateMetadata({ params }: PlatformsOverviewPageProps): 
 export default async function PlatformsOverviewPage({ params }: PlatformsOverviewPageProps) {
  const { locale } = await params;
 
- let posts: Awaited<ReturnType<typeof getPublishedPosts>>= [];
- let featuredPosts: Awaited<ReturnType<typeof getFeaturedPosts>>= [];
- let topPlatforms: Awaited<ReturnType<typeof getTopRatedPlatforms>>= [];
- let trendingPosts: Awaited<ReturnType<typeof getTrendingPosts>>= [];
-
  interface FeaturedGig {
  id: string;
  slug: string;
@@ -110,87 +161,152 @@ export default async function PlatformsOverviewPage({ params }: PlatformsOvervie
  gig_count: number;
  }
 
+ // Fetch blog/platform data via Convex and map to legacy shape expected by components
+ let posts: Post[] = [];
+ let featuredPosts: Post[] = [];
+ let topPlatforms: Platform[] = [];
+
+ interface TrendingPost {
+  id: string;
+  title: string;
+  slug: string;
+  views: number;
+  category_name: string | null;
+ }
+ let trendingPosts: TrendingPost[] = [];
+
  let featuredGigs: FeaturedGig[] = [];
  let homepageCategories: HomepageCategory[] = [];
 
+ /**
+  * Map a Convex post (camelCase) to the legacy Post shape (snake_case)
+  * that LatestReviews, FeaturedPlatforms, etc. expect.
+  */
+ function mapPost(p: any): Post {
+  return {
+  id: String(p._id),
+  title: p.title ?? '',
+  slug: p.slug ?? '',
+  excerpt: p.excerpt ?? null,
+  content: p.content ?? '',
+  feature_img: p.featureImg ?? null,
+  post_format: p.postFormat ?? 'standard',
+  status: p.status ?? 'published',
+  published_at: p.publishedAt ? new Date(p.publishedAt) : null,
+  updated_at: p.updatedAt ? new Date(p.updatedAt) : null,
+  views: p.views ?? 0,
+  read_time: p.readTime ?? null,
+  featured: p.featured ?? false,
+  sticky: p.sticky ?? false,
+  created_at: p.createdAt ? new Date(p.createdAt) : new Date(),
+  author_id: p.authorId ? String(p.authorId) : null,
+  author_name: p.authorName ?? p.author?.name ?? null,
+  author_email: p.author?.email ?? null,
+  author_avatar: p.author?.avatar ?? p.author?.image ?? null,
+  category_id: p.categoryId ? String(p.categoryId) : null,
+  category_name: p.category?.name ?? null,
+  category_slug: p.category?.slug ?? null,
+  tags: p.tags ?? [],
+  meta_title: p.metaTitle ?? null,
+  meta_description: p.metaDescription ?? null,
+  ad_image: p.adImage ?? null,
+  ad_link: p.adLink ?? null,
+  platform_type: null,
+  fee_structure: null,
+  difficulty_level: null,
+  best_for: null,
+  };
+ }
+
+ /**
+  * Map a Convex platform (camelCase) to the legacy Platform shape (snake_case).
+  */
+ function mapPlatform(p: any): Platform {
+  return {
+  id: String(p._id),
+  name: p.name ?? '',
+  slug: p.slug ?? '',
+  description: p.description ?? null,
+  logo_url: p.logoUrl ?? null,
+  website_url: p.websiteUrl ?? null,
+  affiliate_link: p.affiliateLink ?? null,
+  rating: p.rating ?? 0,
+  category: p.category ?? '',
+  fees: p.fees ?? null,
+  difficulty: p.difficulty ?? 'Medium',
+  color: p.color ?? '',
+  featured: p.featured ?? false,
+  pros: p.pros ?? [],
+  cons: p.cons ?? [],
+  features: p.features ?? [],
+  status: p.status ?? 'published',
+  published_at: p.publishedAt ? new Date(p.publishedAt) : null,
+  created_at: p.createdAt ? new Date(p.createdAt) : new Date(),
+  work_type: p.workType ?? 'remote',
+  countries: p.countries ?? [],
+  };
+ }
+
  try {
- posts = await getPublishedPosts(6, 0, locale);
- featuredPosts = await getFeaturedPosts(3, locale);
- topPlatforms = await getTopRatedPlatforms(6, locale);
- trendingPosts = await getTrendingPosts(6, locale);
+ const rawPosts = await fetchQuery(api.posts.list, { locale, limit: 6 });
+ posts = rawPosts.map(mapPost);
+
+ const rawFeatured = await fetchQuery(api.posts.getFeatured, { locale, limit: 3 });
+ featuredPosts = rawFeatured.map(mapPost);
+
+ const rawTop = await fetchQuery(api.platforms.getTopRated, { locale, limit: 6 });
+ topPlatforms = rawTop.map(mapPlatform);
+
+ const rawTrending = await fetchQuery(api.posts.getTrending, { locale, limit: 6 });
+ trendingPosts = rawTrending.map((p: any) => ({
+  id: String(p._id),
+  title: p.title ?? '',
+  slug: p.slug ?? '',
+  views: p.views ?? 0,
+  category_name: p.category?.name ?? null,
+ }));
  } catch (error) {
  console.error('Error fetching data:', error);
  }
 
  // Fetch marketplace data separately so a missing marketplace table doesn't break the page
  try {
- const gigsResult = await sql`
- SELECT g.id, g.title, g.slug, g.description, g.tags, g.work_type,
- g.location_city, g.location_country, g.views, g.order_count,
- g.rating_average, g.rating_count, g.is_featured, g.status, g.created_at,
- fp.display_name AS freelancer_name, fp.avatar_url AS freelancer_avatar,
- fp.rating_average AS freelancer_rating, fp.is_verified AS freelancer_verified,
- fp.id AS freelancer_id,
- mc.name AS category_name, mc.slug AS category_slug, mc.id AS category_id,
- COALESCE((SELECT MIN(price) FROM gig_packages WHERE gig_id = g.id), 0) AS price_from,
- COALESCE((SELECT currency FROM gig_packages WHERE gig_id = g.id LIMIT 1), 'EUR') AS currency,
- COALESCE(
- (SELECT ARRAY_AGG(image_url ORDER BY sort_order) FROM gig_images WHERE gig_id = g.id),
- ARRAY[]::TEXT[]
- ) AS images
- FROM gigs g
- JOIN freelancer_profiles fp ON g.freelancer_id = fp.id
- JOIN marketplace_categories mc ON g.category_id = mc.id
- WHERE g.status = 'active' AND g.locale = ${locale}
- ORDER BY g.is_featured DESC, g.rating_average DESC
- LIMIT 4
- `;
+ const rawGigs = await fetchQuery(api['marketplace/gigs'].list, { locale, limit: 4 });
 
- featuredGigs = (gigsResult as FeaturedGig[]).map((row) =>({
- id: String(row.id),
- slug: String(row.slug),
- title: String(row.title),
- description: String(row.description ?? ''),
- images: Array.isArray(row.images) ? (row.images as string[]) : [],
- freelancer_name: String(row.freelancer_name ?? ''),
- freelancer_avatar: row.freelancer_avatar ? String(row.freelancer_avatar) : null,
- freelancer_verified: Boolean(row.freelancer_verified),
- rating_average: Number(row.rating_average) || 0,
- rating_count: Number(row.rating_count) || 0,
- order_count: Number(row.order_count) || 0,
- price_from: Number(row.price_from) || 0,
- currency: String(row.currency ?? 'EUR'),
- work_type: String(row.work_type ?? 'remote'),
- location_city: row.location_city ? String(row.location_city) : null,
- location_country: row.location_country ? String(row.location_country) : null,
- category_name: String(row.category_name ?? ''),
- category_slug: String(row.category_slug ?? ''),
- category_id: String(row.category_id ?? ''),
+ featuredGigs = rawGigs.map((gig) => ({
+ id: String(gig._id),
+ slug: String(gig.slug),
+ title: String(gig.title),
+ description: String(gig.description ?? ''),
+ images: gig.firstImage?.imageUrl ? [gig.firstImage.imageUrl] : [],
+ freelancer_name: String(gig.freelancerProfile?.displayName ?? ''),
+ freelancer_avatar: gig.freelancerProfile?.avatarUrl ? String(gig.freelancerProfile.avatarUrl) : null,
+ freelancer_verified: Boolean(gig.freelancerProfile?.isVerified),
+ rating_average: Number(gig.ratingAverage) || 0,
+ rating_count: Number(gig.ratingCount) || 0,
+ order_count: Number(gig.orderCount) || 0,
+ price_from: Number(gig.minPrice) || 0,
+ currency: 'EUR',
+ work_type: String(gig.workType ?? 'remote'),
+ location_city: gig.locationCity ? String(gig.locationCity) : null,
+ location_country: gig.locationCountry ? String(gig.locationCountry) : null,
+ category_name: String(gig.category?.name ?? ''),
+ category_slug: String(gig.category?.slug ?? ''),
+ category_id: gig.category?._id ? String(gig.category._id) : '',
  }));
 
- const catsResult = await sql`
- SELECT
- mc.id,
- COALESCE(mc.name, '') AS name,
- COALESCE(mc.slug, '') AS slug,
- mc.icon,
- COALESCE(
- (SELECT COUNT(*)::int FROM gigs g
- WHERE g.category_id = mc.id AND g.status = 'active' AND g.locale = ${locale}),
- 0
- ) AS gig_count
- FROM marketplace_categories mc
- WHERE mc.parent_id IS NULL AND mc.is_active = true AND mc.locale = ${locale}
- ORDER BY mc.sort_order ASC, mc.name ASC
- LIMIT 8
- `;
+ const rawCategories = await fetchQuery(api['marketplace/categories'].list, { locale });
 
- homepageCategories = (catsResult as HomepageCategory[]).map((row) =>({
- id: String(row.id),
- name: String(row.name),
- slug: String(row.slug),
- icon: row.icon ? String(row.icon) : null,
- gig_count: Number(row.gig_count) || 0,
+ // Flatten tree to root-level categories only (parentId is null/undefined for roots)
+ homepageCategories = rawCategories
+ .filter((cat) => !cat.parentId)
+ .slice(0, 8)
+ .map((cat) => ({
+ id: String(cat._id),
+ name: String(cat.name),
+ slug: String(cat.slug),
+ icon: cat.icon ? String(cat.icon) : null,
+ gig_count: Number(cat.gigCount) || 0,
  }));
  } catch (marketplaceError) {
  console.warn('Marketplace data not available:', (marketplaceError as Error).message);

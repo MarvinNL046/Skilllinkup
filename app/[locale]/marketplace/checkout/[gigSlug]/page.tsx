@@ -2,12 +2,12 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { ChevronRight } from 'lucide-react';
-import { getGigBySlug, type GigDetail, type GigPackage } from '@/lib/marketplace-queries';
+import { fetchQuery } from 'convex/nextjs';
+import { api } from '@/convex/_generated/api';
 import { safeText, safeArray } from '@/lib/safe';
 import { CheckoutForm } from '@/components/marketplace/CheckoutForm';
 
 export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
 
 interface PageProps {
  params: Promise<{ locale: string; gigSlug: string }>;
@@ -38,52 +38,54 @@ export interface SerializablePackage {
  features: string[];
 }
 
-function serializeGig(gig: GigDetail): SerializableGig {
- return {
- id: String(gig.id),
- freelancer_id: String(gig.freelancer_id),
- freelancer_name: safeText(gig.freelancer_name, 'Freelancer'),
- title: safeText(gig.title, 'Untitled Service'),
- slug: safeText(gig.slug, ''),
- currency: safeText(gig.currency, 'USD'),
- status: safeText(gig.status, 'active'),
- packages: safeArray<GigPackage>(gig.packages).map((pkg) =>({
- id: String(pkg.id),
- tier: safeText(pkg.tier, 'basic'),
- title: safeText(pkg.title, ''),
- description: safeText(pkg.description, ''),
- price: Number(pkg.price) || 0,
- currency: safeText(pkg.currency, 'USD'),
- delivery_days: Number(pkg.delivery_days) || 1,
- revision_count: Number(pkg.revision_count) || 0,
- features: safeArray<string>(pkg.features)
- .map((f) =>safeText(f, ''))
- .filter(Boolean),
- })),
- };
-}
-
 export default async function CheckoutPage({ params, searchParams }: PageProps) {
  const { locale, gigSlug } = await params;
  const { package: preselectedPackageId } = await searchParams;
  const t = await getTranslations('checkout');
 
- let gig: GigDetail | null = null;
+ let gigData: Awaited<ReturnType<typeof fetchQuery<typeof api.marketplace.gigs.getBySlug>>> = null;
  try {
- gig = await getGigBySlug(gigSlug, locale);
+ gigData = await fetchQuery(api.marketplace.gigs.getBySlug, { slug: gigSlug, locale });
  } catch (error) {
  console.error('Error fetching gig for checkout:', error);
  }
 
- if (!gig) {
+ if (!gigData) {
  notFound();
  }
 
- const serializedGig = serializeGig(gig);
+ // Map Convex camelCase to SerializableGig shape
+ const rawPackages = safeArray(gigData.packages);
+ const packages: SerializablePackage[] = rawPackages.map((pkg) => ({
+ id: String(pkg._id),
+ tier: safeText(pkg.tier, 'basic'),
+ title: safeText(pkg.title, ''),
+ description: safeText(pkg.description, ''),
+ price: Number(pkg.price) || 0,
+ currency: safeText(pkg.currency, 'USD'),
+ delivery_days: Number(pkg.deliveryDays) || 1,
+ revision_count: Number(pkg.revisionCount) || 0,
+ features: safeArray<string>(pkg.features as any)
+ .map((f) => safeText(f, ''))
+ .filter(Boolean),
+ }));
+
+ const freelancerProfile = gigData.freelancerProfile as any;
+
+ const serializedGig: SerializableGig = {
+ id: String(gigData._id),
+ freelancer_id: String(gigData.freelancerId),
+ freelancer_name: safeText(freelancerProfile?.displayName, 'Freelancer'),
+ title: safeText(gigData.title, 'Untitled Service'),
+ slug: safeText(gigData.slug, ''),
+ currency: safeText((gigData as any).currency, 'USD'),
+ status: safeText(gigData.status, 'active'),
+ packages,
+ };
 
  // Determine the package to pre-select: URL param first, otherwise first package
  const selectedPackageId =
- preselectedPackageId && serializedGig.packages.some((p) =>p.id === preselectedPackageId)
+ preselectedPackageId && serializedGig.packages.some((p) => p.id === preselectedPackageId)
  ? preselectedPackageId
  : (serializedGig.packages[0]?.id ?? '');
 

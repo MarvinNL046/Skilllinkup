@@ -9,38 +9,21 @@ import {
  Wallet,
  MessageSquare,
 } from 'lucide-react';
-import { sql } from '@/lib/db';
+import { fetchQuery } from 'convex/nextjs';
+import { api } from '@/convex/_generated/api';
 import { getCurrentUser } from '@/lib/auth-helpers';
 import { safeText } from '@/lib/safe';
 import { QuoteCompare } from '@/components/marketplace/QuoteCompare';
 import type { QuoteData } from '@/components/marketplace/QuoteCard';
+import type { Id } from '@/convex/_generated/dataModel';
 
 export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
 
 interface PageProps {
  params: Promise<{ locale: string; id: string }>;
 }
 
-interface QuoteRequestDetail {
- id: string;
- client_id: string;
- client_name: string;
- category_id: string;
- category_name: string;
- title: string;
- description: string;
- location_city: string | null;
- location_postcode: string | null;
- location_country: string;
- budget_indication: string | null;
- preferred_date: string | null;
- status: string;
- quote_count: number;
- created_at: string;
-}
-
-const BUDGET_LABELS: Record<string, string>= {
+const BUDGET_LABELS: Record<string, string> = {
  under_100: 'Under \u20ac100',
  '100_500': '\u20ac100 \u2013 \u20ac500',
  '500_1000': '\u20ac500 \u2013 \u20ac1,000',
@@ -48,25 +31,25 @@ const BUDGET_LABELS: Record<string, string>= {
  over_5000: '\u20ac5,000+',
 };
 
-function formatDate(dateStr: string): string {
+function formatDate(dateVal: string | number): string {
  try {
  return new Intl.DateTimeFormat('en-US', {
  month: 'long',
  day: 'numeric',
  year: 'numeric',
- }).format(new Date(dateStr));
+ }).format(new Date(typeof dateVal === 'number' ? dateVal : dateVal));
  } catch {
- return dateStr;
+ return String(dateVal);
  }
 }
 
 function StatusBadge({ status }: { status: string }) {
- const styles: Record<string, string>= {
+ const styles: Record<string, string> = {
  open: 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400',
  accepted: 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400',
  closed: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400',
  };
- const labels: Record<string, string>= {
+ const labels: Record<string, string> = {
  open: 'Open',
  accepted: 'Accepted',
  closed: 'Closed',
@@ -88,104 +71,48 @@ export default async function QuoteRequestDetailPage({ params }: PageProps) {
 
  const user = await getCurrentUser();
 
- // Fetch the quote request
- let quoteRequest: QuoteRequestDetail | null = null;
+ // Fetch the quote request via Convex
+ let quoteRequestData: Awaited<ReturnType<typeof fetchQuery<typeof api.marketplace.quotes.getRequestById>>> = null;
  try {
- const rows = await sql`
- SELECT
- qr.id,
- qr.client_id,
- COALESCE(u.name, u.email, 'Client') AS client_name,
- qr.category_id,
- COALESCE(mc.name, 'Uncategorized') AS category_name,
- qr.title,
- qr.description,
- qr.location_city,
- qr.location_postcode,
- qr.location_country,
- qr.budget_indication,
- qr.preferred_date,
- qr.status,
- COALESCE(qr.quote_count, 0) AS quote_count,
- qr.created_at
- FROM quote_requests qr
- LEFT JOIN users u ON qr.client_id = u.id
- LEFT JOIN marketplace_categories mc ON qr.category_id = mc.id
- WHERE qr.id = ${id}
- LIMIT 1
- `;
- if (rows.length >0) {
- quoteRequest = rows[0] as QuoteRequestDetail;
- }
+ quoteRequestData = await fetchQuery(api.marketplace.quotes.getRequestById, {
+ requestId: id as Id<'quoteRequests'>,
+ });
  } catch (error) {
  console.error('Error fetching quote request:', error);
  }
 
- if (!quoteRequest) {
+ if (!quoteRequestData) {
  notFound();
  }
 
- const isOwner = user?.id === quoteRequest.client_id;
+ const isOwner = user?.id === quoteRequestData.clientId;
 
- // Fetch quotes for this request
- let quotes: QuoteData[] = [];
- try {
- const rows = await sql`
- SELECT
- q.id,
- q.quote_request_id,
- q.freelancer_id,
- COALESCE(fp.display_name, 'Unknown') AS freelancer_name,
- fp.avatar_url AS freelancer_avatar,
- COALESCE(fp.rating_average, 0) AS freelancer_rating,
- COALESCE(fp.rating_count, 0) AS freelancer_rating_count,
- COALESCE(fp.is_verified, false) AS freelancer_verified,
- fp.location_city AS freelancer_city,
- fp.location_country AS freelancer_country,
- COALESCE(q.amount, 0) AS amount,
- COALESCE(q.currency, 'EUR') AS currency,
- COALESCE(q.description, '') AS description,
- q.estimated_days,
- q.valid_until,
- COALESCE(q.status, 'pending') AS status,
- q.created_at
- FROM quotes q
- JOIN freelancer_profiles fp ON q.freelancer_id = fp.id
- WHERE q.quote_request_id = ${id}
- ORDER BY
- CASE q.status WHEN 'accepted' THEN 0 ELSE 1 END,
- q.amount ASC,
- q.created_at ASC
- `;
-
- quotes = rows.map((row) =>({
- id: String(row.id),
- quote_request_id: String(row.quote_request_id),
- freelancer_id: String(row.freelancer_id),
- freelancer_name: String(row.freelancer_name),
- freelancer_avatar: row.freelancer_avatar ? String(row.freelancer_avatar) : null,
- freelancer_rating: Number(row.freelancer_rating),
- freelancer_rating_count: Number(row.freelancer_rating_count),
- freelancer_verified: Boolean(row.freelancer_verified),
- freelancer_city: row.freelancer_city ? String(row.freelancer_city) : null,
- freelancer_country: row.freelancer_country ? String(row.freelancer_country) : null,
- amount: Number(row.amount),
- currency: String(row.currency),
- description: String(row.description),
- estimated_days: row.estimated_days ? Number(row.estimated_days) : null,
- valid_until: row.valid_until ? String(row.valid_until) : null,
- status: String(row.status),
- created_at: String(row.created_at),
+ // Map Convex quotes to QuoteData shape expected by QuoteCompare
+ const quotes: QuoteData[] = (quoteRequestData.quotes ?? []).map((q) => ({
+ id: q._id,
+ quote_request_id: quoteRequestData!._id,
+ freelancer_id: q.freelancerId,
+ freelancer_name: q.freelancerProfile?.displayName ?? 'Unknown',
+ freelancer_avatar: q.freelancerProfile?.avatarUrl ?? null,
+ freelancer_rating: Number(q.freelancerProfile?.ratingAverage ?? 0),
+ freelancer_rating_count: Number(q.freelancerProfile?.ratingCount ?? 0),
+ freelancer_verified: q.freelancerProfile?.isVerified ?? false,
+ freelancer_city: null,
+ freelancer_country: null,
+ amount: Number(q.amount),
+ currency: q.currency ?? 'EUR',
+ description: q.description,
+ estimated_days: q.estimatedDays ?? null,
+ valid_until: q.validUntil ? new Date(q.validUntil).toISOString() : null,
+ status: q.status,
+ created_at: new Date(q.createdAt).toISOString(),
  }));
- } catch (error) {
- console.error('Error fetching quotes:', error);
- }
 
- const safeTitle = safeText(quoteRequest.title, 'Quote Request');
+ const safeTitle = safeText(quoteRequestData.title, 'Quote Request');
  const locationParts = [
- quoteRequest.location_city,
- quoteRequest.location_postcode,
- quoteRequest.location_country,
+ quoteRequestData.locationCity,
+ quoteRequestData.locationPostcode,
+ quoteRequestData.locationCountry,
  ].filter(Boolean);
  const locationText = locationParts.join(', ');
 
@@ -224,9 +151,9 @@ export default async function QuoteRequestDetailPage({ params }: PageProps) {
  <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
  {/* Status + category */}
  <div className="flex items-center gap-2 flex-wrap mb-3">
- <StatusBadge status={quoteRequest.status} />
+ <StatusBadge status={quoteRequestData.status} />
  <span className="text-xs text-gray-400 dark:text-gray-500">
- {quoteRequest.category_name}
+ {quoteRequestData.categoryName}
  </span>
  </div>
 
@@ -235,7 +162,7 @@ export default async function QuoteRequestDetailPage({ params }: PageProps) {
  </h1>
 
  <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-5">
- {safeText(quoteRequest.description, '')}
+ {safeText(quoteRequestData.description, '')}
  </p>
 
  {/* Meta details */}
@@ -246,25 +173,25 @@ export default async function QuoteRequestDetailPage({ params }: PageProps) {
  <span>{locationText}</span>
  </div>
  )}
- {quoteRequest.budget_indication && (
+ {quoteRequestData.budgetIndication && (
  <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
  <Wallet className="w-4 h-4 flex-shrink-0 text-primary" />
  <span>
- {BUDGET_LABELS[quoteRequest.budget_indication] ??
- quoteRequest.budget_indication}
+ {BUDGET_LABELS[quoteRequestData.budgetIndication] ??
+ quoteRequestData.budgetIndication}
  </span>
  </div>
  )}
- {quoteRequest.preferred_date && (
+ {quoteRequestData.preferredDate && (
  <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
  <Calendar className="w-4 h-4 flex-shrink-0 text-primary" />
- <span>{formatDate(quoteRequest.preferred_date)}</span>
+ <span>{formatDate(quoteRequestData.preferredDate)}</span>
  </div>
  )}
  <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
  <Tag className="w-4 h-4 flex-shrink-0 text-primary" />
  <span>
- {Number(quoteRequest.quote_count)} {t('quotesReceived')}
+ {Number(quoteRequestData.quoteCount ?? 0)} {t('quotesReceived')}
  </span>
  </div>
  </div>
@@ -274,17 +201,17 @@ export default async function QuoteRequestDetailPage({ params }: PageProps) {
  <p className="text-xs text-gray-400 dark:text-gray-500">
  Posted by{' '}
  <span className="font-medium text-gray-700 dark:text-gray-300">
- {safeText(quoteRequest.client_name, 'Client')}
+ {safeText(quoteRequestData.clientName ?? null, 'Client')}
  </span>
  </p>
  <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
- {formatDate(quoteRequest.created_at)}
+ {formatDate(quoteRequestData.createdAt)}
  </p>
  </div>
  </div>
 
  {/* CTA for freelancers */}
- {!isOwner && user && quoteRequest.status === 'open' && (
+ {!isOwner && user && quoteRequestData.status === 'open' && (
  <div className="bg-secondary/5 dark:bg-secondary/20 rounded-xl border border-secondary/20 p-4 text-center">
  <MessageSquare className="w-6 h-6 text-secondary mx-auto mb-2" />
  <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
@@ -319,7 +246,7 @@ export default async function QuoteRequestDetailPage({ params }: PageProps) {
  <div className="lg:col-span-2">
  <h2 className="text-xl font-heading font-bold text-gray-900 dark:text-white mb-6">
  {t('compareQuotes')}
- {quotes.length >0 && (
+ {quotes.length > 0 && (
  <span className="ml-2 text-sm font-normal text-gray-400 dark:text-gray-500">
  ({quotes.length})
  </span>

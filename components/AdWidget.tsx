@@ -1,18 +1,11 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 import { safeImage } from '@/lib/safe';
-import { DEFAULTS } from '@/lib/defaults';
-
-interface Ad {
- id: string;
- title: string;
- image_url: string;
- link_url: string;
- placement: string;
-}
 
 interface AdWidgetProps {
  placement: 'tools_listing' | 'tools_detail' | 'blog_sidebar';
@@ -21,88 +14,56 @@ interface AdWidgetProps {
 }
 
 export function AdWidget({ placement, adImage, adLink }: AdWidgetProps) {
- const [ad, setAd] = useState<Ad | null>(null);
- const [loading, setLoading] = useState(true);
- const [error, setError] = useState(false);
-
- useEffect(() =>{
- // If legacy props are provided, use them directly
- if (adImage && adLink) {
- const safeAdImage = safeImage(adImage, '');
+ // Legacy props take precedence
+ const safeAdImage = adImage ? safeImage(adImage, '') : '';
  const safeAdLink = adLink?.trim() || '';
+ const hasLegacyAd = !!(safeAdImage && safeAdLink);
 
- if (safeAdImage && safeAdLink) {
- setAd({
- id: 'legacy',
- title: 'Advertisement',
- image_url: safeAdImage,
- link_url: safeAdLink,
- placement: placement,
- });
- setLoading(false);
- return;
- }
- }
+ // Only query Convex if no legacy props
+ const ads = useQuery(
+   api.ads.getActive,
+   hasLegacyAd ? 'skip' : { placement }
+ );
 
- // Otherwise fetch from database
- async function fetchAd() {
- try {
- const response = await fetch(`/api/ads/active?placement=${placement}`);
+ // Pick a random ad (stable per render)
+ const ad = useMemo(() => {
+   if (hasLegacyAd) {
+     return {
+       title: 'Advertisement',
+       imageUrl: safeAdImage,
+       linkUrl: safeAdLink,
+     };
+   }
+   if (!ads || ads.length === 0) return null;
+   const randomIndex = Math.floor(Math.random() * ads.length);
+   return ads[randomIndex];
+ }, [hasLegacyAd, safeAdImage, safeAdLink, ads]);
 
- if (!response.ok) {
- throw new Error('Failed to fetch ads');
- }
-
- const data = await response.json();
-
- // Select random ad from active ads
- if (data.ads && data.ads.length >0) {
- const randomIndex = Math.floor(Math.random() * data.ads.length);
- setAd(data.ads[randomIndex]);
- } else {
- setAd(null);
- }
- } catch (err) {
- console.error('Error fetching ad:', err);
- setError(true);
- } finally {
- setLoading(false);
- }
- }
-
- fetchAd();
- }, [placement, adImage, adLink]);
-
- // Don't render if no ad is available
- if (loading) {
- return null; // Or return a skeleton loader
- }
-
- if (error || !ad) {
- return null;
- }
+ // Don't render if loading or no ad
+ if (ads === undefined && !hasLegacyAd) return null;
+ if (!ad) return null;
 
  return (
- <div className="mb-8">
- <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden transition-all hover:shadow-lg dark:hover:shadow-gray-900/50">
- <Link
- href={ad.link_url}
- target="_blank"
- rel="noopener noreferrer sponsored"
- className="block"
- >
- <div className="relative w-full aspect-square">
- <Image
- src={ad.image_url}
- alt={ad.title}
- fill
- sizes="(max-width: 768px) 100vw, 400px"
- className="object-cover"
- priority={false}
- />
- </div>
- </Link>
- </div>
- </div>
+   <div className="mb-8">
+     <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden transition-all hover:shadow-lg dark:hover:shadow-gray-900/50">
+       <Link
+         href={ad.linkUrl}
+         target="_blank"
+         rel="noopener noreferrer sponsored"
+         className="block"
+       >
+         <div className="relative w-full aspect-square">
+           <Image
+             src={ad.imageUrl}
+             alt={ad.title}
+             fill
+             sizes="(max-width: 768px) 100vw, 400px"
+             className="object-cover"
+             priority={false}
+           />
+         </div>
+       </Link>
+     </div>
+   </div>
  );
 }

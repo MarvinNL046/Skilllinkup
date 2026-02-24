@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Search, Filter, X, ChevronDown } from 'lucide-react';
 import { GigCard } from './GigCard';
-import type { GigSummary, MarketplaceCategory } from '@/lib/marketplace-queries';
+import type { GigSummary, MarketplaceCategory } from '@/types/marketplace';
 
 interface GigFiltersProps {
  gigs: GigSummary[];

@@ -1,12 +1,12 @@
 import { Metadata } from 'next';
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { getPublishedPlatforms, getPlatformCategories } from "@/lib/queries";
+import { fetchQuery } from "convex/nextjs";
+import { api } from "@/convex/_generated/api";
 import { PlatformFilters } from "@/components/platform-filters";
 import { getTranslations } from 'next-intl/server';
 
 export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
 
 interface PlatformsPageProps {
  params: Promise<{ locale: string }>;
@@ -82,12 +82,44 @@ export default async function PlatformsPage({ params }: PlatformsPageProps) {
  const { locale } = await params;
  const t = await getTranslations('platformsPage');
 
- let platforms: Awaited<ReturnType<typeof getPublishedPlatforms>>= [];
- let platformCategories: Awaited<ReturnType<typeof getPlatformCategories>>= [];
+ // Fetch platforms and categories from Convex
+ let platforms: any[] = [];
+
+ let platformCategories: Array<{ category: string; count: number }> = [];
 
  try {
- platforms = await getPublishedPlatforms(50, locale);
- platformCategories = await getPlatformCategories(locale);
+ const rawPlatforms = await fetchQuery(api.platforms.list, { locale, limit: 50 });
+
+ // Map Convex camelCase fields to snake_case shape expected by JSX/PlatformFilters
+ platforms = rawPlatforms.map((p) => ({
+ id: p._id as string,
+ name: p.name,
+ slug: p.slug,
+ description: p.description ?? null,
+ logo_url: p.logoUrl ?? null,
+ website_url: p.websiteUrl ?? null,
+ affiliate_link: p.affiliateLink ?? null,
+ rating: p.rating ?? 0,
+ rating_avg: p.rating ?? 0,
+ review_count: null,
+ category: p.category ?? '',
+ fees: p.fees ?? null,
+ difficulty: p.difficulty ?? 'Medium',
+ featured: p.featured ?? false,
+ pros: p.pros ?? [],
+ cons: p.cons ?? [],
+ features: p.features ?? [],
+ status: p.status ?? 'published',
+ work_type: p.workType ?? 'remote',
+ countries: p.countries ?? [],
+ color: '',
+ published_at: p.publishedAt ? new Date(p.publishedAt) : null,
+ created_at: new Date(p.createdAt),
+ tagline: null,
+ }));
+
+ const rawCategories = await fetchQuery(api.platforms.getCategories, { locale });
+ platformCategories = rawCategories;
  } catch (error) {
  console.error('Error fetching platforms:', error);
  }

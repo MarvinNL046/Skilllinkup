@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { Search } from 'lucide-react';
 import { FreelancerCard } from './FreelancerCard';
-import type { FreelancerProfile } from '@/lib/marketplace-queries';
+import type { FreelancerProfile } from '@/types/marketplace';
 
 interface FreelancerSearchProps {
  freelancers: FreelancerProfile[];
