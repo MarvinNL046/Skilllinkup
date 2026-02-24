@@ -51,7 +51,9 @@
     "contact": "Contact",
     "subscribe": "Subscribe",
     "signIn": "Sign In",
-    "signUp": "Sign Up"
+    "signUp": "Sign Up",
+    "dashboard": "Dashboard",
+    "signOut": "Sign Out"
   },
   "footer": {
     "slogan": "Your trusted guide to finding the perfect freelance platform for your skills.",

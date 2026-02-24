@@ -51,7 +51,9 @@
     "contact": "Contact",
     "subscribe": "Abonneren",
     "signIn": "Inloggen",
-    "signUp": "Aanmelden"
+    "signUp": "Aanmelden",
+    "dashboard": "Dashboard",
+    "signOut": "Uitloggen"
   },
   "footer": {
     "slogan": "Jouw vertrouwde gids voor het vinden van het perfecte freelance platform voor jouw vaardigheden.",

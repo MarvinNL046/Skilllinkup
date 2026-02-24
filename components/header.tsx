@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import { useUser } from "@stackframe/stack";
 import ThemeToggle from "./ThemeToggle";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { SeoMegaMenu } from "./seo-megamenu";
@@ -11,6 +12,7 @@ import { SeoMegaMenu } from "./seo-megamenu";
 export function Header() {
  const t = useTranslations();
  const locale = useLocale();
+ const user = useUser();
  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
  return (
@@ -80,6 +82,23 @@ export function Header() {
  <div className="hidden md:flex items-center gap-3">
  <LanguageSwitcher />
  <ThemeToggle />
+ {user ? (
+ <>
+ <Link
+ href={`/${locale}/dashboard`}
+ className="inline-flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm font-heading font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+ >
+ {t('header.dashboard')}
+ </Link>
+ <Link
+ href="/handler/sign-out"
+ className="inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-dark px-4 py-2 text-sm font-heading font-semibold text-white transition-colors shadow-lg"
+ >
+ {t('header.signOut')}
+ </Link>
+ </>
+ ) : (
+ <>
  <Link
  href="/handler/sign-in"
  className="inline-flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm font-heading font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
@@ -92,6 +111,8 @@ export function Header() {
  >
  {t('header.signUp')}
  </Link>
+ </>
+ )}
  </div>
 
  {/* Mobile Menu Button */}
@@ -180,6 +201,25 @@ export function Header() {
  {t('header.about')}
  </Link>
  <div className="flex gap-3 mt-2">
+ {user ? (
+ <>
+ <Link
+ href={`/${locale}/dashboard`}
+ className="flex-1 inline-flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm font-heading font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+ onClick={() =>setMobileMenuOpen(false)}
+ >
+ {t('header.dashboard')}
+ </Link>
+ <Link
+ href="/handler/sign-out"
+ className="flex-1 inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-dark px-4 py-2 text-sm font-heading font-semibold text-white shadow-lg"
+ onClick={() =>setMobileMenuOpen(false)}
+ >
+ {t('header.signOut')}
+ </Link>
+ </>
+ ) : (
+ <>
  <Link
  href="/handler/sign-in"
  className="flex-1 inline-flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm font-heading font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
@@ -194,6 +234,8 @@ export function Header() {
  >
  {t('header.signUp')}
  </Link>
+ </>
+ )}
  </div>
  <div className="flex justify-center gap-3 mt-4">
  <LanguageSwitcher />
