@@ -613,7 +613,12 @@ app.prepare().then(() => {
     cors: {
       origin: dev
         ? ["http://localhost:3000", "http://localhost:3001", "http://127.0.0.1:3000"]
-        : [process.env.NEXT_PUBLIC_SITE_URL || "https://skilllinkup.com"],
+        : [
+            process.env.NEXT_PUBLIC_SITE_URL || "https://skilllinkup.com",
+            "https://skilllinkup.com",
+            "https://www.skilllinkup.com",
+            "https://skilllinkup-production.up.railway.app",
+          ],
       credentials: true,
     },
     // Prefer WebSocket but allow polling fallback
