@@ -18,7 +18,7 @@ export default async function SellerStripePage({ params }: PageProps) {
 
   const user = await getCurrentUser();
   if (!user) {
-    redirect(`/${locale}/auth/signin`);
+    redirect('/handler/sign-in');
   }
 
   // Fetch the freelancer profile including Stripe fields

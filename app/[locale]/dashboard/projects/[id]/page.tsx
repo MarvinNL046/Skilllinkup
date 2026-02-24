@@ -117,7 +117,7 @@ export default async function OwnerProjectDetailPage({ params }: PageProps) {
 
   const user = await getCurrentUser();
   if (!user) {
-    redirect(`/${locale}/auth/signin`);
+    redirect('/handler/sign-in');
   }
 
   // Fetch project

@@ -61,7 +61,7 @@ export default async function SellerGigsPage({ params }: PageProps) {
 
   const user = await getCurrentUser();
   if (!user) {
-    redirect(`/${locale}/auth/signin`);
+    redirect('/handler/sign-in');
   }
 
   // Get the freelancer profile for this user

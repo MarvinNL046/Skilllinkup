@@ -19,7 +19,7 @@ export default async function ClientOrdersPage({ params }: PageProps) {
 
   const user = await getCurrentUser();
   if (!user) {
-    redirect(`/${locale}/auth/signin`);
+    redirect('/handler/sign-in');
   }
 
   const orders = await getOrdersByUser(user.id, 'client');

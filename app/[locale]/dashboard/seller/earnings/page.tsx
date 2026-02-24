@@ -18,7 +18,7 @@ export default async function SellerEarningsPage({ params }: PageProps) {
 
   const user = await getCurrentUser();
   if (!user) {
-    redirect(`/${locale}/auth/signin`);
+    redirect('/handler/sign-in');
   }
 
   // Get freelancer profile

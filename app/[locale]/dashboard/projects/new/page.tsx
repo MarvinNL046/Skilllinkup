@@ -41,7 +41,7 @@ export default async function NewProjectPage({ params }: PageProps) {
 
   const user = await getCurrentUser();
   if (!user) {
-    redirect(`/${locale}/auth/signin`);
+    redirect('/handler/sign-in');
   }
 
   let categories: SerializableCategory[] = [];

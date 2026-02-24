@@ -32,7 +32,7 @@ export default async function NewGigPage({ params }: PageProps) {
 
   const user = await getCurrentUser();
   if (!user) {
-    redirect(`/${locale}/auth/signin`);
+    redirect('/handler/sign-in');
   }
 
   const categories = await getMarketplaceCategories(locale);

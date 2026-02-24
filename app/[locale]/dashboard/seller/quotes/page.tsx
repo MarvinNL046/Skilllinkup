@@ -65,7 +65,7 @@ export default async function SellerQuotesPage({ params }: PageProps) {
 
   const user = await getCurrentUser();
   if (!user) {
-    redirect(`/${locale}/auth/signin`);
+    redirect('/handler/sign-in');
   }
 
   // Get freelancer profile (if any)

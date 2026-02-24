@@ -18,7 +18,7 @@ export default async function SellerDashboardPage({ params }: PageProps) {
 
   const user = await getCurrentUser();
   if (!user) {
-    redirect(`/${locale}/auth/signin`);
+    redirect('/handler/sign-in');
   }
 
   const profile = await getFreelancerProfile(user.id, locale);

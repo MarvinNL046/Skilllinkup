@@ -92,7 +92,7 @@ export default async function QuoteRequestPage({ params }: PageProps) {
                 Please sign in to submit a quote request.
               </p>
               <Link
-                href={`/${locale}/auth/signin`}
+                href="/handler/sign-in"
                 className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors"
               >
                 Sign In

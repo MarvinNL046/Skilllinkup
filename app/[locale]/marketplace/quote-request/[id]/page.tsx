@@ -305,7 +305,7 @@ export default async function QuoteRequestDetailPage({ params }: PageProps) {
                     Sign in to submit a quote for this request.
                   </p>
                   <Link
-                    href={`/${locale}/auth/signin`}
+                    href="/handler/sign-in"
                     className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primary/90 transition-colors"
                   >
                     Sign In

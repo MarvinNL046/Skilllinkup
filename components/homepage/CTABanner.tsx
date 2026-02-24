@@ -26,7 +26,7 @@ export function CTABanner() {
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                href={`/${locale}/auth/signup`}
+                href="/handler/sign-up"
                 className="inline-flex items-center gap-2 px-8 py-3.5 bg-primary hover:bg-primary-dark text-white font-heading font-semibold rounded-lg transition-colors shadow-lg"
               >
                 {t('signUp')}

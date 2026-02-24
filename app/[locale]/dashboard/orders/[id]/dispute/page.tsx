@@ -41,7 +41,7 @@ export default async function DisputePage({ params }: PageProps) {
 
   const user = await getCurrentUser();
   if (!user) {
-    redirect(`/${locale}/auth/signin`);
+    redirect('/handler/sign-in');
   }
 
   const order = await getOrderById(orderId, user.id);

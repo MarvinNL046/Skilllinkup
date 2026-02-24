@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
       (err.message === 'Unauthorized' ||
         err.message === 'No active freelancer profile')
     ) {
-      return NextResponse.redirect(`${siteUrl}/${locale}/auth/signin`);
+      return NextResponse.redirect(`${siteUrl}/handler/sign-in`);
     }
     console.error('GET /api/stripe/connect/return error:', err);
     return NextResponse.redirect(dashboardUrl);

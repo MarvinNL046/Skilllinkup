@@ -15,7 +15,7 @@ export default async function MessagesPage({ params }: PageProps) {
 
   const user = await getCurrentUser();
   if (!user) {
-    redirect(`/${locale}/auth/signin`);
+    redirect('/handler/sign-in');
   }
 
   const t = await getTranslations('messages');

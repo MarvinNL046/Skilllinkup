@@ -472,7 +472,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                         Sign in to place a bid on this project.
                       </p>
                       <Link
-                        href={`/${locale}/auth/signin`}
+                        href="/handler/sign-in"
                         className="inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors"
                       >
                         Sign In

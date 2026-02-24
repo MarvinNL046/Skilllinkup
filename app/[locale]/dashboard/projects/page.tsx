@@ -84,7 +84,7 @@ export default async function ClientProjectsPage({ params }: PageProps) {
 
   const user = await getCurrentUser();
   if (!user) {
-    redirect(`/${locale}/auth/signin`);
+    redirect('/handler/sign-in');
   }
 
   let projects: ClientProject[] = [];
