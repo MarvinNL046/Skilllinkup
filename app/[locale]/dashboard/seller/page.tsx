@@ -2,7 +2,6 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { getCurrentUser } from '@/lib/auth-helpers';
-import { getFreelancerProfile } from '@/lib/marketplace-queries';
 import { DollarSign, ShoppingBag, Star, TrendingUp, User, Briefcase, ArrowRight } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -21,7 +20,35 @@ export default async function SellerDashboardPage({ params }: PageProps) {
  redirect('/handler/sign-in');
  }
 
- const profile = await getFreelancerProfile(user.id, locale);
+ // Fetch own profile without locale filter (user profiles aren't locale-dependent)
+ let profile;
+ try {
+ const rows = await (await import('@/lib/db')).sql`
+ SELECT
+ fp.id, fp.user_id,
+ COALESCE(fp.display_name, 'Unknown') AS display_name,
+ fp.tagline, fp.bio, fp.avatar_url, fp.hourly_rate,
+ COALESCE(fp.work_type, 'remote') AS work_type,
+ fp.location_city, fp.location_country,
+ COALESCE(fp.skills, '{}') AS skills,
+ COALESCE(fp.languages, '{}') AS languages,
+ COALESCE(fp.is_verified, false) AS is_verified,
+ COALESCE(fp.rating_average, 0)::float AS rating_average,
+ COALESCE(fp.rating_count, 0)::int AS rating_count,
+ COALESCE(fp.total_orders, 0)::int AS total_orders,
+ COALESCE(fp.completion_rate, 0)::float AS completion_rate,
+ fp.response_time_hours,
+ COALESCE(fp.status, 'active') AS status,
+ fp.created_at
+ FROM freelancer_profiles fp
+ WHERE fp.user_id = ${user.id}
+ LIMIT 1
+ `;
+ profile = rows.length > 0 ? rows[0] : null;
+ } catch (e) {
+ console.error('[seller-dashboard] profile query error:', e);
+ profile = null;
+ }
 
  // Calculate profile completion percentage
  const profileFields = [
@@ -30,8 +57,8 @@ export default async function SellerDashboardPage({ params }: PageProps) {
  profile?.bio,
  profile?.avatar_url,
  profile?.hourly_rate,
- profile?.skills && profile.skills.length >0,
- profile?.languages && profile.languages.length >0,
+ profile?.skills && Array.isArray(profile.skills) && profile.skills.length >0,
+ profile?.languages && Array.isArray(profile.languages) && profile.languages.length >0,
  ];
  const completedFields = profileFields.filter(Boolean).length;
  const profileCompletion = Math.round((completedFields / profileFields.length) * 100);
@@ -60,7 +87,7 @@ export default async function SellerDashboardPage({ params }: PageProps) {
  },
  {
  label: t('avgRating'),
- value: profile?.rating_average ? profile.rating_average.toFixed(1) : '—',
+ value: profile?.rating_average ? Number(profile.rating_average).toFixed(1) : '—',
  icon: Star,
  color: 'text-yellow-600 dark:text-yellow-400',
  bg: 'bg-yellow-50 dark:bg-yellow-900/20',
