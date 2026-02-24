@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
 import { requireAuth } from '@/lib/auth-helpers';
 import { createNotification } from '@/lib/marketplace-queries';
+import { sendEmailAsync } from '@/lib/send-email';
+import { getUserContact } from '@/lib/get-user-email';
+import { NewBidEmail } from '@/emails/new-bid';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -146,6 +149,30 @@ export async function POST(
     } catch (notifyErr) {
       // Non-critical: log but don't fail the request
       console.error('Failed to send bid notification:', notifyErr);
+    }
+
+    // Send new bid email to project owner
+    const ownerContact = await getUserContact(String(project.client_id));
+    const bidderRows = await sql`
+      SELECT COALESCE(u.name, u.email, 'A freelancer') AS name
+      FROM users u WHERE u.id = ${user.id} LIMIT 1
+    `;
+    const bidderName = (bidderRows[0]?.name as string) || 'A freelancer';
+
+    if (ownerContact) {
+      sendEmailAsync({
+        to: ownerContact.email,
+        subject: `New bid on "${project.title}" - SkillLinkup`,
+        react: NewBidEmail({
+          clientName: ownerContact.name,
+          projectTitle: String(project.title),
+          bidAmount: amount,
+          currency,
+          deliveryDays,
+          freelancerName: bidderName,
+          projectId,
+        }),
+      });
     }
 
     return NextResponse.json(

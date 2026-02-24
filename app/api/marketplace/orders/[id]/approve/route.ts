@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
 import { requireAuth } from '@/lib/auth-helpers';
 import { createNotification } from '@/lib/marketplace-queries';
+import { sendEmailAsync } from '@/lib/send-email';
+import { getUserContact } from '@/lib/get-user-email';
+import { OrderCompletedEmail } from '@/emails/order-completed';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -153,6 +156,25 @@ export async function POST(
       }
     } catch {
       // Skip notification failure
+    }
+
+    // Send payment released email to freelancer
+    if (order.freelancer_user_id) {
+      const freelancerContact = await getUserContact(order.freelancer_user_id as string);
+      if (freelancerContact) {
+        sendEmailAsync({
+          to: freelancerContact.email,
+          subject: `Payment Released: ${order.order_number}`,
+          react: OrderCompletedEmail({
+            freelancerName: freelancerContact.name,
+            orderNumber: order.order_number as string,
+            orderTitle: order.title as string,
+            amount: order.freelancer_earnings as number,
+            currency: order.currency as string,
+            orderId,
+          }),
+        });
+      }
     }
 
     // Notify client (confirmation)

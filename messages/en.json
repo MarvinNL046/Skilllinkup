@@ -2383,6 +2383,7 @@
     "today": "Today",
     "yesterday": "Yesterday",
     "online": "Online",
+    "offline": "Offline",
     "selectConversation": "Select a conversation to start chatting",
     "newMessage": "New Message",
     "unread": "unread"

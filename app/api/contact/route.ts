@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { render } from "@react-email/render";
+import { ContactAdminEmail } from "@/emails/contact-admin";
+import { ContactConfirmationEmail } from "@/emails/contact-confirmation";
 
 export const runtime = 'edge';
 
@@ -35,32 +38,17 @@ export async function POST(request: Request) {
     // Initialize Resend client
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    // Send email notification to admin
+    // Send email notification to admin using React Email template
+    const adminHtml = await render(
+      ContactAdminEmail({ name, email, subject, message })
+    );
+
     const adminEmail = await resend.emails.send({
       from: "SkillLinkup Contact <contact@skilllinkup.com>",
-      to: "info@staycoolairco.nl", // Your admin email
+      to: "info@staycoolairco.nl",
       replyTo: email,
       subject: `Contact Form: ${subject || 'New Message'}`,
-      html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1 style="color: #2563eb;">New Contact Form Submission</h1>
-
-          <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Subject:</strong> ${subject || 'No subject'}</p>
-          </div>
-
-          <div style="background: #fff; border: 1px solid #e5e7eb; padding: 20px; border-radius: 8px;">
-            <h3 style="margin-top: 0;">Message:</h3>
-            <p style="white-space: pre-wrap;">${message}</p>
-          </div>
-
-          <p style="color: #666; font-size: 14px; margin-top: 32px;">
-            Reply directly to this email to respond to ${name}.
-          </p>
-        </div>
-      `,
+      html: adminHtml,
     });
 
     if (adminEmail.error) {
@@ -71,29 +59,16 @@ export async function POST(request: Request) {
       );
     }
 
-    // Send confirmation email to user
+    // Send confirmation email to user using React Email template
+    const confirmHtml = await render(
+      ContactConfirmationEmail({ name, message })
+    );
+
     await resend.emails.send({
       from: "SkillLinkup <contact@skilllinkup.com>",
       to: email,
       subject: "We received your message - SkillLinkup",
-      html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1 style="color: #2563eb;">Thanks for reaching out!</h1>
-          <p>Hi ${name},</p>
-          <p>We've received your message and will get back to you as soon as possible.</p>
-
-          <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="margin-top: 0;">Your message:</h3>
-            <p style="white-space: pre-wrap;">${message}</p>
-          </div>
-
-          <p>Best regards,<br>The SkillLinkup Team</p>
-
-          <p style="color: #666; font-size: 14px; margin-top: 32px;">
-            This is an automated confirmation. Please do not reply to this email.
-          </p>
-        </div>
-      `,
+      html: confirmHtml,
     });
 
     return NextResponse.json(

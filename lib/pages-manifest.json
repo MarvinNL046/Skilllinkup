@@ -1,7 +1,7 @@
 {
-  "generated": "2026-02-23T16:50:02.103Z",
+  "generated": "2026-02-24T10:23:53.108Z",
   "homepage": {
-    "lastModified": "2026-02-23T16:49:27.350Z"
+    "lastModified": "2026-02-23T17:30:21.741Z"
   },
   "pages": [
     {
@@ -642,6 +642,11 @@
     {
       "path": "/platforms",
       "lastModified": "2026-02-20T16:09:56.063Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/platforms-overview",
+      "lastModified": "2026-02-23T17:27:51.574Z",
       "hasSubpages": false
     },
     {

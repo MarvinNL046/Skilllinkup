@@ -81,10 +81,10 @@ export function Header() {
             <LanguageSwitcher />
             <ThemeToggle />
             <Link
-              href={`/${locale}/newsletter`}
+              href={`/${locale}/auth/signup`}
               className="inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-dark px-4 py-2 text-sm font-heading font-semibold text-white transition-colors shadow-lg"
             >
-              {t('header.subscribe')}
+              {t('header.signUp')}
             </Link>
           </div>
 
@@ -174,11 +174,11 @@ export function Header() {
                 {t('header.about')}
               </Link>
               <Link
-                href={`/${locale}/newsletter`}
+                href={`/${locale}/auth/signup`}
                 className="inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-dark px-4 py-2 text-sm font-heading font-semibold text-white mt-2 shadow-lg"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                {t('header.subscribe')}
+                {t('header.signUp')}
               </Link>
               <div className="flex justify-center gap-3 mt-4">
                 <LanguageSwitcher />

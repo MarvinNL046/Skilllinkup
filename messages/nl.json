@@ -2383,6 +2383,7 @@
     "today": "Vandaag",
     "yesterday": "Gisteren",
     "online": "Online",
+    "offline": "Offline",
     "selectConversation": "Selecteer een gesprek om te chatten",
     "newMessage": "Nieuw Bericht",
     "unread": "ongelezen"

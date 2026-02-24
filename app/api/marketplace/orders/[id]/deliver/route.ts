@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
 import { requireFreelancer } from '@/lib/auth-helpers';
 import { createNotification } from '@/lib/marketplace-queries';
+import { sendEmailAsync } from '@/lib/send-email';
+import { getUserContact } from '@/lib/get-user-email';
+import { OrderDeliveredEmail } from '@/emails/order-delivered';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -122,6 +125,21 @@ export async function POST(
       );
     } catch {
       // Notification failure should not block the response
+    }
+
+    // Send delivery email to client
+    const clientContact = await getUserContact(order.client_id as string);
+    if (clientContact) {
+      sendEmailAsync({
+        to: clientContact.email,
+        subject: `Order Delivered: ${order.order_number}`,
+        react: OrderDeliveredEmail({
+          clientName: clientContact.name,
+          orderNumber: order.order_number as string,
+          orderTitle: order.title as string,
+          orderId,
+        }),
+      });
     }
 
     return NextResponse.json(

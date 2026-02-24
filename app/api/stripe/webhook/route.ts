@@ -6,6 +6,11 @@ import {
   createOrder,
   createNotification,
 } from '@/lib/marketplace-queries';
+import { sendEmailAsync } from '@/lib/send-email';
+import { getUserContact } from '@/lib/get-user-email';
+import { OrderConfirmationEmail } from '@/emails/order-confirmation';
+import { NewOrderEmail } from '@/emails/new-order';
+import { PaymentFailedEmail } from '@/emails/payment-failed';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -230,6 +235,43 @@ async function handlePaymentIntentSucceeded(
     `/en/orders/${order.id}`,
     { order_id: order.id, order_number: order.order_number, gig_id: gigId }
   );
+
+  // Send order confirmation email to client
+  const orderTitle = packageTitle ? `${gigTitle} – ${packageTitle}` : gigTitle;
+  const clientContact = await getUserContact(clientId);
+  if (clientContact) {
+    sendEmailAsync({
+      to: clientContact.email,
+      subject: `Order Confirmed: ${order.order_number}`,
+      react: OrderConfirmationEmail({
+        clientName: clientContact.name,
+        orderNumber: order.order_number,
+        orderTitle,
+        amount,
+        currency,
+        deliveryDays,
+        orderId: order.id,
+      }),
+    });
+  }
+
+  // Send new order email to freelancer
+  const freelancerContact = await getUserContact(freelancerUserId);
+  if (freelancerContact) {
+    sendEmailAsync({
+      to: freelancerContact.email,
+      subject: `New Order: ${order.order_number}`,
+      react: NewOrderEmail({
+        freelancerName: freelancerContact.name,
+        orderNumber: order.order_number,
+        orderTitle,
+        amount,
+        currency,
+        deliveryDays,
+        orderId: order.id,
+      }),
+    });
+  }
 }
 
 async function handlePaymentIntentFailed(
@@ -258,6 +300,19 @@ async function handlePaymentIntentFailed(
       );
     } catch (notifErr) {
       console.error('Failed to send payment failure notification:', notifErr);
+    }
+
+    // Send payment failed email
+    const clientContact = await getUserContact(clientId);
+    if (clientContact) {
+      sendEmailAsync({
+        to: clientContact.email,
+        subject: 'Payment Failed - SkillLinkup',
+        react: PaymentFailedEmail({
+          clientName: clientContact.name,
+          gigTitle,
+        }),
+      });
     }
   }
 }

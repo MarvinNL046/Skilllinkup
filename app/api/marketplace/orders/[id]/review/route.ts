@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
 import { requireAuth } from '@/lib/auth-helpers';
 import { createNotification } from '@/lib/marketplace-queries';
+import { sendEmailAsync } from '@/lib/send-email';
+import { getUserContact } from '@/lib/get-user-email';
+import { ReviewReceivedEmail } from '@/emails/review-received';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -371,6 +374,23 @@ export async function POST(
       }
     } catch {
       // Skip notification failures
+    }
+
+    // Send review email to reviewee
+    if (revieweeId) {
+      const revieweeContact = await getUserContact(revieweeId);
+      if (revieweeContact) {
+        sendEmailAsync({
+          to: revieweeContact.email,
+          subject: 'You received a new review - SkillLinkup',
+          react: ReviewReceivedEmail({
+            userName: revieweeContact.name,
+            orderTitle: order.title as string,
+            rating: overall_rating,
+            orderId,
+          }),
+        });
+      }
     }
 
     return NextResponse.json(

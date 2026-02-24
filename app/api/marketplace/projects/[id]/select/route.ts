@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
 import { requireAuth } from '@/lib/auth-helpers';
 import { createOrder, createNotification, type OrderSummary } from '@/lib/marketplace-queries';
+import { sendEmailAsync } from '@/lib/send-email';
+import { getUserContact } from '@/lib/get-user-email';
+import { BidAcceptedEmail } from '@/emails/bid-accepted';
+import { BidRejectedEmail } from '@/emails/bid-rejected';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -130,6 +134,22 @@ export async function POST(
       // Non-critical
     }
 
+    // Send bid accepted email to winner
+    const winnerContact = await getUserContact(String(selectedBid.freelancer_user_id));
+    if (winnerContact) {
+      sendEmailAsync({
+        to: winnerContact.email,
+        subject: `Your bid was accepted! - SkillLinkup`,
+        react: BidAcceptedEmail({
+          freelancerName: winnerContact.name,
+          projectTitle: String(project.title),
+          amount: Number(selectedBid.amount),
+          currency: String(selectedBid.currency || project.currency || 'EUR'),
+          orderId: order?.id,
+        }),
+      });
+    }
+
     // Notify all other rejected bidders
     try {
       const otherBidders = await sql`
@@ -153,6 +173,19 @@ export async function POST(
           );
         } catch {
           // Non-critical per-bidder
+        }
+
+        // Send bid rejected email
+        const bidderContact = await getUserContact(String(bidder.user_id));
+        if (bidderContact) {
+          sendEmailAsync({
+            to: bidderContact.email,
+            subject: `Update on your bid - SkillLinkup`,
+            react: BidRejectedEmail({
+              freelancerName: bidderContact.name,
+              projectTitle: String(project.title),
+            }),
+          });
         }
       }
     } catch {

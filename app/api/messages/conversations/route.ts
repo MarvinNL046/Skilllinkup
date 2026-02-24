@@ -36,6 +36,10 @@ export async function GET() {
           WHEN c.participant_1 = ${user.id} THEN u2.image
           ELSE u1.image
         END AS other_user_image,
+        CASE
+          WHEN c.participant_1 = ${user.id} THEN u2.last_active_at
+          ELSE u1.last_active_at
+        END AS other_user_last_active,
         -- Unread count for current user
         CASE
           WHEN c.participant_1 = ${user.id} THEN c.unread_count_1
@@ -68,6 +72,10 @@ export async function GET() {
         id: row.other_user_id ? String(row.other_user_id) : '',
         name: String(row.other_user_name ?? 'Unknown'),
         image: row.other_user_image ? String(row.other_user_image) : null,
+        isOnline: !!(
+          row.other_user_last_active &&
+          Date.now() - new Date(row.other_user_last_active as string).getTime() < 2 * 60 * 1000
+        ),
       },
     }));
 

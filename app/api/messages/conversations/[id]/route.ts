@@ -14,6 +14,9 @@ export async function GET(
     const user = await requireAuth();
     const { id: conversationId } = await params;
 
+    // Passive heartbeat: update last_active_at on every poll (fire-and-forget)
+    sql`UPDATE users SET last_active_at = NOW() WHERE id = ${user.id}`.catch(() => {});
+
     const { searchParams } = new URL(request.url);
     const limit = Math.min(Number(searchParams.get('limit') ?? '50'), 100);
     const before = searchParams.get('before');
@@ -112,6 +115,15 @@ export async function GET(
       `;
     }
 
+    // Check if the other participant is online (active in last 2 minutes)
+    const statusRows = await sql`
+      SELECT last_active_at FROM users WHERE id = ${otherParticipantId as string} LIMIT 1
+    `;
+    const lastActive = statusRows[0]?.last_active_at as string | null;
+    const otherUserOnline = !!(
+      lastActive && Date.now() - new Date(lastActive).getTime() < 2 * 60 * 1000
+    );
+
     // Messages come from DB newest-first; reverse so UI gets oldest-first
     const messages = messageRows.reverse().map((row) => ({
       id: String(row.id ?? ''),
@@ -130,7 +142,7 @@ export async function GET(
       },
     }));
 
-    return NextResponse.json({ messages });
+    return NextResponse.json({ messages, otherUserOnline });
   } catch (err) {
     if (err instanceof Error && err.message === 'Unauthorized') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

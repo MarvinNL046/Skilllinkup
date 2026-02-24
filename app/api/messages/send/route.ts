@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
 import { requireAuth } from '@/lib/auth-helpers';
+import { sendEmailAsync } from '@/lib/send-email';
+import { getUserContact } from '@/lib/get-user-email';
+import { NewMessageEmail } from '@/emails/new-message';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -114,6 +117,41 @@ export async function POST(request: NextRequest) {
     `;
     const senderName = senderRows[0]?.sender_name ?? 'Unknown';
     const senderImage = senderRows[0]?.sender_image ?? null;
+
+    // Send email notification to recipient if they appear offline (no recent message in 5 min)
+    const recipientId = isParticipant1
+      ? (conv.participant_2 as string)
+      : (conv.participant_1 as string);
+
+    try {
+      // Check if recipient is online (active in last 5 minutes) via last_active_at
+      const statusRows = await sql`
+        SELECT last_active_at FROM users WHERE id = ${recipientId} LIMIT 1
+      `;
+      const lastActive = statusRows[0]?.last_active_at as string | null;
+      const isRecipientOnline = !!(
+        lastActive && Date.now() - new Date(lastActive).getTime() < 5 * 60 * 1000
+      );
+
+      // Only email if recipient appears offline (not actively using the platform)
+      if (!isRecipientOnline) {
+        const recipientContact = await getUserContact(recipientId);
+        if (recipientContact) {
+          sendEmailAsync({
+            to: recipientContact.email,
+            subject: `New message from ${String(senderName)} - SkillLinkup`,
+            react: NewMessageEmail({
+              recipientName: recipientContact.name,
+              senderName: String(senderName),
+              messagePreview: (content ?? '').substring(0, 200),
+              conversationId,
+            }),
+          });
+        }
+      }
+    } catch {
+      // Email notification failure should not block the response
+    }
 
     return NextResponse.json(
       {
