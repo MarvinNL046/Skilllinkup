@@ -2062,7 +2062,10 @@
     "passwordMismatch": "Wachtwoorden komen niet overeen",
     "signUpSuccess": "Account aangemaakt! Log nu in.",
     "invalidCredentials": "Ongeldig e-mailadres of wachtwoord",
-    "emailExists": "Dit e-mailadres is al geregistreerd"
+    "emailExists": "Dit e-mailadres is al geregistreerd",
+    "onboardingSubtitle": "Je kunt dit later altijd wijzigen in je instellingen.",
+    "continue": "Doorgaan",
+    "loading": "Laden..."
   },
   "marketplace": {
     "heroTitle": "Vind de Perfecte Freelancer",

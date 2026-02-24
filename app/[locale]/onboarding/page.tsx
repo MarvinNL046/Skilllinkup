@@ -47,7 +47,7 @@ export default function OnboardingPage() {
             {t('signUpAs')}
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-8">
-            You can always change this later in your settings.
+            {t('onboardingSubtitle')}
           </p>
 
           <div className="grid grid-cols-2 gap-4 mb-8">
@@ -113,10 +113,10 @@ export default function OnboardingPage() {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
-                Loading...
+                {t('loading')}
               </span>
             ) : (
-              'Continue'
+              t('continue')
             )}
           </button>
         </div>

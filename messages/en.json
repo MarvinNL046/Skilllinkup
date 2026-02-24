@@ -2062,7 +2062,10 @@
     "passwordMismatch": "Passwords do not match",
     "signUpSuccess": "Account created! Please sign in.",
     "invalidCredentials": "Invalid email or password",
-    "emailExists": "This email is already registered"
+    "emailExists": "This email is already registered",
+    "onboardingSubtitle": "You can always change this later in your settings.",
+    "continue": "Continue",
+    "loading": "Loading..."
   },
   "marketplace": {
     "heroTitle": "Find the Perfect Freelancer",
