@@ -3,11 +3,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { Search, MessageSquare } from 'lucide-react';
+import { useSocket } from '@/components/providers/SocketProvider';
 
 interface OtherUser {
   id: string;
   name: string;
   image: string | null;
+  isOnline?: boolean;
 }
 
 interface Conversation {
@@ -86,6 +88,7 @@ export function ConversationList({
   onSelectConversation,
 }: ConversationListProps) {
   const t = useTranslations('messages');
+  const { socket, isConnected } = useSocket();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
@@ -94,10 +97,10 @@ export function ConversationList({
     try {
       const res = await fetch('/api/messages/conversations', { cache: 'no-store' });
       if (!res.ok) return;
-      const data = await res.json() as { conversations: Conversation[] };
+      const data = (await res.json()) as { conversations: Conversation[] };
       setConversations(data.conversations ?? []);
     } catch {
-      // silently ignore network errors during polling
+      // silently ignore network errors
     } finally {
       setLoading(false);
     }
@@ -108,15 +111,71 @@ export function ConversationList({
     fetchConversations();
   }, [fetchConversations]);
 
-  // Poll every 4 seconds
+  // Socket event listeners for live updates
   useEffect(() => {
-    const interval = setInterval(fetchConversations, 4000);
-    return () => clearInterval(interval);
-  }, [fetchConversations]);
+    if (!isConnected) return;
 
-  const filtered = conversations.filter((c) =>
-    c.otherUser.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (c.lastMessagePreview ?? '').toLowerCase().includes(searchQuery.toLowerCase())
+    function onConversationUpdated(data: {
+      conversationId: string;
+      lastMessage: string;
+      lastMessageAt: string;
+      unreadCount: number;
+    }) {
+      setConversations((prev) => {
+        const updated = prev.map((conv) => {
+          if (conv.id !== data.conversationId) return conv;
+
+          // If this conversation is currently active, don't show unread
+          const isActive = conv.id === activeConversationId;
+          return {
+            ...conv,
+            lastMessagePreview: data.lastMessage,
+            lastMessageAt: data.lastMessageAt,
+            unreadCount: isActive ? 0 : data.unreadCount,
+          };
+        });
+
+        // Re-sort by lastMessageAt (newest first)
+        return updated.sort((a, b) => {
+          const dateA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0;
+          const dateB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0;
+          return dateB - dateA;
+        });
+      });
+    }
+
+    function onUserStatus(data: { userId: string; isOnline: boolean }) {
+      setConversations((prev) =>
+        prev.map((conv) => {
+          if (conv.otherUser.id !== data.userId) return conv;
+          return {
+            ...conv,
+            otherUser: { ...conv.otherUser, isOnline: data.isOnline },
+          };
+        })
+      );
+    }
+
+    socket.on('conversation:updated', onConversationUpdated);
+    socket.on('user:status', onUserStatus);
+
+    return () => {
+      socket.off('conversation:updated', onConversationUpdated);
+      socket.off('user:status', onUserStatus);
+    };
+  }, [isConnected, socket, activeConversationId]);
+
+  // Fallback polling when socket is disconnected (every 6 sec)
+  useEffect(() => {
+    if (isConnected) return;
+    const interval = setInterval(fetchConversations, 6000);
+    return () => clearInterval(interval);
+  }, [isConnected, fetchConversations]);
+
+  const filtered = conversations.filter(
+    (c) =>
+      c.otherUser.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (c.lastMessagePreview ?? '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -184,6 +243,9 @@ export function ConversationList({
                     {/* Avatar */}
                     <div className="relative flex-shrink-0 mt-0.5">
                       <Avatar name={conv.otherUser.name} image={conv.otherUser.image} size={10} />
+                      {conv.otherUser.isOnline && (
+                        <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white dark:border-gray-900 rounded-full" />
+                      )}
                     </div>
 
                     {/* Content */}

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { MessageSquare } from 'lucide-react';
 import { ConversationList } from '@/components/dashboard/ConversationList';
 import { ChatWindow } from '@/components/dashboard/ChatWindow';
+import { SocketProvider } from '@/components/providers/SocketProvider';
 
 interface ActiveConversation {
   id: string;
@@ -37,6 +38,7 @@ export function MessagesLayout({
   }
 
   return (
+    <SocketProvider>
     <div className="flex h-[calc(100vh-8rem)] overflow-hidden bg-white dark:bg-gray-900">
       {/* Left panel: Conversation list (1/3 width on md+) */}
       <div
@@ -80,5 +82,6 @@ export function MessagesLayout({
         )}
       </div>
     </div>
+    </SocketProvider>
   );
 }

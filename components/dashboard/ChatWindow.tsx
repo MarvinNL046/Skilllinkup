@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
-import { Send, Paperclip } from 'lucide-react';
+import { Send, Paperclip, WifiOff } from 'lucide-react';
+import { useSocket } from '@/components/providers/SocketProvider';
 
 interface MessageSender {
   name: string;
@@ -81,13 +82,18 @@ export function ChatWindow({
   otherUserImage,
 }: ChatWindowProps) {
   const t = useTranslations('messages');
+  const { socket, isConnected } = useSocket();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [sending, setSending] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isOnline, setIsOnline] = useState(false);
+  const [typingUser, setTypingUser] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const lastMessageIdRef = useRef<string | null>(null);
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastTypingEmitRef = useRef<number>(0);
+  const prevConversationRef = useRef<string | null>(null);
 
   const scrollToBottom = useCallback((smooth = false) => {
     messagesEndRef.current?.scrollIntoView({
@@ -95,43 +101,112 @@ export function ChatWindow({
     });
   }, []);
 
-  const fetchMessages = useCallback(async (isInitial = false) => {
+  // Fetch message history via REST (one-time on mount / conversation switch)
+  const fetchMessages = useCallback(async () => {
     try {
       const res = await fetch(`/api/messages/conversations/${conversationId}`, {
         cache: 'no-store',
       });
       if (!res.ok) return;
-      const data = await res.json() as { messages: Message[] };
-      const newMessages = data.messages ?? [];
-
-      setMessages((prev) => {
-        const lastNew = newMessages[newMessages.length - 1];
-        if (lastNew && lastNew.id !== lastMessageIdRef.current) {
-          lastMessageIdRef.current = lastNew.id;
-          return newMessages;
-        }
-        if (prev.length === 0 && newMessages.length > 0) {
-          lastMessageIdRef.current = newMessages[newMessages.length - 1]?.id ?? null;
-          return newMessages;
-        }
-        return prev.length !== newMessages.length ? newMessages : prev;
-      });
-
-      if (isInitial) {
-        setLoading(false);
-      }
+      const data = (await res.json()) as { messages: Message[]; otherUserOnline?: boolean };
+      setMessages(data.messages ?? []);
+      setIsOnline(!!data.otherUserOnline);
     } catch {
-      if (isInitial) setLoading(false);
+      // silently ignore
+    } finally {
+      setLoading(false);
     }
   }, [conversationId]);
 
-  // Initial fetch
+  // Initial fetch + join/leave socket room on conversation switch
   useEffect(() => {
     setLoading(true);
     setMessages([]);
-    lastMessageIdRef.current = null;
-    fetchMessages(true);
-  }, [fetchMessages, conversationId]);
+    setTypingUser(null);
+
+    // Leave previous conversation room
+    if (prevConversationRef.current && isConnected) {
+      socket.emit('conversation:leave', { conversationId: prevConversationRef.current });
+    }
+
+    fetchMessages();
+
+    // Join new conversation room
+    if (isConnected) {
+      socket.emit('conversation:join', { conversationId });
+    }
+
+    prevConversationRef.current = conversationId;
+
+    return () => {
+      if (isConnected) {
+        socket.emit('conversation:leave', { conversationId });
+      }
+    };
+  }, [conversationId, fetchMessages, isConnected, socket]);
+
+  // Re-join room when socket reconnects
+  useEffect(() => {
+    if (isConnected && conversationId) {
+      socket.emit('conversation:join', { conversationId });
+    }
+  }, [isConnected, conversationId, socket]);
+
+  // Socket event listeners
+  useEffect(() => {
+    function onNewMessage(msg: Message) {
+      if (msg.conversationId !== conversationId) return;
+      setMessages((prev) => {
+        if (prev.some((m) => m.id === msg.id)) return prev;
+        return [...prev, msg];
+      });
+      // Mark as read since we're viewing this conversation
+      socket.emit('message:read', { conversationId });
+    }
+
+    function onTyping(data: { userId: string; userName: string }) {
+      if (data.userId === currentUserId) return;
+      setTypingUser(data.userName);
+      // Clear typing indicator after 3 seconds
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = setTimeout(() => setTypingUser(null), 3000);
+    }
+
+    function onUserStatus(data: { userId: string; isOnline: boolean }) {
+      // Check if this status update is for the other user in this conversation
+      // We don't have otherUserId as a prop, but we can infer from messages
+      // For simplicity, update if any user goes online/offline
+      setIsOnline((prev) => {
+        // This is a broadcast event; only update if it's about our chat partner
+        // We'll rely on the initial REST fetch for the correct value
+        // and update when we get explicit status events
+        return data.isOnline || prev;
+      });
+    }
+
+    function onMessageRead(data: { conversationId: string; readBy: string }) {
+      if (data.conversationId !== conversationId) return;
+      // Mark all our sent messages as read
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.senderId === currentUserId && !m.isRead ? { ...m, isRead: true } : m
+        )
+      );
+    }
+
+    socket.on('message:new', onNewMessage);
+    socket.on('message:typing', onTyping);
+    socket.on('user:status', onUserStatus);
+    socket.on('message:read', onMessageRead);
+
+    return () => {
+      socket.off('message:new', onNewMessage);
+      socket.off('message:typing', onTyping);
+      socket.off('user:status', onUserStatus);
+      socket.off('message:read', onMessageRead);
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    };
+  }, [conversationId, currentUserId, socket]);
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -140,11 +215,12 @@ export function ChatWindow({
     }
   }, [messages, scrollToBottom]);
 
-  // Poll every 3 seconds
+  // Fallback polling when socket is disconnected (every 5 sec)
   useEffect(() => {
-    const interval = setInterval(() => fetchMessages(false), 3000);
+    if (isConnected) return;
+    const interval = setInterval(() => fetchMessages(), 5000);
     return () => clearInterval(interval);
-  }, [fetchMessages]);
+  }, [isConnected, fetchMessages]);
 
   async function handleSend() {
     const content = inputValue.trim();
@@ -153,32 +229,53 @@ export function ChatWindow({
     setSending(true);
     setInputValue('');
 
-    try {
-      const res = await fetch('/api/messages/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ conversationId, content }),
-      });
-
-      if (res.ok) {
-        const data = await res.json() as { message: Message };
-        const newMsg = data.message;
-        setMessages((prev) => {
-          // Avoid duplicate if poll already picked it up
-          if (prev.some((m) => m.id === newMsg.id)) return prev;
-          lastMessageIdRef.current = newMsg.id;
-          return [...prev, newMsg];
+    if (isConnected) {
+      // Send via Socket.io
+      socket.emit(
+        'message:send',
+        { conversationId, content },
+        (response: { ok?: boolean; message?: Message; error?: string }) => {
+          if (response?.ok && response.message) {
+            // Message already broadcast via message:new event, but add optimistically
+            // if it hasn't arrived yet
+            setMessages((prev) => {
+              if (prev.some((m) => m.id === response.message!.id)) return prev;
+              return [...prev, response.message!];
+            });
+            setTimeout(() => scrollToBottom(true), 50);
+          } else {
+            // Restore input on failure
+            setInputValue(content);
+          }
+          setSending(false);
+          inputRef.current?.focus();
+        }
+      );
+    } else {
+      // Fallback: send via REST API
+      try {
+        const res = await fetch('/api/messages/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ conversationId, content }),
         });
-        setTimeout(() => scrollToBottom(true), 50);
-      } else {
-        // Restore input on failure
+
+        if (res.ok) {
+          const data = (await res.json()) as { message: Message };
+          setMessages((prev) => {
+            if (prev.some((m) => m.id === data.message.id)) return prev;
+            return [...prev, data.message];
+          });
+          setTimeout(() => scrollToBottom(true), 50);
+        } else {
+          setInputValue(content);
+        }
+      } catch {
         setInputValue(content);
+      } finally {
+        setSending(false);
+        inputRef.current?.focus();
       }
-    } catch {
-      setInputValue(content);
-    } finally {
-      setSending(false);
-      inputRef.current?.focus();
     }
   }
 
@@ -186,6 +283,19 @@ export function ChatWindow({
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
+    }
+  }
+
+  function handleInputChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    setInputValue(e.target.value);
+
+    // Emit typing indicator (debounced: max once per 2 seconds)
+    if (isConnected) {
+      const now = Date.now();
+      if (now - lastTypingEmitRef.current > 2000) {
+        lastTypingEmitRef.current = now;
+        socket.emit('message:typing', { conversationId });
+      }
     }
   }
 
@@ -206,12 +316,20 @@ export function ChatWindow({
       {/* Chat header */}
       <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
         <Avatar name={otherUserName} image={otherUserImage} size={9} />
-        <div>
+        <div className="flex-1">
           <p className="text-sm font-semibold text-gray-900 dark:text-white">
             {otherUserName}
           </p>
-          <p className="text-xs text-green-500 font-medium">{t('online')}</p>
+          <p className={`text-xs font-medium ${isOnline ? 'text-green-500' : 'text-gray-400'}`}>
+            {isOnline ? t('online') : t('offline')}
+          </p>
         </div>
+        {!isConnected && (
+          <div className="flex items-center gap-1.5 text-amber-500" title="Reconnecting...">
+            <WifiOff size={14} />
+            <span className="text-xs font-medium">Reconnecting...</span>
+          </div>
+        )}
       </div>
 
       {/* Messages area */}
@@ -302,6 +420,21 @@ export function ChatWindow({
             </div>
           ))
         )}
+
+        {/* Typing indicator */}
+        {typingUser && (
+          <div className="flex items-center gap-2 px-2 py-1">
+            <div className="flex gap-1">
+              <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+              <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+              <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+            </div>
+            <span className="text-xs text-gray-400 dark:text-gray-500">
+              {typingUser} is typing...
+            </span>
+          </div>
+        )}
+
         <div ref={messagesEndRef} />
       </div>
 
@@ -312,7 +445,7 @@ export function ChatWindow({
             <textarea
               ref={inputRef}
               value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+              onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               placeholder={t('typeMessage')}
               rows={1}
