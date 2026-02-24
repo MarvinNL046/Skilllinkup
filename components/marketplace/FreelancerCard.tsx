@@ -18,7 +18,7 @@ export function FreelancerCard({ freelancer }: FreelancerCardProps) {
 
  const displayName = safeText(freelancer.display_name, 'Unknown');
  const tagline = safeText(freelancer.tagline, '');
- const avatarUrl = safeImage(freelancer.avatar_url, '/images/placeholder-avatar.png');
+ const avatarUrl = safeImage(freelancer.avatar_url, '');
  const skills = safeArray<string>(freelancer.skills);
  const rating = safeNumber(freelancer.rating_average, 0);
  const ratingCount = safeNumber(freelancer.rating_count, 0);
@@ -44,6 +44,7 @@ export function FreelancerCard({ freelancer }: FreelancerCardProps) {
  <div className="flex items-start gap-3 mb-3">
  <div className="relative flex-shrink-0">
  <div className="w-14 h-14 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700">
+ {avatarUrl ? (
  <Image
  src={avatarUrl}
  alt={displayName}
@@ -51,9 +52,14 @@ export function FreelancerCard({ freelancer }: FreelancerCardProps) {
  height={56}
  className="object-cover w-full h-full"
  onError={(e) =>{
- (e.target as HTMLImageElement).src = '/images/placeholder-avatar.png';
+ (e.target as HTMLImageElement).style.display = 'none';
  }}
  />
+ ) : (
+ <div className="w-full h-full flex items-center justify-center bg-primary/10 text-primary font-semibold text-lg">
+ {displayName.charAt(0).toUpperCase()}
+ </div>
+ )}
  </div>
  {freelancer.is_verified && (
  <div className="absolute -bottom-1 -right-1 bg-white dark:bg-gray-800 rounded-full p-0.5">

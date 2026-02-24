@@ -286,7 +286,7 @@ interface LocalFreelancerCardProps {
 function LocalFreelancerCard({ freelancer, locale, kmAwayLabel }: LocalFreelancerCardProps) {
  const displayName = safeText(freelancer.display_name, 'Unknown');
  const tagline = safeText(freelancer.tagline, '');
- const avatarUrl = safeImage(freelancer.avatar_url, '/images/placeholder-avatar.png');
+ const avatarUrl = safeImage(freelancer.avatar_url, '');
  const skills = safeArray<string>(freelancer.skills);
  const rating = safeNumber(freelancer.rating_average, 0);
  const ratingCount = safeNumber(freelancer.rating_count, 0);
@@ -320,6 +320,7 @@ function LocalFreelancerCard({ freelancer, locale, kmAwayLabel }: LocalFreelance
  {/* Avatar + Name */}
  <div className="flex items-start gap-3 mb-3">
  <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700 flex-shrink-0">
+ {avatarUrl ? (
  <Image
  src={avatarUrl}
  alt={displayName}
@@ -327,9 +328,14 @@ function LocalFreelancerCard({ freelancer, locale, kmAwayLabel }: LocalFreelance
  height={48}
  className="object-cover w-full h-full"
  onError={(e) =>{
- (e.target as HTMLImageElement).src = '/images/placeholder-avatar.png';
+ (e.target as HTMLImageElement).style.display = 'none';
  }}
  />
+ ) : (
+ <div className="w-full h-full flex items-center justify-center bg-primary/10 text-primary font-semibold text-base">
+ {displayName.charAt(0).toUpperCase()}
+ </div>
+ )}
  </div>
  <div className="flex-1 min-w-0">
  <h3 className="font-semibold text-gray-900 dark:text-white text-sm truncate">

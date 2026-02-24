@@ -36,7 +36,7 @@ export default async function GigDetailPage({ params }: PageProps) {
  const safeTitle = safeText(gig.title, 'Untitled Service');
  const safeDescription = safeText(gig.description, '');
  const safeFreelancerName = safeText(gig.freelancer_name, 'Freelancer');
- const safeFreelancerAvatar = safeImage(gig.freelancer_avatar, '/images/placeholder-avatar.webp');
+ const safeFreelancerAvatar = safeImage(gig.freelancer_avatar, '');
  const safeFreelancerBio = safeText(gig.freelancer_bio, '');
  const safeCategoryName = safeText(gig.category_name, 'Uncategorized');
  const safeCategorySlug = safeText(gig.category_slug, '');
@@ -116,7 +116,8 @@ export default async function GigDetailPage({ params }: PageProps) {
 
  {/* Freelancer info bar */}
  <div className="flex flex-wrap items-center gap-4 py-4 border-y border-gray-200 dark:border-gray-700">
- <div className="relative w-10 h-10 flex-shrink-0">
+ <div className="relative w-10 h-10 flex-shrink-0 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700">
+ {safeFreelancerAvatar ? (
  <Image
  src={safeFreelancerAvatar}
  alt={safeFreelancerName}
@@ -124,6 +125,11 @@ export default async function GigDetailPage({ params }: PageProps) {
  sizes="40px"
  className="rounded-full object-cover"
  />
+ ) : (
+ <div className="w-full h-full flex items-center justify-center bg-primary/10 text-primary font-semibold text-sm">
+ {safeFreelancerName.charAt(0).toUpperCase()}
+ </div>
+ )}
  </div>
  <div className="flex flex-col min-w-0">
  <div className="flex items-center gap-1.5">
@@ -192,7 +198,8 @@ export default async function GigDetailPage({ params }: PageProps) {
 
  {/* Avatar + name */}
  <div className="flex items-center gap-4">
- <div className="relative w-14 h-14 flex-shrink-0">
+ <div className="relative w-14 h-14 flex-shrink-0 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700">
+ {safeFreelancerAvatar ? (
  <Image
  src={safeFreelancerAvatar}
  alt={safeFreelancerName}
@@ -200,6 +207,11 @@ export default async function GigDetailPage({ params }: PageProps) {
  sizes="56px"
  className="rounded-full object-cover border-2 border-gray-200 dark:border-gray-700"
  />
+ ) : (
+ <div className="w-full h-full flex items-center justify-center bg-primary/10 text-primary font-semibold text-xl border-2 border-gray-200 dark:border-gray-700 rounded-full">
+ {safeFreelancerName.charAt(0).toUpperCase()}
+ </div>
+ )}
  </div>
  <div>
  <div className="flex items-center gap-1.5">

@@ -79,7 +79,7 @@ export function QuoteCard({
  const freelancerName = safeText(quote.freelancer_name, 'Freelancer');
  const avatarSrc = safeImage(
  quote.freelancer_avatar,
- '/images/placeholder-avatar.webp'
+ ''
  );
  const rating = Number(quote.freelancer_rating) || 0;
  const ratingCount = Number(quote.freelancer_rating_count) || 0;
@@ -136,7 +136,8 @@ export function QuoteCard({
 
  {/* Freelancer header */}
  <div className="flex items-start gap-3 mb-4">
- <div className="relative w-12 h-12 flex-shrink-0">
+ <div className="relative w-12 h-12 flex-shrink-0 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700">
+ {avatarSrc ? (
  <Image
  src={avatarSrc}
  alt={freelancerName}
@@ -144,6 +145,11 @@ export function QuoteCard({
  sizes="48px"
  className="rounded-full object-cover"
  />
+ ) : (
+ <div className="w-full h-full flex items-center justify-center bg-primary/10 text-primary font-semibold text-base">
+ {freelancerName.charAt(0).toUpperCase()}
+ </div>
+ )}
  </div>
  <div className="flex-1 min-w-0">
  <div className="flex items-center gap-1.5 flex-wrap">

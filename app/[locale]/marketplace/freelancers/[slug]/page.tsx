@@ -43,7 +43,7 @@ export default async function FreelancerProfilePage({ params }: PageProps) {
  const displayName = safeText(profile.display_name, 'Unknown');
  const tagline = safeText(profile.tagline, '');
  const bio = safeText(profile.bio, '');
- const avatarUrl = safeImage(profile.avatar_url, '/images/placeholder-avatar.webp');
+ const avatarUrl = safeImage(profile.avatar_url, '');
  const skills = safeArray<string>(profile.skills);
  const languages = safeArray<string>(profile.languages);
  const rating = safeNumber(profile.rating_average, 0);
@@ -82,6 +82,7 @@ export default async function FreelancerProfilePage({ params }: PageProps) {
  <div className="flex flex-col items-center pt-8 pb-6 px-6 border-b border-gray-100 dark:border-gray-700">
  <div className="relative mb-4">
  <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700 ring-4 ring-white dark:ring-gray-800">
+ {avatarUrl ? (
  <Image
  src={avatarUrl}
  alt={displayName}
@@ -89,6 +90,11 @@ export default async function FreelancerProfilePage({ params }: PageProps) {
  height={96}
  className="object-cover w-full h-full"
  />
+ ) : (
+ <div className="w-full h-full flex items-center justify-center bg-primary/10 text-primary font-bold text-3xl">
+ {displayName.charAt(0).toUpperCase()}
+ </div>
+ )}
  </div>
  {profile.is_verified && (
  <div className="absolute bottom-0 right-0 bg-white dark:bg-gray-800 rounded-full p-1 ring-2 ring-white dark:ring-gray-800">

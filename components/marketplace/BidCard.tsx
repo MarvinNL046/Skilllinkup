@@ -45,7 +45,7 @@ export function BidCard({ bid, isOwner = false, projectId, onSelected }: BidCard
  const [error, setError] = useState<string | null>(null);
 
  const freelancerName = safeText(bid.freelancer_name, 'Freelancer');
- const avatarSrc = safeImage(bid.freelancer_avatar, '/images/placeholder-avatar.webp');
+ const avatarSrc = safeImage(bid.freelancer_avatar, '');
  const rating = Number(bid.freelancer_rating) || 0;
  const isAccepted = bid.status === 'accepted';
  const isRejected = bid.status === 'rejected';
@@ -89,7 +89,8 @@ export function BidCard({ bid, isOwner = false, projectId, onSelected }: BidCard
  >
  {/* Freelancer info */}
  <div className="flex items-start gap-3 mb-3">
- <div className="relative w-10 h-10 flex-shrink-0">
+ <div className="relative w-10 h-10 flex-shrink-0 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700">
+ {avatarSrc ? (
  <Image
  src={avatarSrc}
  alt={freelancerName}
@@ -97,6 +98,11 @@ export function BidCard({ bid, isOwner = false, projectId, onSelected }: BidCard
  sizes="40px"
  className="rounded-full object-cover"
  />
+ ) : (
+ <div className="w-full h-full flex items-center justify-center bg-primary/10 text-primary font-semibold text-sm">
+ {freelancerName.charAt(0).toUpperCase()}
+ </div>
+ )}
  </div>
  <div className="flex-1 min-w-0">
  <div className="flex items-center gap-1.5 flex-wrap">

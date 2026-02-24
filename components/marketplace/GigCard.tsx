@@ -64,7 +64,7 @@ export function GigCard({
 
  const avatarImage = safeImage(
  freelancer_avatar,
- '/images/placeholder-avatar.webp'
+ ''
  );
 
  const safeTitle = safeText(title, 'Untitled Service');
@@ -111,7 +111,8 @@ export function GigCard({
  <div className="p-4">
  {/* Freelancer info */}
  <div className="flex items-center gap-2 mb-3">
- <div className="relative w-8 h-8 flex-shrink-0">
+ <div className="relative w-8 h-8 flex-shrink-0 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700">
+ {avatarImage ? (
  <Image
  src={avatarImage}
  alt={safeName}
@@ -119,6 +120,11 @@ export function GigCard({
  sizes="32px"
  className="rounded-full object-cover"
  />
+ ) : (
+ <div className="w-full h-full flex items-center justify-center bg-primary/10 text-primary font-semibold text-xs">
+ {safeName.charAt(0).toUpperCase()}
+ </div>
+ )}
  </div>
  <div className="flex items-center gap-1 min-w-0">
  <span className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
