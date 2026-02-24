@@ -29,26 +29,28 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid user type' }, { status: 400 });
     }
 
+    // Get tenant for user creation
+    const tenants = await sql`SELECT id FROM tenants LIMIT 1`;
+    const tenantId = tenants[0]?.id || null;
+
     // Find or create local user
     let localUser = await sql`
       SELECT id, name FROM users WHERE email = ${email} LIMIT 1
     `;
 
     if (localUser.length === 0) {
-      // Auto-create local user
-      const tenants = await sql`SELECT id FROM tenants LIMIT 1`;
-      const tenantId = tenants[0]?.id || null;
 
       await sql`
-        INSERT INTO users (email, name, image, user_type, tenant_id, role, email_verified)
+        INSERT INTO users (email, name, password_hash, image, user_type, tenant_id, role, email_verified)
         VALUES (
           ${email},
           ${stackUser.displayName || email.split('@')[0]},
+          'stack-auth-managed',
           ${stackUser.profileImageUrl || null},
           ${userType},
           ${tenantId},
           'author',
-          NOW()
+          true
         )
       `;
 
@@ -73,8 +75,8 @@ export async function POST(request: NextRequest) {
       `;
       if (existing.length === 0) {
         await sql`
-          INSERT INTO freelancer_profiles (user_id, display_name, status, locale)
-          VALUES (${userId}, ${userName}, 'active', 'en')
+          INSERT INTO freelancer_profiles (user_id, tenant_id, display_name, status, locale)
+          VALUES (${userId}, ${tenantId}, ${userName}, 'active', 'en')
         `;
       }
     }

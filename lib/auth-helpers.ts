@@ -36,15 +36,16 @@ export async function getCurrentUser() {
     const tenantId = tenants[0]?.id;
 
     await sql`
-      INSERT INTO users (email, name, image, user_type, tenant_id, role, email_verified)
+      INSERT INTO users (email, name, password_hash, image, user_type, tenant_id, role, email_verified)
       VALUES (
         ${email},
         ${stackUser.displayName || email.split('@')[0]},
+        'stack-auth-managed',
         ${stackUser.profileImageUrl || null},
         'client',
         ${tenantId},
         'author',
-        NOW()
+        true
       )
     `;
 
