@@ -9,8 +9,8 @@ export function getStackApp(): StackClientApp<true, string>{
  urls: {
  signIn: "/handler/sign-in",
  signUp: "/handler/sign-up",
- afterSignIn: "/en/dashboard/seller",
- afterSignUp: "/en/dashboard/seller",
+ afterSignIn: "/dashboard",
+ afterSignUp: "/onboarding",
  },
  });
  }

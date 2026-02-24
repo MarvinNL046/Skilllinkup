@@ -10,8 +10,8 @@ export function getStackServerApp(): StackServerApp {
  urls: {
  signIn: "/handler/sign-in",
  signUp: "/handler/sign-up",
- afterSignIn: "/en/dashboard/seller",
- afterSignUp: "/en/dashboard/seller",
+ afterSignIn: "/dashboard",
+ afterSignUp: "/onboarding",
  },
  });
  }
