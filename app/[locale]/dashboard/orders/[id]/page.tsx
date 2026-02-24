@@ -7,21 +7,21 @@ export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
 interface PageProps {
-  params: Promise<{ locale: string; id: string }>;
+ params: Promise<{ locale: string; id: string }>;
 }
 
 export default async function ClientOrderDetailPage({ params }: PageProps) {
-  const { locale, id } = await params;
+ const { locale, id } = await params;
 
-  const user = await getCurrentUser();
-  if (!user) {
-    redirect('/handler/sign-in');
-  }
+ const user = await getCurrentUser();
+ if (!user) {
+ redirect('/handler/sign-in');
+ }
 
-  const order = await getOrderById(id, user.id);
-  if (!order) {
-    redirect(`/${locale}/dashboard/orders`);
-  }
+ const order = await getOrderById(id, user.id);
+ if (!order) {
+ redirect(`/${locale}/dashboard/orders`);
+ }
 
-  return <ClientOrderDetailClient order={order} locale={locale} />;
+ return <ClientOrderDetailClient order={order} locale={locale} />;
 }

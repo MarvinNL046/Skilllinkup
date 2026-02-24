@@ -16,17 +16,17 @@ const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://skilllinkup.com";
 const locales = ['en', 'nl'] as const;
 
 interface PageEntry {
-  path: string;
-  lastModified: string;
-  hasSubpages: boolean;
+ path: string;
+ lastModified: string;
+ hasSubpages: boolean;
 }
 
 interface PagesManifest {
-  generated: string;
-  homepage: {
-    lastModified: string;
-  };
-  pages: PageEntry[];
+ generated: string;
+ homepage: {
+ lastModified: string;
+ };
+ pages: PageEntry[];
 }
 
 // Type assertion for imported JSON
@@ -36,110 +36,110 @@ const manifest = pagesManifest as PagesManifest;
  * Determine priority based on path
  */
 function getPriority(pagePath: string): number {
-  // Homepage
-  if (pagePath === '/') return 1.0;
+ // Homepage
+ if (pagePath === '/') return 1.0;
 
-  // Top-level important pages (including guides overview)
-  if (['/platforms', '/blog', '/comparisons', '/reviews', '/tools', '/gids', '/guides'].includes(pagePath)) {
-    return 0.9;
-  }
+ // Top-level important pages (including guides overview)
+ if (['/platforms', '/blog', '/comparisons', '/reviews', '/tools', '/gids', '/guides'].includes(pagePath)) {
+ return 0.9;
+ }
 
-  // Pricing and "what is" pages (high SEO value)
-  if (pagePath.includes('pricing') || pagePath.includes('what-is-') || pagePath.includes('wat-is-')) {
-    return 0.9;
-  }
+ // Pricing and "what is" pages (high SEO value)
+ if (pagePath.includes('pricing') || pagePath.includes('what-is-') || pagePath.includes('wat-is-')) {
+ return 0.9;
+ }
 
-  // Complete guides and main reviews
-  if (pagePath.includes('complete-guide') || pagePath.includes('review') || pagePath.includes('honest-review')) {
-    return 0.85;
-  }
+ // Complete guides and main reviews
+ if (pagePath.includes('complete-guide') || pagePath.includes('review') || pagePath.includes('honest-review')) {
+ return 0.85;
+ }
 
-  // Comparisons
-  if (pagePath.includes('-vs-')) {
-    return 0.8;
-  }
+ // Comparisons
+ if (pagePath.includes('-vs-')) {
+ return 0.8;
+ }
 
-  // Tool pages
-  if (pagePath.startsWith('/tools/')) {
-    return 0.8;
-  }
+ // Tool pages
+ if (pagePath.startsWith('/tools/')) {
+ return 0.8;
+ }
 
-  // SEO guide pages (gids/*)
-  if (pagePath.startsWith('/gids/')) {
-    // Pillar pages (e.g., /gids/platform-reviews)
-    const segments = pagePath.split('/').filter(Boolean);
-    if (segments.length === 2) {
-      return 0.85; // Pillar overview pages
-    }
-    // Sub-pillar pages (individual guides)
-    return 0.8;
-  }
+ // SEO guide pages (gids/*)
+ if (pagePath.startsWith('/gids/')) {
+ // Pillar pages (e.g., /gids/platform-reviews)
+ const segments = pagePath.split('/').filter(Boolean);
+ if (segments.length === 2) {
+ return 0.85; // Pillar overview pages
+ }
+ // Sub-pillar pages (individual guides)
+ return 0.8;
+ }
 
-  // Resource/guide pages (legacy)
-  if (pagePath.startsWith('/resources/')) {
-    return 0.75;
-  }
+ // Resource/guide pages (legacy)
+ if (pagePath.startsWith('/resources/')) {
+ return 0.75;
+ }
 
-  // Secondary pages
-  if (['/about', '/faq', '/newsletter'].includes(pagePath)) {
-    return 0.6;
-  }
+ // Secondary pages
+ if (['/about', '/faq', '/newsletter'].includes(pagePath)) {
+ return 0.6;
+ }
 
-  // Legal pages
-  if (['/privacy', '/terms', '/disclosure', '/contact'].includes(pagePath)) {
-    return 0.3;
-  }
+ // Legal pages
+ if (['/privacy', '/terms', '/disclosure', '/contact'].includes(pagePath)) {
+ return 0.3;
+ }
 
-  // Default
-  return 0.7;
+ // Default
+ return 0.7;
 }
 
 /**
  * Determine change frequency based on path
  */
 function getChangeFrequency(pagePath: string): 'daily' | 'weekly' | 'monthly' | 'yearly' {
-  // Homepage and main listings
-  if (['/', '/blog', '/reviews'].includes(pagePath)) {
-    return 'daily';
-  }
+ // Homepage and main listings
+ if (['/', '/blog', '/reviews'].includes(pagePath)) {
+ return 'daily';
+ }
 
-  // Pricing pages change frequently
-  if (pagePath.includes('pricing') || pagePath.includes('cost') || pagePath.includes('kosten')) {
-    return 'weekly';
-  }
+ // Pricing pages change frequently
+ if (pagePath.includes('pricing') || pagePath.includes('cost') || pagePath.includes('kosten')) {
+ return 'weekly';
+ }
 
-  // Platform listings and comparisons
-  if (['/platforms', '/comparisons'].includes(pagePath) || pagePath.includes('-vs-')) {
-    return 'weekly';
-  }
+ // Platform listings and comparisons
+ if (['/platforms', '/comparisons'].includes(pagePath) || pagePath.includes('-vs-')) {
+ return 'weekly';
+ }
 
-  // Guide overview pages (updated frequently with new content)
-  if (['/gids', '/guides'].includes(pagePath)) {
-    return 'weekly';
-  }
+ // Guide overview pages (updated frequently with new content)
+ if (['/gids', '/guides'].includes(pagePath)) {
+ return 'weekly';
+ }
 
-  // SEO guide pages - updated monthly
-  if (pagePath.startsWith('/gids/')) {
-    return 'monthly';
-  }
+ // SEO guide pages - updated monthly
+ if (pagePath.startsWith('/gids/')) {
+ return 'monthly';
+ }
 
-  // Tool pages
-  if (pagePath.startsWith('/tools')) {
-    return 'monthly';
-  }
+ // Tool pages
+ if (pagePath.startsWith('/tools')) {
+ return 'monthly';
+ }
 
-  // Legal pages rarely change
-  if (['/privacy', '/terms', '/disclosure'].includes(pagePath)) {
-    return 'yearly';
-  }
+ // Legal pages rarely change
+ if (['/privacy', '/terms', '/disclosure'].includes(pagePath)) {
+ return 'yearly';
+ }
 
-  // Tax/insurance content
-  if (pagePath.includes('tax') || pagePath.includes('insurance') || pagePath.includes('belasting')) {
-    return 'yearly';
-  }
+ // Tax/insurance content
+ if (pagePath.includes('tax') || pagePath.includes('insurance') || pagePath.includes('belasting')) {
+ return 'yearly';
+ }
 
-  // Default
-  return 'monthly';
+ // Default
+ return 'monthly';
 }
 
 /**
@@ -147,11 +147,11 @@ function getChangeFrequency(pagePath: string): 'daily' | 'weekly' | 'monthly' | 
  * Converts /gids/* to /guides/* for English locale
  */
 function getLocalizedPath(pagePath: string, locale: string): string {
-  // For English locale, use /guides instead of /gids
-  if (locale === 'en' && pagePath.startsWith('/gids')) {
-    return pagePath.replace('/gids', '/guides');
-  }
-  return pagePath;
+ // For English locale, use /guides instead of /gids
+ if (locale === 'en' && pagePath.startsWith('/gids')) {
+ return pagePath.replace('/gids', '/guides');
+ }
+ return pagePath;
 }
 
 /**
@@ -159,55 +159,55 @@ function getLocalizedPath(pagePath: string, locale: string): string {
  * Reads from build-time generated manifest (no fs access needed at runtime)
  */
 export function generateAutoSitemapEntries(): MetadataRoute.Sitemap {
-  const sitemapEntries: MetadataRoute.Sitemap = [];
+ const sitemapEntries: MetadataRoute.Sitemap = [];
 
-  // Add homepage for each locale
-  locales.forEach((locale) => {
-    sitemapEntries.push({
-      url: `${baseUrl}/${locale}`,
-      lastModified: new Date(manifest.homepage.lastModified),
-      changeFrequency: 'daily',
-      priority: 1.0,
-      alternates: {
-        languages: Object.fromEntries(
-          locales.map((l) => [l, `${baseUrl}/${l}`])
-        ),
-      },
-    });
-  });
+ // Add homepage for each locale
+ locales.forEach((locale) =>{
+ sitemapEntries.push({
+ url: `${baseUrl}/${locale}`,
+ lastModified: new Date(manifest.homepage.lastModified),
+ changeFrequency: 'daily',
+ priority: 1.0,
+ alternates: {
+ languages: Object.fromEntries(
+ locales.map((l) =>[l, `${baseUrl}/${l}`])
+ ),
+ },
+ });
+ });
 
-  // Add all discovered pages from manifest
-  manifest.pages.forEach((page) => {
-    const priority = getPriority(page.path);
-    const changeFrequency = getChangeFrequency(page.path);
+ // Add all discovered pages from manifest
+ manifest.pages.forEach((page) =>{
+ const priority = getPriority(page.path);
+ const changeFrequency = getChangeFrequency(page.path);
 
-    locales.forEach((locale) => {
-      // Get locale-aware path (en uses /guides, nl uses /gids)
-      const localizedPath = getLocalizedPath(page.path, locale);
+ locales.forEach((locale) =>{
+ // Get locale-aware path (en uses /guides, nl uses /gids)
+ const localizedPath = getLocalizedPath(page.path, locale);
 
-      sitemapEntries.push({
-        url: `${baseUrl}/${locale}${localizedPath}`,
-        lastModified: new Date(page.lastModified),
-        changeFrequency,
-        priority,
-        alternates: {
-          languages: Object.fromEntries(
-            locales.map((l) => [l, `${baseUrl}/${l}${getLocalizedPath(page.path, l)}`])
-          ),
-        },
-      });
-    });
-  });
+ sitemapEntries.push({
+ url: `${baseUrl}/${locale}${localizedPath}`,
+ lastModified: new Date(page.lastModified),
+ changeFrequency,
+ priority,
+ alternates: {
+ languages: Object.fromEntries(
+ locales.map((l) =>[l, `${baseUrl}/${l}${getLocalizedPath(page.path, l)}`])
+ ),
+ },
+ });
+ });
+ });
 
-  console.log(`[Sitemap] Loaded ${manifest.pages.length + 1} pages from manifest (${sitemapEntries.length} URLs with locales)`);
-  console.log(`[Sitemap] Manifest generated at: ${manifest.generated}`);
+ console.log(`[Sitemap] Loaded ${manifest.pages.length + 1} pages from manifest (${sitemapEntries.length} URLs with locales)`);
+ console.log(`[Sitemap] Manifest generated at: ${manifest.generated}`);
 
-  return sitemapEntries;
+ return sitemapEntries;
 }
 
 /**
  * Get count of all discovered pages
  */
 export function getAutoDiscoveredPageCount(): number {
-  return manifest.pages.length + 1; // +1 for homepage
+ return manifest.pages.length + 1; // +1 for homepage
 }

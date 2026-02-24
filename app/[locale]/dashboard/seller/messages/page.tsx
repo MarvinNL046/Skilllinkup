@@ -7,25 +7,25 @@ export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
 interface PageProps {
-  params: Promise<{ locale: string }>;
+ params: Promise<{ locale: string }>;
 }
 
 export default async function MessagesPage({ params }: PageProps) {
-  const { locale } = await params;
+ const { locale } = await params;
 
-  const user = await getCurrentUser();
-  if (!user) {
-    redirect('/handler/sign-in');
-  }
+ const user = await getCurrentUser();
+ if (!user) {
+ redirect('/handler/sign-in');
+ }
 
-  const t = await getTranslations('messages');
+ const t = await getTranslations('messages');
 
-  return (
-    <MessagesLayout
-      locale={locale}
-      currentUserId={user.id}
-      pageTitle={t('title')}
-      emptyStateText={t('selectConversation')}
-    />
-  );
+ return (
+ <MessagesLayout
+ locale={locale}
+ currentUserId={user.id}
+ pageTitle={t('title')}
+ emptyStateText={t('selectConversation')}
+ />
+ );
 }

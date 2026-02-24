@@ -10,9 +10,9 @@ import { DEFAULTS } from './defaults';
  * Handles: undefined, null, empty strings, whitespace-only strings
  */
 export function safeImage(src?: unknown, fallback: string = DEFAULTS.featureImg): string {
-  if (typeof src !== 'string') return fallback;
-  const trimmed = src.trim();
-  return trimmed ? trimmed : fallback;
+ if (typeof src !== 'string') return fallback;
+ const trimmed = src.trim();
+ return trimmed ? trimmed : fallback;
 }
 
 /**
@@ -20,8 +20,8 @@ export function safeImage(src?: unknown, fallback: string = DEFAULTS.featureImg)
  * Ensures components always receive a valid array to map over
  */
 export function safeArray<T = any>(val: unknown): T[] {
-  if (!Array.isArray(val)) return [];
-  return val.filter(Boolean) as T[];
+ if (!Array.isArray(val)) return [];
+ return val.filter(Boolean) as T[];
 }
 
 /**
@@ -29,23 +29,23 @@ export function safeArray<T = any>(val: unknown): T[] {
  * Handles: undefined, null, empty strings, whitespace-only strings
  */
 export function safeText(v: unknown, fallback = ''): string {
-  if (typeof v !== 'string') return fallback;
-  const trimmed = v.trim();
-  return trimmed ? trimmed : fallback;
+ if (typeof v !== 'string') return fallback;
+ const trimmed = v.trim();
+ return trimmed ? trimmed : fallback;
 }
 
 /**
  * Safely handle numbers with fallback for invalid values
  */
 export function safeNumber(v: unknown, fallback = 0): number {
-  const num = Number(v);
-  return isNaN(num) ? fallback : num;
+ const num = Number(v);
+ return isNaN(num) ? fallback : num;
 }
 
 /**
  * Safely handle booleans with fallback for invalid values
  */
 export function safeBoolean(v: unknown, fallback = false): boolean {
-  if (typeof v === 'boolean') return v;
-  return fallback;
+ if (typeof v === 'boolean') return v;
+ return fallback;
 }
