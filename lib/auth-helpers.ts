@@ -1,4 +1,4 @@
-import { stackServerApp } from '@/lib/stack';
+import { getStackServerApp } from '@/lib/stack';
 import { sql } from '@/lib/db';
 
 /**
@@ -7,7 +7,7 @@ import { sql } from '@/lib/db';
  * { id, email, name, image, userType, tenantId }
  */
 export async function getCurrentUser() {
-  const stackUser = await stackServerApp.getUser();
+  const stackUser = await getStackServerApp().getUser();
   if (!stackUser) return null;
 
   // Look up user in local DB by email (primary) or Stack Auth ID
