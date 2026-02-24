@@ -1,8 +1,14 @@
 "use client";
 
-import { StackHandler } from "@stackframe/stack";
+import { StackHandler, StackProvider, StackTheme } from "@stackframe/stack";
 import { getStackApp } from "@/lib/stack-client";
 
 export default function Handler(props: any) {
-  return <StackHandler fullPage app={getStackApp()} {...props} />;
+  return (
+    <StackProvider app={getStackApp()}>
+      <StackTheme>
+        <StackHandler fullPage app={getStackApp()} {...props} />
+      </StackTheme>
+    </StackProvider>
+  );
 }
