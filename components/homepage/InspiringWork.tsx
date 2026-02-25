@@ -40,7 +40,7 @@ export default function InspiringWork() {
               />
               <h2 className="title mb30">{t("inspiringWork.clientTitle")}</h2>
               <p className="text mb30">{t("inspiringWork.clientText")}</p>
-              <Link className="ud-btn btn-dark bdrs60" href={`/${locale}/marketplace/freelancers`}>
+              <Link className="ud-btn btn-dark bdrs60" href={`/${locale}/freelancers`}>
                 {t("inspiringWork.clientCta")} <i className="fal fa-arrow-right-long"></i>
               </Link>
             </div>

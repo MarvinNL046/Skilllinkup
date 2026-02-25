@@ -207,7 +207,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
                         <p className="mb-0 text">{freelancer?.tagline ?? "Verified freelancer"}</p>
                       </div>
                     </div>
-                    <Link href={`/${locale}/marketplace/freelancers/${freelancer?.userId ?? ""}`} className="ud-btn btn-white2 w-100">
+                    <Link href={`/${locale}/freelancers/${freelancer?.userId ?? ""}`} className="ud-btn btn-white2 w-100">
                       View Profile
                     </Link>
                   </div>

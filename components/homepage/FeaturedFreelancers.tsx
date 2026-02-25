@@ -28,7 +28,7 @@ export function FeaturedFreelancers({ freelancers }: FeaturedFreelancersProps) {
  </p>
  </div>
  <Link
- href={`/${locale}/marketplace/freelancers`}
+    href={`/${locale}/freelancers`}
  className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary-dark transition-colors flex-shrink-0"
  >
  {t('viewAll')}
@@ -49,7 +49,7 @@ export function FeaturedFreelancers({ freelancers }: FeaturedFreelancersProps) {
  {t('noFreelancersYet')}
  </p>
  <Link
- href={`/${locale}/marketplace/freelancers`}
+              href={`/${locale}/freelancers`}
  className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-dark transition-colors"
  >
  {t('exploreFreelancers')}

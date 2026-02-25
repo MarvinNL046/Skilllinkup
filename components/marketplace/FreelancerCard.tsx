@@ -25,7 +25,7 @@ export function FreelancerCard({ freelancer }: FreelancerCardProps) {
  const locationText = [locationCity, locationCountry].filter(Boolean).join(', ');
  const completionRate = freelancer.completion_rate ? Number(freelancer.completion_rate) : null;
 
- const profileUrl = `/${locale}/marketplace/freelancers/${freelancer.user_id}`;
+ const profileUrl = `/${locale}/freelancers/${freelancer.user_id}`;
 
  return (
  <div className="freelancer-style1 text-center bdr1 hover-box-shadow">

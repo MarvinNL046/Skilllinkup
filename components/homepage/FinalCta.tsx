@@ -23,7 +23,7 @@ export default function FinalCta() {
               <Link href={`/${locale}/marketplace/gigs`} className="ud-btn btn-white bdrs16 mr20">
                 {t("finalCta.primaryCta")} <i className="fal fa-arrow-right-long"></i>
               </Link>
-              <Link href={`/${locale}/marketplace/freelancers`} className="ud-btn btn-transparent2 bdrs16">
+              <Link href={`/${locale}/freelancers`} className="ud-btn btn-transparent2 bdrs16">
                 {t("finalCta.secondaryCta")} <i className="fal fa-arrow-right-long"></i>
               </Link>
             </div>
