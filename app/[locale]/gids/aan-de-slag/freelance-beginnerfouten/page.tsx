@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { AdWidget } from '@/components/AdWidget';
 import { AlertTriangle, XCircle, CheckCircle, ArrowRight, Zap, Shield, TrendingUp } from 'lucide-react';
 
@@ -474,7 +472,7 @@ export default async function FreelanceBeginnerfouten({
 
  return (
  <>
- <Header />
+ 
  <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
  {/* Hero */}
  <section className="bg-gradient-to-br from-red-600 via-red-700 to-[#1e1541] text-white py-16 sm:py-20">
@@ -659,7 +657,7 @@ export default async function FreelanceBeginnerfouten({
  </div>
  </article>
  </main>
- <Footer />
+ 
  </>
  );
 }

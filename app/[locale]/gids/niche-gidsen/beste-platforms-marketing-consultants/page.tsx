@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { TrendingUp, ArrowRight, Target, Megaphone } from 'lucide-react';
 
 interface PageProps {
@@ -62,7 +60,7 @@ export default async function MarketingConsultantPlatformsPage({ params }: PageP
  return (
  <>
  <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
- <Header />
+ 
  <main className="min-h-screen bg-white dark:bg-gray-900">
  <section className="bg-gradient-to-br from-secondary via-primary to-accent py-16 sm:py-24">
  <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -136,7 +134,7 @@ export default async function MarketingConsultantPlatformsPage({ params }: PageP
  </div>
  </article>
  </main>
- <Footer />
+ 
  </>
  );
 }

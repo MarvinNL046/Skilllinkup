@@ -3,8 +3,6 @@
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 
 export default function AboutPage() {
  const t = useTranslations('aboutPage');
@@ -13,7 +11,7 @@ export default function AboutPage() {
 
  return (
  <>
- <Header />
+ 
  <main className="flex-1">
  {/* Hero Section */}
  <section className="bg-gradient-to-b from-purple-50 to-white dark:from-gray-900 dark:to-gray-800 py-16 sm:py-20">
@@ -195,7 +193,7 @@ export default function AboutPage() {
  </div>
  </section>
  </main>
- <Footer />
+ 
  </>
  );
 }

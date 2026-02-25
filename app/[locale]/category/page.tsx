@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { FolderOpen, ArrowRight } from 'lucide-react';
 import { fetchQuery } from 'convex/nextjs';
 import { api } from '@/convex/_generated/api';
@@ -26,7 +24,7 @@ export default async function CategoriesPage() {
 
  return (
  <>
- <Header />
+ 
  <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
  {/* Hero Section */}
  <section className="bg-white dark:bg-slate-800 py-16 sm:py-20 border-b border-gray-200 dark:border-slate-700">
@@ -118,7 +116,7 @@ export default async function CategoriesPage() {
  )}
  </section>
  </main>
- <Footer />
+ 
  </>
  );
 }

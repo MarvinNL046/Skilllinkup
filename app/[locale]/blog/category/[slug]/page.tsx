@@ -2,8 +2,6 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { fetchQuery } from 'convex/nextjs';
 import { api } from '@/convex/_generated/api';
 
@@ -69,7 +67,7 @@ export default async function CategoryPage({ params }: PageProps) {
 
  return (
  <>
- <Header />
+ 
  <main className="flex-1">
  {/* Page Header */}
  <section className="bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 py-12 sm:py-16">
@@ -186,7 +184,7 @@ export default async function CategoryPage({ params }: PageProps) {
  </div>
  </section>
  </main>
- <Footer />
+ 
  </>
  );
 }

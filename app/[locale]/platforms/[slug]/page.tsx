@@ -4,8 +4,6 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { Newsletter } from "@/components/newsletter";
 import { AffiliateButton } from "@/components/affiliate-button";
 import { PlatformReviews } from "@/components/PlatformReviews";
@@ -338,7 +336,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
  dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
  />
 
- <Header />
+ 
  <main className="flex-1">
  {/* Platform Header */}
  <article>
@@ -726,7 +724,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
  {/* Newsletter */}
  <Newsletter />
  </main>
- <Footer />
+ 
  </>
  );
 }

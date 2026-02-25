@@ -4,8 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 
 export default function ContactPage() {
  const t = useTranslations("contactPage");
@@ -48,7 +46,7 @@ export default function ContactPage() {
 
  return (
  <>
- <Header />
+ 
  <main className="flex-1">
  {/* Hero Section */}
  <section className="bg-gradient-to-b from-purple-50 to-white dark:from-gray-900 dark:to-gray-800 py-16 sm:py-20">
@@ -250,7 +248,7 @@ export default function ContactPage() {
  </div>
  </section>
  </main>
- <Footer />
+ 
  </>
  );
 }

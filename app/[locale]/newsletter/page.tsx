@@ -4,8 +4,6 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { Mail, Check, TrendingUp, Award, Sparkles, Users } from 'lucide-react';
 
 export default function NewsletterPage() {
@@ -49,7 +47,7 @@ export default function NewsletterPage() {
 
  return (
  <>
- <Header />
+ 
  <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
  {/* Breadcrumb */}
  <section className="bg-white dark:bg-slate-800 border-b dark:border-slate-700">
@@ -364,7 +362,7 @@ export default function NewsletterPage() {
  </div>
  </section>
  </main>
- <Footer />
+ 
  </>
  );
 }

@@ -3,8 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { MoneyBiiPromo } from '@/components/MoneyBiiPromo';
 import {
  Clock,
@@ -419,7 +417,7 @@ export default function TimeTrackerPage() {
 
  return (
  <>
- <Header />
+ 
  <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
  {/* Breadcrumb */}
  <section className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700">
@@ -1010,7 +1008,7 @@ export default function TimeTrackerPage() {
  <MoneyBiiPromo variant="subtle" />
  </div>
  </main>
- <Footer />
+ 
  </>
  );
 }

@@ -3,8 +3,6 @@ import Image from "next/image";
 import { Metadata } from 'next';
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { getTranslations } from 'next-intl/server';
 
 export const dynamic = 'force-dynamic';
@@ -152,7 +150,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
  />
- <Header />
+ 
  <main className="flex-1">
  {/* Page Header */}
  <section className="bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 py-12 sm:py-16">
@@ -309,7 +307,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
  </section>
  )}
  </main>
- <Footer />
+ 
  </>
  );
 }

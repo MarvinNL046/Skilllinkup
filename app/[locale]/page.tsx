@@ -2,8 +2,6 @@ import { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { MarketplaceHero } from "@/components/homepage/MarketplaceHero";
 import { CategoryGrid } from "@/components/homepage/CategoryGrid";
 import { FeaturedGigs } from "@/components/homepage/FeaturedGigs";
@@ -268,7 +266,7 @@ export default async function HomePage({ params }: HomePageProps) {
  dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
  />
 
- <Header />
+ 
  <main className="flex-1">
  <MarketplaceHero categories={homepageCategories} />
  <CategoryGrid categories={homepageCategories} />
@@ -285,7 +283,7 @@ export default async function HomePage({ params }: HomePageProps) {
  <CTABanner />
  <Newsletter />
  </main>
- <Footer />
+ 
  </>
  );
 }

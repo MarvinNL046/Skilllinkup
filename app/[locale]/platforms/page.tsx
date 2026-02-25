@@ -1,6 +1,4 @@
 import { Metadata } from 'next';
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
 import { PlatformFilters } from "@/components/platform-filters";
@@ -193,7 +191,7 @@ export default async function PlatformsPage({ params }: PlatformsPageProps) {
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
  />
- <Header />
+ 
  <main className="flex-1">
  {/* Page Header */}
  <section className="bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 py-12 sm:py-16">
@@ -216,7 +214,7 @@ export default async function PlatformsPage({ params }: PlatformsPageProps) {
  </div>
  </section>
  </main>
- <Footer />
+ 
  </>
  );
 }

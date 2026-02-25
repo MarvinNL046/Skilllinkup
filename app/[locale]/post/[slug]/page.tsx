@@ -3,8 +3,6 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { Newsletter } from "@/components/newsletter";
 import { ViewTracker } from "@/components/ViewTracker";
 import { CommentSection } from "@/components/CommentSection";
@@ -322,7 +320,7 @@ export default async function PostPage({ params }: PostPageProps) {
  {/* View Tracker - Increments view count after 2 seconds */}
  <ViewTracker slug={post.slug} />
 
- <Header />
+ 
  <main className="flex-1">
  {/* Post Header */}
  <article>
@@ -563,7 +561,7 @@ export default async function PostPage({ params }: PostPageProps) {
  {/* Newsletter */}
  <Newsletter />
  </main>
- <Footer />
+ 
  </>
  );
 }

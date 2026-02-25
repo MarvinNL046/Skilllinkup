@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { AdWidget } from '@/components/AdWidget';
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
@@ -292,7 +290,7 @@ export default async function ToolsPage({ params }: PageProps) {
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
  />
- <Header />
+ 
  <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
  {/* Hero Section */}
  <section className="bg-white dark:bg-slate-800 py-16 sm:py-20">
@@ -492,7 +490,7 @@ export default async function ToolsPage({ params }: PageProps) {
  </div>
  </section>
  </main>
- <Footer />
+ 
  </>
  );
 }

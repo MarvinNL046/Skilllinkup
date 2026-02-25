@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { Target, Trophy, Clock, DollarSign, TrendingUp, Users, CheckCircle2, ArrowRight, Zap, Shield, Award } from 'lucide-react';
 
 interface PageProps {
@@ -112,7 +110,7 @@ export default async function AdvancedBiddingStrategiesPage({ params }: PageProp
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
  />
- <Header />
+ 
  <main className="min-h-screen bg-white dark:bg-gray-900">
  {/* Hero Section */}
  <section className="bg-gradient-to-br from-accent via-accent-dark to-secondary py-16 sm:py-24">
@@ -840,7 +838,7 @@ export default async function AdvancedBiddingStrategiesPage({ params }: PageProp
  </section>
  </article>
  </main>
- <Footer />
+ 
  </>
  );
 }

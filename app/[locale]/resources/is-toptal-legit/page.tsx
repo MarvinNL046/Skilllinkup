@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { Metadata } from "next";
 
 type Props = {
@@ -413,7 +411,7 @@ export default async function IsToptalLegitPage({ params }: Props) {
  <><script
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
- /><Header /><main className="flex-1">{/* Hero Section */}
+ /><main className="flex-1">{/* Hero Section */}
  <section className="bg-gradient-to-br from-green-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-16 sm:py-24"><div className="container mx-auto px-4 sm:px-6 lg:px-8"><div className="max-w-4xl mx-auto text-center"><div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 mb-6"><span className="text-sm font-heading font-semibold">{content.badge}</span></div><h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-gray-900 dark:text-white mb-6">{content.title}
  </h1><p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">{content.subtitle}
  </p><div className="flex flex-wrap justify-center gap-4"><Link
@@ -525,5 +523,5 @@ export default async function IsToptalLegitPage({ params }: Props) {
  href={`/${locale}/newsletter`}
  className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-white dark:bg-gray-800 text-green-600 dark:text-green-400 border-2 border-green-600 dark:border-green-400 font-heading font-bold hover:bg-green-50 dark:hover:bg-green-900/20 transition-all"
  >{content.getWeeklyInsights}
- </Link></div></div></div></section></main><Footer /></>);
+ </Link></div></div></div></section></main></>);
 }

@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 
 export async function generateMetadata({
  params
@@ -598,7 +596,7 @@ export default async function KeyFactorsChoosingFreelanceMarketplace({
  };
 
  return (
- <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} /><Header /><main className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-[#1e1541] dark:to-gray-900">{/* Hero Section */}
+ <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} /><main className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-[#1e1541] dark:to-gray-900">{/* Hero Section */}
  <section className="relative py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-[#22c55e] to-[#1e1541] text-white"><div className="max-w-4xl mx-auto"><h1 className="text-4xl md:text-5xl font-bold mb-6 font-['Lexend']">{content.hero.title}
  </h1><p className="text-xl md:text-2xl text-gray-100 font-['Inter']">{content.hero.subtitle}
  </p></div></section>{/* Main Content */}
@@ -665,5 +663,5 @@ export default async function KeyFactorsChoosingFreelanceMarketplace({
  <section className="mt-16 p-8 bg-gray-100 dark:bg-gray-800 rounded-2xl"><h3 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white font-['Lexend']">{content.relatedLinks.title}
  </h3><div className="grid md:grid-cols-2 gap-4">{content.relatedLinks.links.map((link, i) =>(
  <Link key={i} href={`/${locale}${link.href}`} className="p-4 bg-white dark:bg-gray-700 rounded-xl hover:shadow-lg transition-shadow"><h4 className="font-semibold text-[#ef2b70] mb-2">{link.title}</h4><p className="text-sm text-gray-600 dark:text-gray-400">{link.desc}</p></Link>))}
- </div></section></article></main><Footer /></>);
+ </div></section></article></main></>);
 }

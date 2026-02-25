@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { Clock, CheckCircle, Zap, Timer, BarChart3, DollarSign, Star } from 'lucide-react';
 
 interface PageProps {
@@ -56,7 +54,7 @@ export default async function TimeTrackingToolsPage({ params }: PageProps) {
  <>
  <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
 
- <Header />
+ 
  <main className="flex-1 bg-gray-50 dark:bg-gray-900">
  {/* Hero */}
  <section className="bg-gradient-to-br from-accent via-accent-dark to-primary dark:from-primary dark:via-accent-dark dark:to-accent py-16 sm:py-24">
@@ -408,7 +406,7 @@ export default async function TimeTrackingToolsPage({ params }: PageProps) {
  </div>
  </article>
  </main>
- <Footer />
+ 
  </>
  );
 }

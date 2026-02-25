@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { Metadata } from "next";
 
 export const dynamic = 'force-dynamic';
@@ -89,7 +87,7 @@ export default async function FiverrVs99DesignsPage({ params }: Props) {
 
  return (
  <>
- <Header />
+ 
  <main className="min-h-screen bg-[#f8f9fb]">
  {/* Hero Section */}
  <section className="bg-gradient-to-br from-[#1e1541] via-[#2a1f5e] to-[#1e1541] text-white py-16">
@@ -625,7 +623,7 @@ export default async function FiverrVs99DesignsPage({ params }: Props) {
  }}
  />
  </main>
- <Footer />
+ 
  </>
  );
 }

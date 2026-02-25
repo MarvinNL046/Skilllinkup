@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -15,7 +13,7 @@ export const metadata: Metadata = {
 export default function NotFound() {
  return (
  <>
- <Header />
+ 
  <main className="flex-1 flex items-center justify-center px-4 py-16 bg-background-light">
  <div className="max-w-2xl w-full text-center">
  {/* 404 Number */}
@@ -80,7 +78,7 @@ export default function NotFound() {
  </div>
  </div>
  </main>
- <Footer />
+ 
  </>
  );
 }

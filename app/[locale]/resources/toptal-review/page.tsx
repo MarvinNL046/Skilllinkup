@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { Metadata } from "next";
 
 type Props = {
@@ -357,7 +355,7 @@ export default async function ToptalReviewPage({ params }: Props) {
  <><script
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
- /><Header /><main className="flex-1">{/* Hero Section */}
+ /><main className="flex-1">{/* Hero Section */}
  <section className="bg-gradient-to-br from-secondary/10 via-white to-primary/10 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-16 sm:py-24"><div className="container mx-auto px-4 sm:px-6 lg:px-8"><div className="max-w-4xl mx-auto text-center"><div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/20 dark:bg-secondary/30 text-secondary dark:text-white mb-6"><span className="text-sm font-heading font-semibold">{content.badge}</span></div><h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-gray-900 dark:text-white mb-6">{content.title}
  </h1><p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">{content.subtitle}
  </p><div className="flex flex-wrap justify-center gap-4"><Link
@@ -455,5 +453,5 @@ export default async function ToptalReviewPage({ params }: Props) {
  href={`/${locale}/newsletter`}
  className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-white dark:bg-gray-800 text-secondary dark:text-accent border-2 border-secondary dark:border-accent font-heading font-bold hover:bg-secondary/5 dark:hover:bg-accent/10 transition-all"
  >{content.getWeeklyInsights}
- </Link></div></div></div></section></main><Footer /></>);
+ </Link></div></div></div></section></main></>);
 }

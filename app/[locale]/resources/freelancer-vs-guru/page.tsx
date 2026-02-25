@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { Metadata } from "next";
 
 interface PageProps {
@@ -470,7 +468,7 @@ export default async function FreelancerVsGuruPage({ params }: PageProps) {
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
  />
- <Header />
+ 
  <main className="flex-1">
  {/* Hero Section */}
  <section className="bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 py-16 sm:py-20">
@@ -949,7 +947,7 @@ export default async function FreelancerVsGuruPage({ params }: PageProps) {
  </div>
  </section>
  </main>
- <Footer />
+ 
  </>
  );
 }

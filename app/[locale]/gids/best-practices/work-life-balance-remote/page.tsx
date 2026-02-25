@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { AdWidget } from '@/components/AdWidget';
 import { Home, Clock, Users, CheckCircle, ArrowRight, Zap, Coffee, Moon, Laptop, AlertCircle } from 'lucide-react';
 
@@ -77,7 +75,7 @@ export default async function WorkLifeBalanceRemote({
 
  return (
  <>
- <Header />
+ 
  <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
  {/* Hero Section */}
  <section className="bg-gradient-to-br from-primary via-primary-dark to-[#1e1541] text-white py-16 sm:py-20">
@@ -542,7 +540,7 @@ export default async function WorkLifeBalanceRemote({
  </div>
  </article>
  </main>
- <Footer />
+ 
  </>
  );
 }

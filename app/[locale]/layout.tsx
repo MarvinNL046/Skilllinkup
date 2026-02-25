@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import { locales } from '@/i18n/request';
 import { ClerkProvider } from "@clerk/nextjs";
 import ConvexClientProvider from "@/components/ConvexClientProvider";
+import PublicShell from "@/components/layout/PublicShell";
 
 // Generate locale-specific metadata
 export async function generateMetadata({
@@ -152,7 +153,7 @@ export default async function LocaleLayout({
         <ConvexClientProvider>
           <NextIntlClientProvider locale={locale} messages={messages}>
             <div className="wrapper ovh">
-              {children}
+              <PublicShell>{children}</PublicShell>
             </div>
           </NextIntlClientProvider>
         </ConvexClientProvider>

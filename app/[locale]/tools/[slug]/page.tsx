@@ -2,8 +2,6 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { AdWidget } from '@/components/AdWidget';
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
@@ -187,7 +185,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
  />
- <Header />
+ 
  <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
  {/* Breadcrumb */}
  <section className="bg-white dark:bg-slate-800 border-b dark:border-slate-700">
@@ -411,7 +409,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
  </div>
  </section>
  </main>
- <Footer />
+ 
  </>
  );
 }
