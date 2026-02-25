@@ -35,6 +35,21 @@ export default function ClientOnboarding() {
   const [showErrors, setShowErrors] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  const steps = [
+    {
+      title: t("steps.clientBasicsTitle"),
+      description: t("steps.clientBasicsDesc"),
+    },
+    {
+      title: t("steps.clientNeedsTitle"),
+      description: t("steps.clientNeedsDesc"),
+    },
+    {
+      title: t("steps.clientLocationTitle"),
+      description: t("steps.clientLocationDesc"),
+    },
+  ];
+
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === steps.length - 1;
 
@@ -89,8 +104,8 @@ export default function ClientOnboarding() {
     try {
       await setUserType({ userType: "client" });
       await user.update({
-        publicMetadata: {
-          ...(user.publicMetadata || {}),
+        unsafeMetadata: {
+          ...(user.unsafeMetadata || {}),
           userType: "client",
           onboardingCompleted: true,
         },
@@ -105,21 +120,6 @@ export default function ClientOnboarding() {
       setSubmitting(false);
     }
   };
-
-  const steps = [
-    {
-      title: t("steps.clientBasicsTitle"),
-      description: t("steps.clientBasicsDesc"),
-    },
-    {
-      title: t("steps.clientNeedsTitle"),
-      description: t("steps.clientNeedsDesc"),
-    },
-    {
-      title: t("steps.clientLocationTitle"),
-      description: t("steps.clientLocationDesc"),
-    },
-  ];
 
   return (
     <div>

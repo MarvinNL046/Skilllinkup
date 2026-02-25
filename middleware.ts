@@ -28,7 +28,7 @@ export default clerkMiddleware(async (auth, req) => {
     await auth.protect();
   }
 
-  const { userId, sessionClaims } = auth();
+  const { userId, sessionClaims } = await auth();
   if (userId) {
     const url = req.nextUrl;
     const segments = url.pathname.split("/").filter(Boolean);

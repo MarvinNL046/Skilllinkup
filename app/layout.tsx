@@ -17,6 +17,21 @@ export default function RootLayout({
 }) {
   return (
     <html suppressHydrationWarning>
+      <head>
+        {/* Freeio vendor CSS loaded from public/ */}
+        <link rel="stylesheet" href="/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/css/animate.css" />
+        <link rel="stylesheet" href="/css/ace-responsive-menu.css" />
+        <link rel="stylesheet" href="/css/menu.css" />
+        <link rel="stylesheet" href="/css/fontawesome.css" />
+        <link rel="stylesheet" href="/css/flaticon.css" />
+        <link rel="stylesheet" href="/css/bootstrap-select.min.css" />
+        <link rel="stylesheet" href="/css/slider.css" />
+        <link rel="stylesheet" href="/css/style.css" />
+        <link rel="stylesheet" href="/css/ud-custom-spacing.css" />
+        <link rel="stylesheet" href="/css/dashbord_navitaion.css" />
+        <link rel="stylesheet" href="/css/responsive.css" />
+      </head>
       <body className={dmSans.className}>
         {children}
       </body>

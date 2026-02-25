@@ -49,6 +49,29 @@ export default function FreelancerOnboarding() {
   const [showErrors, setShowErrors] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  const steps = [
+    {
+      title: t("steps.freelancerBasicsTitle"),
+      description: t("steps.freelancerBasicsDesc"),
+    },
+    {
+      title: t("steps.freelancerExpertiseTitle"),
+      description: t("steps.freelancerExpertiseDesc"),
+    },
+    {
+      title: t("steps.freelancerWorkTitle"),
+      description: t("steps.freelancerWorkDesc"),
+    },
+    {
+      title: t("steps.freelancerPortfolioTitle"),
+      description: t("steps.freelancerPortfolioDesc"),
+    },
+    {
+      title: t("steps.freelancerVerifyTitle"),
+      description: t("steps.freelancerVerifyDesc"),
+    },
+  ];
+
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === steps.length - 1;
 
@@ -133,8 +156,8 @@ export default function FreelancerOnboarding() {
       }
 
       await user.update({
-        publicMetadata: {
-          ...(user.publicMetadata || {}),
+        unsafeMetadata: {
+          ...(user.unsafeMetadata || {}),
           userType: "freelancer",
           onboardingCompleted: true,
         },
@@ -149,29 +172,6 @@ export default function FreelancerOnboarding() {
       setSubmitting(false);
     }
   };
-
-  const steps = [
-    {
-      title: t("steps.freelancerBasicsTitle"),
-      description: t("steps.freelancerBasicsDesc"),
-    },
-    {
-      title: t("steps.freelancerExpertiseTitle"),
-      description: t("steps.freelancerExpertiseDesc"),
-    },
-    {
-      title: t("steps.freelancerWorkTitle"),
-      description: t("steps.freelancerWorkDesc"),
-    },
-    {
-      title: t("steps.freelancerPortfolioTitle"),
-      description: t("steps.freelancerPortfolioDesc"),
-    },
-    {
-      title: t("steps.freelancerVerifyTitle"),
-      description: t("steps.freelancerVerifyDesc"),
-    },
-  ];
 
   return (
     <div>

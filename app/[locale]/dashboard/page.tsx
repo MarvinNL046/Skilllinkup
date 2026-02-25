@@ -1,4 +1,3 @@
-import createDynamic from "next/dynamic";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth, currentUser } from "@clerk/nextjs/server";
@@ -6,14 +5,9 @@ import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
 import StatCard from "@/components/dashboard/StatCard";
 import RecentActivity from "@/components/dashboard/RecentActivity";
+import DashboardCharts from "@/components/dashboard/DashboardChartsWrapper";
 
 export const dynamic = "force-dynamic";
-
-// Dynamic import of charts to avoid SSR issues with Chart.js
-const DashboardCharts = createDynamic(
-  () => import("@/components/dashboard/DashboardCharts"),
-  { ssr: false }
-);
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -193,37 +187,37 @@ export default async function DashboardPage({ params }: PageProps) {
                   <>
                     <div className="col-sm-6 col-lg-3 mb15">
                       <Link
-                        href={`/${locale}/dashboard/seller/gigs`}
+                        href={`/${locale}/dashboard/manage-services`}
                         className="d-flex align-items-center gap10 p15 bdrs4 border"
                         style={{ textDecoration: "none" }}
                       >
                         <i className="flaticon-briefcase fz20 text-thm" />
-                        <span className="fz14 fw500 dark-color">My Gigs</span>
+                        <span className="fz14 fw500 dark-color">My Services</span>
                       </Link>
                     </div>
                     <div className="col-sm-6 col-lg-3 mb15">
                       <Link
-                        href={`/${locale}/dashboard/seller/orders`}
+                        href={`/${locale}/dashboard/proposals`}
                         className="d-flex align-items-center gap10 p15 bdrs4 border"
                         style={{ textDecoration: "none" }}
                       >
-                        <i className="flaticon-invoice fz20 text-thm" />
-                        <span className="fz14 fw500 dark-color">Seller Orders</span>
+                        <i className="flaticon-document fz20 text-thm" />
+                        <span className="fz14 fw500 dark-color">Proposals</span>
                       </Link>
                     </div>
                     <div className="col-sm-6 col-lg-3 mb15">
                       <Link
-                        href={`/${locale}/dashboard/seller/earnings`}
+                        href={`/${locale}/dashboard/payouts`}
                         className="d-flex align-items-center gap10 p15 bdrs4 border"
                         style={{ textDecoration: "none" }}
                       >
                         <i className="flaticon-dollar fz20 text-thm" />
-                        <span className="fz14 fw500 dark-color">Earnings</span>
+                        <span className="fz14 fw500 dark-color">Payouts</span>
                       </Link>
                     </div>
                     <div className="col-sm-6 col-lg-3 mb15">
                       <Link
-                        href={`/${locale}/dashboard/seller/profile`}
+                        href={`/${locale}/dashboard/my-profile`}
                         className="d-flex align-items-center gap10 p15 bdrs4 border"
                         style={{ textDecoration: "none" }}
                       >
@@ -237,32 +231,32 @@ export default async function DashboardPage({ params }: PageProps) {
                   <>
                     <div className="col-sm-6 col-lg-3 mb15">
                       <Link
-                        href={`/${locale}/dashboard/orders`}
+                        href={`/${locale}/dashboard/manage-projects`}
                         className="d-flex align-items-center gap10 p15 bdrs4 border"
                         style={{ textDecoration: "none" }}
                       >
-                        <i className="flaticon-invoice fz20 text-thm" />
-                        <span className="fz14 fw500 dark-color">My Orders</span>
-                      </Link>
-                    </div>
-                    <div className="col-sm-6 col-lg-3 mb15">
-                      <Link
-                        href={`/${locale}/dashboard/projects`}
-                        className="d-flex align-items-center gap10 p15 bdrs4 border"
-                        style={{ textDecoration: "none" }}
-                      >
-                        <i className="flaticon-folder fz20 text-thm" />
+                        <i className="flaticon-content fz20 text-thm" />
                         <span className="fz14 fw500 dark-color">My Projects</span>
                       </Link>
                     </div>
                     <div className="col-sm-6 col-lg-3 mb15">
                       <Link
-                        href={`/${locale}/gigs`}
+                        href={`/${locale}/dashboard/manage-jobs`}
+                        className="d-flex align-items-center gap10 p15 bdrs4 border"
+                        style={{ textDecoration: "none" }}
+                      >
+                        <i className="flaticon-briefcase fz20 text-thm" />
+                        <span className="fz14 fw500 dark-color">My Jobs</span>
+                      </Link>
+                    </div>
+                    <div className="col-sm-6 col-lg-3 mb15">
+                      <Link
+                        href={`/${locale}/services`}
                         className="d-flex align-items-center gap10 p15 bdrs4 border"
                         style={{ textDecoration: "none" }}
                       >
                         <i className="flaticon-search fz20 text-thm" />
-                        <span className="fz14 fw500 dark-color">Browse Gigs</span>
+                        <span className="fz14 fw500 dark-color">Browse Services</span>
                       </Link>
                     </div>
                     <div className="col-sm-6 col-lg-3 mb15">

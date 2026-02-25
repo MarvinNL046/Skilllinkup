@@ -145,9 +145,11 @@ export const getByFreelancer = query({
       (g) => g.status === "active" && g.locale === args.locale
     );
 
-    // Enrich with packages min price and first image
+    // Enrich with category, packages min price and first image
     const enriched = await Promise.all(
       filtered.map(async (gig) => {
+        const category = gig.categoryId ? await ctx.db.get(gig.categoryId) : null;
+
         const packages = await ctx.db
           .query("gigPackages")
           .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
@@ -168,7 +170,7 @@ export const getByFreelancer = query({
             ? images.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))[0]
             : null;
 
-        return { ...gig, minPrice, firstImage };
+        return { ...gig, category, minPrice, firstImage };
       })
     );
 
