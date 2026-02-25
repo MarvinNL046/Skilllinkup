@@ -1,7 +1,25 @@
 "use client";
+import { Suspense } from "react";
 import Footer from "@/components/footer/Footer";
 import Header20 from "@/components/header/Header20";
 import { SignUp } from "@clerk/nextjs";
+import { useSearchParams } from "next/navigation";
+
+function RegisterContent() {
+    const searchParams = useSearchParams();
+    const role = searchParams.get("role");
+    const afterSignUpUrl = role
+        ? `/onboarding?role=${role}`
+        : "/onboarding";
+
+    return (
+        <SignUp
+            routing="hash"
+            afterSignUpUrl={afterSignUpUrl}
+            signInUrl="/login"
+        />
+    );
+}
 
 export default function RegisterPage() {
     return (
@@ -19,11 +37,9 @@ export default function RegisterPage() {
                         </div>
                         <div className="row wow fadeInRight" data-wow-delay="300ms">
                             <div className="col-xl-6 mx-auto d-flex justify-content-center">
-                                <SignUp
-                                    routing="hash"
-                                    afterSignUpUrl="/dashboard"
-                                    signInUrl="/login"
-                                />
+                                <Suspense fallback={<div className="text-center py-5">Loading...</div>}>
+                                    <RegisterContent />
+                                </Suspense>
                             </div>
                         </div>
                     </div>

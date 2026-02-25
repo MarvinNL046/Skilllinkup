@@ -1,11 +1,19 @@
 "use client";
-import { dasboardNavigation } from "@/data/dashboard";
+import { clientNavigation, freelancerNavigation } from "@/data/dashboard";
+import useConvexUser from "@/hook/useConvexUser";
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+
 export default function DashboardNavigation() {
   const [isActive, setActive] = useState(false);
-  const path = usePathname()
+  const path = usePathname();
+  const { convexUser } = useConvexUser();
+
+  const isFreelancer = convexUser?.userType === "freelancer";
+  const nav = isFreelancer ? freelancerNavigation : clientNavigation;
+  const startEnd = isFreelancer ? 5 : 5;
+  const organizeEnd = isFreelancer ? 10 : 7;
 
   return (
     <>
@@ -18,7 +26,7 @@ export default function DashboardNavigation() {
             <li>
               <p className="fz15 fw400 ff-heading mt30 pl30">Start</p>
             </li>
-            {dasboardNavigation.slice(0, 8).map((item,i) => (
+            {nav.slice(0, startEnd).map((item, i) => (
               <li className={path == item.path ? 'mobile-dasboard-menu-active' : ''} onClick={() => setActive(false)} key={i}>
                 <Link href={item.path}>
                   <i className={`${item.icon} mr10`} />
@@ -31,8 +39,8 @@ export default function DashboardNavigation() {
                 Organize and Manage
               </p>
             </li>
-            {dasboardNavigation.slice(8, 13).map((item,i) => (
-              <li className={path == item.path ? 'mobile-dasboard-menu-active' : ''}  onClick={() => setActive(false)} key={i}>
+            {nav.slice(startEnd, organizeEnd).map((item, i) => (
+              <li className={path == item.path ? 'mobile-dasboard-menu-active' : ''} onClick={() => setActive(false)} key={i}>
                 <Link href={item.path}>
                   <i className={`${item.icon} mr10`} />
                   {item.name}
@@ -42,8 +50,8 @@ export default function DashboardNavigation() {
             <li>
               <p className="fz15 fw400 ff-heading mt30 pl30">Account</p>
             </li>
-            {dasboardNavigation.slice(13, 15).map((item,i) => (
-              <li className={path == item.path ? 'mobile-dasboard-menu-active' : ''}  onClick={() => setActive(false)} key={i}>
+            {nav.slice(organizeEnd).map((item, i) => (
+              <li className={path == item.path ? 'mobile-dasboard-menu-active' : ''} onClick={() => setActive(false)} key={i}>
                 <Link href={item.path}>
                   <i className={`${item.icon} mr10`} />
                   {item.name}
