@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     });
 
     if (!convexUser) {
-      return NextResponse.redirect(`${siteUrl}/handler/sign-in`);
+      return NextResponse.redirect(`${siteUrl}/sign-in`);
     }
 
     const convexUserId = convexUser._id as Id<'users'>;
@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
       (err.message === 'Unauthorized' ||
         err.message === 'No active freelancer profile')
     ) {
-      return NextResponse.redirect(`${siteUrl}/handler/sign-in`);
+      return NextResponse.redirect(`${siteUrl}/sign-in`);
     }
     console.error('GET /api/stripe/connect/return error:', err);
     return NextResponse.redirect(dashboardUrl);
