@@ -1,7 +1,5 @@
 import Link from "next/link";
 import { Metadata } from "next";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 
 interface PageProps {
  params: Promise<{ locale: string }>;
@@ -298,7 +296,7 @@ export default async function FreelanceBeginnerGuidePage({ params }: PageProps) 
  <><script
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(content.jsonLd) }}
- /><Header /><main className="flex-1">{/* Hero Section */}
+ /><main className="flex-1">{/* Hero Section */}
  <section className="bg-gradient-to-br from-primary/10 via-white to-accent/10 dark:from-secondary dark:via-gray-900 dark:to-gray-800 py-16 sm:py-24"><div className="container mx-auto px-4 sm:px-6 lg:px-8"><div className="max-w-4xl mx-auto text-center"><div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 dark:bg-primary/30 text-primary dark:text-accent text-sm font-semibold mb-6"><span>{content.hero.badge}</span></div><h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-gray-900 dark:text-white mb-6">{content.hero.h1}
  </h1><p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">{content.hero.intro}
  </p><div className="flex flex-col sm:flex-row gap-4 justify-center"><Link
@@ -356,5 +354,5 @@ export default async function FreelanceBeginnerGuidePage({ params }: PageProps) 
  <div key={i}><h4 className="font-bold text-gray-900 dark:text-white mb-2">{phase.title}</h4><p className="text-gray-700 dark:text-gray-300">{phase.desc}</p></div>))}
  </div></div><div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-400 dark:border-red-500 p-6 my-6 rounded-r-xl"><p className="text-gray-800 dark:text-gray-200 font-semibold mb-2">{content.step4.warning.split('.')[0]}</p><p className="text-gray-700 dark:text-gray-300">{content.step4.warning.split('.').slice(1).join('.')}
  </p></div><p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">{content.step4.researchTip}
- </p></div></div></div></article></main><Footer /></>);
+ </p></div></div></div></article></main></>);
 }

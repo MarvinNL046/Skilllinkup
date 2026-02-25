@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { FileText, Download, CheckCircle, Zap, DollarSign, Shield, Clock } from 'lucide-react';
 
 interface PageProps {
@@ -72,7 +70,7 @@ export default async function InvoiceGeneratorPage({ params }: PageProps) {
  <>
  <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
 
- <Header />
+ 
  <main className="flex-1 bg-gray-50 dark:bg-gray-900">
  {/* Hero */}
  <section className="bg-gradient-to-br from-primary via-primary-dark to-secondary py-16 sm:py-24">
@@ -538,7 +536,7 @@ export default async function InvoiceGeneratorPage({ params }: PageProps) {
  </div>
  </article>
  </main>
- <Footer />
+ 
  </>
  );
 }

@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }>}): Promise<Metadata>{
  const { locale } = await params;
@@ -579,7 +577,7 @@ export default async function FreelancePricingStrategiesPage({ params }: { param
  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
  />
 
- <Header />
+ 
 
  <main className="flex-1 bg-white dark:bg-gray-900">
  {/* Hero Section */}
@@ -699,7 +697,7 @@ export default async function FreelancePricingStrategiesPage({ params }: { param
  </article>
  </main>
 
- <Footer />
+ 
  </>
  );
 }

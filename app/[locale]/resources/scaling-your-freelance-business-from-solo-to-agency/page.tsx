@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { Rocket, TrendingUp, Users, DollarSign, Target, CheckCircle2, ArrowRight, Zap, Award, BarChart3, Shield } from 'lucide-react';
 
 interface PageProps {
@@ -77,7 +75,7 @@ export default async function ScalingFreelanceBusinessPage({ params }: PageProps
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
  />
- <Header />
+ 
  <main className="min-h-screen bg-white dark:bg-gray-900">
  {/* Hero Section */}
  <section className="bg-gradient-to-br from-primary via-accent to-secondary py-16 sm:py-24">
@@ -984,7 +982,7 @@ export default async function ScalingFreelanceBusinessPage({ params }: PageProps
  </section>
  </article>
  </main>
- <Footer />
+ 
  </>
  );
 }

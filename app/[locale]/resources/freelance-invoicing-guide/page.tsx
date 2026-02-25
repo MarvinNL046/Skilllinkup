@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { FileText, Download, CheckCircle, DollarSign, Clock } from 'lucide-react';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }>}): Promise<Metadata>{
@@ -450,7 +448,7 @@ export default async function FreelanceInvoicingGuidePage({ params }: { params: 
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
  />
- <Header />
+ 
  <main className="min-h-screen bg-white dark:bg-gray-900">
  {/* Hero Section */}
  <section className="bg-gradient-to-br from-primary/5 via-white to-accent/5 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-16 sm:py-24">
@@ -614,7 +612,7 @@ export default async function FreelanceInvoicingGuidePage({ params }: { params: 
  </div>
  </section>
  </main>
- <Footer />
+ 
  </>
  );
 }

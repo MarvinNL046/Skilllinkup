@@ -60,7 +60,6 @@ interface Platform {
   work_type: string;
   countries: string[];
 }
-import { Header } from "@/components/header";
 import { Hero } from "@/components/hero";
 import { FeaturedPlatforms } from "@/components/featured-platforms";
 import { TopRatedPlatforms } from "@/components/top-rated-platforms";
@@ -70,7 +69,6 @@ import { TrendingTopics } from "@/components/trending-topics";
 import { LatestReviews } from "@/components/latest-reviews";
 import { Testimonials } from "@/components/testimonials";
 import { Newsletter } from "@/components/newsletter";
-import { Footer } from "@/components/footer";
 import { PopularServices } from "@/components/popular-services";
 
 export const dynamic = 'force-dynamic';
@@ -340,7 +338,7 @@ export default async function PlatformsOverviewPage({ params }: PlatformsOvervie
  dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
  />
 
- <Header />
+ 
  <main className="flex-1">
  <Hero />
  <HowItWorks />
@@ -353,7 +351,7 @@ export default async function PlatformsOverviewPage({ params }: PlatformsOvervie
  <PopularServices gigs={featuredGigs} categories={homepageCategories} />
  <Newsletter />
  </main>
- <Footer />
+ 
  </>
  );
 }

@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { Metadata } from "next";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }>}): Promise<Metadata>{
@@ -528,7 +526,7 @@ export default async function FiverrBeginnerGuidePage({ params }: { params: Prom
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
  />
- <Header />
+ 
  <main className="flex-1">
  {/* Hero Section */}
  <section className="bg-gradient-to-br from-accent/10 via-white to-primary/10 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-16 sm:py-24">
@@ -652,7 +650,7 @@ export default async function FiverrBeginnerGuidePage({ params }: { params: Prom
  </div>
  </article>
  </main>
- <Footer />
+ 
  </>
  );
 }

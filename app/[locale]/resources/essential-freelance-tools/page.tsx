@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { Wrench, Clock, FileText, Calculator, BarChart3, Shield, Zap, CheckCircle } from 'lucide-react';
 
 interface PageProps {
@@ -384,7 +382,7 @@ export default async function EssentialFreelanceToolsPage({ params }: PageProps)
  <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
  <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 
- <Header />
+ 
  <main className="flex-1 bg-gray-50 dark:bg-gray-900">
  {/* Hero Section */}
  <section className="bg-gradient-to-br from-primary via-primary-dark to-secondary dark:from-secondary dark:via-primary-dark dark:to-primary py-16 sm:py-24">
@@ -572,7 +570,7 @@ export default async function EssentialFreelanceToolsPage({ params }: PageProps)
  </div>
  </article>
  </main>
- <Footer />
+ 
  </>
  );
 }

@@ -5,6 +5,7 @@ import { api } from '@/convex/_generated/api';
 import { auth } from '@clerk/nextjs/server';
 import { stripe } from '@/lib/stripe';
 import { StripeConnect } from '@/components/dashboard/StripeConnect';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -69,25 +70,34 @@ export default async function SellerStripePage({ params }: PageProps) {
   }
 
   return (
-    <div className="p-6 lg:p-8 max-w-2xl mx-auto w-full">
-      {/* Page header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-heading font-bold text-gray-900 dark:text-white">
-          {t('title')}
-        </h1>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          {t('description')}
-        </p>
-      </div>
+    <div className="container py40">
+      <div className="row">
+        <div className="col-lg-8 offset-lg-2">
+          {/* Breadcrumb */}
+          <div className="breadcumb-list mb30">
+            <Link href={`/${locale}/dashboard`}>Dashboard</Link>
+            <span className="mx10">/</span>
+            <Link href={`/${locale}/dashboard/seller`}>Seller</Link>
+            <span className="mx10">/</span>
+            <span className="active">{t('title')}</span>
+          </div>
 
-      {/* Stripe Connect status card */}
-      <StripeConnect
-        stripeAccountId={stripeAccountId}
-        onboardingComplete={onboardingComplete}
-        chargesEnabled={chargesEnabled}
-        payoutsEnabled={payoutsEnabled}
-        loginLinkUrl={loginLinkUrl}
-      />
+          {/* Page header */}
+          <div className="ps-widget bgc-white bdrs12 bdr1 p30 mb30">
+            <h4 className="fw600 mb5">{t('title')}</h4>
+            <p className="fz14 body-color mb0">{t('description')}</p>
+          </div>
+
+          {/* Stripe Connect status card */}
+          <StripeConnect
+            stripeAccountId={stripeAccountId}
+            onboardingComplete={onboardingComplete}
+            chargesEnabled={chargesEnabled}
+            payoutsEnabled={payoutsEnabled}
+            loginLinkUrl={loginLinkUrl}
+          />
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { MessageSquare } from 'lucide-react';
+import { MessageSquare, ArrowLeft } from 'lucide-react';
 import { ConversationList } from '@/components/dashboard/ConversationList';
 import { ChatWindow } from '@/components/dashboard/ChatWindow';
 
@@ -62,12 +62,27 @@ export function MessagesLayout({
     ].join(' ')}
    >
     {activeConversation ? (
-     <ChatWindow
-      conversationId={activeConversation.id}
-      currentUserId={currentUserId}
-      otherUserName={activeConversation.otherUserName}
-      otherUserImage={activeConversation.otherUserImage}
-     />
+     <div className="flex flex-col h-full">
+      {/* Mobile back button — visible only on small screens */}
+      <div className="flex md:hidden items-center gap-2 px-3 py-2 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+       <button
+        onClick={() => setActiveConversation(null)}
+        className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-primary transition-colors"
+        aria-label="Back to conversations"
+       >
+        <ArrowLeft size={16} />
+        <span>Back</span>
+       </button>
+      </div>
+      <div className="flex-1 overflow-hidden">
+       <ChatWindow
+        conversationId={activeConversation.id}
+        currentUserId={currentUserId}
+        otherUserName={activeConversation.otherUserName}
+        otherUserImage={activeConversation.otherUserImage}
+       />
+      </div>
+     </div>
     ) : (
      <div className="flex flex-col items-center justify-center h-full text-center px-8">
       <div className="w-16 h-16 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-4">

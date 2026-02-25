@@ -1,992 +1,1087 @@
 {
-  "generated": "2026-02-24T19:02:15.550Z",
+  "generated": "2026-02-25T18:57:01.402Z",
   "homepage": {
-    "lastModified": "2026-02-24T18:45:48.719Z"
+    "lastModified": "2026-02-25T17:44:13.604Z"
   },
   "pages": [
     {
       "path": "/about",
-      "lastModified": "2026-02-24T13:35:32.124Z",
+      "lastModified": "2026-02-25T18:44:10.828Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/become-client",
+      "lastModified": "2026-02-25T18:44:23.054Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/become-freelancer",
+      "lastModified": "2026-02-25T18:44:17.326Z",
       "hasSubpages": false
     },
     {
       "path": "/blog",
-      "lastModified": "2026-02-24T18:12:47.170Z",
+      "lastModified": "2026-02-25T18:34:16.969Z",
       "hasSubpages": true
     },
     {
       "path": "/blog/category",
-      "lastModified": "2026-02-24T18:29:17.959Z",
+      "lastModified": "2026-02-25T18:39:36.890Z",
       "hasSubpages": false
     },
     {
       "path": "/category",
-      "lastModified": "2026-02-24T18:30:03.405Z",
+      "lastModified": "2026-02-25T17:11:46.564Z",
       "hasSubpages": false
     },
     {
       "path": "/comparisons",
-      "lastModified": "2026-02-24T18:31:17.868Z",
+      "lastModified": "2026-02-25T17:11:46.559Z",
       "hasSubpages": false
     },
     {
       "path": "/contact",
-      "lastModified": "2026-02-24T13:35:32.124Z",
+      "lastModified": "2026-02-25T17:11:46.550Z",
       "hasSubpages": false
     },
     {
       "path": "/dashboard",
-      "lastModified": "2026-02-24T18:16:04.589Z",
+      "lastModified": "2026-02-25T18:53:54.230Z",
       "hasSubpages": true
     },
     {
+      "path": "/dashboard/add-services",
+      "lastModified": "2026-02-25T18:27:34.627Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/create-projects",
+      "lastModified": "2026-02-25T18:26:34.725Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/invoice",
+      "lastModified": "2026-02-25T18:26:46.044Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/manage-jobs",
+      "lastModified": "2026-02-25T18:29:42.934Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/manage-projects",
+      "lastModified": "2026-02-25T18:29:08.945Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/manage-services",
+      "lastModified": "2026-02-25T18:25:42.238Z",
+      "hasSubpages": false
+    },
+    {
       "path": "/dashboard/messages",
-      "lastModified": "2026-02-24T18:20:03.457Z",
+      "lastModified": "2026-02-25T18:33:17.109Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/my-profile",
+      "lastModified": "2026-02-25T18:25:22.501Z",
       "hasSubpages": false
     },
     {
       "path": "/dashboard/orders",
-      "lastModified": "2026-02-24T18:16:21.821Z",
+      "lastModified": "2026-02-25T17:11:46.552Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/payouts",
+      "lastModified": "2026-02-25T18:27:19.452Z",
       "hasSubpages": false
     },
     {
       "path": "/dashboard/projects",
-      "lastModified": "2026-02-24T18:19:02.624Z",
+      "lastModified": "2026-02-25T17:11:46.549Z",
       "hasSubpages": true
     },
     {
       "path": "/dashboard/projects/new",
-      "lastModified": "2026-02-24T18:18:11.562Z",
+      "lastModified": "2026-02-25T17:11:46.549Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/proposals",
+      "lastModified": "2026-02-25T18:30:21.361Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/reviews",
+      "lastModified": "2026-02-25T18:26:19.049Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/saved",
+      "lastModified": "2026-02-25T18:28:20.442Z",
       "hasSubpages": false
     },
     {
       "path": "/dashboard/seller",
-      "lastModified": "2026-02-24T18:37:09.626Z",
+      "lastModified": "2026-02-25T17:11:46.553Z",
       "hasSubpages": true
     },
     {
       "path": "/dashboard/seller/earnings",
-      "lastModified": "2026-02-24T18:18:53.323Z",
+      "lastModified": "2026-02-25T17:11:46.553Z",
       "hasSubpages": false
     },
     {
       "path": "/dashboard/seller/gigs",
-      "lastModified": "2026-02-24T18:17:18.616Z",
+      "lastModified": "2026-02-25T17:11:46.553Z",
       "hasSubpages": true
     },
     {
       "path": "/dashboard/seller/gigs/new",
-      "lastModified": "2026-02-24T18:47:44.579Z",
+      "lastModified": "2026-02-25T17:11:46.553Z",
       "hasSubpages": false
     },
     {
       "path": "/dashboard/seller/messages",
-      "lastModified": "2026-02-24T13:35:32.126Z",
+      "lastModified": "2026-02-25T17:11:46.553Z",
       "hasSubpages": false
     },
     {
       "path": "/dashboard/seller/orders",
-      "lastModified": "2026-02-24T18:17:36.143Z",
+      "lastModified": "2026-02-25T17:11:46.553Z",
       "hasSubpages": false
     },
     {
       "path": "/dashboard/seller/profile",
-      "lastModified": "2026-02-24T18:37:10.682Z",
+      "lastModified": "2026-02-25T17:11:46.552Z",
       "hasSubpages": false
     },
     {
       "path": "/dashboard/seller/quotes",
-      "lastModified": "2026-02-24T18:37:21.658Z",
+      "lastModified": "2026-02-25T17:11:46.551Z",
       "hasSubpages": false
     },
     {
       "path": "/dashboard/seller/stripe",
-      "lastModified": "2026-02-24T18:19:03.661Z",
+      "lastModified": "2026-02-25T18:38:46.501Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/dashboard/statements",
+      "lastModified": "2026-02-25T18:27:53.331Z",
       "hasSubpages": false
     },
     {
       "path": "/disclosure",
-      "lastModified": "2026-02-24T13:35:32.067Z",
+      "lastModified": "2026-02-25T17:11:46.563Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/employees",
+      "lastModified": "2026-02-25T18:44:05.593Z",
       "hasSubpages": false
     },
     {
       "path": "/faq",
-      "lastModified": "2026-02-24T13:35:32.128Z",
+      "lastModified": "2026-02-25T17:11:46.548Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/freelancers",
+      "lastModified": "2026-02-25T18:44:00.561Z",
       "hasSubpages": false
     },
     {
       "path": "/gids",
-      "lastModified": "2026-02-24T13:35:32.068Z",
+      "lastModified": "2026-02-25T17:11:46.565Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/aan-de-slag/eerste-freelance-voorstel",
-      "lastModified": "2026-02-24T13:35:32.097Z",
+      "lastModified": "2026-02-25T17:11:46.573Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/aan-de-slag/first-client-in-30-days",
-      "lastModified": "2026-02-24T13:35:32.098Z",
+      "lastModified": "2026-02-25T17:11:46.572Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/aan-de-slag/freelance-beginnerfouten",
-      "lastModified": "2026-02-24T13:35:32.096Z",
+      "lastModified": "2026-02-25T17:11:46.570Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/aan-de-slag/freelance-beginners-gids",
-      "lastModified": "2026-02-24T13:35:32.097Z",
+      "lastModified": "2026-02-25T17:11:46.572Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/aan-de-slag/freelance-contracts-basics",
-      "lastModified": "2026-02-24T13:35:32.095Z",
+      "lastModified": "2026-02-25T17:11:46.571Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/aan-de-slag/freelance-niche-selection",
-      "lastModified": "2026-02-24T13:35:32.094Z",
+      "lastModified": "2026-02-25T17:11:46.571Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/aan-de-slag/freelance-portfolio-from-scratch",
-      "lastModified": "2026-02-24T13:35:32.094Z",
+      "lastModified": "2026-02-25T17:11:46.571Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/aan-de-slag/freelance-profiel-templates",
-      "lastModified": "2026-02-24T13:35:32.097Z",
+      "lastModified": "2026-02-25T17:11:46.573Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/aan-de-slag/profile-optimization-secrets",
-      "lastModified": "2026-02-24T13:35:32.098Z",
+      "lastModified": "2026-02-25T17:11:46.570Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/aan-de-slag/toptal-voor-beginners",
-      "lastModified": "2026-02-24T13:35:32.096Z",
+      "lastModified": "2026-02-25T17:11:46.571Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/best-practices/avoiding-freelance-burnout",
-      "lastModified": "2026-02-24T13:35:32.081Z",
+      "lastModified": "2026-02-25T17:11:46.570Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/best-practices/building-passive-income",
-      "lastModified": "2026-02-24T13:35:32.081Z",
+      "lastModified": "2026-02-25T17:11:46.571Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/best-practices/continuous-learning-freelancers",
-      "lastModified": "2026-02-24T13:35:32.082Z",
+      "lastModified": "2026-02-25T17:11:46.569Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/best-practices/freelance-communicatie",
-      "lastModified": "2026-02-24T13:35:32.078Z",
+      "lastModified": "2026-02-25T17:11:46.574Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/best-practices/freelance-networking-strategies",
-      "lastModified": "2026-02-24T13:35:32.080Z",
+      "lastModified": "2026-02-25T17:11:46.569Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/best-practices/platform-algoritmes-beheersen",
-      "lastModified": "2026-02-24T13:35:32.080Z",
+      "lastModified": "2026-02-25T17:11:46.569Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/best-practices/portfolio-dat-converteert",
-      "lastModified": "2026-02-24T13:35:32.082Z",
+      "lastModified": "2026-02-25T17:11:46.568Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/best-practices/profiel-optimaliseren",
-      "lastModified": "2026-02-24T13:35:32.079Z",
+      "lastModified": "2026-02-25T17:11:46.572Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/best-practices/winnende-voorstellen-schrijven",
-      "lastModified": "2026-02-24T13:35:32.081Z",
+      "lastModified": "2026-02-25T17:11:46.569Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/best-practices/work-life-balance-remote",
-      "lastModified": "2026-02-24T13:35:32.079Z",
+      "lastModified": "2026-02-25T17:11:46.570Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/niche-gidsen/beste-platforms-grafisch-designers",
-      "lastModified": "2026-02-24T13:35:32.091Z",
+      "lastModified": "2026-02-25T17:11:46.569Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/niche-gidsen/beste-platforms-marketing-consultants",
-      "lastModified": "2026-02-24T13:35:32.090Z",
+      "lastModified": "2026-02-25T17:11:46.572Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/niche-gidsen/beste-platforms-schrijvers",
-      "lastModified": "2026-02-24T13:35:32.090Z",
+      "lastModified": "2026-02-25T17:11:46.573Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/niche-gidsen/beste-platforms-virtual-assistants",
-      "lastModified": "2026-02-24T13:35:32.092Z",
+      "lastModified": "2026-02-25T17:11:46.574Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/niche-gidsen/beste-platforms-webdevelopers",
-      "lastModified": "2026-02-24T13:35:32.092Z",
+      "lastModified": "2026-02-25T17:11:46.574Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/niche-gidsen/data-science-freelancing",
-      "lastModified": "2026-02-24T13:35:32.093Z",
+      "lastModified": "2026-02-25T17:11:46.569Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/niche-gidsen/platforms-for-copywriters",
-      "lastModified": "2026-02-24T13:35:32.093Z",
+      "lastModified": "2026-02-25T17:11:46.570Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/niche-gidsen/platforms-for-developers-2026",
-      "lastModified": "2026-02-24T13:35:32.093Z",
+      "lastModified": "2026-02-25T17:11:46.573Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/niche-gidsen/platforms-for-translators",
-      "lastModified": "2026-02-24T13:35:32.093Z",
+      "lastModified": "2026-02-25T17:11:46.571Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/niche-gidsen/video-editor-freelance-guide",
-      "lastModified": "2026-02-24T13:35:32.091Z",
+      "lastModified": "2026-02-25T17:11:46.570Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-reviews/99designs-for-creatives",
-      "lastModified": "2026-02-24T13:37:21.755Z",
+      "lastModified": "2026-02-25T17:11:46.564Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-reviews/fiverr-pros-cons-deep-dive",
-      "lastModified": "2026-02-24T13:37:21.754Z",
+      "lastModified": "2026-02-25T17:11:46.565Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-reviews/freelancer-com-review",
-      "lastModified": "2026-02-24T13:37:21.754Z",
+      "lastModified": "2026-02-25T17:11:46.567Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-reviews/toptal-worth-it",
-      "lastModified": "2026-02-24T13:37:21.753Z",
+      "lastModified": "2026-02-25T17:11:46.568Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-reviews/upwork-honest-review-2026",
-      "lastModified": "2026-02-24T13:37:21.755Z",
+      "lastModified": "2026-02-25T17:11:46.564Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-selectie/beginner-vs-expert-platforms",
-      "lastModified": "2026-02-24T13:35:32.103Z",
+      "lastModified": "2026-02-25T17:11:46.571Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-selectie/belangrijke-selectiefactoren",
-      "lastModified": "2026-02-24T13:35:32.100Z",
+      "lastModified": "2026-02-25T17:11:46.573Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-selectie/beste-freelance-platform-kiezen",
-      "lastModified": "2026-02-24T13:35:32.101Z",
+      "lastModified": "2026-02-25T17:11:46.573Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-selectie/freelance-platform-red-flags",
-      "lastModified": "2026-02-24T13:35:32.098Z",
+      "lastModified": "2026-02-25T17:11:46.575Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-selectie/meerdere-platforms-gebruiken",
-      "lastModified": "2026-02-24T13:35:32.099Z",
+      "lastModified": "2026-02-25T17:11:46.574Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-selectie/platform-fees-comparison",
-      "lastModified": "2026-02-24T13:35:32.102Z",
+      "lastModified": "2026-02-25T17:11:46.573Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-selectie/platform-reputation-systems",
-      "lastModified": "2026-02-24T13:35:32.101Z",
+      "lastModified": "2026-02-25T17:11:46.575Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-selectie/platform-selectie-quiz",
-      "lastModified": "2026-02-24T13:35:32.100Z",
+      "lastModified": "2026-02-25T17:11:46.574Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-selectie/remote-work-platforms-2026",
-      "lastModified": "2026-02-24T13:35:32.099Z",
+      "lastModified": "2026-02-25T17:11:46.573Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-selectie/switching-platforms-guide",
-      "lastModified": "2026-02-24T13:35:32.101Z",
+      "lastModified": "2026-02-25T17:11:46.574Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-vergelijkingen/best-platforms-by-skill",
-      "lastModified": "2026-02-24T13:35:32.072Z",
+      "lastModified": "2026-02-25T17:11:46.568Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-vergelijkingen/beste-platform-designers",
-      "lastModified": "2026-02-24T13:35:32.070Z",
+      "lastModified": "2026-02-25T17:11:46.566Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-vergelijkingen/beste-platform-schrijvers",
-      "lastModified": "2026-02-24T13:35:32.071Z",
+      "lastModified": "2026-02-25T17:11:46.568Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-vergelijkingen/enterprise-vs-gig-platforms",
-      "lastModified": "2026-02-24T13:35:32.072Z",
+      "lastModified": "2026-02-25T17:11:46.566Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-vergelijkingen/fiverr-vs-99designs",
-      "lastModified": "2026-02-24T13:35:32.069Z",
+      "lastModified": "2026-02-25T17:11:46.566Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-vergelijkingen/freelancer-vs-guru",
-      "lastModified": "2026-02-24T13:35:32.069Z",
+      "lastModified": "2026-02-25T17:11:46.565Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-vergelijkingen/guru-vs-peopleperhour",
-      "lastModified": "2026-02-24T13:35:32.071Z",
+      "lastModified": "2026-02-25T17:11:46.567Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-vergelijkingen/toptal-vs-upwork",
-      "lastModified": "2026-02-24T13:35:32.074Z",
+      "lastModified": "2026-02-25T17:11:46.565Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-vergelijkingen/upwork-vs-fiverr",
-      "lastModified": "2026-02-24T13:35:32.072Z",
+      "lastModified": "2026-02-25T17:11:46.566Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/platform-vergelijkingen/upwork-vs-toptal-detailed",
-      "lastModified": "2026-02-24T13:35:32.069Z",
+      "lastModified": "2026-02-25T17:11:46.565Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/prijzen-verdienen/freelance-prijsstrategieen",
-      "lastModified": "2026-02-24T13:35:32.074Z",
+      "lastModified": "2026-02-25T17:11:46.574Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/prijzen-verdienen/freelance-rate-calculator-guide",
-      "lastModified": "2026-02-24T13:35:32.074Z",
+      "lastModified": "2026-02-25T17:11:46.569Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/prijzen-verdienen/freelance-uurtarief-berekenen",
-      "lastModified": "2026-02-24T13:35:32.075Z",
+      "lastModified": "2026-02-25T17:11:46.574Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/prijzen-verdienen/hogere-tarieven-onderhandelen",
-      "lastModified": "2026-02-24T13:35:32.077Z",
+      "lastModified": "2026-02-25T17:11:46.572Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/prijzen-verdienen/platform-fee-optimization",
-      "lastModified": "2026-02-24T13:35:32.076Z",
+      "lastModified": "2026-02-25T17:11:46.572Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/prijzen-verdienen/raising-rates-without-losing-clients",
-      "lastModified": "2026-02-24T13:35:32.077Z",
+      "lastModified": "2026-02-25T17:11:46.571Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/prijzen-verdienen/retainer-pricing-strategies",
-      "lastModified": "2026-02-24T13:35:32.076Z",
+      "lastModified": "2026-02-25T17:11:46.575Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/prijzen-verdienen/toptal-prijzen",
-      "lastModified": "2026-02-24T13:35:32.077Z",
+      "lastModified": "2026-02-25T17:11:46.575Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/prijzen-verdienen/upwork-kosten",
-      "lastModified": "2026-02-24T13:35:32.076Z",
+      "lastModified": "2026-02-25T17:11:46.570Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/prijzen-verdienen/value-based-pricing-freelancers",
-      "lastModified": "2026-02-24T13:35:32.078Z",
+      "lastModified": "2026-02-25T17:11:46.570Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/succes-strategieen/5-sterren-reviews-krijgen",
-      "lastModified": "2026-02-24T13:35:32.112Z",
+      "lastModified": "2026-02-25T17:11:46.569Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/succes-strategieen/client-retention-strategies",
-      "lastModified": "2026-02-24T13:37:42.458Z",
+      "lastModified": "2026-02-25T17:11:46.569Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/succes-strategieen/dealing-with-difficult-clients",
-      "lastModified": "2026-02-24T13:37:42.457Z",
+      "lastModified": "2026-02-25T17:11:46.572Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/succes-strategieen/freelance-business-opschalen",
-      "lastModified": "2026-02-24T13:35:32.114Z",
+      "lastModified": "2026-02-25T17:11:46.567Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/succes-strategieen/freelance-personal-branding",
-      "lastModified": "2026-02-24T13:35:32.113Z",
+      "lastModified": "2026-02-25T17:11:46.568Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/succes-strategieen/geavanceerde-biedstrategieen",
-      "lastModified": "2026-02-24T13:35:32.111Z",
+      "lastModified": "2026-02-25T17:11:46.571Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/succes-strategieen/langdurige-klantrelaties",
-      "lastModified": "2026-02-24T13:35:32.114Z",
+      "lastModified": "2026-02-25T17:11:46.567Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/succes-strategieen/opvallen-op-freelance-platforms",
-      "lastModified": "2026-02-24T13:35:32.115Z",
+      "lastModified": "2026-02-25T17:11:46.566Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/succes-strategieen/top-rated-freelancer-secrets",
-      "lastModified": "2026-02-24T13:35:32.112Z",
+      "lastModified": "2026-02-25T17:11:46.570Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/succes-strategieen/winning-proposals-templates",
-      "lastModified": "2026-02-24T13:35:32.108Z",
+      "lastModified": "2026-02-25T17:11:46.572Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/tools-productiviteit/ai-tools-for-freelancers",
-      "lastModified": "2026-02-24T13:35:32.087Z",
+      "lastModified": "2026-02-25T17:11:46.568Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/tools-productiviteit/automation-workflows-freelance",
-      "lastModified": "2026-02-24T13:35:32.088Z",
+      "lastModified": "2026-02-25T17:11:46.566Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/tools-productiviteit/beste-tijdregistratie-tools",
-      "lastModified": "2026-02-24T13:35:32.084Z",
+      "lastModified": "2026-02-25T17:11:46.564Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/tools-productiviteit/client-communication-tools",
-      "lastModified": "2026-02-24T13:35:32.082Z",
+      "lastModified": "2026-02-25T17:11:46.566Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/tools-productiviteit/essentiele-freelance-tools",
-      "lastModified": "2026-02-24T13:35:32.085Z",
+      "lastModified": "2026-02-25T17:11:46.568Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/tools-productiviteit/freelance-boekhoudsoftware",
-      "lastModified": "2026-02-24T13:37:21.749Z",
+      "lastModified": "2026-02-25T17:11:46.563Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/tools-productiviteit/freelance-crm-software",
-      "lastModified": "2026-02-24T13:37:21.748Z",
+      "lastModified": "2026-02-25T17:11:46.568Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/tools-productiviteit/freelance-factuur-generator",
-      "lastModified": "2026-02-24T13:37:21.747Z",
+      "lastModified": "2026-02-25T17:11:46.565Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/tools-productiviteit/productivity-systems-freelancers",
-      "lastModified": "2026-02-24T13:37:21.748Z",
+      "lastModified": "2026-02-25T17:11:46.567Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/tools-productiviteit/projectmanagement-tools",
-      "lastModified": "2026-02-24T13:35:32.085Z",
+      "lastModified": "2026-02-25T17:11:46.564Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/zakelijk-beheer/freelance-belasting-gids",
-      "lastModified": "2026-02-24T13:35:32.122Z",
+      "lastModified": "2026-02-25T17:11:46.555Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/zakelijk-beheer/freelance-contracten-101",
-      "lastModified": "2026-02-24T13:37:42.459Z",
+      "lastModified": "2026-02-25T17:11:46.559Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/zakelijk-beheer/freelance-factureren-gids",
-      "lastModified": "2026-02-24T13:35:32.120Z",
+      "lastModified": "2026-02-25T17:11:46.562Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/zakelijk-beheer/freelance-legal-structure",
-      "lastModified": "2026-02-24T13:35:32.120Z",
+      "lastModified": "2026-02-25T17:11:46.560Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/zakelijk-beheer/freelance-retirement-planning",
-      "lastModified": "2026-02-24T13:37:42.459Z",
+      "lastModified": "2026-02-25T17:11:46.566Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/zakelijk-beheer/freelance-taxes-international",
-      "lastModified": "2026-02-24T13:35:32.119Z",
+      "lastModified": "2026-02-25T17:11:46.565Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/zakelijk-beheer/freelance-zakelijke-verzekering",
-      "lastModified": "2026-02-24T13:35:32.119Z",
+      "lastModified": "2026-02-25T17:11:46.563Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/zakelijk-beheer/invoicing-best-practices",
-      "lastModified": "2026-02-24T13:35:32.116Z",
+      "lastModified": "2026-02-25T17:11:46.564Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/zakelijk-beheer/managing-freelance-finances",
-      "lastModified": "2026-02-24T13:35:32.122Z",
+      "lastModified": "2026-02-25T17:11:46.556Z",
       "hasSubpages": false
     },
     {
       "path": "/gids/zakelijk-beheer/meerdere-klanten-beheren",
-      "lastModified": "2026-02-24T13:35:32.121Z",
+      "lastModified": "2026-02-25T17:11:46.558Z",
       "hasSubpages": false
     },
     {
       "path": "/guides",
-      "lastModified": "2026-02-24T18:32:52.427Z",
+      "lastModified": "2026-02-25T17:11:46.549Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/jobs",
+      "lastModified": "2026-02-25T18:43:55.096Z",
       "hasSubpages": false
     },
     {
       "path": "/marketplace",
-      "lastModified": "2026-02-24T18:12:44.347Z",
+      "lastModified": "2026-02-25T17:11:46.554Z",
       "hasSubpages": true
     },
     {
       "path": "/marketplace/freelancers",
-      "lastModified": "2026-02-24T18:16:46.879Z",
+      "lastModified": "2026-02-25T17:11:46.556Z",
       "hasSubpages": false
     },
     {
       "path": "/marketplace/gigs",
-      "lastModified": "2026-02-24T18:37:42.584Z",
+      "lastModified": "2026-02-25T17:11:46.554Z",
       "hasSubpages": false
     },
     {
       "path": "/marketplace/local",
-      "lastModified": "2026-02-24T18:34:30.425Z",
+      "lastModified": "2026-02-25T17:11:46.554Z",
       "hasSubpages": false
     },
     {
       "path": "/marketplace/projects",
-      "lastModified": "2026-02-24T18:19:05.347Z",
+      "lastModified": "2026-02-25T17:11:46.553Z",
       "hasSubpages": false
     },
     {
       "path": "/marketplace/quote-request",
-      "lastModified": "2026-02-24T18:33:23.991Z",
+      "lastModified": "2026-02-25T17:11:46.554Z",
       "hasSubpages": false
     },
     {
       "path": "/newsletter",
-      "lastModified": "2026-02-24T13:35:32.067Z",
+      "lastModified": "2026-02-25T17:11:46.563Z",
       "hasSubpages": false
     },
     {
       "path": "/onboarding",
-      "lastModified": "2026-02-24T14:33:27.823Z",
+      "lastModified": "2026-02-25T17:25:06.052Z",
       "hasSubpages": false
     },
     {
       "path": "/platforms",
-      "lastModified": "2026-02-24T19:00:13.869Z",
+      "lastModified": "2026-02-25T18:36:25.399Z",
       "hasSubpages": false
     },
     {
       "path": "/platforms-overview",
-      "lastModified": "2026-02-24T18:46:16.531Z",
+      "lastModified": "2026-02-25T17:11:46.565Z",
       "hasSubpages": false
     },
     {
       "path": "/privacy",
-      "lastModified": "2026-02-24T13:35:32.029Z",
+      "lastModified": "2026-02-25T17:11:46.558Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/projects",
+      "lastModified": "2026-02-25T18:43:48.434Z",
       "hasSubpages": false
     },
     {
       "path": "/resources",
-      "lastModified": "2026-02-24T13:37:21.735Z",
+      "lastModified": "2026-02-25T17:11:46.558Z",
       "hasSubpages": true
     },
     {
       "path": "/resources/99designs-pricing",
-      "lastModified": "2026-02-24T13:35:32.061Z",
+      "lastModified": "2026-02-25T17:11:46.561Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/advanced-bidding-strategies-to-win-more-freelance-projects",
-      "lastModified": "2026-02-24T13:35:32.058Z",
+      "lastModified": "2026-02-25T17:11:46.556Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/beginner-vs-expert-platforms",
-      "lastModified": "2026-02-24T13:35:32.066Z",
+      "lastModified": "2026-02-25T17:11:46.551Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/best-freelance-platforms-marketing-consultants",
-      "lastModified": "2026-02-24T13:35:32.052Z",
+      "lastModified": "2026-02-25T17:11:46.560Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/best-freelance-platforms-web-developers-2025",
-      "lastModified": "2026-02-24T13:35:32.065Z",
+      "lastModified": "2026-02-25T17:11:46.554Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/best-platform-designers",
-      "lastModified": "2026-02-24T13:35:32.042Z",
+      "lastModified": "2026-02-25T17:11:46.560Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/best-platform-writers",
-      "lastModified": "2026-02-24T13:35:32.057Z",
+      "lastModified": "2026-02-25T17:11:46.559Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/best-platforms-freelance-writers-content-creators",
-      "lastModified": "2026-02-24T13:35:32.048Z",
+      "lastModified": "2026-02-25T17:11:46.560Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/best-time-tracking-tools-freelancers",
-      "lastModified": "2026-02-24T13:35:32.054Z",
+      "lastModified": "2026-02-25T17:11:46.556Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/building-long-term-client-relationships-on-freelance-platforms",
-      "lastModified": "2026-02-24T13:35:32.035Z",
+      "lastModified": "2026-02-25T17:11:46.556Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/building-portfolio-that-converts",
-      "lastModified": "2026-02-24T13:35:32.038Z",
+      "lastModified": "2026-02-25T17:11:46.562Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/calculate-freelance-hourly-rate",
-      "lastModified": "2026-02-24T13:35:32.037Z",
+      "lastModified": "2026-02-25T17:11:46.563Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/choose-best-freelance-platform",
-      "lastModified": "2026-02-24T13:35:32.066Z",
+      "lastModified": "2026-02-25T17:11:46.553Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/essential-freelance-tools",
-      "lastModified": "2026-02-24T13:35:32.064Z",
+      "lastModified": "2026-02-25T17:11:46.555Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/first-freelance-proposal",
-      "lastModified": "2026-02-24T13:35:32.030Z",
+      "lastModified": "2026-02-25T17:11:46.557Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/fiverr-beginner-guide",
-      "lastModified": "2026-02-24T13:35:32.054Z",
+      "lastModified": "2026-02-25T17:11:46.558Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/freelance-accounting-software",
-      "lastModified": "2026-02-24T13:35:32.056Z",
+      "lastModified": "2026-02-25T17:11:46.561Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/freelance-beginner-mistakes",
-      "lastModified": "2026-02-24T13:35:32.047Z",
+      "lastModified": "2026-02-25T17:11:46.557Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/freelance-beginners-guide",
-      "lastModified": "2026-02-24T13:35:32.043Z",
+      "lastModified": "2026-02-25T17:11:46.559Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/freelance-business-insurance",
-      "lastModified": "2026-02-24T13:35:32.062Z",
+      "lastModified": "2026-02-25T17:11:46.558Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/freelance-contracts-101",
-      "lastModified": "2026-02-24T13:35:32.051Z",
+      "lastModified": "2026-02-25T17:11:46.562Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/freelance-invoice-generator",
-      "lastModified": "2026-02-24T13:35:32.043Z",
+      "lastModified": "2026-02-25T17:11:46.563Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/freelance-invoicing-guide",
-      "lastModified": "2026-02-24T13:35:32.058Z",
+      "lastModified": "2026-02-25T17:11:46.557Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/freelance-platform-communication",
-      "lastModified": "2026-02-24T13:35:32.048Z",
+      "lastModified": "2026-02-25T17:11:46.556Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/freelance-platform-setup",
-      "lastModified": "2026-02-24T13:35:32.039Z",
+      "lastModified": "2026-02-25T17:11:46.560Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/freelance-platforms-virtual-assistants-complete-guide",
-      "lastModified": "2026-02-24T13:35:32.055Z",
+      "lastModified": "2026-02-25T17:11:46.555Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/freelance-pricing-strategies",
-      "lastModified": "2026-02-24T13:35:32.033Z",
+      "lastModified": "2026-02-25T17:11:46.560Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/freelance-profile-templates",
-      "lastModified": "2026-02-24T13:35:32.050Z",
+      "lastModified": "2026-02-25T17:11:46.557Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/freelance-tax-guide",
-      "lastModified": "2026-02-24T13:35:32.036Z",
+      "lastModified": "2026-02-25T17:11:46.564Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/freelancer-platform-deep-dive",
-      "lastModified": "2026-02-24T13:35:32.047Z",
+      "lastModified": "2026-02-25T17:11:46.559Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/freelancer-vs-guru",
-      "lastModified": "2026-02-24T13:35:32.031Z",
+      "lastModified": "2026-02-25T17:11:46.555Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/guru-platform-analysis",
-      "lastModified": "2026-02-24T13:35:32.040Z",
+      "lastModified": "2026-02-25T17:11:46.559Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/how-to-get-5-star-reviews-on-every-freelance-project",
-      "lastModified": "2026-02-24T13:35:32.053Z",
+      "lastModified": "2026-02-25T17:11:46.560Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/how-to-stand-out-on-crowded-freelance-platforms",
-      "lastModified": "2026-02-24T13:35:32.065Z",
+      "lastModified": "2026-02-25T17:11:46.554Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/how-to-write-proposals-that-win",
-      "lastModified": "2026-02-24T13:35:32.063Z",
+      "lastModified": "2026-02-25T17:11:46.558Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/is-toptal-legit",
-      "lastModified": "2026-02-24T13:35:32.034Z",
+      "lastModified": "2026-02-25T17:11:46.557Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/key-factors-choosing-freelance-marketplace",
-      "lastModified": "2026-02-24T13:35:32.037Z",
+      "lastModified": "2026-02-25T17:11:46.562Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/managing-multiple-clients",
-      "lastModified": "2026-02-24T13:35:32.055Z",
+      "lastModified": "2026-02-25T17:11:46.561Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/mastering-freelance-platform-algorithms",
-      "lastModified": "2026-02-24T13:35:32.044Z",
+      "lastModified": "2026-02-25T17:11:46.561Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/multiple-freelance-platforms-pros-cons",
-      "lastModified": "2026-02-24T13:35:32.052Z",
+      "lastModified": "2026-02-25T17:11:46.561Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/negotiate-higher-rates",
-      "lastModified": "2026-02-24T13:35:32.059Z",
+      "lastModified": "2026-02-25T17:11:46.556Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/optimizing-freelance-profile-maximum-visibility",
-      "lastModified": "2026-02-24T13:35:32.059Z",
+      "lastModified": "2026-02-25T17:11:46.563Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/platform-fees-maximize-earnings",
-      "lastModified": "2026-02-24T13:35:32.033Z",
+      "lastModified": "2026-02-25T17:11:46.559Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/platform-selection-quiz",
-      "lastModified": "2026-02-24T13:35:32.064Z",
+      "lastModified": "2026-02-25T17:11:46.557Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/project-management-tools-freelancers",
-      "lastModified": "2026-02-24T13:35:32.036Z",
+      "lastModified": "2026-02-25T17:11:46.555Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/scaling-your-freelance-business-from-solo-to-agency",
-      "lastModified": "2026-02-24T13:35:32.041Z",
+      "lastModified": "2026-02-25T17:11:46.557Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/top-freelance-platforms-graphic-designers-creatives",
-      "lastModified": "2026-02-24T13:35:32.060Z",
+      "lastModified": "2026-02-25T17:11:46.562Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/toptal-for-beginners",
-      "lastModified": "2026-02-24T13:35:32.035Z",
+      "lastModified": "2026-02-25T17:11:46.556Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/toptal-pricing",
-      "lastModified": "2026-02-24T13:35:32.046Z",
+      "lastModified": "2026-02-25T17:11:46.555Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/toptal-review",
-      "lastModified": "2026-02-24T13:35:32.057Z",
+      "lastModified": "2026-02-25T17:11:46.560Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/toptal-vs-upwork",
-      "lastModified": "2026-02-24T13:35:32.062Z",
+      "lastModified": "2026-02-25T17:11:46.559Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/upwork-complete-guide",
-      "lastModified": "2026-02-24T13:35:32.049Z",
+      "lastModified": "2026-02-25T17:11:46.558Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/upwork-pricing",
-      "lastModified": "2026-02-24T13:35:32.032Z",
+      "lastModified": "2026-02-25T17:11:46.561Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/upwork-pricing-tactics",
-      "lastModified": "2026-02-24T13:35:32.045Z",
+      "lastModified": "2026-02-25T17:11:46.559Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/upwork-vs-fiverr",
-      "lastModified": "2026-02-24T13:35:32.050Z",
+      "lastModified": "2026-02-25T17:11:46.558Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/what-is-toptal",
-      "lastModified": "2026-02-24T13:35:32.045Z",
+      "lastModified": "2026-02-25T17:11:46.557Z",
       "hasSubpages": false
     },
     {
       "path": "/resources/what-is-upwork",
-      "lastModified": "2026-02-24T13:35:32.042Z",
+      "lastModified": "2026-02-25T17:11:46.561Z",
       "hasSubpages": false
     },
     {
       "path": "/reviews",
-      "lastModified": "2026-02-24T18:32:05.646Z",
+      "lastModified": "2026-02-25T17:11:46.548Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/services",
+      "lastModified": "2026-02-25T18:43:42.369Z",
       "hasSubpages": false
     },
     {
       "path": "/terms",
-      "lastModified": "2026-02-24T13:35:32.067Z",
+      "lastModified": "2026-02-25T17:11:46.564Z",
       "hasSubpages": false
     },
     {
       "path": "/tools",
-      "lastModified": "2026-02-24T18:46:33.308Z",
+      "lastModified": "2026-02-25T18:38:19.897Z",
       "hasSubpages": true
     },
     {
       "path": "/tools/client-manager",
-      "lastModified": "2026-02-24T13:35:32.029Z",
+      "lastModified": "2026-02-25T17:11:46.562Z",
       "hasSubpages": false
     },
     {
       "path": "/tools/income-tracker",
-      "lastModified": "2026-02-24T13:35:32.026Z",
+      "lastModified": "2026-02-25T17:11:46.567Z",
       "hasSubpages": false
     },
     {
       "path": "/tools/invoice-generator",
-      "lastModified": "2026-02-24T13:35:32.028Z",
+      "lastModified": "2026-02-25T17:11:46.563Z",
       "hasSubpages": false
     },
     {
       "path": "/tools/project-price-calculator",
-      "lastModified": "2026-02-24T13:35:32.026Z",
+      "lastModified": "2026-02-25T17:11:46.567Z",
       "hasSubpages": false
     },
     {
       "path": "/tools/rate-calculator",
-      "lastModified": "2026-02-24T13:35:32.027Z",
+      "lastModified": "2026-02-25T17:11:46.565Z",
       "hasSubpages": false
     },
     {
       "path": "/tools/time-tracker",
-      "lastModified": "2026-02-24T13:35:32.028Z",
+      "lastModified": "2026-02-25T17:11:46.564Z",
       "hasSubpages": false
     }
   ]

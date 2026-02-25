@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { Metadata } from "next";
 
 export const dynamic = 'force-dynamic';
@@ -54,7 +52,7 @@ export default async function TranslatorPlatformsPage({ params }: Props) {
 
  return (
  <>
- <Header />
+ 
 
  <main className="min-h-screen bg-[#f8f9fb]">
  {/* Hero Section */}
@@ -709,7 +707,7 @@ export default async function TranslatorPlatformsPage({ params }: Props) {
  />
  </main>
 
- <Footer />
+ 
  </>
  );
 }

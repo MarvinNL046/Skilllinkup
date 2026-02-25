@@ -3,8 +3,132 @@
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Search, Filter, X, ChevronDown } from 'lucide-react';
-import { ProjectCard } from './ProjectCard';
+import Link from 'next/link';
+import { Search, Filter, X, ChevronDown, Calendar, Users, MapPin, Tag, Briefcase } from 'lucide-react';
+import { useLocale } from 'next-intl';
+import { safeText } from '@/lib/safe';
+
+// Inline card component for the legacy marketplace/projects page.
+// The new Freeio-style ProjectCard lives at components/marketplace/ProjectCard.tsx
+// and uses a different interface (default export, Freeio CSS classes).
+function LegacyProjectCard(project: SerializableProject) {
+  const locale = useLocale();
+
+  function formatCurrency(amount: number, currency: string): string {
+    try {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(amount);
+    } catch {
+      return `${currency} ${amount}`;
+    }
+  }
+
+  function formatDate(dateStr: string): string {
+    try {
+      return new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }).format(new Date(dateStr));
+    } catch {
+      return dateStr;
+    }
+  }
+
+  const safeTitle = safeText(project.title, 'Untitled Project');
+  const safeDescription = safeText(project.description, '');
+  const safeCategoryName = safeText(project.category_name, 'Uncategorized');
+  const safeClientName = safeText(project.client_name, 'Client');
+
+  const showLocation = project.work_type === 'local' || project.work_type === 'hybrid';
+  const locationText = [project.location_city, project.location_country].filter(Boolean).join(', ');
+
+  const budgetText =
+    project.budget_min && project.budget_max
+      ? `${formatCurrency(project.budget_min, project.currency)} – ${formatCurrency(project.budget_max, project.currency)}`
+      : project.budget_min
+      ? `From ${formatCurrency(project.budget_min, project.currency)}`
+      : project.budget_max
+      ? `Up to ${formatCurrency(project.budget_max, project.currency)}`
+      : null;
+
+  const skills = Array.isArray(project.required_skills) ? project.required_skills : [];
+
+  return (
+    <Link
+      href={`/${locale}/marketplace/projects/${project.slug}`}
+      className="group block bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-gray-100 dark:border-gray-700 hover:border-primary/30 p-5"
+    >
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-xs text-gray-400 dark:text-gray-500">{safeCategoryName}</span>
+          </div>
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+            {safeTitle}
+          </h3>
+        </div>
+        {budgetText && (
+          <div className="text-right flex-shrink-0">
+            <p className="text-xs text-gray-400 dark:text-gray-500">Budget</p>
+            <p className="text-sm font-bold text-primary leading-tight">{budgetText}</p>
+          </div>
+        )}
+      </div>
+      {safeDescription && (
+        <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mb-3 leading-relaxed">
+          {safeDescription}
+        </p>
+      )}
+      {skills.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mb-3">
+          {skills.slice(0, 4).map((skill) => (
+            <span
+              key={skill}
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+            >
+              <Tag className="w-2.5 h-2.5" />
+              {skill}
+            </span>
+          ))}
+          {skills.length > 4 && (
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
+              +{skills.length - 4}
+            </span>
+          )}
+        </div>
+      )}
+      <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700">
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+            <Briefcase className="w-3.5 h-3.5 flex-shrink-0" />
+            <span className="truncate max-w-[100px]">{safeClientName}</span>
+          </div>
+          {project.deadline && (
+            <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+              <Calendar className="w-3.5 h-3.5 flex-shrink-0" />
+              <span>{formatDate(project.deadline)}</span>
+            </div>
+          )}
+          {showLocation && locationText && (
+            <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+              <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="truncate max-w-[100px]">{locationText}</span>
+            </div>
+          )}
+        </div>
+        <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">
+          <Users className="w-3.5 h-3.5" />
+          <span>{project.bid_count} bids</span>
+        </div>
+      </div>
+    </Link>
+  );
+}
 
 interface SerializableProject {
  id: string;
@@ -257,26 +381,7 @@ export function ProjectFilters({ projects, categories }: ProjectFiltersProps) {
  {filteredProjects.length >0 ? (
  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
  {filteredProjects.map((project) =>(
- <ProjectCard
- key={project.id}
- id={project.id}
- slug={project.slug}
- title={project.title}
- description={project.description}
- category_name={project.category_name}
- required_skills={project.required_skills}
- budget_min={project.budget_min}
- budget_max={project.budget_max}
- currency={project.currency}
- deadline={project.deadline}
- work_type={project.work_type}
- location_city={project.location_city}
- location_country={project.location_country}
- bid_count={project.bid_count}
- client_name={project.client_name}
- status={project.status}
- created_at={project.created_at}
- />
+ <LegacyProjectCard key={project.id} {...project} />
  ))}
  </div>
  ) : (

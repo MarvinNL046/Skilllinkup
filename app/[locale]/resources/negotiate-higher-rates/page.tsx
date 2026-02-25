@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 
 export async function generateMetadata({
  params,
@@ -473,7 +471,7 @@ Best regards,`,
  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
  />
 
- <Header />
+ 
 
  <main className="flex-1 bg-white dark:bg-gray-900">
  {/* Hero Section */}
@@ -1143,7 +1141,7 @@ Best regards,`,
  </article>
  </main>
 
- <Footer />
+ 
  </>
  );
 }

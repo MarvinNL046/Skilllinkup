@@ -1,7 +1,5 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -144,7 +142,7 @@ export default async function GidsPage({
 
  return (
  <>
- <Header />
+ 
  <main className="min-h-screen bg-background-light dark:bg-gray-900">
  {/* Hero Section */}
  <section className="bg-gradient-to-b from-secondary to-secondary-medium py-16 sm:py-20">
@@ -223,7 +221,7 @@ export default async function GidsPage({
  </div>
  </section>
  </main>
- <Footer />
+ 
  </>
  );
 }

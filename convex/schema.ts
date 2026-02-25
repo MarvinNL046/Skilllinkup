@@ -495,6 +495,42 @@ export default defineSchema({
     .index("by_freelancer", ["freelancerId"]),
 
   // ============================================================
+  // MARKETPLACE: JOBS
+  // ============================================================
+
+  jobs: defineTable({
+    tenantId: v.id("tenants"),
+    clientId: v.id("users"),
+    title: v.string(),
+    slug: v.string(),
+    description: v.string(),
+    categoryId: v.optional(v.id("marketplaceCategories")),
+    company: v.optional(v.string()),
+    companyLogo: v.optional(v.string()),
+    requiredSkills: v.optional(v.array(v.string())),
+    salaryMin: v.optional(v.number()),
+    salaryMax: v.optional(v.number()),
+    currency: v.optional(v.string()),
+    jobType: v.string(), // full_time, part_time, freelance, internship
+    experienceLevel: v.optional(v.string()), // junior, mid, senior, lead
+    workType: v.optional(v.string()), // remote, local, hybrid
+    locationCity: v.optional(v.string()),
+    locationCountry: v.optional(v.string()),
+    benefits: v.optional(v.array(v.string())),
+    applicationCount: v.optional(v.number()),
+    views: v.optional(v.number()),
+    status: v.string(), // open, closed, filled
+    locale: v.string(),
+    publishedAt: v.optional(v.number()),
+    expiresAt: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_status", ["status"])
+    .index("by_slug_locale", ["slug", "locale"])
+    .index("by_client", ["clientId"]),
+
+  // ============================================================
   // MARKETPLACE: ORDERS & TRANSACTIONS
   // ============================================================
 
@@ -714,4 +750,20 @@ export default defineSchema({
   })
     .index("by_quoteRequest", ["quoteRequestId"])
     .index("by_freelancer", ["freelancerId"]),
+
+  // ============================================================
+  // SAVED ITEMS / FAVORITES
+  // ============================================================
+
+  savedItems: defineTable({
+    userId: v.id("users"),
+    itemType: v.string(), // "gig", "freelancer", "project"
+    itemId: v.string(),
+    itemTitle: v.optional(v.string()),
+    itemImage: v.optional(v.string()),
+    itemUrl: v.optional(v.string()),
+    createdAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_item", ["userId", "itemId"]),
 });

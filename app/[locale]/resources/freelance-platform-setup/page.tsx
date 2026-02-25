@@ -1,7 +1,5 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 
 interface PageProps {
  params: Promise<{ locale: string }>;
@@ -100,7 +98,7 @@ export default async function FreelancePlatformSetupPage({ params }: PageProps) 
  <><script
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
- /><Header /><main className="flex-1">{/* Hero Section */}
+ /><main className="flex-1">{/* Hero Section */}
  <section className="bg-gradient-to-br from-secondary/10 via-white to-accent/10 dark:from-secondary dark:via-gray-900 dark:to-gray-800 py-16 sm:py-24"><div className="container mx-auto px-4 sm:px-6 lg:px-8"><div className="max-w-4xl mx-auto text-center"><div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/20 dark:bg-secondary/30 text-secondary dark:text-accent text-sm font-semibold mb-6"><span>Platform Setup Guide</span></div><h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-gray-900 dark:text-white mb-6">Freelance Platform Onboarding: Step-by-Step Setup Guide
  </h1><p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">Get your freelance profiles set up correctly from day one. Complete walkthroughs for Upwork, Fiverr, Freelancer, and other major platforms with optimization tips that maximize your visibility.
  </p><div className="flex flex-col sm:flex-row gap-4 justify-center"><Link
@@ -180,5 +178,5 @@ export default async function FreelancePlatformSetupPage({ params }: PageProps) 
  className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all group"
  ><h3 className="text-xl font-heading font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Writing Your First Proposal
  </h3><p className="text-gray-600 dark:text-gray-300 text-sm">Proven proposal formulas and real examples that consistently get hired.
- </p></Link></div></div></div></section></main><Footer /></>);
+ </p></Link></div></div></div></section></main></>);
 }

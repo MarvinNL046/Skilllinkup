@@ -44,15 +44,15 @@ export function AdWidget({ placement, adImage, adLink }: AdWidgetProps) {
  if (!ad) return null;
 
  return (
-   <div className="mb-8">
-     <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden transition-all hover:shadow-lg dark:hover:shadow-gray-900/50">
+   <div className="mb30">
+     <div className="ps-widget bgc-white bdrs12 bdr1 hover-box-shadow overflow-hidden">
        <Link
          href={ad.linkUrl}
          target="_blank"
          rel="noopener noreferrer sponsored"
-         className="block"
+         className="d-block"
        >
-         <div className="relative w-full aspect-square">
+         <div style={{ position: 'relative', width: '100%', paddingTop: '100%' }}>
            <Image
              src={ad.imageUrl}
              alt={ad.title}

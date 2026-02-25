@@ -2121,7 +2121,9 @@
     }
   },
   "freelancers": {
-    "title": "Find Freelancers",
+    "title": "Freelancers",
+    "brief": "Browse verified freelance talent",
+    "findTitle": "Find Freelancers",
     "subtitle": "Browse talented professionals for your next project",
     "searchPlaceholder": "Search freelancers...",
     "verified": "Verified",
@@ -2140,9 +2142,20 @@
     "portfolio": "Portfolio",
     "contactFreelancer": "Contact",
     "noFreelancers": "No freelancers found",
-    "viewProfile": "View Profile"
+    "viewProfile": "View Profile",
+    "taglineFallback": "Freelance professional",
+    "locationFallback": "Remote"
   },
   "dashboard": {
+    "title": "Dashboard",
+    "overview": "Overview",
+    "totalOrders": "Total Orders",
+    "totalEarnings": "Total Earnings",
+    "activeGigs": "Active Services",
+    "pendingOrders": "Pending Orders",
+    "recentActivity": "Recent Activity",
+    "noActivity": "No recent activity",
+    "quickActions": "Quick Actions",
     "seller": {
       "title": "Seller Dashboard",
       "overview": "Overview",
@@ -2380,6 +2393,7 @@
   },
   "messages": {
     "title": "Messages",
+    "noMessages": "No messages yet",
     "noConversations": "No conversations yet",
     "noConversationsDesc": "Start a conversation by contacting a freelancer or client.",
     "searchConversations": "Search conversations...",
@@ -2396,6 +2410,11 @@
   },
   "projects": {
     "title": "Projects",
+    "brief": "Browse open projects",
+    "count": "{count} Projects",
+    "submitProposal": "Submit a Proposal",
+    "manageTitle": "Manage Projects",
+    "createTitle": "Create Project",
     "postProject": "Post a Project",
     "browseProjects": "Browse Projects",
     "myProjects": "My Projects",
@@ -2598,10 +2617,342 @@
     "resolvedOn": "Resolved on",
     "existingDispute": "A dispute is already open for this order"
   },
+  "home20": {
+    "hero": {
+      "title": "Join us & Explore",
+      "titleHighlight": "Thousands of Freelancers",
+      "subtitle": "Work with talented people at the most affordable price to get the most out of your time and cost.",
+      "searchPlaceholder": "What are you looking for?",
+      "searchCta": "Search",
+      "locationPlaceholder": "City, state, or zip",
+      "popularLabel": "Popular Searches",
+      "popular": ["Designer", "Developer", "Web", "iOS", "PHP", "Senior"],
+      "locations": ["City, state, or zip", "Amsterdam", "Berlin", "London", "New York"]
+    },
+    "partners": {
+      "title": "Trusted by the world’s best"
+    },
+    "trending": {
+      "title": "Trending Services",
+      "subtitle": "Most viewed and all-time top-selling services",
+      "tabs": { "all": "All" },
+      "reviewsLabel": "reviews",
+      "startingAt": "Starting at"
+    },
+    "categories": {
+      "title": "Browse talent by category",
+      "subtitle": "Get some inspirations from 1800+ skills",
+      "allCta": "All Categories",
+      "skillsLabel": "skills",
+      "cardHint": "Top rated talent"
+    },
+    "needSomething": {
+      "title": "Need something done?",
+      "subtitle": "Most viewed and all-time top-selling services",
+      "items": {
+        "post": {
+          "icon": "flaticon-cv",
+          "title": "Post a job",
+          "text": "It’s free and easy to post a job. Simply fill in a title, description."
+        },
+        "choose": {
+          "icon": "flaticon-web-design",
+          "title": "Choose freelancers",
+          "text": "Review proposals, compare profiles, and hire the best fit."
+        },
+        "pay": {
+          "icon": "flaticon-secure",
+          "title": "Pay safely",
+          "text": "Pay only for work you approve with secure payments."
+        },
+        "support": {
+          "icon": "flaticon-customer-service",
+          "title": "We’re here to help",
+          "text": "Our support team is here for you 24/7."
+        }
+      }
+    },
+    "cta": {
+      "titleLine1": "A whole world of freelance",
+      "titleLine2": "talent at your fingertips",
+      "features": [
+        {
+          "title": "Proof of quality",
+          "text": "Check work samples, client reviews, and identity verification.",
+          "icon": "flaticon-badge"
+        },
+        {
+          "title": "No cost until you hire",
+          "text": "Interview, negotiate rates, and pay for approved work only.",
+          "icon": "flaticon-money"
+        },
+        {
+          "title": "Safe and secure",
+          "text": "We protect your data and privacy with 24/7 support.",
+          "icon": "flaticon-security"
+        }
+      ],
+      "bullets": [
+        "The best for every budget",
+        "Quality work done quickly",
+        "Protected payments, every time",
+        "24/7 support"
+      ],
+      "imageAlt": "Freelancer collaboration"
+    },
+    "testimonials": {
+      "title": "What our clients have to say",
+      "subtitle": "Discover how teams scale faster with SkillLinkup.",
+      "items": [
+        {
+          "name": "Alison Dawn",
+          "role": "Product Lead",
+          "quote": "We hired a fantastic designer in 48 hours. The process was smooth and the quality impressed our whole team.",
+          "image": "/images/testimonials/2.jpg"
+        },
+        {
+          "name": "Daniel Parker",
+          "role": "Founder",
+          "quote": "SkillLinkup helped us move faster with dependable talent. We saved weeks of sourcing time.",
+          "image": "/images/testimonials/3.jpg"
+        },
+        {
+          "name": "Albert Cole",
+          "role": "Engineering Manager",
+          "quote": "Reliable freelancers, clear communication, and transparent pricing. Exactly what we needed.",
+          "image": "/images/testimonials/1.jpg"
+        }
+      ]
+    },
+    "inspiringWork": {
+      "freelancerTitle": "Find great work",
+      "freelancerText": "Work with the largest network of independent professionals and get things done with quick turnaround.",
+      "freelancerCta": "Get Started",
+      "clientTitle": "Find talent your way",
+      "clientText": "Hire vetted freelancers for your next project and scale your team on demand.",
+      "clientCta": "Get Started"
+    },
+    "inspiringServices": {
+      "title": "Inspiring work made on SkillLinkup",
+      "subtitle": "Get some inspirations from 1800+ skills",
+      "cta": "See more",
+      "by": "by {name}"
+    },
+    "finalCta": {
+      "title": "With talented freelancers do",
+      "titleHighlight": "more work.",
+      "subtitle": "Work with the largest network of independent professionals and get things done—fast.",
+      "primaryCta": "Find Work",
+      "secondaryCta": "Find Talent"
+    }
+  },
   "authGate": {
     "title": "Create an account to continue",
     "description": "Sign up for free to order services, contact freelancers, and manage your projects on SkillLinkup.",
     "signUp": "Create Free Account",
     "signIn": "Already have an account? Sign in"
+  },
+  "onboarding": {
+    "freelancerTitle": "Become a Freelancer",
+    "freelancerSubtitle": "Set up your profile to start attracting new clients.",
+    "clientTitle": "Become a Client",
+    "clientSubtitle": "Share your project goals so we can match you with talent.",
+    "steps": {
+      "freelancerBasicsTitle": "Basics",
+      "freelancerBasicsDesc": "Your public profile essentials.",
+      "freelancerExpertiseTitle": "Expertise",
+      "freelancerExpertiseDesc": "Skills and experience level.",
+      "freelancerWorkTitle": "Work preferences",
+      "freelancerWorkDesc": "Location and availability.",
+      "freelancerPortfolioTitle": "Portfolio",
+      "freelancerPortfolioDesc": "Showcase your best work.",
+      "freelancerVerifyTitle": "Verification",
+      "freelancerVerifyDesc": "Link your professional profiles.",
+      "clientBasicsTitle": "Basics",
+      "clientBasicsDesc": "Tell us about you.",
+      "clientNeedsTitle": "Project needs",
+      "clientNeedsDesc": "What are you looking to build?",
+      "clientLocationTitle": "Location",
+      "clientLocationDesc": "Where is your team based?"
+    },
+    "fields": {
+      "profilePhoto": "Profile photo",
+      "displayName": "Display name",
+      "tagline": "Tagline",
+      "bio": "Bio",
+      "category": "Primary category",
+      "skills": "Skills",
+      "experienceLevel": "Experience level",
+      "hourlyRate": "Hourly rate (USD)",
+      "workType": "Work type",
+      "countries": "Countries you can work with",
+      "city": "City",
+      "languages": "Languages",
+      "portfolioImage": "Portfolio image",
+      "projectTitle": "Project title",
+      "projectLink": "Project link (optional)",
+      "linkedinUrl": "LinkedIn URL",
+      "websiteUrl": "Website URL",
+      "certificates": "Certificates (optional)",
+      "clientName": "Your name",
+      "companyName": "Company name",
+      "companyWebsite": "Company website",
+      "projectType": "Project type",
+      "budgetRange": "Budget range",
+      "timeline": "Timeline",
+      "projectSummary": "Project summary",
+      "requiredSkills": "Key skills",
+      "country": "Country"
+    },
+    "placeholders": {
+      "displayName": "Your name",
+      "tagline": "e.g. Product designer for SaaS teams",
+      "bio": "Tell clients about your experience and results.",
+      "category": "Select a category",
+      "skills": "Add a skill (e.g. Figma)",
+      "experienceLevel": "Select experience level",
+      "hourlyRate": "e.g. 50",
+      "countries": "Add a country",
+      "city": "e.g. Amsterdam",
+      "languages": "Add a language",
+      "projectTitle": "e.g. Fintech dashboard redesign",
+      "projectLink": "https://",
+      "linkedinUrl": "https://linkedin.com/in/username",
+      "websiteUrl": "https://yourportfolio.com",
+      "certificates": "Add a certificate",
+      "clientName": "Your name",
+      "companyName": "Company or team name",
+      "companyWebsite": "https://",
+      "projectType": "Select project type",
+      "budgetRange": "Select budget range",
+      "timeline": "e.g. 4-6 weeks",
+      "projectSummary": "What do you need help with?",
+      "requiredSkills": "Add a skill",
+      "country": "Country"
+    },
+    "help": {
+      "profilePhoto": "Use a clear headshot with good lighting.",
+      "portfolioImage": "Upload a project screenshot or cover image."
+    },
+    "buttons": {
+      "add": "Add",
+      "addPortfolioItem": "Add portfolio item",
+      "back": "Back",
+      "next": "Next",
+      "submit": "Submit"
+    },
+    "options": {
+      "category": {
+        "design": "Design",
+        "development": "Development",
+        "marketing": "Marketing",
+        "writing": "Writing",
+        "video": "Video & Animation"
+      },
+      "experience": {
+        "junior": "Junior (0-2 years)",
+        "mid": "Mid (3-5 years)",
+        "senior": "Senior (6+ years)"
+      },
+      "workType": {
+        "remote": "Remote",
+        "local": "Local",
+        "hybrid": "Hybrid"
+      },
+      "projectType": {
+        "build": "Website / App build",
+        "design": "Design / Branding",
+        "marketing": "Marketing / Growth",
+        "writing": "Content / Writing",
+        "other": "Other"
+      },
+      "budget": {
+        "low": "$500 - $1,000",
+        "mid": "$1,000 - $5,000",
+        "high": "$5,000 - $10,000",
+        "enterprise": "$10,000+"
+      }
+    },
+    "errors": {
+      "required": "This field is required.",
+      "completeRequired": "Please complete the required fields before continuing.",
+      "signInRequired": "You need to be signed in to complete onboarding.",
+      "loadAccountFailed": "We couldn't load your account. Please try again.",
+      "submitFailed": "Something went wrong. Please try again."
+    }
+  },
+  "services": {
+    "title": "Services",
+    "brief": "Browse services from top freelancers",
+    "count": "{count} Services",
+    "startingAt": "Starting at",
+    "reviews": "reviews",
+    "manageTitle": "Manage Services",
+    "addTitle": "Add New Service",
+    "editTitle": "Edit Service",
+    "publish": "Publish Service",
+    "update": "Update Service"
+  },
+  "jobs": {
+    "title": "Jobs",
+    "brief": "Find your next opportunity",
+    "count": "{count} Jobs",
+    "apply": "Apply Now",
+    "fullTime": "Full Time",
+    "partTime": "Part Time",
+    "freelance": "Freelance",
+    "internship": "Internship",
+    "manageTitle": "Manage Jobs"
+  },
+  "employees": {
+    "title": "Clients",
+    "brief": "Browse registered clients",
+    "viewProfile": "View Profile",
+    "noClients": "No clients registered yet"
+  },
+  "about": {
+    "title": "About Us",
+    "brief": "Learn more about SkillLinkup",
+    "mission": "Our Mission",
+    "values": "Our Values",
+    "quality": "Quality First",
+    "trust": "Built on Trust",
+    "growth": "Growth Together",
+    "getStarted": "Ready to get started?",
+    "signUp": "Sign Up Free",
+    "browseServices": "Browse Services"
+  },
+  "financial": {
+    "invoice": "Invoice",
+    "payouts": "Payouts",
+    "statements": "Statements",
+    "totalEarned": "Total Earned",
+    "available": "Available",
+    "pending": "Pending",
+    "withdrawn": "Withdrawn"
+  },
+  "saved": {
+    "title": "Saved Items",
+    "noSaved": "You haven't saved any items yet",
+    "remove": "Remove"
+  },
+  "filters": {
+    "allFilters": "All filters",
+    "search": "Search",
+    "categories": "Categories",
+    "priceRange": "Price range",
+    "location": "Location",
+    "rating": "Rating",
+    "anyRating": "Any rating",
+    "clear": "Clear filters"
+  },
+  "profile": {
+    "title": "My Profile",
+    "basicInfo": "Basic Information",
+    "professional": "Professional Details",
+    "locationWork": "Location & Work Type",
+    "aboutMe": "About Me",
+    "save": "Save Changes",
+    "saving": "Saving..."
   }
 }

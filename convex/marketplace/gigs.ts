@@ -145,9 +145,11 @@ export const getByFreelancer = query({
       (g) => g.status === "active" && g.locale === args.locale
     );
 
-    // Enrich with packages min price and first image
+    // Enrich with category, packages min price and first image
     const enriched = await Promise.all(
       filtered.map(async (gig) => {
+        const category = gig.categoryId ? await ctx.db.get(gig.categoryId) : null;
+
         const packages = await ctx.db
           .query("gigPackages")
           .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
@@ -168,7 +170,7 @@ export const getByFreelancer = query({
             ? images.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))[0]
             : null;
 
-        return { ...gig, minPrice, firstImage };
+        return { ...gig, category, minPrice, firstImage };
       })
     );
 
@@ -280,6 +282,116 @@ export const create = mutation({
     });
 
     return gigId;
+  },
+});
+
+/**
+ * Get ALL gigs for a specific freelancer, regardless of status.
+ * Used by the dashboard Manage Services page.
+ */
+export const getAllByFreelancer = query({
+  args: {
+    freelancerId: v.id("freelancerProfiles"),
+  },
+  handler: async (ctx, args) => {
+    const gigs = await ctx.db
+      .query("gigs")
+      .withIndex("by_freelancer", (q) => q.eq("freelancerId", args.freelancerId))
+      .order("desc")
+      .collect();
+
+    // Enrich with packages min price and first image
+    const enriched = await Promise.all(
+      gigs.map(async (gig) => {
+        const category = gig.categoryId ? await ctx.db.get(gig.categoryId) : null;
+
+        const packages = await ctx.db
+          .query("gigPackages")
+          .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
+          .collect();
+
+        const minPrice =
+          packages.length > 0
+            ? Math.min(...packages.map((p) => p.price))
+            : null;
+
+        const images = await ctx.db
+          .query("gigImages")
+          .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
+          .collect();
+
+        const firstImage =
+          images.length > 0
+            ? images.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))[0]
+            : null;
+
+        return { ...gig, category, minPrice, firstImage };
+      })
+    );
+
+    return enriched;
+  },
+});
+
+/**
+ * Remove (soft-delete) a gig by setting status to "deleted". Authentication required.
+ */
+export const remove = mutation({
+  args: {
+    gigId: v.id("gigs"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Authentication required to remove a gig.");
+    }
+
+    await ctx.db.patch(args.gigId, {
+      status: "deleted",
+      updatedAt: Date.now(),
+    });
+
+    return args.gigId;
+  },
+});
+
+/**
+ * Create a package for a gig. Authentication required.
+ */
+export const createPackage = mutation({
+  args: {
+    gigId: v.id("gigs"),
+    tier: v.string(),
+    title: v.string(),
+    description: v.string(),
+    price: v.number(),
+    currency: v.optional(v.string()),
+    deliveryDays: v.number(),
+    revisionCount: v.optional(v.number()),
+    features: v.optional(v.array(v.any())),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Authentication required to create a package.");
+    }
+
+    const now = Date.now();
+    const packageId = await ctx.db.insert("gigPackages", {
+      gigId: args.gigId,
+      tier: args.tier,
+      title: args.title,
+      description: args.description,
+      price: args.price,
+      currency: args.currency ?? "EUR",
+      deliveryDays: args.deliveryDays,
+      revisionCount: args.revisionCount,
+      features: args.features ?? [],
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    return packageId;
   },
 });
 

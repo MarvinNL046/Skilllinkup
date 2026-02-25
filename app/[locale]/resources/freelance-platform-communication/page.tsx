@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { AdWidget } from '@/components/AdWidget';
 import { MessageSquare, Users, Award, CheckCircle, ArrowRight, Zap, ThumbsUp, Clock, Heart, Star, Mail, Phone } from 'lucide-react';
 
@@ -326,7 +324,7 @@ export default async function FreelancePlatformCommunication({ params }: { param
 
  return (
  <>
- <Header />
+ 
  <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
  {/* Hero Section */}
  <section className="bg-gradient-to-br from-primary via-primary-dark to-[#1e1541] text-white py-16 sm:py-20">
@@ -624,7 +622,7 @@ export default async function FreelancePlatformCommunication({ params }: { param
  </div>
  </article>
  </main>
- <Footer />
+ 
  </>
  );
 }

@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { Users, CheckCircle2, ArrowRight, Calendar, FileText, Zap, Clock, Target, TrendingUp, AlertCircle, Star } from 'lucide-react';
 
 interface PageProps {
@@ -91,7 +89,7 @@ export default async function MeerdereKlantenBeherenPage({ params }: PageProps) 
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
  />
- <Header />
+ 
  <main className="min-h-screen bg-white dark:bg-gray-900">
  {/* Hero Section */}
  <section className="bg-gradient-to-br from-secondary via-primary to-accent py-16 sm:py-24">
@@ -630,7 +628,7 @@ export default async function MeerdereKlantenBeherenPage({ params }: PageProps) 
  </section>
  </article>
  </main>
- <Footer />
+ 
  </>
  );
 }

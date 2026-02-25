@@ -1,6 +1,4 @@
 import { Metadata } from 'next';
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
@@ -113,7 +111,7 @@ export default async function FreelancerVsGuruPage({ params }: PageProps) {
  <>
  <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
  <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
- <Header />
+ 
  <main className="flex-1">
  <section className="bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 py-12 sm:py-16">
  <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -351,7 +349,7 @@ export default async function FreelancerVsGuruPage({ params }: PageProps) {
  </div>
  </article>
  </main>
- <Footer />
+ 
  </>
  );
 }

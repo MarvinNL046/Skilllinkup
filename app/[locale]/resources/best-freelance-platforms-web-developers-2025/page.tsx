@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { AdWidget } from '@/components/AdWidget';
 import { Code, Laptop, Zap, CheckCircle, ArrowRight, Star, TrendingUp, Shield, Award } from 'lucide-react';
 
@@ -332,7 +330,7 @@ export default async function BestFreelancePlatformsWebDevelopers2026({ params }
 
  return (
  <>
- <Header />
+ 
  <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
  {/* Hero Section */}
  <section className="bg-gradient-to-br from-primary via-primary-dark to-[#1e1541] text-white py-16 sm:py-20">
@@ -605,7 +603,7 @@ export default async function BestFreelancePlatformsWebDevelopers2026({ params }
  </div>
  </article>
  </main>
- <Footer />
+ 
  </>
  );
 }

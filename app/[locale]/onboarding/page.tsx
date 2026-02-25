@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useLocale } from 'next-intl';
 import { useTranslations } from 'next-intl';
 import { Briefcase, Users } from 'lucide-react';
 
@@ -10,6 +11,7 @@ type UserType = 'client' | 'freelancer';
 export default function OnboardingPage() {
   const t = useTranslations('auth');
   const router = useRouter();
+  const locale = useLocale();
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState<UserType | null>(null);
 
@@ -30,9 +32,9 @@ export default function OnboardingPage() {
       }
 
       if (selected === 'freelancer') {
-        router.push('/dashboard/seller');
+        router.push(`/${locale}/become-freelancer`);
       } else {
-        router.push('/dashboard/projects');
+        router.push(`/${locale}/become-client`);
       }
     } catch {
       setLoading(false);
@@ -40,87 +42,69 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 px-4">
-      <div className="w-full max-w-lg">
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-8 shadow-sm">
-          <h1 className="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-2 text-center">
-            {t('signUpAs')}
-          </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-8">
-            {t('onboardingSubtitle')}
-          </p>
-
-          <div className="grid grid-cols-2 gap-4 mb-8">
-            {/* Client / Buyer card */}
-            <button
-              type="button"
-              onClick={() => setSelected('client')}
-              className={`p-6 border-2 rounded-xl text-center transition-all ${
-                selected === 'client'
-                  ? 'border-primary bg-primary/5 dark:bg-primary/10 shadow-sm'
-                  : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
-              }`}
-            >
-              <div className={`mx-auto w-12 h-12 rounded-lg flex items-center justify-center mb-3 ${
-                selected === 'client'
-                  ? 'bg-primary/10 text-primary'
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-500'
-              }`}>
-                <Users size={24} />
+    <div className="bgc-thm4 min-vh-100">
+      <section className="our-register">
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-6 m-auto">
+              <div className="main-title text-center">
+                <h2 className="title">{t('signUpAs')}</h2>
+                <p className="paragraph">{t('onboardingSubtitle')}</p>
               </div>
-              <span className="block font-semibold text-gray-900 dark:text-white mb-1">
-                {t('client')}
-              </span>
-              <p className="text-xs text-gray-500 dark:text-gray-400 leading-snug">
-                {t('clientDesc')}
-              </p>
-            </button>
-
-            {/* Freelancer / Seller card */}
-            <button
-              type="button"
-              onClick={() => setSelected('freelancer')}
-              className={`p-6 border-2 rounded-xl text-center transition-all ${
-                selected === 'freelancer'
-                  ? 'border-primary bg-primary/5 dark:bg-primary/10 shadow-sm'
-                  : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
-              }`}
-            >
-              <div className={`mx-auto w-12 h-12 rounded-lg flex items-center justify-center mb-3 ${
-                selected === 'freelancer'
-                  ? 'bg-primary/10 text-primary'
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-500'
-              }`}>
-                <Briefcase size={24} />
-              </div>
-              <span className="block font-semibold text-gray-900 dark:text-white mb-1">
-                {t('freelancer')}
-              </span>
-              <p className="text-xs text-gray-500 dark:text-gray-400 leading-snug">
-                {t('freelancerDesc')}
-              </p>
-            </button>
+            </div>
           </div>
-
-          <button
-            onClick={handleContinue}
-            disabled={!selected || loading}
-            className="w-full py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? (
-              <span className="flex items-center justify-center gap-2">
-                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-                {t('loading')}
-              </span>
-            ) : (
-              t('continue')
-            )}
-          </button>
+          <div className="row">
+            <div className="col-xl-7 mx-auto">
+              <div className="log-reg-form search-modal form-style1 bgc-white p50 p30-sm default-box-shadow1 bdrs12">
+                <div className="row g-4 mb30">
+                  <div className="col-md-6">
+                    <button
+                      type="button"
+                      onClick={() => setSelected('client')}
+                      className={`default-box-shadow1 bdrs12 p30 text-start w-100 ${
+                        selected === 'client' ? 'border border-thm' : ''
+                      }`}
+                    >
+                      <div className="d-flex align-items-center mb15">
+                        <span className={`icon text-thm me-3 ${selected === 'client' ? 'text-thm' : 'text-muted'}`}>
+                          <Users size={26} />
+                        </span>
+                        <h5 className="mb0">{t('client')}</h5>
+                      </div>
+                      <p className="text mb0">{t('clientDesc')}</p>
+                    </button>
+                  </div>
+                  <div className="col-md-6">
+                    <button
+                      type="button"
+                      onClick={() => setSelected('freelancer')}
+                      className={`default-box-shadow1 bdrs12 p30 text-start w-100 ${
+                        selected === 'freelancer' ? 'border border-thm' : ''
+                      }`}
+                    >
+                      <div className="d-flex align-items-center mb15">
+                        <span className={`icon text-thm me-3 ${selected === 'freelancer' ? 'text-thm' : 'text-muted'}`}>
+                          <Briefcase size={26} />
+                        </span>
+                        <h5 className="mb0">{t('freelancer')}</h5>
+                      </div>
+                      <p className="text mb0">{t('freelancerDesc')}</p>
+                    </button>
+                  </div>
+                </div>
+                <button
+                  onClick={handleContinue}
+                  disabled={!selected || loading}
+                  className="ud-btn btn-thm w-100"
+                >
+                  {loading ? t('loading') : t('continue')}
+                  <i className="fal fa-arrow-right-long ms-2" />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

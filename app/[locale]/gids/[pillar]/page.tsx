@@ -1,8 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { readdirSync, existsSync } from "fs";
 import { join } from "path";
 
@@ -187,7 +185,7 @@ export default async function PillarPage({
 
  return (
  <>
- <Header />
+ 
  <main className="min-h-screen bg-background-light dark:bg-gray-900">
  {/* Hero Section */}
  <section className={`bg-gradient-to-r ${pillarData.gradient} py-16 sm:py-20`}>
@@ -300,7 +298,7 @@ export default async function PillarPage({
  </div>
  </section>
  </main>
- <Footer />
+ 
  </>
  );
 }

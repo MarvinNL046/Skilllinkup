@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }>}): Promise<Metadata>{
  const { locale } = await params;
@@ -352,7 +350,7 @@ export default async function ChooseBestFreelancePlatform({ params }: { params: 
  return (
  <>
  <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
- <Header />
+ 
  <main className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-[#1e1541] dark:to-gray-900">
  {/* Hero Section */}
  <section className="relative py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-[#ef2b70] to-[#1e1541] text-white">
@@ -533,7 +531,7 @@ export default async function ChooseBestFreelancePlatform({ params }: { params: 
  </section>
  </article>
  </main>
- <Footer />
+ 
  </>
  );
 }

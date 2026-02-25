@@ -2121,7 +2121,9 @@
     }
   },
   "freelancers": {
-    "title": "Vind Freelancers",
+    "title": "Freelancers",
+    "brief": "Ontdek geverifieerde freelance talenten",
+    "findTitle": "Vind Freelancers",
     "subtitle": "Ontdek getalenteerde professionals voor je volgende project",
     "searchPlaceholder": "Zoek freelancers...",
     "verified": "Geverifieerd",
@@ -2140,9 +2142,20 @@
     "portfolio": "Portfolio",
     "contactFreelancer": "Contact",
     "noFreelancers": "Geen freelancers gevonden",
-    "viewProfile": "Bekijk Profiel"
+    "viewProfile": "Bekijk Profiel",
+    "taglineFallback": "Freelance professional",
+    "locationFallback": "Op afstand"
   },
   "dashboard": {
+    "title": "Dashboard",
+    "overview": "Overzicht",
+    "totalOrders": "Totaal bestellingen",
+    "totalEarnings": "Totale inkomsten",
+    "activeGigs": "Actieve diensten",
+    "pendingOrders": "Openstaande bestellingen",
+    "recentActivity": "Recente activiteit",
+    "noActivity": "Geen recente activiteit",
+    "quickActions": "Snelle acties",
     "seller": {
       "title": "Verkoper Dashboard",
       "overview": "Overzicht",
@@ -2380,6 +2393,7 @@
   },
   "messages": {
     "title": "Berichten",
+    "noMessages": "Nog geen berichten",
     "noConversations": "Nog geen gesprekken",
     "noConversationsDesc": "Start een gesprek door contact op te nemen met een freelancer of opdrachtgever.",
     "searchConversations": "Gesprekken zoeken...",
@@ -2396,6 +2410,11 @@
   },
   "projects": {
     "title": "Projecten",
+    "brief": "Bekijk openstaande projecten",
+    "count": "{count} Projecten",
+    "submitProposal": "Voorstel indienen",
+    "manageTitle": "Projecten beheren",
+    "createTitle": "Project aanmaken",
     "postProject": "Project Plaatsen",
     "browseProjects": "Projecten Bekijken",
     "myProjects": "Mijn Projecten",
@@ -2598,10 +2617,342 @@
     "resolvedOn": "Opgelost op",
     "existingDispute": "Er is al een geschil geopend voor deze bestelling"
   },
+  "home20": {
+    "hero": {
+      "title": "Ontdek",
+      "titleHighlight": "duizenden freelancers",
+      "subtitle": "Werk met talentvolle mensen voor een betaalbare prijs en haal het maximale uit je tijd en budget.",
+      "searchPlaceholder": "Waar ben je naar op zoek?",
+      "searchCta": "Zoeken",
+      "locationPlaceholder": "Stad, regio of postcode",
+      "popularLabel": "Populaire zoekopdrachten",
+      "popular": ["Designer", "Developer", "Web", "iOS", "PHP", "Senior"],
+      "locations": ["Stad, regio of postcode", "Amsterdam", "Rotterdam", "Berlijn", "New York"]
+    },
+    "partners": {
+      "title": "Vertrouwd door de beste teams"
+    },
+    "trending": {
+      "title": "Trending services",
+      "subtitle": "Meest bekeken en best verkochte services",
+      "tabs": { "all": "Alles" },
+      "reviewsLabel": "reviews",
+      "startingAt": "Vanaf"
+    },
+    "categories": {
+      "title": "Browse talent per categorie",
+      "subtitle": "Krijg inspiratie uit 1800+ skills",
+      "allCta": "Alle categorieën",
+      "skillsLabel": "skills",
+      "cardHint": "Top talent"
+    },
+    "needSomething": {
+      "title": "Iets gedaan krijgen?",
+      "subtitle": "Meest bekeken en best verkochte services",
+      "items": {
+        "post": {
+          "icon": "flaticon-cv",
+          "title": "Plaats een opdracht",
+          "text": "Snel en gratis. Vul een titel en beschrijving in."
+        },
+        "choose": {
+          "icon": "flaticon-web-design",
+          "title": "Kies freelancers",
+          "text": "Vergelijk profielen en selecteer de beste match."
+        },
+        "pay": {
+          "icon": "flaticon-secure",
+          "title": "Betaal veilig",
+          "text": "Betaal pas als je het werk hebt goedgekeurd."
+        },
+        "support": {
+          "icon": "flaticon-customer-service",
+          "title": "We helpen je graag",
+          "text": "Onze support is 24/7 beschikbaar."
+        }
+      }
+    },
+    "cta": {
+      "titleLine1": "Een wereld van freelance",
+      "titleLine2": "talent binnen handbereik",
+      "features": [
+        {
+          "title": "Kwaliteit bewezen",
+          "text": "Bekijk werkvoorbeelden, reviews en verificatie.",
+          "icon": "flaticon-badge"
+        },
+        {
+          "title": "Geen kosten tot je hiret",
+          "text": "Interview, onderhandel en betaal alleen voor goedgekeurd werk.",
+          "icon": "flaticon-money"
+        },
+        {
+          "title": "Veilig en zeker",
+          "text": "We beschermen je data en privacy met 24/7 support.",
+          "icon": "flaticon-security"
+        }
+      ],
+      "bullets": [
+        "Voor elk budget",
+        "Kwalitatief werk, snel geleverd",
+        "Beschermde betalingen, altijd",
+        "24/7 support"
+      ],
+      "imageAlt": "Samenwerken met freelancers"
+    },
+    "testimonials": {
+      "title": "Wat klanten zeggen",
+      "subtitle": "Zie hoe teams sneller groeien met SkillLinkup.",
+      "items": [
+        {
+          "name": "Alison Dawn",
+          "role": "Product Lead",
+          "quote": "Binnen 48 uur vonden we een top designer. Het proces was soepel en de kwaliteit uitstekend.",
+          "image": "/images/testimonials/2.jpg"
+        },
+        {
+          "name": "Daniel Parker",
+          "role": "Founder",
+          "quote": "SkillLinkup bespaarde ons weken sourcing. Betrouwbaar talent, snel geleverd.",
+          "image": "/images/testimonials/3.jpg"
+        },
+        {
+          "name": "Albert Cole",
+          "role": "Engineering Manager",
+          "quote": "Heldere communicatie en transparante prijzen. Precies wat we nodig hadden.",
+          "image": "/images/testimonials/1.jpg"
+        }
+      ]
+    },
+    "inspiringWork": {
+      "freelancerTitle": "Vind geweldig werk",
+      "freelancerText": "Werk met het grootste netwerk van zelfstandigen en lever snel resultaat.",
+      "freelancerCta": "Aan de slag",
+      "clientTitle": "Vind talent op jouw manier",
+      "clientText": "Huur gescreende freelancers in en schaal je team wanneer nodig.",
+      "clientCta": "Aan de slag"
+    },
+    "inspiringServices": {
+      "title": "Inspirerend werk gemaakt op SkillLinkup",
+      "subtitle": "Krijg inspiratie uit 1800+ skills",
+      "cta": "Bekijk meer",
+      "by": "door {name}"
+    },
+    "finalCta": {
+      "title": "Met getalenteerde freelancers",
+      "titleHighlight": "krijg je meer gedaan.",
+      "subtitle": "Werk met het grootste netwerk van zelfstandigen en rond projecten sneller af.",
+      "primaryCta": "Vind werk",
+      "secondaryCta": "Vind talent"
+    }
+  },
   "authGate": {
     "title": "Maak een account aan om verder te gaan",
     "description": "Registreer gratis om diensten te bestellen, freelancers te contacteren en je projecten te beheren op SkillLinkup.",
     "signUp": "Gratis Account Aanmaken",
     "signIn": "Heb je al een account? Inloggen"
+  },
+  "onboarding": {
+    "freelancerTitle": "Word freelancer",
+    "freelancerSubtitle": "Zet je profiel op om nieuwe klanten aan te trekken.",
+    "clientTitle": "Word opdrachtgever",
+    "clientSubtitle": "Deel je projectdoelen zodat we je kunnen matchen met talent.",
+    "steps": {
+      "freelancerBasicsTitle": "Basis",
+      "freelancerBasicsDesc": "Je publieke profiel.",
+      "freelancerExpertiseTitle": "Expertise",
+      "freelancerExpertiseDesc": "Skills en ervaring.",
+      "freelancerWorkTitle": "Werkvoorkeur",
+      "freelancerWorkDesc": "Locatie en beschikbaarheid.",
+      "freelancerPortfolioTitle": "Portfolio",
+      "freelancerPortfolioDesc": "Laat je beste werk zien.",
+      "freelancerVerifyTitle": "Verificatie",
+      "freelancerVerifyDesc": "Koppel je professionele profielen.",
+      "clientBasicsTitle": "Basis",
+      "clientBasicsDesc": "Vertel iets over jezelf.",
+      "clientNeedsTitle": "Projectbehoeften",
+      "clientNeedsDesc": "Wat wil je laten bouwen?",
+      "clientLocationTitle": "Locatie",
+      "clientLocationDesc": "Waar zit je team?"
+    },
+    "fields": {
+      "profilePhoto": "Profielfoto",
+      "displayName": "Weergavenaam",
+      "tagline": "Tagline",
+      "bio": "Bio",
+      "category": "Hoofdcategorie",
+      "skills": "Skills",
+      "experienceLevel": "Ervaringsniveau",
+      "hourlyRate": "Uurtarief (USD)",
+      "workType": "Type werk",
+      "countries": "Landen waarmee je kunt werken",
+      "city": "Stad",
+      "languages": "Talen",
+      "portfolioImage": "Portfolio-afbeelding",
+      "projectTitle": "Projecttitel",
+      "projectLink": "Projectlink (optioneel)",
+      "linkedinUrl": "LinkedIn URL",
+      "websiteUrl": "Website URL",
+      "certificates": "Certificaten (optioneel)",
+      "clientName": "Jouw naam",
+      "companyName": "Bedrijfsnaam",
+      "companyWebsite": "Bedrijfswebsite",
+      "projectType": "Projecttype",
+      "budgetRange": "Budgetrange",
+      "timeline": "Tijdlijn",
+      "projectSummary": "Projectsamenvatting",
+      "requiredSkills": "Belangrijke skills",
+      "country": "Land"
+    },
+    "placeholders": {
+      "displayName": "Jouw naam",
+      "tagline": "bijv. Product designer voor SaaS teams",
+      "bio": "Vertel klanten over je ervaring en resultaten.",
+      "category": "Kies een categorie",
+      "skills": "Voeg een skill toe (bijv. Figma)",
+      "experienceLevel": "Kies ervaringsniveau",
+      "hourlyRate": "bijv. 50",
+      "countries": "Voeg een land toe",
+      "city": "bijv. Amsterdam",
+      "languages": "Voeg een taal toe",
+      "projectTitle": "bijv. Fintech dashboard redesign",
+      "projectLink": "https://",
+      "linkedinUrl": "https://linkedin.com/in/gebruikersnaam",
+      "websiteUrl": "https://jouwportfolio.com",
+      "certificates": "Voeg een certificaat toe",
+      "clientName": "Jouw naam",
+      "companyName": "Bedrijfs- of teamnaam",
+      "companyWebsite": "https://",
+      "projectType": "Kies projecttype",
+      "budgetRange": "Kies budgetrange",
+      "timeline": "bijv. 4-6 weken",
+      "projectSummary": "Waar heb je hulp bij nodig?",
+      "requiredSkills": "Voeg een skill toe",
+      "country": "Land"
+    },
+    "help": {
+      "profilePhoto": "Gebruik een duidelijke portretfoto met goed licht.",
+      "portfolioImage": "Upload een projectscreenshot of coverafbeelding."
+    },
+    "buttons": {
+      "add": "Toevoegen",
+      "addPortfolioItem": "Portfolio-item toevoegen",
+      "back": "Terug",
+      "next": "Volgende",
+      "submit": "Versturen"
+    },
+    "options": {
+      "category": {
+        "design": "Design",
+        "development": "Development",
+        "marketing": "Marketing",
+        "writing": "Schrijven",
+        "video": "Video & animatie"
+      },
+      "experience": {
+        "junior": "Junior (0-2 jaar)",
+        "mid": "Medior (3-5 jaar)",
+        "senior": "Senior (6+ jaar)"
+      },
+      "workType": {
+        "remote": "Remote",
+        "local": "Lokaal",
+        "hybrid": "Hybride"
+      },
+      "projectType": {
+        "build": "Website / app bouwen",
+        "design": "Design / Branding",
+        "marketing": "Marketing / Groei",
+        "writing": "Content / Schrijven",
+        "other": "Overig"
+      },
+      "budget": {
+        "low": "$500 - $1.000",
+        "mid": "$1.000 - $5.000",
+        "high": "$5.000 - $10.000",
+        "enterprise": "$10.000+"
+      }
+    },
+    "errors": {
+      "required": "Dit veld is verplicht.",
+      "completeRequired": "Vul de verplichte velden in voordat je doorgaat.",
+      "signInRequired": "Je moet ingelogd zijn om onboarding af te ronden.",
+      "loadAccountFailed": "We konden je account niet laden. Probeer het opnieuw.",
+      "submitFailed": "Er ging iets mis. Probeer het opnieuw."
+    }
+  },
+  "services": {
+    "title": "Diensten",
+    "brief": "Ontdek diensten van top freelancers",
+    "count": "{count} Diensten",
+    "startingAt": "Vanaf",
+    "reviews": "beoordelingen",
+    "manageTitle": "Diensten beheren",
+    "addTitle": "Nieuwe dienst toevoegen",
+    "editTitle": "Dienst bewerken",
+    "publish": "Dienst publiceren",
+    "update": "Dienst bijwerken"
+  },
+  "jobs": {
+    "title": "Vacatures",
+    "brief": "Vind je volgende kans",
+    "count": "{count} Vacatures",
+    "apply": "Nu solliciteren",
+    "fullTime": "Voltijd",
+    "partTime": "Deeltijd",
+    "freelance": "Freelance",
+    "internship": "Stage",
+    "manageTitle": "Vacatures beheren"
+  },
+  "employees": {
+    "title": "Opdrachtgevers",
+    "brief": "Bekijk geregistreerde opdrachtgevers",
+    "viewProfile": "Profiel bekijken",
+    "noClients": "Nog geen opdrachtgevers geregistreerd"
+  },
+  "about": {
+    "title": "Over Ons",
+    "brief": "Leer meer over SkillLinkup",
+    "mission": "Onze Missie",
+    "values": "Onze Waarden",
+    "quality": "Kwaliteit Voorop",
+    "trust": "Gebouwd op Vertrouwen",
+    "growth": "Samen Groeien",
+    "getStarted": "Klaar om te beginnen?",
+    "signUp": "Gratis Aanmelden",
+    "browseServices": "Diensten bekijken"
+  },
+  "financial": {
+    "invoice": "Factuur",
+    "payouts": "Uitbetalingen",
+    "statements": "Overzichten",
+    "totalEarned": "Totaal verdiend",
+    "available": "Beschikbaar",
+    "pending": "In behandeling",
+    "withdrawn": "Uitbetaald"
+  },
+  "saved": {
+    "title": "Opgeslagen items",
+    "noSaved": "Je hebt nog geen items opgeslagen",
+    "remove": "Verwijderen"
+  },
+  "filters": {
+    "allFilters": "Alle filters",
+    "search": "Zoeken",
+    "categories": "Categorieën",
+    "priceRange": "Prijsrange",
+    "location": "Locatie",
+    "rating": "Beoordeling",
+    "anyRating": "Elke beoordeling",
+    "clear": "Filters wissen"
+  },
+  "profile": {
+    "title": "Mijn profiel",
+    "basicInfo": "Basisinformatie",
+    "professional": "Professionele gegevens",
+    "locationWork": "Locatie & werkwijze",
+    "aboutMe": "Over mij",
+    "save": "Wijzigingen opslaan",
+    "saving": "Opslaan..."
   }
 }

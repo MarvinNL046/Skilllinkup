@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { Users, Calendar, CheckCircle, Clock, Zap, FileText } from 'lucide-react';
 
 export async function generateMetadata({
@@ -718,7 +716,7 @@ export default async function ManagingMultipleClientsPage({
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(content.jsonLd) }}
  />
- <Header />
+ 
  <main className="min-h-screen bg-white dark:bg-gray-900">
  {/* Hero Section */}
  <section className="bg-gradient-to-br from-primary/5 via-white to-accent/5 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-16 sm:py-24">
@@ -1062,7 +1060,7 @@ export default async function ManagingMultipleClientsPage({
  </div>
  </section>
  </main>
- <Footer />
+ 
  </>
  );
 }

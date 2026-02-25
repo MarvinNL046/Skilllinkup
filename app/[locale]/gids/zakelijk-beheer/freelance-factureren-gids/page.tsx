@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { Receipt, CheckCircle2, ArrowRight, FileText, Calendar, Euro, AlertTriangle, TrendingUp, Clock, Shield } from 'lucide-react';
 
 interface PageProps {
@@ -75,7 +73,7 @@ export default async function FreelanceFacturerenGidsPage({ params }: PageProps)
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
  />
- <Header />
+ 
  <main className="min-h-screen bg-white dark:bg-gray-900">
  {/* Hero Section */}
  <section className="bg-gradient-to-br from-secondary via-primary to-accent py-16 sm:py-24">
@@ -727,7 +725,7 @@ export default async function FreelanceFacturerenGidsPage({ params }: PageProps)
  </section>
  </article>
  </main>
- <Footer />
+ 
  </>
  );
 }

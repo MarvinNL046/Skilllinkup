@@ -1,10 +1,9 @@
 import { Metadata } from 'next';
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
 import { PlatformFilters } from "@/components/platform-filters";
 import { getTranslations } from 'next-intl/server';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -193,30 +192,36 @@ export default async function PlatformsPage({ params }: PlatformsPageProps) {
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
  />
- <Header />
- <main className="flex-1">
- {/* Page Header */}
- <section className="bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 py-12 sm:py-16">
- <div className="container mx-auto px-4 sm:px-6 lg:px-8">
- <div className="text-center max-w-3xl mx-auto">
- <h1 className="text-4xl font-heading font-bold text-gray-900 dark:text-white sm:text-5xl mb-4">
- {t('title')}
- </h1>
- <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
+
+ <main>
+ {/* Page Header / Breadcrumb */}
+ <section className="breadcumb-section">
+ <div className="container">
+ <div className="row">
+ <div className="col-lg-12">
+ <div className="breadcumb-style1 text-center">
+ <h2 className="title">{t('title')}</h2>
+ <p className="text fz17 mt10">
  {t('subtitle', { count: platforms.length })}
  </p>
+ <div className="breadcumb-list mt15">
+ <Link href={`/${locale}`}>Home</Link>
+ <span className="mx10">/</span>
+ <span className="active">Platforms</span>
+ </div>
+ </div>
+ </div>
  </div>
  </div>
  </section>
 
  {/* Filters & Content */}
- <section className="py-12 bg-white dark:bg-gray-800">
- <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+ <section className="pt50 pb90">
+ <div className="container">
  <PlatformFilters platforms={platforms} categories={categories} />
  </div>
  </section>
  </main>
- <Footer />
  </>
  );
 }

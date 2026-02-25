@@ -3,8 +3,6 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { Newsletter } from "@/components/newsletter";
 import { ViewTracker } from "@/components/ViewTracker";
 import { CommentSection } from "@/components/CommentSection";
@@ -214,7 +212,6 @@ export default async function PostPage({ params }: PostPageProps) {
  }));
 
  // Get comments for this post
- // Comments getByPost requires a Convex Id type; cast via string coercion
  const rawComments = await fetchQuery(api.comments.getByPost, {
  postId: raw._id as any,
  });
@@ -322,40 +319,51 @@ export default async function PostPage({ params }: PostPageProps) {
  {/* View Tracker - Increments view count after 2 seconds */}
  <ViewTracker slug={post.slug} />
 
- <Header />
- <main className="flex-1">
- {/* Post Header */}
- <article>
- <header className="bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 py-12 sm:py-16">
- <div className="container mx-auto px-4 sm:px-6 lg:px-8">
- <div className="max-w-4xl mx-auto">
- {/* Breadcrumb */}
- <nav className="mb-6">
- <ol className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
- <li>
- <Link href="/" className="hover:text-primary dark:hover:text-accent transition-colors">
- Home
- </Link>
- </li>
- <li>/</li>
- <li>
- <Link href="/blog" className="hover:text-primary dark:hover:text-accent transition-colors">
- Blog
- </Link>
- </li>
- <li>/</li>
- <li className="text-gray-900 dark:text-white font-medium line-clamp-1">
- {post.title}
- </li>
- </ol>
- </nav>
-
- {/* Category */}
+ <main>
+ {/* Post Header / Breadcrumb */}
+ <section className="breadcumb-section">
+ <div className="container">
+ <div className="row">
+ <div className="col-lg-12">
+ <div className="breadcumb-style1">
+ <div className="breadcumb-list">
+ <Link href={`/${locale}`}>Home</Link>
+ <span className="mx10">/</span>
+ <Link href={`/${locale}/blog`}>Blog</Link>
  {post.category_name && post.category_slug && (
- <div className="mb-4">
+ <>
+ <span className="mx10">/</span>
+ <Link href={`/${locale}/blog/category/${post.category_slug}`}>
+ {post.category_name}
+ </Link>
+ </>
+ )}
+ <span className="mx10">/</span>
+ <span className="active" style={{ maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block', verticalAlign: 'bottom' }}>
+ {post.title}
+ </span>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </section>
+
+ {/* Post Content */}
+ <section className="pt30 pb90">
+ <div className="container">
+ <div className="row">
+ {/* Main Content */}
+ <div className="col-lg-8">
+ {/* Post Header */}
+ <div className="ps-widget bgc-white bdrs12 bdr1 p30 mb30">
+ {/* Category Badge */}
+ {post.category_name && post.category_slug && (
+ <div className="mb15">
  <Link
  href={`/${locale}/blog/category/${post.category_slug}`}
- className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 dark:bg-accent/20 text-accent dark:text-accent-light text-sm font-heading font-semibold uppercase tracking-wide hover:bg-accent/20 dark:hover:bg-accent/30 transition-colors"
+ className="ud-btn btn-thm2 bdrs4"
+ style={{ padding: '4px 14px', fontSize: '12px' }}
  >
  {post.category_name}
  </Link>
@@ -363,23 +371,21 @@ export default async function PostPage({ params }: PostPageProps) {
  )}
 
  {/* Title */}
- <h1 className="text-4xl font-heading font-bold text-gray-900 dark:text-white sm:text-5xl mb-6 leading-tight">
- {post.title}
- </h1>
+ <h1 className="title mb20">{post.title}</h1>
 
  {/* Meta Info */}
- <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+ <div className="d-flex flex-wrap align-items-center mb20" style={{ gap: '16px' }}>
  {post.author_name && (
- <div className="flex items-center gap-2">
- <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+ <div className="d-flex align-items-center fz14 body-color" style={{ gap: '6px' }}>
+ <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
  </svg>
- <span className="font-semibold text-gray-900 dark:text-white">{post.author_name}</span>
+ <span className="fw500">{post.author_name}</span>
  </div>
  )}
  {post.published_at && (
- <div className="flex items-center gap-2">
- <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+ <div className="d-flex align-items-center fz14 body-color" style={{ gap: '6px' }}>
+ <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
  </svg>
  <time dateTime={post.published_at}>
@@ -392,32 +398,27 @@ export default async function PostPage({ params }: PostPageProps) {
  </div>
  )}
  {post.read_time && (
- <div className="flex items-center gap-2">
- <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+ <div className="d-flex align-items-center fz14 body-color" style={{ gap: '6px' }}>
+ <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
  </svg>
  <span>{post.read_time} min read</span>
  </div>
  )}
- {post.views && (
- <div className="flex items-center gap-2">
- <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+ {post.views ? (
+ <div className="d-flex align-items-center fz14 body-color" style={{ gap: '6px' }}>
+ <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
  </svg>
  <span>{post.views} views</span>
  </div>
- )}
+ ) : null}
  </div>
- </div>
- </div>
- </header>
 
  {/* Featured Image */}
  {post.feature_img && (
- <div className="container mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
- <div className="max-w-4xl mx-auto">
- <div className="relative aspect-[16/9] overflow-hidden rounded-lg shadow-xl">
+ <div className="bdrs12 overflow-hidden mb20" style={{ position: 'relative', width: '100%', paddingTop: '56.25%' }}>
  <Image
  src={post.feature_img}
  alt={post.title}
@@ -427,61 +428,31 @@ export default async function PostPage({ params }: PostPageProps) {
  priority
  />
  </div>
- </div>
- </div>
  )}
 
- {/* Post Content */}
- <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
- <div className="max-w-4xl mx-auto">
- <div className="grid gap-12 lg:grid-cols-3">
- {/* Sidebar - Shows first on mobile, right on desktop */}
- <aside className="lg:col-span-1 lg:order-2">
- <div className="lg:sticky lg:top-24 space-y-8">
- {/* Table of Contents - Automatically generated from H2/H3 */}
- <TableOfContents content={post.content || ''} />
-
- {/* Quick Info - Only shows if data is filled in */}
- <QuickInfoWidget
- platformType={post.platform_type}
- feeStructure={post.fee_structure}
- difficultyLevel={post.difficulty_level}
- bestFor={post.best_for}
- />
-
- {/* Advertisement - Only shows if configured */}
- <AdWidget placement="blog_sidebar" adImage={post.ad_image} adLink={post.ad_link} />
- </div>
- </aside>
-
- {/* Main Content */}
- <div className="lg:col-span-2 lg:order-1">
  {/* Excerpt */}
  {post.excerpt && (
- <div className="mb-8 text-xl text-gray-700 dark:text-gray-300 leading-relaxed font-medium border-l-4 border-primary dark:border-accent pl-6 py-2">
+ <div className="mb20 fz17 body-color" style={{ borderLeft: '4px solid var(--primary-color)', paddingLeft: '20px', paddingTop: '8px', paddingBottom: '8px', fontWeight: 500 }}>
  {post.excerpt}
  </div>
  )}
 
  {/* Post Body */}
- <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:text-gray-900 dark:prose-headings:text-white prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-a:text-primary dark:prose-a:text-accent prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 dark:prose-strong:text-white prose-code:text-gray-900 dark:prose-code:text-gray-100 prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-gray-100 dark:prose-pre:bg-gray-800 prose-pre:border prose-pre:border-gray-200 dark:prose-pre:border-gray-700 prose-blockquote:border-primary dark:prose-blockquote:border-accent prose-blockquote:text-gray-700 dark:prose-blockquote:text-gray-300 prose-li:text-gray-700 dark:prose-li:text-gray-300">
  <div
+ className="blog-post-content"
  dangerouslySetInnerHTML={{ __html: post.content || '' }}
  />
- </div>
 
  {/* Tags */}
- {post.tags && post.tags.length >0 && (
- <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
- <h3 className="text-sm font-heading font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
- Tags
- </h3>
- <div className="flex flex-wrap gap-2">
- {post.tags.map((tag: string) =>(
+ {post.tags && post.tags.length > 0 && (
+ <div className="mt30 pt20 bdr1-top">
+ <h6 className="fw600 mb15">Tags</h6>
+ <div className="d-flex flex-wrap" style={{ gap: '8px' }}>
+ {post.tags.map((tag: string) => (
  <Link
  key={tag}
  href={`/blog/tag/${tag.toLowerCase()}`}
- className="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm hover:bg-accent/10 dark:hover:bg-accent/20 hover:text-accent dark:hover:text-accent-light transition-colors"
+ className="bdrs4 fz14 px15 py5 bgc-f7 body-color"
  >
  #{tag}
  </Link>
@@ -491,69 +462,96 @@ export default async function PostPage({ params }: PostPageProps) {
  )}
 
  {/* Share Buttons */}
- <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
- <h3 className="text-sm font-heading font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
- Share this post
- </h3>
- <div className="flex gap-3">
- <button className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary hover:bg-primary-dark dark:bg-accent dark:hover:bg-accent-dark text-white transition-colors">
- <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+ <div className="mt30 pt20 bdr1-top">
+ <h6 className="fw600 mb15">Share this post</h6>
+ <div className="d-flex" style={{ gap: '10px' }}>
+ <button className="ud-btn btn-thm bdrs8" style={{ width: 40, height: 40, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+ <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
  <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
  </svg>
  </button>
- <button className="flex items-center justify-center w-10 h-10 rounded-lg bg-secondary hover:bg-secondary-dark dark:bg-gray-700 dark:hover:bg-gray-600 text-white transition-colors">
- <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+ <button className="ud-btn btn-dark bdrs8" style={{ width: 40, height: 40, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+ <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
  </svg>
  </button>
- <button className="flex items-center justify-center w-10 h-10 rounded-lg bg-accent hover:bg-accent-dark dark:bg-accent dark:hover:bg-accent-light text-white transition-colors">
- <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+ <button className="ud-btn btn-thm2 bdrs8" style={{ width: 40, height: 40, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+ <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
  </svg>
  </button>
  </div>
  </div>
  </div>
- </div>
- </div>
- </div>
- </article>
 
  {/* Comments Section */}
  <CommentSection postId={post.id} comments={comments} />
+ </div>
+
+ {/* Sidebar */}
+ <div className="col-lg-4">
+ <div className="position-sticky" style={{ top: '24px' }}>
+ {/* Table of Contents */}
+ <div className="ps-widget bgc-white bdrs12 bdr1 p30 mb30">
+ <TableOfContents content={post.content || ''} />
+ </div>
+
+ {/* Quick Info */}
+ <div className="ps-widget bgc-white bdrs12 bdr1 p30 mb30">
+ <QuickInfoWidget
+ platformType={post.platform_type}
+ feeStructure={post.fee_structure}
+ difficultyLevel={post.difficulty_level}
+ bestFor={post.best_for}
+ />
+ </div>
+
+ {/* Advertisement */}
+ <AdWidget placement="blog_sidebar" adImage={post.ad_image} adLink={post.ad_link} />
+ </div>
+ </div>
+ </div>
+ </div>
+ </section>
 
  {/* Related Posts */}
- {relatedPosts.length >0 && (
- <section className="py-16 bg-gray-50 dark:bg-gray-900">
- <div className="container mx-auto px-4 sm:px-6 lg:px-8">
- <h2 className="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-8">
- Related Articles
- </h2>
- <div className="grid gap-6 md:grid-cols-3">
- {relatedPosts.map((relatedPost) =>(
- <article key={relatedPost.id} className="group">
- <Link href={`/post/${relatedPost.slug}`} className="block">
- {relatedPost.feature_img && (
- <div className="relative aspect-[16/9] overflow-hidden rounded-lg mb-4 shadow-md group-hover:shadow-xl dark:shadow-gray-800 dark:group-hover:shadow-gray-700 transition-shadow">
+ {relatedPosts.length > 0 && (
+ <section className="pt0 pb90 bgc-f7">
+ <div className="container">
+ <div className="row mb40">
+ <div className="col-12">
+ <h3 className="title">Related Articles</h3>
+ </div>
+ </div>
+ <div className="row">
+ {relatedPosts.map((relatedPost) => (
+ <div key={relatedPost.id} className="col-sm-6 col-lg-4">
+ <div className="blog-style1 bdrs12 bdr1 hover-box-shadow mb30 overflow-hidden">
+ <Link href={`/post/${relatedPost.slug}`} className="blog-img d-block">
+ {relatedPost.feature_img ? (
+ <div style={{ position: 'relative', width: '100%', paddingTop: '56.25%', overflow: 'hidden' }}>
  <Image
  src={relatedPost.feature_img}
  alt={relatedPost.title}
  fill
  sizes="(max-width: 768px) 100vw, 33vw"
- className="object-cover transition-transform group-hover:scale-105"
+ className="object-cover"
  />
  </div>
- )}
- <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white group-hover:text-primary dark:group-hover:text-accent transition-colors line-clamp-2 mb-2">
- {relatedPost.title}
- </h3>
- {relatedPost.excerpt && (
- <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
- {relatedPost.excerpt}
- </p>
+ ) : (
+ <div style={{ height: '200px', background: '#f5f5f5' }} />
  )}
  </Link>
- </article>
+ <div className="blog-content p30">
+ <Link href={`/post/${relatedPost.slug}`}>
+ <h5 className="fw600 mb10">{relatedPost.title}</h5>
+ </Link>
+ {relatedPost.excerpt && (
+ <p className="fz14 body-color mb0">{relatedPost.excerpt}</p>
+ )}
+ </div>
+ </div>
+ </div>
  ))}
  </div>
  </div>
@@ -563,7 +561,6 @@ export default async function PostPage({ params }: PostPageProps) {
  {/* Newsletter */}
  <Newsletter />
  </main>
- <Footer />
  </>
  );
 }

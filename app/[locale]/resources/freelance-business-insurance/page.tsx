@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { Shield, AlertTriangle, CheckCircle, FileText, DollarSign } from 'lucide-react';
 
 interface PageProps {
@@ -607,7 +605,7 @@ export default async function FreelanceBusinessInsurancePage({ params }: PagePro
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
  />
- <Header />
+ 
  <main className="min-h-screen bg-white dark:bg-gray-900">
  {/* Hero Section */}
  <section className="bg-gradient-to-br from-primary/5 via-white to-accent/5 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-16 sm:py-24">
@@ -1135,7 +1133,7 @@ export default async function FreelanceBusinessInsurancePage({ params }: PagePro
  </div>
  </section>
  </main>
- <Footer />
+ 
  </>
  );
 }

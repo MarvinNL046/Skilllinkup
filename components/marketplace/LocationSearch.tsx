@@ -298,7 +298,7 @@ function LocalFreelancerCard({ freelancer, locale, kmAwayLabel }: LocalFreelance
  const locationText = [locationCity, locationCountry].filter(Boolean).join(', ');
  const visibleSkills = skills.slice(0, 3);
  const remainingSkills = skills.length >3 ? skills.length - 3 : 0;
- const profileUrl = `/${locale}/marketplace/freelancers/${freelancer.user_id}`;
+ const profileUrl = `/${locale}/freelancers/${freelancer.user_id}`;
 
  return (
  <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow duration-200 flex flex-col">

@@ -1,7 +1,5 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 
 interface PageProps {
  params: Promise<{ locale: string }>;
@@ -89,7 +87,7 @@ export default async function FirstFreelanceProposalPage({ params }: PageProps) 
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
  />
- <Header />
+ 
  <main className="flex-1">
  {/* Hero Section */}
  <section className="bg-gradient-to-br from-secondary/10 via-white to-primary/10 dark:from-secondary dark:via-gray-900 dark:to-gray-800 py-16 sm:py-24">
@@ -686,7 +684,7 @@ Jessica`}
  </div>
  </section>
  </main>
- <Footer />
+ 
  </>
  );
 }

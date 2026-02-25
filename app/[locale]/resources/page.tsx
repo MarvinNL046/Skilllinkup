@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { SEO_NAVIGATION } from "@/lib/seo-navigation-data";
 
 interface SeoIndexPageProps {
@@ -240,7 +238,7 @@ export default async function SeoIndexPage({ params }: SeoIndexPageProps) {
  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
  />
 
- <Header />
+ 
  <main className="flex-1">
  {/* Hero Section */}
  <section className="relative bg-gradient-to-br from-primary/10 via-background-white to-accent/5 dark:from-primary/5 dark:via-gray-900 dark:to-accent/5 py-20 overflow-hidden">
@@ -384,7 +382,7 @@ export default async function SeoIndexPage({ params }: SeoIndexPageProps) {
  </div>
  </section>
  </main>
- <Footer />
+ 
  </>
  );
 }

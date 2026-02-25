@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { Star, Award, ThumbsUp, MessageSquare, CheckCircle2, ArrowRight, Zap, Shield, TrendingUp, Users } from 'lucide-react';
 
 interface PageProps {
@@ -94,7 +92,7 @@ export default async function Get5StarReviewsPage({ params }: PageProps) {
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
  />
- <Header />
+ 
  <main className="min-h-screen bg-white dark:bg-gray-900">
  {/* Hero Section */}
  <section className="bg-gradient-to-br from-accent via-primary to-secondary py-16 sm:py-24">
@@ -879,7 +877,7 @@ export default async function Get5StarReviewsPage({ params }: PageProps) {
  </section>
  </article>
  </main>
- <Footer />
+ 
  </>
  );
 }

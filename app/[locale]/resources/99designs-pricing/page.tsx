@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 
 type Props = {
  params: Promise<{ locale: string }>;
@@ -533,7 +531,7 @@ export default async function NinetyNineDesignsPricingPage({ params }: Props) {
  <><script
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
- /><Header /><main className="flex-1 bg-white dark:bg-gray-900">{/* Hero Section */}
+ /><main className="flex-1 bg-white dark:bg-gray-900">{/* Hero Section */}
  <section className="bg-gradient-to-br from-secondary via-secondary-medium to-secondary-light dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-white py-16 md:py-24"><div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl"><div className="text-center"><div className="inline-block bg-accent/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6"><span className="text-accent font-semibold">{content.badge}</span></div><h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold mb-6">{content.title}
  </h1><p className="text-xl md:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto">{content.subtitle}
  </p><div className="flex flex-col sm:flex-row gap-4 justify-center"><Link
@@ -677,5 +675,5 @@ export default async function NinetyNineDesignsPricingPage({ params }: Props) {
  href={`/${locale}/newsletter`}
  className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-white dark:bg-gray-800 text-secondary dark:text-accent border-2 border-secondary dark:border-accent font-heading font-bold hover:bg-secondary/5 dark:hover:bg-accent/10 transition-all"
  >{content.getWeeklyInsights}
- </Link></div></div></div></section></main><Footer /></>);
+ </Link></div></div></div></section></main></>);
 }

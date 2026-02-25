@@ -2,8 +2,6 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { fetchQuery } from 'convex/nextjs';
 import { api } from '@/convex/_generated/api';
 
@@ -69,124 +67,121 @@ export default async function CategoryPage({ params }: PageProps) {
 
  return (
  <>
- <Header />
- <main className="flex-1">
- {/* Page Header */}
- <section className="bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 py-12 sm:py-16">
- <div className="container mx-auto px-4 sm:px-6 lg:px-8">
- <div className="text-center max-w-3xl mx-auto">
- <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style={{ backgroundColor: category.color || '#9333ea' }}>
- <span className="text-3xl text-white font-bold">
- {category.name.charAt(0)}
- </span>
+ <main>
+ {/* Page Header / Breadcrumb */}
+ <section className="breadcumb-section">
+ <div className="container">
+ <div className="row">
+ <div className="col-lg-12">
+ <div className="breadcumb-style1 text-center">
+ <div
+ className="d-flex align-items-center justify-content-center text-white fw600 bdrs50 mx-auto mb15"
+ style={{ backgroundColor: category.color || '#9333ea', width: 60, height: 60 }}
+ >
+ <span style={{ fontSize: '1.5rem' }}>{category.name.charAt(0)}</span>
  </div>
-
- <h1 className="text-4xl font-heading font-bold text-gray-900 dark:text-white sm:text-5xl mb-4">
- {category.name}
- </h1>
-
+ <h2 className="title">{category.name}</h2>
  {category.description && (
- <p className="text-lg text-gray-600 dark:text-gray-300 mb-4">
- {category.description}
- </p>
+ <p className="text fz17 mt10">{category.description}</p>
  )}
-
- <p className="text-sm text-gray-500 dark:text-gray-400">
+ <p className="fz14 text-muted mt5">
  {category.post_count} {category.post_count === 1 ? 'post' : 'posts'}
  </p>
+ <div className="breadcumb-list mt15">
+ <Link href={`/${locale}`}>Home</Link>
+ <span className="mx10">/</span>
+ <Link href={`/${locale}/blog`}>Blog</Link>
+ <span className="mx10">/</span>
+ <span className="active">{category.name}</span>
+ </div>
+ </div>
+ </div>
  </div>
  </div>
  </section>
 
  {/* Posts Grid */}
- <section className="py-12 bg-white dark:bg-gray-800">
- <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+ <section className="pt50 pb90">
+ <div className="container">
  {posts.length === 0 ? (
- <div className="text-center py-12">
- <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
- We're working on adding content to this category. Check back soon!
+ <div className="row">
+ <div className="col-12 text-center py50">
+ <p className="fz17 body-color mb30">
+ We&apos;re working on adding content to this category. Check back soon!
  </p>
  <Link
  href={`/${locale}/blog`}
- className="inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-dark px-8 py-3 text-base font-heading font-semibold text-white transition-colors shadow-lg"
+ className="ud-btn btn-thm"
  >
  Browse All Posts
  </Link>
  </div>
+ </div>
  ) : (
- <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
- {posts.map((post) =>(
- <article key={post.id} className="group bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg overflow-hidden transition-all hover:border-accent hover:shadow-xl">
- <Link href={`/${locale}/post/${post.slug}`} className="block">
- {/* Image */}
- {post.feature_img && (
- <div className="relative aspect-[16/9] overflow-hidden">
+ <div className="row">
+ {posts.map((post) => (
+ <div key={post.id} className="col-sm-6 col-lg-4">
+ <div className="blog-style1 bdrs12 bdr1 hover-box-shadow mb30 overflow-hidden">
+ <Link href={`/${locale}/post/${post.slug}`} className="blog-img d-block">
+ {post.feature_img ? (
+ <div style={{ position: 'relative', width: '100%', paddingTop: '56.25%', overflow: 'hidden' }}>
  <Image
  src={post.feature_img}
  alt={post.title}
  fill
  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
- className="object-cover transition-transform group-hover:scale-105"
+ className="object-cover"
  />
  </div>
+ ) : (
+ <div style={{ height: '200px', background: '#f5f5f5' }} />
  )}
-
- {/* Content */}
- <div className="p-6">
- {/* Category & Read Time */}
- <div className="mb-2 flex items-center justify-between text-xs">
+ </Link>
+ <div className="blog-content p30">
+ <div className="d-flex align-items-center justify-content-between mb10">
  {post.category_name && (
- <span className="font-heading font-semibold text-accent uppercase tracking-wide">
+ <span className="fz13 fw500 text-thm">
  {post.category_name}
  </span>
  )}
  {post.read_time && (
- <span className="text-gray-500 dark:text-gray-400">
+ <span className="fz13 text-muted">
  {post.read_time} min read
  </span>
  )}
  </div>
-
- {/* Title */}
- <h2 className="mb-2 text-xl font-heading font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors line-clamp-2">
- {post.title}
- </h2>
-
- {/* Excerpt */}
+ <Link href={`/${locale}/post/${post.slug}`}>
+ <h5 className="fw600 mb10">{post.title}</h5>
+ </Link>
  {post.excerpt && (
- <p className="mb-3 text-sm text-gray-600 dark:text-gray-300 line-clamp-3">
- {post.excerpt}
- </p>
+ <p className="fz14 body-color mb15">{post.excerpt}</p>
  )}
-
- {/* Meta */}
- <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+ <div className="d-flex align-items-center fz13 text-muted">
  {post.published_at && (
  <time dateTime={new Date(post.published_at).toISOString()}>
  {new Date(post.published_at).toLocaleDateString(locale === 'nl' ? 'nl-NL' : 'en-US', {
- month: "short",
- day: "numeric",
- year: "numeric",
+ month: 'short',
+ day: 'numeric',
+ year: 'numeric',
  })}
  </time>
  )}
- {post.views && (
+ {post.views ? (
  <>
- <span>·</span>
+ <span className="mx10">·</span>
  <span>{post.views} views</span>
  </>
- )}
+ ) : null}
  </div>
  </div>
- </Link>
- </article>
+ </div>
+ </div>
  ))}
  </div>
  )}
  </div>
  </section>
  </main>
- <Footer />
  </>
  );
 }

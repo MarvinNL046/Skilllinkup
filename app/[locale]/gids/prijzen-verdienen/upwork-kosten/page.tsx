@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { Metadata } from "next";
 
 type Props = {
@@ -96,7 +94,7 @@ export default async function UpworkKostenPage({ params }: Props) {
 
  return (
  <>
- <Header />
+ 
 
  <main className="min-h-screen bg-[#f8f9fb]">
  {/* Hero Section */}
@@ -615,7 +613,7 @@ export default async function UpworkKostenPage({ params }: Props) {
  />
  </main>
 
- <Footer />
+ 
  </>
  );
 }

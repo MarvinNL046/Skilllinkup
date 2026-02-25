@@ -1,6 +1,4 @@
 import { getTranslations } from 'next-intl/server';
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 
 interface PageProps {
  params: Promise<{ locale: string }>;
@@ -28,7 +26,7 @@ export default async function TermsPage({ params }: PageProps) {
 
  return (
  <>
- <Header />
+ 
  <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
  <div className="container mx-auto px-4 py-16 max-w-4xl">
  <h1 className="text-4xl font-heading font-bold text-gray-900 dark:text-white mb-4">
@@ -236,7 +234,7 @@ export default async function TermsPage({ params }: PageProps) {
  </div>
  </div>
  </div>
- <Footer />
+ 
  </>
  );
 }

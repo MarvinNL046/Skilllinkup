@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { ReviewAvatar } from "@/components/ReviewAvatar";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
@@ -164,7 +162,7 @@ export default async function ReviewsPage({ params }: PageProps) {
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
  />
- <Header />
+ 
  <main className="flex-1">
  {/* Page Header */}
  <section className="bg-gradient-to-b from-gray-50 dark:from-gray-900 to-white dark:to-slate-800 py-12 sm:py-16">
@@ -375,7 +373,7 @@ export default async function ReviewsPage({ params }: PageProps) {
  </div>
  </section>
  </main>
- <Footer />
+ 
  </>
  );
 }
