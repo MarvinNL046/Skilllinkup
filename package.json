@@ -27,6 +27,7 @@
     "db:translate-platforms": "node scripts/translate-platforms.mjs",
     "db:migrate-seo": "node scripts/run-migration-0009.mjs",
     "db:seed-seo": "node scripts/seed-seo-pages.mjs",
+    "db:seed-platforms-convex": "npx convex run platforms:seedAll --args \"$(npx tsx scripts/seed-platforms-convex.ts)\"",
     "email:preview": "npx tsx scripts/preview-emails.ts"
   },
   "dependencies": {

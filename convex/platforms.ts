@@ -1,4 +1,4 @@
-import { query } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
 /**
@@ -168,5 +168,70 @@ export const search = query({
       .collect();
 
     return results;
+  },
+});
+
+/**
+ * Seed mutation: accepts a batch of platform objects and inserts any that do
+ * not yet exist (checked by slug + locale). Safe to run multiple times.
+ * Call via:  npx convex run platforms:seedAll --args '{"platforms":[...]}'
+ */
+export const seedAll = mutation({
+  args: {
+    platforms: v.array(
+      v.object({
+        name: v.string(),
+        slug: v.string(),
+        description: v.optional(v.string()),
+        logoUrl: v.optional(v.string()),
+        websiteUrl: v.optional(v.string()),
+        rating: v.optional(v.number()),
+        category: v.optional(v.string()),
+        fees: v.optional(v.string()),
+        difficulty: v.optional(v.string()),
+        color: v.optional(v.string()),
+        featured: v.optional(v.boolean()),
+        pros: v.optional(v.array(v.string())),
+        cons: v.optional(v.array(v.string())),
+        features: v.optional(v.array(v.string())),
+        status: v.optional(v.string()),
+        publishedAt: v.optional(v.number()),
+        workType: v.optional(v.string()),
+        countries: v.optional(v.array(v.string())),
+        affiliateLink: v.optional(v.string()),
+        locale: v.string(),
+        createdAt: v.number(),
+        updatedAt: v.number(),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    const now = Date.now();
+    let inserted = 0;
+    let skipped = 0;
+
+    for (const platform of args.platforms) {
+      // Check for existing record by slug + locale
+      const existing = await ctx.db
+        .query("platforms")
+        .withIndex("by_slug_locale", (q) =>
+          q.eq("slug", platform.slug).eq("locale", platform.locale)
+        )
+        .first();
+
+      if (existing) {
+        skipped++;
+        continue;
+      }
+
+      await ctx.db.insert("platforms", {
+        ...platform,
+        createdAt: platform.createdAt ?? now,
+        updatedAt: platform.updatedAt ?? now,
+      });
+      inserted++;
+    }
+
+    return { inserted, skipped, total: args.platforms.length };
   },
 });
