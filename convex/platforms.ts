@@ -235,3 +235,50 @@ export const seedAll = mutation({
     return { inserted, skipped, total: args.platforms.length };
   },
 });
+
+/**
+ * Seed mutation: patch affiliate links onto existing platform records.
+ * For each entry in the input array, locates the platform by slug + locale
+ * and patches the affiliateLink field.
+ *
+ * Usage:
+ *   npx convex run platforms:seedPlatformAffiliateLinks \
+ *     --args '{"links":[{"slug":"upwork","locale":"en","affiliateLink":"https://..."}]}'
+ */
+export const seedPlatformAffiliateLinks = mutation({
+  args: {
+    links: v.array(
+      v.object({
+        slug: v.string(),
+        locale: v.string(),
+        affiliateLink: v.string(),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    let updated = 0;
+    let notFound = 0;
+
+    for (const link of args.links) {
+      const platform = await ctx.db
+        .query("platforms")
+        .withIndex("by_slug_locale", (q) =>
+          q.eq("slug", link.slug).eq("locale", link.locale)
+        )
+        .first();
+
+      if (!platform) {
+        notFound++;
+        continue;
+      }
+
+      await ctx.db.patch(platform._id, {
+        affiliateLink: link.affiliateLink,
+        updatedAt: Date.now(),
+      });
+      updated++;
+    }
+
+    return { updated, notFound, total: args.links.length };
+  },
+});

@@ -28,6 +28,8 @@
     "db:migrate-seo": "node scripts/run-migration-0009.mjs",
     "db:seed-seo": "node scripts/seed-seo-pages.mjs",
     "db:seed-platforms-convex": "npx convex run platforms:seedAll --args \"$(npx tsx scripts/seed-platforms-convex.ts)\"",
+    "db:seed-categories-convex": "npx convex run categories:seedAll --args \"$(npx tsx scripts/seed-content-convex.ts)\"",
+    "db:seed-posts-convex": "echo 'Usage: npx convex run posts:seedAll --args \"$(npx tsx scripts/seed-posts-convex.ts <tenantId>)\"'",
     "email:preview": "npx tsx scripts/preview-emails.ts"
   },
   "dependencies": {

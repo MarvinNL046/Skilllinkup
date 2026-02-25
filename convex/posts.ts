@@ -273,3 +273,99 @@ export const incrementViews = mutation({
     });
   },
 });
+
+/**
+ * Seed mutation: insert blog posts in bulk.
+ * Resolves categorySlug to a category _id using the by_slug_locale index.
+ * Skips posts whose slug+locale combination already exists.
+ * Safe to run multiple times.
+ *
+ * Usage:
+ *   npx convex run posts:seedAll --args '{"tenantId":"<id>","posts":[...]}'
+ */
+export const seedAll = mutation({
+  args: {
+    tenantId: v.id("tenants"),
+    posts: v.array(
+      v.object({
+        title: v.string(),
+        slug: v.string(),
+        excerpt: v.optional(v.string()),
+        content: v.string(),
+        categorySlug: v.optional(v.string()),
+        locale: v.string(),
+        status: v.string(),
+        featured: v.optional(v.boolean()),
+        views: v.optional(v.number()),
+        readTime: v.optional(v.number()),
+        metaTitle: v.optional(v.string()),
+        metaDescription: v.optional(v.string()),
+        featureImg: v.optional(v.string()),
+        postFormat: v.optional(v.string()),
+        authorName: v.optional(v.string()),
+        tags: v.optional(v.array(v.string())),
+        publishedAt: v.optional(v.number()),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    const now = Date.now();
+    let inserted = 0;
+    let skipped = 0;
+
+    for (const post of args.posts) {
+      // Skip if this slug+locale already exists
+      const existing = await ctx.db
+        .query("posts")
+        .withIndex("by_slug_locale", (q) =>
+          q.eq("slug", post.slug).eq("locale", post.locale)
+        )
+        .first();
+
+      if (existing) {
+        skipped++;
+        continue;
+      }
+
+      // Resolve categorySlug to a category _id
+      let categoryId: string | undefined;
+      if (post.categorySlug) {
+        const category = await ctx.db
+          .query("categories")
+          .withIndex("by_slug_locale", (q) =>
+            q.eq("slug", post.categorySlug!).eq("locale", post.locale)
+          )
+          .first();
+        if (category) {
+          categoryId = category._id;
+        }
+      }
+
+      await ctx.db.insert("posts", {
+        tenantId: args.tenantId,
+        title: post.title,
+        slug: post.slug,
+        excerpt: post.excerpt,
+        content: post.content,
+        categoryId: categoryId as any,
+        locale: post.locale,
+        status: post.status,
+        featured: post.featured,
+        views: post.views,
+        readTime: post.readTime,
+        metaTitle: post.metaTitle,
+        metaDescription: post.metaDescription,
+        featureImg: post.featureImg,
+        postFormat: post.postFormat ?? "standard",
+        authorName: post.authorName,
+        tags: post.tags,
+        publishedAt: post.publishedAt ?? now,
+        createdAt: now,
+        updatedAt: now,
+      });
+      inserted++;
+    }
+
+    return { inserted, skipped, total: args.posts.length };
+  },
+});
