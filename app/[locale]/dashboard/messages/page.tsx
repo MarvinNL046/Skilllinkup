@@ -14,7 +14,7 @@ export default async function DashboardMessagesPage({ params }: PageProps) {
 
  const user = await getCurrentUser();
  if (!user) {
-  redirect('/handler/sign-in');
+  redirect('/sign-in');
  }
 
  const t = await getTranslations('messages');

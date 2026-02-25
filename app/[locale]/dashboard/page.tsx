@@ -12,7 +12,7 @@ export default async function DashboardPage({ params }: PageProps) {
 
   const user = await getCurrentUser();
   if (!user) {
-    redirect('/handler/sign-in');
+    redirect('/sign-in');
   }
 
   if (user.userType === 'freelancer') {

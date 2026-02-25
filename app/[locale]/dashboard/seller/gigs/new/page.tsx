@@ -30,7 +30,7 @@ export default async function NewGigPage({ params }: PageProps) {
 
  const user = await getCurrentUser();
  if (!user) {
- redirect('/handler/sign-in');
+ redirect('/sign-in');
  }
 
  const rawCategories = await fetchQuery(api.marketplace.categories.list, { locale });

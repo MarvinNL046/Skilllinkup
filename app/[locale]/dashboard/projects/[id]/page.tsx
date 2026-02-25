@@ -82,7 +82,7 @@ export default async function OwnerProjectDetailPage({ params }: PageProps) {
 
  const user = await getCurrentUser();
  if (!user) {
-  redirect('/handler/sign-in');
+  redirect('/sign-in');
  }
 
  const { getToken } = await auth();
