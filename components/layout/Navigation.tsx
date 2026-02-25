@@ -22,7 +22,7 @@ const menuItems: MenuItem[] = [
     name: "Freelancers",
     children: [
       { name: "Find Freelancers", path: "/freelancers" },
-      { name: "Become a Seller", path: "/become-seller" },
+      { name: "Become a Seller", path: "/become-freelancer" },
     ],
   },
   {

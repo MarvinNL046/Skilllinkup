@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { auth, clerkClient, currentUser } from '@clerk/nextjs/server';
 
 export const runtime = 'nodejs';
 
@@ -25,9 +25,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid user type' }, { status: 400 });
     }
 
-    // TODO: Migrate to Convex mutation once Convex is fully set up
-    // For now this route is a placeholder — the actual user sync will happen
-    // via Convex mutations in convex/users.ts
+    await clerkClient.users.updateUserMetadata(userId, {
+      publicMetadata: {
+        ...(clerkUser.publicMetadata || {}),
+        userType,
+        onboardingCompleted: false,
+      },
+    });
 
     return NextResponse.json({ success: true, userType });
   } catch (error) {
