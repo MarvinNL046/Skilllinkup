@@ -51,6 +51,49 @@ export const getByFreelancer = query({
 });
 
 /**
+ * Get all reviews received by a user (as reviewee) using their Convex user ID.
+ * Used for the dashboard reviews page. Returns both public and pending reviews.
+ */
+export const getByUserId = query({
+  args: {
+    userId: v.id("users"),
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const limit = args.limit ?? 50;
+
+    const reviews = await ctx.db
+      .query("marketplaceReviews")
+      .withIndex("by_reviewee", (q) => q.eq("revieweeId", args.userId))
+      .collect();
+
+    const sorted = reviews
+      .sort((a, b) => b.createdAt - a.createdAt)
+      .slice(0, limit);
+
+    const enriched = await Promise.all(
+      sorted.map(async (review) => {
+        const reviewer = review.reviewerId
+          ? await ctx.db.get(review.reviewerId)
+          : null;
+        const order = review.orderId
+          ? await ctx.db.get(review.orderId)
+          : null;
+
+        return {
+          ...review,
+          reviewerName: reviewer?.name ?? "Anonymous",
+          reviewerAvatar: reviewer?.image ?? null,
+          orderTitle: order?.title ?? null,
+        };
+      })
+    );
+
+    return enriched;
+  },
+});
+
+/**
  * Get reviews for an order (both client and freelancer reviews).
  */
 export const getByOrder = query({

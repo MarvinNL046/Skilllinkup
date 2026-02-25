@@ -325,6 +325,38 @@ export const submitBid = mutation({
 });
 
 /**
+ * Get all bids submitted by the current freelancer.
+ * Enriched with the project title and slug.
+ */
+export const getMyBids = query({
+  args: {
+    freelancerId: v.id("freelancerProfiles"),
+  },
+  handler: async (ctx, args) => {
+    const bids = await ctx.db
+      .query("bids")
+      .withIndex("by_freelancer", (q) => q.eq("freelancerId", args.freelancerId))
+      .order("desc")
+      .take(50);
+
+    const enriched = await Promise.all(
+      bids.map(async (bid) => {
+        const project = await ctx.db.get(bid.projectId);
+        return {
+          ...bid,
+          projectTitle: project?.title ?? "Unknown",
+          projectSlug: project?.slug ?? "",
+          projectStatus: project?.status ?? "unknown",
+          projectCurrency: project?.currency ?? bid.currency ?? "EUR",
+        };
+      })
+    );
+
+    return enriched;
+  },
+});
+
+/**
  * Client accepts a bid.
  * Sets bid status to "accepted" and project status to "in_progress".
  * Requires authentication — caller must be the project owner.

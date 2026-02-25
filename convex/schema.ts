@@ -750,4 +750,20 @@ export default defineSchema({
   })
     .index("by_quoteRequest", ["quoteRequestId"])
     .index("by_freelancer", ["freelancerId"]),
+
+  // ============================================================
+  // SAVED ITEMS / FAVORITES
+  // ============================================================
+
+  savedItems: defineTable({
+    userId: v.id("users"),
+    itemType: v.string(), // "gig", "freelancer", "project"
+    itemId: v.string(),
+    itemTitle: v.optional(v.string()),
+    itemImage: v.optional(v.string()),
+    itemUrl: v.optional(v.string()),
+    createdAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_item", ["userId", "itemId"]),
 });
