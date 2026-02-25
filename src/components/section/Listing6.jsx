@@ -1,5 +1,5 @@
 "use client";
-import { product1 } from "@/data/product";
+import useConvexGigs from "@/hook/useConvexGigs";
 import ListingOption2 from "../element/ListingOption2";
 import ListingSidebarModal1 from "../modal/ListingSidebarModal1";
 import ListingSidebar1 from "../sidebar/ListingSidebar1";
@@ -55,6 +55,8 @@ export default function Listing6() {
   // speak filter
   const speakFilter = (item) =>
     getSpeak?.length !== 0 ? getSpeak.includes(item.language) : item;
+
+  const product1 = useConvexGigs();
 
   let content = product1
     .slice(0, 9)

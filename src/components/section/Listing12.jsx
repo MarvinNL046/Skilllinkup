@@ -1,5 +1,5 @@
 "use client";
-import { employee } from "@/data/product";
+import { employee as staticEmployee } from "@/data/product";
 import ListingSidebar4 from "../sidebar/ListingSidebar4";
 import Pagination1 from "./Pagination1";
 import listingStore from "@/store/listingStore";
@@ -23,6 +23,9 @@ export default function Listing12() {
   // sort by filter
   const sortByFilter = (item) =>
     getBestSeller === "best-seller" ? item : item.sort === getBestSeller;
+
+  // Employee data - uses static data (employees are a separate concept from freelancers)
+  const employee = staticEmployee;
 
   // content
   const content = employee

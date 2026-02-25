@@ -4,7 +4,7 @@ import ListingOption2 from "../element/ListingOption2";
 import ListingSidebar5 from "../sidebar/ListingSidebar5";
 import Pagination1 from "./Pagination1";
 import priceStore from "@/store/priceStore";
-import { freelancer1 } from "@/data/product";
+import useConvexFreelancers from "@/hook/useConvexFreelancers";
 import FreelancerCard2 from "../card/FreelancerCard2";
 import ListingSidebarModal5 from "../modal/ListingSidebarModal5";
 
@@ -49,6 +49,8 @@ export default function Listing14() {
   // sort by filter
   const sortByFilter = (item) =>
     getBestSeller === "best-seller" ? item : item.sort === getBestSeller;
+
+  const freelancer1 = useConvexFreelancers();
 
   const content = freelancer1
     .slice(0, 9)

@@ -1,5 +1,5 @@
 "use client";
-import { job1 } from "@/data/job";
+import useConvexJobs from "@/hook/useConvexJobs";
 import ListingOption2 from "../element/ListingOption2";
 import ListingSidebar3 from "../sidebar/ListingSidebar3";
 import Pagination1 from "./Pagination1";
@@ -35,6 +35,8 @@ export default function Listing16() {
   // sort by filter
   const sortByFilter = (item) =>
     getBestSeller === "best-seller" ? item : item.sort === getBestSeller;
+
+  const job1 = useConvexJobs();
 
   let content = job1
     .slice(0, 12)

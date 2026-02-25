@@ -1,5 +1,5 @@
 "use client";
-import { project1 } from "@/data/product";
+import useConvexProjects from "@/hook/useConvexProjects";
 import ProjectCard1 from "../card/ProjectCard1";
 import ListingOption2 from "../element/ListingOption2";
 import ListingSidebar2 from "../sidebar/ListingSidebar2";
@@ -73,6 +73,8 @@ export default function Listing19() {
   // sort by filter
   const sortByFilter = (item) =>
     getBestSeller === "best-seller" ? item : item.sort === getBestSeller;
+
+  const project1 = useConvexProjects();
 
   // content
   let content = project1

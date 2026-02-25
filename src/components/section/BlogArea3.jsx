@@ -1,4 +1,5 @@
-import { blog1 } from "@/data/blog";
+"use client";
+import useConvexBlog from "@/hook/useConvexBlog";
 import Category1 from "../element/Category1";
 import RecentPost1 from "../element/RecentPost1";
 import Search1 from "../element/Search1";
@@ -7,7 +8,8 @@ import Pagination1 from "./Pagination1";
 import BlogCard4 from "../card/BlogCard4";
 
 export default function BlogArea3() {
-  const blogData = blog1.slice(16, 19);
+  const blog1 = useConvexBlog();
+  const blogData = blog1.slice(0, 6);
   const lastIndex = blogData[blogData.length - 1]?.id;
   return (
     <>
@@ -15,7 +17,7 @@ export default function BlogArea3() {
         <div className="container">
           <div className="row wow fadeInUp" data-wow-delay="300ms">
             <div className="col-lg-8">
-              {blog1.slice(16, 19).map((item,i) => (
+              {blogData.map((item,i) => (
                 <BlogCard4 key={ i } data={item} index={lastIndex} />
               ))}
               <Pagination1 />

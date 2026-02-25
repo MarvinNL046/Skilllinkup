@@ -1,5 +1,5 @@
 "use client";
-import { product1 } from "@/data/product";
+import useConvexGigs from "@/hook/useConvexGigs";
 import PopularServiceCard1 from "../card/PopularServiceCard1";
 import PopularServiceSlideCard1 from "../card/PopularServiceSlideCard1";
 import { useState } from "react";
@@ -16,6 +16,7 @@ const categories = [
 ];
 
 export default function TrendingService14() {
+  const product1 = useConvexGigs();
   const [getCurrentCategory, setCurrentCategory] = useState("All");
 
   // tab handler
