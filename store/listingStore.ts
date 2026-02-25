@@ -3,6 +3,7 @@ import { create } from 'zustand';
 interface ListingState {
   deliveryTime: string;
   level: string;
+  ratingMin: number;
   location: string[];
   bestSeller: string;
   designTool: string[];
@@ -15,6 +16,7 @@ interface ListingState {
   noOfEmployee: string;
   setDeliveryTime: (val: string) => void;
   setLevel: (val: string) => void;
+  setRatingMin: (val: number) => void;
   setLocation: (val: string[]) => void;
   setBestSeller: (val: string) => void;
   setDesignTool: (val: string[]) => void;
@@ -31,6 +33,7 @@ interface ListingState {
 const initialState = {
   deliveryTime: '',
   level: '',
+  ratingMin: 0,
   location: [] as string[],
   bestSeller: '',
   designTool: [] as string[],
@@ -47,6 +50,7 @@ export const useListingStore = create<ListingState>((set) => ({
   ...initialState,
   setDeliveryTime: (val) => set({ deliveryTime: val }),
   setLevel: (val) => set({ level: val }),
+  setRatingMin: (val) => set({ ratingMin: val }),
   setLocation: (val) => set({ location: val }),
   setBestSeller: (val) => set({ bestSeller: val }),
   setDesignTool: (val) => set({ designTool: val }),
