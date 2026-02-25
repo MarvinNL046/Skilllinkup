@@ -23,7 +23,7 @@ export default function MobileNavigation() {
               </Link>
               <div className="right-side text-end">
                 <SignedOut>
-                  <Link href="/sign-in">join</Link>
+                  <Link href={`/${locale}/sign-in`}>join</Link>
                 </SignedOut>
                 <SignedIn>
                   <Link href={`/${locale}/dashboard`}>Dashboard</Link>

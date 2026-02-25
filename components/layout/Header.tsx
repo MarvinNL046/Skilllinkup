@@ -40,13 +40,13 @@ export default function Header() {
                   <SignedOut>
                     <Link
                       className="login-info mr10 home18-sign-btn px30 py-1 bdrs12 ml30 bdr1-dark"
-                      href="/sign-in"
+                      href={`/${locale}/sign-in`}
                     >
                       Sign in
                     </Link>
                     <Link
                       className="ud-btn add-joining home20-join-btn bdrs12 text-white"
-                      href="/sign-up"
+                      href={`/${locale}/sign-up`}
                     >
                       Join
                     </Link>
