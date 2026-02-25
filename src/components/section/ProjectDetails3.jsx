@@ -7,8 +7,9 @@ import ProjectPriceWidget1 from "../element/ProjectPriceWidget1";
 import ProjectContactWidget1 from "../element/ProjectContactWidget1";
 import useScreen from "@/hook/useScreen";
 import { useParams } from "next/navigation";
+import useConvexProjectDetail from "@/hook/useConvexProjectDetail";
 
-const skills = [
+const staticSkills = [
   "SaaS",
   "Figma",
   "Software Design",
@@ -23,7 +24,66 @@ export default function ProjectDetail3() {
   const isMatchedScreen = useScreen(1216);
   const { id } = useParams();
 
-  const data = project1.find((item) => item.id == id);
+  const convexData = useConvexProjectDetail(id);
+
+  // convexData === undefined means still loading
+  const isLoading = convexData === undefined;
+
+  const data = !isLoading
+    ? convexData
+      ? {
+          _id: convexData._id,
+          title: convexData.title,
+          description: convexData.description || null,
+          location: convexData.locationCity
+            ? `${convexData.locationCity}, ${convexData.locationCountry || ""}`
+            : convexData.workType === "remote"
+            ? "Remote"
+            : "On-site",
+          postedAt: convexData.createdAt
+            ? new Date(convexData.createdAt).toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })
+            : null,
+          views: convexData.views || null,
+          budgetMin: convexData.budgetMin || null,
+          budgetMax: convexData.budgetMax || null,
+          requiredSkills: convexData.requiredSkills || [],
+          bidCount: convexData.bidCount || 0,
+          projectType: convexData.projectType || null,
+          duration: convexData.duration || null,
+        }
+      : project1.find((item) => item.id == id) || null
+    : null;
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <section className="pt30">
+        <div className="container">
+          <div className="row">
+            <div className="col-12 text-center py-5">
+              <p className="text">Loading project details...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const title = data?.title || "Website Designer Required For Directory Theme";
+  const location = data?.location || "London, UK";
+  const postedAt = data?.postedAt || "January 15, 2022";
+  const views = data?.views != null ? `${data.views} Views` : "902 Views";
+  const description = data?.description || null;
+  const skills =
+    data?.requiredSkills && data.requiredSkills.length > 0
+      ? data.requiredSkills
+      : staticSkills;
+  const bidCount =
+    data?.bidCount != null ? data.bidCount : projectProposal1.slice(0, 3).length;
 
   return (
     <>
@@ -38,25 +98,19 @@ export default function ProjectDetail3() {
                       <div className="row ">
                         <div className="col-xl-12">
                           <div className="position-relative">
-                            {data ? (
-                              <h2>{data.title}</h2>
-                            ) : (
-                              <h2>
-                                Website Designer Required For Directory Theme
-                              </h2>
-                            )}
+                            <h2>{title}</h2>
                             <div className="list-meta mt15 mb30 pb30 bdrb1 ">
                               <p className="mb-0 dark-color fz15 fw500 list-inline-item mb5-sm">
                                 <i className="flaticon-place vam fz20 text-thm2 me-2"></i>{" "}
-                                London, UK
+                                {location}
                               </p>
                               <p className="mb-0 dark-color fz15 fw500 list-inline-item ml15 mb5-sm ml0-xs">
                                 <i className="flaticon-calendar text-thm2 vam fz20 me-2"></i>{" "}
-                                January 15, 2022
+                                {postedAt}
                               </p>
                               <p className="mb-0 dark-color fz15 fw500 list-inline-item ml15 mb5-sm ml0-xs">
                                 <i className="flaticon-website text-thm2 vam fz20 me-2"></i>{" "}
-                                902 Views
+                                {views}
                               </p>
                             </div>
                           </div>
@@ -82,7 +136,9 @@ export default function ProjectDetail3() {
                           </div>
                           <div className="details">
                             <h5 className="title">Project type</h5>
-                            <p className="mb-0 text">Hourly</p>
+                            <p className="mb-0 text">
+                              {data?.projectType || "Hourly"}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -93,7 +149,9 @@ export default function ProjectDetail3() {
                           </div>
                           <div className="details">
                             <h5 className="title">Project Duration</h5>
-                            <p className="mb-0 text">10-15 Hours</p>
+                            <p className="mb-0 text">
+                              {data?.duration || "10-15 Hours"}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -135,22 +193,30 @@ export default function ProjectDetail3() {
                   <div className="service-about">
                     <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
                       <h4>Description</h4>
-                      <p className="text mb30">
-                        It is a long established fact that a reader will be
-                        distracted by the readable content of a page when
-                        looking at its layout. The point of using Lorem Ipsum is
-                        that it has a more-or-less normal distribution of
-                        letters, as opposed to using 'Content here, content
-                        here', making it look like readable English.{" "}
-                      </p>
-                      <p className="text mb30">
-                        Many desktop publishing packages and web page editors
-                        now use Lorem Ipsum as their default model text, and a
-                        search for 'lorem ipsum' will uncover many web sites
-                        still in their infancy. Various versions have evolved
-                        over the years, sometimes by accident, sometimes on
-                        purpose (injected humour and the like).
-                      </p>
+                      {description ? (
+                        <p className="text mb30">{description}</p>
+                      ) : (
+                        <>
+                          <p className="text mb30">
+                            It is a long established fact that a reader will be
+                            distracted by the readable content of a page when
+                            looking at its layout. The point of using Lorem Ipsum
+                            is that it has a more-or-less normal distribution of
+                            letters, as opposed to using &apos;Content here,
+                            content here&apos;, making it look like readable
+                            English.{" "}
+                          </p>
+                          <p className="text mb30">
+                            Many desktop publishing packages and web page editors
+                            now use Lorem Ipsum as their default model text, and
+                            a search for &apos;lorem ipsum&apos; will uncover
+                            many web sites still in their infancy. Various
+                            versions have evolved over the years, sometimes by
+                            accident, sometimes on purpose (injected humour and
+                            the like).
+                          </p>
+                        </>
+                      )}
                     </div>
                     {/* <hr className="opacity-100 mb60 mt60" /> */}
                     <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
@@ -180,7 +246,7 @@ export default function ProjectDetail3() {
                           <a
                             key={i}
                             className={`tag list-inline-item mb-2 mb-xl-0 ${
-                              Number(item.length) === 7 ? "mr0" : "mr10"
+                              String(item).length === 7 ? "mr0" : "mr10"
                             }`}
                           >
                             {item}
@@ -190,7 +256,9 @@ export default function ProjectDetail3() {
                     </div>
                     {/* <hr className="opacity-100 mb60" /> */}
                     <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
-                      <h4 className="mb30">Project Proposals (3)</h4>
+                      <h4 className="mb30">
+                        Project Proposals ({bidCount})
+                      </h4>
                       <div className="row">
                         {projectProposal1.slice(0, 3).map((item, i) => (
                           <div key={i} className="col-md-6 col-lg-12">

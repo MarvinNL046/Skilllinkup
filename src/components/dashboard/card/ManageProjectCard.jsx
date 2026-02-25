@@ -1,7 +1,51 @@
 "use client";
+import Link from "next/link";
 import { Tooltip } from "react-tooltip";
 
-export default function ManageProjectCard() {
+const STATUS_LABELS = {
+  open: { label: "Open", className: "text-success" },
+  in_progress: { label: "In Progress", className: "text-warning" },
+  completed: { label: "Completed", className: "text-primary" },
+  cancelled: { label: "Cancelled", className: "text-danger" },
+  closed: { label: "Closed", className: "text-secondary" },
+};
+
+export default function ManageProjectCard({ project }) {
+  // Fallback to static data when no project prop is provided
+  const title = project?.title ?? "Food Delivery Mobile App";
+  const categoryName = project?.categoryName ?? "Web & App Design";
+  const status = project?.status ?? "open";
+  const bidCount = project?.bidCount ?? 0;
+  const budgetMin = project?.budgetMin;
+  const budgetMax = project?.budgetMax;
+  const currency = project?.currency ?? "EUR";
+  const workType = project?.workType ?? "remote";
+  const slug = project?.slug ?? "";
+  const createdAt = project?.createdAt;
+
+  const statusInfo = STATUS_LABELS[status] ?? { label: status, className: "text-secondary" };
+
+  const budgetDisplay =
+    budgetMin != null && budgetMax != null
+      ? `${currency} ${budgetMin} - ${budgetMax}`
+      : budgetMin != null
+      ? `${currency} ${budgetMin}+`
+      : "Budget TBD";
+
+  const timeAgo = createdAt
+    ? (() => {
+        const diff = Date.now() - createdAt;
+        const hours = Math.floor(diff / 3600000);
+        if (hours < 24) return `${hours || 1} hour${hours !== 1 ? "s" : ""} ago`;
+        const days = Math.floor(diff / 86400000);
+        return `${days} day${days !== 1 ? "s" : ""} ago`;
+      })()
+    : "Recently";
+
+  // Unique tooltip IDs to avoid conflicts when multiple cards are rendered
+  const tooltipEditId = `edit-${project?._id ?? Math.random()}`;
+  const tooltipDeleteId = `delete-${project?._id ?? Math.random()}`;
+
   return (
     <>
       <tr>
@@ -9,50 +53,69 @@ export default function ManageProjectCard() {
           <div className="freelancer-style1 box-shadow-none row m-0 p-0 align-items-lg-end">
             <div className="d-lg-flex px-0">
               <div className="details mb15-md-md">
-                <h5 className="title mb10">Food Delviery Mobile App</h5>
+                <h5 className="title mb10">{title}</h5>
                 <p className="mb-0 fz14 list-inline-item mb5-sm pe-1">
                   <i className="flaticon-place fz16 vam text-thm2 me-1" />{" "}
-                  London, UK
+                  {workType.charAt(0).toUpperCase() + workType.slice(1)}
                 </p>
                 <p className="mb-0 fz14 list-inline-item mb5-sm pe-1">
                   <i className="flaticon-30-days fz16 vam text-thm2 me-1 bdrl1 pl15 pl0-xs bdrn-xs" />{" "}
-                  2 hours ago
+                  {timeAgo}
                 </p>
                 <p className="mb-0 fz14 list-inline-item mb5-sm text-thm">
                   <i className="flaticon-contract fz16 vam me-1 bdrl1 pl15 pl0-xs bdrn-xs" />{" "}
-                  1 Received
+                  {bidCount} Bid{bidCount !== 1 ? "s" : ""} Received
                 </p>
               </div>
             </div>
           </div>
         </th>
         <td className="vam">
-          <span className="fz15 fw400">Web &amp; App Design</span>
+          <span className="fz15 fw400">{categoryName}</span>
         </td>
         <td className="vam">
-          <span className="fz14 fw400">$500.00/Fixed</span>
+          <div>
+            <span className="fz14 fw400">{budgetDisplay} / Fixed</span>
+            <br />
+            <span className={`fz13 fw500 ${statusInfo.className}`}>{statusInfo.label}</span>
+          </div>
         </td>
         <td>
-          <div className="d-flex">
-            <a
-              className="icon me-2"
-              id="edit"
-              data-bs-toggle="modal"
-              data-bs-target="#proposalModal"
-            >
-              <Tooltip anchorSelect="#edit" className="ui-tooltip" place="top">
-                Edit
-              </Tooltip>
-              <span className="flaticon-pencil" />
-            </a>
+          <div className="d-flex align-items-center">
+            {slug && (
+              <Link
+                href={`/en/projects/${slug}`}
+                className="icon me-2"
+                title="View Bids"
+                id={tooltipEditId}
+              >
+                <Tooltip anchorSelect={`#${tooltipEditId}`} className="ui-tooltip" place="top">
+                  View Bids
+                </Tooltip>
+                <span className="flaticon-pencil" />
+              </Link>
+            )}
+            {!slug && (
+              <a
+                className="icon me-2"
+                id={tooltipEditId}
+                data-bs-toggle="modal"
+                data-bs-target="#proposalModal"
+              >
+                <Tooltip anchorSelect={`#${tooltipEditId}`} className="ui-tooltip" place="top">
+                  Edit
+                </Tooltip>
+                <span className="flaticon-pencil" />
+              </a>
+            )}
             <a
               className="icon"
-              id="delete"
+              id={tooltipDeleteId}
               data-bs-toggle="modal"
               data-bs-target="#deleteModal"
             >
               <Tooltip
-                anchorSelect="#delete"
+                anchorSelect={`#${tooltipDeleteId}`}
                 place="top"
                 className="ui-tooltip"
               >

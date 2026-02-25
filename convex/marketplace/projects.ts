@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
+import { internal } from "../_generated/api";
 
 /**
  * List open projects with client info, category name, and bid count.
@@ -320,6 +321,26 @@ export const submitBid = mutation({
       updatedAt: now,
     });
 
+    // Send new bid notification to project client
+    const client = project.clientId ? await ctx.db.get(project.clientId) : null;
+    const freelancerProfile = await ctx.db
+      .query("freelancerProfiles")
+      .withIndex("by_userId", (q) => q.eq("userId", user._id))
+      .first();
+
+    if (client?.email) {
+      await ctx.scheduler.runAfter(0, internal.lib.email.sendNewBid, {
+        clientEmail: client.email,
+        clientName: client.name || "Customer",
+        projectTitle: project.title,
+        bidAmount: args.amount,
+        currency: project.currency ?? "EUR",
+        deliveryDays: args.deliveryDays,
+        freelancerName: freelancerProfile?.displayName || user.name || "Freelancer",
+        projectId: args.projectId,
+      });
+    }
+
     return bidId;
   },
 });
@@ -399,6 +420,20 @@ export const acceptBid = mutation({
       selectedFreelancerId: bid.freelancerId,
       updatedAt: now,
     });
+
+    // Send bid accepted notification to freelancer
+    const freelancerProfile = await ctx.db.get(bid.freelancerId);
+    const freelancerUser = freelancerProfile ? await ctx.db.get(freelancerProfile.userId) : null;
+
+    if (freelancerUser?.email) {
+      await ctx.scheduler.runAfter(0, internal.lib.email.sendBidAccepted, {
+        freelancerEmail: freelancerUser.email,
+        freelancerName: freelancerProfile?.displayName || freelancerUser.name || "Freelancer",
+        projectTitle: project.title,
+        amount: bid.amount,
+        currency: project.currency ?? "EUR",
+      });
+    }
 
     return { success: true };
   },

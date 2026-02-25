@@ -4,9 +4,9 @@ import DashboardNavigation from "../header/DashboardNavigation";
 import { useState } from "react";
 import Pagination1 from "@/components/section/Pagination1";
 import ManageServiceCard1 from "../card/ManageServiceCard1";
-import { manageService } from "@/data/dashboard";
 import ProposalModal1 from "../modal/ProposalModal1";
 import DeleteModal from "../modal/DeleteModal";
+import useConvexMyGigs from "@/hook/useConvexMyGigs";
 
 const tab = [
   "Active Services",
@@ -16,8 +16,68 @@ const tab = [
   "Canceled Services",
 ];
 
+const STATUS_MAP = {
+  0: "active",
+  1: "pending",
+  2: "ongoing",
+  3: "completed",
+  4: "cancelled",
+};
+
+function mapGigToCard(gig) {
+  return {
+    _id: gig._id,
+    id: gig._id,
+    img: gig.firstImage?.url || "/images/listings/g-1.jpg",
+    title: gig.title || "Untitled Service",
+    category: gig.category?.name || "Uncategorized",
+    cost: gig.minPrice || 0,
+    status: gig.status,
+    list: [],
+  };
+}
+
+function GigTable({ gigs, removeGig }) {
+  if (gigs.length === 0) {
+    return (
+      <div className="text-center py-4">
+        <p className="text">No services found in this category.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="packages_table table-responsive">
+      <table className="table-style3 table at-savesearch">
+        <thead className="t-head">
+          <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Category</th>
+            <th scope="col">Type/Cost</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody className="t-body">
+          {gigs.map((item, i) => (
+            <ManageServiceCard1 key={item._id || i} data={item} removeGig={removeGig} />
+          ))}
+        </tbody>
+      </table>
+      <div className="mt30">
+        <Pagination1 />
+      </div>
+    </div>
+  );
+}
+
 export default function ManageServiceInfo() {
   const [selectedTab, setSelectedTab] = useState(0);
+  const { gigs, removeGig } = useConvexMyGigs();
+
+  const currentStatus = STATUS_MAP[selectedTab];
+  const filteredGigs = gigs
+    .filter((g) => g.status === currentStatus)
+    .map(mapGigToCard);
 
   return (
     <>
@@ -63,116 +123,7 @@ export default function ManageServiceInfo() {
                     ))}
                   </div>
                 </nav>
-                {selectedTab === 0 && (
-                  <div className="packages_table table-responsive">
-                    <table className="table-style3 table at-savesearch">
-                      <thead className="t-head">
-                        <tr>
-                          <th scope="col">Title</th>
-                          <th scope="col">Category</th>
-                          <th scope="col">Type/Cost</th>
-                          <th scope="col">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="t-body">
-                        {manageService.map((item,i) => (
-                          <ManageServiceCard1 key={i} data={item} />
-                        ))}
-                      </tbody>
-                    </table>
-                    <div className="mt30">
-                      <Pagination1 />
-                    </div>
-                  </div>
-                )}
-                {selectedTab === 1 && (
-                  <div className="packages_table table-responsive">
-                    <table className="table-style3 table at-savesearch">
-                      <thead className="t-head">
-                        <tr>
-                          <th scope="col">Title</th>
-                          <th scope="col">Category</th>
-                          <th scope="col">Type/Cost</th>
-                          <th scope="col">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="t-body">
-                        {manageService.slice(0, 4).map((item,i) => (
-                          <ManageServiceCard1 key={i} data={item} />
-                        ))}
-                      </tbody>
-                    </table>
-                    <div className="mt30">
-                      <Pagination1 />
-                    </div>
-                  </div>
-                )}
-                {selectedTab === 2 && (
-                  <div className="packages_table table-responsive">
-                    <table className="table-style3 table at-savesearch">
-                      <thead className="t-head">
-                        <tr>
-                          <th scope="col">Title</th>
-                          <th scope="col">Category</th>
-                          <th scope="col">Type/Cost</th>
-                          <th scope="col">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="t-body">
-                        {manageService.slice(0, 3).map((item,i) => (
-                          <ManageServiceCard1 key={i} data={item} />
-                        ))}
-                      </tbody>
-                    </table>
-                    <div className="mt30">
-                      <Pagination1 />
-                    </div>
-                  </div>
-                )}
-                {selectedTab === 3 && (
-                  <div className="packages_table table-responsive">
-                    <table className="table-style3 table at-savesearch">
-                      <thead className="t-head">
-                        <tr>
-                          <th scope="col">Title</th>
-                          <th scope="col">Category</th>
-                          <th scope="col">Type/Cost</th>
-                          <th scope="col">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="t-body">
-                        {manageService.slice(0, 4).map((item,i) => (
-                          <ManageServiceCard1 key={i} data={item} />
-                        ))}
-                      </tbody>
-                    </table>
-                    <div className="mt30">
-                      <Pagination1 />
-                    </div>
-                  </div>
-                )}
-                {selectedTab === 4 && (
-                  <div className="packages_table table-responsive">
-                    <table className="table-style3 table at-savesearch">
-                      <thead className="t-head">
-                        <tr>
-                          <th scope="col">Title</th>
-                          <th scope="col">Category</th>
-                          <th scope="col">Type/Cost</th>
-                          <th scope="col">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="t-body">
-                        {manageService.slice(0, 5).map((item,i) => (
-                          <ManageServiceCard1 key={i} data={item} />
-                        ))}
-                      </tbody>
-                    </table>
-                    <div className="mt30">
-                      <Pagination1 />
-                    </div>
-                  </div>
-                )}
+                <GigTable gigs={filteredGigs} removeGig={removeGig} />
               </div>
             </div>
           </div>

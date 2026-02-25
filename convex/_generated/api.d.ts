@@ -14,6 +14,7 @@ import type * as chat_conversations from "../chat/conversations.js";
 import type * as chat_messages from "../chat/messages.js";
 import type * as comments from "../comments.js";
 import type * as http from "../http.js";
+import type * as lib_email from "../lib/email.js";
 import type * as marketplace_categories from "../marketplace/categories.js";
 import type * as marketplace_clients from "../marketplace/clients.js";
 import type * as marketplace_dashboard from "../marketplace/dashboard.js";
@@ -46,6 +47,7 @@ declare const fullApi: ApiFromModules<{
   "chat/messages": typeof chat_messages;
   comments: typeof comments;
   http: typeof http;
+  "lib/email": typeof lib_email;
   "marketplace/categories": typeof marketplace_categories;
   "marketplace/clients": typeof marketplace_clients;
   "marketplace/dashboard": typeof marketplace_dashboard;

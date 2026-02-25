@@ -17,7 +17,7 @@ export default function BlogCard3({ data }) {
         <div className="blog-content pl0-sm pl30-lg pl60 py-0 pe-0 flex-grow-1">
           <a className="date">Business</a>
           <h3 className="title mt-1 mb20">
-            <Link href={`/blog-single/${data.id}`}>{data.title}</Link>
+            <Link href={`/post/${data.id}`}>{data.title}</Link>
           </h3>
           <p className="text mb0">{data.description}</p>
           <div className="d-flex mt50 mt30-lg">

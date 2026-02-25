@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
+import { internal } from "../_generated/api";
 import { Doc } from "../_generated/dataModel";
 
 /**
@@ -79,6 +80,41 @@ export const create = mutation({
       createdAt: now,
       updatedAt: now,
     });
+
+    // Fetch user data for emails
+    const client = await ctx.db.get(args.clientId);
+    const freelancerProfile = await ctx.db.get(args.freelancerId);
+    const freelancerUser = freelancerProfile ? await ctx.db.get(freelancerProfile.userId) : null;
+
+    const order = await ctx.db.get(orderId);
+
+    // Send order confirmation to client
+    if (client?.email) {
+      await ctx.scheduler.runAfter(0, internal.lib.email.sendOrderConfirmation, {
+        clientEmail: client.email,
+        clientName: client.name || "Customer",
+        orderNumber: order!.orderNumber,
+        orderTitle: args.title,
+        amount: args.amount,
+        currency: args.currency ?? "EUR",
+        deliveryDays: args.deliveryDays,
+        orderId: orderId,
+      });
+    }
+
+    // Send new order notification to freelancer
+    if (freelancerUser?.email) {
+      await ctx.scheduler.runAfter(0, internal.lib.email.sendNewOrderNotification, {
+        freelancerEmail: freelancerUser.email,
+        freelancerName: freelancerProfile?.displayName || freelancerUser.name || "Freelancer",
+        orderNumber: order!.orderNumber,
+        orderTitle: args.title,
+        amount: args.amount - platformFee,
+        currency: args.currency ?? "EUR",
+        deliveryDays: args.deliveryDays,
+        orderId: orderId,
+      });
+    }
 
     return orderId;
   },
@@ -302,6 +338,18 @@ export const deliver = mutation({
       updatedAt: Date.now(),
     });
 
+    // Send delivery notification to client
+    const client = await ctx.db.get(order.clientId);
+    if (client?.email) {
+      await ctx.scheduler.runAfter(0, internal.lib.email.sendOrderDelivered, {
+        clientEmail: client.email,
+        clientName: client.name || "Customer",
+        orderNumber: order.orderNumber,
+        orderTitle: order.title,
+        orderId: args.orderId,
+      });
+    }
+
     return { success: true };
   },
 });
@@ -339,6 +387,21 @@ export const approve = mutation({
       completedAt: now,
       updatedAt: now,
     });
+
+    // Send completion notification to freelancer
+    const freelancerProfile = order.freelancerId ? await ctx.db.get(order.freelancerId) : null;
+    const freelancerUser = freelancerProfile ? await ctx.db.get(freelancerProfile.userId) : null;
+    if (freelancerUser?.email) {
+      await ctx.scheduler.runAfter(0, internal.lib.email.sendOrderCompleted, {
+        freelancerEmail: freelancerUser.email,
+        freelancerName: freelancerProfile?.displayName || freelancerUser.name || "Freelancer",
+        orderNumber: order.orderNumber,
+        orderTitle: order.title,
+        amount: order.freelancerEarnings ?? order.amount,
+        currency: order.currency ?? "EUR",
+        orderId: args.orderId,
+      });
+    }
 
     return { success: true };
   },

@@ -109,8 +109,8 @@ export default function Footer14() {
                                                 Need live support?
                                             </p>
                                             <h5 className="info-mail">
-                                                <Link href="mailto:hi@freeio.com">
-                                                    hi@freeio.com
+                                                <Link href="mailto:info@skilllinkup.com">
+                                                    info@skilllinkup.com
                                                 </Link>
                                             </h5>
                                         </div>
@@ -165,7 +165,7 @@ export default function Footer14() {
                         <div className="col-sm-6">
                             <div className="text-center text-lg-start">
                                 <p className="copyright-text mb-0 at-home8 ff-heading">
-                                    © Freeio. 2023{" "}
+                                    © SkillLinkup. 2023{" "}
                                     <Link
                                         href="https://themeforest.net/user/ib-themes/portfolio"
                                         target="_blank"

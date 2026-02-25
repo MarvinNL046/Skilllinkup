@@ -81,7 +81,7 @@ export default function BlogArea4() {
                     height={530}
                     width={1501}
                     className="w-100 h-100 bdrs16 object-fit-conver"
-                    src="/images/blog/blog-single-1.jpg"
+                    src="/images/blog/post-1.jpg"
                     alt="single blog"
                   />
                 )}
@@ -190,7 +190,7 @@ export default function BlogArea4() {
                 <Image
                   height={456}
                   width={937}
-                  src="/images/blog/blog-single-2.jpg"
+                  src="/images/blog/post-2.jpg"
                   alt="blog-single"
                   className="bdrs4 post-img-2 w-100 h-100 object-fit-contain"
                 />

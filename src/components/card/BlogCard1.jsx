@@ -37,7 +37,7 @@ export default function BlogCard1({ data, isContentExpanded = false }) {
         <div className={`blog-content ${isContentExpanded ? "px-0" : ""}`}>
           <a className="date">{data.date}</a>
           <h4 className="title mt-1">
-            <Link href={`/blog-single/${data.id}`}>{data.title}</Link>
+            <Link href={`/post/${data.id}`}>{data.title}</Link>
           </h4>
           <p className="text mb-0">{data.brief}</p>
         </div>

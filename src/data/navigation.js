@@ -39,12 +39,12 @@ const menus = [
           { id: 3, name: "Service v3", path: "/service-3" },
           { id: 4, name: "Service v4", path: "/service-4" },
           { id: 5, name: "Service v5", path: "/service-5" },
-          { id: 6, name: "Service v6", path: "/service-6" },
+          { id: 6, name: "Services", path: "/services" },
           { id: 7, name: "Service v7", path: "/service-7" },
           { id: 8, name: "Service All", path: "/service-all" },
           { id: 9, name: "Service Single v1", path: "/service-single" },
           { id: 10, name: "Service Single v2", path: "/service-single-v2" },
-          { id: 11, name: "Service Single v3", path: "/service-single-v3" },
+          { id: 11, name: "Service", path: "/service" },
         ],
       },
       {
@@ -54,10 +54,10 @@ const menus = [
           { id: 1, name: "Project v1", path: "/project-1" },
           { id: 1, name: "Project v2", path: "/project-2" },
           { id: 1, name: "Project v3", path: "/project-3" },
-          { id: 1, name: "Project v4", path: "/project-4" },
+          { id: 1, name: "Projects", path: "/projects" },
           { id: 2, name: "Project Single v1", path: "/project-single" },
           { id: 3, name: "Project Single v2", path: "/project-single-v2" },
-          { id: 4, name: "Project Single v3", path: "/project-single-v3" },
+          { id: 4, name: "Project", path: "/project" },
         ],
       },
       {
@@ -66,8 +66,8 @@ const menus = [
         children: [
           { id: 1, name: "Job list v1", path: "/job-1" },
           { id: 2, name: "Job list v2", path: "/job-2" },
-          { id: 3, name: "Job list v3", path: "/job-3" },
-          { id: 4, name: "Job Single", path: "/job-single" },
+          { id: 3, name: "Jobs", path: "/jobs" },
+          { id: 4, name: "Job", path: "/job" },
         ],
       },
     ],
@@ -109,7 +109,7 @@ const menus = [
         name: "Employee",
         children: [
           { id: 1, name: "Employee V1", path: "/employee-1" },
-          { id: 2, name: "Employee V2", path: "/employee-2" },
+          { id: 2, name: "Employees", path: "/employees" },
           {
             id: 3,
             name: "Employee Single",
@@ -122,7 +122,7 @@ const menus = [
         name: "Freelancer",
         children: [
           { id: 1, name: "Freelancer V1", path: "/freelancer-1" },
-          { id: 2, name: "Freelancer V2", path: "/freelancer-2" },
+          { id: 2, name: "Freelancers", path: "/freelancers" },
           { id: 3, name: "Freelancer V3", path: "/freelancer-3" },
           {
             id: 4,
@@ -136,8 +136,8 @@ const menus = [
           },
           {
             id: 6,
-            name: "Freelancer Single v3",
-            path: "/freelancer-single-v3",
+            name: "Freelancer",
+            path: "/freelancer",
           },
         ],
       },
@@ -157,7 +157,7 @@ const menus = [
         name: "About",
         children: [
           { id: 1, name: "About v1", path: "/about-1" },
-          { id: 2, name: "About v2", path: "/about-2" },
+          { id: 2, name: "About", path: "/about" },
         ],
       },
       {
@@ -166,8 +166,8 @@ const menus = [
         children: [
           { id: 1, name: "List 1", path: "/blog-1" },
           { id: 2, name: "List 2", path: "/blog-2" },
-          { id: 3, name: "List 3", path: "/blog-3" },
-          { id: 4, name: "Single", path: "/blog-single" },
+          { id: 3, name: "Blog", path: "/blog" },
+          { id: 4, name: "Post", path: "/post" },
         ],
       },
       {

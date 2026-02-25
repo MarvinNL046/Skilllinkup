@@ -11,11 +11,69 @@ import Sticky from "react-stickynode";
 import useScreen from "@/hook/useScreen";
 import Image from "next/image";
 import { useParams } from "next/navigation";
+import useConvexFreelancerDetail from "@/hook/useConvexFreelancerDetail";
+
 export default function FreelancerDetail3() {
   const isMatchedScreen = useScreen(1216);
   const { id } = useParams();
 
-  const data = freelancer1.find((item) => item.id == id);
+  // The id param is a Convex document ID for freelancerProfiles
+  const convexData = useConvexFreelancerDetail(id);
+
+  // convexData === undefined means still loading
+  // convexData === null means not found in Convex, use static fallback
+  const isLoading = convexData === undefined;
+
+  const data = !isLoading
+    ? convexData
+      ? {
+          _id: convexData._id,
+          img: convexData.avatarUrl || "/images/team/fl-1.png",
+          name: convexData.displayName || "Freelancer",
+          profession: convexData.tagline || "Professional",
+          rating: convexData.ratingAverage || 0,
+          reviews: convexData.ratingCount || 0,
+          location: convexData.locationCity
+            ? `${convexData.locationCity}, ${convexData.locationCountry || ""}`
+            : convexData.locationCountry || "Remote",
+          memberSince: convexData.createdAt
+            ? new Date(convexData.createdAt).toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })
+            : "April 1, 2022",
+          bio: convexData.bio || null,
+          skills: convexData.skills || [],
+          hourlyRate: convexData.hourlyRate || null,
+        }
+      : freelancer1.find((item) => item.id == id) || null
+    : null;
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <section className="pt10 pb90 pb30-md">
+        <div className="container">
+          <div className="row">
+            <div className="col-12 text-center py-5">
+              <p className="text">Loading freelancer profile...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const profileImg = data?.img || "/images/team/fl-1.png";
+  const profileName = data?.name || "Leslie Alexander";
+  const profession = data?.profession || "UI/UX Designer";
+  const rating = data?.rating ?? 4.82;
+  const reviewCount = data?.reviews ?? 94;
+  const location = data?.location || "London, UK";
+  const memberSince = data?.memberSince || "April 1, 2022";
+  const bio = data?.bio || null;
+
   return (
     <>
       <section className="pt10 pb90 pb30-md">
@@ -37,28 +95,24 @@ export default function FreelancerDetail3() {
                               width={90}
                               height={90}
                               className="rounded-circle w-100 wa-sm mb15-sm"
-                              src={
-                                data?.img ? data.img : "/images/team/fl-1.png"
-                              }
+                              src={profileImg}
                               alt="Freelancer Photo"
                             />
                           </a>
                           <div className="ml20 ml0-xs">
-                            <h5 className="title mb-1">
-                              {data?.name ? data.name : "Leslie Alexander"}
-                            </h5>
-                            <p className="mb-0">UI/UX Designer</p>
+                            <h5 className="title mb-1">{profileName}</h5>
+                            <p className="mb-0">{profession}</p>
                             <p className="mb-0 dark-color fz15 fw500 list-inline-item mb5-sm">
                               <i className="fas fa-star vam fz10 review-color me-2"></i>{" "}
-                              4.82 94 reviews
+                              {rating} {reviewCount} reviews
                             </p>
                             <p className="mb-0 dark-color fz15 fw500 list-inline-item ml15 mb5-sm ml0-xs">
                               <i className="flaticon-place vam fz20 me-2"></i>{" "}
-                              London, UK
+                              {location}
                             </p>
                             <p className="mb-0 dark-color fz15 fw500 list-inline-item ml15 mb5-sm ml0-xs">
                               <i className="flaticon-30-days vam fz20 me-2"></i>{" "}
-                              Member since April 1, 2022
+                              Member since {memberSince}
                             </p>
                           </div>
                         </div>
@@ -116,22 +170,28 @@ export default function FreelancerDetail3() {
               <div className="service-about">
                 <div className="px30 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1">
                   <h4>Description</h4>
-                  <p className="text mb30">
-                    It is a long established fact that a reader will be
-                    distracted by the readable content of a page when looking at
-                    its layout. The point of using Lorem Ipsum is that it has a
-                    more-or-less normal distribution of letters, as opposed to
-                    using 'Content here, content here', making it look like
-                    readable English.
-                  </p>
-                  <p className="text mb30">
-                    Many desktop publishing packages and web page editors now
-                    use Lorem Ipsum as their default model text, and a search
-                    for 'lorem ipsum' will uncover many web sites still in their
-                    infancy. Various versions have evolved over the years,
-                    sometimes by accident, sometimes on purpose (injected humour
-                    and the like).
-                  </p>
+                  {bio ? (
+                    <p className="text mb30">{bio}</p>
+                  ) : (
+                    <>
+                      <p className="text mb30">
+                        It is a long established fact that a reader will be
+                        distracted by the readable content of a page when looking
+                        at its layout. The point of using Lorem Ipsum is that it
+                        has a more-or-less normal distribution of letters, as
+                        opposed to using &apos;Content here, content here&apos;,
+                        making it look like readable English.
+                      </p>
+                      <p className="text mb30">
+                        Many desktop publishing packages and web page editors now
+                        use Lorem Ipsum as their default model text, and a search
+                        for &apos;lorem ipsum&apos; will uncover many web sites
+                        still in their infancy. Various versions have evolved
+                        over the years, sometimes by accident, sometimes on
+                        purpose (injected humour and the like).
+                      </p>
+                    </>
+                  )}
                 </div>
                 {/* <hr className="opacity-100 mb60 mt60" /> */}
                 <div className="px30 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1">

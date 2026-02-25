@@ -3,7 +3,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { Tooltip } from "react-tooltip";
 
-export default function ManageServiceCard1({ data }) {
+export default function ManageServiceCard1({ data, removeGig }) {
+  const handleDelete = async () => {
+    if (data._id && removeGig) {
+      try {
+        await removeGig({ gigId: data._id });
+      } catch (error) {
+        console.error("Failed to delete gig:", error);
+      }
+    }
+  };
+
   return (
     <>
       <tr>
@@ -23,7 +33,7 @@ export default function ManageServiceCard1({ data }) {
                 <Link href="/service-single">{data.title}</Link>
               </h6>
               <ul className="list-style-type-bullet ps-3 dashboard-style mb-0">
-                {data.list.map((item, i) => (
+                {data.list && data.list.map((item, i) => (
                   <li key={i}>{item}</li>
                 ))}
               </ul>
@@ -34,29 +44,35 @@ export default function ManageServiceCard1({ data }) {
           <span className="fz15 fw400">{data.category}</span>
         </td>
         <td className="align-top">
-          <span className="fz14 fw400">${data.cost.toFixed(2)}/Fixed</span>
+          <span className="fz14 fw400">${(data.cost || 0).toFixed(2)}/Fixed</span>
         </td>
         <td className="align-top">
           <div className="d-flex">
             <a
               className="icon me-2"
-              id="edit"
+              id={`edit-${data._id || data.id}`}
               data-bs-toggle="modal"
               data-bs-target="#proposalModal"
             >
-              <Tooltip anchorSelect="#edit" className="ui-tooltip" place="top">
+              <Tooltip
+                anchorSelect={`#edit-${data._id || data.id}`}
+                className="ui-tooltip"
+                place="top"
+              >
                 Edit
               </Tooltip>
               <span className="flaticon-pencil" />
             </a>
             <a
               className="icon"
-              id="delete"
+              id={`delete-${data._id || data.id}`}
               data-bs-toggle="modal"
               data-bs-target="#deleteModal"
+              onClick={handleDelete}
+              style={{ cursor: "pointer" }}
             >
               <Tooltip
-                anchorSelect="#delete"
+                anchorSelect={`#delete-${data._id || data.id}`}
                 place="top"
                 className="ui-tooltip"
               >

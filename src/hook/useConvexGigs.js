@@ -3,7 +3,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { product1 } from "@/data/product";
 
-// Maps Convex gig data to Freeio product format
+// Maps Convex gig data to SkillLinkup product format
 function mapGigToProduct(gig, index) {
   return {
     id: index + 1,

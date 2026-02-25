@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
+import { internal } from "../_generated/api";
 
 /**
  * Get messages for a conversation, sorted newest last (ascending by createdAt).
@@ -130,6 +131,24 @@ export const send = mutation({
     }
 
     await ctx.db.patch(args.conversationId, conversationPatch);
+
+    // Send new message email notification (only for non-system messages)
+    if (messageType !== "system" && messageType !== "order_update") {
+      const recipientId = isParticipant1
+        ? conversation.participant2
+        : conversation.participant1;
+      const recipient = await ctx.db.get(recipientId);
+
+      if (recipient?.email) {
+        await ctx.scheduler.runAfter(0, internal.lib.email.sendNewMessage, {
+          recipientEmail: recipient.email,
+          recipientName: recipient.name || "User",
+          senderName: currentUser.name || "User",
+          messagePreview: (args.content || "").slice(0, 200),
+          conversationId: args.conversationId,
+        });
+      }
+    }
 
     return messageId;
   },

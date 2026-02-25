@@ -5,7 +5,7 @@ import MobileNavigation2 from "@/components/header/MobileNavigation2";
 
 export const metadata = {
   title:
-    "Freeio - Freelance Marketplace React/Next Js Template | Create Project",
+    "SkillLinkup | Create Project",
 };
 
 export default function page() {

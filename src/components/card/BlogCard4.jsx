@@ -34,11 +34,11 @@ export default function BlogCard4({ data, index }) {
             </div>
           </div>
           <h3 className="title mt-1 mb10">
-            <Link href={`/blog-single/${data.id}`}>{data.title}</Link>
+            <Link href={`/post/${data.id}`}>{data.title}</Link>
           </h3>
           <p className="text mb25">{data.description}</p>
           <Link
-            href={`/blog-single/${data.id}`}
+            href={`/post/${data.id}`}
             className="ud-btn btn-light-thm"
           >
             Read More

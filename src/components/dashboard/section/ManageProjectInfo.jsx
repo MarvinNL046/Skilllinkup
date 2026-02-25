@@ -2,22 +2,40 @@
 import Link from "next/link";
 import DashboardNavigation from "../header/DashboardNavigation";
 import { useState } from "react";
-import Pagination1 from "@/components/section/Pagination1";
+import { useQuery } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
 import ManageProjectCard from "../card/ManageProjectCard";
 import ProposalModal1 from "../modal/ProposalModal1";
 import DeleteModal from "../modal/DeleteModal";
+import useConvexUser from "@/hook/useConvexUser";
 
-const tab = [
-  "Posted Projects",
-  "Pending Projects",
-  "Ongoing Services",
-  "Expired Projects",
-  "Completed Services",
-  "Canceled Services",
+const tabs = [
+  { label: "All Projects", status: null },
+  { label: "Open", status: "open" },
+  { label: "In Progress", status: "in_progress" },
+  { label: "Completed", status: "completed" },
+  { label: "Cancelled", status: "cancelled" },
+  { label: "Closed", status: "closed" },
 ];
 
 export default function ManageProjectInfo() {
   const [selectedTab, setSelectedTab] = useState(0);
+  const { convexUser, isLoaded } = useConvexUser();
+
+  const projects = useQuery(
+    api.marketplace.projects.getByClient,
+    convexUser?._id ? { clientId: convexUser._id, limit: 50 } : "skip"
+  );
+
+  const activeStatus = tabs[selectedTab].status;
+
+  const filteredProjects = projects
+    ? activeStatus
+      ? projects.filter((p) => p.status === activeStatus)
+      : projects
+    : [];
+
+  const isLoading = !isLoaded || (convexUser?._id && projects === undefined);
 
   return (
     <>
@@ -28,8 +46,8 @@ export default function ManageProjectInfo() {
           </div>
           <div className="col-lg-9">
             <div className="dashboard_title_area">
-              <h2>Manage Project</h2>
-              <p className="text">Lorem ipsum dolor sit amet, consectetur.</p>
+              <h2>Manage Projects</h2>
+              <p className="text">View and manage all your posted projects.</p>
             </div>
           </div>
           <div className="col-lg-3">
@@ -50,163 +68,66 @@ export default function ManageProjectInfo() {
               <div className="navtab-style1">
                 <nav>
                   <div className="nav nav-tabs mb30">
-                    {tab.map((item, i) => (
+                    {tabs.map((tab, i) => (
                       <button
                         key={i}
                         className={`nav-link fw500 ps-0 ${
-                          selectedTab == i ? "active" : ""
+                          selectedTab === i ? "active" : ""
                         }`}
                         onClick={() => setSelectedTab(i)}
                       >
-                        {item}
+                        {tab.label}
+                        {projects && tab.status === null && (
+                          <span className="ms-1 badge bg-secondary fz11">{projects.length}</span>
+                        )}
+                        {projects && tab.status !== null && (
+                          <span className="ms-1 badge bg-secondary fz11">
+                            {projects.filter((p) => p.status === tab.status).length}
+                          </span>
+                        )}
                       </button>
                     ))}
                   </div>
                 </nav>
-                {selectedTab === 0 && (
-                  <div className="packages_table table-responsive">
+
+                <div className="packages_table table-responsive">
+                  {isLoading ? (
+                    <div className="text-center py30">
+                      <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </div>
+                      <p className="mt10 fz14 text-muted">Loading your projects...</p>
+                    </div>
+                  ) : filteredProjects.length === 0 ? (
+                    <div className="text-center py30">
+                      <p className="fz15 text-muted">
+                        {activeStatus
+                          ? `No ${activeStatus.replace("_", " ")} projects found.`
+                          : "You have not posted any projects yet."}
+                      </p>
+                      <Link href="/create-projects" className="ud-btn btn-thm mt10">
+                        Post Your First Project
+                        <i className="fal fa-arrow-right-long" />
+                      </Link>
+                    </div>
+                  ) : (
                     <table className="table-style3 table at-savesearch">
                       <thead className="t-head">
                         <tr>
                           <th scope="col">Title</th>
                           <th scope="col">Category</th>
-                          <th scope="col">Type/Cost</th>
+                          <th scope="col">Budget / Status</th>
                           <th scope="col">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="t-body">
-                        {Array(7)
-                          .fill(7)
-                          .map((_, i) => (
-                            <ManageProjectCard key={i} />
-                          ))}
+                        {filteredProjects.map((project) => (
+                          <ManageProjectCard key={project._id} project={project} />
+                        ))}
                       </tbody>
                     </table>
-                    <div className="mt30">
-                      <Pagination1 />
-                    </div>
-                  </div>
-                )}
-                {selectedTab === 1 && (
-                  <div className="packages_table table-responsive">
-                    <table className="table-style3 table at-savesearch">
-                      <thead className="t-head">
-                        <tr>
-                          <th scope="col">Title</th>
-                          <th scope="col">Category</th>
-                          <th scope="col">Type/Cost</th>
-                          <th scope="col">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="t-body">
-                        {Array(7)
-                          .fill(7)
-                          .map((_, i) => (
-                            <ManageProjectCard key={i} />
-                          ))}
-                      </tbody>
-                    </table>
-                    <div className="mt30">
-                      <Pagination1 />
-                    </div>
-                  </div>
-                )}
-                {selectedTab === 2 && (
-                  <div className="packages_table table-responsive">
-                    <table className="table-style3 table at-savesearch">
-                      <thead className="t-head">
-                        <tr>
-                          <th scope="col">Title</th>
-                          <th scope="col">Category</th>
-                          <th scope="col">Type/Cost</th>
-                          <th scope="col">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="t-body">
-                        {Array(7)
-                          .fill(7)
-                          .map((_, i) => (
-                            <ManageProjectCard key={i} />
-                          ))}
-                      </tbody>
-                    </table>
-                    <div className="mt30">
-                      <Pagination1 />
-                    </div>
-                  </div>
-                )}
-                {selectedTab === 3 && (
-                  <div className="packages_table table-responsive">
-                    <table className="table-style3 table at-savesearch">
-                      <thead className="t-head">
-                        <tr>
-                          <th scope="col">Title</th>
-                          <th scope="col">Category</th>
-                          <th scope="col">Type/Cost</th>
-                          <th scope="col">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="t-body">
-                        {Array(7)
-                          .fill(7)
-                          .map((_, i) => (
-                            <ManageProjectCard key={i} />
-                          ))}
-                      </tbody>
-                    </table>
-                    <div className="mt30">
-                      <Pagination1 />
-                    </div>
-                  </div>
-                )}
-                {selectedTab === 4 && (
-                  <div className="packages_table table-responsive">
-                    <table className="table-style3 table at-savesearch">
-                      <thead className="t-head">
-                        <tr>
-                          <th scope="col">Title</th>
-                          <th scope="col">Category</th>
-                          <th scope="col">Type/Cost</th>
-                          <th scope="col">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="t-body">
-                        {Array(7)
-                          .fill(7)
-                          .map((_, i) => (
-                            <ManageProjectCard key={i} />
-                          ))}
-                      </tbody>
-                    </table>
-                    <div className="mt30">
-                      <Pagination1 />
-                    </div>
-                  </div>
-                )}
-                {selectedTab === 5 && (
-                  <div className="packages_table table-responsive">
-                    <table className="table-style3 table at-savesearch">
-                      <thead className="t-head">
-                        <tr>
-                          <th scope="col">Title</th>
-                          <th scope="col">Category</th>
-                          <th scope="col">Type/Cost</th>
-                          <th scope="col">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="t-body">
-                        {Array(7)
-                          .fill(7)
-                          .map((_, i) => (
-                            <ManageProjectCard key={i} />
-                          ))}
-                      </tbody>
-                    </table>
-                    <div className="mt30">
-                      <Pagination1 />
-                    </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
           </div>

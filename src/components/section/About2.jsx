@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const aboutImages = [
   "/images/about/about-1.jpg",
-  "/images/about/about-2.jpg",
+  "/images/about/about.jpg",
   "/images/about/about-3.jpg",
   "/images/about/about-4.jpg",
 ];

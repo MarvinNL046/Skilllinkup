@@ -20,7 +20,7 @@ export default function OurPartner1() {
         className={`our-partners ${
           path === "/" ||
           path === "/home-3" ||
-          path === "/about-2" ||
+          path === "/about" ||
           path === "/home-15" ||
           path === "/home-6"
             ? "pt0"

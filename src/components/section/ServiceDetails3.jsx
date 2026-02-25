@@ -12,12 +12,63 @@ import ServiceDetailSlider2 from "../element/ServiceDetailSlider2";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { product1 } from "@/data/product";
+import useConvexGigDetail from "@/hook/useConvexGigDetail";
 
 export default function ServiceDetail3() {
   const isMatchedScreen = useScreen(1216);
   const { id } = useParams();
 
-  const data = product1.find((item) => item.id == id);
+  const gigData = useConvexGigDetail(id);
+
+  // Map Convex data to the shape this component expects, with static fallback
+  const data =
+    gigData !== undefined
+      ? gigData
+        ? {
+            id: gigData._id,
+            title: gigData.title,
+            description: gigData.description,
+            category: gigData.category?.name,
+            rating: gigData.ratingAverage || 0,
+            reviewCount: gigData.ratingCount || 0,
+            views: gigData.views || 0,
+            orderCount: gigData.orderCount || 0,
+            freelancer: gigData.freelancerProfile,
+            packages: gigData.packages || [],
+            images: gigData.images || [],
+            workType: gigData.workType,
+            location: gigData.locationCity
+              ? `${gigData.locationCity}, ${gigData.locationCountry || ""}`
+              : "Remote",
+          }
+        : product1.find((item) => item.id == id)
+      : null; // null = still loading
+
+  // Loading state while Convex query is in flight
+  if (data === null) {
+    return (
+      <section className="pt10 pb90 pb30-md">
+        <div className="container">
+          <div className="row">
+            <div className="col-12 text-center py-5">
+              <p className="text">Loading service details...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const freelancerName = data?.freelancer?.displayName || "Freelancer";
+  const freelancerAvatar =
+    data?.freelancer?.avatarUrl || "/images/team/fl-d-1.png";
+  const rating = data?.rating ?? 4.82;
+  const reviewCount = data?.reviewCount ?? 94;
+  const orderCount = data?.orderCount ?? 2;
+  const views = data?.views ?? 902;
+  const location = data?.location || "Remote";
+  const description = data?.description || null;
+  const packages = data?.packages || [];
 
   return (
     <>
@@ -43,24 +94,24 @@ export default function ServiceDetail3() {
                               width={40}
                               height={40}
                               className="rounded-circle"
-                              src="/images/team/fl-d-1.png"
+                              src={freelancerAvatar}
                               alt="Freelancer Photo"
                             />
                             <span className="online-badge"></span>
                           </span>
-                          <span className="fz14">Eleanor Pena</span>
+                          <span className="fz14">{freelancerName}</span>
                         </a>
                         <p className="mb-0 dark-color fz14 list-inline-item ml25 ml15-sm mb5-sm ml0-xs">
                           <i className="fas fa-star vam fz10 review-color me-2"></i>{" "}
-                          4.82 94 reviews
+                          {rating} {reviewCount} reviews
                         </p>
                         <p className="mb-0 dark-color fz14 list-inline-item ml25 ml15-sm mb5-sm ml0-xs">
-                          <i className="flaticon-file-1 vam fz20 me-2"></i> 2
-                          Order in Queue
+                          <i className="flaticon-file-1 vam fz20 me-2"></i>{" "}
+                          {orderCount} Order in Queue
                         </p>
                         <p className="mb-0 dark-color fz14 list-inline-item ml25 ml15-sm mb5-sm ml0-xs">
-                          <i className="flaticon-website vam fz20 me-2"></i> 902
-                          Views
+                          <i className="flaticon-website vam fz20 me-2"></i>{" "}
+                          {views} Views
                         </p>
                       </div>
                     </div>
@@ -73,7 +124,11 @@ export default function ServiceDetail3() {
                         </div>
                         <div className="details">
                           <h5 className="title">Delivery Time</h5>
-                          <p className="mb-0 text">1-3 Days</p>
+                          <p className="mb-0 text">
+                            {packages.length > 0
+                              ? `${packages[0].deliveryDays} Days`
+                              : "1-3 Days"}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -95,7 +150,7 @@ export default function ServiceDetail3() {
                         </div>
                         <div className="details">
                           <h5 className="title">Location</h5>
-                          <p className="mb-0 text">New York</p>
+                          <p className="mb-0 text">{location}</p>
                         </div>
                       </div>
                     </div>
@@ -106,28 +161,35 @@ export default function ServiceDetail3() {
                 <div className="service-about">
                   <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
                     <h4>About</h4>
-                    <p className="text mb30">
-                      It is a long established fact that a reader will be
-                      distracted by the readable content of a page when looking
-                      at its layout. The point of using Lorem Ipsum is that it
-                      has a more-or-less normal distribution of letters, as
-                      opposed to using 'Content here, content here', making it
-                      look like readable English.
-                    </p>
-                    <p className="text mb-0">Services I provide:</p>
-                    <p className="text mb-0">1) Website Design</p>
-                    <p className="text mb-0">2) Mobile App Design</p>
-                    <p className="text mb-0">3) Brochure Design</p>
-                    <p className="text mb-0">4) Business Card Design</p>
-                    <p className="text mb30">5) Flyer Design</p>
-                    <p className="text mb30">
-                      Many desktop publishing packages and web page editors now
-                      use Lorem Ipsum as their default model text, and a search
-                      for 'lorem ipsum' will uncover many web sites still in
-                      their infancy. Various versions have evolved over the
-                      years, sometimes by accident, sometimes on purpose
-                      (injected humour and the like).
-                    </p>
+                    {description ? (
+                      <p className="text mb30">{description}</p>
+                    ) : (
+                      <>
+                        <p className="text mb30">
+                          It is a long established fact that a reader will be
+                          distracted by the readable content of a page when
+                          looking at its layout. The point of using Lorem Ipsum
+                          is that it has a more-or-less normal distribution of
+                          letters, as opposed to using &apos;Content here,
+                          content here&apos;, making it look like readable
+                          English.
+                        </p>
+                        <p className="text mb-0">Services I provide:</p>
+                        <p className="text mb-0">1) Website Design</p>
+                        <p className="text mb-0">2) Mobile App Design</p>
+                        <p className="text mb-0">3) Brochure Design</p>
+                        <p className="text mb-0">4) Business Card Design</p>
+                        <p className="text mb30">5) Flyer Design</p>
+                        <p className="text mb30">
+                          Many desktop publishing packages and web page editors
+                          now use Lorem Ipsum as their default model text, and a
+                          search for &apos;lorem ipsum&apos; will uncover many
+                          web sites still in their infancy. Various versions have
+                          evolved over the years, sometimes by accident,
+                          sometimes on purpose (injected humour and the like).
+                        </p>
+                      </>
+                    )}
                     <div className="d-flex align-items-start mb50">
                       <div className="list1">
                         <h6>App type</h6>
@@ -145,123 +207,177 @@ export default function ServiceDetail3() {
                       </div>
                     </div>
                   </div>
-                  {/* <hr className="opacity-100 mb60" /> */}
+                  {/* Compare Packages */}
                   <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
                     <h4>Compare Packages</h4>
                     <div className="table-style2 table-responsive bdr1 mt30 mb60">
-                      <table className="table table-borderless mb-0">
-                        <thead className="t-head">
-                          <tr>
-                            <th className="col" scope="col" />
-                            <th className="col" scope="col">
-                              <span className="h2">
-                                $29 <small>/ monthly</small>
-                              </span>
-                              <br />
-                              <span className="h4">Basic</span>
-                              <br />
-                              <span className="text">
-                                I will redesign your current{" "}
-                                <br className="d-none d-lg-block" /> landing
-                                page or create one for{" "}
-                                <br className="d-none d-lg-block" /> you (upto 4
-                                sections)
-                              </span>
-                            </th>
-                            <th className="col" scope="col">
-                              <span className="h2">
-                                $49 <small>/ monthly</small>
-                              </span>
-                              <br />
-                              <span className="h4">Standard</span>
-                              <br />
-                              <span className="text">
-                                4 High Quality Desktop{" "}
-                                <br className="d-none d-lg-block" /> Pages.
-                              </span>
-                            </th>
-                            <th className="col" scope="col">
-                              <span className="h2">
-                                $89 <small>/ monthly</small>
-                              </span>
-                              <br />
-                              <span className="h4">Premium</span>
-                              <br />
-                              <span className="text">
-                                4 High Quality Desktop and{" "}
-                                <br className="d-none d-lg-block" /> Mobile
-                                Pages.
-                              </span>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="t-body">
-                          <tr className="bgc-thm3">
-                            <th scope="row">Source file</th>
-                            <td>
-                              <a className="check_circle bgc-thm">
-                                <span className="fas fa-check" />
-                              </a>
-                            </td>
-                            <td>
-                              <a className="check_circle bgc-thm">
-                                <span className="fas fa-check" />
-                              </a>
-                            </td>
-                            <td>
-                              <a className="check_circle bgc-thm">
-                                <span className="fas fa-check" />
-                              </a>
-                            </td>
-                          </tr>
-                          <tr>
-                            <th scope="row">Number of pages</th>
-                            <td>2</td>
-                            <td>4</td>
-                            <td>6</td>
-                          </tr>
-                          <tr className="bgc-thm3">
-                            <th scope="row">Revisions</th>
-                            <td>1</td>
-                            <td>3</td>
-                            <td>5</td>
-                          </tr>
-                          <tr>
-                            <th scope="row">Delivery Time </th>
-                            <td>2 Days</td>
-                            <td>3 Days</td>
-                            <td>4 Days</td>
-                          </tr>
-                          <tr className="bgc-thm3">
-                            <th scope="row">Total</th>
-                            <td>$29</td>
-                            <td>$49</td>
-                            <td>$89</td>
-                          </tr>
-                          <tr>
-                            <th scope="row" />
-                            <td>
-                              <a className="ud-btn btn-thm">
-                                Select
-                                <i className="fal fa-arrow-right-long" />
-                              </a>
-                            </td>
-                            <td>
-                              <a className="ud-btn btn-thm">
-                                Select
-                                <i className="fal fa-arrow-right-long" />
-                              </a>
-                            </td>
-                            <td>
-                              <a className="ud-btn btn-thm">
-                                Select
-                                <i className="fal fa-arrow-right-long" />
-                              </a>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>{" "}
+                      {packages && packages.length > 0 ? (
+                        <table className="table table-borderless mb-0">
+                          <thead className="t-head">
+                            <tr>
+                              <th className="col" scope="col" />
+                              {packages.map((pkg, i) => (
+                                <th key={i} className="col" scope="col">
+                                  <span className="h2">
+                                    &euro;{pkg.price}
+                                  </span>
+                                  <br />
+                                  <span className="h4">
+                                    {pkg.title || pkg.tier}
+                                  </span>
+                                  <br />
+                                  <span className="text">{pkg.description}</span>
+                                </th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody className="t-body">
+                            <tr>
+                              <th scope="row">Delivery Time</th>
+                              {packages.map((pkg, i) => (
+                                <td key={i}>{pkg.deliveryDays} Days</td>
+                              ))}
+                            </tr>
+                            <tr className="bgc-thm3">
+                              <th scope="row">Revisions</th>
+                              {packages.map((pkg, i) => (
+                                <td key={i}>{pkg.revisionCount || 0}</td>
+                              ))}
+                            </tr>
+                            <tr>
+                              <th scope="row">Total</th>
+                              {packages.map((pkg, i) => (
+                                <td key={i}>&euro;{pkg.price}</td>
+                              ))}
+                            </tr>
+                            <tr>
+                              <th scope="row" />
+                              {packages.map((pkg, i) => (
+                                <td key={i}>
+                                  <a className="ud-btn btn-thm">
+                                    Select{" "}
+                                    <i className="fal fa-arrow-right-long" />
+                                  </a>
+                                </td>
+                              ))}
+                            </tr>
+                          </tbody>
+                        </table>
+                      ) : (
+                        <table className="table table-borderless mb-0">
+                          <thead className="t-head">
+                            <tr>
+                              <th className="col" scope="col" />
+                              <th className="col" scope="col">
+                                <span className="h2">
+                                  $29 <small>/ monthly</small>
+                                </span>
+                                <br />
+                                <span className="h4">Basic</span>
+                                <br />
+                                <span className="text">
+                                  I will redesign your current{" "}
+                                  <br className="d-none d-lg-block" /> landing
+                                  page or create one for{" "}
+                                  <br className="d-none d-lg-block" /> you (upto
+                                  4 sections)
+                                </span>
+                              </th>
+                              <th className="col" scope="col">
+                                <span className="h2">
+                                  $49 <small>/ monthly</small>
+                                </span>
+                                <br />
+                                <span className="h4">Standard</span>
+                                <br />
+                                <span className="text">
+                                  4 High Quality Desktop{" "}
+                                  <br className="d-none d-lg-block" /> Pages.
+                                </span>
+                              </th>
+                              <th className="col" scope="col">
+                                <span className="h2">
+                                  $89 <small>/ monthly</small>
+                                </span>
+                                <br />
+                                <span className="h4">Premium</span>
+                                <br />
+                                <span className="text">
+                                  4 High Quality Desktop and{" "}
+                                  <br className="d-none d-lg-block" /> Mobile
+                                  Pages.
+                                </span>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className="t-body">
+                            <tr className="bgc-thm3">
+                              <th scope="row">Source file</th>
+                              <td>
+                                <a className="check_circle bgc-thm">
+                                  <span className="fas fa-check" />
+                                </a>
+                              </td>
+                              <td>
+                                <a className="check_circle bgc-thm">
+                                  <span className="fas fa-check" />
+                                </a>
+                              </td>
+                              <td>
+                                <a className="check_circle bgc-thm">
+                                  <span className="fas fa-check" />
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Number of pages</th>
+                              <td>2</td>
+                              <td>4</td>
+                              <td>6</td>
+                            </tr>
+                            <tr className="bgc-thm3">
+                              <th scope="row">Revisions</th>
+                              <td>1</td>
+                              <td>3</td>
+                              <td>5</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Delivery Time </th>
+                              <td>2 Days</td>
+                              <td>3 Days</td>
+                              <td>4 Days</td>
+                            </tr>
+                            <tr className="bgc-thm3">
+                              <th scope="row">Total</th>
+                              <td>$29</td>
+                              <td>$49</td>
+                              <td>$89</td>
+                            </tr>
+                            <tr>
+                              <th scope="row" />
+                              <td>
+                                <a className="ud-btn btn-thm">
+                                  Select
+                                  <i className="fal fa-arrow-right-long" />
+                                </a>
+                              </td>
+                              <td>
+                                <a className="ud-btn btn-thm">
+                                  Select
+                                  <i className="fal fa-arrow-right-long" />
+                                </a>
+                              </td>
+                              <td>
+                                <a className="ud-btn btn-thm">
+                                  Select
+                                  <i className="fal fa-arrow-right-long" />
+                                </a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      )}
+                    </div>
                   </div>
                   {/* <hr className="opacity-100 mb60" /> */}
                   <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">

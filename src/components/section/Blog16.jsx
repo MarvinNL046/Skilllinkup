@@ -42,7 +42,7 @@ export default function Blog16() {
                   {blog1[19].date}
                 </a>
                 <h2 className="title mt-1">
-                  <Link href="/blog-single">{blog1[19].title}</Link>
+                  <Link href="/post">{blog1[19].title}</Link>
                 </h2>
                 <p className="mb-0 text">{blog1[19].brief}</p>
               </div>
@@ -69,7 +69,7 @@ export default function Blog16() {
                     {elm.date}
                   </a>
                   <h4 className="title mt-1">
-                    <Link href="/blog-single">{elm.title}</Link>
+                    <Link href="/post">{elm.title}</Link>
                   </h4>
                   <p className="mb-0">{elm.brief}</p>
                 </div>

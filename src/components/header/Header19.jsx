@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Navigation from "./Navigation";
 import MobileNavigation2 from "./MobileNavigation2";
+import NotificationBell from "./NotificationBell";
 import { useUser, useClerk } from "@clerk/nextjs";
 
 export default function Header19() {
@@ -21,9 +22,9 @@ export default function Header19() {
                   <div className="logos">
                     <Link className="header-logo logo1" href="/">
                       <Image
-                        width={133}
+                        width={172}
                         height={40}
-                        src="/images/header-logo-dark2.svg"
+                        src="/images/logo/skilllinkup-transparant-rozepunt.webp"
                         alt="Header Logo"
                       />
                     </Link>
@@ -40,6 +41,9 @@ export default function Header19() {
                       <Link className="login-info" href="/dashboard">
                         Dashboard
                       </Link>
+                      <span className="ml15 mr5 position-relative d-inline-flex align-items-center">
+                        <NotificationBell />
+                      </span>
                       <Link
                         className="login-info mr10 ml15"
                         href="/dashboard"

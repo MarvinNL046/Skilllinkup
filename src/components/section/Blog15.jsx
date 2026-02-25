@@ -43,7 +43,7 @@ export default function Blog15() {
                     {elm.date}
                   </a>
                   <h4 className="title mt-1">
-                    <Link className="text-white" href="/blog-single">
+                    <Link className="text-white" href="/post">
                       {elm.title}
                     </Link>
                   </h4>

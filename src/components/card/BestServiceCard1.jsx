@@ -53,7 +53,7 @@ export default function BestServiceCard1({ data }) {
                 />
                 <span className="online-badges" />
               </span>
-              {path !== "/service-6" && path === "/service-all" && (
+              {path !== "/services" && path === "/service-all" && (
                 <span className="fz14">{data.author.name}</span>
               )}
             </Link>

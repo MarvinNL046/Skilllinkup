@@ -26,7 +26,7 @@ export default function Breadcumb7() {
 
   // search handler
   const searchHandler = () => {
-    router.push("/service-6");
+    router.push("/services");
   };
   return (
     <>

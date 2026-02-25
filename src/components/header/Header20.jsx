@@ -23,9 +23,9 @@ export default function Header20() {
                                     >
                                         <Image
                                             height={40}
-                                            width={133}
+                                            width={172}
                                             className="w-100 h-100 object-fit-contain"
-                                            src="/images/header-logo-dark.svg"
+                                            src="/images/logo/skilllinkup-transparant-rozepunt.webp"
                                             alt="Header Logo"
                                         />
                                     </Link>

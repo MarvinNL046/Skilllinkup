@@ -1,6 +1,19 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect, useRef } from "react";
 
 export default function Testimonial2() {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    // Let Bootstrap JS handle tab behavior on the client
+    if (typeof window !== "undefined" && window.bootstrap) {
+      const tabEls = containerRef.current?.querySelectorAll('[data-bs-toggle="pill"]');
+      tabEls?.forEach((el) => new window.bootstrap.Tab(el));
+    }
+  }, []);
+
   return (
     <>
       <section className="our-testimonial">
@@ -16,22 +29,23 @@ export default function Testimonial2() {
             </div>
           </div>
           <div className="row justify-content-center">
-            <div className="col-xl-10 mx-auto">
+            <div className="col-xl-10 mx-auto" ref={containerRef}>
               <div className="home2_testimonial_tabs position-relative">
                 <div className="tab-content" id="pills-tabContent2">
                   <div
                     className="tab-pane fade"
                     id="pills-home"
+                    role="tabpanel"
                     aria-labelledby="pills-home-tab"
                   >
                     <div className="testimonial-style2 at-about2 text-center">
                       <div className="testi-content text-center">
                         <span className="icon fas fa-quote-left" />
                         <h4 className="testi-text">
-                          "Our family was traveling via bullet train between
+                          &quot;Our family was traveling via bullet train between
                           cities in Japan with our luggage - the location for
                           this hotel made that so easy. Agoda price was
-                          fantastic. "
+                          fantastic. &quot;
                         </h4>
                       </div>
                     </div>
@@ -39,16 +53,17 @@ export default function Testimonial2() {
                   <div
                     className="tab-pane fade show active"
                     id="pills-profile"
+                    role="tabpanel"
                     aria-labelledby="pills-profile-tab"
                   >
                     <div className="testimonial-style2 at-about2 text-center">
                       <div className="testi-content text-center">
                         <span className="icon fas fa-quote-left" />
                         <h4 className="testi-text">
-                          "Our family was traveling via bullet train between
+                          &quot;Our family was traveling via bullet train between
                           cities in Japan with our luggage - the location for
                           this hotel made that so easy. Agoda price was
-                          fantastic. "
+                          fantastic. &quot;
                         </h4>
                       </div>
                     </div>
@@ -56,28 +71,36 @@ export default function Testimonial2() {
                   <div
                     className="tab-pane fade"
                     id="pills-contact"
+                    role="tabpanel"
                     aria-labelledby="pills-contact-tab"
                   >
                     <div className="testimonial-style2 at-about2 text-center">
                       <div className="testi-content text-center">
                         <span className="icon fas fa-quote-left" />
                         <h4 className="testi-text">
-                          "Our family was traveling via bullet train between
+                          &quot;Our family was traveling via bullet train between
                           cities in Japan with our luggage - the location for
                           this hotel made that so easy. Agoda price was
-                          fantastic. "
+                          fantastic. &quot;
                         </h4>
                       </div>
                     </div>
                   </div>
                 </div>
-                <ul className="nav justify-content-center" id="pills-tab2">
-                  <li className="nav-item">
+                <ul
+                  className="nav justify-content-center"
+                  id="pills-tab2"
+                  role="tablist"
+                >
+                  <li className="nav-item" role="presentation">
                     <a
                       className="nav-link"
                       id="pills-home-tab"
                       data-bs-toggle="pill"
                       href="#pills-home"
+                      role="tab"
+                      aria-selected="false"
+                      tabIndex="-1"
                     >
                       <div className="thumb d-flex align-items-center">
                         <Image
@@ -95,12 +118,14 @@ export default function Testimonial2() {
                       </div>
                     </a>
                   </li>
-                  <li className="nav-item">
+                  <li className="nav-item" role="presentation">
                     <a
                       className="nav-link active"
                       id="pills-profile-tab"
                       data-bs-toggle="pill"
                       href="#pills-profile"
+                      role="tab"
+                      aria-selected="true"
                     >
                       <div className="thumb d-flex align-items-center">
                         <Image
@@ -118,12 +143,15 @@ export default function Testimonial2() {
                       </div>
                     </a>
                   </li>
-                  <li className="nav-item">
+                  <li className="nav-item" role="presentation">
                     <a
                       className="nav-link"
                       id="pills-contact-tab"
                       data-bs-toggle="pill"
                       href="#pills-contact"
+                      role="tab"
+                      aria-selected="false"
+                      tabIndex="-1"
                     >
                       <div className="thumb d-flex align-items-center">
                         <Image

@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
+import { internal } from "../_generated/api";
 
 /**
  * Get public reviews for a freelancer (by their user ID in revieweeId).
@@ -174,6 +175,18 @@ export const create = mutation({
     // If both have now reviewed, make the other review public too
     if (isPublic && otherReview) {
       await ctx.db.patch(otherReview._id, { isPublic: true });
+    }
+
+    // Send review notification to reviewee
+    const reviewee = await ctx.db.get(args.revieweeId);
+    if (reviewee?.email) {
+      await ctx.scheduler.runAfter(0, internal.lib.email.sendReviewReceived, {
+        userEmail: reviewee.email,
+        userName: reviewee.name || "User",
+        orderTitle: order.title,
+        rating: args.overallRating,
+        orderId: args.orderId,
+      });
     }
 
     return reviewId;

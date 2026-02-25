@@ -1,8 +1,75 @@
+"use client";
 import { job1 } from "@/data/job";
 import Link from "next/link";
 import JobCard5 from "../card/JobCard5";
+import { useParams } from "next/navigation";
+import useConvexJobDetail from "@/hook/useConvexJobDetail";
 
 export default function JobDetail1() {
+  const { id } = useParams();
+  const convexData = useConvexJobDetail(id);
+
+  // convexData === undefined means still loading
+  const isLoading = convexData === undefined;
+
+  const data = !isLoading
+    ? convexData
+      ? {
+          _id: convexData._id,
+          title: convexData.title,
+          description: convexData.description || null,
+          location: convexData.locationCity
+            ? `${convexData.locationCity}, ${convexData.locationCountry || ""}`
+            : convexData.workType === "remote"
+            ? "Remote"
+            : "London",
+          postedAt: convexData.createdAt
+            ? (() => {
+                const diffMs = Date.now() - convexData.createdAt;
+                const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                if (diffDays === 0) return "Posted today";
+                if (diffDays === 1) return "Posted 1 day ago";
+                return `Posted ${diffDays} days ago`;
+              })()
+            : "Posted 1 day ago",
+          hours: convexData.hoursPerWeek
+            ? `${convexData.hoursPerWeek}h / week`
+            : null,
+          salary:
+            convexData.salaryMin && convexData.salaryMax
+              ? `$${Math.round(convexData.salaryMin / 1000)}k - $${Math.round(
+                  convexData.salaryMax / 1000
+                )}k`
+              : convexData.salaryMax
+              ? `$${Math.round(convexData.salaryMax / 1000)}k`
+              : null,
+          responsibilities: convexData.responsibilities || [],
+          requirements: convexData.requirements || [],
+        }
+      : job1.find((item) => item.id == id) || null
+    : null;
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <section className="pt10 pb90 pb30-md">
+        <div className="container">
+          <div className="row">
+            <div className="col-12 text-center py-5">
+              <p className="text">Loading job details...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const location = data?.location || "London";
+  const postedAt = data?.postedAt || "Posted 1 days ago";
+  const hours = data?.hours || "50h / week";
+  const salary = data?.salary || "$35 - $45K";
+  const description = data?.description || null;
+
   return (
     <>
       <section className="pt10 pb90 pb30-md">
@@ -17,7 +84,7 @@ export default function JobDetail1() {
                     </div>
                     <div className="details">
                       <h5 className="title">Date Posted</h5>
-                      <p className="mb-0 text">Posted 1 days ago</p>
+                      <p className="mb-0 text">{postedAt}</p>
                     </div>
                   </div>
                 </div>
@@ -28,7 +95,7 @@ export default function JobDetail1() {
                     </div>
                     <div className="details">
                       <h5 className="title">Location</h5>
-                      <p className="mb-0 text">London</p>
+                      <p className="mb-0 text">{location}</p>
                     </div>
                   </div>
                 </div>
@@ -39,7 +106,7 @@ export default function JobDetail1() {
                     </div>
                     <div className="details">
                       <h5 className="title">Hours</h5>
-                      <p className="mb-0 text">50h / week</p>
+                      <p className="mb-0 text">{hours}</p>
                     </div>
                   </div>
                 </div>
@@ -50,28 +117,35 @@ export default function JobDetail1() {
                     </div>
                     <div className="details">
                       <h5 className="title">Salary</h5>
-                      <p className="mb-0 text">$35 - $45K</p>
+                      <p className="mb-0 text">{salary}</p>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="service-about">
                 <h4 className="mb-4">Description</h4>
-                <p className="text mb30">
-                  It is a long established fact that a reader will be distracted
-                  by the readable content of a page when looking at its layout.
-                  The point of using Lorem Ipsum is that it has a more-or-less
-                  normal distribution of letters, as opposed to using 'Content
-                  here, content here', making it look like readable English.{" "}
-                </p>
-                <p className="text mb60">
-                  Many desktop publishing packages and web page editors now use
-                  Lorem Ipsum as their default model text, and a search for
-                  'lorem ipsum' will uncover many web sites still in their
-                  infancy. Various versions have evolved over the years,
-                  sometimes by accident, sometimes on purpose (injected humour
-                  and the like).
-                </p>
+                {description ? (
+                  <p className="text mb30">{description}</p>
+                ) : (
+                  <>
+                    <p className="text mb30">
+                      It is a long established fact that a reader will be
+                      distracted by the readable content of a page when looking
+                      at its layout. The point of using Lorem Ipsum is that it
+                      has a more-or-less normal distribution of letters, as
+                      opposed to using &apos;Content here, content here&apos;,
+                      making it look like readable English.{" "}
+                    </p>
+                    <p className="text mb60">
+                      Many desktop publishing packages and web page editors now
+                      use Lorem Ipsum as their default model text, and a search
+                      for &apos;lorem ipsum&apos; will uncover many web sites
+                      still in their infancy. Various versions have evolved over
+                      the years, sometimes by accident, sometimes on purpose
+                      (injected humour and the like).
+                    </p>
+                  </>
+                )}
                 <h4 className="mb30">Key Responsibilities</h4>
                 <div className="list-style1 mb60 pr50 pr0-lg">
                   <ul>
@@ -114,9 +188,9 @@ export default function JobDetail1() {
                     </li>
                     <li>
                       <i className="far fa-check text-thm3 bgc-thm3-light" />
-                      Design pixel perfect responsive UI’s and understand that
-                      adopting common interface patterns is better for UX than
-                      reinventing the wheel
+                      Design pixel perfect responsive UI&apos;s and understand
+                      that adopting common interface patterns is better for UX
+                      than reinventing the wheel
                     </li>
                     <li>
                       <i className="far fa-check text-thm3 bgc-thm3-light" />
@@ -128,15 +202,15 @@ export default function JobDetail1() {
                 <h4 className="mb30">Work &amp; Experience</h4>
                 <ul className="list-style-type-bullet ps-3 mb60">
                   <li>
-                    You have at least 3 years’ experience working as a Product
-                    Designer.
+                    You have at least 3 years&apos; experience working as a
+                    Product Designer.
                   </li>
                   <li>
                     You have experience using Sketch and InVision or Framer X
                   </li>
                   <li>
                     You have some previous experience working in an agile
-                    environment – Think two-week sprints.
+                    environment &ndash; Think two-week sprints.
                   </li>
                   <li>
                     You are familiar using Jira and Confluence in your workflow
@@ -153,8 +227,8 @@ export default function JobDetail1() {
                   <p className="text">2022 jobs live - 293 added today</p>
                 </div>
                 <div className="row">
-                  {job1.slice(0, 3).map((item,i) => (
-                    <div key={ i } className="col-sm-6 col-xl-12">
+                  {job1.slice(0, 3).map((item, i) => (
+                    <div key={i} className="col-sm-6 col-xl-12">
                       <JobCard5 data={item} />
                     </div>
                   ))}

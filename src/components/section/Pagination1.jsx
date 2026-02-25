@@ -8,7 +8,7 @@ export default function Pagination1() {
     <>
       <div
         className={`mbp_pagination text-center ${
-          path === "/blog-2" || path === "/blog-3" ? "mb40-md" : ""
+          path === "/blog" || path === "/blog" ? "mb40-md" : ""
         } ${path === "/shop-list" ? "mt30" : ""}`}
       >
         <ul className="page_navigation">

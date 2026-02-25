@@ -1,10 +1,24 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SelectInput from "../option/SelectInput";
 import Link from "next/link";
 import Image from "next/image";
+import useConvexProfile from "@/hook/useConvexProfile";
 
 export default function ProfileDetails() {
+  const { profile, updateProfile } = useConvexProfile();
+
+  const [displayName, setDisplayName] = useState("");
+  const [tagline, setTagline] = useState("");
+  const [bio, setBio] = useState("");
+  const [hourlyRate, setHourlyRate] = useState("");
+  const [locationCity, setLocationCity] = useState("");
+  const [locationCountry, setLocationCountry] = useState("");
+  const [websiteUrl, setWebsiteUrl] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
   const [getHourly, setHourly] = useState({
     option: "Select",
     value: null,
@@ -37,22 +51,60 @@ export default function ProfileDetails() {
     option: "Select",
     value: null,
   });
-  const [selectedImage, setSelectedImage] = useState(null);
+
+  // Pre-fill form fields once profile loads
+  useEffect(() => {
+    if (profile) {
+      setDisplayName(profile.displayName || "");
+      setTagline(profile.tagline || "");
+      setBio(profile.bio || "");
+      setHourlyRate(profile.hourlyRate ? String(profile.hourlyRate) : "");
+      setLocationCity(profile.locationCity || "");
+      setLocationCountry(profile.locationCountry || "");
+      setWebsiteUrl(profile.websiteUrl || "");
+
+      if (profile.hourlyRate) {
+        setHourly({
+          option: `$${profile.hourlyRate}`,
+          value: String(profile.hourlyRate),
+        });
+      }
+      if (profile.locationCountry) {
+        setCountry({
+          option: profile.locationCountry,
+          value: profile.locationCountry.toLowerCase(),
+        });
+      }
+      if (profile.locationCity) {
+        setCity({
+          option: profile.locationCity,
+          value: profile.locationCity.toLowerCase().replace(/\s+/g, "-"),
+        });
+      }
+      if (profile.languages && profile.languages.length > 0) {
+        setLanguage({
+          option: profile.languages[0],
+          value: profile.languages[0].toLowerCase(),
+        });
+      }
+    }
+  }, [profile]);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
-    console.log(event);
-    setSelectedImage(URL.createObjectURL(file));
+    if (file) {
+      setSelectedImage(URL.createObjectURL(file));
+    }
   };
 
   // handlers
   const hourlyHandler = (option, value) => {
     setHourly({ option, value });
+    setHourlyRate(value || "");
   };
   const genderHandler = (option, value) => {
     setGender({ option, value });
   };
-
   const specializationHandler = (option, value) => {
     setSpecialization({ option, value });
   };
@@ -61,9 +113,11 @@ export default function ProfileDetails() {
   };
   const countryHandler = (option, value) => {
     setCountry({ option, value });
+    setLocationCountry(option !== "Select" ? option : "");
   };
   const cityHandler = (option, value) => {
     setCity({ option, value });
+    setLocationCity(option !== "Select" ? option : "");
   };
   const languageHandler = (option, value) => {
     setLanguage({ option, value });
@@ -72,12 +126,65 @@ export default function ProfileDetails() {
     setLanLevel({ option, value });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!profile?._id) return;
+
+    setSaving(true);
+    setSaveSuccess(false);
+
+    try {
+      const languages = getLanguage.value ? [getLanguage.option] : profile?.languages || [];
+
+      await updateProfile({
+        profileId: profile._id,
+        displayName: displayName || undefined,
+        tagline: tagline || undefined,
+        bio: bio || undefined,
+        hourlyRate: hourlyRate ? Number(hourlyRate) : undefined,
+        locationCity: locationCity || undefined,
+        locationCountry: locationCountry || undefined,
+        websiteUrl: websiteUrl || undefined,
+        languages: languages.length > 0 ? languages : undefined,
+      });
+
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } catch (error) {
+      console.error("Failed to save profile:", error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Loading state
+  if (profile === undefined) {
+    return (
+      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+        <div className="bdrb1 pb15 mb25">
+          <h5 className="list-title">Profile Details</h5>
+        </div>
+        <p className="text">Loading profile...</p>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
         <div className="bdrb1 pb15 mb25">
           <h5 className="list-title">Profile Details</h5>
         </div>
+        {saveSuccess && (
+          <div className="alert alert-success mb20" role="alert">
+            Profile saved successfully!
+          </div>
+        )}
+        {!profile && (
+          <div className="alert alert-info mb20" role="alert">
+            No freelancer profile found. Please set your account type to freelancer first.
+          </div>
+        )}
         <div className="col-xl-7">
           <div className="profile-box d-sm-flex align-items-center mb30">
             <div className="profile-img mb20-sm">
@@ -85,7 +192,11 @@ export default function ProfileDetails() {
                 height={71}
                 width={71}
                 className="rounded-circle wa-xs"
-                src={selectedImage ? selectedImage : "/images/team/fl-1.png"}
+                src={
+                  selectedImage
+                    ? selectedImage
+                    : profile?.avatarUrl || "/images/team/fl-1.png"
+                }
                 style={{
                   height: "71px",
                   width: "71px",
@@ -120,41 +231,47 @@ export default function ProfileDetails() {
           </div>
         </div>
         <div className="col-lg-7">
-          <form className="form-style1">
+          <form className="form-style1" onSubmit={handleSubmit}>
             <div className="row">
               <div className="col-sm-6">
                 <div className="mb20">
                   <label className="heading-color ff-heading fw500 mb10">
-                    Username
+                    Display Name
                   </label>
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="i will"
+                    placeholder="Your display name"
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
                   />
                 </div>
               </div>
               <div className="col-sm-6">
                 <div className="mb20">
                   <label className="heading-color ff-heading fw500 mb10">
-                    Email Address
+                    Website URL
                   </label>
                   <input
-                    type="email"
+                    type="url"
                     className="form-control"
-                    placeholder="i will"
+                    placeholder="https://yourwebsite.com"
+                    value={websiteUrl}
+                    onChange={(e) => setWebsiteUrl(e.target.value)}
                   />
                 </div>
               </div>
               <div className="col-sm-6">
                 <div className="mb20">
                   <label className="heading-color ff-heading fw500 mb10">
-                    Phone Number
+                    Location (City)
                   </label>
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="i will"
+                    placeholder="e.g. Amsterdam"
+                    value={locationCity}
+                    onChange={(e) => setLocationCity(e.target.value)}
                   />
                 </div>
               </div>
@@ -166,7 +283,9 @@ export default function ProfileDetails() {
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="i will"
+                    placeholder="Your professional tagline"
+                    value={tagline}
+                    onChange={(e) => setTagline(e.target.value)}
                   />
                 </div>
               </div>
@@ -271,6 +390,8 @@ export default function ProfileDetails() {
                         value: "germany",
                       },
                       { option: "Japan", value: "japan" },
+                      { option: "Netherlands", value: "netherlands" },
+                      { option: "Belgium", value: "belgium" },
                     ]}
                     handler={countryHandler}
                   />
@@ -303,6 +424,8 @@ export default function ProfileDetails() {
                         value: "berlin",
                       },
                       { option: "Tokyo", value: "tokyo" },
+                      { option: "Amsterdam", value: "amsterdam" },
+                      { option: "Brussels", value: "brussels" },
                     ]}
                     handler={cityHandler}
                   />
@@ -329,6 +452,10 @@ export default function ProfileDetails() {
                       {
                         option: "Japanese",
                         value: "japanese",
+                      },
+                      {
+                        option: "Dutch",
+                        value: "dutch",
                       },
                     ]}
                     handler={languageHandler}
@@ -367,15 +494,25 @@ export default function ProfileDetails() {
                   <label className="heading-color ff-heading fw500 mb10">
                     Introduce Yourself
                   </label>
-                  <textarea cols={30} rows={6} placeholder="Description" />
+                  <textarea
+                    cols={30}
+                    rows={6}
+                    placeholder="Description"
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                  />
                 </div>
               </div>
               <div className="col-md-12">
                 <div className="text-start">
-                  <Link className="ud-btn btn-thm" href="/contact">
-                    Save
+                  <button
+                    type="submit"
+                    className="ud-btn btn-thm"
+                    disabled={saving || !profile}
+                  >
+                    {saving ? "Saving..." : "Save"}
                     <i className="fal fa-arrow-right-long" />
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>
