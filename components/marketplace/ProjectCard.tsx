@@ -1,199 +1,150 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { Calendar, Users, MapPin, Tag, Briefcase } from 'lucide-react';
-import { useLocale, useTranslations } from 'next-intl';
-import { safeText } from '@/lib/safe';
+import Image from "next/image";
+import Link from "next/link";
+import { useLocale } from "next-intl";
+import { useState } from "react";
 
-interface ProjectCardProps {
- id: string;
- slug: string;
- title: string;
- description: string;
- category_name: string;
- required_skills: string[];
- budget_min: number | null;
- budget_max: number | null;
- currency: string;
- deadline: string | null;
- work_type: string;
- location_city: string | null;
- location_country: string | null;
- bid_count: number;
- client_name: string;
- status: string;
- created_at: string;
+export interface ProjectCardData {
+  slug: string;
+  title: string;
+  description: string;
+  category: string;
+  categorySlug: string;
+  clientName: string;
+  clientAvatar: string | null;
+  budgetMin: number | null;
+  budgetMax: number | null;
+  currency: string;
+  bidCount: number;
+  requiredSkills: string[];
+  workType: string | null;
+  locationCountry: string | null;
+  createdAt: number;
 }
 
-function formatCurrency(amount: number, currency: string): string {
- try {
- return new Intl.NumberFormat('en-US', {
- style: 'currency',
- currency: currency,
- minimumFractionDigits: 0,
- maximumFractionDigits: 0,
- }).format(amount);
- } catch {
- return `${currency} ${amount}`;
- }
+function timeAgo(timestamp: number): string {
+  const seconds = Math.floor((Date.now() - timestamp) / 1000);
+  if (seconds < 60) return "just now";
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days} day${days === 1 ? "" : "s"} ago`;
+  const weeks = Math.floor(days / 7);
+  if (weeks < 5) return `${weeks} week${weeks === 1 ? "" : "s"} ago`;
+  const months = Math.floor(days / 30);
+  return `${months} month${months === 1 ? "" : "s"} ago`;
 }
 
-function formatDate(dateStr: string): string {
- try {
- return new Intl.DateTimeFormat('en-US', {
- month: 'short',
- day: 'numeric',
- year: 'numeric',
- }).format(new Date(dateStr));
- } catch {
- return dateStr;
- }
+function formatBudget(
+  budgetMin: number | null,
+  budgetMax: number | null,
+  currency: string
+): string {
+  const symbol = currency === "USD" ? "$" : currency === "GBP" ? "£" : "€";
+  if (budgetMin !== null && budgetMax !== null) {
+    return `${symbol}${budgetMin.toLocaleString()} - ${symbol}${budgetMax.toLocaleString()}`;
+  }
+  if (budgetMin !== null) return `From ${symbol}${budgetMin.toLocaleString()}`;
+  if (budgetMax !== null) return `Up to ${symbol}${budgetMax.toLocaleString()}`;
+  return "Budget TBD";
 }
 
-export function ProjectCard({
- slug,
- title,
- description,
- category_name,
- required_skills,
- budget_min,
- budget_max,
- currency,
- deadline,
- work_type,
- location_city,
- location_country,
- bid_count,
- client_name,
- created_at,
-}: ProjectCardProps) {
- const locale = useLocale();
- const t = useTranslations('projects');
+export default function ProjectCard({ data }: { data: ProjectCardData }) {
+  const locale = useLocale();
+  const [fav, setFav] = useState(false);
 
- const safeTitle = safeText(title, 'Untitled Project');
- const safeDescription = safeText(description, '');
- const safeCategoryName = safeText(category_name, 'Uncategorized');
- const safeClientName = safeText(client_name, 'Client');
+  const visibleSkills = data.requiredSkills.slice(0, 3);
+  const extraSkills = data.requiredSkills.length - visibleSkills.length;
 
- const showLocation = work_type === 'local' || work_type === 'hybrid';
- const locationText = [location_city, location_country].filter(Boolean).join(', ');
+  return (
+    <div className="freelancer-style1 bdrs12 bdr1 hover-box-shadow">
+      <div className="d-flex align-items-center justify-content-between mb15">
+        <div className="d-flex align-items-center">
+          <Image
+            height={24}
+            width={24}
+            className="rounded-circle wa mr10"
+            src={data.clientAvatar || "/images/resource/user.png"}
+            alt={data.clientName}
+          />
+          <span className="fz14 body-color">{data.clientName}</span>
+        </div>
+        <a
+          onClick={() => setFav(!fav)}
+          className={`listing-fav fz12 ${fav ? "ui-fav-active" : ""}`}
+          style={{ cursor: "pointer" }}
+        >
+          <span className="far fa-heart" />
+        </a>
+      </div>
 
- const workTypeBadgeLabel =
- work_type === 'local'
- ? t('local')
- : work_type === 'hybrid'
- ? t('hybrid')
- : t('remote');
+      <div className="d-flex align-items-center mb10 fz13 body-color flex-wrap" style={{ gap: "12px" }}>
+        {data.locationCountry && (
+          <span>
+            <i className="fas fa-map-marker-alt me-1" />
+            {data.locationCountry}
+          </span>
+        )}
+        {data.workType && (
+          <span className="text-capitalize">
+            <i className="fas fa-briefcase me-1" />
+            {data.workType}
+          </span>
+        )}
+        <span>
+          <i className="far fa-clock me-1" />
+          {timeAgo(data.createdAt)}
+        </span>
+        <span>
+          <i className="fas fa-gavel me-1" />
+          {data.bidCount} bid{data.bidCount === 1 ? "" : "s"}
+        </span>
+      </div>
 
- const workTypeBadgeColor =
- work_type === 'local'
- ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
- : work_type === 'hybrid'
- ? 'bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400'
- : 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400';
+      <h5 className="list-title mb10">
+        <Link href={`/${locale}/projects/${data.slug}`}>{data.title}</Link>
+      </h5>
 
- const budgetText =
- budget_min && budget_max
- ? `${formatCurrency(budget_min, currency)} – ${formatCurrency(budget_max, currency)}`
- : budget_min
- ? `From ${formatCurrency(budget_min, currency)}`
- : budget_max
- ? `Up to ${formatCurrency(budget_max, currency)}`
- : null;
+      <p
+        className="fz14 body-color mb15"
+        style={{
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
+        }}
+      >
+        {data.description}
+      </p>
 
- const skills = Array.isArray(required_skills) ? required_skills : [];
+      {visibleSkills.length > 0 && (
+        <div className="d-flex flex-wrap mb15" style={{ gap: "8px" }}>
+          {visibleSkills.map((skill) => (
+            <span key={skill} className="tag-badge bdrs4 fz12">
+              {skill}
+            </span>
+          ))}
+          {extraSkills > 0 && (
+            <span className="tag-badge bdrs4 fz12">+{extraSkills} more</span>
+          )}
+        </div>
+      )}
 
- return (
- <Link
- href={`/${locale}/marketplace/projects/${slug}`}
- className="group block bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-gray-100 dark:border-gray-700 hover:border-primary/30 p-5"
- >
- {/* Header row */}
- <div className="flex items-start justify-between gap-3 mb-3">
- <div className="flex-1 min-w-0">
- <div className="flex items-center gap-2 mb-1">
- <span className="text-xs text-gray-400 dark:text-gray-500">
- {safeCategoryName}
- </span>
- <span
- className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${workTypeBadgeColor}`}
- >
- {workTypeBadgeLabel}
- </span>
- </div>
- <h3 className="text-sm font-semibold text-gray-900 dark:text-white line-clamp-2 leading-snug group-hover:text-primary transition-colors">
- {safeTitle}
- </h3>
- </div>
- {budgetText && (
- <div className="text-right flex-shrink-0">
- <p className="text-xs text-gray-400 dark:text-gray-500">{t('budget')}</p>
- <p className="text-sm font-bold text-primary leading-tight">{budgetText}</p>
- </div>
- )}
- </div>
+      <hr className="my-2" />
 
- {/* Description */}
- {safeDescription && (
- <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mb-3 leading-relaxed">
- {safeDescription}
- </p>
- )}
-
- {/* Skills */}
- {skills.length >0 && (
- <div className="flex flex-wrap gap-1.5 mb-3">
- {skills.slice(0, 4).map((skill) =>(
- <span
- key={skill}
- className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
- >
- <Tag className="w-2.5 h-2.5" />
- {skill}
- </span>
- ))}
- {skills.length >4 && (
- <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
- +{skills.length - 4}
- </span>
- )}
- </div>
- )}
-
- {/* Footer row */}
- <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700">
- <div className="flex items-center gap-3 flex-wrap">
- {/* Client */}
- <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
- <Briefcase className="w-3.5 h-3.5 flex-shrink-0" />
- <span className="truncate max-w-[100px]">{safeClientName}</span>
- </div>
-
- {/* Deadline */}
- {deadline && (
- <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
- <Calendar className="w-3.5 h-3.5 flex-shrink-0" />
- <span>{formatDate(deadline)}</span>
- </div>
- )}
-
- {/* Location */}
- {showLocation && locationText && (
- <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
- <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
- <span className="truncate max-w-[100px]">{locationText}</span>
- </div>
- )}
- </div>
-
- {/* Bid count */}
- <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">
- <Users className="w-3.5 h-3.5" />
- <span>
- {bid_count} {t('bids').toLowerCase()}
- </span>
- </div>
- </div>
- </Link>
- );
+      <div className="d-flex justify-content-between align-items-center mt10">
+        <p className="mb-0 fz13 body-color">{data.category}</p>
+        <div className="budget">
+          <p className="mb-0 body-color">
+            <span className="fz17 fw500 dark-color">
+              {formatBudget(data.budgetMin, data.budgetMax, data.currency)}
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }
