@@ -2121,7 +2121,9 @@
     }
   },
   "freelancers": {
-    "title": "Find Freelancers",
+    "title": "Freelancers",
+    "brief": "Browse verified freelance talent",
+    "findTitle": "Find Freelancers",
     "subtitle": "Browse talented professionals for your next project",
     "searchPlaceholder": "Search freelancers...",
     "verified": "Verified",
@@ -2145,6 +2147,15 @@
     "locationFallback": "Remote"
   },
   "dashboard": {
+    "title": "Dashboard",
+    "overview": "Overview",
+    "totalOrders": "Total Orders",
+    "totalEarnings": "Total Earnings",
+    "activeGigs": "Active Services",
+    "pendingOrders": "Pending Orders",
+    "recentActivity": "Recent Activity",
+    "noActivity": "No recent activity",
+    "quickActions": "Quick Actions",
     "seller": {
       "title": "Seller Dashboard",
       "overview": "Overview",
@@ -2382,6 +2393,7 @@
   },
   "messages": {
     "title": "Messages",
+    "noMessages": "No messages yet",
     "noConversations": "No conversations yet",
     "noConversationsDesc": "Start a conversation by contacting a freelancer or client.",
     "searchConversations": "Search conversations...",
@@ -2398,6 +2410,11 @@
   },
   "projects": {
     "title": "Projects",
+    "brief": "Browse open projects",
+    "count": "{count} Projects",
+    "submitProposal": "Submit a Proposal",
+    "manageTitle": "Manage Projects",
+    "createTitle": "Create Project",
     "postProject": "Post a Project",
     "browseProjects": "Browse Projects",
     "myProjects": "My Projects",
@@ -2863,5 +2880,79 @@
       "loadAccountFailed": "We couldn't load your account. Please try again.",
       "submitFailed": "Something went wrong. Please try again."
     }
+  },
+  "services": {
+    "title": "Services",
+    "brief": "Browse services from top freelancers",
+    "count": "{count} Services",
+    "startingAt": "Starting at",
+    "reviews": "reviews",
+    "manageTitle": "Manage Services",
+    "addTitle": "Add New Service",
+    "editTitle": "Edit Service",
+    "publish": "Publish Service",
+    "update": "Update Service"
+  },
+  "jobs": {
+    "title": "Jobs",
+    "brief": "Find your next opportunity",
+    "count": "{count} Jobs",
+    "apply": "Apply Now",
+    "fullTime": "Full Time",
+    "partTime": "Part Time",
+    "freelance": "Freelance",
+    "internship": "Internship",
+    "manageTitle": "Manage Jobs"
+  },
+  "employees": {
+    "title": "Clients",
+    "brief": "Browse registered clients",
+    "viewProfile": "View Profile",
+    "noClients": "No clients registered yet"
+  },
+  "about": {
+    "title": "About Us",
+    "brief": "Learn more about SkillLinkup",
+    "mission": "Our Mission",
+    "values": "Our Values",
+    "quality": "Quality First",
+    "trust": "Built on Trust",
+    "growth": "Growth Together",
+    "getStarted": "Ready to get started?",
+    "signUp": "Sign Up Free",
+    "browseServices": "Browse Services"
+  },
+  "financial": {
+    "invoice": "Invoice",
+    "payouts": "Payouts",
+    "statements": "Statements",
+    "totalEarned": "Total Earned",
+    "available": "Available",
+    "pending": "Pending",
+    "withdrawn": "Withdrawn"
+  },
+  "saved": {
+    "title": "Saved Items",
+    "noSaved": "You haven't saved any items yet",
+    "remove": "Remove"
+  },
+  "filters": {
+    "allFilters": "All filters",
+    "search": "Search",
+    "categories": "Categories",
+    "priceRange": "Price range",
+    "location": "Location",
+    "rating": "Rating",
+    "anyRating": "Any rating",
+    "clear": "Clear filters"
+  },
+  "profile": {
+    "title": "My Profile",
+    "basicInfo": "Basic Information",
+    "professional": "Professional Details",
+    "locationWork": "Location & Work Type",
+    "aboutMe": "About Me",
+    "save": "Save Changes",
+    "saving": "Saving..."
   }
 }

@@ -1,5 +1,17 @@
+import type { Metadata } from "next";
 import ClientOnboarding from "@/components/onboarding/ClientOnboarding";
 import { getTranslations } from "next-intl/server";
+
+export const metadata: Metadata = {
+  title: "Post a Project | SkillLinkup",
+  description:
+    "Hire top freelancers on SkillLinkup. Post your project for free and receive bids from verified talent across the Netherlands and beyond.",
+  openGraph: {
+    title: "Post a Project | SkillLinkup",
+    description:
+      "Hire top freelancers on SkillLinkup. Post your project for free and receive bids from verified talent across the Netherlands and beyond.",
+  },
+};
 
 export default async function BecomeClientPage() {
   const t = await getTranslations("onboarding");

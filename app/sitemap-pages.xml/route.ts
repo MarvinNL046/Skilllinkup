@@ -35,6 +35,8 @@ function getPriority(path: string): number {
  if (path === "/") return 1.0;
  if (["/tools", "/newsletter"].includes(path)) return 0.9;
  if (path.startsWith("/tools/")) return 0.8;
+ if (["/services", "/projects", "/jobs", "/freelancers", "/employees"].includes(path)) return 0.8;
+ if (["/become-freelancer", "/become-client"].includes(path)) return 0.7;
  if (["/about", "/faq"].includes(path)) return 0.6;
  if (["/privacy", "/terms", "/disclosure", "/contact"].includes(path)) return 0.3;
  return 0.5;
@@ -42,6 +44,8 @@ function getPriority(path: string): number {
 
 function getChangeFrequency(path: string): string {
  if (path === "/") return "daily";
+ if (["/services", "/projects", "/jobs", "/freelancers", "/employees"].includes(path)) return "daily";
+ if (["/become-freelancer", "/become-client"].includes(path)) return "monthly";
  if (path.startsWith("/tools")) return "monthly";
  if (["/privacy", "/terms", "/disclosure"].includes(path)) return "yearly";
  return "monthly";

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { fetchQuery } from "convex/nextjs";
@@ -6,6 +7,17 @@ import Breadcrumb from "@/components/layout/Breadcrumb";
 import CounterSection from "./CounterSection";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "About Us | SkillLinkup",
+  description:
+    "Learn more about SkillLinkup — the freelance marketplace connecting talented freelancers with clients across the Netherlands and beyond.",
+  openGraph: {
+    title: "About Us | SkillLinkup",
+    description:
+      "Learn more about SkillLinkup — the freelance marketplace connecting talented freelancers with clients across the Netherlands and beyond.",
+  },
+};
 
 interface PageProps {
   params: Promise<{ locale: string }>;

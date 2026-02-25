@@ -1,9 +1,21 @@
+import type { Metadata } from "next";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
 import Breadcrumb from "@/components/layout/Breadcrumb";
 import ServicesClient from "./ServicesClient";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Services | SkillLinkup",
+  description:
+    "Browse services from top freelancers on SkillLinkup. Find web development, design, copywriting, and more — all from verified Dutch and international talent.",
+  openGraph: {
+    title: "Services | SkillLinkup",
+    description:
+      "Browse services from top freelancers on SkillLinkup. Find web development, design, copywriting, and more — all from verified Dutch and international talent.",
+  },
+};
 
 interface PageProps {
   params: Promise<{ locale: string }>;

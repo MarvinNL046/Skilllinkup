@@ -10,6 +10,16 @@
       "hasSubpages": false
     },
     {
+      "path": "/become-client",
+      "lastModified": "2026-02-25T00:00:00.000Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/become-freelancer",
+      "lastModified": "2026-02-25T00:00:00.000Z",
+      "hasSubpages": false
+    },
+    {
       "path": "/blog",
       "lastModified": "2026-02-24T18:12:47.170Z",
       "hasSubpages": true
@@ -110,8 +120,18 @@
       "hasSubpages": false
     },
     {
+      "path": "/employees",
+      "lastModified": "2026-02-25T00:00:00.000Z",
+      "hasSubpages": false
+    },
+    {
       "path": "/faq",
       "lastModified": "2026-02-24T13:35:32.128Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/freelancers",
+      "lastModified": "2026-02-25T00:00:00.000Z",
       "hasSubpages": false
     },
     {
@@ -600,6 +620,11 @@
       "hasSubpages": false
     },
     {
+      "path": "/jobs",
+      "lastModified": "2026-02-25T00:00:00.000Z",
+      "hasSubpages": false
+    },
+    {
       "path": "/marketplace",
       "lastModified": "2026-02-24T18:12:44.347Z",
       "hasSubpages": true
@@ -652,6 +677,11 @@
     {
       "path": "/privacy",
       "lastModified": "2026-02-24T13:35:32.029Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/projects",
+      "lastModified": "2026-02-25T00:00:00.000Z",
       "hasSubpages": false
     },
     {
@@ -947,6 +977,11 @@
     {
       "path": "/reviews",
       "lastModified": "2026-02-24T18:32:05.646Z",
+      "hasSubpages": false
+    },
+    {
+      "path": "/services",
+      "lastModified": "2026-02-25T00:00:00.000Z",
       "hasSubpages": false
     },
     {

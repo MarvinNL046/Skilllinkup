@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
 import Breadcrumb from "@/components/layout/Breadcrumb";
@@ -5,6 +6,17 @@ import ProjectsClient from "./ProjectsClient";
 import { ProjectCardData } from "@/components/marketplace/ProjectCard";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Projects | SkillLinkup",
+  description:
+    "Browse open client projects on SkillLinkup and submit your bid. Find freelance projects in web development, design, marketing, and more.",
+  openGraph: {
+    title: "Projects | SkillLinkup",
+    description:
+      "Browse open client projects on SkillLinkup and submit your bid. Find freelance projects in web development, design, marketing, and more.",
+  },
+};
 
 interface PageProps {
   params: Promise<{ locale: string }>;
