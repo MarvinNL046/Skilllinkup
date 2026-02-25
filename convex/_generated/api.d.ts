@@ -15,6 +15,7 @@ import type * as chat_messages from "../chat/messages.js";
 import type * as comments from "../comments.js";
 import type * as http from "../http.js";
 import type * as marketplace_categories from "../marketplace/categories.js";
+import type * as marketplace_clients from "../marketplace/clients.js";
 import type * as marketplace_disputes from "../marketplace/disputes.js";
 import type * as marketplace_freelancers from "../marketplace/freelancers.js";
 import type * as marketplace_gigs from "../marketplace/gigs.js";
@@ -44,6 +45,7 @@ declare const fullApi: ApiFromModules<{
   comments: typeof comments;
   http: typeof http;
   "marketplace/categories": typeof marketplace_categories;
+  "marketplace/clients": typeof marketplace_clients;
   "marketplace/disputes": typeof marketplace_disputes;
   "marketplace/freelancers": typeof marketplace_freelancers;
   "marketplace/gigs": typeof marketplace_gigs;
