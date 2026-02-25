@@ -3,23 +3,29 @@
 import SelectInput from "@/components/forms/SelectInput";
 import TagInput from "@/components/forms/TagInput";
 import { useOnboardingStore } from "@/store/onboardingStore";
+import { useTranslations } from "next-intl";
 
-const projectTypeOptions = [
-  { label: "Website / App build", value: "build" },
-  { label: "Design / Branding", value: "design" },
-  { label: "Marketing / Growth", value: "marketing" },
-  { label: "Content / Writing", value: "writing" },
-  { label: "Other", value: "other" },
-];
+interface ClientNeedsProps {
+  showErrors?: boolean;
+}
 
-const budgetOptions = [
-  { label: "$500 - $1,000", value: "500-1000" },
-  { label: "$1,000 - $5,000", value: "1000-5000" },
-  { label: "$5,000 - $10,000", value: "5000-10000" },
-  { label: "$10,000+", value: "10000+" },
-];
+export default function ClientNeeds({ showErrors }: ClientNeedsProps) {
+  const t = useTranslations("onboarding");
 
-export default function ClientNeeds() {
+  const projectTypeOptions = [
+    { label: t("options.projectType.build"), value: "build" },
+    { label: t("options.projectType.design"), value: "design" },
+    { label: t("options.projectType.marketing"), value: "marketing" },
+    { label: t("options.projectType.writing"), value: "writing" },
+    { label: t("options.projectType.other"), value: "other" },
+  ];
+
+  const budgetOptions = [
+    { label: t("options.budget.low"), value: "500-1000" },
+    { label: t("options.budget.mid"), value: "1000-5000" },
+    { label: t("options.budget.high"), value: "5000-10000" },
+    { label: t("options.budget.enterprise"), value: "10000+" },
+  ];
   const projectType = useOnboardingStore((state) => state.projectType);
   const budgetRange = useOnboardingStore((state) => state.budgetRange);
   const timeline = useOnboardingStore((state) => state.timeline);
@@ -27,47 +33,65 @@ export default function ClientNeeds() {
   const requiredSkills = useOnboardingStore((state) => state.requiredSkills);
   const updateField = useOnboardingStore((state) => state.updateField);
 
+  const projectTypeError = showErrors && !projectType;
+  const budgetError = showErrors && !budgetRange;
+  const descriptionError = showErrors && !projectDescription.trim();
+
   return (
     <div>
       <SelectInput
-        label="Project type"
+        label={t("fields.projectType")}
         value={projectType}
         options={projectTypeOptions}
-        placeholder="Select project type"
+        placeholder={t("placeholders.projectType")}
         onChange={(value) => updateField("projectType", value)}
+        isInvalid={projectTypeError}
+        errorMessage={t("errors.required")}
       />
       <SelectInput
-        label="Budget range"
+        label={t("fields.budgetRange")}
         value={budgetRange}
         options={budgetOptions}
-        placeholder="Select budget range"
+        placeholder={t("placeholders.budgetRange")}
         onChange={(value) => updateField("budgetRange", value)}
+        isInvalid={budgetError}
+        errorMessage={t("errors.required")}
       />
       <div className="form-style1 mb20">
-        <label className="heading-color ff-heading fw500 mb10">Timeline</label>
+        <label className="heading-color ff-heading fw500 mb10">
+          {t("fields.timeline")}
+        </label>
         <input
           type="text"
           className="form-control"
           value={timeline}
-          placeholder="e.g. 4-6 weeks"
+          placeholder={t("placeholders.timeline")}
           onChange={(event) => updateField("timeline", event.target.value)}
         />
       </div>
       <div className="form-style1 mb20">
-        <label className="heading-color ff-heading fw500 mb10">Project summary</label>
+        <label className="heading-color ff-heading fw500 mb10">
+          {t("fields.projectSummary")}
+        </label>
         <textarea
-          className="form-control"
+          className={`form-control ${descriptionError ? "is-invalid" : ""}`}
           rows={4}
           value={projectDescription}
-          placeholder="What do you need help with?"
+          placeholder={t("placeholders.projectSummary")}
           onChange={(event) => updateField("projectDescription", event.target.value)}
         />
+        {descriptionError && (
+          <div className="invalid-feedback d-block">
+            {t("errors.required")}
+          </div>
+        )}
       </div>
       <TagInput
-        label="Key skills"
+        label={t("fields.requiredSkills")}
         value={requiredSkills}
-        placeholder="Add a skill"
+        placeholder={t("placeholders.requiredSkills")}
         onChange={(value) => updateField("requiredSkills", value)}
+        addLabel={t("buttons.add")}
       />
     </div>
   );

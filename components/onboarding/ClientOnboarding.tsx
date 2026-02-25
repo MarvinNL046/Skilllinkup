@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useUser } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -12,14 +12,9 @@ import ClientBasics from "@/components/onboarding/steps/ClientBasics";
 import ClientNeeds from "@/components/onboarding/steps/ClientNeeds";
 import ClientLocation from "@/components/onboarding/steps/ClientLocation";
 
-const steps = [
-  { title: "Basics", description: "Tell us about you." },
-  { title: "Project needs", description: "What are you looking to build?" },
-  { title: "Location", description: "Where is your team based?" },
-];
-
 export default function ClientOnboarding() {
   const locale = useLocale();
+  const t = useTranslations("onboarding");
   const router = useRouter();
   const { user } = useUser();
 
@@ -37,6 +32,7 @@ export default function ClientOnboarding() {
   const setUserType = useMutation(api.users.setUserType);
 
   const [error, setError] = useState<string | null>(null);
+  const [showErrors, setShowErrors] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const isFirstStep = currentStep === 0;
@@ -62,26 +58,30 @@ export default function ClientOnboarding() {
   const handleNext = () => {
     setError(null);
     if (!validateStep(currentStep)) {
-      setError("Please complete the required fields before continuing.");
+      setError(t("errors.completeRequired"));
+      setShowErrors(true);
       return;
     }
     setStep(currentStep + 1);
+    setShowErrors(false);
   };
 
   const handleBack = () => {
     setError(null);
     setStep(Math.max(currentStep - 1, 0));
+    setShowErrors(false);
   };
 
   const handleSubmit = async () => {
     setError(null);
     if (!validateStep(currentStep)) {
-      setError("Please complete the required fields before submitting.");
+      setError(t("errors.completeRequired"));
+      setShowErrors(true);
       return;
     }
 
     if (!user) {
-      setError("You need to be signed in to complete onboarding.");
+      setError(t("errors.signInRequired"));
       return;
     }
 
@@ -100,11 +100,26 @@ export default function ClientOnboarding() {
       router.push(`/${locale}/dashboard`);
     } catch (err) {
       console.error("[ClientOnboarding] submit failed:", err);
-      setError("Something went wrong. Please try again.");
+      setError(t("errors.submitFailed"));
     } finally {
       setSubmitting(false);
     }
   };
+
+  const steps = [
+    {
+      title: t("steps.clientBasicsTitle"),
+      description: t("steps.clientBasicsDesc"),
+    },
+    {
+      title: t("steps.clientNeedsTitle"),
+      description: t("steps.clientNeedsDesc"),
+    },
+    {
+      title: t("steps.clientLocationTitle"),
+      description: t("steps.clientLocationDesc"),
+    },
+  ];
 
   return (
     <div>
@@ -123,10 +138,13 @@ export default function ClientOnboarding() {
         isLastStep={isLastStep}
         isNextDisabled={submitting}
         isSubmitDisabled={submitting}
+        backLabel={t("buttons.back")}
+        nextLabel={t("buttons.next")}
+        submitLabel={t("buttons.submit")}
       >
-        {currentStep === 0 && <ClientBasics />}
-        {currentStep === 1 && <ClientNeeds />}
-        {currentStep === 2 && <ClientLocation />}
+        {currentStep === 0 && <ClientBasics showErrors={showErrors} />}
+        {currentStep === 1 && <ClientNeeds showErrors={showErrors} />}
+        {currentStep === 2 && <ClientLocation showErrors={showErrors} />}
       </MultiStepForm>
     </div>
   );

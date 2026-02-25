@@ -17,6 +17,9 @@ interface MultiStepFormProps {
   isFirstStep: boolean;
   isNextDisabled?: boolean;
   isSubmitDisabled?: boolean;
+  backLabel?: string;
+  nextLabel?: string;
+  submitLabel?: string;
   children: React.ReactNode;
 }
 
@@ -30,6 +33,9 @@ export default function MultiStepForm({
   isFirstStep,
   isNextDisabled,
   isSubmitDisabled,
+  backLabel = "Back",
+  nextLabel = "Next",
+  submitLabel = "Submit",
   children,
 }: MultiStepFormProps) {
   const progress = Math.round(((currentStep + 1) / steps.length) * 100);
@@ -82,7 +88,7 @@ export default function MultiStepForm({
           onClick={onBack}
           disabled={isFirstStep}
         >
-          Back
+          {backLabel}
         </button>
         {isLastStep ? (
           <button
@@ -91,7 +97,7 @@ export default function MultiStepForm({
             onClick={onSubmit}
             disabled={isSubmitDisabled}
           >
-            Submit
+            {submitLabel}
             <i className="fal fa-arrow-right-long ms-2" />
           </button>
         ) : (
@@ -101,7 +107,7 @@ export default function MultiStepForm({
             onClick={onNext}
             disabled={isNextDisabled}
           >
-            Next
+            {nextLabel}
             <i className="fal fa-arrow-right-long ms-2" />
           </button>
         )}

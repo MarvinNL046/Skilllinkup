@@ -2603,5 +2603,134 @@
     "description": "Sign up for free to order services, contact freelancers, and manage your projects on SkillLinkup.",
     "signUp": "Create Free Account",
     "signIn": "Already have an account? Sign in"
+  },
+  "onboarding": {
+    "freelancerTitle": "Become a Freelancer",
+    "freelancerSubtitle": "Set up your profile to start attracting new clients.",
+    "clientTitle": "Become a Client",
+    "clientSubtitle": "Share your project goals so we can match you with talent.",
+    "steps": {
+      "freelancerBasicsTitle": "Basics",
+      "freelancerBasicsDesc": "Your public profile essentials.",
+      "freelancerExpertiseTitle": "Expertise",
+      "freelancerExpertiseDesc": "Skills and experience level.",
+      "freelancerWorkTitle": "Work preferences",
+      "freelancerWorkDesc": "Location and availability.",
+      "freelancerPortfolioTitle": "Portfolio",
+      "freelancerPortfolioDesc": "Showcase your best work.",
+      "freelancerVerifyTitle": "Verification",
+      "freelancerVerifyDesc": "Link your professional profiles.",
+      "clientBasicsTitle": "Basics",
+      "clientBasicsDesc": "Tell us about you.",
+      "clientNeedsTitle": "Project needs",
+      "clientNeedsDesc": "What are you looking to build?",
+      "clientLocationTitle": "Location",
+      "clientLocationDesc": "Where is your team based?"
+    },
+    "fields": {
+      "profilePhoto": "Profile photo",
+      "displayName": "Display name",
+      "tagline": "Tagline",
+      "bio": "Bio",
+      "category": "Primary category",
+      "skills": "Skills",
+      "experienceLevel": "Experience level",
+      "hourlyRate": "Hourly rate (USD)",
+      "workType": "Work type",
+      "countries": "Countries you can work with",
+      "city": "City",
+      "languages": "Languages",
+      "portfolioImage": "Portfolio image",
+      "projectTitle": "Project title",
+      "projectLink": "Project link (optional)",
+      "linkedinUrl": "LinkedIn URL",
+      "websiteUrl": "Website URL",
+      "certificates": "Certificates (optional)",
+      "clientName": "Your name",
+      "companyName": "Company name",
+      "companyWebsite": "Company website",
+      "projectType": "Project type",
+      "budgetRange": "Budget range",
+      "timeline": "Timeline",
+      "projectSummary": "Project summary",
+      "requiredSkills": "Key skills",
+      "country": "Country"
+    },
+    "placeholders": {
+      "displayName": "Your name",
+      "tagline": "e.g. Product designer for SaaS teams",
+      "bio": "Tell clients about your experience and results.",
+      "category": "Select a category",
+      "skills": "Add a skill (e.g. Figma)",
+      "experienceLevel": "Select experience level",
+      "hourlyRate": "e.g. 50",
+      "countries": "Add a country",
+      "city": "e.g. Amsterdam",
+      "languages": "Add a language",
+      "projectTitle": "e.g. Fintech dashboard redesign",
+      "projectLink": "https://",
+      "linkedinUrl": "https://linkedin.com/in/username",
+      "websiteUrl": "https://yourportfolio.com",
+      "certificates": "Add a certificate",
+      "clientName": "Your name",
+      "companyName": "Company or team name",
+      "companyWebsite": "https://",
+      "projectType": "Select project type",
+      "budgetRange": "Select budget range",
+      "timeline": "e.g. 4-6 weeks",
+      "projectSummary": "What do you need help with?",
+      "requiredSkills": "Add a skill",
+      "country": "Country"
+    },
+    "help": {
+      "profilePhoto": "Use a clear headshot with good lighting.",
+      "portfolioImage": "Upload a project screenshot or cover image."
+    },
+    "buttons": {
+      "add": "Add",
+      "addPortfolioItem": "Add portfolio item",
+      "back": "Back",
+      "next": "Next",
+      "submit": "Submit"
+    },
+    "options": {
+      "category": {
+        "design": "Design",
+        "development": "Development",
+        "marketing": "Marketing",
+        "writing": "Writing",
+        "video": "Video & Animation"
+      },
+      "experience": {
+        "junior": "Junior (0-2 years)",
+        "mid": "Mid (3-5 years)",
+        "senior": "Senior (6+ years)"
+      },
+      "workType": {
+        "remote": "Remote",
+        "local": "Local",
+        "hybrid": "Hybrid"
+      },
+      "projectType": {
+        "build": "Website / App build",
+        "design": "Design / Branding",
+        "marketing": "Marketing / Growth",
+        "writing": "Content / Writing",
+        "other": "Other"
+      },
+      "budget": {
+        "low": "$500 - $1,000",
+        "mid": "$1,000 - $5,000",
+        "high": "$5,000 - $10,000",
+        "enterprise": "$10,000+"
+      }
+    },
+    "errors": {
+      "required": "This field is required.",
+      "completeRequired": "Please complete the required fields before continuing.",
+      "signInRequired": "You need to be signed in to complete onboarding.",
+      "loadAccountFailed": "We couldn't load your account. Please try again.",
+      "submitFailed": "Something went wrong. Please try again."
+    }
   }
 }

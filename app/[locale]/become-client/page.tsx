@@ -1,6 +1,8 @@
 import ClientOnboarding from "@/components/onboarding/ClientOnboarding";
+import { getTranslations } from "next-intl/server";
 
-export default function BecomeClientPage() {
+export default async function BecomeClientPage() {
+  const t = await getTranslations("onboarding");
   return (
     <div className="bgc-thm4">
       <section className="our-register">
@@ -8,9 +10,9 @@ export default function BecomeClientPage() {
           <div className="row">
             <div className="col-lg-6 m-auto">
               <div className="main-title text-center">
-                <h2 className="title">Become a Client</h2>
+                <h2 className="title">{t("clientTitle")}</h2>
                 <p className="paragraph">
-                  Share your project goals so we can match you with talent.
+                  {t("clientSubtitle")}
                 </p>
               </div>
             </div>

@@ -10,6 +10,8 @@ interface ImageUploadProps {
   helperText?: string;
   accept?: string;
   id?: string;
+  isInvalid?: boolean;
+  errorMessage?: string;
 }
 
 export default function ImageUpload({
@@ -19,6 +21,8 @@ export default function ImageUpload({
   helperText,
   accept = "image/*",
   id,
+  isInvalid,
+  errorMessage,
 }: ImageUploadProps) {
   const [preview, setPreview] = useState<string | null>(value ?? null);
 
@@ -59,11 +63,14 @@ export default function ImageUpload({
           <input
             id={id}
             type="file"
-            className="form-control"
+            className={`form-control ${isInvalid ? "is-invalid" : ""}`}
             accept={accept}
             onChange={handleChange}
           />
           {helperText && <p className="text mt10 mb0">{helperText}</p>}
+          {isInvalid && errorMessage && (
+            <div className="invalid-feedback d-block">{errorMessage}</div>
+          )}
         </div>
       </div>
     </div>

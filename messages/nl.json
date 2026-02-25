@@ -2603,5 +2603,134 @@
     "description": "Registreer gratis om diensten te bestellen, freelancers te contacteren en je projecten te beheren op SkillLinkup.",
     "signUp": "Gratis Account Aanmaken",
     "signIn": "Heb je al een account? Inloggen"
+  },
+  "onboarding": {
+    "freelancerTitle": "Word freelancer",
+    "freelancerSubtitle": "Zet je profiel op om nieuwe klanten aan te trekken.",
+    "clientTitle": "Word opdrachtgever",
+    "clientSubtitle": "Deel je projectdoelen zodat we je kunnen matchen met talent.",
+    "steps": {
+      "freelancerBasicsTitle": "Basis",
+      "freelancerBasicsDesc": "Je publieke profiel.",
+      "freelancerExpertiseTitle": "Expertise",
+      "freelancerExpertiseDesc": "Skills en ervaring.",
+      "freelancerWorkTitle": "Werkvoorkeur",
+      "freelancerWorkDesc": "Locatie en beschikbaarheid.",
+      "freelancerPortfolioTitle": "Portfolio",
+      "freelancerPortfolioDesc": "Laat je beste werk zien.",
+      "freelancerVerifyTitle": "Verificatie",
+      "freelancerVerifyDesc": "Koppel je professionele profielen.",
+      "clientBasicsTitle": "Basis",
+      "clientBasicsDesc": "Vertel iets over jezelf.",
+      "clientNeedsTitle": "Projectbehoeften",
+      "clientNeedsDesc": "Wat wil je laten bouwen?",
+      "clientLocationTitle": "Locatie",
+      "clientLocationDesc": "Waar zit je team?"
+    },
+    "fields": {
+      "profilePhoto": "Profielfoto",
+      "displayName": "Weergavenaam",
+      "tagline": "Tagline",
+      "bio": "Bio",
+      "category": "Hoofdcategorie",
+      "skills": "Skills",
+      "experienceLevel": "Ervaringsniveau",
+      "hourlyRate": "Uurtarief (USD)",
+      "workType": "Type werk",
+      "countries": "Landen waarmee je kunt werken",
+      "city": "Stad",
+      "languages": "Talen",
+      "portfolioImage": "Portfolio-afbeelding",
+      "projectTitle": "Projecttitel",
+      "projectLink": "Projectlink (optioneel)",
+      "linkedinUrl": "LinkedIn URL",
+      "websiteUrl": "Website URL",
+      "certificates": "Certificaten (optioneel)",
+      "clientName": "Jouw naam",
+      "companyName": "Bedrijfsnaam",
+      "companyWebsite": "Bedrijfswebsite",
+      "projectType": "Projecttype",
+      "budgetRange": "Budgetrange",
+      "timeline": "Tijdlijn",
+      "projectSummary": "Projectsamenvatting",
+      "requiredSkills": "Belangrijke skills",
+      "country": "Land"
+    },
+    "placeholders": {
+      "displayName": "Jouw naam",
+      "tagline": "bijv. Product designer voor SaaS teams",
+      "bio": "Vertel klanten over je ervaring en resultaten.",
+      "category": "Kies een categorie",
+      "skills": "Voeg een skill toe (bijv. Figma)",
+      "experienceLevel": "Kies ervaringsniveau",
+      "hourlyRate": "bijv. 50",
+      "countries": "Voeg een land toe",
+      "city": "bijv. Amsterdam",
+      "languages": "Voeg een taal toe",
+      "projectTitle": "bijv. Fintech dashboard redesign",
+      "projectLink": "https://",
+      "linkedinUrl": "https://linkedin.com/in/gebruikersnaam",
+      "websiteUrl": "https://jouwportfolio.com",
+      "certificates": "Voeg een certificaat toe",
+      "clientName": "Jouw naam",
+      "companyName": "Bedrijfs- of teamnaam",
+      "companyWebsite": "https://",
+      "projectType": "Kies projecttype",
+      "budgetRange": "Kies budgetrange",
+      "timeline": "bijv. 4-6 weken",
+      "projectSummary": "Waar heb je hulp bij nodig?",
+      "requiredSkills": "Voeg een skill toe",
+      "country": "Land"
+    },
+    "help": {
+      "profilePhoto": "Gebruik een duidelijke portretfoto met goed licht.",
+      "portfolioImage": "Upload een projectscreenshot of coverafbeelding."
+    },
+    "buttons": {
+      "add": "Toevoegen",
+      "addPortfolioItem": "Portfolio-item toevoegen",
+      "back": "Terug",
+      "next": "Volgende",
+      "submit": "Versturen"
+    },
+    "options": {
+      "category": {
+        "design": "Design",
+        "development": "Development",
+        "marketing": "Marketing",
+        "writing": "Schrijven",
+        "video": "Video & animatie"
+      },
+      "experience": {
+        "junior": "Junior (0-2 jaar)",
+        "mid": "Medior (3-5 jaar)",
+        "senior": "Senior (6+ jaar)"
+      },
+      "workType": {
+        "remote": "Remote",
+        "local": "Lokaal",
+        "hybrid": "Hybride"
+      },
+      "projectType": {
+        "build": "Website / app bouwen",
+        "design": "Design / Branding",
+        "marketing": "Marketing / Groei",
+        "writing": "Content / Schrijven",
+        "other": "Overig"
+      },
+      "budget": {
+        "low": "$500 - $1.000",
+        "mid": "$1.000 - $5.000",
+        "high": "$5.000 - $10.000",
+        "enterprise": "$10.000+"
+      }
+    },
+    "errors": {
+      "required": "Dit veld is verplicht.",
+      "completeRequired": "Vul de verplichte velden in voordat je doorgaat.",
+      "signInRequired": "Je moet ingelogd zijn om onboarding af te ronden.",
+      "loadAccountFailed": "We konden je account niet laden. Probeer het opnieuw.",
+      "submitFailed": "Er ging iets mis. Probeer het opnieuw."
+    }
   }
 }

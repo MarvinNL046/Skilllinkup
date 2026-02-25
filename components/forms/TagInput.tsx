@@ -7,6 +7,9 @@ interface TagInputProps {
   value: string[];
   placeholder?: string;
   onChange: (value: string[]) => void;
+  addLabel?: string;
+  isInvalid?: boolean;
+  errorMessage?: string;
 }
 
 export default function TagInput({
@@ -14,6 +17,9 @@ export default function TagInput({
   value,
   placeholder = "Add a tag",
   onChange,
+  addLabel = "Add",
+  isInvalid,
+  errorMessage,
 }: TagInputProps) {
   const [input, setInput] = useState("");
 
@@ -34,7 +40,7 @@ export default function TagInput({
       <div className="d-flex gap-2">
         <input
           type="text"
-          className="form-control"
+          className={`form-control ${isInvalid ? "is-invalid" : ""}`}
           value={input}
           placeholder={placeholder}
           onChange={(event) => setInput(event.target.value)}
@@ -46,9 +52,12 @@ export default function TagInput({
           }}
         />
         <button type="button" className="ud-btn btn-thm" onClick={addTag}>
-          Add
+          {addLabel}
         </button>
       </div>
+      {isInvalid && errorMessage && (
+        <div className="invalid-feedback d-block">{errorMessage}</div>
+      )}
       {value.length > 0 && (
         <div className="d-flex flex-wrap gap-2 mt15">
           {value.map((tag) => (

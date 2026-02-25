@@ -12,6 +12,8 @@ interface SelectInputProps {
   placeholder?: string;
   onChange: (value: string) => void;
   id?: string;
+  isInvalid?: boolean;
+  errorMessage?: string;
 }
 
 export default function SelectInput({
@@ -21,6 +23,8 @@ export default function SelectInput({
   placeholder = "Select an option",
   onChange,
   id,
+  isInvalid,
+  errorMessage,
 }: SelectInputProps) {
   return (
     <div className="form-style1 mb20">
@@ -29,7 +33,7 @@ export default function SelectInput({
       </label>
       <select
         id={id}
-        className="form-select"
+        className={`form-select ${isInvalid ? "is-invalid" : ""}`}
         value={value}
         onChange={(event) => onChange(event.target.value)}
       >
@@ -40,6 +44,9 @@ export default function SelectInput({
           </option>
         ))}
       </select>
+      {isInvalid && errorMessage && (
+        <div className="invalid-feedback d-block">{errorMessage}</div>
+      )}
     </div>
   );
 }

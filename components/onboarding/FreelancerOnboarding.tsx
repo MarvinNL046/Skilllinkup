@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useUser } from "@clerk/nextjs";
 import { useConvex, useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -14,16 +14,9 @@ import FreelancerWorkPreference from "@/components/onboarding/steps/FreelancerWo
 import FreelancerPortfolio from "@/components/onboarding/steps/FreelancerPortfolio";
 import FreelancerVerification from "@/components/onboarding/steps/FreelancerVerification";
 
-const steps = [
-  { title: "Basics", description: "Your public profile essentials." },
-  { title: "Expertise", description: "Skills and experience level." },
-  { title: "Work preferences", description: "Location and availability." },
-  { title: "Portfolio", description: "Showcase your best work." },
-  { title: "Verification", description: "Link your professional profiles." },
-];
-
 export default function FreelancerOnboarding() {
   const locale = useLocale();
+  const t = useTranslations("onboarding");
   const router = useRouter();
   const convex = useConvex();
   const { user } = useUser();
@@ -53,6 +46,7 @@ export default function FreelancerOnboarding() {
   const updateProfile = useMutation(api.marketplace.freelancers.updateProfile);
 
   const [error, setError] = useState<string | null>(null);
+  const [showErrors, setShowErrors] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const isFirstStep = currentStep === 0;
@@ -78,30 +72,34 @@ export default function FreelancerOnboarding() {
   const handleNext = () => {
     setError(null);
     if (!validateStep(currentStep)) {
-      setError("Please complete the required fields before continuing.");
+      setError(t("errors.completeRequired"));
+      setShowErrors(true);
       return;
     }
     setStep(currentStep + 1);
+    setShowErrors(false);
   };
 
   const handleBack = () => {
     setError(null);
     setStep(Math.max(currentStep - 1, 0));
+    setShowErrors(false);
   };
 
   const handleSubmit = async () => {
     setError(null);
     if (!validateStep(currentStep)) {
-      setError("Please complete the required fields before submitting.");
+      setError(t("errors.completeRequired"));
+      setShowErrors(true);
       return;
     }
 
     if (!user) {
-      setError("You need to be signed in to complete onboarding.");
+      setError(t("errors.signInRequired"));
       return;
     }
     if (!convexUser) {
-      setError("We couldn't load your account. Please try again.");
+      setError(t("errors.loadAccountFailed"));
       return;
     }
 
@@ -146,11 +144,34 @@ export default function FreelancerOnboarding() {
       router.push(`/${locale}/dashboard`);
     } catch (err) {
       console.error("[FreelancerOnboarding] submit failed:", err);
-      setError("Something went wrong. Please try again.");
+      setError(t("errors.submitFailed"));
     } finally {
       setSubmitting(false);
     }
   };
+
+  const steps = [
+    {
+      title: t("steps.freelancerBasicsTitle"),
+      description: t("steps.freelancerBasicsDesc"),
+    },
+    {
+      title: t("steps.freelancerExpertiseTitle"),
+      description: t("steps.freelancerExpertiseDesc"),
+    },
+    {
+      title: t("steps.freelancerWorkTitle"),
+      description: t("steps.freelancerWorkDesc"),
+    },
+    {
+      title: t("steps.freelancerPortfolioTitle"),
+      description: t("steps.freelancerPortfolioDesc"),
+    },
+    {
+      title: t("steps.freelancerVerifyTitle"),
+      description: t("steps.freelancerVerifyDesc"),
+    },
+  ];
 
   return (
     <div>
@@ -169,10 +190,13 @@ export default function FreelancerOnboarding() {
         isLastStep={isLastStep}
         isNextDisabled={submitting}
         isSubmitDisabled={submitting}
+        backLabel={t("buttons.back")}
+        nextLabel={t("buttons.next")}
+        submitLabel={t("buttons.submit")}
       >
-        {currentStep === 0 && <FreelancerBasics />}
-        {currentStep === 1 && <FreelancerExpertise />}
-        {currentStep === 2 && <FreelancerWorkPreference />}
+        {currentStep === 0 && <FreelancerBasics showErrors={showErrors} />}
+        {currentStep === 1 && <FreelancerExpertise showErrors={showErrors} />}
+        {currentStep === 2 && <FreelancerWorkPreference showErrors={showErrors} />}
         {currentStep === 3 && <FreelancerPortfolio />}
         {currentStep === 4 && <FreelancerVerification />}
       </MultiStepForm>

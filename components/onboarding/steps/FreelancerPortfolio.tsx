@@ -3,8 +3,10 @@
 import { useState } from "react";
 import ImageUpload from "@/components/forms/ImageUpload";
 import { useOnboardingStore } from "@/store/onboardingStore";
+import { useTranslations } from "next-intl";
 
 export default function FreelancerPortfolio() {
+  const t = useTranslations("onboarding");
   const portfolioItems = useOnboardingStore((state) => state.portfolioItems);
   const addPortfolioItem = useOnboardingStore((state) => state.addPortfolioItem);
   const removePortfolioItem = useOnboardingStore((state) => state.removePortfolioItem);
@@ -24,33 +26,37 @@ export default function FreelancerPortfolio() {
   return (
     <div>
       <ImageUpload
-        label="Portfolio image"
+        label={t("fields.portfolioImage")}
         value={image}
         onChange={(value) => setImage(value)}
-        helperText="Upload a project screenshot or cover image."
+        helperText={t("help.portfolioImage")}
       />
       <div className="form-style1 mb20">
-        <label className="heading-color ff-heading fw500 mb10">Project title</label>
+        <label className="heading-color ff-heading fw500 mb10">
+          {t("fields.projectTitle")}
+        </label>
         <input
           type="text"
           className="form-control"
           value={title}
-          placeholder="e.g. Fintech dashboard redesign"
+          placeholder={t("placeholders.projectTitle")}
           onChange={(event) => setTitle(event.target.value)}
         />
       </div>
       <div className="form-style1 mb20">
-        <label className="heading-color ff-heading fw500 mb10">Project link (optional)</label>
+        <label className="heading-color ff-heading fw500 mb10">
+          {t("fields.projectLink")}
+        </label>
         <input
           type="text"
           className="form-control"
           value={link}
-          placeholder="https://"
+          placeholder={t("placeholders.projectLink")}
           onChange={(event) => setLink(event.target.value)}
         />
       </div>
       <button type="button" className="ud-btn btn-thm mb30" onClick={handleAdd}>
-        Add portfolio item
+        {t("buttons.addPortfolioItem")}
       </button>
 
       {portfolioItems.length > 0 && (
@@ -62,7 +68,12 @@ export default function FreelancerPortfolio() {
                   <div>
                     <h6 className="mb5">{item.title}</h6>
                     {item.link && (
-                      <a className="text-thm fz14" href={item.link} target="_blank" rel="noreferrer">
+                      <a
+                        className="text-thm fz14"
+                        href={item.link}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
                         {item.link}
                       </a>
                     )}

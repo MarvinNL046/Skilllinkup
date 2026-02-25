@@ -1,6 +1,8 @@
 import FreelancerOnboarding from "@/components/onboarding/FreelancerOnboarding";
+import { getTranslations } from "next-intl/server";
 
-export default function BecomeFreelancerPage() {
+export default async function BecomeFreelancerPage() {
+  const t = await getTranslations("onboarding");
   return (
     <div className="bgc-thm4">
       <section className="our-register">
@@ -8,9 +10,9 @@ export default function BecomeFreelancerPage() {
           <div className="row">
             <div className="col-lg-6 m-auto">
               <div className="main-title text-center">
-                <h2 className="title">Become a Freelancer</h2>
+                <h2 className="title">{t("freelancerTitle")}</h2>
                 <p className="paragraph">
-                  Set up your profile to start attracting new clients.
+                  {t("freelancerSubtitle")}
                 </p>
               </div>
             </div>
