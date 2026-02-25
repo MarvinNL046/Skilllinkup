@@ -2,11 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Star, MapPin, CheckCircle, Clock } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
-import { safeImage, safeText, safeArray, safeNumber } from '@/lib/safe';
 import type { FreelancerProfile } from '@/types/marketplace';
-import { FreelancerBadges } from '@/components/marketplace/FreelancerBadges';
 
 interface FreelancerCardProps {
  freelancer: FreelancerProfile;
@@ -16,159 +13,72 @@ export function FreelancerCard({ freelancer }: FreelancerCardProps) {
  const locale = useLocale();
  const t = useTranslations('freelancers');
 
- const displayName = safeText(freelancer.display_name, 'Unknown');
- const tagline = safeText(freelancer.tagline, '');
- const avatarUrl = safeImage(freelancer.avatar_url, '');
- const skills = safeArray<string>(freelancer.skills);
- const rating = safeNumber(freelancer.rating_average, 0);
- const ratingCount = safeNumber(freelancer.rating_count, 0);
- const hourlyRate = freelancer.hourly_rate ? safeNumber(freelancer.hourly_rate, 0) : null;
- const locationCity = safeText(freelancer.location_city, '');
- const locationCountry = safeText(freelancer.location_country, '');
- const workType = safeText(freelancer.work_type, 'remote');
-
- const showLocation = (workType === 'local' || workType === 'hybrid') && (locationCity || locationCountry);
+ const displayName = freelancer.display_name ?? 'Unknown';
+ const tagline = freelancer.tagline ?? '';
+ const avatarUrl = freelancer.avatar_url ?? '';
+ const skills = Array.isArray(freelancer.skills) ? freelancer.skills : [];
+ const rating = Number(freelancer.rating_average ?? 0);
+ const ratingCount = Number(freelancer.rating_count ?? 0);
+ const hourlyRate = freelancer.hourly_rate ? Number(freelancer.hourly_rate) : null;
+ const locationCity = freelancer.location_city ?? '';
+ const locationCountry = freelancer.location_country ?? '';
  const locationText = [locationCity, locationCountry].filter(Boolean).join(', ');
-
- // Show first 3-4 skills
- const visibleSkills = skills.slice(0, 4);
- const remainingSkills = skills.length >4 ? skills.length - 4 : 0;
+ const completionRate = freelancer.completion_rate ? Number(freelancer.completion_rate) : null;
 
  const profileUrl = `/${locale}/marketplace/freelancers/${freelancer.user_id}`;
 
  return (
- <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow duration-200 flex flex-col">
- {/* Card Body */}
- <div className="p-5 flex-1">
- {/* Avatar + Name Row */}
- <div className="flex items-start gap-3 mb-3">
- <div className="relative flex-shrink-0">
- <div className="w-14 h-14 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700">
- {avatarUrl ? (
+ <div className="freelancer-style1 text-center bdr1 hover-box-shadow">
+ <div className="thumb w90 mb25 mx-auto position-relative rounded-circle">
  <Image
- src={avatarUrl}
+ height={90}
+ width={90}
+ className="rounded-circle mx-auto"
+ src={avatarUrl || '/images/resource/user.png'}
  alt={displayName}
- width={56}
- height={56}
- className="object-cover w-full h-full"
- onError={(e) =>{
- (e.target as HTMLImageElement).style.display = 'none';
- }}
  />
- ) : (
- <div className="w-full h-full flex items-center justify-center bg-primary/10 text-primary font-semibold text-lg">
- {displayName.charAt(0).toUpperCase()}
+ {freelancer.is_verified && <span className="online" />}
  </div>
- )}
- </div>
- {freelancer.is_verified && (
- <div className="absolute -bottom-1 -right-1 bg-white dark:bg-gray-800 rounded-full p-0.5">
- <CheckCircle className="w-4 h-4 text-green-500" />
- </div>
- )}
- </div>
-
- <div className="flex-1 min-w-0">
- <div className="flex items-center gap-1.5 flex-wrap">
- <h3 className="font-semibold text-gray-900 dark:text-white text-sm truncate">
- {displayName}
- </h3>
- {freelancer.is_verified && (
- <span className="text-xs bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-1.5 py-0.5 rounded font-medium">
- {t('verified')}
- </span>
- )}
- </div>
- {tagline && (
- <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">
- {tagline}
+ <div className="details">
+ <h5 className="title mb-1">{displayName}</h5>
+ <p className="mb-0">{tagline || t('taglineFallback')}</p>
+ <div className="review">
+ <p>
+ <i className="fas fa-star fz10 review-color pr10" />
+ <span className="dark-color fw500">{rating.toFixed(1)}</span>({ratingCount} reviews)
  </p>
- )}
  </div>
- </div>
-
- {/* Badges Row */}
- <div className="mb-3">
- <FreelancerBadges
- profile={{
- is_verified: freelancer.is_verified,
- rating_average: safeNumber(freelancer.rating_average, 0),
- rating_count: safeNumber(freelancer.rating_count, 0),
- total_orders: safeNumber(freelancer.total_orders, 0),
- completion_rate: safeNumber(freelancer.completion_rate, 0),
- created_at: freelancer.created_at,
- }}
- locale={locale}
- layout="inline"
- />
- </div>
-
- {/* Rating Row */}
- <div className="flex items-center gap-3 mb-3">
- {rating >0 ? (
- <div className="flex items-center gap-1">
- <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
- <span className="text-sm font-semibold text-gray-900 dark:text-white">
- {rating.toFixed(1)}
- </span>
- <span className="text-xs text-gray-500 dark:text-gray-400">
- ({ratingCount})
- </span>
- </div>
- ) : (
- <div className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
- <Star className="w-3.5 h-3.5" />
- <span>New</span>
- </div>
- )}
-
- {showLocation && (
- <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
- <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
- <span className="truncate">{locationText}</span>
- </div>
- )}
- </div>
-
- {/* Skills */}
- {visibleSkills.length >0 && (
- <div className="flex flex-wrap gap-1.5 mb-3">
- {visibleSkills.map((skill) =>(
- <span
- key={skill}
- className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-0.5 rounded-full"
- >
+ <div className="skill-tags d-flex align-items-center justify-content-center mb5">
+ {skills.slice(0, 3).map((skill) => (
+ <span key={skill} className="tag">
  {skill}
  </span>
  ))}
- {remainingSkills >0 && (
- <span className="text-xs text-gray-400 dark:text-gray-500 px-1 py-0.5">
- +{remainingSkills}
+ </div>
+ <hr className="opacity-100 mt20 mb15" />
+ <div className="fl-meta d-flex align-items-center justify-content-between">
+ <span className="meta fw500 text-start">
+ Location
+ <br />
+ <span className="fz14 fw400">{locationText || t('locationFallback')}</span>
  </span>
- )}
+ <span className="meta fw500 text-start">
+ Rate
+ <br />
+ <span className="fz14 fw400">{hourlyRate ? `€${hourlyRate} / hr` : '—'}</span>
+ </span>
+ <span className="meta fw500 text-start">
+ Job Success
+ <br />
+ <span className="fz14 fw400">{completionRate ? `${completionRate}%` : '—'}</span>
+ </span>
  </div>
- )}
- </div>
-
- {/* Card Footer */}
- <div className="px-5 py-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
- {hourlyRate !== null && hourlyRate >0 ? (
- <div className="text-sm">
- <span className="font-bold text-gray-900 dark:text-white">${hourlyRate}</span>
- <span className="text-gray-500 dark:text-gray-400 text-xs">{t('perHour')}</span>
- </div>
- ) : (
- <div className="text-xs text-gray-400 dark:text-gray-500">
- {t('hourlyRate')}: —
- </div>
- )}
-
- <Link
- href={profileUrl}
- className="text-xs font-medium text-[#ef2b70] hover:text-[#d4235f] transition-colors"
- >
- {t('viewProfile')} &rarr;
+ <div className="d-grid mt15">
+ <Link href={profileUrl} className="ud-btn btn-light-thm">
+ {t('viewProfile')}
+ <i className="fal fa-arrow-right-long" />
  </Link>
+ </div>
  </div>
  </div>
  );

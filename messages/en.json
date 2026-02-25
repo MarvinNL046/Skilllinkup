@@ -2140,7 +2140,9 @@
     "portfolio": "Portfolio",
     "contactFreelancer": "Contact",
     "noFreelancers": "No freelancers found",
-    "viewProfile": "View Profile"
+    "viewProfile": "View Profile",
+    "taglineFallback": "Freelance professional",
+    "locationFallback": "Remote"
   },
   "dashboard": {
     "seller": {

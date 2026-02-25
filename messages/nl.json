@@ -2140,7 +2140,9 @@
     "portfolio": "Portfolio",
     "contactFreelancer": "Contact",
     "noFreelancers": "Geen freelancers gevonden",
-    "viewProfile": "Bekijk Profiel"
+    "viewProfile": "Bekijk Profiel",
+    "taglineFallback": "Freelance professional",
+    "locationFallback": "Op afstand"
   },
   "dashboard": {
     "seller": {
