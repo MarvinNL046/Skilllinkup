@@ -9,6 +9,7 @@ import toggleStore from "@/store/toggleStore";
 import "react-tooltip/dist/react-tooltip.css";
 import "rc-slider/assets/index.css";
 import NavSidebar from "@/components/sidebar/NavSidebar";
+import Providers from "@/components/Providers";
 if (typeof window !== "undefined") {
   import("bootstrap");
 }
@@ -36,14 +37,16 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${dmSans.className}`}>
-        <SearchModal1 />
-        {children}
+        <Providers>
+          <SearchModal1 />
+          {children}
 
-        {/* bottom to top */}
-        <BottomToTop />
+          {/* bottom to top */}
+          <BottomToTop />
 
-        {/* sidebar mobile navigation */}
-        <NavSidebar />
+          {/* sidebar mobile navigation */}
+          <NavSidebar />
+        </Providers>
       </body>
     </html>
   );
