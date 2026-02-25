@@ -197,21 +197,7 @@ export default async function ToolsPage({ params }: PageProps) {
  // Client Manager temporarily disabled - MoneyBii not yet ready
  // {
  // id: 'client-manager-temp',
- // owner_id: 'system',
- // name: t('hardcodedTools.clientManager.name'),
- // slug: 'client-manager',
- // description: t('hardcodedTools.clientManager.description'),
- // category: 'tool',
- // icon: 'Users',
- // color: '#06B6D4',
- // tool_url: `/${locale}/tools/client-manager`,
- // is_available: true,
- // featured: false,
- // sort_order: 6,
- // views: 0,
- // status: 'published',
- // created_at: new Date(),
- // updated_at: new Date(),
+ // ...
  // },
  ];
 
@@ -290,75 +276,70 @@ export default async function ToolsPage({ params }: PageProps) {
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
  />
- 
- <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
- {/* Hero Section */}
- <section className="bg-white dark:bg-slate-800 py-16 sm:py-20">
- <div className="container mx-auto px-4">
- <div className="max-w-3xl mx-auto text-center">
- <div className="flex items-center justify-center gap-3 mb-6">
- <div className="w-14 h-14 bg-primary rounded-lg flex items-center justify-center">
- <Wrench className="w-7 h-7 text-white" />
- </div>
- </div>
 
- <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
- {t('hero.title')}
- </h1>
- <p className="text-xl text-gray-700 dark:text-gray-300">
- {t('hero.subtitle')}
- </p>
+ <main>
+ {/* Hero / Breadcrumb */}
+ <section className="breadcumb-section">
+ <div className="container">
+ <div className="row">
+ <div className="col-lg-12">
+ <div className="breadcumb-style1 text-center">
+ <div
+ className="d-flex align-items-center justify-content-center bdrs12 mx-auto mb20"
+ style={{ width: 60, height: 60, background: 'var(--primary-color)' }}
+ >
+ <Wrench size={28} color="#fff" />
+ </div>
+ <h2 className="title">{t('hero.title')}</h2>
+ <p className="text fz17 mt10">{t('hero.subtitle')}</p>
+ <div className="breadcumb-list mt15">
+ <Link href={`/${locale}`}>Home</Link>
+ <span className="mx10">/</span>
+ <span className="active">Tools</span>
+ </div>
+ </div>
+ </div>
  </div>
  </div>
  </section>
 
  {/* Tools Grid */}
- <section className="container mx-auto px-4 py-16">
- <div className="mb-12">
- <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
- {t('toolsSection.title')}
- </h2>
- <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl">
- {t('toolsSection.description')}
- </p>
+ <section className="pt50 pb90">
+ <div className="container">
+ <div className="row mb30">
+ <div className="col-12">
+ <h3 className="title mb10">{t('toolsSection.title')}</h3>
+ <p className="fz17 body-color">{t('toolsSection.description')}</p>
+ </div>
  </div>
 
- {tools.length >0 ? (
+ {tools.length > 0 ? (
  <>
- <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
- {tools.map((tool) =>{
+ <div className="row">
+ {tools.map((tool) => {
  const Icon = tool.icon && iconMap[tool.icon] ? iconMap[tool.icon] : Wrench;
  return (
+ <div key={tool.id} className="col-sm-6 col-lg-4">
+ <div className="freelancer-style1 bdrs12 bdr1 hover-box-shadow mb25 p30">
  <div
- key={tool.id}
- className="bg-white dark:bg-slate-800 rounded-lg shadow-md hover:shadow-xl transition-all overflow-hidden border border-gray-200 dark:border-slate-700"
+ className="bdrs12 d-flex align-items-center justify-content-center mb20"
+ style={{ width: 52, height: 52, backgroundColor: tool.color }}
  >
- <div className="p-6">
- <div
- className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
- style={{ backgroundColor: tool.color }}
- >
- <Icon className="w-6 h-6 text-white" />
+ <Icon size={24} color="#fff" />
  </div>
- <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
- {tool.name}
- </h3>
- <p className="text-gray-600 dark:text-gray-300 mb-4">
- {tool.description}
- </p>
+ <h5 className="fw600 mb10">{tool.name}</h5>
+ <p className="fz14 body-color mb20">{tool.description}</p>
  {tool.is_available ? (
  <Link
  href={`/${locale}/tools/${tool.slug}`}
- className="inline-flex items-center gap-2 text-primary font-semibold hover:underline"
+ className="ud-btn btn-thm w-100 text-center"
  >
  {t('toolsSection.startButton')}
  </Link>
  ) : (
- <div className="flex items-center gap-2">
- <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+ <span className="fz13 fw500 text-muted px15 py8 bdrs4 bgc-f7 d-inline-block">
  {t('toolsSection.comingSoon')}
  </span>
- </div>
  )}
  </div>
  </div>
@@ -367,130 +348,114 @@ export default async function ToolsPage({ params }: PageProps) {
  </div>
 
  {/* Ad Widget for Tools Listing */}
- <div className="mb-16 max-w-md mx-auto">
+ <div className="row mt20 mb30">
+ <div className="col-md-6 offset-md-3">
  <AdWidget placement="tools_listing" />
+ </div>
  </div>
  </>
  ) : (
- <div className="text-center py-12 mb-16">
- <p className="text-lg text-gray-600 dark:text-gray-300">
- {t('emptyStates.noTools')}
- </p>
+ <div className="row">
+ <div className="col-12 text-center py50">
+ <p className="fz17 body-color">{t('emptyStates.noTools')}</p>
+ </div>
  </div>
  )}
 
  {/* Resources Section */}
- <div className="mb-12">
- <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
- {t('resourcesSection.title')}
- </h2>
- <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl">
- {t('resourcesSection.description')}
- </p>
+ <div className="row mb30 mt20">
+ <div className="col-12">
+ <h3 className="title mb10">{t('resourcesSection.title')}</h3>
+ <p className="fz17 body-color">{t('resourcesSection.description')}</p>
+ </div>
  </div>
 
- {resources.length >0 ? (
- <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
- {resources.map((resource) =>{
+ {resources.length > 0 ? (
+ <div className="row mb30">
+ {resources.map((resource) => {
  const Icon = resource.icon && iconMap[resource.icon] ? iconMap[resource.icon] : FileText;
  return (
+ <div key={resource.id} className="col-sm-6 col-lg-3">
+ <div className="ps-widget bgc-white bdrs12 bdr1 hover-box-shadow p30 mb25">
  <div
- key={resource.id}
- className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 hover:shadow-xl transition-all border border-gray-200 dark:border-slate-700"
+ className="bdrs12 d-flex align-items-center justify-content-center mb20"
+ style={{ width: 52, height: 52, backgroundColor: resource.color }}
  >
- <div
- className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
- style={{ backgroundColor: resource.color }}
- >
- <Icon className="w-6 h-6 text-white" />
+ <Icon size={24} color="#fff" />
  </div>
- <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
- {resource.name}
- </h3>
- <p className="text-sm text-gray-600 dark:text-gray-300">
- {resource.description}
- </p>
+ <h6 className="fw600 mb10">{resource.name}</h6>
+ <p className="fz14 body-color mb0">{resource.description}</p>
+ </div>
  </div>
  );
  })}
  </div>
  ) : (
- <div className="bg-gradient-to-br from-primary to-primary-dark rounded-xl shadow-xl p-8 md:p-12 mb-16">
- <div className="max-w-4xl mx-auto text-center">
- <div className="mb-6">
- <Zap className="w-16 h-16 text-white mx-auto mb-4" />
- <h3 className="text-3xl font-bold text-white mb-4">
- {t('moneyBiiCta.title')}
- </h3>
- <p className="text-xl text-white/90 mb-8">
+ <div className="ps-widget bgc-thm bdrs12 p50 mb30 text-center">
+ <div className="mb30">
+ <Zap size={64} color="#fff" style={{ display: 'block', margin: '0 auto 16px' }} />
+ <h3 className="text-white mb15">{t('moneyBiiCta.title')}</h3>
+ <p className="fz17 mb30" style={{ color: 'rgba(255,255,255,0.9)' }}>
  {t('moneyBiiCta.description')}
  </p>
  </div>
 
- <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 text-left">
- <div className="flex items-start space-x-3 bg-white/10 backdrop-blur-sm rounded-lg p-4">
- <FileText className="w-6 h-6 text-white flex-shrink-0 mt-1" />
- <div>
- <p className="text-white font-semibold">{t('moneyBiiCta.features.invoicing')}</p>
+ <div className="row mb30 text-start">
+ <div className="col-sm-6">
+ <div className="d-flex align-items-start p20 bdrs8 mb15" style={{ background: 'rgba(255,255,255,0.1)', gap: '12px' }}>
+ <FileText size={22} color="#fff" style={{ flexShrink: 0, marginTop: '2px' }} />
+ <p className="text-white fw600 mb0">{t('moneyBiiCta.features.invoicing')}</p>
  </div>
  </div>
- <div className="flex items-start space-x-3 bg-white/10 backdrop-blur-sm rounded-lg p-4">
- <Calculator className="w-6 h-6 text-white flex-shrink-0 mt-1" />
- <div>
- <p className="text-white font-semibold">{t('moneyBiiCta.features.quotes')}</p>
+ <div className="col-sm-6">
+ <div className="d-flex align-items-start p20 bdrs8 mb15" style={{ background: 'rgba(255,255,255,0.1)', gap: '12px' }}>
+ <Calculator size={22} color="#fff" style={{ flexShrink: 0, marginTop: '2px' }} />
+ <p className="text-white fw600 mb0">{t('moneyBiiCta.features.quotes')}</p>
  </div>
  </div>
- <div className="flex items-start space-x-3 bg-white/10 backdrop-blur-sm rounded-lg p-4">
- <Users className="w-6 h-6 text-white flex-shrink-0 mt-1" />
- <div>
- <p className="text-white font-semibold">{t('moneyBiiCta.features.crm')}</p>
+ <div className="col-sm-6">
+ <div className="d-flex align-items-start p20 bdrs8 mb15" style={{ background: 'rgba(255,255,255,0.1)', gap: '12px' }}>
+ <Users size={22} color="#fff" style={{ flexShrink: 0, marginTop: '2px' }} />
+ <p className="text-white fw600 mb0">{t('moneyBiiCta.features.crm')}</p>
  </div>
  </div>
- <div className="flex items-start space-x-3 bg-white/10 backdrop-blur-sm rounded-lg p-4">
- <BarChart3 className="w-6 h-6 text-white flex-shrink-0 mt-1" />
- <div>
- <p className="text-white font-semibold">{t('moneyBiiCta.features.reports')}</p>
+ <div className="col-sm-6">
+ <div className="d-flex align-items-start p20 bdrs8 mb15" style={{ background: 'rgba(255,255,255,0.1)', gap: '12px' }}>
+ <BarChart3 size={22} color="#fff" style={{ flexShrink: 0, marginTop: '2px' }} />
+ <p className="text-white fw600 mb0">{t('moneyBiiCta.features.reports')}</p>
  </div>
  </div>
  </div>
 
-{/* MoneyBii launch button - temporarily disabled until product is ready */}
+ {/* MoneyBii launch button - temporarily disabled until product is ready */}
  <div
- className="inline-flex items-center gap-2 bg-white/80 text-gray-500 px-8 py-4 rounded-lg font-bold text-lg shadow-lg cursor-not-allowed"
+ className="d-inline-flex align-items-center px30 py15 bdrs8 fw600 fz17"
+ style={{ background: 'rgba(255,255,255,0.8)', color: '#6c757d', cursor: 'not-allowed', gap: '8px' }}
  >
  {t('moneyBiiCta.comingSoon')}
- <Zap className="w-5 h-5" />
- </div>
+ <Zap size={18} />
  </div>
  </div>
  )}
 
  {/* CTA Section */}
- <div className="bg-primary rounded-lg shadow-lg p-8 text-center text-white">
- <h2 className="text-2xl font-bold mb-4">
- {t('cta.title')}
- </h2>
- <p className="text-white/90 mb-6 max-w-2xl mx-auto">
+ <div className="ps-widget bgc-thm bdrs12 p50 text-center text-white">
+ <h3 className="text-white mb15">{t('cta.title')}</h3>
+ <p className="fz17 mb30" style={{ color: 'rgba(255,255,255,0.9)' }}>
  {t('cta.description')}
  </p>
- <div className="flex items-center justify-center gap-4">
- <Link
- href={`/${locale}/blog`}
- className="inline-flex items-center px-6 py-3 rounded-lg bg-white text-primary font-semibold hover:bg-gray-100 transition-colors"
- >
+ <div className="d-flex align-items-center justify-content-center" style={{ gap: '16px' }}>
+ <Link href={`/${locale}/blog`} className="ud-btn btn-white">
  {t('cta.guidesButton')}
  </Link>
- <Link
- href={`/${locale}#newsletter`}
- className="inline-flex items-center px-6 py-3 rounded-lg border-2 border-white text-white font-semibold hover:bg-white/10 transition-colors"
- >
+ <Link href={`/${locale}#newsletter`} className="ud-btn btn-white2">
  {t('cta.updatesButton')}
  </Link>
  </div>
  </div>
+ </div>
  </section>
  </main>
- 
  </>
  );
 }

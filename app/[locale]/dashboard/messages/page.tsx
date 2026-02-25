@@ -4,6 +4,7 @@ import { getCurrentUser } from '@/lib/auth-helpers';
 import { MessagesLayout } from '../seller/messages/MessagesLayout';
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 interface PageProps {
  params: Promise<{ locale: string }>;

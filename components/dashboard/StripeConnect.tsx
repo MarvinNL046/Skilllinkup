@@ -56,34 +56,35 @@ export function StripeConnect({
  // Not connected at all
  if (!stripeAccountId) {
  return (
- <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6">
- <div className="flex items-start gap-4">
- <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
- <CreditCard size={24} className="text-gray-400" />
+ <div className="ps-widget bgc-white bdrs12 bdr1 p30">
+ <div className="d-flex align-items-start" style={{ gap: '16px' }}>
+ <div
+ className="d-flex align-items-center justify-content-center bdrs12 bgc-f7 flex-shrink-0"
+ style={{ width: 52, height: 52 }}
+ >
+ <CreditCard size={24} color="#6c757d" />
  </div>
- <div className="flex-1">
- <h3 className="text-base font-semibold text-gray-900 dark:text-white">
- {t('notConnected')}
- </h3>
- <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
- {t('notConnectedDesc')}
- </p>
+ <div>
+ <h5 className="fw600 mb5">{t('notConnected')}</h5>
+ <p className="fz14 body-color mb0">{t('notConnectedDesc')}</p>
  </div>
  </div>
 
  {error && (
- <div className="mt-4 flex items-center gap-2 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 px-4 py-3">
- <AlertCircle size={16} className="text-red-600 dark:text-red-400 flex-shrink-0" />
- <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+ <div className="d-flex align-items-center bdrs8 bdr1 px20 py15 mt20" style={{ background: '#fff5f5', borderColor: '#fca5a5', gap: '8px' }}>
+ <AlertCircle size={16} color="#dc2626" style={{ flexShrink: 0 }} />
+ <p className="fz14 mb0" style={{ color: '#b91c1c' }}>{error}</p>
  </div>
  )}
 
- <div className="mt-6">
+ <div className="mt25">
  <button
  onClick={handleConnect}
  disabled={isLoading}
- className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+ className="ud-btn btn-thm"
+ style={{ opacity: isLoading ? 0.7 : 1, cursor: isLoading ? 'not-allowed' : 'pointer' }}
  >
+ <span className="d-flex align-items-center" style={{ gap: '8px' }}>
  {isLoading ? (
  <>
  <Loader2 size={16} className="animate-spin" />
@@ -95,6 +96,7 @@ export function StripeConnect({
  {t('connectAccount')}
  </>
  )}
+ </span>
  </button>
  </div>
  </div>
@@ -104,34 +106,41 @@ export function StripeConnect({
  // Account exists but onboarding not complete
  if (!onboardingComplete) {
  return (
- <div className="bg-white dark:bg-gray-900 rounded-xl border border-amber-200 dark:border-amber-800 p-6">
- <div className="flex items-start gap-4">
- <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center">
- <AlertCircle size={24} className="text-amber-500" />
+ <div className="ps-widget bgc-white bdrs12 p30" style={{ border: '1px solid #fcd34d' }}>
+ <div className="d-flex align-items-start" style={{ gap: '16px' }}>
+ <div
+ className="d-flex align-items-center justify-content-center bdrs12 flex-shrink-0"
+ style={{ width: 52, height: 52, background: '#fffbeb' }}
+ >
+ <AlertCircle size={24} color="#f59e0b" />
  </div>
- <div className="flex-1">
- <h3 className="text-base font-semibold text-gray-900 dark:text-white">
- {t('pendingSetup')}
- </h3>
- <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
- {t('pendingSetupDesc')}
- </p>
+ <div>
+ <h5 className="fw600 mb5">{t('pendingSetup')}</h5>
+ <p className="fz14 body-color mb0">{t('pendingSetupDesc')}</p>
  </div>
  </div>
 
  {error && (
- <div className="mt-4 flex items-center gap-2 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 px-4 py-3">
- <AlertCircle size={16} className="text-red-600 dark:text-red-400 flex-shrink-0" />
- <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+ <div className="d-flex align-items-center bdrs8 bdr1 px20 py15 mt20" style={{ background: '#fff5f5', borderColor: '#fca5a5', gap: '8px' }}>
+ <AlertCircle size={16} color="#dc2626" style={{ flexShrink: 0 }} />
+ <p className="fz14 mb0" style={{ color: '#b91c1c' }}>{error}</p>
  </div>
  )}
 
- <div className="mt-6">
+ <div className="mt25">
  <button
  onClick={handleConnect}
  disabled={isLoading}
- className="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-amber-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+ className="ud-btn"
+ style={{
+ background: '#f59e0b',
+ color: '#fff',
+ border: 'none',
+ opacity: isLoading ? 0.7 : 1,
+ cursor: isLoading ? 'not-allowed' : 'pointer',
+ }}
  >
+ <span className="d-flex align-items-center" style={{ gap: '8px' }}>
  {isLoading ? (
  <>
  <Loader2 size={16} className="animate-spin" />
@@ -143,6 +152,7 @@ export function StripeConnect({
  {t('completeSetup')}
  </>
  )}
+ </span>
  </button>
  </div>
  </div>
@@ -151,69 +161,72 @@ export function StripeConnect({
 
  // Fully connected and onboarding complete
  return (
- <div className="bg-white dark:bg-gray-900 rounded-xl border border-green-200 dark:border-green-800 p-6">
- <div className="flex items-start gap-4">
- <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-green-50 dark:bg-green-900/20 flex items-center justify-center">
- <CheckCircle size={24} className="text-green-600 dark:text-green-400" />
+ <div className="ps-widget bgc-white bdrs12 p30" style={{ border: '1px solid #86efac' }}>
+ <div className="d-flex align-items-start" style={{ gap: '16px' }}>
+ <div
+ className="d-flex align-items-center justify-content-center bdrs12 flex-shrink-0"
+ style={{ width: 52, height: 52, background: '#f0fdf4' }}
+ >
+ <CheckCircle size={24} color="#16a34a" />
  </div>
- <div className="flex-1">
- <h3 className="text-base font-semibold text-gray-900 dark:text-white">
- {t('connected')}
- </h3>
- <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
- {t('connectedDesc')}
- </p>
+ <div>
+ <h5 className="fw600 mb5">{t('connected')}</h5>
+ <p className="fz14 body-color mb0">{t('connectedDesc')}</p>
  </div>
  </div>
 
  {/* Account details */}
- <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
- <div className="rounded-lg bg-gray-50 dark:bg-gray-800 px-4 py-3">
- <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
- {t('accountId')}
- </p>
- <p className="text-sm font-mono text-gray-900 dark:text-white">
+ <div className="row mt25">
+ <div className="col-sm-6">
+ <div className="bgc-f7 bdrs8 px20 py15 mb15">
+ <p className="fz12 text-muted mb5">{t('accountId')}</p>
+ <p className="fz14 fw500 mb0" style={{ fontFamily: 'monospace' }}>
  {maskAccountId(stripeAccountId)}
  </p>
  </div>
-
- <div className="rounded-lg bg-gray-50 dark:bg-gray-800 px-4 py-3">
- <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
- {t('status')}
- </p>
- <span className="inline-flex items-center gap-1.5 text-sm font-medium text-green-700 dark:text-green-400">
- <span className="w-2 h-2 rounded-full bg-green-500" />
- {t('active')}
- </span>
  </div>
 
- <div className="rounded-lg bg-gray-50 dark:bg-gray-800 px-4 py-3">
- <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
- {t('payoutsEnabled')}
- </p>
- <p className={`text-sm font-medium ${payoutsEnabled ? 'text-green-700 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+ <div className="col-sm-6">
+ <div className="bgc-f7 bdrs8 px20 py15 mb15">
+ <p className="fz12 text-muted mb5">{t('status')}</p>
+ <div className="d-flex align-items-center" style={{ gap: '6px' }}>
+ <span
+ className="bdrs50 d-inline-block"
+ style={{ width: 8, height: 8, background: '#22c55e' }}
+ />
+ <span className="fz14 fw500" style={{ color: '#15803d' }}>{t('active')}</span>
+ </div>
+ </div>
+ </div>
+
+ <div className="col-sm-6">
+ <div className="bgc-f7 bdrs8 px20 py15 mb15">
+ <p className="fz12 text-muted mb5">{t('payoutsEnabled')}</p>
+ <p className={`fz14 fw500 mb0 ${payoutsEnabled ? '' : ''}`} style={{ color: payoutsEnabled ? '#15803d' : '#dc2626' }}>
  {payoutsEnabled ? t('yes') : t('no')}
  </p>
  </div>
+ </div>
 
- <div className="rounded-lg bg-gray-50 dark:bg-gray-800 px-4 py-3">
- <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
- {t('chargesEnabled')}
- </p>
- <p className={`text-sm font-medium ${chargesEnabled ? 'text-green-700 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+ <div className="col-sm-6">
+ <div className="bgc-f7 bdrs8 px20 py15 mb15">
+ <p className="fz12 text-muted mb5">{t('chargesEnabled')}</p>
+ <p className="fz14 fw500 mb0" style={{ color: chargesEnabled ? '#15803d' : '#dc2626' }}>
  {chargesEnabled ? t('yes') : t('no')}
  </p>
+ </div>
  </div>
  </div>
 
  {/* Link to Stripe Express dashboard */}
  {loginLinkUrl && (
- <div className="mt-6">
+ <div className="mt20">
  <a
  href={loginLinkUrl}
  target="_blank"
  rel="noopener noreferrer"
- className="inline-flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-5 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+ className="ud-btn btn-white2 d-inline-flex align-items-center"
+ style={{ gap: '8px' }}
  >
  <ExternalLink size={16} />
  {t('viewDashboard')}

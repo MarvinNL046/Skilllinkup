@@ -150,164 +150,156 @@ export default async function BlogPage({ params }: BlogPageProps) {
  type="application/ld+json"
  dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
  />
- 
- <main className="flex-1">
- {/* Page Header */}
- <section className="bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 py-12 sm:py-16">
- <div className="container mx-auto px-4 sm:px-6 lg:px-8">
- <div className="text-center max-w-3xl mx-auto">
- <h1 className="text-4xl font-heading font-bold text-gray-900 dark:text-white sm:text-5xl mb-4">
- {t('hero.title')}
- </h1>
- <p className="text-lg text-gray-600 dark:text-gray-300">
- {t('hero.subtitle')}
- </p>
+
+ <main>
+ {/* Page Header / Breadcrumb */}
+ <section className="breadcumb-section">
+ <div className="container">
+ <div className="row">
+ <div className="col-lg-12">
+ <div className="breadcumb-style1 text-center">
+ <h2 className="title">{t('hero.title')}</h2>
+ <p className="text fz17 mt10">{t('hero.subtitle')}</p>
+ <div className="breadcumb-list mt15">
+ <Link href={`/${locale}`}>Home</Link>
+ <span className="mx10">/</span>
+ <span className="active">Blog</span>
+ </div>
+ </div>
+ </div>
  </div>
  </div>
  </section>
 
  {/* Blog Grid */}
- <section className="py-12 bg-white dark:bg-gray-800">
- <div className="container mx-auto px-4 sm:px-6 lg:px-8">
- {posts.length >0 ? (
- <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
- {posts.map((post) =>(
- <article key={post.id} className="group bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg overflow-hidden transition-all hover:border-accent hover:shadow-xl">
- <Link href={`/${locale}/post/${post.slug}`} className="block">
- {/* Image */}
- {post.feature_img && (
- <div className="relative aspect-[16/9] overflow-hidden">
+ <section className="pt50 pb90">
+ <div className="container">
+ {posts.length > 0 ? (
+ <>
+ <div className="row">
+ {posts.map((post) => (
+ <div key={post.id} className="col-sm-6 col-lg-4">
+ <div className="blog-style1 bdrs12 bdr1 hover-box-shadow mb30 overflow-hidden">
+ <Link href={`/${locale}/post/${post.slug}`} className="blog-img d-block">
+ {post.feature_img ? (
+ <div style={{ position: 'relative', width: '100%', paddingTop: '56.25%', overflow: 'hidden' }}>
  <Image
  src={post.feature_img}
  alt={post.title}
  fill
  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
- className="object-cover transition-transform group-hover:scale-105"
+ className="object-cover"
  />
  </div>
+ ) : (
+ <div style={{ height: '200px', background: '#f5f5f5' }} />
  )}
-
- {/* Content */}
- <div className="p-6">
- {/* Category & Read Time */}
- <div className="mb-2 flex items-center justify-between text-xs">
+ </Link>
+ <div className="blog-content p30">
+ <div className="d-flex align-items-center justify-content-between mb10">
  {post.category_name && (
- <span className="font-heading font-semibold text-accent uppercase tracking-wide">
+ <span className="fz13 fw500 text-thm">
  {post.category_name}
  </span>
  )}
  {post.read_time && (
- <span className="text-gray-500 dark:text-gray-400">
+ <span className="fz13 text-muted">
  {post.read_time} {t('postCard.minRead')}
  </span>
  )}
  </div>
-
- {/* Title */}
- <h2 className="mb-2 text-xl font-heading font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors line-clamp-2">
+ <Link href={`/${locale}/post/${post.slug}`}>
+ <h5 className="fw600 mb10">
  {post.title}
- </h2>
-
- {/* Excerpt */}
+ </h5>
+ </Link>
  {post.excerpt && (
- <p className="mb-3 text-sm text-gray-600 dark:text-gray-300 line-clamp-3">
+ <p className="fz14 body-color mb15">
  {post.excerpt}
  </p>
  )}
-
- {/* Meta */}
- <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+ <div className="d-flex align-items-center fz13 text-muted">
  {post.published_at && (
  <time dateTime={new Date(post.published_at).toISOString()}>
  {new Date(post.published_at).toLocaleDateString(locale, {
- month: "short",
- day: "numeric",
- year: "numeric",
+ month: 'short',
+ day: 'numeric',
+ year: 'numeric',
  })}
  </time>
  )}
- {post.views && (
+ {post.views ? (
  <>
- <span>·</span>
+ <span className="mx10">·</span>
  <span>{post.views} {t('postCard.views')}</span>
  </>
- )}
+ ) : null}
  </div>
  </div>
- </Link>
- </article>
+ </div>
+ </div>
  ))}
  </div>
- ) : (
- <div className="text-center py-12">
- <p className="text-lg text-gray-600 dark:text-gray-300">
- {t('emptyState.message')}
- </p>
- </div>
- )}
 
- {/* Load More (for future pagination) */}
+ {/* Load More */}
  {posts.length >= 12 && (
- <div className="mt-12 text-center">
- <button className="inline-flex items-center justify-center rounded-lg border-2 border-primary bg-white dark:bg-gray-800 hover:bg-primary px-8 py-3 text-base font-heading font-semibold text-primary hover:text-white dark:text-accent dark:hover:text-white transition-all">
+ <div className="row mt20">
+ <div className="col-12 text-center">
+ <button className="ud-btn btn-white2">
  {t('loadMore.button')}
  </button>
+ </div>
+ </div>
+ )}
+ </>
+ ) : (
+ <div className="row">
+ <div className="col-12 text-center py50">
+ <p className="fz17 body-color">{t('emptyState.message')}</p>
+ </div>
  </div>
  )}
  </div>
  </section>
 
  {/* Categories Section */}
- {categories.length >0 && (
- <section className="py-12 bg-gray-50 dark:bg-gray-900">
- <div className="container mx-auto px-4 sm:px-6 lg:px-8">
- <h2 className="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-6 text-center">
- {t('categories.heading')}
- </h2>
- <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
- {categories.map((category) =>(
+ {categories.length > 0 && (
+ <section className="pt0 pb90 bgc-f7">
+ <div className="container">
+ <div className="row mb40">
+ <div className="col-12 text-center">
+ <h3 className="title">{t('categories.heading')}</h3>
+ </div>
+ </div>
+ <div className="row">
+ {categories.map((category) => (
+ <div key={category.id} className="col-sm-6 col-md-4 col-lg-3">
  <Link
- key={category.id}
  href={`/${locale}/category/${category.slug}`}
- className="group bg-white dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700 p-4 hover:border-accent hover:shadow-lg transition-all"
+ className="d-block ps-widget bgc-white bdrs12 bdr1 hover-box-shadow p20 mb20"
  >
- <div className="flex items-center gap-3">
+ <div className="d-flex align-items-center" style={{ gap: '12px' }}>
  <div
- className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
- style={{ backgroundColor: category.color }}
+ className="d-flex align-items-center justify-content-center text-white fw600 bdrs50"
+ style={{ backgroundColor: category.color, width: 40, height: 40, flexShrink: 0 }}
  >
  {category.name.charAt(0)}
  </div>
- <div className="flex-1">
- <h3 className="font-heading font-semibold text-gray-900 dark:text-white group-hover:text-primary transition-colors">
- {category.name}
- </h3>
- <p className="text-xs text-gray-500 dark:text-gray-400">
+ <div>
+ <h6 className="mb0 fw600">{category.name}</h6>
+ <p className="fz13 text-muted mb0">
  {t('categories.postCount', { count: category.post_count || 0 })}
  </p>
  </div>
- <svg
- className="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-accent transition-colors"
- fill="none"
- viewBox="0 0 24 24"
- stroke="currentColor"
- >
- <path
- strokeLinecap="round"
- strokeLinejoin="round"
- strokeWidth={2}
- d="M9 5l7 7-7 7"
- />
- </svg>
  </div>
  </Link>
+ </div>
  ))}
  </div>
  </div>
  </section>
  )}
  </main>
- 
  </>
  );
 }

@@ -191,33 +191,35 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
  router.push(`${pathname}?${query}`);
  };
 
- const getDifficultyColor = (difficulty: string) =>{
+ const getDifficultyBadgeClass = (difficulty: string) =>{
  switch (difficulty) {
- case "Easy":
- return "text-accent bg-accent/10";
- case "Medium":
- return "text-primary bg-primary/10";
- case "Hard":
- return "text-secondary bg-secondary/10";
+ case 'Easy':
+ return 'badge-success';
+ case 'Medium':
+ return 'badge-warning';
+ case 'Hard':
+ return 'badge-danger';
  default:
- return "text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-700";
+ return 'badge-secondary';
  }
  };
 
  return (
  <>
  {/* Search Bar */}
- <div className="max-w-2xl mx-auto mb-8">
- <div className="relative">
+ <div className="row mb30">
+ <div className="col-lg-8 offset-lg-2">
+ <div className="position-relative">
  <input
  type="text"
  placeholder={t('searchPlaceholder')}
  value={searchQuery}
  onChange={(e) =>handleSearch(e.target.value)}
- className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-6 py-4 pl-12 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-md"
+ className="form-control bdrs12 py15 px50"
+ style={{ paddingLeft: '48px', height: '56px', fontSize: '15px' }}
  />
  <svg
- className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400"
+ style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', width: '20px', height: '20px', color: '#6c757d' }}
  fill="none"
  viewBox="0 0 24 24"
  stroke="currentColor"
@@ -231,29 +233,28 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
  </svg>
  </div>
  </div>
+ </div>
 
- <div className="grid gap-8 lg:grid-cols-4">
+ <div className="row">
  {/* Sidebar Filters */}
- <aside className="lg:col-span-1">
- <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 sticky top-4">
- <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white mb-4">
- {t('categories')}
- </h3>
- <ul className="space-y-2">
- {categories.map((cat) =>(
- <li key={cat.category}>
+ <div className="col-lg-3">
+ <div className="ps-widget bgc-white bdrs12 bdr1 p30" style={{ position: 'sticky', top: '16px' }}>
+ {/* Categories */}
+ <h6 className="fw600 mb20">{t('categories')}</h6>
+ <ul className="list-unstyled mb0">
+ {categories.map((cat) => (
+ <li key={cat.category} className="mb5">
  <button
  onClick={() =>handleCategoryChange(cat.category)}
- className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-left transition-all ${
+ className={`w-100 d-flex align-items-center justify-content-between px15 py10 bdrs8 text-start border-0 ${
  selectedCategory === cat.category
- ? 'bg-primary text-white'
- : 'text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-700 hover:text-primary'
+ ? 'bgc-thm text-white'
+ : 'bg-transparent body-color'
  }`}
+ style={{ transition: 'all 0.2s' }}
  >
- <span className="font-medium">{cat.category}</span>
- <span className={`text-xs ${
- selectedCategory === cat.category ? 'text-white/80' : 'text-gray-500 dark:text-gray-400'
- }`}>
+ <span className="fw500">{cat.category}</span>
+ <span className={`fz12 ${selectedCategory === cat.category ? 'text-white' : 'text-muted'}`}>
  {cat.count}
  </span>
  </button>
@@ -261,61 +262,60 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
  ))}
  </ul>
 
- <hr className="my-6 border-gray-200 dark:border-gray-700" />
+ <hr className="my20" />
 
- <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white mb-4">
- {t('difficulty')}
- </h3>
- <div className="space-y-2">
+ {/* Difficulty */}
+ <h6 className="fw600 mb15">{t('difficulty')}</h6>
+ <div>
  {[
- { value: "Easy", label: t('easy') },
- { value: "Medium", label: t('medium') },
- { value: "Hard", label: t('hard') }
- ].map((level) =>(
- <label key={level.value} className="flex items-center gap-2 cursor-pointer">
+ { value: 'Easy', label: t('easy') },
+ { value: 'Medium', label: t('medium') },
+ { value: 'Hard', label: t('hard') }
+ ].map((level) => (
+ <label key={level.value} className="d-flex align-items-center mb10" style={{ cursor: 'pointer', gap: '8px' }}>
  <input
  type="checkbox"
  checked={selectedDifficulties.includes(level.value)}
  onChange={() =>handleDifficultyToggle(level.value)}
- className="w-4 h-4 rounded border-gray-200 dark:border-gray-700 text-primary focus:ring-primary/50"
+ className="form-check-input"
+ style={{ width: '16px', height: '16px', flexShrink: 0 }}
  />
- <span className="text-sm text-gray-600 dark:text-gray-300">{level.label}</span>
+ <span className="fz14 body-color">{level.label}</span>
  </label>
  ))}
  </div>
 
- <hr className="my-6 border-gray-200 dark:border-gray-700" />
+ <hr className="my20" />
 
- <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white mb-4">
- {t('rating')}
- </h3>
- <div className="space-y-2">
+ {/* Rating */}
+ <h6 className="fw600 mb15">{t('rating')}</h6>
+ <div>
  {[
- { label: t('rating45Plus'), value: "4.5" },
- { label: t('rating40To44'), value: "4.0" },
- { label: t('rating35To39'), value: "3.5" },
- ].map((rating) =>(
- <label key={rating.value} className="flex items-center gap-2 cursor-pointer">
+ { label: t('rating45Plus'), value: '4.5' },
+ { label: t('rating40To44'), value: '4.0' },
+ { label: t('rating35To39'), value: '3.5' },
+ ].map((rating) => (
+ <label key={rating.value} className="d-flex align-items-center mb10" style={{ cursor: 'pointer', gap: '8px' }}>
  <input
  type="checkbox"
  checked={selectedRatings.includes(rating.value)}
  onChange={() =>handleRatingToggle(rating.value)}
- className="w-4 h-4 rounded border-gray-200 dark:border-gray-700 text-primary focus:ring-primary/50"
+ className="form-check-input"
+ style={{ width: '16px', height: '16px', flexShrink: 0 }}
  />
- <span className="text-sm text-gray-600 dark:text-gray-300">{rating.label}</span>
+ <span className="fz14 body-color">{rating.label}</span>
  </label>
  ))}
  </div>
 
- <hr className="my-6 border-gray-200 dark:border-gray-700" />
+ <hr className="my20" />
 
- <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white mb-4">
- {t('workType')}
- </h3>
+ {/* Work Type */}
+ <h6 className="fw600 mb15">{t('workType')}</h6>
  <select
  value={selectedWorkType}
  onChange={(e) =>handleWorkTypeChange(e.target.value)}
- className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
+ className="form-select bdrs8 fz14"
  >
  <option value="all">{t('allWorkTypes')}</option>
  <option value="remote">{t('remoteOnly')}</option>
@@ -323,15 +323,14 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
  <option value="hybrid">{t('hybrid')}</option>
  </select>
 
- <hr className="my-6 border-gray-200 dark:border-gray-700" />
+ <hr className="my20" />
 
- <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white mb-4">
- {t('country')}
- </h3>
+ {/* Country */}
+ <h6 className="fw600 mb15">{t('country')}</h6>
  <select
  value={selectedCountry}
  onChange={(e) =>handleCountryChange(e.target.value)}
- className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
+ className="form-select bdrs8 fz14"
  >
  <option value="all">{t('allCountries')}</option>
  <option value="Worldwide">{t('worldwide')}</option>
@@ -342,12 +341,13 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
  <option value="US">{t('unitedStates')}</option>
  </select>
  </div>
- </aside>
+ </div>
 
  {/* Platforms Grid */}
- <div className="lg:col-span-3">
- <div className="flex items-center justify-between mb-6">
- <p className="text-sm text-gray-600 dark:text-gray-300">
+ <div className="col-lg-9">
+ {/* Sort & Count bar */}
+ <div className="d-flex align-items-center justify-content-between mb20">
+ <p className="fz14 body-color mb0">
  {filteredPlatforms.length === 1
  ? t('showingCountSingular', { count: filteredPlatforms.length })
  : t('showingCount', { count: filteredPlatforms.length, plural: 's' })
@@ -356,7 +356,7 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
  <select
  value={sortBy}
  onChange={(e) =>handleSort(e.target.value)}
- className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
+ className="form-select bdrs8 fz14 w-auto"
  >
  <option value="rating">{t('sortByRating')}</option>
  <option value="name">{t('sortByName')}</option>
@@ -365,106 +365,81 @@ export function PlatformFilters({ platforms, categories }: PlatformFiltersProps)
  </div>
 
  {filteredPlatforms.length === 0 ? (
- <div className="text-center py-12 bg-gray-50 dark:bg-gray-900 rounded-lg">
- <p className="text-gray-600 dark:text-gray-300">{t('noPlatformsFound')}</p>
+ <div className="ps-widget bgc-white bdrs12 bdr1 p30 text-center">
+ <p className="fz16 body-color mb20">{t('noPlatformsFound')}</p>
  <button
  onClick={() =>router.push('/platforms')}
- className="mt-4 text-primary hover:text-primary-dark font-semibold"
+ className="ud-btn btn-thm2"
  >
  {t('clearAllFilters')}
  </button>
  </div>
  ) : (
- <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
- {filteredPlatforms.map((platform) =>(
- <a
- key={platform.id}
- href={`/platforms/${platform.slug}`}
- className="group relative overflow-hidden rounded-lg border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 transition-all hover:border-accent hover:shadow-xl"
- >
+ <div className="row">
+ {filteredPlatforms.map((platform) => (
+ <div key={platform.id} className="col-sm-6 col-xl-4">
+ <div className="freelancer-style1 bdrs12 bdr1 hover-box-shadow mb25 p30 position-relative">
  {/* Featured Badge */}
  {platform.featured && (
- <div className="absolute right-3 top-3">
- <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-xs font-heading font-semibold text-white">
+ <div className="position-absolute" style={{ top: '12px', right: '12px' }}>
+ <span className="ud-btn btn-thm bdrs4" style={{ padding: '2px 10px', fontSize: '11px' }}>
  ★
  </span>
  </div>
  )}
 
  {/* Platform Name */}
- <h3 className="text-xl font-heading font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">
- {platform.name}
- </h3>
+ <a href={`/platforms/${platform.slug}`}>
+ <h5 className="fw600 mb10">{platform.name}</h5>
+ </a>
 
  {/* Rating */}
- <div className="flex items-center gap-2 mb-3">
- <div className="flex gap-0.5">
- {[...Array(5)].map((_, i) =>(
+ <div className="d-flex align-items-center mb15" style={{ gap: '6px' }}>
+ <div className="d-flex" style={{ gap: '2px' }}>
+ {[...Array(5)].map((_, i) => (
  <svg
  key={i}
- className={`w-4 h-4 ${
- i < Math.floor(platform.rating)
- ? "text-accent"
- : "text-gray-200 dark:text-gray-700"
- }`}
- fill="currentColor"
+ width="14"
+ height="14"
+ fill={i < Math.floor(platform.rating) ? '#f5a623' : '#e0e0e0'}
  viewBox="0 0 20 20"
  >
  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
  </svg>
  ))}
  </div>
- <span className="text-sm font-semibold text-gray-900 dark:text-white">
- {Number(platform.rating).toFixed(1)}
- </span>
+ <span className="fz14 fw600">{Number(platform.rating).toFixed(1)}</span>
  </div>
 
  {/* Details */}
- <div className="space-y-2 mb-4">
- <div className="flex items-center justify-between text-xs">
- <span className="text-gray-600 dark:text-gray-300">{t('categoryLabel')}</span>
- <span className="font-semibold text-accent">
- {platform.category}
- </span>
+ <div className="mb20">
+ <div className="d-flex align-items-center justify-content-between mb8 fz13">
+ <span className="body-color">{t('categoryLabel')}</span>
+ <span className="fw600 text-thm">{platform.category}</span>
  </div>
  {platform.fees && (
- <div className="flex items-center justify-between text-xs">
- <span className="text-gray-600 dark:text-gray-300">{t('feesLabel')}</span>
- <span className="font-semibold text-gray-900 dark:text-white">
- {platform.fees}
- </span>
+ <div className="d-flex align-items-center justify-content-between mb8 fz13">
+ <span className="body-color">{t('feesLabel')}</span>
+ <span className="fw600">{platform.fees}</span>
  </div>
  )}
- <div className="flex items-center justify-between text-xs">
- <span className="text-gray-600 dark:text-gray-300">{t('difficultyLabel')}</span>
- <span
- className={`font-semibold text-xs px-2 py-0.5 rounded-full ${getDifficultyColor(
- platform.difficulty
- )}`}
- >
+ <div className="d-flex align-items-center justify-content-between fz13">
+ <span className="body-color">{t('difficultyLabel')}</span>
+ <span className={`badge ${getDifficultyBadgeClass(platform.difficulty)} bdrs4`}>
  {platform.difficulty}
  </span>
  </div>
  </div>
 
  {/* CTA */}
- <div className="flex items-center justify-between text-sm font-heading font-semibold text-primary group-hover:text-primary-dark transition-colors">
- <span>{t('readReview')}</span>
- <svg
- className="w-4 h-4"
- fill="none"
- viewBox="0 0 24 24"
- stroke="currentColor"
+ <a
+ href={`/platforms/${platform.slug}`}
+ className="ud-btn btn-thm2 w-100 text-center"
  >
- <path
- strokeLinecap="round"
- strokeLinejoin="round"
- strokeWidth={2}
- d="M13 7l5 5m0 0l-5 5m5-5H6"
- />
- </svg>
- </div>
+ {t('readReview')}
  </a>
+ </div>
+ </div>
  ))}
  </div>
  )}
