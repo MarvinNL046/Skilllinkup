@@ -121,6 +121,19 @@ export const getContact = query({
 });
 
 /**
+ * Get a user by their email address.
+ */
+export const getByEmail = query({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .first();
+  },
+});
+
+/**
  * Get a user by their Stack Auth / Clerk ID.
  * Returns the Convex user document or null.
  */
@@ -139,15 +152,13 @@ export const getByStackAuthId = query({
  */
 export const setUserType = mutation({
   args: {
+    email: v.string(),
     userType: v.string(),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
     const user = await ctx.db
       .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
+      .withIndex("by_email", (q) => q.eq("email", args.email))
       .first();
 
     if (!user) throw new Error("User not found");

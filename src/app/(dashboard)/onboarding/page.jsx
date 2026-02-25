@@ -34,7 +34,7 @@ function OnboardingContent() {
     setSelected(type);
     setSaving(true);
     try {
-      await setUserType({ userType: type });
+      await setUserType({ email: convexUser.email, userType: type });
       router.push("/dashboard");
     } catch (err) {
       console.error("Failed to set user type:", err);
