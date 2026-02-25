@@ -4,10 +4,13 @@ import toggleStore from "@/store/toggleStore";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useUser, useClerk } from "@clerk/nextjs";
 
 export default function DashboardHeader() {
   const toggle = toggleStore((state) => state.dashboardSlidebarToggleHandler);
   const path = usePathname();
+  const { user } = useUser();
+  const { signOut } = useClerk();
 
   return (
     <>
@@ -276,8 +279,9 @@ export default function DashboardHeader() {
                           <Image
                             height={50}
                             width={50}
-                            src="/images/resource/user.png"
-                            alt="user.png"
+                            src={user?.imageUrl || "/images/resource/user.png"}
+                            alt={user?.fullName || "user"}
+                            className="rounded-circle"
                           />
                         </a>
                         <div className="dropdown-menu">
@@ -327,6 +331,14 @@ export default function DashboardHeader() {
                                 {item.name}
                               </Link>
                             ))}
+                            <hr className="my-2" />
+                            <button
+                              className="dropdown-item text-danger"
+                              onClick={() => signOut({ redirectUrl: "/" })}
+                            >
+                              <i className="flaticon-logout mr10" />
+                              Logout
+                            </button>
                           </div>
                         </div>
                       </div>
