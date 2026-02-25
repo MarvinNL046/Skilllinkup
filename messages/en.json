@@ -2598,6 +2598,135 @@
     "resolvedOn": "Resolved on",
     "existingDispute": "A dispute is already open for this order"
   },
+  "home20": {
+    "hero": {
+      "title": "Join us & Explore",
+      "titleHighlight": "Thousands of Freelancers",
+      "subtitle": "Work with talented people at the most affordable price to get the most out of your time and cost.",
+      "searchPlaceholder": "What are you looking for?",
+      "searchCta": "Search",
+      "locationPlaceholder": "City, state, or zip",
+      "popularLabel": "Popular Searches",
+      "popular": ["Designer", "Developer", "Web", "iOS", "PHP", "Senior"],
+      "locations": ["City, state, or zip", "Amsterdam", "Berlin", "London", "New York"]
+    },
+    "partners": {
+      "title": "Trusted by the world’s best"
+    },
+    "trending": {
+      "title": "Trending Services",
+      "subtitle": "Most viewed and all-time top-selling services",
+      "tabs": { "all": "All" },
+      "reviewsLabel": "reviews",
+      "startingAt": "Starting at"
+    },
+    "categories": {
+      "title": "Browse talent by category",
+      "subtitle": "Get some inspirations from 1800+ skills",
+      "allCta": "All Categories",
+      "skillsLabel": "skills",
+      "cardHint": "Top rated talent"
+    },
+    "needSomething": {
+      "title": "Need something done?",
+      "subtitle": "Most viewed and all-time top-selling services",
+      "items": {
+        "post": {
+          "icon": "flaticon-cv",
+          "title": "Post a job",
+          "text": "It’s free and easy to post a job. Simply fill in a title, description."
+        },
+        "choose": {
+          "icon": "flaticon-web-design",
+          "title": "Choose freelancers",
+          "text": "Review proposals, compare profiles, and hire the best fit."
+        },
+        "pay": {
+          "icon": "flaticon-secure",
+          "title": "Pay safely",
+          "text": "Pay only for work you approve with secure payments."
+        },
+        "support": {
+          "icon": "flaticon-customer-service",
+          "title": "We’re here to help",
+          "text": "Our support team is here for you 24/7."
+        }
+      }
+    },
+    "cta": {
+      "titleLine1": "A whole world of freelance",
+      "titleLine2": "talent at your fingertips",
+      "features": [
+        {
+          "title": "Proof of quality",
+          "text": "Check work samples, client reviews, and identity verification.",
+          "icon": "flaticon-badge"
+        },
+        {
+          "title": "No cost until you hire",
+          "text": "Interview, negotiate rates, and pay for approved work only.",
+          "icon": "flaticon-money"
+        },
+        {
+          "title": "Safe and secure",
+          "text": "We protect your data and privacy with 24/7 support.",
+          "icon": "flaticon-security"
+        }
+      ],
+      "bullets": [
+        "The best for every budget",
+        "Quality work done quickly",
+        "Protected payments, every time",
+        "24/7 support"
+      ],
+      "imageAlt": "Freelancer collaboration"
+    },
+    "testimonials": {
+      "title": "What our clients have to say",
+      "subtitle": "Discover how teams scale faster with SkillLinkup.",
+      "items": [
+        {
+          "name": "Alison Dawn",
+          "role": "Product Lead",
+          "quote": "We hired a fantastic designer in 48 hours. The process was smooth and the quality impressed our whole team.",
+          "image": "/images/testimonials/2.jpg"
+        },
+        {
+          "name": "Daniel Parker",
+          "role": "Founder",
+          "quote": "SkillLinkup helped us move faster with dependable talent. We saved weeks of sourcing time.",
+          "image": "/images/testimonials/3.jpg"
+        },
+        {
+          "name": "Albert Cole",
+          "role": "Engineering Manager",
+          "quote": "Reliable freelancers, clear communication, and transparent pricing. Exactly what we needed.",
+          "image": "/images/testimonials/1.jpg"
+        }
+      ]
+    },
+    "inspiringWork": {
+      "freelancerTitle": "Find great work",
+      "freelancerText": "Work with the largest network of independent professionals and get things done with quick turnaround.",
+      "freelancerCta": "Get Started",
+      "clientTitle": "Find talent your way",
+      "clientText": "Hire vetted freelancers for your next project and scale your team on demand.",
+      "clientCta": "Get Started"
+    },
+    "inspiringServices": {
+      "title": "Inspiring work made on SkillLinkup",
+      "subtitle": "Get some inspirations from 1800+ skills",
+      "cta": "See more",
+      "by": "by {name}"
+    },
+    "finalCta": {
+      "title": "With talented freelancers do",
+      "titleHighlight": "more work.",
+      "subtitle": "Work with the largest network of independent professionals and get things done—fast.",
+      "primaryCta": "Find Work",
+      "secondaryCta": "Find Talent"
+    }
+  },
   "authGate": {
     "title": "Create an account to continue",
     "description": "Sign up for free to order services, contact freelancers, and manage your projects on SkillLinkup.",

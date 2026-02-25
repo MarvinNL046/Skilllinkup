@@ -2,16 +2,16 @@ import { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
-import { MarketplaceHero } from "@/components/homepage/MarketplaceHero";
-import { CategoryGrid } from "@/components/homepage/CategoryGrid";
-import { FeaturedGigs } from "@/components/homepage/FeaturedGigs";
-import { MarketplaceHowItWorks } from "@/components/homepage/MarketplaceHowItWorks";
-import { FeaturedFreelancers } from "@/components/homepage/FeaturedFreelancers";
-import { Testimonials } from "@/components/testimonials";
-import { TrustStats } from "@/components/homepage/TrustStats";
-import { CTABanner } from "@/components/homepage/CTABanner";
-import { Newsletter } from "@/components/newsletter";
-import type { FreelancerProfile } from "@/types/marketplace";
+import Hero20 from "@/components/homepage/Hero20";
+import Partners from "@/components/homepage/Partners";
+import TrendingServices from "@/components/homepage/TrendingServices";
+import BrowseCategories from "@/components/homepage/BrowseCategories";
+import NeedSomething from "@/components/homepage/NeedSomething";
+import CtaBanner from "@/components/homepage/CtaBanner";
+import Testimonials from "@/components/homepage/Testimonials";
+import InspiringWork from "@/components/homepage/InspiringWork";
+import InspiringServices from "@/components/homepage/InspiringServices";
+import FinalCta from "@/components/homepage/FinalCta";
 
 export const dynamic = 'force-dynamic';
 
@@ -99,20 +99,11 @@ interface HomepageCategory {
  gig_count: number;
 }
 
-interface MarketplaceStats {
- freelancerCount: number;
- serviceCount: number;
- satisfactionRate: number;
- orderCount: number;
-}
-
 export default async function HomePage({ params }: HomePageProps) {
  const { locale } = await params;
 
  let featuredGigs: FeaturedGig[] = [];
  let homepageCategories: HomepageCategory[] = [];
- let freelancers: FreelancerProfile[] = [];
- let stats: MarketplaceStats = { freelancerCount: 0, serviceCount: 0, satisfactionRate: 0, orderCount: 0 };
 
  // Fetch marketplace data (graceful degradation if tables don't exist yet)
  try {
@@ -152,41 +143,6 @@ export default async function HomePage({ params }: HomePageProps) {
  gig_count: cat.gigCount ?? 0,
  }));
 
- // Freelancers - top 6
- const freelancersResult = await fetchQuery(api.marketplace.freelancers.list, { locale, limit: 6 });
-
- freelancers = freelancersResult.map((fp: any): FreelancerProfile => ({
- id: fp._id,
- user_id: fp.userId,
- display_name: fp.displayName ?? 'Unknown',
- tagline: fp.tagline ?? null,
- bio: fp.bio ?? null,
- avatar_url: fp.avatarUrl ?? null,
- hourly_rate: fp.hourlyRate ?? null,
- work_type: fp.workType ?? 'remote',
- location_city: fp.locationCity ?? null,
- location_country: fp.locationCountry ?? null,
- skills: fp.skills ?? [],
- languages: fp.languages ?? [],
- is_verified: Boolean(fp.isVerified),
- rating_average: fp.ratingAverage ?? 0,
- rating_count: fp.ratingCount ?? 0,
- total_orders: fp.totalOrders ?? 0,
- completion_rate: fp.completionRate ?? 0,
- response_time_hours: fp.responseTimeHours ?? null,
- status: fp.status ?? 'active',
- created_at: typeof fp.createdAt === 'number'
- ? new Date(fp.createdAt).toISOString()
- : String(fp.createdAt),
- }));
-
- // Stats - simplified counts derived from already-fetched data
- stats = {
- freelancerCount: freelancersResult.length,
- serviceCount: gigsResult.length,
- satisfactionRate: 95,
- orderCount: 0,
- };
  } catch (marketplaceError) {
  // Marketplace tables may not exist yet - silently degrade
  console.warn('Marketplace data not available:', (marketplaceError as Error).message);
@@ -268,20 +224,18 @@ export default async function HomePage({ params }: HomePageProps) {
 
  
  <main className="flex-1">
- <MarketplaceHero categories={homepageCategories} />
- <CategoryGrid categories={homepageCategories} />
- <FeaturedGigs gigs={featuredGigs} />
- <MarketplaceHowItWorks />
- <FeaturedFreelancers freelancers={freelancers} />
+ <div className="body_content">
+ <Hero20 categories={homepageCategories} />
+ <Partners />
+ <TrendingServices gigs={featuredGigs} categories={homepageCategories} />
+ <BrowseCategories categories={homepageCategories} />
+ <NeedSomething />
+ <CtaBanner />
  <Testimonials />
- <TrustStats
- freelancerCount={stats.freelancerCount}
- serviceCount={stats.serviceCount}
- satisfactionRate={stats.satisfactionRate}
- orderCount={stats.orderCount}
- />
- <CTABanner />
- <Newsletter />
+ <InspiringWork />
+ <InspiringServices gigs={featuredGigs} />
+ <FinalCta />
+ </div>
  </main>
  
  </>

@@ -2598,6 +2598,135 @@
     "resolvedOn": "Opgelost op",
     "existingDispute": "Er is al een geschil geopend voor deze bestelling"
   },
+  "home20": {
+    "hero": {
+      "title": "Ontdek",
+      "titleHighlight": "duizenden freelancers",
+      "subtitle": "Werk met talentvolle mensen voor een betaalbare prijs en haal het maximale uit je tijd en budget.",
+      "searchPlaceholder": "Waar ben je naar op zoek?",
+      "searchCta": "Zoeken",
+      "locationPlaceholder": "Stad, regio of postcode",
+      "popularLabel": "Populaire zoekopdrachten",
+      "popular": ["Designer", "Developer", "Web", "iOS", "PHP", "Senior"],
+      "locations": ["Stad, regio of postcode", "Amsterdam", "Rotterdam", "Berlijn", "New York"]
+    },
+    "partners": {
+      "title": "Vertrouwd door de beste teams"
+    },
+    "trending": {
+      "title": "Trending services",
+      "subtitle": "Meest bekeken en best verkochte services",
+      "tabs": { "all": "Alles" },
+      "reviewsLabel": "reviews",
+      "startingAt": "Vanaf"
+    },
+    "categories": {
+      "title": "Browse talent per categorie",
+      "subtitle": "Krijg inspiratie uit 1800+ skills",
+      "allCta": "Alle categorieën",
+      "skillsLabel": "skills",
+      "cardHint": "Top talent"
+    },
+    "needSomething": {
+      "title": "Iets gedaan krijgen?",
+      "subtitle": "Meest bekeken en best verkochte services",
+      "items": {
+        "post": {
+          "icon": "flaticon-cv",
+          "title": "Plaats een opdracht",
+          "text": "Snel en gratis. Vul een titel en beschrijving in."
+        },
+        "choose": {
+          "icon": "flaticon-web-design",
+          "title": "Kies freelancers",
+          "text": "Vergelijk profielen en selecteer de beste match."
+        },
+        "pay": {
+          "icon": "flaticon-secure",
+          "title": "Betaal veilig",
+          "text": "Betaal pas als je het werk hebt goedgekeurd."
+        },
+        "support": {
+          "icon": "flaticon-customer-service",
+          "title": "We helpen je graag",
+          "text": "Onze support is 24/7 beschikbaar."
+        }
+      }
+    },
+    "cta": {
+      "titleLine1": "Een wereld van freelance",
+      "titleLine2": "talent binnen handbereik",
+      "features": [
+        {
+          "title": "Kwaliteit bewezen",
+          "text": "Bekijk werkvoorbeelden, reviews en verificatie.",
+          "icon": "flaticon-badge"
+        },
+        {
+          "title": "Geen kosten tot je hiret",
+          "text": "Interview, onderhandel en betaal alleen voor goedgekeurd werk.",
+          "icon": "flaticon-money"
+        },
+        {
+          "title": "Veilig en zeker",
+          "text": "We beschermen je data en privacy met 24/7 support.",
+          "icon": "flaticon-security"
+        }
+      ],
+      "bullets": [
+        "Voor elk budget",
+        "Kwalitatief werk, snel geleverd",
+        "Beschermde betalingen, altijd",
+        "24/7 support"
+      ],
+      "imageAlt": "Samenwerken met freelancers"
+    },
+    "testimonials": {
+      "title": "Wat klanten zeggen",
+      "subtitle": "Zie hoe teams sneller groeien met SkillLinkup.",
+      "items": [
+        {
+          "name": "Alison Dawn",
+          "role": "Product Lead",
+          "quote": "Binnen 48 uur vonden we een top designer. Het proces was soepel en de kwaliteit uitstekend.",
+          "image": "/images/testimonials/2.jpg"
+        },
+        {
+          "name": "Daniel Parker",
+          "role": "Founder",
+          "quote": "SkillLinkup bespaarde ons weken sourcing. Betrouwbaar talent, snel geleverd.",
+          "image": "/images/testimonials/3.jpg"
+        },
+        {
+          "name": "Albert Cole",
+          "role": "Engineering Manager",
+          "quote": "Heldere communicatie en transparante prijzen. Precies wat we nodig hadden.",
+          "image": "/images/testimonials/1.jpg"
+        }
+      ]
+    },
+    "inspiringWork": {
+      "freelancerTitle": "Vind geweldig werk",
+      "freelancerText": "Werk met het grootste netwerk van zelfstandigen en lever snel resultaat.",
+      "freelancerCta": "Aan de slag",
+      "clientTitle": "Vind talent op jouw manier",
+      "clientText": "Huur gescreende freelancers in en schaal je team wanneer nodig.",
+      "clientCta": "Aan de slag"
+    },
+    "inspiringServices": {
+      "title": "Inspirerend werk gemaakt op SkillLinkup",
+      "subtitle": "Krijg inspiratie uit 1800+ skills",
+      "cta": "Bekijk meer",
+      "by": "door {name}"
+    },
+    "finalCta": {
+      "title": "Met getalenteerde freelancers",
+      "titleHighlight": "krijg je meer gedaan.",
+      "subtitle": "Werk met het grootste netwerk van zelfstandigen en rond projecten sneller af.",
+      "primaryCta": "Vind werk",
+      "secondaryCta": "Vind talent"
+    }
+  },
   "authGate": {
     "title": "Maak een account aan om verder te gaan",
     "description": "Registreer gratis om diensten te bestellen, freelancers te contacteren en je projecten te beheren op SkillLinkup.",
