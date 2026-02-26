@@ -2,6 +2,39 @@
 
 import { usePathname } from "next/navigation";
 
+const faqs = [
+  {
+    id: "One",
+    question: "How do I get started as a freelancer on SkillLinkup?",
+    answer:
+      "Sign up for a free account, complete your profile with your skills and portfolio, and start browsing available projects or create service listings. Clients can find you through search or you can apply to posted projects directly.",
+  },
+  {
+    id: "Two",
+    question: "How do payments work?",
+    answer:
+      "SkillLinkup uses a secure escrow system. When a client hires you, the payment is held in escrow until the work is completed and approved. Once the client confirms delivery, the funds are released to your account. This protects both freelancers and clients.",
+  },
+  {
+    id: "Three",
+    question: "Is it free to create an account?",
+    answer:
+      "Yes, creating an account on SkillLinkup is completely free for both freelancers and clients. You can browse platforms, compare services, and set up your profile at no cost.",
+  },
+  {
+    id: "Four",
+    question: "How do I find the right freelancer for my project?",
+    answer:
+      "Use the search and filter options on the Services page to find freelancers by skill, rating, price range, and delivery time. You can also browse our platform comparisons to find the best freelance platform for your specific needs.",
+  },
+  {
+    id: "Five",
+    question: "What if I have a dispute with a client or freelancer?",
+    answer:
+      "SkillLinkup has a built-in dispute resolution system. If you encounter any issues, you can open a dispute through your dashboard. Our team will review the case and help mediate a fair resolution for both parties.",
+  },
+];
+
 export default function OurFaq1() {
   const path = usePathname();
 
@@ -18,7 +51,7 @@ export default function OurFaq1() {
               <div className="main-title text-center">
                 <h2 className="title">Frequently Asked Questions</h2>
                 <p className="paragraph mt10">
-                  Lorem ipsum dolor sit amet, consectetur.
+                  Everything you need to know about using SkillLinkup.
                 </p>
               </div>
             </div>
@@ -28,141 +61,36 @@ export default function OurFaq1() {
               <div className="ui-content">
                 <div className="accordion-style1 faq-page mb-4 mb-lg-5">
                   <div className="accordion" id="accordionExample">
-                    <div className="accordion-item active">
-                      <h2 className="accordion-header" id="headingOne">
-                        <button
-                          className="accordion-button"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#collapseOne"
-                          aria-expanded="true"
-                          aria-controls="collapseOne"
-                        >
-                          What methods of payments are supported?
-                        </button>
-                      </h2>
+                    {faqs.map((faq, index) => (
                       <div
-                        id="collapseOne"
-                        className="accordion-collapse collapse show"
-                        aria-labelledby="headingOne"
-                        data-parent="#accordionExample"
+                        key={faq.id}
+                        className={`accordion-item${index === 0 ? " active" : ""}`}
                       >
-                        <div className="accordion-body">
-                          Cras vitae ac nunc orci. Purus amet tortor non at
-                          phasellus ultricies hendrerit. Eget a, sit morbi nunc
-                          sit id massa. Metus, scelerisque volutpat nec sit vel
-                          donec. Sagittis, id volutpat erat vel.
+                        <h2
+                          className="accordion-header"
+                          id={`heading${faq.id}`}
+                        >
+                          <button
+                            className={`accordion-button${index !== 0 ? " collapsed" : ""}`}
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target={`#collapse${faq.id}`}
+                            aria-expanded={index === 0 ? "true" : "false"}
+                            aria-controls={`collapse${faq.id}`}
+                          >
+                            {faq.question}
+                          </button>
+                        </h2>
+                        <div
+                          id={`collapse${faq.id}`}
+                          className={`accordion-collapse collapse${index === 0 ? " show" : ""}`}
+                          aria-labelledby={`heading${faq.id}`}
+                          data-parent="#accordionExample"
+                        >
+                          <div className="accordion-body">{faq.answer}</div>
                         </div>
                       </div>
-                    </div>
-                    <div className="accordion-item">
-                      <h2 className="accordion-header" id="headingTwo">
-                        <button
-                          className="accordion-button collapsed"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#collapseTwo"
-                          aria-expanded="false"
-                          aria-controls="collapseTwo"
-                        >
-                          Can I cancel at anytime?
-                        </button>
-                      </h2>
-                      <div
-                        id="collapseTwo"
-                        className="accordion-collapse collapse"
-                        aria-labelledby="headingTwo"
-                        data-parent="#accordionExample"
-                      >
-                        <div className="accordion-body">
-                          Cras vitae ac nunc orci. Purus amet tortor non at
-                          phasellus ultricies hendrerit. Eget a, sit morbi nunc
-                          sit id massa. Metus, scelerisque volutpat nec sit vel
-                          donec. Sagittis, id volutpat erat vel.
-                        </div>
-                      </div>
-                    </div>
-                    <div className="accordion-item">
-                      <h2 className="accordion-header" id="headingThree">
-                        <button
-                          className="accordion-button collapsed"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#collapseThree"
-                          aria-expanded="false"
-                          aria-controls="collapseThree"
-                        >
-                          How do I get a receipt for my purchase?
-                        </button>
-                      </h2>
-                      <div
-                        id="collapseThree"
-                        className="accordion-collapse collapse"
-                        aria-labelledby="headingThree"
-                        data-parent="#accordionExample"
-                      >
-                        <div className="accordion-body">
-                          Cras vitae ac nunc orci. Purus amet tortor non at
-                          phasellus ultricies hendrerit. Eget a, sit morbi nunc
-                          sit id massa. Metus, scelerisque volutpat nec sit vel
-                          donec. Sagittis, id volutpat erat vel.
-                        </div>
-                      </div>
-                    </div>
-                    <div className="accordion-item">
-                      <h2 className="accordion-header" id="headingFour">
-                        <button
-                          className="accordion-button collapsed"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#collapseFour"
-                          aria-expanded="false"
-                          aria-controls="collapseFour"
-                        >
-                          Which license do I need?
-                        </button>
-                      </h2>
-                      <div
-                        id="collapseFour"
-                        className="accordion-collapse collapse"
-                        aria-labelledby="headingFour"
-                        data-parent="#accordionExample"
-                      >
-                        <div className="accordion-body">
-                          Cras vitae ac nunc orci. Purus amet tortor non at
-                          phasellus ultricies hendrerit. Eget a, sit morbi nunc
-                          sit id massa. Metus, scelerisque volutpat nec sit vel
-                          donec. Sagittis, id volutpat erat vel.
-                        </div>
-                      </div>
-                    </div>
-                    <div className="accordion-item">
-                      <h2 className="accordion-header" id="headingFive">
-                        <button
-                          className="accordion-button collapsed"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#collapseFive"
-                          aria-expanded="false"
-                          aria-controls="collapseFive"
-                        >
-                          How do I get access to a theme I purchased?
-                        </button>
-                      </h2>
-                      <div
-                        id="collapseFive"
-                        className="accordion-collapse collapse"
-                        aria-labelledby="headingFive"
-                        data-parent="#accordionExample"
-                      >
-                        <div className="accordion-body">
-                          Cras vitae ac nunc orci. Purus amet tortor non at
-                          phasellus ultricies hendrerit. Eget a, sit morbi nunc
-                          sit id massa. Metus, scelerisque volutpat nec sit vel
-                          donec. Sagittis, id volutpat erat vel.
-                        </div>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
