@@ -1,10 +1,8 @@
-import Breadcumb16 from "@/components/breadcumb/Breadcumb16";
-import Breadcumb3 from "@/components/breadcumb/Breadcumb3";
+import Breadcumb1 from "@/components/breadcumb/Breadcumb1";
 import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 
 import Listing14 from "@/components/section/Listing14";
-import TabSection1 from "@/components/section/TabSection1";
 
 export const metadata = {
     title: "Find Freelancers | SkillLinkup",
@@ -15,9 +13,11 @@ export default function page() {
     return (
         <>
             <Header20 />
-            <TabSection1 />
-            <Breadcumb3 path={["Home", "Services", "Design & Creative"]} />
-            <Breadcumb16 />
+            <Breadcumb1
+                title="Find Freelancers"
+                brief="Browse talented professionals ready to work on your project."
+                isBtnActive={false}
+            />
             <Listing14 />
             <Footer14 />
         </>

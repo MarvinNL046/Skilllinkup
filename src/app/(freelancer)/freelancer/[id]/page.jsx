@@ -3,7 +3,6 @@ import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 
 import FreelancerDetail3 from "@/components/section/FreelancerDetails3";
-import TabSection1 from "@/components/section/TabSection1";
 
 export const metadata = {
     title: "Freelancer Profile | SkillLinkup",
@@ -14,10 +13,8 @@ export default function page() {
     return (
         <>
             <Header20 />
-            <TabSection1 />
             <div className="bgc-thm3">
-                <Breadcumb10 path={["Home", "Services", "Design & Creative"]} />
-
+                <Breadcumb10 path={["Home", "Freelancers"]} />
                 <FreelancerDetail3 />
             </div>
             <Footer14 />
