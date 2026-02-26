@@ -3,7 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-const FALLBACK_IMG = "/images/blog/blog-1.jpg";
+const FALLBACK_IMG = "/images/blog/default-blog-feature.jpg";
 const FALLBACK_AVATAR = "/images/blog/default-avatar.png";
 
 function stripHtml(html) {

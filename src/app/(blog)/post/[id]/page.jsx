@@ -8,7 +8,7 @@ import Footer14 from "@/components/footer/Footer14";
 import useConvexPost from "@/hook/useConvexPost";
 import EmptyState from "@/components/ui/EmptyState";
 
-const FALLBACK_IMG = "/images/blog/blog-1.jpg";
+const FALLBACK_IMG = "/images/blog/default-blog-feature.jpg";
 const FALLBACK_AVATAR = "/images/blog/default-avatar.png";
 
 function PostContent({ slug }) {

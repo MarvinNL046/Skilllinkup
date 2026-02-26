@@ -1,7 +1,7 @@
 export const blog1 = [
   {
     id: 1,
-    img: "/images/blog/blog-1.jpg",
+    img: "/images/blog/default-blog-feature.jpg",
     date: "December 2, 2022",
     title: "Start an online business and work from home",
     brief: "A complete guide to starting a small business online",

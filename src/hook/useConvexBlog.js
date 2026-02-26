@@ -6,7 +6,7 @@ function mapConvexPost(post, index) {
   return {
     id: index + 1,
     _id: post._id,
-    img: post.featureImg || "/images/blog/blog-1.jpg",
+    img: post.featureImg || "/images/blog/default-blog-feature.jpg",
     date: post.publishedAt
       ? new Date(post.publishedAt).toLocaleDateString("en-US", {
           year: "numeric",
