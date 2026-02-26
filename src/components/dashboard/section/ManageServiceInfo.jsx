@@ -75,9 +75,9 @@ export default function ManageServiceInfo() {
   const { gigs, removeGig } = useConvexMyGigs();
 
   const currentStatus = STATUS_MAP[selectedTab];
-  const filteredGigs = gigs
-    .filter((g) => g.status === currentStatus)
-    .map(mapGigToCard);
+  const filteredGigs = Array.isArray(gigs)
+    ? gigs.filter((g) => g.status === currentStatus).map(mapGigToCard)
+    : [];
 
   return (
     <>
@@ -114,7 +114,7 @@ export default function ManageServiceInfo() {
                       <button
                         key={i}
                         className={`nav-link fw500 ps-0 ${
-                          selectedTab == i ? "active" : ""
+                          selectedTab === i ? "active" : ""
                         }`}
                         onClick={() => setSelectedTab(i)}
                       >

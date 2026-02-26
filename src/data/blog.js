@@ -9,7 +9,7 @@ export const blog1 = [
       "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
     category: "Freelancer",
     author: {
-      img: "/images/blog/author-md-1.png",
+      img: "/images/blog/default-avatar.png",
       name: "Leslie Alexander",
     },
   },
@@ -23,7 +23,7 @@ export const blog1 = [
       "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
     category: "Graphics Design",
     author: {
-      img: "/images/blog/author-md-1.png",
+      img: "/images/blog/default-avatar.png",
       name: "Leslie Alexander",
     },
   },
@@ -38,7 +38,7 @@ export const blog1 = [
       "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
     category: "App Developer",
     author: {
-      img: "/images/blog/author-md-1.png",
+      img: "/images/blog/default-avatar.png",
       name: "Leslie Alexander",
     },
   },
@@ -53,7 +53,7 @@ export const blog1 = [
       "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
     category: "Digital Marketing",
     author: {
-      img: "/images/blog/author-md-1.png",
+      img: "/images/blog/default-avatar.png",
       name: "Leslie Alexander",
     },
   },
@@ -67,7 +67,7 @@ export const blog1 = [
       "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
     category: "Music & Audio",
     author: {
-      img: "/images/blog/author-md-1.png",
+      img: "/images/blog/default-avatar.png",
       name: "Leslie Alexander",
     },
   },
@@ -81,7 +81,7 @@ export const blog1 = [
       "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
     category: "Video & Audio",
     author: {
-      img: "/images/blog/author-md-1.png",
+      img: "/images/blog/default-avatar.png",
       name: "Leslie Alexander",
     },
   },
@@ -95,7 +95,7 @@ export const blog1 = [
       "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
     category: "Freelancer",
     author: {
-      img: "/images/blog/author-md-1.png",
+      img: "/images/blog/default-avatar.png",
       name: "Leslie Alexander",
     },
   },
@@ -109,7 +109,7 @@ export const blog1 = [
       "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
     category: "Graphics Design",
     author: {
-      img: "/images/blog/author-md-1.png",
+      img: "/images/blog/default-avatar.png",
       name: "Leslie Alexander",
     },
   },
@@ -123,7 +123,7 @@ export const blog1 = [
       "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
     category: "App Developer",
     author: {
-      img: "/images/blog/author-md-1.png",
+      img: "/images/blog/default-avatar.png",
       name: "Leslie Alexander",
     },
   },
@@ -137,7 +137,7 @@ export const blog1 = [
       "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
     category: "Digital Marketing",
     author: {
-      img: "/images/blog/author-md-1.png",
+      img: "/images/blog/default-avatar.png",
       name: "Leslie Alexander",
     },
   },
@@ -151,7 +151,7 @@ export const blog1 = [
       "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
     category: "Music & Audio",
     author: {
-      img: "/images/blog/author-md-1.png",
+      img: "/images/blog/default-avatar.png",
       name: "Leslie Alexander",
     },
   },
@@ -165,7 +165,7 @@ export const blog1 = [
       "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
     category: "Video & Audio",
     author: {
-      img: "/images/blog/author-md-1.png",
+      img: "/images/blog/default-avatar.png",
       name: "Leslie Alexander",
     },
   },
@@ -179,7 +179,7 @@ export const blog1 = [
       "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
     category: "Freelancer",
     author: {
-      img: "/images/blog/author-md-1.png",
+      img: "/images/blog/default-avatar.png",
       name: "Leslie Alexander",
     },
   },
@@ -193,7 +193,7 @@ export const blog1 = [
       "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
     category: "Graphics Design",
     author: {
-      img: "/images/blog/author-md-1.png",
+      img: "/images/blog/default-avatar.png",
       name: "Leslie Alexander",
     },
   },
@@ -207,7 +207,7 @@ export const blog1 = [
       "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
     category: "App Developer",
     author: {
-      img: "/images/blog/author-md-1.png",
+      img: "/images/blog/default-avatar.png",
       name: "Leslie Alexander",
     },
   },
@@ -221,7 +221,7 @@ export const blog1 = [
       "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
     category: "Video & Audio",
     author: {
-      img: "/images/blog/author-md-1.png",
+      img: "/images/blog/default-avatar.png",
       name: "Leslie Alexander",
     },
   },
@@ -235,7 +235,7 @@ export const blog1 = [
       "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
     category: "Freelancer",
     author: {
-      img: "/images/blog/author-md-1.png",
+      img: "/images/blog/default-avatar.png",
       name: "Leslie Alexander",
     },
   },
@@ -249,7 +249,7 @@ export const blog1 = [
       "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
     category: "Graphics Design",
     author: {
-      img: "/images/blog/author-md-1.png",
+      img: "/images/blog/default-avatar.png",
       name: "Leslie Alexander",
     },
   },
@@ -263,7 +263,7 @@ export const blog1 = [
       "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
     category: "App Developer",
     author: {
-      img: "/images/blog/author-md-1.png",
+      img: "/images/blog/default-avatar.png",
       name: "Leslie Alexander",
     },
   },
@@ -277,7 +277,7 @@ export const blog1 = [
       "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
     category: "App Developer",
     author: {
-      img: "/images/blog/author-md-1.png",
+      img: "/images/blog/default-avatar.png",
       name: "Leslie Alexander",
     },
   },

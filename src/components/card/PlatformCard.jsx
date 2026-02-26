@@ -21,6 +21,11 @@ function StarRating({ rating }) {
   );
 }
 
+function stripHtml(html) {
+  if (!html) return "";
+  return html.replace(/<[^>]*>/g, "").trim();
+}
+
 export default function PlatformCard({ data }) {
   const {
     name = "Unnamed Platform",
@@ -34,10 +39,11 @@ export default function PlatformCard({ data }) {
     featured,
   } = data;
 
+  const plainDescription = stripHtml(description);
   const truncatedDescription =
-    description && description.length > 100
-      ? description.slice(0, 100) + "..."
-      : description;
+    plainDescription && plainDescription.length > 100
+      ? plainDescription.slice(0, 100) + "..."
+      : plainDescription;
 
   return (
     <div className="listing-style1">

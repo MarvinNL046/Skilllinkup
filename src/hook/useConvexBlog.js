@@ -19,7 +19,7 @@ function mapConvexPost(post, index) {
     description: post.content || "",
     category: post.category?.name || "General",
     author: {
-      img: post.author?.image || "/images/blog/author-md-1.png",
+      img: post.author?.image || "/images/blog/default-avatar.png",
       name: post.author?.name || "Author",
     },
     slug: post.slug,

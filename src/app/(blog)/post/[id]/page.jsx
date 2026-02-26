@@ -1,11 +1,14 @@
 "use client";
-import { use } from "react";
+import { use, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Header20 from "@/components/header/Header20";
 import Footer14 from "@/components/footer/Footer14";
 import useConvexPost from "@/hook/useConvexPost";
 import EmptyState from "@/components/ui/EmptyState";
+
+const FALLBACK_IMG = "/images/blog/blog-1.jpg";
+const FALLBACK_AVATAR = "/images/blog/default-avatar.png";
 
 function PostContent({ slug }) {
   const post = useConvexPost(slug);
@@ -52,9 +55,9 @@ function PostContent({ slug }) {
     : "Recent";
 
   const authorName = post.author?.name || "SkillLinkup";
-  const authorImg = post.author?.image || "/images/blog/author-md-1.png";
   const categoryName = post.category?.name || "General";
-  const featureImg = post.featureImg || "/images/blog/blog-1.jpg";
+  const [featSrc, setFeatSrc] = useState(post.featureImg || FALLBACK_IMG);
+  const [avatarSrc, setAvatarSrc] = useState(post.author?.image || FALLBACK_AVATAR);
 
   return (
     <section className="our-blog pt40 pb90">
@@ -80,8 +83,9 @@ function PostContent({ slug }) {
                   height={40}
                   width={40}
                   className="mr10 object-fit-contain rounded-circle"
-                  src={authorImg}
+                  src={avatarSrc}
                   alt={authorName}
+                  onError={() => setAvatarSrc(FALLBACK_AVATAR)}
                 />
                 <span className="pr15 body-light-color">{authorName}</span>
                 <span className="ml15 pr15 body-light-color">{categoryName}</span>
@@ -104,8 +108,9 @@ function PostContent({ slug }) {
               width={1200}
               className="w-100 bdrs12 object-fit-cover"
               style={{ maxHeight: "500px" }}
-              src={featureImg}
+              src={featSrc}
               alt={post.title}
+              onError={() => setFeatSrc(FALLBACK_IMG)}
             />
           </div>
         </div>

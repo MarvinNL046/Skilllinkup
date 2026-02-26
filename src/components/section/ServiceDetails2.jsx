@@ -18,7 +18,7 @@ export default function ServiceDetail2() {
   const isMatchedScreen = useScreen(1216);
   const { id } = useParams();
 
-  const data = product1.find((item) => item.id == id);
+  const data = product1.find((item) => String(item.id) === String(id));
 
   return (
     <>
