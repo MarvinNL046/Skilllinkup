@@ -4,10 +4,9 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import DashboardNavigation from "../header/DashboardNavigation";
-import ExtraService from "./ExtraService";
 import ServiceGallery from "./ServiceGallery";
-import ServicePackage from "./ServicePackage";
 import useConvexProfile from "@/hook/useConvexProfile";
+import useConvexCategories from "@/hook/useConvexCategories";
 
 function slugify(text) {
   return text
@@ -16,24 +15,49 @@ function slugify(text) {
     .replace(/^-+|-+$/g, "");
 }
 
+const EMPTY_PACKAGE = {
+  title: "",
+  description: "",
+  price: "",
+  deliveryDays: "",
+  revisionCount: "",
+};
+
 export default function AddServiceInfo() {
   const router = useRouter();
   const { convexUser, profile } = useConvexProfile();
+  const categories = useConvexCategories("en");
 
   const createGig = useMutation(api.marketplace.gigs.create);
   const createPackage = useMutation(api.marketplace.gigs.createPackage);
 
-  // Form state
+  // Basic info state
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("select");
+  const [categoryId, setCategoryId] = useState("");
   const [tags, setTags] = useState("");
-  const [locationCountry, setLocationCountry] = useState("usa");
-  const [locationCity, setLocationCity] = useState("new-york");
+  const [workType, setWorkType] = useState("remote");
+  const [locationCountry, setLocationCountry] = useState("");
+  const [locationCity, setLocationCity] = useState("");
+
+  // Package state: three tiers
+  const [basicPkg, setBasicPkg] = useState({ ...EMPTY_PACKAGE });
+  const [standardPkg, setStandardPkg] = useState({ ...EMPTY_PACKAGE });
+  const [premiumPkg, setPremiumPkg] = useState({ ...EMPTY_PACKAGE });
+
+  // UI state
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
+
+  // Helper to update a package field
+  const updatePkg = (setter, field, value) => {
+    setter((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // Check if a package tier has enough data to submit
+  const isPkgFilled = (pkg) =>
+    pkg.title.trim() && pkg.price && !isNaN(Number(pkg.price)) && pkg.deliveryDays && !isNaN(Number(pkg.deliveryDays));
 
   const handleSaveAndPublish = async () => {
     if (!profile?._id || !convexUser) {
@@ -46,6 +70,10 @@ export default function AddServiceInfo() {
     }
     if (!description.trim()) {
       setSaveError("Please enter a service description.");
+      return;
+    }
+    if (!isPkgFilled(basicPkg)) {
+      setSaveError("Please complete at least the Basic package (title, price, and delivery days).");
       return;
     }
 
@@ -62,29 +90,39 @@ export default function AddServiceInfo() {
         title: title.trim(),
         slug,
         description: description.trim(),
+        categoryId: categoryId || undefined,
         tags: tags ? tags.split(",").map((t) => t.trim()).filter(Boolean) : undefined,
-        locationCountry: locationCountry !== "select" ? locationCountry : undefined,
-        locationCity: locationCity !== "select" ? locationCity : undefined,
+        workType,
+        locationCountry: locationCountry.trim() || undefined,
+        locationCity: locationCity.trim() || undefined,
         locale: "en",
       });
 
-      // Create a basic package if a price was entered
-      if (price && !isNaN(Number(price))) {
-        await createPackage({
-          gigId,
-          tier: "basic",
-          title: "Basic Package",
-          description: description.trim(),
-          price: Number(price),
-          currency: "EUR",
-          deliveryDays: 3,
-          revisionCount: 1,
-        });
+      // Create packages for each filled tier
+      const tiers = [
+        { tier: "basic", pkg: basicPkg },
+        { tier: "standard", pkg: standardPkg },
+        { tier: "premium", pkg: premiumPkg },
+      ];
+
+      for (const { tier, pkg } of tiers) {
+        if (isPkgFilled(pkg)) {
+          await createPackage({
+            gigId,
+            tier,
+            title: pkg.title.trim(),
+            description: pkg.description.trim() || pkg.title.trim(),
+            price: Number(pkg.price),
+            currency: "EUR",
+            deliveryDays: Number(pkg.deliveryDays),
+            revisionCount: pkg.revisionCount ? Number(pkg.revisionCount) : undefined,
+          });
+        }
       }
 
       setSaveSuccess(true);
       setTimeout(() => {
-        router.push("/dashboard-manage-service");
+        router.push("/dashboard/manage-services");
       }, 1500);
     } catch (error) {
       console.error("Failed to create gig:", error);
@@ -93,6 +131,19 @@ export default function AddServiceInfo() {
       setSaving(false);
     }
   };
+
+  // Flatten the category tree for the dropdown
+  const flatCategories = [];
+  if (categories) {
+    for (const cat of categories) {
+      flatCategories.push({ id: cat._id, name: cat.name, indent: false });
+      if (cat.children) {
+        for (const child of cat.children) {
+          flatCategories.push({ id: child._id, name: child.name, indent: true });
+        }
+      }
+    }
+  }
 
   return (
     <>
@@ -104,7 +155,7 @@ export default function AddServiceInfo() {
           <div className="col-lg-9">
             <div className="dashboard_title_area">
               <h2>Add Services</h2>
-              <p className="text">Lorem ipsum dolor sit amet, consectetur.</p>
+              <p className="text">Fill in the details below to publish your new service.</p>
             </div>
           </div>
           <div className="col-lg-3">
@@ -153,7 +204,7 @@ export default function AddServiceInfo() {
 
         <div className="row">
           <div className="col-xl-12">
-            {/* Inline basic information form wired to Convex state */}
+            {/* Basic Information */}
             <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
               <div className="bdrb1 pb15 mb25">
                 <h5 className="list-title">Basic Information</h5>
@@ -178,36 +229,22 @@ export default function AddServiceInfo() {
                     <div className="col-sm-6">
                       <div className="mb20">
                         <label className="heading-color ff-heading fw500 mb10">
-                          Price (EUR)
-                        </label>
-                        <input
-                          type="number"
-                          className="form-control"
-                          placeholder="e.g. 50"
-                          value={price}
-                          onChange={(e) => setPrice(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-sm-6">
-                      <div className="mb20">
-                        <label className="heading-color ff-heading fw500 mb10">
                           Category
                         </label>
                         <select
                           className="form-control"
-                          value={category}
-                          onChange={(e) => setCategory(e.target.value)}
+                          value={categoryId}
+                          onChange={(e) => setCategoryId(e.target.value)}
                         >
-                          <option value="select">Select</option>
-                          <option value="graphics-design">Graphics &amp; Design</option>
-                          <option value="digital-marketing">Digital Marketing</option>
-                          <option value="writing-translation">Writing &amp; Translation</option>
-                          <option value="video-animation">Video &amp; Animation</option>
-                          <option value="music-audio">Music &amp; Audio</option>
-                          <option value="programming-tech">Programming &amp; Tech</option>
-                          <option value="business">Business</option>
-                          <option value="lifestyle">Lifestyle</option>
+                          <option value="">Select a category</option>
+                          {flatCategories.map((cat) => (
+                            <option key={cat.id} value={cat.id}>
+                              {cat.indent ? "\u00a0\u00a0\u2514 " : ""}{cat.name}
+                            </option>
+                          ))}
+                          {categories === undefined && (
+                            <option disabled>Loading categories...</option>
+                          )}
                         </select>
                       </div>
                     </div>
@@ -228,49 +265,55 @@ export default function AddServiceInfo() {
                     <div className="col-sm-6">
                       <div className="mb20">
                         <label className="heading-color ff-heading fw500 mb10">
-                          Country
+                          Work Type
                         </label>
                         <select
                           className="form-control"
-                          value={locationCountry}
-                          onChange={(e) => setLocationCountry(e.target.value)}
+                          value={workType}
+                          onChange={(e) => setWorkType(e.target.value)}
                         >
-                          <option value="usa">United States</option>
-                          <option value="canada">Canada</option>
-                          <option value="uk">United Kingdom</option>
-                          <option value="australia">Australia</option>
-                          <option value="germany">Germany</option>
-                          <option value="netherlands">Netherlands</option>
-                          <option value="belgium">Belgium</option>
-                          <option value="japan">Japan</option>
+                          <option value="remote">Remote</option>
+                          <option value="local">Local / On-site</option>
+                          <option value="hybrid">Hybrid</option>
                         </select>
                       </div>
                     </div>
-                    <div className="col-sm-6">
-                      <div className="mb20">
-                        <label className="heading-color ff-heading fw500 mb10">
-                          City
-                        </label>
-                        <select
-                          className="form-control"
-                          value={locationCity}
-                          onChange={(e) => setLocationCity(e.target.value)}
-                        >
-                          <option value="new-york">New York</option>
-                          <option value="toronto">Toronto</option>
-                          <option value="london">London</option>
-                          <option value="sydney">Sydney</option>
-                          <option value="berlin">Berlin</option>
-                          <option value="amsterdam">Amsterdam</option>
-                          <option value="brussels">Brussels</option>
-                          <option value="tokyo">Tokyo</option>
-                        </select>
-                      </div>
-                    </div>
+                    {(workType === "local" || workType === "hybrid") && (
+                      <>
+                        <div className="col-sm-6">
+                          <div className="mb20">
+                            <label className="heading-color ff-heading fw500 mb10">
+                              Country
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="e.g. Netherlands"
+                              value={locationCountry}
+                              onChange={(e) => setLocationCountry(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                        <div className="col-sm-6">
+                          <div className="mb20">
+                            <label className="heading-color ff-heading fw500 mb10">
+                              City
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="e.g. Amsterdam"
+                              value={locationCity}
+                              onChange={(e) => setLocationCity(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      </>
+                    )}
                     <div className="col-md-12">
                       <div className="mb10">
                         <label className="heading-color ff-heading fw500 mb10">
-                          Services Detail
+                          Service Description
                         </label>
                         <textarea
                           cols={30}
@@ -286,9 +329,108 @@ export default function AddServiceInfo() {
               </div>
             </div>
 
-            <ServicePackage />
-            <ExtraService />
+            {/* Packages */}
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+              <div className="bdrb1 pb15 mb25">
+                <h5 className="list-title">Packages</h5>
+                <p className="text fz14 mt5">
+                  Define your pricing tiers. Basic is required; Standard and Premium are optional.
+                </p>
+              </div>
+              <div className="row">
+                {[
+                  { label: "Basic", pkg: basicPkg, setter: setBasicPkg, required: true },
+                  { label: "Standard", pkg: standardPkg, setter: setStandardPkg, required: false },
+                  { label: "Premium", pkg: premiumPkg, setter: setPremiumPkg, required: false },
+                ].map(({ label, pkg, setter, required }) => (
+                  <div className="col-md-4" key={label}>
+                    <div className="package-tier-card bdr1 bdrs4 p20 mb20">
+                      <h6 className="heading-color ff-heading fw600 mb15">
+                        {label}
+                        {required && <span className="text-danger ms-1">*</span>}
+                      </h6>
+                      <div className="mb15">
+                        <label className="heading-color ff-heading fw500 mb8 fz14">
+                          Package Name
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder={`e.g. ${label} Package`}
+                          value={pkg.title}
+                          onChange={(e) => updatePkg(setter, "title", e.target.value)}
+                        />
+                      </div>
+                      <div className="mb15">
+                        <label className="heading-color ff-heading fw500 mb8 fz14">
+                          Description
+                        </label>
+                        <textarea
+                          rows={3}
+                          className="form-control"
+                          placeholder="What is included?"
+                          value={pkg.description}
+                          onChange={(e) => updatePkg(setter, "description", e.target.value)}
+                        />
+                      </div>
+                      <div className="mb15">
+                        <label className="heading-color ff-heading fw500 mb8 fz14">
+                          Price (EUR)
+                        </label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          placeholder="e.g. 50"
+                          min="0"
+                          value={pkg.price}
+                          onChange={(e) => updatePkg(setter, "price", e.target.value)}
+                        />
+                      </div>
+                      <div className="mb15">
+                        <label className="heading-color ff-heading fw500 mb8 fz14">
+                          Delivery Days
+                        </label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          placeholder="e.g. 3"
+                          min="1"
+                          value={pkg.deliveryDays}
+                          onChange={(e) => updatePkg(setter, "deliveryDays", e.target.value)}
+                        />
+                      </div>
+                      <div className="mb10">
+                        <label className="heading-color ff-heading fw500 mb8 fz14">
+                          Revisions
+                        </label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          placeholder="e.g. 2"
+                          min="0"
+                          value={pkg.revisionCount}
+                          onChange={(e) => updatePkg(setter, "revisionCount", e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <ServiceGallery />
+
+            {/* Bottom submit button */}
+            <div className="col-xl-12 text-end mb30">
+              <button
+                className="ud-btn btn-dark"
+                onClick={handleSaveAndPublish}
+                disabled={saving || !profile}
+              >
+                {saving ? "Saving..." : "Save & Publish"}
+                <i className="fal fa-arrow-right-long" />
+              </button>
+            </div>
           </div>
         </div>
       </div>

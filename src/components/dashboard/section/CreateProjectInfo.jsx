@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import DashboardNavigation from "../header/DashboardNavigation";
 import useConvexUser from "@/hook/useConvexUser";
@@ -21,9 +21,13 @@ export default function CreateProjectInfo() {
   const { convexUser, isLoaded } = useConvexUser();
   const createProject = useMutation(api.marketplace.projects.create);
 
+  // Fetch marketplace categories for the dropdown
+  const categories = useQuery(api.marketplace.categories.list, { locale: "en" });
+
   const [form, setForm] = useState({
     title: "",
     description: "",
+    categoryId: "",
     budgetMin: "",
     budgetMax: "",
     requiredSkills: "",
@@ -68,6 +72,7 @@ export default function CreateProjectInfo() {
         title: form.title.trim(),
         slug,
         description: form.description.trim(),
+        categoryId: form.categoryId || undefined,
         requiredSkills: skillsArray,
         budgetMin,
         budgetMax,
@@ -83,6 +88,7 @@ export default function CreateProjectInfo() {
       setForm({
         title: "",
         description: "",
+        categoryId: "",
         budgetMin: "",
         budgetMax: "",
         requiredSkills: "",
@@ -162,6 +168,37 @@ export default function CreateProjectInfo() {
                           onChange={handleChange}
                           required
                         />
+                      </div>
+                    </div>
+
+                    <div className="col-sm-12">
+                      <div className="mb20">
+                        <label className="heading-color ff-heading fw500 mb10">
+                          Category
+                        </label>
+                        <select
+                          name="categoryId"
+                          className="form-control"
+                          value={form.categoryId}
+                          onChange={handleChange}
+                        >
+                          <option value="">-- Select a category --</option>
+                          {categories === undefined && (
+                            <option disabled>Loading categories...</option>
+                          )}
+                          {categories &&
+                            categories.map((cat) => (
+                              <optgroup key={cat._id} label={cat.name}>
+                                <option value={cat._id}>{cat.name}</option>
+                                {cat.children &&
+                                  cat.children.map((child) => (
+                                    <option key={child._id} value={child._id}>
+                                      &nbsp;&nbsp;{child.name}
+                                    </option>
+                                  ))}
+                              </optgroup>
+                            ))}
+                        </select>
                       </div>
                     </div>
 

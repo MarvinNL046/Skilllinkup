@@ -4,7 +4,6 @@ import { api } from "../../../../convex/_generated/api";
 import Pagination1 from "@/components/section/Pagination1";
 import ProposalCard1 from "../card/ProposalCard1";
 import DashboardNavigation from "../header/DashboardNavigation";
-import { project1 } from "@/data/product";
 import DeleteModal from "../modal/DeleteModal";
 import ProposalModal1 from "../modal/ProposalModal1";
 import useConvexProfile from "@/hook/useConvexProfile";
@@ -18,7 +17,7 @@ export default function ProposalInfo() {
   );
 
   const isLoading = profile === undefined || (profile?._id && bids === undefined);
-  const hasConvexData = bids && bids.length > 0;
+  const hasBids = bids && bids.length > 0;
 
   return (
     <>
@@ -45,30 +44,30 @@ export default function ProposalInfo() {
                     </div>
                     <p className="mt10 fz14 text-muted">Loading your proposals...</p>
                   </div>
-                ) : (
-                  <table className="table-style3 table at-savesearch">
-                    <thead className="t-head">
-                      <tr>
-                        <th scope="col">Project</th>
-                        <th scope="col">Bid Amount / Delivery</th>
-                        <th scope="col">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody className="t-body">
-                      {hasConvexData
-                        ? bids.map((bid) => (
-                            <ProposalCard1 key={bid._id} bid={bid} />
-                          ))
-                        : project1.slice(0, 7).map((item, i) => (
-                            <ProposalCard1 key={i} data={item} />
-                          ))}
-                    </tbody>
-                  </table>
-                )}
-                {!isLoading && (
-                  <div className="mt30">
-                    <Pagination1 />
+                ) : !hasBids ? (
+                  <div className="text-center py-4">
+                    <p className="text mb-0">No proposals yet. Browse open projects and submit your first bid!</p>
                   </div>
+                ) : (
+                  <>
+                    <table className="table-style3 table at-savesearch">
+                      <thead className="t-head">
+                        <tr>
+                          <th scope="col">Project</th>
+                          <th scope="col">Bid Amount / Delivery</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="t-body">
+                        {bids.map((bid) => (
+                          <ProposalCard1 key={bid._id} bid={bid} />
+                        ))}
+                      </tbody>
+                    </table>
+                    <div className="mt30">
+                      <Pagination1 />
+                    </div>
+                  </>
                 )}
               </div>
             </div>

@@ -18,7 +18,7 @@ function OnboardingContent() {
 
   // If user already has a userType that was explicitly set, skip onboarding
   useEffect(() => {
-    if (convexUser?.userType === "freelancer") {
+    if (convexUser?.userType === "freelancer" || convexUser?.userType === "client") {
       router.replace("/dashboard");
     }
   }, [convexUser, router]);

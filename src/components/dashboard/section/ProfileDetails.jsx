@@ -1,56 +1,26 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import SelectInput from "../option/SelectInput";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import useConvexProfile from "@/hook/useConvexProfile";
 
 export default function ProfileDetails() {
-  const { profile, updateProfile } = useConvexProfile();
+  const { convexUser, profile, updateProfile } = useConvexProfile();
 
   const [displayName, setDisplayName] = useState("");
   const [tagline, setTagline] = useState("");
   const [bio, setBio] = useState("");
   const [hourlyRate, setHourlyRate] = useState("");
+  const [skillsInput, setSkillsInput] = useState(""); // comma-separated
+  const [languagesInput, setLanguagesInput] = useState(""); // comma-separated
   const [locationCity, setLocationCity] = useState("");
   const [locationCountry, setLocationCountry] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState("");
+  const [linkedinUrl, setLinkedinUrl] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveError, setSaveError] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
-
-  const [getHourly, setHourly] = useState({
-    option: "Select",
-    value: null,
-  });
-  const [getGender, setGender] = useState({
-    option: "Select",
-    value: null,
-  });
-  const [getSpecialization, setSpecialization] = useState({
-    option: "Select",
-    value: null,
-  });
-  const [getType, setType] = useState({
-    option: "Select",
-    value: null,
-  });
-  const [getCountry, setCountry] = useState({
-    option: "Select",
-    value: null,
-  });
-  const [getCity, setCity] = useState({
-    option: "Select",
-    value: null,
-  });
-  const [getLanguage, setLanguage] = useState({
-    option: "Select",
-    value: null,
-  });
-  const [getLanLevel, setLanLevel] = useState({
-    option: "Select",
-    value: null,
-  });
 
   // Pre-fill form fields once profile loads
   useEffect(() => {
@@ -62,30 +32,16 @@ export default function ProfileDetails() {
       setLocationCity(profile.locationCity || "");
       setLocationCountry(profile.locationCountry || "");
       setWebsiteUrl(profile.websiteUrl || "");
+      setLinkedinUrl(profile.linkedinUrl || "");
 
-      if (profile.hourlyRate) {
-        setHourly({
-          option: `$${profile.hourlyRate}`,
-          value: String(profile.hourlyRate),
-        });
+      // Skills: array -> comma-separated string
+      if (profile.skills && profile.skills.length > 0) {
+        setSkillsInput(profile.skills.join(", "));
       }
-      if (profile.locationCountry) {
-        setCountry({
-          option: profile.locationCountry,
-          value: profile.locationCountry.toLowerCase(),
-        });
-      }
-      if (profile.locationCity) {
-        setCity({
-          option: profile.locationCity,
-          value: profile.locationCity.toLowerCase().replace(/\s+/g, "-"),
-        });
-      }
+
+      // Languages: array -> comma-separated string
       if (profile.languages && profile.languages.length > 0) {
-        setLanguage({
-          option: profile.languages[0],
-          value: profile.languages[0].toLowerCase(),
-        });
+        setLanguagesInput(profile.languages.join(", "));
       }
     }
   }, [profile]);
@@ -97,67 +53,82 @@ export default function ProfileDetails() {
     }
   };
 
-  // handlers
-  const hourlyHandler = (option, value) => {
-    setHourly({ option, value });
-    setHourlyRate(value || "");
-  };
-  const genderHandler = (option, value) => {
-    setGender({ option, value });
-  };
-  const specializationHandler = (option, value) => {
-    setSpecialization({ option, value });
-  };
-  const typeHandler = (option, value) => {
-    setType({ option, value });
-  };
-  const countryHandler = (option, value) => {
-    setCountry({ option, value });
-    setLocationCountry(option !== "Select" ? option : "");
-  };
-  const cityHandler = (option, value) => {
-    setCity({ option, value });
-    setLocationCity(option !== "Select" ? option : "");
-  };
-  const languageHandler = (option, value) => {
-    setLanguage({ option, value });
-  };
-  const lanLevelHandler = (option, value) => {
-    setLanLevel({ option, value });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!profile?._id) return;
 
     setSaving(true);
     setSaveSuccess(false);
+    setSaveError("");
+
+    // Parse comma-separated inputs into arrays
+    const skillsArray = skillsInput
+      .split(",")
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+
+    const languagesArray = languagesInput
+      .split(",")
+      .map((l) => l.trim())
+      .filter((l) => l.length > 0);
 
     try {
-      const languages = getLanguage.value ? [getLanguage.option] : profile?.languages || [];
-
       await updateProfile({
         profileId: profile._id,
         displayName: displayName || undefined,
         tagline: tagline || undefined,
         bio: bio || undefined,
         hourlyRate: hourlyRate ? Number(hourlyRate) : undefined,
+        skills: skillsArray.length > 0 ? skillsArray : undefined,
+        languages: languagesArray.length > 0 ? languagesArray : undefined,
         locationCity: locationCity || undefined,
         locationCountry: locationCountry || undefined,
         websiteUrl: websiteUrl || undefined,
-        languages: languages.length > 0 ? languages : undefined,
+        linkedinUrl: linkedinUrl || undefined,
       });
 
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error) {
       console.error("Failed to save profile:", error);
+      setSaveError("Something went wrong while saving. Please try again.");
     } finally {
       setSaving(false);
     }
   };
 
-  // Loading state
+  // Still loading: convexUser not yet resolved
+  if (convexUser === undefined) {
+    return (
+      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+        <div className="bdrb1 pb15 mb25">
+          <h5 className="list-title">Profile Details</h5>
+        </div>
+        <p className="text">Loading profile...</p>
+      </div>
+    );
+  }
+
+  // User is a client, not a freelancer
+  if (convexUser?.userType === "client" || (profile === null && convexUser?.userType !== "freelancer")) {
+    return (
+      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+        <div className="bdrb1 pb15 mb25">
+          <h5 className="list-title">Profile Details</h5>
+        </div>
+        <div className="alert alert-info" role="alert">
+          <strong>This page is for freelancers.</strong> Switch to freelancer
+          mode to set up your profile.
+        </div>
+        <Link href="/dashboard" className="ud-btn btn-thm mt15">
+          Go to Dashboard
+          <i className="fal fa-arrow-right-long" />
+        </Link>
+      </div>
+    );
+  }
+
+  // Profile query still loading (profile === undefined but userType is freelancer)
   if (profile === undefined) {
     return (
       <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
@@ -175,16 +146,19 @@ export default function ProfileDetails() {
         <div className="bdrb1 pb15 mb25">
           <h5 className="list-title">Profile Details</h5>
         </div>
+
         {saveSuccess && (
           <div className="alert alert-success mb20" role="alert">
             Profile saved successfully!
           </div>
         )}
-        {!profile && (
-          <div className="alert alert-info mb20" role="alert">
-            No freelancer profile found. Please set your account type to freelancer first.
+        {saveError && (
+          <div className="alert alert-danger mb20" role="alert">
+            {saveError}
           </div>
         )}
+
+        {/* Avatar section */}
         <div className="col-xl-7">
           <div className="profile-box d-sm-flex align-items-center mb30">
             <div className="profile-img mb20-sm">
@@ -210,10 +184,11 @@ export default function ProfileDetails() {
                 <a
                   className="tag-delt text-thm2"
                   onClick={() => setSelectedImage(null)}
+                  style={{ cursor: "pointer" }}
                 >
                   <span className="flaticon-delete text-thm2" />
                 </a>
-                <label>
+                <label style={{ cursor: "pointer" }}>
                   <input
                     type="file"
                     accept=".png, .jpg, .jpeg"
@@ -230,9 +205,13 @@ export default function ProfileDetails() {
             </div>
           </div>
         </div>
+
+        {/* Profile form */}
         <div className="col-lg-7">
           <form className="form-style1" onSubmit={handleSubmit}>
             <div className="row">
+
+              {/* Display Name */}
               <div className="col-sm-6">
                 <div className="mb20">
                   <label className="heading-color ff-heading fw500 mb10">
@@ -247,34 +226,8 @@ export default function ProfileDetails() {
                   />
                 </div>
               </div>
-              <div className="col-sm-6">
-                <div className="mb20">
-                  <label className="heading-color ff-heading fw500 mb10">
-                    Website URL
-                  </label>
-                  <input
-                    type="url"
-                    className="form-control"
-                    placeholder="https://yourwebsite.com"
-                    value={websiteUrl}
-                    onChange={(e) => setWebsiteUrl(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="col-sm-6">
-                <div className="mb20">
-                  <label className="heading-color ff-heading fw500 mb10">
-                    Location (City)
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="e.g. Amsterdam"
-                    value={locationCity}
-                    onChange={(e) => setLocationCity(e.target.value)}
-                  />
-                </div>
-              </div>
+
+              {/* Tagline */}
               <div className="col-sm-6">
                 <div className="mb20">
                   <label className="heading-color ff-heading fw500 mb10">
@@ -289,220 +242,140 @@ export default function ProfileDetails() {
                   />
                 </div>
               </div>
+
+              {/* Hourly Rate */}
               <div className="col-sm-6">
                 <div className="mb20">
-                  <SelectInput
-                    label="Hourly Rate"
-                    defaultSelect={getHourly}
-                    data={[
-                      { option: "$50", value: "50" },
-                      { option: "$60", value: "60" },
-                      { option: "$70", value: "70" },
-                      { option: "$80", value: "80" },
-                      { option: "$90", value: "90" },
-                      { option: "$100", value: "100" },
-                    ]}
-                    handler={hourlyHandler}
+                  <label className="heading-color ff-heading fw500 mb10">
+                    Hourly Rate ($)
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    placeholder="e.g. 75"
+                    min="0"
+                    step="1"
+                    value={hourlyRate}
+                    onChange={(e) => setHourlyRate(e.target.value)}
                   />
                 </div>
               </div>
+
+              {/* Website URL */}
               <div className="col-sm-6">
                 <div className="mb20">
-                  <SelectInput
-                    label="Gender"
-                    defaultSelect={getGender}
-                    data={[
-                      { option: "Male", value: "male" },
-                      {
-                        option: "Female",
-                        value: "female",
-                      },
-                      { option: "Other", value: "other" },
-                    ]}
-                    handler={genderHandler}
+                  <label className="heading-color ff-heading fw500 mb10">
+                    Website URL
+                  </label>
+                  <input
+                    type="url"
+                    className="form-control"
+                    placeholder="https://yourwebsite.com"
+                    value={websiteUrl}
+                    onChange={(e) => setWebsiteUrl(e.target.value)}
                   />
                 </div>
               </div>
+
+              {/* Location City */}
               <div className="col-sm-6">
                 <div className="mb20">
-                  <SelectInput
-                    label="Specialization"
-                    defaultSelect={getSpecialization}
-                    data={[
-                      { option: "Male", value: "male" },
-                      {
-                        option: "Female",
-                        value: "female",
-                      },
-                      { option: "Other", value: "other" },
-                    ]}
-                    handler={specializationHandler}
+                  <label className="heading-color ff-heading fw500 mb10">
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="e.g. Amsterdam"
+                    value={locationCity}
+                    onChange={(e) => setLocationCity(e.target.value)}
                   />
                 </div>
               </div>
+
+              {/* Location Country */}
               <div className="col-sm-6">
                 <div className="mb20">
-                  <SelectInput
-                    label="Type"
-                    defaultSelect={getType}
-                    data={[
-                      {
-                        option: "Type 1",
-                        value: "type-1",
-                      },
-                      {
-                        option: "Type 2",
-                        value: "type-2",
-                      },
-                      {
-                        option: "Type 3",
-                        value: "type-3",
-                      },
-                    ]}
-                    handler={typeHandler}
+                  <label className="heading-color ff-heading fw500 mb10">
+                    Country
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="e.g. Netherlands"
+                    value={locationCountry}
+                    onChange={(e) => setLocationCountry(e.target.value)}
                   />
                 </div>
               </div>
+
+              {/* LinkedIn URL */}
               <div className="col-sm-6">
                 <div className="mb20">
-                  <SelectInput
-                    label="Country"
-                    defaultSelect={getCountry}
-                    data={[
-                      {
-                        option: "United States",
-                        value: "usa",
-                      },
-                      {
-                        option: "Canada",
-                        value: "canada",
-                      },
-                      {
-                        option: "United Kingdom",
-                        value: "uk",
-                      },
-                      {
-                        option: "Australia",
-                        value: "australia",
-                      },
-                      {
-                        option: "Germany",
-                        value: "germany",
-                      },
-                      { option: "Japan", value: "japan" },
-                      { option: "Netherlands", value: "netherlands" },
-                      { option: "Belgium", value: "belgium" },
-                    ]}
-                    handler={countryHandler}
+                  <label className="heading-color ff-heading fw500 mb10">
+                    LinkedIn URL
+                  </label>
+                  <input
+                    type="url"
+                    className="form-control"
+                    placeholder="https://linkedin.com/in/yourprofile"
+                    value={linkedinUrl}
+                    onChange={(e) => setLinkedinUrl(e.target.value)}
                   />
                 </div>
               </div>
+
+              {/* Languages (comma-separated) */}
               <div className="col-sm-6">
                 <div className="mb20">
-                  <SelectInput
-                    label="City"
-                    defaultSelect={getCity}
-                    data={[
-                      {
-                        option: "New York",
-                        value: "new-york",
-                      },
-                      {
-                        option: "Toronto",
-                        value: "toronto",
-                      },
-                      {
-                        option: "London",
-                        value: "london",
-                      },
-                      {
-                        option: "Sydney",
-                        value: "sydney",
-                      },
-                      {
-                        option: "Berlin",
-                        value: "berlin",
-                      },
-                      { option: "Tokyo", value: "tokyo" },
-                      { option: "Amsterdam", value: "amsterdam" },
-                      { option: "Brussels", value: "brussels" },
-                    ]}
-                    handler={cityHandler}
+                  <label className="heading-color ff-heading fw500 mb10">
+                    Languages
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="e.g. English, Dutch, German"
+                    value={languagesInput}
+                    onChange={(e) => setLanguagesInput(e.target.value)}
                   />
+                  <small className="text-muted">Separate multiple languages with a comma</small>
                 </div>
               </div>
-              <div className="col-sm-6">
-                <div className="mb20">
-                  <SelectInput
-                    label="Language"
-                    defaultSelect={getLanguage}
-                    data={[
-                      {
-                        option: "English",
-                        value: "english",
-                      },
-                      {
-                        option: "French",
-                        value: "french",
-                      },
-                      {
-                        option: "German",
-                        value: "german",
-                      },
-                      {
-                        option: "Japanese",
-                        value: "japanese",
-                      },
-                      {
-                        option: "Dutch",
-                        value: "dutch",
-                      },
-                    ]}
-                    handler={languageHandler}
-                  />
-                </div>
-              </div>
-              <div className="col-sm-6">
-                <div className="mb20">
-                  <SelectInput
-                    label="Languages Level"
-                    defaultSelect={getLanLevel}
-                    data={[
-                      {
-                        option: "Beginner",
-                        value: "beginner",
-                      },
-                      {
-                        option: "Intermediate",
-                        value: "intermediate",
-                      },
-                      {
-                        option: "Advanced",
-                        value: "advanced",
-                      },
-                      {
-                        option: "Fluent",
-                        value: "fluent",
-                      },
-                    ]}
-                    handler={lanLevelHandler}
-                  />
-                </div>
-              </div>
+
+              {/* Skills (comma-separated) */}
               <div className="col-md-12">
-                <div className="mb10">
+                <div className="mb20">
+                  <label className="heading-color ff-heading fw500 mb10">
+                    Skills
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="e.g. React, Node.js, UI Design, SEO"
+                    value={skillsInput}
+                    onChange={(e) => setSkillsInput(e.target.value)}
+                  />
+                  <small className="text-muted">Separate multiple skills with a comma</small>
+                </div>
+              </div>
+
+              {/* Bio */}
+              <div className="col-md-12">
+                <div className="mb20">
                   <label className="heading-color ff-heading fw500 mb10">
                     Introduce Yourself
                   </label>
                   <textarea
                     cols={30}
                     rows={6}
-                    placeholder="Description"
+                    placeholder="Tell clients about yourself, your experience, and what makes you stand out..."
                     value={bio}
                     onChange={(e) => setBio(e.target.value)}
                   />
                 </div>
               </div>
+
+              {/* Submit */}
               <div className="col-md-12">
                 <div className="text-start">
                   <button
@@ -510,11 +383,12 @@ export default function ProfileDetails() {
                     className="ud-btn btn-thm"
                     disabled={saving || !profile}
                   >
-                    {saving ? "Saving..." : "Save"}
+                    {saving ? "Saving..." : "Save Profile"}
                     <i className="fal fa-arrow-right-long" />
                   </button>
                 </div>
               </div>
+
             </div>
           </form>
         </div>
