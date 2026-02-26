@@ -1,5 +1,4 @@
-import Breadcumb2 from "@/components/breadcumb/Breadcumb2";
-import Breadcumb3 from "@/components/breadcumb/Breadcumb3";
+import Breadcumb1 from "@/components/breadcumb/Breadcumb1";
 import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 
@@ -14,10 +13,10 @@ export default function page() {
     return (
         <>
             <Header20 />
-            <Breadcumb3 path={["Home", "Services", "Design & Creative"]} />
-            <Breadcumb2
+            <Breadcumb1
                 title="SkillLinkup Blog"
-                brief="Give your visitor a smooth online experience with a solid UX design"
+                brief="Tips, guides, and insights for freelancers and clients."
+                isBtnActive={false}
             />
             <BlogArea3 />
             <Footer14 />

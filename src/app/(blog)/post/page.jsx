@@ -1,21 +1,27 @@
-import Breadcumb3 from "@/components/breadcumb/Breadcumb3";
 import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
-
-import BlogArea4 from "@/components/section/BlogArea4";
-import RecentPostArea1 from "@/components/section/RecentPostArea1";
+import EmptyState from "@/components/ui/EmptyState";
 
 export const metadata = {
-    title: "SkillLinkup | Blog Single",
+    title: "Blog Post | SkillLinkup",
+    description: "Read articles and guides on the SkillLinkup blog.",
 };
 
 export default function page() {
     return (
         <>
             <Header20 />
-            <Breadcumb3 path={["Home", "Services", "Design & Creative"]} />
-            <BlogArea4 />
-            <RecentPostArea1 />
+            <section className="pt60 pb90">
+                <div className="container">
+                    <EmptyState
+                        icon="📝"
+                        title="Post not found"
+                        description="This blog post doesn't exist or has been removed."
+                        actionLabel="Back to Blog"
+                        actionHref="/blog"
+                    />
+                </div>
+            </section>
             <Footer14 />
         </>
     );

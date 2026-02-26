@@ -1,7 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 
+function stripHtml(html) {
+  if (!html) return "";
+  return html.replace(/<[^>]*>/g, "").slice(0, 200);
+}
+
 export default function BlogCard4({ data, index }) {
+  const postUrl = data.slug ? `/post/${data.slug}` : `/post/${data.id}`;
+  const excerpt = data.brief || stripHtml(data.description);
+
   return (
     <>
       <div
@@ -16,7 +24,7 @@ export default function BlogCard4({ data, index }) {
             className="w-100 bdrs4 object-fit-cover"
             style={{ height: "auto" }}
             src={data.img}
-            alt="blog"
+            alt={data.title}
           />
         </div>
         <div className="blog-content px-0 pt20 pb-0">
@@ -30,16 +38,16 @@ export default function BlogCard4({ data, index }) {
                 alt="avatar"
               />
               <a className="pr15 body-light-color">{data.author.name}</a>
-              <a className="ml15 pr15 body-light-color">Business</a>
+              <a className="ml15 pr15 body-light-color">{data.category}</a>
               <a className="ml15 body-light-color">{data.date}</a>
             </div>
           </div>
           <h3 className="title mt-1 mb10">
-            <Link href={`/post/${data.id}`}>{data.title}</Link>
+            <Link href={postUrl}>{data.title}</Link>
           </h3>
-          <p className="text mb25">{data.description}</p>
+          <p className="text mb25">{excerpt}</p>
           <Link
-            href={`/post/${data.id}`}
+            href={postUrl}
             className="ud-btn btn-light-thm"
           >
             Read More

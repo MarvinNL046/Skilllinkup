@@ -1,7 +1,6 @@
 "use client";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { blog1 } from "@/data/blog";
 
 function mapConvexPost(post, index) {
   return {
@@ -30,9 +29,10 @@ function mapConvexPost(post, index) {
 export default function useConvexBlog() {
   const convexPosts = useQuery(api.posts.list, { locale: "en" });
 
+  if (convexPosts === undefined) return undefined; // loading
   if (convexPosts && convexPosts.length > 0) {
     return convexPosts.map(mapConvexPost);
   }
 
-  return blog1;
+  return []; // no posts yet
 }
