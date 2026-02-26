@@ -13,7 +13,7 @@ export default function Listing11() {
 
   // category filter
   const categoryFilter = (item) =>
-    getCategory?.length !== 0 ? getCategory.includes(item.category) : item;
+    getCategory?.length !== 0 ? getCategory.includes(item.category) : true;
 
   // no of employee
   const noOfEmployeeFilter = (item) =>
@@ -21,7 +21,7 @@ export default function Listing11() {
 
   // sort by filter
   const sortByFilter = (item) =>
-    getBestSeller === "best-seller" ? item : item.sort === getBestSeller;
+    getBestSeller === "best-seller" ? true : item.sort === getBestSeller;
 
   // content
   const content = employee

@@ -16,7 +16,7 @@ export default function ShopArea1() {
 
   // category filter
   const categoryFilter = (item) =>
-    getCategory?.length !== 0 ? getCategory.includes(item.category) : item;
+    getCategory?.length !== 0 ? getCategory.includes(item.category) : true;
 
   // salary filter
   const salaryFilter = (item) =>
@@ -24,7 +24,7 @@ export default function ShopArea1() {
 
   // sort by filter
   const sortByFilter = (item) =>
-    getBestSeller === "best-seller" ? item : item.sort === getBestSeller;
+    getBestSeller === "best-seller" ? true : item.sort === getBestSeller;
 
   const searchFilter = (item) =>
     getSearch !== ""

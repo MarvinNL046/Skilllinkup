@@ -18,7 +18,7 @@ export default function Listing16() {
 
   // category filter
   const categoryFilter = (item) =>
-    getCategory?.length !== 0 ? getCategory.includes(item.category) : item;
+    getCategory?.length !== 0 ? getCategory.includes(item.category) : true;
 
   // salary filter
   const salaryFilter = (item) =>
@@ -26,15 +26,15 @@ export default function Listing16() {
 
   // job type filter
   const jobTypeFilter = (item) =>
-    getJobType?.length !== 0 ? getJobType.includes(item.jobType) : item;
+    getJobType?.length !== 0 ? getJobType.includes(item.jobType) : true;
 
   // level filter
   const levelFilter = (item) =>
-    getLevel?.length !== 0 ? getLevel.includes(item.level) : item;
+    getLevel?.length !== 0 ? getLevel.includes(item.level) : true;
 
   // sort by filter
   const sortByFilter = (item) =>
-    getBestSeller === "best-seller" ? item : item.sort === getBestSeller;
+    getBestSeller === "best-seller" ? true : item.sort === getBestSeller;
 
   const job1 = useConvexJobs();
 

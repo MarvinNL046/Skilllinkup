@@ -21,7 +21,7 @@ export default function Listing8() {
 
   // category filter
   const categoryFilter = (item) =>
-    getCategory?.length !== 0 ? getCategory.includes(item.category) : item;
+    getCategory?.length !== 0 ? getCategory.includes(item.category) : true;
 
   // project-type filter
   const projectTypeFilter = (item) =>
@@ -69,7 +69,7 @@ export default function Listing8() {
 
   // sort by filter
   const sortByFilter = (item) =>
-    getBestSeller === "best-seller" ? item : item.sort === getBestSeller;
+    getBestSeller === "best-seller" ? true : item.sort === getBestSeller;
 
   // content
   let content = project1

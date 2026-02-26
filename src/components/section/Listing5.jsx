@@ -34,11 +34,11 @@ export default function Listing5() {
 
   // level filter
   const levelFilter = (item) =>
-    getLevel?.length !== 0 ? getLevel.includes(item.level) : item;
+    getLevel?.length !== 0 ? getLevel.includes(item.level) : true;
 
   // location filter
   const locationFilter = (item) =>
-    getLocation?.length !== 0 ? getLocation.includes(item.location) : item;
+    getLocation?.length !== 0 ? getLocation.includes(item.location) : true;
 
   const searchFilter = (item) =>
     getSearch !== ""
@@ -47,7 +47,7 @@ export default function Listing5() {
 
   // sort by filter
   const sortByFilter = (item) =>
-    getBestSeller === "best-seller" ? item : item.sort === getBestSeller;
+    getBestSeller === "best-seller" ? true : item.sort === getBestSeller;
 
   // design tool filter
   const designToolFilter = (item) =>
@@ -55,7 +55,7 @@ export default function Listing5() {
 
   // speak filter
   const speakFilter = (item) =>
-    getSpeak?.length !== 0 ? getSpeak.includes(item.language) : item;
+    getSpeak?.length !== 0 ? getSpeak.includes(item.language) : true;
 
   let content = product1
     .slice(0, 9)

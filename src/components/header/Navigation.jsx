@@ -12,7 +12,7 @@ export default function Navigation() {
     <>
       <ul
         className={`ace-responsive-menu ui-navigation ${
-          path == "/home-3" || path == "/home-4" || path == "/home-10"
+          path === "/home-3" || path === "/home-4" || path === "/home-10"
             ? "menu-without-paddingy"
             : ""
         } `}
@@ -21,7 +21,7 @@ export default function Navigation() {
           <li
             key={ i }
             className={`visible_list menu-active ${
-              item.id == 1 ? "home-menu-parent" : ""
+              item.id === 1 ? "home-menu-parent" : ""
             } `}
           >
             {item.children ? (
@@ -44,7 +44,7 @@ export default function Navigation() {
             )}
 
             {item.children && (
-              <ul className={`sub-menu ${item.id == 1 ? "home-menu" : ""} `}>
+              <ul className={`sub-menu ${item.id === 1 ? "home-menu" : ""} `}>
                 {item.children?.map((item2,i2) => (
                   <li
                     key={i2}

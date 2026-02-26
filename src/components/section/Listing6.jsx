@@ -72,19 +72,19 @@ export default function Listing6() {
   const priceFilter = (item) =>
     getPriceRange.min <= item.price && getPriceRange.max >= item.price;
   const levelFilter = (item) =>
-    getLevel?.length !== 0 ? getLevel.includes(item.level) : item;
+    getLevel?.length !== 0 ? getLevel.includes(item.level) : true;
   const locationFilter = (item) =>
-    getLocation?.length !== 0 ? getLocation.includes(item.location) : item;
+    getLocation?.length !== 0 ? getLocation.includes(item.location) : true;
   const searchFilter = (item) =>
     getSearch !== ""
       ? item.location.split("-").join(" ").includes(getSearch.toLowerCase())
       : item;
   const sortByFilter = (item) =>
-    getBestSeller === "best-seller" ? item : item.sort === getBestSeller;
+    getBestSeller === "best-seller" ? true : item.sort === getBestSeller;
   const designToolFilter = (item) =>
     getDesginTool?.length !== 0 ? getDesginTool.includes(item.tool) : item;
   const speakFilter = (item) =>
-    getSpeak?.length !== 0 ? getSpeak.includes(item.language) : item;
+    getSpeak?.length !== 0 ? getSpeak.includes(item.language) : true;
 
   let content = product1
     .slice(0, 9)

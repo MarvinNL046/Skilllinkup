@@ -29,7 +29,7 @@ export default function TabSection2() {
                     <li key={index}>
                       <a
                         onClick={() => setCurrentTab(item)}
-                        className={getCurrentTab == item ? "active" : ""}
+                        className={getCurrentTab === item ? "active" : ""}
                       >
                         {item}
                       </a>

@@ -20,7 +20,7 @@ export default function Listing14() {
 
   // category filter
   const categoryFilter = (item) =>
-    getCategory?.length !== 0 ? getCategory.includes(item.skill) : item;
+    getCategory?.length !== 0 ? getCategory.includes(item.skill) : true;
 
   // salary filter
   const priceFilter = (item) =>
@@ -39,7 +39,7 @@ export default function Listing14() {
 
   // level filter
   const levelFilter = (item) =>
-    getLevel?.length !== 0 ? getLevel.includes(item.level) : item;
+    getLevel?.length !== 0 ? getLevel.includes(item.level) : true;
 
   // speak filter
   const languageFilter = (item) =>
@@ -49,7 +49,7 @@ export default function Listing14() {
 
   // sort by filter
   const sortByFilter = (item) =>
-    getBestSeller === "best-seller" ? item : item.sort === getBestSeller;
+    getBestSeller === "best-seller" ? true : item.sort === getBestSeller;
 
   const freelancer1 = useConvexFreelancers();
 

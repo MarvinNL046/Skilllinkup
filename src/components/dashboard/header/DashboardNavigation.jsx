@@ -27,7 +27,7 @@ export default function DashboardNavigation() {
               <p className="fz15 fw400 ff-heading mt30 pl30">Start</p>
             </li>
             {nav.slice(0, startEnd).map((item, i) => (
-              <li className={path == item.path ? 'mobile-dasboard-menu-active' : ''} onClick={() => setActive(false)} key={i}>
+              <li className={path === item.path ? 'mobile-dasboard-menu-active' : ''} onClick={() => setActive(false)} key={i}>
                 <Link href={item.path}>
                   <i className={`${item.icon} mr10`} />
                   {item.name}
@@ -40,7 +40,7 @@ export default function DashboardNavigation() {
               </p>
             </li>
             {nav.slice(startEnd, organizeEnd).map((item, i) => (
-              <li className={path == item.path ? 'mobile-dasboard-menu-active' : ''} onClick={() => setActive(false)} key={i}>
+              <li className={path === item.path ? 'mobile-dasboard-menu-active' : ''} onClick={() => setActive(false)} key={i}>
                 <Link href={item.path}>
                   <i className={`${item.icon} mr10`} />
                   {item.name}
@@ -51,7 +51,7 @@ export default function DashboardNavigation() {
               <p className="fz15 fw400 ff-heading mt30 pl30">Account</p>
             </li>
             {nav.slice(organizeEnd).map((item, i) => (
-              <li className={path == item.path ? 'mobile-dasboard-menu-active' : ''} onClick={() => setActive(false)} key={i}>
+              <li className={path === item.path ? 'mobile-dasboard-menu-active' : ''} onClick={() => setActive(false)} key={i}>
                 <Link href={item.path}>
                   <i className={`${item.icon} mr10`} />
                   {item.name}
