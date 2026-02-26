@@ -31,6 +31,7 @@ export default function Header20() {
                                             className="w-100 h-100 object-fit-contain"
                                             src="/images/logo/skilllinkup-transparant-rozepunt.webp"
                                             alt="Header Logo"
+                                            priority
                                         />
                                     </Link>
                                     <div className="home1_style">

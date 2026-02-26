@@ -26,6 +26,7 @@ export default function Header19() {
                         height={40}
                         src="/images/logo/skilllinkup-transparant-rozepunt.webp"
                         alt="Header Logo"
+                        priority
                       />
                     </Link>
                   </div>
