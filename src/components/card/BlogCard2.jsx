@@ -9,7 +9,8 @@ export default function BlogCard2({ data }) {
           <Image
             height={253}
             width={334}
-            className="w-100 h-100 object-fit-contain"
+            className="w-100 object-fit-contain"
+            style={{ height: "auto" }}
             src={data.img}
             alt="blog"
           />

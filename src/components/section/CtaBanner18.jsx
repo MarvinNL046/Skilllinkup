@@ -52,7 +52,7 @@ export default function CtaBanner18() {
       <Image
         width={610}
         height={710}
-        style={{ height: "fit-content" }}
+        style={{ height: "fit-content", width: "auto" }}
         className="home10-cta-img  bdrs24"
         src="/images/about/about-19.png"
         alt="Freelancers collaborating"

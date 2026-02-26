@@ -29,7 +29,8 @@ export default function BlogCard1({ data, isContentExpanded = false }) {
           <Image
             height={250}
             width={329}
-            className="w-100 h-100 object-fit-cover"
+            className="w-100 object-fit-cover"
+            style={{ height: "auto" }}
             src={data.img}
             alt="thumbnail"
           />

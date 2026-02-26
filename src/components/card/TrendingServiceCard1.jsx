@@ -37,7 +37,8 @@ export default function TrendingServiceCard1({ data }) {
           <Image
             height={190}
             width={255}
-            className="w-100 h-100 object-fit-cover"
+            className="w-100 object-fit-cover"
+            style={{ height: "auto" }}
             src={data.img}
             alt="thumbnail"
           />

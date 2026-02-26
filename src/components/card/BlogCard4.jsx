@@ -14,6 +14,7 @@ export default function BlogCard4({ data, index }) {
             height={398}
             width={736}
             className="w-100 bdrs4 object-fit-cover"
+            style={{ height: "auto" }}
             src={data.img}
             alt="blog"
           />
