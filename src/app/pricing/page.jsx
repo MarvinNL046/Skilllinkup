@@ -1,4 +1,4 @@
-import Footer from "@/components/footer/Footer";
+import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 import PriceTable1 from "@/components/section/PriceTable1";
 
@@ -12,7 +12,7 @@ export default function page() {
         <>
             <Header20 />
             <PriceTable1 />
-            <Footer />
+            <Footer14 />
         </>
     );
 }

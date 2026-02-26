@@ -1,5 +1,5 @@
 import Breadcumb10 from "@/components/breadcumb/Breadcumb10";
-import Footer from "@/components/footer/Footer";
+import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 
 import FreelancerDetail3 from "@/components/section/FreelancerDetails3";
@@ -19,7 +19,7 @@ export default function page() {
 
                 <FreelancerDetail3 />
             </div>
-            <Footer />
+            <Footer14 />
         </>
     );
 }

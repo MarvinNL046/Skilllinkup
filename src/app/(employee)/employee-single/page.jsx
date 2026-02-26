@@ -1,6 +1,6 @@
 import Breadcumb10 from "@/components/breadcumb/Breadcumb10";
 import Breadcumb15 from "@/components/breadcumb/Breadcumb15";
-import Footer from "@/components/footer/Footer";
+import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 
 import EmplyeeDetail1 from "@/components/section/EmplyeeDetail1";
@@ -20,7 +20,7 @@ export default function page() {
             <Breadcumb15 />
             <EmplyeeDetail1 />
             <JobInvision1 />
-            <Footer />
+            <Footer14 />
         </>
     );
 }

@@ -1,5 +1,5 @@
 import Breadcumb1 from "@/components/breadcumb/Breadcumb1";
-import Footer from "@/components/footer/Footer";
+import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 
 import ContactInfo1 from "@/components/section/ContactInfo1";
@@ -23,7 +23,7 @@ export default function page() {
             <ContactInfo1 />
             <GoogleMap1 />
             <OurFaq1 />
-            <Footer />
+            <Footer14 />
         </>
     );
 }

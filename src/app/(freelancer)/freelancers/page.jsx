@@ -1,6 +1,6 @@
 import Breadcumb16 from "@/components/breadcumb/Breadcumb16";
 import Breadcumb3 from "@/components/breadcumb/Breadcumb3";
-import Footer from "@/components/footer/Footer";
+import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 
 import Listing14 from "@/components/section/Listing14";
@@ -19,7 +19,7 @@ export default function page() {
             <Breadcumb3 path={["Home", "Services", "Design & Creative"]} />
             <Breadcumb16 />
             <Listing14 />
-            <Footer />
+            <Footer14 />
         </>
     );
 }

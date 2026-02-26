@@ -1,5 +1,5 @@
 import Breadcumb2 from "@/components/breadcumb/Breadcumb2";
-import Footer from "@/components/footer/Footer";
+import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 
 import About5 from "@/components/section/About5";
@@ -33,7 +33,7 @@ export default function page() {
             <CtaBanner4 />
             <OurFaq1 />
             <OurPartner1 />
-            <Footer />
+            <Footer14 />
         </>
     );
 }

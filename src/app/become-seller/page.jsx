@@ -6,7 +6,7 @@ import OurFaq1 from "@/components/section/OurFaq1";
 import OurFeature1 from "@/components/section/OurFeature1";
 import OurTeam1 from "@/components/section/OurTeam1";
 import Header20 from "@/components/header/Header20";
-import Footer from "@/components/footer/Footer";
+import Footer14 from "@/components/footer/Footer14";
 
 export const metadata = {
     title: "Become a Seller | SkillLinkup",
@@ -29,7 +29,7 @@ export default function page() {
             <CounterInfo1 />
             <OurTeam1 />
             <OurFaq1 />
-            <Footer />
+            <Footer14 />
         </>
     );
 }

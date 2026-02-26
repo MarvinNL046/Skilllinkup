@@ -1,4 +1,4 @@
-import Footer from "@/components/footer/Footer";
+import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 import PageNotFound from "@/components/section/PageNotFound";
 
@@ -7,7 +7,7 @@ export default function NotFound() {
         <>
             <Header20 />
             <PageNotFound />
-            <Footer />
+            <Footer14 />
         </>
     );
 }

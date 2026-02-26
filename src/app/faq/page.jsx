@@ -1,4 +1,4 @@
-import Footer from "@/components/footer/Footer";
+import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 import FaqPayment from "@/components/section/FaqPayment";
 import FaqSuggestion from "@/components/section/FaqSuggestion";
@@ -38,7 +38,7 @@ export default function page() {
                     </div>
                 </div>
             </section>
-            <Footer />
+            <Footer14 />
         </>
     );
 }

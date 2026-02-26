@@ -1,5 +1,5 @@
 import Breadcumb3 from "@/components/breadcumb/Breadcumb3";
-import Footer from "@/components/footer/Footer";
+import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 import PopulerService from "@/components/section/PopulerService";
 import ServiceDetail3 from "@/components/section/ServiceDetails3";
@@ -16,7 +16,7 @@ export default function page() {
                 <ServiceDetail3 />
                 <PopulerService />
             </div>
-            <Footer />
+            <Footer14 />
         </>
     );
 }

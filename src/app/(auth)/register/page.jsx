@@ -1,6 +1,6 @@
 "use client";
 import { Suspense } from "react";
-import Footer from "@/components/footer/Footer";
+import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 import { SignUp } from "@clerk/nextjs";
 import { useSearchParams } from "next/navigation";
@@ -44,7 +44,7 @@ export default function RegisterPage() {
                         </div>
                     </div>
                 </section>
-                <Footer />
+                <Footer14 />
             </div>
         </>
     );

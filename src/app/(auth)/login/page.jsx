@@ -1,5 +1,5 @@
 "use client";
-import Footer from "@/components/footer/Footer";
+import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 import { SignIn } from "@clerk/nextjs";
 
@@ -28,7 +28,7 @@ export default function LoginPage() {
                         </div>
                     </div>
                 </section>
-                <Footer />
+                <Footer14 />
             </div>
         </>
     );
