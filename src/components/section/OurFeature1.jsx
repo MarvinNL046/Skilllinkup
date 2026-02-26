@@ -10,7 +10,7 @@ export default function OurFeature1() {
               <div className="main-title">
                 <h2>How It Works</h2>
                 <p className="text">
-                  Most viewed and all-time top-selling services
+                  Get started in three simple steps
                 </p>
               </div>
             </div>

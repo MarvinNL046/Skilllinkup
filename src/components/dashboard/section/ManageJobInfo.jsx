@@ -16,7 +16,7 @@ export default function ManageJobInfo() {
           <div className="col-lg-12">
             <div className="dashboard_title_area">
               <h2>Manage Jobs</h2>
-              <p className="text">Lorem ipsum dolor sit amet, consectetur.</p>
+              <p className="text">View and manage your posted jobs.</p>
             </div>
           </div>
         </div>

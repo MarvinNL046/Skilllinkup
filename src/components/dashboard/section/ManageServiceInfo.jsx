@@ -89,7 +89,7 @@ export default function ManageServiceInfo() {
           <div className="col-lg-9">
             <div className="dashboard_title_area">
               <h2>Manage Services</h2>
-              <p className="text">Lorem ipsum dolor sit amet, consectetur.</p>
+              <p className="text">View and manage your listed services.</p>
             </div>
           </div>
           <div className="col-lg-3">

@@ -15,7 +15,7 @@ function RegisterContent() {
     return (
         <SignUp
             routing="hash"
-            afterSignUpUrl={afterSignUpUrl}
+            fallbackRedirectUrl={afterSignUpUrl}
             signInUrl="/login"
         />
     );

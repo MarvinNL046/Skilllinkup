@@ -16,7 +16,7 @@ export default function InvoiceInfo() {
           <div className="col-xl-4">
             <div className="dashboard_title_area">
               <h2>Invoice</h2>
-              <p className="text">Lorem ipsum dolor sit amet, consectetur.</p>
+              <p className="text">View and manage your invoices.</p>
             </div>
           </div>
           <div className="col-xl-4">

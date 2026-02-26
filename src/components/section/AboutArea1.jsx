@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function AboutArea1() {
   return (
     <>
@@ -36,27 +38,18 @@ export default function AboutArea1() {
                   aria-labelledby="nav-accountpayment-tab"
                 >
                   <div className="for-hire">
-                    <h4>For Hiring</h4>
-                    <p className="text mb30">
-                      It is a long established fact that a reader will be
-                      distracted by the readable content of a page when looking
-                      at its layout. The point of using Lorem Ipsum is that it
-                      has a more-or-less normal distribution of letters, as
-                      opposed to using 'Content here, content here', making it
-                      look like readable English.
-                    </p>
+                    <h4>Find the Right Freelancer, Fast</h4>
                     <p className="text mb40">
-                      Many desktop publishing packages and web page editors now
-                      use Lorem Ipsum as their default model text, and a search
-                      for 'lorem ipsum' will uncover many web sites still in
-                      their infancy. Various versions have evolved over the
-                      years, sometimes by accident, sometimes on purpose
-                      (injected humour and the like).
+                      SkillLinkup helps you discover and compare freelance
+                      platforms to find the perfect match for your project.
+                      Whether you need a designer, developer, or marketing
+                      expert — we guide you to the right platform where top
+                      talent is waiting.
                     </p>
-                    <a className="ud-btn btn-thm-border mb25 me-4">
-                      Get Started
+                    <Link href="/freelancers" className="ud-btn btn-thm-border mb25 me-4">
+                      Browse Freelancers
                       <i className="fal fa-arrow-right-long" />
-                    </a>
+                    </Link>
                   </div>
                 </div>
                 <div
@@ -65,27 +58,18 @@ export default function AboutArea1() {
                   aria-labelledby="nav-manageother-tab"
                 >
                   <div className="for-hire">
-                    <h4>For Freelancing</h4>
-                    <p className="text mb30">
-                      It is a long established fact that a reader will be
-                      distracted by the readable content of a page when looking
-                      at its layout. The point of using Lorem Ipsum is that it
-                      has a more-or-less normal distribution of letters, as
-                      opposed to using 'Content here, content here', making it
-                      look like readable English.
-                    </p>
+                    <h4>Grow Your Freelance Career</h4>
                     <p className="text mb40">
-                      Many desktop publishing packages and web page editors now
-                      use Lorem Ipsum as their default model text, and a search
-                      for 'lorem ipsum' will uncover many web sites still in
-                      their infancy. Various versions have evolved over the
-                      years, sometimes by accident, sometimes on purpose
-                      (injected humour and the like).
+                      Compare freelance platforms side by side to find where
+                      your skills are most valued. SkillLinkup shows you
+                      commission rates, payment terms, and real reviews so you
+                      can make an informed choice about where to offer your
+                      services.
                     </p>
-                    <a className="ud-btn btn-thm-border mb25 me-4">
-                      Get Started
+                    <Link href="/platforms" className="ud-btn btn-thm-border mb25 me-4">
+                      Compare Platforms
                       <i className="fal fa-arrow-right-long" />
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>

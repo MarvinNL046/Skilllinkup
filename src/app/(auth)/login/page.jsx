@@ -21,7 +21,7 @@ export default function LoginPage() {
                             <div className="col-xl-6 mx-auto d-flex justify-content-center">
                                 <SignIn
                                     routing="hash"
-                                    afterSignInUrl="/services"
+                                    fallbackRedirectUrl="/dashboard"
                                     signUpUrl="/register"
                                 />
                             </div>
