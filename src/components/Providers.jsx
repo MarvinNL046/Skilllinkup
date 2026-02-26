@@ -1,23 +1,55 @@
 "use client";
 
 import { ClerkProvider, useAuth } from "@clerk/nextjs";
-import { ConvexProviderWithClerk } from "convex/react-clerk";
-import { ConvexReactClient } from "convex/react";
+import { ConvexProvider, ConvexReactClient } from "convex/react";
 import ConvexUserSync from "./ConvexUserSync";
+import { useEffect, useCallback } from "react";
 
 const convex = new ConvexReactClient(
   process.env.NEXT_PUBLIC_CONVEX_URL
 );
+
+/**
+ * Syncs Clerk auth token to Convex client when available.
+ * Unlike ConvexProviderWithClerk, this does NOT block public queries
+ * while auth is loading — so pages like /platforms work immediately.
+ */
+function ClerkConvexAdapter() {
+  const { getToken, isLoaded, isSignedIn } = useAuth();
+
+  const fetchToken = useCallback(
+    async ({ forceRefreshToken }) => {
+      const token = await getToken({
+        template: "convex",
+        skipCache: forceRefreshToken,
+      });
+      return token ?? null;
+    },
+    [getToken]
+  );
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    if (isSignedIn) {
+      convex.setAuth(fetchToken);
+    } else {
+      convex.clearAuth();
+    }
+  }, [isLoaded, isSignedIn, fetchToken]);
+
+  return null;
+}
 
 export default function Providers({ children }) {
   return (
     <ClerkProvider
       publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
     >
-      <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+      <ConvexProvider client={convex}>
+        <ClerkConvexAdapter />
         <ConvexUserSync />
         {children}
-      </ConvexProviderWithClerk>
+      </ConvexProvider>
     </ClerkProvider>
   );
 }
