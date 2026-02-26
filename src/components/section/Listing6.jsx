@@ -6,11 +6,10 @@ import ListingSidebar1 from "../sidebar/ListingSidebar1";
 import Pagination1 from "./Pagination1";
 import listingStore from "@/store/listingStore";
 import priceStore from "@/store/priceStore";
-import ClearButton from "../button/ClearButton";
 import PopularServiceSlideCard1 from "../card/PopularServiceSlideCard1";
 import TrendingServiceCard1 from "../card/TrendingServiceCard1";
-import BestService2 from "./BestService2";
 import EmptyState from "@/components/ui/EmptyState";
+import Link from "next/link";
 
 export default function Listing6() {
   const getDeliveryTime = listingStore((state) => state.getDeliveryTime);
@@ -22,53 +21,70 @@ export default function Listing6() {
   const getSpeak = listingStore((state) => state.getSpeak);
   const getSearch = listingStore((state) => state.getSearch);
 
-  // delivery filter
-  const deliveryFilter = (item) =>
-    getDeliveryTime === "" || getDeliveryTime === "anytime"
-      ? item
-      : item.deliveryTime === getDeliveryTime;
-
-  // price filter
-  const priceFilter = (item) =>
-    getPriceRange.min <= item.price && getPriceRange.max >= item.price;
-
-  // level filter
-  const levelFilter = (item) =>
-    getLevel?.length !== 0 ? getLevel.includes(item.level) : item;
-
-  // location filter
-  const locationFilter = (item) =>
-    getLocation?.length !== 0 ? getLocation.includes(item.location) : item;
-
-  const searchFilter = (item) =>
-    getSearch !== ""
-      ? item.location.split("-").join(" ").includes(getSearch.toLowerCase())
-      : item;
-
-  // sort by filter
-  const sortByFilter = (item) =>
-    getBestSeller === "best-seller" ? item : item.sort === getBestSeller;
-
-  // design tool filter
-  const designToolFilter = (item) =>
-    getDesginTool?.length !== 0 ? getDesginTool.includes(item.tool) : item;
-
-  // speak filter
-  const speakFilter = (item) =>
-    getSpeak?.length !== 0 ? getSpeak.includes(item.language) : item;
-
   const product1 = useConvexGigs();
 
   // Show spinner while Convex data is loading
   if (product1 === undefined) {
     return (
-      <div className="text-center py-5">
-        <div className="spinner-border text-thm" role="status">
-          <span className="visually-hidden">Loading...</span>
+      <section className="pt30 pb90">
+        <div className="container">
+          <div className="text-center py-5">
+            <div className="spinner-border text-thm" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+            <p className="body-color mt-3">Loading services...</p>
+          </div>
         </div>
-      </div>
+      </section>
     );
   }
+
+  // Empty state when no services exist yet
+  if (product1.length === 0) {
+    return (
+      <section className="pt30 pb90">
+        <div className="container">
+          <div className="row mb30">
+            <div className="col-12">
+              <h2 className="title mb5">Browse Services</h2>
+              <p className="body-color">
+                Find freelance services for your next project.
+              </p>
+            </div>
+          </div>
+          <EmptyState
+            icon="🎨"
+            title="No services yet"
+            description="Be the first to offer your services on SkillLinkup"
+            actionLabel="Become a Seller"
+            actionHref="/become-seller"
+          />
+        </div>
+      </section>
+    );
+  }
+
+  // Filter functions
+  const deliveryFilter = (item) =>
+    getDeliveryTime === "" || getDeliveryTime === "anytime"
+      ? item
+      : item.deliveryTime === getDeliveryTime;
+  const priceFilter = (item) =>
+    getPriceRange.min <= item.price && getPriceRange.max >= item.price;
+  const levelFilter = (item) =>
+    getLevel?.length !== 0 ? getLevel.includes(item.level) : item;
+  const locationFilter = (item) =>
+    getLocation?.length !== 0 ? getLocation.includes(item.location) : item;
+  const searchFilter = (item) =>
+    getSearch !== ""
+      ? item.location.split("-").join(" ").includes(getSearch.toLowerCase())
+      : item;
+  const sortByFilter = (item) =>
+    getBestSeller === "best-seller" ? item : item.sort === getBestSeller;
+  const designToolFilter = (item) =>
+    getDesginTool?.length !== 0 ? getDesginTool.includes(item.tool) : item;
+  const speakFilter = (item) =>
+    getSpeak?.length !== 0 ? getSpeak.includes(item.language) : item;
 
   let content = product1
     .slice(0, 9)
@@ -94,8 +110,15 @@ export default function Listing6() {
     <>
       <section className="pt30 pb90">
         <div className="container">
-          <BestService2 />
-          <div className="row mt30">
+          <div className="row mb30">
+            <div className="col-12">
+              <h2 className="title mb5">Browse Services</h2>
+              <p className="body-color">
+                Find freelance services for your next project.
+              </p>
+            </div>
+          </div>
+          <div className="row">
             <div className="col-lg-3">
               <ListingSidebar1 />
             </div>
@@ -103,16 +126,14 @@ export default function Listing6() {
               <ListingOption2 itemLength={content?.length} />
               {content.length === 0 ? (
                 <EmptyState
-                  icon="🎨"
-                  title="No services yet"
-                  description="Be the first to offer a service"
-                  actionLabel="Create a Service"
-                  actionHref="/dashboard/add-services"
+                  icon="🔍"
+                  title="No matching services"
+                  description="Try adjusting your filters"
                 />
               ) : (
                 <div className="row">{content}</div>
               )}
-              <Pagination1 />
+              {content.length > 0 && <Pagination1 />}
             </div>
           </div>
         </div>
