@@ -7,8 +7,138 @@ import Sticky from "react-stickynode";
 import useScreen from "@/hook/useScreen";
 import Image from "next/image";
 import { useParams } from "next/navigation";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import useConvexFreelancerDetail from "@/hook/useConvexFreelancerDetail";
 import ContactButton from "@/components/ui/ContactButton";
+import StarRating from "@/components/ui/StarRating";
+
+function formatReviewDate(timestamp) {
+  if (!timestamp) return "";
+  return new Date(timestamp).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function FreelancerReviews({ freelancerId }) {
+  const reviews = useQuery(
+    api.marketplace.reviews.getByFreelancer,
+    freelancerId ? { freelancerId, limit: 10 } : "skip"
+  );
+
+  if (reviews === undefined) {
+    return (
+      <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
+        <h4>Reviews</h4>
+        <p className="text fz14">Loading reviews...</p>
+      </div>
+    );
+  }
+
+  if (!reviews || reviews.length === 0) {
+    return (
+      <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
+        <h4>Reviews</h4>
+        <p className="text fz14">No reviews yet. Be the first to leave a review after completing an order.</p>
+      </div>
+    );
+  }
+
+  const totalRating = reviews.reduce((sum, r) => sum + r.overallRating, 0);
+  const avgRating = totalRating / reviews.length;
+
+  return (
+    <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
+      <div className="product_single_content">
+        <div className="mbp_pagination_comments">
+          {/* Summary row */}
+          <div className="d-md-flex align-items-center mb30">
+            <div className="total-review-box d-flex align-items-center text-center mb30-sm me-4">
+              <div className="wrapper mx-auto">
+                <div className="t-review mb5">{avgRating.toFixed(1)}</div>
+                <StarRating value={Math.round(avgRating)} readOnly size="sm" />
+                <p className="text mb-0 mt5 fz13">{reviews.length} {reviews.length === 1 ? "review" : "reviews"}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Individual reviews */}
+          {reviews.map((review, idx) => (
+            <div key={review._id} className={`col-md-12 ${idx > 0 ? "mt30" : ""}`}>
+              <div className="bdrb1 pb30">
+                {/* Reviewer info */}
+                <div className="mbp_first position-relative d-flex align-items-center justify-content-start mb15">
+                  {review.reviewerAvatar ? (
+                    <Image
+                      height={50}
+                      width={50}
+                      src={review.reviewerAvatar}
+                      className="rounded-circle mr-3"
+                      alt={review.reviewerName || "Reviewer"}
+                    />
+                  ) : (
+                    <div
+                      className="rounded-circle d-flex align-items-center justify-content-center bgc-thm-light mr-3 flex-shrink-0"
+                      style={{ width: 50, height: 50 }}
+                    >
+                      <i className="flaticon-user fz20 text-thm" />
+                    </div>
+                  )}
+                  <div className="ml15">
+                    <h6 className="mt-0 mb-0 fz15">{review.reviewerName || "Anonymous"}</h6>
+                    <div className="d-flex align-items-center gap-2 mt2">
+                      <StarRating value={review.overallRating} readOnly size="sm" />
+                      <span className="fz13 text">{formatReviewDate(review.createdAt)}</span>
+                    </div>
+                    {review.orderTitle && (
+                      <p className="mb-0 fz12 text mt2">
+                        <i className="flaticon-receipt fz12 vam me-1" />
+                        {review.orderTitle}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Sub-ratings */}
+                {(review.communicationRating || review.qualityRating || review.timelinessRating || review.valueRating) && (
+                  <div className="d-flex flex-wrap gap-3 mb15">
+                    {review.communicationRating > 0 && (
+                      <span className="fz13 text">
+                        Communication: <strong>{review.communicationRating}/5</strong>
+                      </span>
+                    )}
+                    {review.qualityRating > 0 && (
+                      <span className="fz13 text">
+                        Quality: <strong>{review.qualityRating}/5</strong>
+                      </span>
+                    )}
+                    {review.timelinessRating > 0 && (
+                      <span className="fz13 text">
+                        Timeliness: <strong>{review.timelinessRating}/5</strong>
+                      </span>
+                    )}
+                    {review.valueRating > 0 && (
+                      <span className="fz13 text">
+                        Value: <strong>{review.valueRating}/5</strong>
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {/* Review text */}
+                {review.content && (
+                  <p className="text mb-0">{review.content}</p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function FreelancerDetail3() {
   const isMatchedScreen = useScreen(1216);
@@ -70,6 +200,9 @@ export default function FreelancerDetail3() {
   const location = data?.location || "";
   const memberSince = data?.memberSince || null;
   const bio = data?.bio || null;
+
+  // The id in the URL is the freelancerProfiles document ID
+  const freelancerProfileId = id;
 
   return (
     <>
@@ -161,6 +294,11 @@ export default function FreelancerDetail3() {
                     <p className="text mb30">{bio}</p>
                   </div>
                 </div>
+              )}
+
+              {/* Public reviews section */}
+              {freelancerProfileId && (
+                <FreelancerReviews freelancerId={freelancerProfileId} />
               )}
             </div>
             <div className="col-lg-4" id="stikyContainer">

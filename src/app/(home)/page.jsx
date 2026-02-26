@@ -7,6 +7,7 @@ import TrendingService14 from "@/components/section/TrendingService14";
 
 export const metadata = {
     title: "SkillLinkup - Freelance Marketplace",
+    description: "Find top freelancers and post projects on SkillLinkup. Connect with skilled professionals for design, development, writing, marketing, and more.",
 };
 
 export default function page() {

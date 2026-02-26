@@ -7,7 +7,8 @@ import Listing14 from "@/components/section/Listing14";
 import TabSection1 from "@/components/section/TabSection1";
 
 export const metadata = {
-    title: "SkillLinkup | Freelancer 2",
+    title: "Find Freelancers | SkillLinkup",
+    description: "Browse top-rated freelancers on SkillLinkup. Filter by skill, location, and rating to find the perfect professional for your project.",
 };
 
 export default function page() {

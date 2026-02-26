@@ -3,7 +3,8 @@ import Header20 from "@/components/header/Header20";
 import OurFaqSection1 from "@/components/section/OurFaqSection1";
 
 export const metadata = {
-    title: "SkillLinkup | Help",
+    title: "Help & Support | SkillLinkup",
+    description: "Get help with SkillLinkup. Browse our support articles, guides, and resources for freelancers and clients.",
 };
 
 export default function page() {

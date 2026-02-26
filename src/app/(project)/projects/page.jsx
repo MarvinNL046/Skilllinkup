@@ -5,7 +5,8 @@ import Header20 from "@/components/header/Header20";
 import Listing19 from "@/components/section/Listing19";
 import TabSection1 from "@/components/section/TabSection1";
 export const metadata = {
-    title: "SkillLinkup | Project 1",
+    title: "Browse Projects | SkillLinkup",
+    description: "Find freelance projects and opportunities on SkillLinkup. Browse open projects across all categories and submit your proposal.",
 };
 
 export default function page() {

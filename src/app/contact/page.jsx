@@ -7,7 +7,8 @@ import GoogleMap1 from "@/components/section/GoogleMap1";
 import OurFaq1 from "@/components/section/OurFaq1";
 
 export const metadata = {
-    title: "SkillLinkup | Contact",
+    title: "Contact Us | SkillLinkup",
+    description: "Get in touch with the SkillLinkup team. We're here to help with any questions about our freelance marketplace platform.",
 };
 
 export default function page() {

@@ -103,15 +103,7 @@ export default function Footer() {
                         <div className="col-md-6">
                             <div className="text-center text-lg-start">
                                 <p className="copyright-text mb-2 mb-md-0 text-white-light ff-heading">
-                                    © SkillLinkup. 2023{" "}
-                                    <Link
-                                        href="https://themeforest.net/user/ib-themes/portfolio"
-                                        target="_blank"
-                                        style={{ color: "inherit" }}
-                                    >
-                                        ib-themes
-                                    </Link>
-                                    . All rights reserved.
+                                    © {new Date().getFullYear()} SkillLinkup. All rights reserved.
                                 </p>
                             </div>
                         </div>

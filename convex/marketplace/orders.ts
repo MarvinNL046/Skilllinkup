@@ -249,6 +249,7 @@ export const getByUser = query({
           ...order,
           clientName: client?.name ?? null,
           freelancerName: freelancerProfile?.displayName ?? freelancerUser?.name ?? null,
+          freelancerUserId: freelancerProfile?.userId ?? null,
         };
       })
     );
@@ -300,6 +301,7 @@ export const getById = query({
       ...order,
       clientName: client?.name ?? null,
       freelancerName: freelancerProfile?.displayName ?? freelancerUser?.name ?? null,
+      freelancerUserId: freelancerProfile?.userId ?? null,
     };
   },
 });

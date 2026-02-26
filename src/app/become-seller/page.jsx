@@ -9,7 +9,8 @@ import Header20 from "@/components/header/Header20";
 import Footer from "@/components/footer/Footer";
 
 export const metadata = {
-    title: "SkillLinkup | Become seller",
+    title: "Become a Seller | SkillLinkup",
+    description: "Start selling your freelance services on SkillLinkup. Create your profile, list your skills, and connect with clients looking for your expertise.",
 };
 
 export default function page() {

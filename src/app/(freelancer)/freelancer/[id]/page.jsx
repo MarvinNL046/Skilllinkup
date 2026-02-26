@@ -6,7 +6,8 @@ import FreelancerDetail3 from "@/components/section/FreelancerDetails3";
 import TabSection1 from "@/components/section/TabSection1";
 
 export const metadata = {
-    title: "SkillLinkup | Freelancer Single",
+    title: "Freelancer Profile | SkillLinkup",
+    description: "View freelancer profile, portfolio, reviews, and services on SkillLinkup. Hire with confidence.",
 };
 
 export default function page() {

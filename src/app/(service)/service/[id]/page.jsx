@@ -6,6 +6,11 @@ import ServiceDetail3 from "@/components/section/ServiceDetails3";
 import TabSection1 from "@/components/section/TabSection1";
 import React from "react";
 
+export const metadata = {
+    title: "Service Details | SkillLinkup",
+    description: "View service details, pricing, and seller information on SkillLinkup. Order freelance services with confidence.",
+};
+
 export default function page() {
     return (
         <>

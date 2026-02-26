@@ -12,7 +12,8 @@ import OurPartner1 from "@/components/section/OurPartner1";
 import Testimonial2 from "@/components/section/Testimonial2";
 
 export const metadata = {
-    title: "SkillLinkup | About 2",
+    title: "About Us | SkillLinkup",
+    description: "Learn about SkillLinkup, our mission to connect freelancers with clients worldwide, and the team behind the platform.",
 };
 
 export default function page() {

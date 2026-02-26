@@ -1,14 +1,18 @@
 "use client";
 import Link from "next/link";
-
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Mega from "./Mega";
 import Navigation from "./Navigation";
 import MobileNavigation2 from "./MobileNavigation2";
+import NotificationBell from "./NotificationBell";
+import { useUser, useClerk } from "@clerk/nextjs";
 
 export default function Header20() {
     const path = usePathname();
+    const { user, isSignedIn } = useUser();
+    const { signOut } = useClerk();
+
     return (
         <>
             <header className="header-nav nav-innerpage-style main-menu  ">
@@ -44,33 +48,71 @@ export default function Header20() {
                                     >
                                         <span className="flaticon-loupe" />
                                     </a>
-                                    <Link
-                                        className={`login-info mx15-lg mx30 ${
-                                            path === "/become-seller"
-                                                ? "ui-active"
-                                                : ""
-                                        }`}
-                                        href="/become-seller"
-                                    >
-                                        <span className="d-none d-xl-inline-block">
-                                            Become a
-                                        </span>{" "}
-                                        Seller
-                                    </Link>
-                                    <Link
-                                        className={`login-info mr15-lg mr30 ${
-                                            path === "/login" ? "ui-active" : ""
-                                        }`}
-                                        href="/login"
-                                    >
-                                        Sign in
-                                    </Link>
-                                    <Link
-                                        className="ud-btn btn-thm add-joining"
-                                        href="/register"
-                                    >
-                                        Join
-                                    </Link>
+                                    {isSignedIn ? (
+                                        <>
+                                            <Link
+                                                className="login-info mx15-lg mx30"
+                                                href="/dashboard"
+                                            >
+                                                Dashboard
+                                            </Link>
+                                            <span className="ml15 mr5 position-relative d-inline-flex align-items-center">
+                                                <NotificationBell />
+                                            </span>
+                                            <Link
+                                                className="login-info mr10 ml15"
+                                                href="/dashboard"
+                                            >
+                                                {user?.imageUrl ? (
+                                                    <Image
+                                                        width={36}
+                                                        height={36}
+                                                        src={user.imageUrl}
+                                                        alt={user.fullName || "User"}
+                                                        className="rounded-circle"
+                                                    />
+                                                ) : (
+                                                    <span>{user?.firstName || "User"}</span>
+                                                )}
+                                            </Link>
+                                            <button
+                                                className="ud-btn btn-thm add-joining"
+                                                onClick={() => signOut({ redirectUrl: "/" })}
+                                            >
+                                                Logout
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Link
+                                                className={`login-info mx15-lg mx30 ${
+                                                    path === "/become-seller"
+                                                        ? "ui-active"
+                                                        : ""
+                                                }`}
+                                                href="/become-seller"
+                                            >
+                                                <span className="d-none d-xl-inline-block">
+                                                    Become a
+                                                </span>{" "}
+                                                Seller
+                                            </Link>
+                                            <Link
+                                                className={`login-info mr15-lg mr30 ${
+                                                    path === "/login" ? "ui-active" : ""
+                                                }`}
+                                                href="/login"
+                                            >
+                                                Sign in
+                                            </Link>
+                                            <Link
+                                                className="ud-btn btn-thm add-joining"
+                                                href="/register"
+                                            >
+                                                Join
+                                            </Link>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </div>

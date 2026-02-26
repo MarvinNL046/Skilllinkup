@@ -9,8 +9,7 @@ export default function DashboardFooter() {
                         <div className="col-auto">
                             <div className="copyright-widget">
                                 <p className="mb-md-0">
-                                    © SkillLinkup. 2023 CreativeLayers. All rights
-                                    reserved.
+                                    © {new Date().getFullYear()} SkillLinkup. All rights reserved.
                                 </p>
                             </div>
                         </div>
