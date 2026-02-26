@@ -3,15 +3,20 @@
 import Sticky from "react-stickynode";
 import ProjectPriceWidget1 from "../element/ProjectPriceWidget1";
 import ProjectContactWidget1 from "../element/ProjectContactWidget1";
+import BidForm from "../element/BidForm";
+import BidList from "../element/BidList";
 import useScreen from "@/hook/useScreen";
 import { useParams } from "next/navigation";
 import useConvexProjectDetail from "@/hook/useConvexProjectDetail";
+import useConvexUser from "@/hook/useConvexUser";
+import Link from "next/link";
 
 export default function ProjectDetail3() {
   const isMatchedScreen = useScreen(1216);
   const { id } = useParams();
 
   const convexData = useConvexProjectDetail(id);
+  const { convexUser, isAuthenticated, isLoaded } = useConvexUser();
 
   // convexData === undefined means still loading
   const isLoading = convexData === undefined;
@@ -161,63 +166,49 @@ export default function ProjectDetail3() {
                         </div>
                       </div>
                     )}
-                    <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
+                    <div className="px30 bdr1 pt30 pb30 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
                       <h4 className="mb30">
                         Project Proposals ({bidCount})
                       </h4>
-                      {bidCount === 0 && (
-                        <p className="text mb30">No proposals yet. Be the first to submit!</p>
+
+                      {/* Bid list — always shown when there is a project ID */}
+                      {data?._id && (
+                        <BidList
+                          projectId={data._id}
+                          isOwner={
+                            !!(
+                              convexUser &&
+                              convexData &&
+                              convexUser._id === convexData.clientId
+                            )
+                          }
+                        />
                       )}
-                      <div className="bsp_reveiw_wrt mt25 mb30 ">
-                        <h4>Send Your Proposal</h4>
-                        <form className="comments_form mt30 mb30-md">
-                          <div className="row">
-                            <div className="col-md-6">
-                              <div className="mb20">
-                                <label className="fw500 ff-heading dark-color mb-2">
-                                  Your hourly price
-                                </label>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  placeholder="$99"
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-6">
-                              <div className="mb20">
-                                <label className="fw500 ff-heading dark-color mb-2">
-                                  Estimated Hours
-                                </label>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  placeholder="4"
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-12">
-                              <div className="mb-4">
-                                <label className="fw500 fz16 ff-heading dark-color mb-2">
-                                  Cover Letter
-                                </label>
-                                <textarea
-                                  className="pt15"
-                                  rows={6}
-                                  placeholder="Describe your approach and why you are the best fit for this project."
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-12">
-                              <div className="d-grid">
-                                <a className="ud-btn btn-thm">
-                                  Submit a Proposal
-                                  <i className="fal fa-arrow-right-long" />
-                                </a>
-                              </div>
-                            </div>
+
+                      {/* Bid form section */}
+                      <div className="bsp_reveiw_wrt mt25">
+                        {!isLoaded ? null : !isAuthenticated ? (
+                          /* Not logged in */
+                          <div className="text-center py20">
+                            <p className="text mb15">
+                              You must be signed in to submit a bid.
+                            </p>
+                            <Link href="/login" className="ud-btn btn-thm">
+                              Log in to Bid
+                              <i className="fal fa-arrow-right-long" />
+                            </Link>
                           </div>
-                        </form>
+                        ) : convexUser &&
+                          convexData &&
+                          convexUser._id === convexData.clientId ? (
+                          /* Current user is the project owner */
+                          null
+                        ) : data?._id ? (
+                          /* Authenticated freelancer (not the owner) */
+                          <BidForm
+                            projectId={data._id}
+                          />
+                        ) : null}
                       </div>
                     </div>
                   </div>

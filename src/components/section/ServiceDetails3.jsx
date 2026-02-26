@@ -7,12 +7,26 @@ import ServiceContactWidget1 from "../element/ServiceContactWidget1";
 import ServiceDetailSlider2 from "../element/ServiceDetailSlider2";
 import ServiceDetailPrice1 from "../element/ServiceDetailPrice1";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 import useConvexGigDetail from "@/hook/useConvexGigDetail";
+import ContactButton from "@/components/ui/ContactButton";
 
 export default function ServiceDetail3() {
   const isMatchedScreen = useScreen(1216);
   const { id } = useParams();
+  const router = useRouter();
+  const { isSignedIn } = useUser();
+
+  function handleSelectPackage() {
+    if (!isSignedIn) {
+      const currentPath =
+        typeof window !== "undefined" ? window.location.pathname : "/";
+      router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
+      return;
+    }
+    router.push("/dashboard/orders");
+  }
 
   const gigData = useConvexGigDetail(id);
 
@@ -197,10 +211,13 @@ export default function ServiceDetail3() {
                               <th scope="row" />
                               {packages.map((pkg, i) => (
                                 <td key={i}>
-                                  <a className="ud-btn btn-thm">
+                                  <button
+                                    className="ud-btn btn-thm"
+                                    onClick={handleSelectPackage}
+                                  >
                                     Select{" "}
                                     <i className="fal fa-arrow-right-long" />
-                                  </a>
+                                  </button>
                                 </td>
                               ))}
                             </tr>
@@ -218,16 +235,42 @@ export default function ServiceDetail3() {
                   <Sticky bottomBoundary="#stikyContainer">
                     <div className="scrollbalance-inner">
                       <div className="blog-sidebar ms-lg-auto">
-                        <ServiceDetailPrice1 />
-                        <ServiceContactWidget1 />
+                        <ServiceDetailPrice1
+                          packages={packages}
+                          gigId={data?.id}
+                        />
+                        <ServiceContactWidget1
+                          freelancer={data?.freelancer}
+                        />
+                        {gigData?.freelancerProfile?.userId && (
+                          <div className="mt20">
+                            <ContactButton
+                              recipientId={gigData.freelancerProfile.userId}
+                              className="w-100"
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
                   </Sticky>
                 ) : (
                   <div className="scrollbalance-inner">
                     <div className="blog-sidebar ms-lg-auto">
-                      <ServiceDetailPrice1 />
-                      <ServiceContactWidget1 />
+                      <ServiceDetailPrice1
+                        packages={packages}
+                        gigId={data?.id}
+                      />
+                      <ServiceContactWidget1
+                        freelancer={data?.freelancer}
+                      />
+                      {gigData?.freelancerProfile?.userId && (
+                        <div className="mt20">
+                          <ContactButton
+                            recipientId={gigData.freelancerProfile.userId}
+                            className="w-100"
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}

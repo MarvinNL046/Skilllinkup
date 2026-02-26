@@ -8,6 +8,7 @@ import useScreen from "@/hook/useScreen";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import useConvexFreelancerDetail from "@/hook/useConvexFreelancerDetail";
+import ContactButton from "@/components/ui/ContactButton";
 
 export default function FreelancerDetail3() {
   const isMatchedScreen = useScreen(1216);
@@ -168,12 +169,22 @@ export default function FreelancerDetail3() {
                   <div className="blog-sidebar ms-lg-auto">
                     <FreelancerAbout1 />
                     <FreelancerSkill1 />
+                    {convexData?.userId && (
+                      <div className="mt20">
+                        <ContactButton recipientId={convexData.userId} className="w-100" />
+                      </div>
+                    )}
                   </div>
                 </Sticky>
               ) : (
                 <div className="blog-sidebar ms-lg-auto">
                   <FreelancerAbout1 />
                   <FreelancerSkill1 />
+                  {convexData?.userId && (
+                    <div className="mt20">
+                      <ContactButton recipientId={convexData.userId} className="w-100" />
+                    </div>
+                  )}
                 </div>
               )}
             </div>
