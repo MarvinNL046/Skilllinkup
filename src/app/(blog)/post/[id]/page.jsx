@@ -1,5 +1,6 @@
 "use client";
 import { use, useState } from "react";
+import DOMPurify from "dompurify";
 import Image from "next/image";
 import Link from "next/link";
 import Header20 from "@/components/header/Header20";
@@ -122,7 +123,7 @@ function PostContent({ slug }) {
               {post.content && (
                 <div
                   className="blog-post-content fz15 body-color lh-lg"
-                  dangerouslySetInnerHTML={{ __html: post.content }}
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
                 />
               )}
             </div>

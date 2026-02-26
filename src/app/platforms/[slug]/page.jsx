@@ -1,5 +1,6 @@
 "use client";
 import { use } from "react";
+import DOMPurify from "dompurify";
 import Link from "next/link";
 import Image from "next/image";
 import Header20 from "@/components/header/Header20";
@@ -205,7 +206,7 @@ function PlatformDetailContent({ slug }) {
               {description && (
                 <div
                   className="fz15 body-color lh-lg"
-                  dangerouslySetInnerHTML={{ __html: description }}
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description) }}
                 />
               )}
             </div>

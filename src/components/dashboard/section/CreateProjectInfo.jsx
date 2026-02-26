@@ -64,8 +64,10 @@ export default function CreateProjectInfo() {
         ? form.requiredSkills.split(",").map((s) => s.trim()).filter(Boolean)
         : undefined;
 
-      const budgetMin = form.budgetMin ? parseFloat(form.budgetMin) : undefined;
-      const budgetMax = form.budgetMax ? parseFloat(form.budgetMax) : undefined;
+      const parsedMin = form.budgetMin ? parseFloat(form.budgetMin) : NaN;
+      const parsedMax = form.budgetMax ? parseFloat(form.budgetMax) : NaN;
+      const budgetMin = Number.isFinite(parsedMin) ? parsedMin : undefined;
+      const budgetMax = Number.isFinite(parsedMax) ? parsedMax : undefined;
       const deadlineMs = form.deadline ? new Date(form.deadline).getTime() : undefined;
 
       await createProject({

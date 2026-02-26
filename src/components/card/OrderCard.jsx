@@ -32,6 +32,7 @@ function formatDate(timestamp) {
 
 export default function OrderCard({ order, role }) {
   const [actionLoading, setActionLoading] = useState(false);
+  const [actionError, setActionError] = useState(null);
   const [showReviewForm, setShowReviewForm] = useState(false);
 
   const { convexUser } = useConvexUser();
@@ -59,20 +60,22 @@ export default function OrderCard({ order, role }) {
 
   const handleDeliver = async () => {
     setActionLoading(true);
+    setActionError(null);
     try {
       await deliverOrder({ orderId: order._id });
     } catch (err) {
-      alert(err.message);
+      setActionError(err.message);
     }
     setActionLoading(false);
   };
 
   const handleApprove = async () => {
     setActionLoading(true);
+    setActionError(null);
     try {
       await approveOrder({ orderId: order._id });
     } catch (err) {
-      alert(err.message);
+      setActionError(err.message);
     }
     setActionLoading(false);
   };
@@ -81,10 +84,11 @@ export default function OrderCard({ order, role }) {
     const msg = prompt("Please describe what needs to be revised:");
     if (!msg || !msg.trim()) return;
     setActionLoading(true);
+    setActionError(null);
     try {
       await requestRevision({ orderId: order._id, message: msg.trim() });
     } catch (err) {
-      alert(err.message);
+      setActionError(err.message);
     }
     setActionLoading(false);
   };
@@ -164,6 +168,13 @@ export default function OrderCard({ order, role }) {
             <div className="text-lg-end mb10">
               <span className={statusConfig.className}>{statusConfig.label}</span>
             </div>
+
+            {/* Error message */}
+            {actionError && (
+              <div className="alert alert-danger fz13 py-2 mb10" role="alert">
+                {actionError}
+              </div>
+            )}
 
             {/* Action buttons */}
             <div className="d-grid gap-2 mt10">

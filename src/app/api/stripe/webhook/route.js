@@ -181,9 +181,17 @@ async function handleCheckoutSessionCompleted(session) {
   if (buyerEmail) {
     try {
       clientUser = await convex.query(api.users.getByEmail, { email: buyerEmail });
+      if (!clientUser) {
+        console.warn(
+          `[stripe/webhook] Buyer email ${buyerEmail} not found in Convex users table. ` +
+          `Order will be created with freelancer as placeholder client.`
+        );
+      }
     } catch (err) {
-      console.warn("[stripe/webhook] Could not resolve buyer email to Convex user:", err);
+      console.error("[stripe/webhook] Failed to resolve buyer email to Convex user:", err);
     }
+  } else {
+    console.warn("[stripe/webhook] No customer email on checkout session – buyer will be unresolved.");
   }
 
   // Amount is stored in Stripe as cents; convert back to the display unit.

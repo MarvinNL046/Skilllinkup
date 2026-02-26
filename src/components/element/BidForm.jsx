@@ -24,8 +24,8 @@ export default function BidForm({ projectId, onSuccess }) {
     try {
       await submitBid({
         projectId,
-        amount: parseFloat(amount),
-        deliveryDays: parseInt(deliveryDays),
+        amount: Number.isFinite(parseFloat(amount)) ? parseFloat(amount) : 0,
+        deliveryDays: Number.isFinite(parseInt(deliveryDays, 10)) ? parseInt(deliveryDays, 10) : 1,
         pitch,
       });
       setSuccess(true);

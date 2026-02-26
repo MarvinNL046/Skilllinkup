@@ -18,6 +18,7 @@ export default function OrdersInfo() {
   const { convexUser } = useConvexUser();
   const [role, setRole] = useState("client");
   const [actionLoading, setActionLoading] = useState(null);
+  const [actionError, setActionError] = useState(null);
 
   const orders = useQuery(
     api.marketplace.orders.getByUser,
@@ -30,6 +31,7 @@ export default function OrdersInfo() {
 
   const handleAction = async (action, orderId, extra) => {
     setActionLoading(orderId);
+    setActionError(null);
     try {
       if (action === "deliver") {
         await deliverOrder({ orderId });
@@ -39,7 +41,7 @@ export default function OrdersInfo() {
         await requestRevision({ orderId, message: extra });
       }
     } catch (err) {
-      alert(err.message);
+      setActionError(err.message);
     }
     setActionLoading(null);
   };
@@ -96,6 +98,14 @@ export default function OrdersInfo() {
       <div className="row">
         <div className="col-xl-12">
           <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+            {/* Error banner */}
+            {actionError && (
+              <div className="alert alert-danger alert-dismissible fz14 mb20" role="alert">
+                {actionError}
+                <button type="button" className="btn-close" onClick={() => setActionError(null)} />
+              </div>
+            )}
+
             {/* Loading state */}
             {orders === undefined && (
               <div className="text-center py-5">
