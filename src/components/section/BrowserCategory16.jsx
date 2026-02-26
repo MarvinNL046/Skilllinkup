@@ -24,7 +24,7 @@ export default function BrowserCategory16() {
           </div>
           <div className="col-lg-3">
             <div className="text-start text-lg-end mb-4 mb-lg-2">
-              <Link className="ud-btn btn-light-thm bdrs12" href="/service-1">
+              <Link className="ud-btn btn-light-thm bdrs12" href="/services">
                 All Category<i className="fal fa-arrow-right-long"></i>
               </Link>
             </div>
@@ -84,7 +84,7 @@ export default function BrowserCategory16() {
                           <div className="top-area">
                             <h6 className="title mb-1">{elm.skill} skills</h6>
                             <h5 className="text">
-                              <Link href="/service-1">{elm.title}</Link>
+                              <Link href="/services">{elm.title}</Link>
                             </h5>
                           </div>
                         </div>

@@ -61,7 +61,7 @@ export default function HeighestRetedCard2({ data, itemClass }) {
           </div>
           <div className="d-grid mt15">
             <Link
-              href={`/freelancer-single/${data.id}`}
+              href={`/freelancer/${data.id}`}
               className="ud-btn btn-white2 double-border bdrs4"
             >
               View Profile

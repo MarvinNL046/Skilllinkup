@@ -30,7 +30,7 @@ export default function ManageServiceCard1({ data, removeGig }) {
             </div>
             <div className="list-content flex-grow-1 py-0 pl15 pl0-lg">
               <h6 className="list-title mb-0">
-                <Link href="/service-single">{data.title}</Link>
+                <Link href="/services">{data.title}</Link>
               </h6>
               <ul className="list-style-type-bullet ps-3 dashboard-style mb-0">
                 {data.list && data.list.map((item, i) => (

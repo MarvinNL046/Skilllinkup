@@ -13,7 +13,7 @@ export default function ShopListCard1({ data }) {
   // handler
   const addToCartHandler = (product) => {
     addToCart(product);
-    router.push("/shop-cart");
+    router.push("/services");
   };
 
   const isAdded = products.some((product) => product.id === data.id);
@@ -22,7 +22,7 @@ export default function ShopListCard1({ data }) {
     <>
       <div className="shop-item text-center">
         <div className="thumb">
-          <Link href={`/shop-single/${data.id}`}>
+          <Link href="/services">
             <Image
               height={247}
               width={271}

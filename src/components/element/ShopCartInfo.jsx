@@ -26,7 +26,7 @@ export default function ShopCartInfo() {
             <span className="float-end">${total}</span>
           </p>
           <div className="d-grid mt40">
-            <Link className="ud-btn btn-thm" href="/shop-checkout">
+            <Link className="ud-btn btn-thm" href="/services">
               Proceed to Checkout
               <i className="fal fa-arrow-right-long" />
             </Link>

@@ -27,7 +27,7 @@ export default function Hero2() {
 
   // search handler
   const searchHandler = () => {
-    router.push("/service-1");
+    router.push("/services");
   };
 
   return (

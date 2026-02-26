@@ -37,7 +37,7 @@ export default function SearchModal1() {
                     <span className="far fa-magnifying-glass" />
                   </label>
                   <button
-                    onClick={() => router.push("/service-1")}
+                    onClick={() => router.push("/services")}
                     className="ud-btn btn-thm"
                     type="submit"
                   >

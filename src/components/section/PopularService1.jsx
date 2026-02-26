@@ -87,7 +87,7 @@ export default function PopularService1() {
                           ? "btn-white2 double-border"
                           : "btn-light-thm"
                       }`}
-                      href="/service-1"
+                      href="/services"
                     >
                       All Services
                       <i className="fal fa-arrow-right-long" />

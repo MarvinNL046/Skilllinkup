@@ -88,7 +88,7 @@ export default function BrowserCategory15() {
                         <div className="details mt20">
                           <p className="text mb5">{elm.skill} skills</p>
                           <h4 className="title">
-                            <Link href="/service-1">{elm.title}</Link>
+                            <Link href="/services">{elm.title}</Link>
                           </h4>
                           <p className="mb-0">{elm.brif}</p>
                         </div>

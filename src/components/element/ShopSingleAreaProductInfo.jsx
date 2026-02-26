@@ -29,7 +29,7 @@ export default function ShopSingleAreaProductInfo() {
     if (data) {
       const d = { ...data, qty: getCurrentQty };
       addToCart(d);
-      router.push("/shop-cart");
+      router.push("/services");
     }
   };
 
@@ -137,7 +137,7 @@ export default function ShopSingleAreaProductInfo() {
                 </button>
               </div>
             </div>
-            <Link className="ud-btn btn-thm" href="/shop-cart">
+            <Link className="ud-btn btn-thm" href="/services">
               Add to cart
               <i className="fal fa-arrow-right-long" />
             </Link>

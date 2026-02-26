@@ -94,64 +94,13 @@ export default function Footer14() {
                                     <div className="col-auto">
                                         <div className="contact-info">
                                             <p className="info-title mb-2">
-                                                Toll Free Customer Care
-                                            </p>
-                                            <h5 className="info-phone">
-                                                <Link href="#">
-                                                    +(1) 123 456 7890
-                                                </Link>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <div className="col-auto">
-                                        <div className="contact-info">
-                                            <p className="info-title mb-2">
-                                                Need live support?
+                                                Contact
                                             </p>
                                             <h5 className="info-mail">
                                                 <Link href="mailto:info@skilllinkup.com">
                                                     info@skilllinkup.com
                                                 </Link>
                                             </h5>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="app-widget at-home20">
-                                    <h5 className="title  mb20">Apps</h5>
-                                    <div className="row mb-4 mb-lg-5">
-                                        <div className="col-auto">
-                                            <Link href="/">
-                                                <div className="app-info d-flex align-items-center mb10 bdrs12 bgc-thm3">
-                                                    <div className="flex-shrink-0">
-                                                        <i className="fab fa-apple fz30" />
-                                                    </div>
-                                                    <div className="flex-grow-1 ml20">
-                                                        <p className="app-text fz13 mb0">
-                                                            Download on the
-                                                        </p>
-                                                        <h6 className="app-title">
-                                                            Apple Store
-                                                        </h6>
-                                                    </div>
-                                                </div>
-                                            </Link>
-                                        </div>
-                                        <div className="col-auto">
-                                            <Link href="/">
-                                                <div className="app-info d-flex align-items-center mb10 bdrs12 bgc-thm3">
-                                                    <div className="flex-shrink-0">
-                                                        <i className="fab fa-google-play fz30" />
-                                                    </div>
-                                                    <div className="flex-grow-1 ml20">
-                                                        <p className="app-text mb0">
-                                                            Get in on
-                                                        </p>
-                                                        <h6 className="app-title">
-                                                            Google Play
-                                                        </h6>
-                                                    </div>
-                                                </div>
-                                            </Link>
                                         </div>
                                     </div>
                                 </div>
@@ -165,15 +114,7 @@ export default function Footer14() {
                         <div className="col-sm-6">
                             <div className="text-center text-lg-start">
                                 <p className="copyright-text mb-0 at-home8 ff-heading">
-                                    © SkillLinkup. 2023{" "}
-                                    <Link
-                                        href="https://themeforest.net/user/ib-themes/portfolio"
-                                        target="_blank"
-                                        style={{ color: "inherit" }}
-                                    >
-                                        ib-themes
-                                    </Link>
-                                    . All rights reserved.
+                                    © {new Date().getFullYear()} SkillLinkup. All rights reserved.
                                 </p>
                             </div>
                         </div>

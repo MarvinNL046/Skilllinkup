@@ -6,17 +6,11 @@ export default function FooterSocial3() {
       <div className="social-widget">
         <h5 className="mb20">Follow Us</h5>
         <div className="social-style1 light-style">
-          <Link href="/">
-            <i className="fab fa-facebook-f list-inline-item"></i>
-          </Link>
-          <Link href="/">
-            <i className="fab fa-twitter list-inline-item"></i>
-          </Link>
-          <Link href="/">
-            <i className="fab fa-instagram list-inline-item"></i>
-          </Link>
-          <Link href="/">
+          <Link href="https://linkedin.com/company/skilllinkup" target="_blank" rel="noopener noreferrer">
             <i className="fab fa-linkedin-in list-inline-item"></i>
+          </Link>
+          <Link href="https://instagram.com/skilllinkup" target="_blank" rel="noopener noreferrer">
+            <i className="fab fa-instagram list-inline-item"></i>
           </Link>
         </div>
       </div>

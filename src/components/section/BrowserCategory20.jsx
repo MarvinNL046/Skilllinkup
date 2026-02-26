@@ -25,7 +25,7 @@ export default function BrowserCategory20() {
             </div>
             <div className="col-lg-3">
               <div className="text-lg-end mb-3">
-                <Link href="/freelancer-1" className="ud-btn2">
+                <Link href="/freelancers" className="ud-btn2">
                   All Categories <i className="fal fa-arrow-right-long"></i>
                 </Link>
               </div>
@@ -68,7 +68,7 @@ export default function BrowserCategory20() {
                           <div className="details mt20">
                             <p className="text mb5">{elm.skill} skills</p>
                             <h4 className="title">
-                              <Link href="/service-1">{elm.title}</Link>
+                              <Link href="/services">{elm.title}</Link>
                             </h4>
                             <p className="mb-0">{elm.brif}</p>
                           </div>

@@ -212,7 +212,7 @@ export default function About4() {
                       ))}
                     </ul>
                   </div>
-                  <Link href="/service-single" className="ud-btn btn-thm2">
+                  <Link href="/services" className="ud-btn btn-thm2">
                     See More
                     <i className="fal fa-arrow-right-long" />
                   </Link>

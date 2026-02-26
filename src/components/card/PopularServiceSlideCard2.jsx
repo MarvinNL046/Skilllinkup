@@ -63,7 +63,7 @@ export default function PopularServiceSlideCard2({ data }) {
           </a>
           <p className="list-text body-color fz14 mb-1">{data.category}</p>
           <h5 className="list-title">
-            <Link href="/service-single">{data.title}</Link>
+            <Link href="/services">{data.title}</Link>
           </h5>
           <div className="review-meta d-flex align-items-center">
             <i className="fas fa-star fz10 review-color me-2" />

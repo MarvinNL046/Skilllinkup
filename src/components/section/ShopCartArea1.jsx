@@ -54,7 +54,7 @@ export default function ShopCartArea1() {
                       </div>
                       <div className="btn-lsit1">
                         <Link
-                          href="/shop-list"
+                          href="/services"
                           className="ud-btn btn-light-thm"
                         >
                           Buy Product
@@ -65,7 +65,7 @@ export default function ShopCartArea1() {
                   </div>
                 ) : (
                   <div className="d-flex justify-content-center pt-5 mb30">
-                    <Link href="/shop-list" className="ud-btn btn-light-thm">
+                    <Link href="/services" className="ud-btn btn-light-thm">
                       Buy Product
                       <i className="fal fa-arrow-right-long" />
                     </Link>

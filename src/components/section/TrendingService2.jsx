@@ -93,7 +93,7 @@ export default function TrendingService2({ bgColor }) {
               </Swiper>
 
               <div className="text-center mt20">
-                <Link className="ud-btn2" href="/service-single">
+                <Link className="ud-btn2" href="/services">
                   All Categories
                   <i className="fal fa-arrow-right-long" />
                 </Link>

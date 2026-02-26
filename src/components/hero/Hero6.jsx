@@ -19,7 +19,7 @@ export default function Hero6() {
 
   // search handler
   const searchHandler = () => {
-    router.push("/freelancer-3");
+    router.push("/freelancers");
   };
 
   return (

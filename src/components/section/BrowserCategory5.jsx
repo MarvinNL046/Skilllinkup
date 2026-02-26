@@ -25,7 +25,7 @@ export default function BrowserCategory5() {
             </div>
             <div className="col-lg-3">
               <div className="text-start text-lg-end mb-3">
-                <Link className="ud-btn2" href="/service-1">
+                <Link className="ud-btn2" href="/services">
                   All Categories
                   <i className="fal fa-arrow-right-long dark-color" />
                 </Link>
@@ -35,7 +35,7 @@ export default function BrowserCategory5() {
           <div className="row wow fadeInUp" data-wow-delay="300ms">
             {browserCategory.slice(0, 8).map((item,i) => (
               <div key={ i } className="col-sm-6 col-lg-3">
-                <Link href="/service-1">
+                <Link href="/services">
                   <BrowserCategoryCard5 data={item} />
                 </Link>
               </div>

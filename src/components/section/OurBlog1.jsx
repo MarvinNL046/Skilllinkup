@@ -27,7 +27,7 @@ export default function OurBlog1() {
             {path === "/home-5" && (
               <div className="col-lg-3 align-self-center">
                 <div className="text-start text-lg-end mb-4 mb-lg-2">
-                  <Link className="ud-btn2" href="/blog-1">
+                  <Link className="ud-btn2" href="/blog">
                     All Categories
                     <i className="fal fa-arrow-right-long" />
                   </Link>

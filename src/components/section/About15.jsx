@@ -109,7 +109,7 @@ export default function About15() {
                     ))}
                   </ul>
                 </div>
-                <Link href="/service-single" className="ud-btn btn-dark bdrs16">
+                <Link href="/services" className="ud-btn btn-dark bdrs16">
                   See More<i className="fal fa-arrow-right-long"></i>
                 </Link>
               </div>
