@@ -233,6 +233,34 @@ export const search = query({
 });
 
 /**
+ * Get a single gig by its Convex document ID.
+ * Used by the Stripe webhook to resolve gig details after checkout.
+ */
+export const getById = query({
+  args: {
+    gigId: v.id("gigs"),
+  },
+  handler: async (ctx, args) => {
+    const gig = await ctx.db.get(args.gigId);
+    return gig ?? null;
+  },
+});
+
+/**
+ * Get a single gig package by its Convex document ID.
+ * Used by the Stripe webhook to resolve package details after checkout.
+ */
+export const getPackageById = query({
+  args: {
+    packageId: v.id("gigPackages"),
+  },
+  handler: async (ctx, args) => {
+    const pkg = await ctx.db.get(args.packageId);
+    return pkg ?? null;
+  },
+});
+
+/**
  * Create a new gig. Authentication required.
  */
 export const create = mutation({

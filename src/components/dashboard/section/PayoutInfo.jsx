@@ -5,6 +5,7 @@ import useConvexUser from "@/hook/useConvexUser";
 import Link from "next/link";
 import DashboardNavigation from "../header/DashboardNavigation";
 import PaymentMethod from "./PaymentMethod";
+import StripeConnectButton from "@/components/ui/StripeConnectButton";
 
 export default function PayoutInfo() {
   const { convexUser } = useConvexUser();
@@ -166,12 +167,6 @@ export default function PayoutInfo() {
                 <h5 className="title">Order Earnings History</h5>
               </div>
 
-              {/* Stripe Connect notice */}
-              <div className="alert alert-info mb20">
-                <i className="fal fa-info-circle mr10" />
-                Payouts will be available when Stripe Connect is set up. Contact support to enable direct payouts to your bank account.
-              </div>
-
               {isLoading ? (
                 <div className="text-center py-4">
                   <div className="spinner-border spinner-border-sm text-thm" role="status">
@@ -214,6 +209,16 @@ export default function PayoutInfo() {
                   </table>
                 </div>
               )}
+            </div>
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 position-relative">
+              <div className="bdrb1 pb15 mb25">
+                <h5 className="list-title">Stripe Payout Setup</h5>
+                <p className="text fz14 mb-0">
+                  Connect your bank account via Stripe Express to receive automatic payouts
+                  when orders are completed.
+                </p>
+              </div>
+              <StripeConnectButton />
             </div>
             <div className="ps-widget bgc-white bdrs4 p30 mb30 position-relative">
               <div className="row">
