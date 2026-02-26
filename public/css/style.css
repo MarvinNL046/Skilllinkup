@@ -3694,6 +3694,12 @@ li {
   }
 }
 
+.home20-hero-imgs-left img,
+.home20-hero-imgs-right img {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .home20-hero-imgs-left .img-1 {
   left: 6%;
   position: absolute;

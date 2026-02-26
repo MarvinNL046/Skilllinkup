@@ -84,10 +84,10 @@ export default function Footer14() {
                                 <Link className="footer-logo" href="/">
                                     <Image
                                         height={40}
-                                        width={133}
+                                        width={172}
                                         className="mb40 object-fit-contain"
-                                        src="/images/header-logo2.svg"
-                                        alt="logo"
+                                        src="/images/logo/skilllinkup-transparant-rozepunt.webp"
+                                        alt="SkillLinkup"
                                     />
                                 </Link>
                                 <div className="row mb-4 mb-lg-5">

@@ -29,28 +29,28 @@ export default function Hero20() {
           width={94}
           height={94}
           src="/images/about/home20-hero-1.png"
-          alt=" image "
+          alt="Freelancer"
           className="img-1 bounce-y"
         />
         <Image
           width={66}
           height={66}
           src="/images/about/home20-hero-2.png"
-          alt=" image "
+          alt="Freelancer"
           className="img-2 bounce-y"
         />
         <Image
           width={68}
           height={67}
           src="/images/about/home20-hero-3.png"
-          alt=" image "
+          alt="Freelancer"
           className="img-3 bounce-y"
         />
         <Image
           width={93}
           height={94}
           src="/images/about/home20-hero-4.png"
-          alt=" image "
+          alt="Freelancer"
           className="img-4 bounce-y"
         />
       </div>
@@ -59,28 +59,28 @@ export default function Hero20() {
           width={65}
           height={66}
           src="/images/about/home20-hero-5.png"
-          alt=" image "
+          alt="Freelancer"
           className="img-1 bounce-y"
         />
         <Image
           width={69}
           height={68}
           src="/images/about/home20-hero-6.png"
-          alt=" image "
+          alt="Freelancer"
           className="img-2 bounce-y"
         />
         <Image
           width={94}
           height={94}
           src="/images/about/home20-hero-7.png"
-          alt=" image "
+          alt="Freelancer"
           className="img-3 bounce-y"
         />
         <Image
           width={94}
           height={94}
           src="/images/about/home20-hero-8.png"
-          alt=" image "
+          alt="Freelancer"
           className="img-4 bounce-y"
         />
       </div>
