@@ -13,6 +13,16 @@ const FALLBACK_AVATAR = "/images/blog/default-avatar.png";
 
 function PostContent({ slug }) {
   const post = useConvexPost(slug);
+  const [featSrc, setFeatSrc] = useState(FALLBACK_IMG);
+  const [avatarSrc, setAvatarSrc] = useState(FALLBACK_AVATAR);
+  const [initialized, setInitialized] = useState(false);
+
+  // Sync image state when post data arrives
+  if (post && !initialized) {
+    if (post.featureImg) setFeatSrc(post.featureImg);
+    if (post.author?.image) setAvatarSrc(post.author.image);
+    setInitialized(true);
+  }
 
   // Loading
   if (post === undefined) {
@@ -57,8 +67,6 @@ function PostContent({ slug }) {
 
   const authorName = post.author?.name || "SkillLinkup";
   const categoryName = post.category?.name || "General";
-  const [featSrc, setFeatSrc] = useState(post.featureImg || FALLBACK_IMG);
-  const [avatarSrc, setAvatarSrc] = useState(post.author?.image || FALLBACK_AVATAR);
 
   return (
     <section className="our-blog pt40 pb90">
