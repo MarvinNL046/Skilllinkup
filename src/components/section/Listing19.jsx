@@ -1,15 +1,13 @@
 "use client";
 import useConvexProjects from "@/hook/useConvexProjects";
-import ProjectCard1 from "../card/ProjectCard1";
 import ListingOption2 from "../element/ListingOption2";
-import ListingSidebar2 from "../sidebar/ListingSidebar2";
 import Pagination1 from "./Pagination1";
 import listingStore from "@/store/listingStore";
 import priceStore from "@/store/priceStore";
 import ListingSidebarModal2 from "../modal/ListingSidebarModal2";
-import ProjectCard2 from "../card/ProjectCard2";
 import ProjectCard3 from "../card/ProjectCard3";
 import ListingSidebar6 from "../sidebar/ListingSidebar6";
+import EmptyState from "@/components/ui/EmptyState";
 
 export default function Listing19() {
   const getCategory = listingStore((state) => state.getCategory);
@@ -39,7 +37,7 @@ export default function Listing19() {
   // skill filter
   const skillFilter = (item) =>
     getDesginTool?.length !== 0
-      ? getDesginTool.includes(item.skills.split(" ").join("-").toLowerCase())
+      ? getDesginTool.includes(item.skills?.split(" ").join("-").toLowerCase())
       : item;
 
   // location filter
@@ -48,7 +46,7 @@ export default function Listing19() {
       ? getLocation.includes(item.location.split(" ").join("-").toLowerCase())
       : item;
 
-  // location filter
+  // search filter
   const searchFilter = (item) =>
     getSearch !== ""
       ? item.location
@@ -61,7 +59,7 @@ export default function Listing19() {
   // speak filter
   const speakFilter = (item) =>
     getSpeak?.length !== 0
-      ? getSpeak.includes(item.language.split(" ").join("-").toLowerCase())
+      ? getSpeak.includes(item.language?.split(" ").join("-").toLowerCase())
       : item;
 
   // english level filter
@@ -76,6 +74,17 @@ export default function Listing19() {
 
   const project1 = useConvexProjects();
 
+  // Show spinner while Convex data is loading
+  if (project1 === undefined) {
+    return (
+      <div className="text-center py-5">
+        <div className="spinner-border text-thm" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
   // content
   let content = project1
     .slice(0, 8)
@@ -88,11 +97,12 @@ export default function Listing19() {
     .filter(speakFilter)
     .filter(englishLevelFilter)
     .filter(sortByFilter)
-    .map((item,i) => (
-      <div key={ i } className="col-md-6 col-xl-12">
+    .map((item, i) => (
+      <div key={i} className="col-md-6 col-xl-12">
         <ProjectCard3 data={item} />
       </div>
     ));
+
   return (
     <>
       <section className="pt30 pb90">
@@ -103,7 +113,17 @@ export default function Listing19() {
             </div>
             <div className="col-lg-9">
               <ListingOption2 itemLength={content?.length} />
-              <div className="row">{content}</div>
+              {content.length === 0 ? (
+                <EmptyState
+                  icon="📋"
+                  title="No projects yet"
+                  description="Post a project and receive bids from freelancers"
+                  actionLabel="Post a Project"
+                  actionHref="/dashboard/create-projects"
+                />
+              ) : (
+                <div className="row">{content}</div>
+              )}
               <div className="mt30">
                 <Pagination1 />
               </div>

@@ -7,6 +7,7 @@ import priceStore from "@/store/priceStore";
 import useConvexFreelancers from "@/hook/useConvexFreelancers";
 import FreelancerCard2 from "../card/FreelancerCard2";
 import ListingSidebarModal5 from "../modal/ListingSidebarModal5";
+import EmptyState from "@/components/ui/EmptyState";
 
 export default function Listing14() {
   const getCategory = listingStore((state) => state.getCategory);
@@ -52,6 +53,17 @@ export default function Listing14() {
 
   const freelancer1 = useConvexFreelancers();
 
+  // Show spinner while Convex data is loading
+  if (freelancer1 === undefined) {
+    return (
+      <div className="text-center py-5">
+        <div className="spinner-border text-thm" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
   const content = freelancer1
     .slice(0, 9)
     .filter(categoryFilter)
@@ -61,8 +73,8 @@ export default function Listing14() {
     .filter(levelFilter)
     .filter(languageFilter)
     .filter(sortByFilter)
-    .map((item,i) => (
-      <div key={ i } className="col-sm-6 col-xl-4">
+    .map((item, i) => (
+      <div key={i} className="col-sm-6 col-xl-4">
         <FreelancerCard2 data={item} />
       </div>
     ));
@@ -78,7 +90,17 @@ export default function Listing14() {
             <div className="col-lg-9">
               <ListingOption2 itemLength={content?.length} />
               <div className="row">
-                {content?.length !== 0 ? content : "Data not found!"}
+                {content.length === 0 ? (
+                  <EmptyState
+                    icon="👤"
+                    title="No freelancers yet"
+                    description="Join as a freelancer to get started"
+                    actionLabel="Become a Freelancer"
+                    actionHref="/register"
+                  />
+                ) : (
+                  content
+                )}
               </div>
               <div className="row mt30">
                 <Pagination1 />

@@ -10,6 +10,7 @@ import ClearButton from "../button/ClearButton";
 import PopularServiceSlideCard1 from "../card/PopularServiceSlideCard1";
 import TrendingServiceCard1 from "../card/TrendingServiceCard1";
 import BestService2 from "./BestService2";
+import EmptyState from "@/components/ui/EmptyState";
 
 export default function Listing6() {
   const getDeliveryTime = listingStore((state) => state.getDeliveryTime);
@@ -58,6 +59,17 @@ export default function Listing6() {
 
   const product1 = useConvexGigs();
 
+  // Show spinner while Convex data is loading
+  if (product1 === undefined) {
+    return (
+      <div className="text-center py-5">
+        <div className="spinner-border text-thm" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
   let content = product1
     .slice(0, 9)
     .filter(deliveryFilter)
@@ -68,8 +80,8 @@ export default function Listing6() {
     .filter(sortByFilter)
     .filter(designToolFilter)
     .filter(speakFilter)
-    .map((item,i) => (
-      <div key={ i } className="col-sm-6 col-xl-4">
+    .map((item, i) => (
+      <div key={i} className="col-sm-6 col-xl-4">
         {item?.gallery ? (
           <PopularServiceSlideCard1 data={item} />
         ) : (
@@ -89,7 +101,17 @@ export default function Listing6() {
             </div>
             <div className="col-lg-9">
               <ListingOption2 itemLength={content?.length} />
-              <div className="row">{content}</div>
+              {content.length === 0 ? (
+                <EmptyState
+                  icon="🎨"
+                  title="No services yet"
+                  description="Be the first to offer a service"
+                  actionLabel="Create a Service"
+                  actionHref="/dashboard/add-services"
+                />
+              ) : (
+                <div className="row">{content}</div>
+              )}
               <Pagination1 />
             </div>
           </div>

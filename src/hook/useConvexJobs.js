@@ -1,7 +1,6 @@
 "use client";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { job1 } from "@/data/job";
 
 function mapConvexJob(job, index) {
   const benefits = [];
@@ -31,9 +30,11 @@ function mapConvexJob(job, index) {
 export default function useConvexJobs() {
   const convexJobs = useQuery(api.marketplace.jobs.list, { locale: "en" });
 
-  if (convexJobs && convexJobs.length > 0) {
-    return convexJobs.map(mapConvexJob);
+  // undefined means still loading
+  if (convexJobs === undefined) {
+    return undefined;
   }
 
-  return job1;
+  // Map Convex data (may be empty array)
+  return convexJobs.map(mapConvexJob);
 }

@@ -7,7 +7,7 @@ import listingStore from "@/store/listingStore";
 import priceStore from "@/store/priceStore";
 import ListingSidebarModal3 from "../modal/ListingSidebarModal3";
 import JobCard4 from "../card/JobCard4";
-import JobCard2 from "../card/JobCard2";
+import EmptyState from "@/components/ui/EmptyState";
 
 export default function Listing16() {
   const getCategory = listingStore((state) => state.getCategory);
@@ -38,6 +38,17 @@ export default function Listing16() {
 
   const job1 = useConvexJobs();
 
+  // Show spinner while Convex data is loading
+  if (job1 === undefined) {
+    return (
+      <div className="text-center py-5">
+        <div className="spinner-border text-thm" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
   let content = job1
     .slice(0, 12)
     .filter(categoryFilter)
@@ -45,8 +56,8 @@ export default function Listing16() {
     .filter(jobTypeFilter)
     .filter(levelFilter)
     .filter(sortByFilter)
-    .map((item,i) => (
-      <div key={ i } className="col-sm-6 col-xl-4">
+    .map((item, i) => (
+      <div key={i} className="col-sm-6 col-xl-4">
         <JobCard4 data={item} />
       </div>
     ));
@@ -61,7 +72,17 @@ export default function Listing16() {
             </div>
             <div className="col-lg-9">
               <ListingOption2 itemLength={content?.length} />
-              <div className="row">{content}</div>
+              {content.length === 0 ? (
+                <EmptyState
+                  icon="💼"
+                  title="No jobs posted yet"
+                  description="Post a job to find the perfect freelancer"
+                  actionLabel="Post a Job"
+                  actionHref="/dashboard/manage-jobs"
+                />
+              ) : (
+                <div className="row">{content}</div>
+              )}
               <div className="row mt30">
                 <Pagination1 />
               </div>

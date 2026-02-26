@@ -1,24 +1,11 @@
 "use client";
-import { project1, projectProposal1 } from "@/data/product";
-import ProjectProposalCard1 from "../card/ProjectProposalCard1";
-import ServiceDetailExtra1 from "../element/ServiceDetailExtra1";
+
 import Sticky from "react-stickynode";
 import ProjectPriceWidget1 from "../element/ProjectPriceWidget1";
 import ProjectContactWidget1 from "../element/ProjectContactWidget1";
 import useScreen from "@/hook/useScreen";
 import { useParams } from "next/navigation";
 import useConvexProjectDetail from "@/hook/useConvexProjectDetail";
-
-const staticSkills = [
-  "SaaS",
-  "Figma",
-  "Software Design",
-  "Sketch",
-  "Prototyping",
-  "HTML5",
-  "Design",
-  "Writing",
-];
 
 export default function ProjectDetail3() {
   const isMatchedScreen = useScreen(1216);
@@ -39,7 +26,7 @@ export default function ProjectDetail3() {
             ? `${convexData.locationCity}, ${convexData.locationCountry || ""}`
             : convexData.workType === "remote"
             ? "Remote"
-            : "On-site",
+            : null,
           postedAt: convexData.createdAt
             ? new Date(convexData.createdAt).toLocaleDateString("en-US", {
                 month: "long",
@@ -55,7 +42,7 @@ export default function ProjectDetail3() {
           projectType: convexData.projectType || null,
           duration: convexData.duration || null,
         }
-      : project1.find((item) => item.id == id) || null
+      : null
     : null;
 
   // Loading state
@@ -73,17 +60,15 @@ export default function ProjectDetail3() {
     );
   }
 
-  const title = data?.title || "Website Designer Required For Directory Theme";
-  const location = data?.location || "London, UK";
-  const postedAt = data?.postedAt || "January 15, 2022";
-  const views = data?.views != null ? `${data.views} Views` : "902 Views";
+  const title = data?.title || "";
+  const location = data?.location || null;
+  const postedAt = data?.postedAt || null;
+  const views = data?.views != null ? `${data.views} Views` : null;
   const description = data?.description || null;
-  const skills =
-    data?.requiredSkills && data.requiredSkills.length > 0
-      ? data.requiredSkills
-      : staticSkills;
-  const bidCount =
-    data?.bidCount != null ? data.bidCount : projectProposal1.slice(0, 3).length;
+  const skills = data?.requiredSkills && data.requiredSkills.length > 0
+    ? data.requiredSkills
+    : [];
+  const bidCount = data?.bidCount ?? 0;
 
   return (
     <>
@@ -98,174 +83,91 @@ export default function ProjectDetail3() {
                       <div className="row ">
                         <div className="col-xl-12">
                           <div className="position-relative">
-                            <h2>{title}</h2>
+                            {title && <h2>{title}</h2>}
                             <div className="list-meta mt15 mb30 pb30 bdrb1 ">
-                              <p className="mb-0 dark-color fz15 fw500 list-inline-item mb5-sm">
-                                <i className="flaticon-place vam fz20 text-thm2 me-2"></i>{" "}
-                                {location}
-                              </p>
-                              <p className="mb-0 dark-color fz15 fw500 list-inline-item ml15 mb5-sm ml0-xs">
-                                <i className="flaticon-calendar text-thm2 vam fz20 me-2"></i>{" "}
-                                {postedAt}
-                              </p>
-                              <p className="mb-0 dark-color fz15 fw500 list-inline-item ml15 mb5-sm ml0-xs">
-                                <i className="flaticon-website text-thm2 vam fz20 me-2"></i>{" "}
-                                {views}
-                              </p>
+                              {location && (
+                                <p className="mb-0 dark-color fz15 fw500 list-inline-item mb5-sm">
+                                  <i className="flaticon-place vam fz20 text-thm2 me-2"></i>{" "}
+                                  {location}
+                                </p>
+                              )}
+                              {postedAt && (
+                                <p className="mb-0 dark-color fz15 fw500 list-inline-item ml15 mb5-sm ml0-xs">
+                                  <i className="flaticon-calendar text-thm2 vam fz20 me-2"></i>{" "}
+                                  {postedAt}
+                                </p>
+                              )}
+                              {views && (
+                                <p className="mb-0 dark-color fz15 fw500 list-inline-item ml15 mb5-sm ml0-xs">
+                                  <i className="flaticon-website text-thm2 vam fz20 me-2"></i>{" "}
+                                  {views}
+                                </p>
+                              )}
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
                     <div className="row">
-                      <div className="col-sm-6 col-xl-4">
-                        <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                          <div className="icon flex-shrink-0">
-                            <span className="flaticon-notification-1" />
-                          </div>
-                          <div className="details">
-                            <h5 className="title">Seller Type</h5>
-                            <p className="mb-0 text">Company</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-sm-6 col-xl-4">
-                        <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                          <div className="icon flex-shrink-0">
-                            <span className="flaticon-dollar" />
-                          </div>
-                          <div className="details">
-                            <h5 className="title">Project type</h5>
-                            <p className="mb-0 text">
-                              {data?.projectType || "Hourly"}
-                            </p>
+                      {data?.projectType && (
+                        <div className="col-sm-6 col-xl-4">
+                          <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
+                            <div className="icon flex-shrink-0">
+                              <span className="flaticon-dollar" />
+                            </div>
+                            <div className="details">
+                              <h5 className="title">Project type</h5>
+                              <p className="mb-0 text">{data.projectType}</p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="col-sm-6 col-xl-4">
-                        <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                          <div className="icon flex-shrink-0">
-                            <span className="flaticon-fifteen" />
-                          </div>
-                          <div className="details">
-                            <h5 className="title">Project Duration</h5>
-                            <p className="mb-0 text">
-                              {data?.duration || "10-15 Hours"}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-sm-6 col-xl-4">
-                        <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                          <div className="icon flex-shrink-0">
-                            <span className="flaticon-like-1" />
-                          </div>
-                          <div className="details">
-                            <h5 className="title">Project Level</h5>
-                            <p className="mb-0 text">Expensive</p>
+                      )}
+                      {data?.duration && (
+                        <div className="col-sm-6 col-xl-4">
+                          <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
+                            <div className="icon flex-shrink-0">
+                              <span className="flaticon-fifteen" />
+                            </div>
+                            <div className="details">
+                              <h5 className="title">Project Duration</h5>
+                              <p className="mb-0 text">{data.duration}</p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="col-sm-6 col-xl-4">
-                        <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                          <div className="icon flex-shrink-0">
-                            <span className="flaticon-translator" />
-                          </div>
-                          <div className="details">
-                            <h5 className="title">Languages</h5>
-                            <p className="mb-0 text">20</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-sm-6 col-xl-4">
-                        <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                          <div className="icon flex-shrink-0">
-                            <span className="flaticon-goal" />
-                          </div>
-                          <div className="details">
-                            <h5 className="title">English Level</h5>
-                            <p className="mb-0 text">Professional</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>{" "}
-                  </div>
-                  <div className="service-about">
-                    <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
-                      <h4>Description</h4>
-                      {description ? (
-                        <p className="text mb30">{description}</p>
-                      ) : (
-                        <>
-                          <p className="text mb30">
-                            It is a long established fact that a reader will be
-                            distracted by the readable content of a page when
-                            looking at its layout. The point of using Lorem Ipsum
-                            is that it has a more-or-less normal distribution of
-                            letters, as opposed to using &apos;Content here,
-                            content here&apos;, making it look like readable
-                            English.{" "}
-                          </p>
-                          <p className="text mb30">
-                            Many desktop publishing packages and web page editors
-                            now use Lorem Ipsum as their default model text, and
-                            a search for &apos;lorem ipsum&apos; will uncover
-                            many web sites still in their infancy. Various
-                            versions have evolved over the years, sometimes by
-                            accident, sometimes on purpose (injected humour and
-                            the like).
-                          </p>
-                        </>
                       )}
                     </div>
-                    {/* <hr className="opacity-100 mb60 mt60" /> */}
-                    <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
-                      <h4 className="mb30">Attachments</h4>
-                      <div className="row">
-                        <div className="col-6 col-lg-3">
-                          <div className="project-attach">
-                            <h6 className="title">Project Brief</h6>
-                            <p>PDF</p>
-                            <span className="icon flaticon-page" />
-                          </div>
-                        </div>
-                        <div className="col-6 col-lg-3">
-                          <div className="project-attach">
-                            <h6 className="title">Project Brief</h6>
-                            <p>PDF</p>
-                            <span className="icon flaticon-page" />
-                          </div>
+                  </div>
+                  <div className="service-about">
+                    {description && (
+                      <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
+                        <h4>Description</h4>
+                        <p className="text mb30">{description}</p>
+                      </div>
+                    )}
+                    {skills.length > 0 && (
+                      <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
+                        <h4 className="mb30">Skills Required</h4>
+                        <div className="mb60">
+                          {skills.map((item, i) => (
+                            <a
+                              key={i}
+                              className={`tag list-inline-item mb-2 mb-xl-0 ${
+                                String(item).length === 7 ? "mr0" : "mr10"
+                              }`}
+                            >
+                              {item}
+                            </a>
+                          ))}
                         </div>
                       </div>
-                    </div>
-                    {/* <hr className="opacity-100 mb60 mt30" /> */}
-                    <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
-                      <h4 className="mb30">Skills Required</h4>
-                      <div className="mb60">
-                        {skills.map((item, i) => (
-                          <a
-                            key={i}
-                            className={`tag list-inline-item mb-2 mb-xl-0 ${
-                              String(item).length === 7 ? "mr0" : "mr10"
-                            }`}
-                          >
-                            {item}
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-                    {/* <hr className="opacity-100 mb60" /> */}
+                    )}
                     <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
                       <h4 className="mb30">
                         Project Proposals ({bidCount})
                       </h4>
-                      <div className="row">
-                        {projectProposal1.slice(0, 3).map((item, i) => (
-                          <div key={i} className="col-md-6 col-lg-12">
-                            <ProjectProposalCard1 data={item} />
-                          </div>
-                        ))}
-                      </div>
+                      {bidCount === 0 && (
+                        <p className="text mb30">No proposals yet. Be the first to submit!</p>
+                      )}
                       <div className="bsp_reveiw_wrt mt25 mb30 ">
                         <h4>Send Your Proposal</h4>
                         <form className="comments_form mt30 mb30-md">
@@ -290,7 +192,7 @@ export default function ProjectDetail3() {
                                 <input
                                   type="text"
                                   className="form-control"
-                                  placeholder={4}
+                                  placeholder="4"
                                 />
                               </div>
                             </div>
@@ -302,12 +204,9 @@ export default function ProjectDetail3() {
                                 <textarea
                                   className="pt15"
                                   rows={6}
-                                  placeholder="There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text."
+                                  placeholder="Describe your approach and why you are the best fit for this project."
                                 />
                               </div>
-                            </div>
-                            <div className="col-md-12">
-                              <ServiceDetailExtra1 />
                             </div>
                             <div className="col-md-12">
                               <div className="d-grid">

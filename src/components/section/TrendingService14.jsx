@@ -2,6 +2,7 @@
 import useConvexGigs from "@/hook/useConvexGigs";
 import PopularServiceCard1 from "../card/PopularServiceCard1";
 import PopularServiceSlideCard1 from "../card/PopularServiceSlideCard1";
+import EmptyState from "@/components/ui/EmptyState";
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -25,6 +26,17 @@ export default function TrendingService14() {
   };
 
   const path = usePathname();
+
+  const isLoading = product1 === undefined;
+  const gigs = product1 ?? [];
+
+  const filteredGigs = gigs
+    .filter((item) =>
+      getCurrentCategory === "All"
+        ? item
+        : item.tag === getCurrentCategory && item,
+    )
+    .slice(0, 4);
 
   return (
     <>
@@ -63,17 +75,24 @@ export default function TrendingService14() {
           </div>
           <div className="row">
             <div className="col-lg-12">
-              <div className="row">
-                {product1
-
-                  .filter((item) =>
-                    getCurrentCategory === "All"
-                      ? item
-                      : item.tag === getCurrentCategory && item,
-                  )
-                  .slice(0, 4)
-                  .map((item,i) => (
-                    <div key={ i } className="col-sm-6 col-xl-3">
+              {isLoading ? (
+                <div className="text-center py-5">
+                  <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                </div>
+              ) : filteredGigs.length === 0 ? (
+                <EmptyState
+                  icon="🚀"
+                  title="Services coming soon"
+                  description="Be the first to offer your services on SkillLinkup"
+                  actionLabel="Become a Seller"
+                  actionHref="/become-seller"
+                />
+              ) : (
+                <div className="row">
+                  {filteredGigs.map((item, i) => (
+                    <div key={i} className="col-sm-6 col-xl-3">
                       {item.gallery ? (
                         <PopularServiceSlideCard1 data={item} />
                       ) : (
@@ -81,7 +100,8 @@ export default function TrendingService14() {
                       )}
                     </div>
                   ))}
-              </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

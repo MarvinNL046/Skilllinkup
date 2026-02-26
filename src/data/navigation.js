@@ -12,6 +12,7 @@ const menus = [
       { id: 2, name: "Projects", path: "/projects" },
       { id: 3, name: "Jobs", path: "/jobs" },
       { id: 4, name: "Freelancers", path: "/freelancers" },
+      { id: 5, name: "Platforms", path: "/platforms" },
     ],
   },
   {

@@ -1,7 +1,6 @@
 "use client";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { product1 } from "@/data/product";
 
 // Maps Convex gig data to SkillLinkup product format
 function mapGigToProduct(gig, index) {
@@ -33,11 +32,11 @@ function mapGigToProduct(gig, index) {
 export default function useConvexGigs() {
   const convexGigs = useQuery(api.marketplace.gigs.list, { locale: "en" });
 
-  // If Convex returns data, map it; otherwise fallback to static data
-  if (convexGigs && convexGigs.length > 0) {
-    return convexGigs.map(mapGigToProduct);
+  // undefined means still loading
+  if (convexGigs === undefined) {
+    return undefined;
   }
 
-  // Fallback to static data when Convex is empty
-  return product1;
+  // Map Convex data (may be empty array)
+  return convexGigs.map(mapGigToProduct);
 }

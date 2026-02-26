@@ -1,7 +1,6 @@
 "use client";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { freelancer1 } from "@/data/product";
 
 function mapConvexFreelancer(fl, index) {
   return {
@@ -27,9 +26,11 @@ function mapConvexFreelancer(fl, index) {
 export default function useConvexFreelancers() {
   const convexFreelancers = useQuery(api.marketplace.freelancers.list, { locale: "en" });
 
-  if (convexFreelancers && convexFreelancers.length > 0) {
-    return convexFreelancers.map(mapConvexFreelancer);
+  // undefined means still loading
+  if (convexFreelancers === undefined) {
+    return undefined;
   }
 
-  return freelancer1;
+  // Map Convex data (may be empty array)
+  return convexFreelancers.map(mapConvexFreelancer);
 }
