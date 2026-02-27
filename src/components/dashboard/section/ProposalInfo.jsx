@@ -1,14 +1,15 @@
 "use client";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import Pagination1 from "@/components/section/Pagination1";
 import ProposalCard1 from "../card/ProposalCard1";
 import DashboardNavigation from "../header/DashboardNavigation";
 import DeleteModal from "../modal/DeleteModal";
 import ProposalModal1 from "../modal/ProposalModal1";
 import useConvexProfile from "@/hook/useConvexProfile";
+import useConvexUser from "@/hook/useConvexUser";
 
 export default function ProposalInfo() {
+  const { isLoaded, isAuthenticated } = useConvexUser();
   const { profile } = useConvexProfile();
 
   const bids = useQuery(
@@ -37,7 +38,11 @@ export default function ProposalInfo() {
           <div className="col-xl-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
               <div className="packages_table table-responsive">
-                {isLoading ? (
+                {isLoaded && !isAuthenticated ? (
+                  <div className="text-center py-5">
+                    <p className="text mb-0">Please sign in to view your proposals.</p>
+                  </div>
+                ) : isLoading ? (
                   <div className="text-center py30">
                     <div className="spinner-border text-primary" role="status">
                       <span className="visually-hidden">Loading...</span>
@@ -64,9 +69,6 @@ export default function ProposalInfo() {
                         ))}
                       </tbody>
                     </table>
-                    <div className="mt30">
-                      <Pagination1 />
-                    </div>
                   </>
                 )}
               </div>

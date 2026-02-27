@@ -5,7 +5,7 @@ import useConvexUser from "@/hook/useConvexUser";
 import DashboardNavigation from "../header/DashboardNavigation";
 
 export default function StatementInfo() {
-  const { convexUser } = useConvexUser();
+  const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const userId = convexUser?._id;
 
   // Fetch orders as both client and freelancer
@@ -19,7 +19,7 @@ export default function StatementInfo() {
     userId ? { userId, role: "freelancer" } : "skip"
   );
 
-  const isLoading = clientOrders === undefined || freelancerOrders === undefined;
+  const isLoading = isAuthenticated && (clientOrders === undefined || freelancerOrders === undefined);
 
   // Merge orders, deduplicate by _id
   const allOrders = (() => {
@@ -95,7 +95,15 @@ export default function StatementInfo() {
             </div>
           </div>
         </div>
-        <div className="row">
+        {isLoaded && !isAuthenticated && (
+          <div className="row"><div className="col-12">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30">
+              <p className="text text-center mb-0">Please sign in to view your statements.</p>
+            </div>
+          </div></div>
+        )}
+
+        {(isAuthenticated || !isLoaded) && (<div className="row">
           <div className="col-sm-6 col-xxl-3">
             <div className="d-flex align-items-center justify-content-between statistics_funfact">
               <div className="details">
@@ -214,6 +222,7 @@ export default function StatementInfo() {
             </div>
           </div>
         </div>
+        )}
       </div>
     </>
   );

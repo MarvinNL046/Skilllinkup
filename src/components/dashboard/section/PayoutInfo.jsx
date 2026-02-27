@@ -86,7 +86,7 @@ export default function PayoutInfo() {
           <div className="col-lg-6">
             <div className="text-lg-end">
               <Link
-                href="/dashboard/my-profile"
+                href="/my-profile"
                 className="ud-btn btn-dark default-box-shadow2"
               >
                 Manage Profile

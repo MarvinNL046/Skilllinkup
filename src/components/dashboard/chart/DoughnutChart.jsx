@@ -6,12 +6,12 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function DoughnutChart() {
   const data = {
-    labels: ["Direct 50%", "Referal 25%", "Oragnic 25%"],
+    labels: ["Direct 45%", "Referral 35%", "Organic 20%"],
     datasets: [
       {
         label: " ",
         backgroundColor: ["#5BBB7B", "#FFEDE8", "#FBF7ED"],
-        data: [50, 25, 25],
+        data: [45, 35, 20],
         borderWidth: 4,
         hoverBorderWidth: 4,
       },

@@ -15,7 +15,7 @@ const STATUS_COLORS = {
 };
 
 export default function OrdersInfo() {
-  const { convexUser } = useConvexUser();
+  const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const [role, setRole] = useState("client");
   const [actionLoading, setActionLoading] = useState(null);
   const [actionError, setActionError] = useState(null);
@@ -106,8 +106,15 @@ export default function OrdersInfo() {
               </div>
             )}
 
+            {/* Not authenticated */}
+            {isLoaded && !isAuthenticated && (
+              <div className="text-center py-5">
+                <p className="text mb-0">Please sign in to view your orders.</p>
+              </div>
+            )}
+
             {/* Loading state */}
-            {orders === undefined && (
+            {isAuthenticated && orders === undefined && (
               <div className="text-center py-5">
                 <div className="spinner-border text-thm" role="status" />
               </div>
