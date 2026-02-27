@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { query } from "../_generated/server";
+import { mutation, query } from "../_generated/server";
 
 /**
  * Get all marketplace categories as a tree (parents with nested children),
@@ -76,5 +76,129 @@ export const getBySlug = query({
         q.eq("slug", args.slug).eq("locale", locale)
       )
       .first();
+  },
+});
+
+/**
+ * Get the first tenant ID (helper for seeding).
+ */
+export const getFirstTenant = query({
+  args: {},
+  handler: async (ctx) => {
+    const tenant = await ctx.db.query("tenants").first();
+    return tenant?._id ?? null;
+  },
+});
+
+/**
+ * Seed marketplace categories in bulk.
+ * Accepts parent categories with nested children.
+ * Skips categories whose slug+locale already exists.
+ */
+export const seedAll = mutation({
+  args: {
+    tenantId: v.id("tenants"),
+    categories: v.array(
+      v.object({
+        name: v.string(),
+        slug: v.string(),
+        icon: v.optional(v.string()),
+        serviceType: v.optional(v.string()),
+        sortOrder: v.optional(v.number()),
+        children: v.optional(
+          v.array(
+            v.object({
+              name: v.string(),
+              slug: v.string(),
+              sortOrder: v.optional(v.number()),
+            })
+          )
+        ),
+      })
+    ),
+    locale: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const locale = args.locale ?? "en";
+    const now = Date.now();
+    let inserted = 0;
+    let skipped = 0;
+
+    for (const cat of args.categories) {
+      // Check if parent already exists
+      const existing = await ctx.db
+        .query("marketplaceCategories")
+        .withIndex("by_slug_locale", (q) =>
+          q.eq("slug", cat.slug).eq("locale", locale)
+        )
+        .first();
+
+      if (existing) {
+        skipped++;
+        // Still seed children under existing parent
+        if (cat.children) {
+          for (const child of cat.children) {
+            const childExists = await ctx.db
+              .query("marketplaceCategories")
+              .withIndex("by_slug_locale", (q) =>
+                q.eq("slug", child.slug).eq("locale", locale)
+              )
+              .first();
+            if (childExists) {
+              skipped++;
+              continue;
+            }
+            await ctx.db.insert("marketplaceCategories", {
+              tenantId: args.tenantId,
+              name: child.name,
+              slug: child.slug,
+              parentId: existing._id,
+              sortOrder: child.sortOrder,
+              isActive: true,
+              locale,
+              createdAt: now,
+              updatedAt: now,
+            });
+            inserted++;
+          }
+        }
+        continue;
+      }
+
+      // Insert parent
+      const parentId = await ctx.db.insert("marketplaceCategories", {
+        tenantId: args.tenantId,
+        name: cat.name,
+        slug: cat.slug,
+        icon: cat.icon,
+        serviceType: cat.serviceType ?? "digital",
+        sortOrder: cat.sortOrder,
+        isActive: true,
+        locale,
+        createdAt: now,
+        updatedAt: now,
+      });
+      inserted++;
+
+      // Insert children
+      if (cat.children) {
+        for (const child of cat.children) {
+          await ctx.db.insert("marketplaceCategories", {
+            tenantId: args.tenantId,
+            name: child.name,
+            slug: child.slug,
+            parentId,
+            sortOrder: child.sortOrder,
+            isActive: true,
+            locale,
+            createdAt: now,
+            updatedAt: now,
+          });
+          inserted++;
+        }
+      }
+    }
+
+    return { inserted, skipped };
   },
 });
