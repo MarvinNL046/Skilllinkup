@@ -11,7 +11,7 @@ export default function InvoiceCard1({ data }) {
           </div>
         </th>
         <td className="vam">{data.purchaseDate}</td>
-        <td className="vam">${data.amount.toFixed(3)}</td>
+        <td className="vam">${(data?.amount ?? 0).toFixed(2)}</td>
         <td className="vam">
           <span
             className={`pending-style ${data.status === 1 ? "style1" : ""} ${

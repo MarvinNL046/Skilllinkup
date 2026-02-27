@@ -34,7 +34,6 @@ export default function OrdersInfo() {
 
   const handleAction = async (action, orderId, extra) => {
     setActionLoading(orderId);
-    setActionError(null);
     try {
       if (action === "deliver") {
         await deliverOrder({ orderId });
