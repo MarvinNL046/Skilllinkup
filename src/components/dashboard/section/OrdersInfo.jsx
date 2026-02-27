@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import DashboardNavigation from "../header/DashboardNavigation";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -147,10 +148,17 @@ export default function OrdersInfo() {
               </div>
             )}
 
-            {/* Loading state */}
-            {isAuthenticated && orders === undefined && (
+            {/* Loading Convex user or loading orders */}
+            {isAuthenticated && (convexUser === undefined || (convexUser?._id && orders === undefined)) && (
               <div className="text-center py-5">
                 <div className="spinner-border text-thm" role="status" />
+              </div>
+            )}
+
+            {/* Authenticated but no Convex profile found */}
+            {isAuthenticated && convexUser === null && (
+              <div className="text-center py-5">
+                <p className="text mb-0">No account profile found. Please complete your <Link href="/onboarding" className="text-thm">onboarding</Link> first.</p>
               </div>
             )}
 

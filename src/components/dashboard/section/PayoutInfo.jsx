@@ -8,7 +8,7 @@ import PaymentMethod from "./PaymentMethod";
 import StripeConnectButton from "@/components/ui/StripeConnectButton";
 
 export default function PayoutInfo() {
-  const { convexUser } = useConvexUser();
+  const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const userId = convexUser?._id;
 
   const freelancerOrders = useQuery(
@@ -16,7 +16,9 @@ export default function PayoutInfo() {
     userId ? { userId, role: "freelancer" } : "skip"
   );
 
-  const isLoading = freelancerOrders === undefined;
+  const isLoading = isAuthenticated && (convexUser === undefined || (userId && freelancerOrders === undefined));
+  const notAuthenticated = isLoaded && !isAuthenticated;
+  const noConvexProfile = isAuthenticated && convexUser === null;
 
   // Calculate total earnings from completed orders
   const completedOrders = (freelancerOrders || []).filter(
@@ -96,7 +98,23 @@ export default function PayoutInfo() {
           </div>
         </div>
 
-        {/* Earnings summary cards */}
+        {notAuthenticated && (
+          <div className="row"><div className="col-12">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30">
+              <p className="text text-center mb-0">Please sign in to view your payouts.</p>
+            </div>
+          </div></div>
+        )}
+
+        {noConvexProfile && (
+          <div className="row"><div className="col-12">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30">
+              <p className="text text-center mb-0">No account profile found. Please complete your <Link href="/onboarding" className="text-thm">onboarding</Link> first.</p>
+            </div>
+          </div></div>
+        )}
+
+        {!notAuthenticated && !noConvexProfile && (<>{/* Earnings summary cards */}
         <div className="row mb30">
           <div className="col-sm-6 col-lg-4">
             <div className="d-flex align-items-center justify-content-between statistics_funfact">
@@ -229,6 +247,7 @@ export default function PayoutInfo() {
             </div>
           </div>
         </div>
+        </>)}
       </div>
     </>
   );
