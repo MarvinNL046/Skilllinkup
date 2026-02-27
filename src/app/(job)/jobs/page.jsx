@@ -3,7 +3,6 @@ import Breadcumb3 from "@/components/breadcumb/Breadcumb3";
 import Header20 from "@/components/header/Header20";
 
 import Listing16 from "@/components/section/Listing16";
-import TabSection1 from "@/components/section/TabSection1";
 
 export const metadata = {
     title: "Find Jobs | SkillLinkup",
@@ -14,8 +13,7 @@ export default function page() {
     return (
         <>
             <Header20 />
-            <TabSection1 />
-            <Breadcumb3 path={["Home", "Services", "Design & Creative"]} />
+            <Breadcumb3 path={["Home", "Jobs"]} />
             <Breadcumb12 />
             <Listing16 />
         </>

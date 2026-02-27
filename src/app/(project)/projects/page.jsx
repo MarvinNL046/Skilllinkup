@@ -3,7 +3,7 @@ import Breadcumb3 from "@/components/breadcumb/Breadcumb3";
 import Header20 from "@/components/header/Header20";
 
 import Listing19 from "@/components/section/Listing19";
-import TabSection1 from "@/components/section/TabSection1";
+
 export const metadata = {
     title: "Browse Projects | SkillLinkup",
     description: "Find freelance projects and opportunities on SkillLinkup. Browse open projects across all categories and submit your proposal.",
@@ -13,12 +13,9 @@ export default function page() {
     return (
         <>
             <Header20 />
-            <TabSection1 />
-            <Breadcumb3 path={["Home", "Services", "Design & Creative"]} />
-            <div className=" bgc-thm3">
-                <Breadcumb18 />
-                <Listing19 />
-            </div>
+            <Breadcumb3 path={["Home", "Projects"]} />
+            <Breadcumb18 />
+            <Listing19 />
         </>
     );
 }
