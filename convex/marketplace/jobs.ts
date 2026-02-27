@@ -22,17 +22,27 @@ export const list = query({
 
     const enriched = await Promise.all(
       filtered.map(async (job) => {
-        const client = await ctx.db.get(job.clientId);
-        const category = job.categoryId
-          ? await ctx.db.get(job.categoryId)
-          : null;
+        try {
+          const client = await ctx.db.get(job.clientId);
+          const category = job.categoryId
+            ? await ctx.db.get(job.categoryId)
+            : null;
 
-        return {
-          ...job,
-          clientName: client?.name ?? null,
-          clientAvatar: client?.avatar ?? client?.image ?? null,
-          categoryName: category?.name ?? null,
-        };
+          return {
+            ...job,
+            clientName: client?.name ?? null,
+            clientAvatar: client?.avatar ?? client?.image ?? null,
+            categoryName: category?.name ?? null,
+          };
+        } catch {
+          // If enrichment fails (e.g. deleted user), return job with defaults
+          return {
+            ...job,
+            clientName: null,
+            clientAvatar: null,
+            categoryName: null,
+          };
+        }
       })
     );
 
@@ -58,10 +68,16 @@ export const getBySlug = query({
 
     if (!job) return null;
 
-    const client = await ctx.db.get(job.clientId);
-    const category = job.categoryId
-      ? await ctx.db.get(job.categoryId)
-      : null;
+    let client = null;
+    let category = null;
+    try {
+      client = await ctx.db.get(job.clientId);
+      category = job.categoryId
+        ? await ctx.db.get(job.categoryId)
+        : null;
+    } catch {
+      // Silently handle missing references
+    }
 
     return {
       ...job,

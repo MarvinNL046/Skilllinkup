@@ -18,8 +18,11 @@ function PostContent({ slug }) {
   const [initialized, setInitialized] = useState(false);
 
   // Sync image state when post data arrives
+  // Skip /images/posts/ URLs as those files don't exist on production
   if (post && !initialized) {
-    if (post.featureImg) setFeatSrc(post.featureImg);
+    if (post.featureImg && !post.featureImg.startsWith("/images/posts/")) {
+      setFeatSrc(post.featureImg);
+    }
     if (post.author?.image) setAvatarSrc(post.author.image);
     setInitialized(true);
   }

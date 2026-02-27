@@ -2,11 +2,18 @@
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 
+// Check if image URL points to an existing path (not /images/posts/ which doesn't exist)
+function validImg(url) {
+  if (!url) return null;
+  if (url.startsWith("/images/posts/")) return null;
+  return url;
+}
+
 function mapConvexPost(post, index) {
   return {
     id: index + 1,
     _id: post._id,
-    img: post.featureImg || "/images/blog/default-blog-feature.jpg",
+    img: validImg(post.featureImg) || "/images/blog/default-blog-feature.jpg",
     date: post.publishedAt
       ? new Date(post.publishedAt).toLocaleDateString("en-US", {
           year: "numeric",
