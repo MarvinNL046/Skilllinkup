@@ -160,7 +160,7 @@ export default function OrderCard({ order, role }) {
             <div className="text-lg-end mb10">
               <h5 className="mb-0">
                 {currencySymbol}
-                {displayAmount.toFixed(2)}
+                {(displayAmount ?? 0).toFixed(2)}
               </h5>
               {role === "freelancer" && order.freelancerEarnings != null && (
                 <span className="fz12 text">after platform fee</span>

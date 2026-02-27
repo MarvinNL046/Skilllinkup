@@ -205,8 +205,8 @@ export default function OrdersInfo() {
                           <span className="fz15 fw500">
                             {getCurrencySymbol(order.currency)}
                             {role === "freelancer"
-                              ? (order.freelancerEarnings ?? order.amount).toFixed(2)
-                              : order.amount.toFixed(2)}
+                              ? (order.freelancerEarnings ?? order.amount ?? 0).toFixed(2)
+                              : (order.amount ?? 0).toFixed(2)}
                           </span>
                           {role === "freelancer" && order.freelancerEarnings != null && (
                             <span className="fz12 text d-block">after fee</span>

@@ -105,7 +105,7 @@ export default function InvoiceInfo() {
                           </td>
                           <td className="vam fz15 fw500">
                             {getCurrencySymbol(order.currency)}
-                            {order.amount.toFixed(2)}
+                            {(order.amount ?? 0).toFixed(2)}
                           </td>
                           <td className="vam">
                             <span className="pending-style style3">Completed</span>
