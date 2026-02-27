@@ -103,7 +103,7 @@ export default function StatementInfo() {
           </div></div>
         )}
 
-        {(isAuthenticated || !isLoaded) && (<div className="row">
+        {(isAuthenticated || !isLoaded) && (<><div className="row">
           <div className="col-sm-6 col-xxl-3">
             <div className="d-flex align-items-center justify-content-between statistics_funfact">
               <div className="details">
@@ -222,7 +222,7 @@ export default function StatementInfo() {
             </div>
           </div>
         </div>
-        )}
+        </>)}
       </div>
     </>
   );
