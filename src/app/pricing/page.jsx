@@ -4,7 +4,7 @@ import Header20 from "@/components/header/Header20";
 export const metadata = {
   title: "Pricing | SkillLinkup",
   description:
-    "SkillLinkup charges just 2.5% for buyers and 2.5% for sellers per transaction. No subscriptions, no hidden fees. Free to join.",
+    "SkillLinkup charges just 3.5% for buyers and 3.5% for sellers per transaction. No subscriptions, no hidden fees. Free to join.",
 };
 
 export default function PricingPage() {
@@ -20,7 +20,7 @@ export default function PricingPage() {
                 Simple, transparent pricing
               </h1>
               <p className="paragraph fz17">
-                No subscriptions. No monthly fees. Just 2.5% each for buyer and seller.
+                No subscriptions. No monthly fees. Just 3.5% each for buyer and seller.
               </p>
             </div>
           </div>
@@ -42,7 +42,7 @@ export default function PricingPage() {
                   className="mb5"
                   style={{ fontSize: "4rem", fontWeight: 800 }}
                 >
-                  2.5% + 2.5%
+                  3.5% + 3.5%
                 </h2>
                 <p className="body-color fz15 mb0">buyer fee + seller fee per completed order</p>
               </div>
@@ -100,9 +100,9 @@ export default function PricingPage() {
                   >
                     <span style={{ fontSize: "1.8rem" }}>3</span>
                   </div>
-                  <h5 className="mb10">Keep 97.5%</h5>
+                  <h5 className="mb10">Keep 96.5%</h5>
                   <p className="body-color fz14">
-                    We only take a 2.5% fee from each side when the order is completed.
+                    We only take a 3.5% fee from each side when the order is completed.
                   </p>
                 </div>
               </div>
@@ -130,10 +130,10 @@ export default function PricingPage() {
                         SkillLinkup
                       </td>
                       <td className="py-3 px-4 fw500" style={{ color: "#22c55e" }}>
-                        2.5%
+                        3.5%
                       </td>
                       <td className="py-3 px-4 fw500" style={{ color: "#22c55e" }}>
-                        2.5%
+                        3.5%
                       </td>
                     </tr>
                     <tr>
@@ -173,23 +173,23 @@ export default function PricingPage() {
               <div className="mb20">
                 <h6 className="mb10">When do I pay the fee?</h6>
                 <p className="body-color fz14">
-                  The 2.5% seller fee is automatically deducted from the freelancer&apos;s
-                  earnings when the payment is released from escrow. The 2.5% buyer fee
+                  The 3.5% seller fee is automatically deducted from the freelancer&apos;s
+                  earnings when the payment is released from escrow. The 3.5% buyer fee
                   is added at checkout.
                 </p>
               </div>
               <div className="mb20">
                 <h6 className="mb10">Are there any hidden fees?</h6>
                 <p className="body-color fz14">
-                  No. The 2.5% on each side is the only fee we charge. There are no
+                  No. The 3.5% on each side is the only fee we charge. There are no
                   listing fees, subscription fees, or withdrawal fees.
                 </p>
               </div>
               <div className="mb20">
                 <h6 className="mb10">How much do buyers pay?</h6>
                 <p className="body-color fz14">
-                  Buyers pay the listed price plus a small 2.5% service fee. For
-                  example, on a €100 order the buyer pays €102.50.
+                  Buyers pay the listed price plus a small 3.5% service fee. For
+                  example, on a €100 order the buyer pays €103.50.
                 </p>
               </div>
               <div className="mb20">
