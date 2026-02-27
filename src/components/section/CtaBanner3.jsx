@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function CtaBanner3() {
   return (
     <>
@@ -24,7 +26,7 @@ export default function CtaBanner3() {
                     <div className="list-content flex-grow-1 ml20">
                       <h4 className="mb-1">Proof of quality</h4>
                       <p className="text mb-0 fz15">
-                        Check any pro’s work samples, client reviews, and
+                        Check any pro's work samples, client reviews, and
                         identity
                         <br className="d-none d-lg-block" />
                         verification.
@@ -49,7 +51,7 @@ export default function CtaBanner3() {
                       <h4 className="mb-1">Safe and secure</h4>
                       <p className="text mb-0 fz15">
                         Focus on your work knowing we help protect your data and
-                        privacy. We’re here with 24/7 support if you need it.
+                        privacy. We're here with 24/7 support if you need it.
                       </p>
                     </div>
                   </div>
@@ -59,61 +61,14 @@ export default function CtaBanner3() {
                 className="col-md-6 col-xl-6 offset-xl-1 wow fadeInLeft"
                 data-wow-delay="500ms"
               >
-                <div
-                  className="bdrs16 p-4 p-lg-5 text-center"
-                  style={{
-                    background: "#1e1541",
-                    minHeight: 500,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: "2rem",
-                  }}
-                >
-                  <div className="d-flex justify-content-center gap-4 mb10">
-                    <div
-                      className="bdrs12 p-4 text-center"
-                      style={{ background: "rgba(255,255,255,0.08)", minWidth: 140 }}
-                    >
-                      <h2 className="text-white mb5" style={{ fontSize: "2.5rem", fontWeight: 800 }}>
-                        19+
-                      </h2>
-                      <p className="text-white-50 fz14 mb0">Platforms</p>
-                    </div>
-                    <div
-                      className="bdrs12 p-4 text-center"
-                      style={{ background: "rgba(255,255,255,0.08)", minWidth: 140 }}
-                    >
-                      <h2 className="text-white mb5" style={{ fontSize: "2.5rem", fontWeight: 800 }}>
-                        3.5%
-                      </h2>
-                      <p className="text-white-50 fz14 mb0">Low Fees</p>
-                    </div>
-                  </div>
-                  <div className="d-flex justify-content-center gap-4">
-                    <div
-                      className="bdrs12 p-4 text-center"
-                      style={{ background: "rgba(255,255,255,0.08)", minWidth: 140 }}
-                    >
-                      <h2 className="text-white mb5" style={{ fontSize: "2.5rem", fontWeight: 800 }}>
-                        24/7
-                      </h2>
-                      <p className="text-white-50 fz14 mb0">Support</p>
-                    </div>
-                    <div
-                      className="bdrs12 p-4 text-center"
-                      style={{ background: "rgba(255,255,255,0.08)", minWidth: 140 }}
-                    >
-                      <h2 className="text-white mb5" style={{ fontSize: "2.5rem", fontWeight: 800 }}>
-                        100%
-                      </h2>
-                      <p className="text-white-50 fz14 mb0">Secure Escrow</p>
-                    </div>
-                  </div>
-                  <p className="text-white-50 fz15 mt10 mb0 px-3">
-                    Trusted by freelancers and clients worldwide
-                  </p>
+                <div className="about-img">
+                  <Image
+                    height={700}
+                    width={700}
+                    className="w100 h-100 bdrs16"
+                    src="/images/about/about-6.png"
+                    alt="Diverse freelancers collaborating remotely on laptops and screens"
+                  />
                 </div>
               </div>
             </div>
