@@ -14,7 +14,7 @@ export default function About5() {
                 <div
                   className="d-flex align-items-center justify-content-center bdrs16"
                   style={{
-                    background: "linear-gradient(135deg, #1e1541 0%, #ef2b70 100%)",
+                    background: "#1e1541",
                     minHeight: 400,
                     padding: "3rem",
                   }}
