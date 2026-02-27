@@ -1,4 +1,52 @@
+"use client";
+
+import { useState } from "react";
+import { toast } from "sonner";
+
 export default function ContactInfo1() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [sending, setSending] = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    if (!name.trim() || !email.trim() || !subject || !message.trim()) {
+      toast.error("Please fill in all fields before sending.");
+      return;
+    }
+
+    setSending(true);
+    const loadingToast = toast.loading("Sending your message...");
+
+    try {
+      const res = await fetch("/api/email/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, subject, message }),
+      });
+
+      toast.dismiss(loadingToast);
+
+      if (!res.ok) {
+        throw new Error("Server responded with an error");
+      }
+
+      toast.success("Message sent! We'll get back to you within 24 hours.");
+      setName("");
+      setEmail("");
+      setSubject("");
+      setMessage("");
+    } catch {
+      toast.dismiss(loadingToast);
+      toast.error("Failed to send message. Please try again.");
+    } finally {
+      setSending(false);
+    }
+  }
+
   return (
     <>
       <section className="pt-0">
@@ -54,7 +102,7 @@ export default function ContactInfo1() {
                   Whether you have a question, feedback, or a partnership
                   inquiry, we&apos;d love to hear from you.
                 </p>
-                <form className="form-style1">
+                <form className="form-style1" onSubmit={handleSubmit}>
                   <div className="row">
                     <div className="col-md-6">
                       <div className="mb20">
@@ -65,6 +113,8 @@ export default function ContactInfo1() {
                           type="text"
                           className="form-control"
                           placeholder="Your name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
                         />
                       </div>
                     </div>
@@ -77,6 +127,8 @@ export default function ContactInfo1() {
                           type="email"
                           className="form-control"
                           placeholder="Your email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
                         />
                       </div>
                     </div>
@@ -85,7 +137,11 @@ export default function ContactInfo1() {
                         <label className="heading-color ff-heading fw500 mb10">
                           Subject
                         </label>
-                        <select className="form-control form-select">
+                        <select
+                          className="form-control form-select"
+                          value={subject}
+                          onChange={(e) => setSubject(e.target.value)}
+                        >
                           <option value="">Select a topic</option>
                           <option value="general">General Question</option>
                           <option value="account">Account & Login</option>
@@ -106,13 +162,19 @@ export default function ContactInfo1() {
                           cols={30}
                           rows={6}
                           placeholder="How can we help you?"
+                          value={message}
+                          onChange={(e) => setMessage(e.target.value)}
                         />
                       </div>
                     </div>
                     <div className="col-md-12">
                       <div>
-                        <button type="button" className="ud-btn btn-thm">
-                          Send Message
+                        <button
+                          type="submit"
+                          className="ud-btn btn-thm"
+                          disabled={sending}
+                        >
+                          {sending ? "Sending..." : "Send Message"}
                           <i className="fal fa-arrow-right-long" />
                         </button>
                       </div>

@@ -5,6 +5,8 @@ import BottomToTop from "@/components/button/BottomToTop";
 import SearchModal1 from "@/components/modal/SearchModal1";
 import NavSidebar from "@/components/sidebar/NavSidebar";
 import Providers from "@/components/Providers";
+import ExitIntentPopup from "@/components/ui/ExitIntentPopup";
+import { Toaster } from "sonner";
 
 if (typeof window !== "undefined") {
   import("bootstrap");
@@ -33,6 +35,8 @@ export default function ClientLayout({ children }) {
 
       {/* sidebar mobile navigation */}
       <NavSidebar />
+      <ExitIntentPopup />
+      <Toaster position="bottom-right" richColors />
     </Providers>
   );
 }

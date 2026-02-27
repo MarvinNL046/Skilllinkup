@@ -1,4 +1,6 @@
 "use client";
+import { useState } from "react";
+import { toast } from "sonner";
 import { about, category, support } from "@/data/footer";
 import Link from "next/link";
 import Image from "next/image";
@@ -9,6 +11,17 @@ import FooterSocial2 from "./ui/FooterSocial2";
 import FooterSocial3 from "./ui/FooterSocial3";
 
 export default function Footer14() {
+    const [email, setEmail] = useState("");
+
+    const handleSubscribe = () => {
+        if (!email || !email.includes("@")) {
+            toast.error("Please enter a valid email address.");
+            return;
+        }
+        toast.success("Thanks for subscribing! We'll keep you updated.");
+        setEmail("");
+    };
+
     return (
         <>
             <section className="footer-style1 at-home8 pb-0 pt60">
@@ -23,10 +36,13 @@ export default function Footer14() {
                                             type="email"
                                             className="form-control"
                                             placeholder="Your email address"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
                                         />
                                         <button
                                             className="text-thm"
                                             type="submit"
+                                            onClick={handleSubscribe}
                                         >
                                             Send
                                         </button>

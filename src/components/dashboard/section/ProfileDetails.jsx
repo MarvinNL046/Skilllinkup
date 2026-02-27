@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "sonner";
 import useConvexProfile from "@/hook/useConvexProfile";
 
 export default function ProfileDetails() {
@@ -18,8 +19,6 @@ export default function ProfileDetails() {
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [linkedinUrl, setLinkedinUrl] = useState("");
   const [saving, setSaving] = useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false);
-  const [saveError, setSaveError] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
 
   // Pre-fill form fields once profile loads
@@ -58,8 +57,6 @@ export default function ProfileDetails() {
     if (!profile?._id) return;
 
     setSaving(true);
-    setSaveSuccess(false);
-    setSaveError("");
 
     // Parse comma-separated inputs into arrays
     const skillsArray = skillsInput
@@ -87,11 +84,10 @@ export default function ProfileDetails() {
         linkedinUrl: linkedinUrl || undefined,
       });
 
-      setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 3000);
+      toast.success("Profile saved successfully!");
     } catch (error) {
       console.error("Failed to save profile:", error);
-      setSaveError("Something went wrong while saving. Please try again.");
+      toast.error("Something went wrong while saving. Please try again.");
     } finally {
       setSaving(false);
     }
@@ -146,17 +142,6 @@ export default function ProfileDetails() {
         <div className="bdrb1 pb15 mb25">
           <h5 className="list-title">Profile Details</h5>
         </div>
-
-        {saveSuccess && (
-          <div className="alert alert-success mb20" role="alert">
-            Profile saved successfully!
-          </div>
-        )}
-        {saveError && (
-          <div className="alert alert-danger mb20" role="alert">
-            {saveError}
-          </div>
-        )}
 
         {/* Avatar section */}
         <div className="col-xl-7">

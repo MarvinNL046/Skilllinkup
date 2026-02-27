@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { toast } from "sonner";
 
 export default function BidForm({ projectId, onSuccess }) {
   const [amount, setAmount] = useState("");
@@ -17,6 +18,7 @@ export default function BidForm({ projectId, onSuccess }) {
     e.preventDefault();
     if (!amount || !deliveryDays || !pitch) {
       setError("Please fill in all fields");
+      toast.error("Please fill in all fields");
       return;
     }
     setIsSubmitting(true);
@@ -28,10 +30,12 @@ export default function BidForm({ projectId, onSuccess }) {
         deliveryDays: Number.isFinite(parseInt(deliveryDays, 10)) ? parseInt(deliveryDays, 10) : 1,
         pitch,
       });
+      toast.success("Your bid has been submitted!");
       setSuccess(true);
       onSuccess?.();
     } catch (err) {
       setError(err.message || "Failed to submit bid");
+      toast.error(err.message || "Failed to submit bid");
     } finally {
       setIsSubmitting(false);
     }
