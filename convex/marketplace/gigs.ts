@@ -74,6 +74,113 @@ export const list = query({
 });
 
 /**
+ * List active gigs filtered by category slug.
+ * Resolves category by slug+locale, then finds gigs (including children categories).
+ */
+export const listByCategory = query({
+  args: {
+    categorySlug: v.string(),
+    locale: v.string(),
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const limit = args.limit ?? 50;
+
+    // Find the category by slug
+    const category = await ctx.db
+      .query("marketplaceCategories")
+      .withIndex("by_slug_locale", (q) =>
+        q.eq("slug", args.categorySlug).eq("locale", args.locale)
+      )
+      .first();
+
+    if (!category) return { category: null, gigs: [] };
+
+    // Collect this category ID + child category IDs
+    const categoryIds = [category._id];
+    const children = await ctx.db
+      .query("marketplaceCategories")
+      .withIndex("by_parent", (q) => q.eq("parentId", category._id))
+      .collect();
+    for (const child of children) {
+      categoryIds.push(child._id);
+    }
+
+    // Find gigs in any of these categories
+    const allGigs = [];
+    for (const catId of categoryIds) {
+      const gigs = await ctx.db
+        .query("gigs")
+        .withIndex("by_category", (q) => q.eq("categoryId", catId))
+        .filter((q) =>
+          q.and(
+            q.eq(q.field("status"), "active"),
+            q.eq(q.field("locale"), args.locale)
+          )
+        )
+        .collect();
+      allGigs.push(...gigs);
+    }
+
+    // Sort and limit
+    const sorted = allGigs
+      .sort((a, b) => {
+        const featA = a.isFeatured ? 1 : 0;
+        const featB = b.isFeatured ? 1 : 0;
+        if (featB !== featA) return featB - featA;
+        return (b.ratingAverage ?? 0) - (a.ratingAverage ?? 0);
+      })
+      .slice(0, limit);
+
+    // Enrich
+    const enriched = await Promise.all(
+      sorted.map(async (gig) => {
+        const freelancerProfile = await ctx.db.get(gig.freelancerId);
+        const gigCategory = gig.categoryId
+          ? await ctx.db.get(gig.categoryId)
+          : null;
+        const packages = await ctx.db
+          .query("gigPackages")
+          .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
+          .collect();
+        const minPrice =
+          packages.length > 0
+            ? Math.min(...packages.map((p) => p.price))
+            : null;
+        const images = await ctx.db
+          .query("gigImages")
+          .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
+          .collect();
+        const firstImage =
+          images.length > 0
+            ? images.sort(
+                (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
+              )[0]
+            : null;
+
+        return {
+          ...gig,
+          freelancerProfile,
+          category: gigCategory,
+          minPrice,
+          firstImage,
+        };
+      })
+    );
+
+    return {
+      category: {
+        ...category,
+        children: children.sort(
+          (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
+        ),
+      },
+      gigs: enriched,
+    };
+  },
+});
+
+/**
  * Get full gig detail by slug + locale.
  * Includes all packages (sorted by price ASC), all images (sorted by sortOrder ASC),
  * freelancer profile and category.

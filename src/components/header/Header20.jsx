@@ -2,7 +2,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import Mega from "./Mega";
 import Navigation from "./Navigation";
 import MobileNavigation2 from "./MobileNavigation2";
 import NotificationBell from "./NotificationBell";
@@ -34,9 +33,6 @@ export default function Header20() {
                                             priority
                                         />
                                     </Link>
-                                    <div className="home1_style">
-                                        <Mega />
-                                    </div>
                                 </div>
                             </div>
                             <div className="col-auto">

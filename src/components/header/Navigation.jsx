@@ -1,12 +1,28 @@
 "use client";
 import navigation from "@/data/navigation";
 import { isActiveNavigation } from "@/utils/isActiveNavigation";
+import useConvexCategories from "@/hook/useConvexCategories";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function Navigation() {
   const path = usePathname();
+  const categories = useConvexCategories("en");
+
+  // Sort parent categories by sortOrder
+  const sortedCategories = categories
+    ? [...categories].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+    : [];
+
+  // Split array into chunks of N
+  function chunk(arr, size) {
+    const result = [];
+    for (let i = 0; i < arr.length; i += size) {
+      result.push(arr.slice(i, i + size));
+    }
+    return result;
+  }
 
   return (
     <>
@@ -17,77 +33,162 @@ export default function Navigation() {
             : ""
         } `}
       >
-        {navigation.map((item,i) => (
-          <li
-            key={ i }
-            className={`visible_list menu-active ${
-              item.id === 1 ? "home-menu-parent" : ""
-            } `}
+        {/* Home */}
+        <li className="visible_list home-menu-parent">
+          <Link
+            href="/"
+            className={`list-item ${path === "/" ? "ui-active" : ""}`}
           >
-            {item.children ? (
-              <a
-                className={`list-item  ${
-                  isActiveNavigation(path, item) ? "ui-active" : ""
-                }`}
-              >
-                <span className="title">{item.name}</span>{" "}
-                {item.children && <span className="arrow "></span>}
-              </a>
-            ) : (
-              <Link
-                href={item.path}
-                className={`list-item
-                                ${item.path === path ? "ui-active" : ""}`}
-              >
-                <span className="title">{item.name}</span>
-              </Link>
-            )}
+            <span className="title">Home</span>
+          </Link>
+        </li>
 
-            {item.children && (
-              <ul className={`sub-menu ${item.id === 1 ? "home-menu" : ""} `}>
-                {item.children?.map((item2,i2) => (
-                  <li
-                    key={i2}
-                    className={`menu-active ${
-                      isActiveNavigation(path, item2) || item2.path === path
-                        ? "ui-child-active"
-                        : ""
-                    }`}
-                  >
-                    {item2.children ? (
-                      <a>
-                        <span className="title">{item2.name}</span>
-                        {item2.children && <span className="arrow "></span>}
-                      </a>
-                    ) : (
-                      <Link href={item2.path}>
-                        <span className="title">{item2.name}</span>
-                      </Link>
-                    )}
-
-                    {item2.children && (
-                      <ul className="sub-menu">
-                        {item2.children?.map((item3,i3) => (
-                          <li
-                            key={i3}
-                            className={
-                              item3.path === path ||
-                              item3.path === path.replace(/\/\d+$/, "")
-                                ? "ui-child-active"
-                                : ""
-                            }
-                          >
-                            <Link href={item3.path}>{item3.name}</Link>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+        {/* Categories - Mega Menu */}
+        <li className="visible_list megamenu_style">
+          <a
+            className={`list-item ${
+              path.startsWith("/services") ? "ui-active" : ""
+            }`}
+          >
+            <span className="title">Categories</span>
+            <span className="arrow"></span>
+          </a>
+          <ul className="dropdown-megamenu">
+            {sortedCategories.length === 0 ? (
+              <li className="mega_menu_list">
+                <ul className="sub-menu">
+                  <li>
+                    <a>Loading categories...</a>
                   </li>
-                ))}
-              </ul>
+                </ul>
+              </li>
+            ) : (
+              chunk(sortedCategories, 3).map((group, gi) => (
+                <li key={gi} className="mega_menu_list">
+                  <ul className="sub-menu">
+                    {group.map((cat) => (
+                      <li key={cat._id}>
+                        <Link href={`/services/${cat.slug}`}>
+                          {cat.icon && (
+                            <span className={`${cat.icon} mr5`} />
+                          )}
+                          <span className="fw500">{cat.name}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))
             )}
-          </li>
-        ))}
+          </ul>
+        </li>
+
+        {/* Browse - Mega Menu */}
+        <li className="visible_list megamenu_style">
+          <a
+            className={`list-item ${
+              ["/projects", "/jobs", "/freelancers", "/platforms"].some((p) =>
+                path.startsWith(p)
+              )
+                ? "ui-active"
+                : ""
+            }`}
+          >
+            <span className="title">Browse</span>
+            <span className="arrow"></span>
+          </a>
+          <ul className="dropdown-megamenu">
+            <li className="mega_menu_list">
+              <ul className="sub-menu">
+                <li>
+                  <Link href="/services">
+                    <span className="flaticon-developer mr5" />
+                    All Services
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/projects">
+                    <span className="flaticon-document mr5" />
+                    Projects
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/jobs">
+                    <span className="flaticon-briefcase mr5" />
+                    Jobs
+                  </Link>
+                </li>
+              </ul>
+            </li>
+            <li className="mega_menu_list">
+              <ul className="sub-menu">
+                <li>
+                  <Link href="/freelancers">
+                    <span className="flaticon-user mr5" />
+                    Freelancers
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/platforms">
+                    <span className="flaticon-web-design-1 mr5" />
+                    Platforms
+                  </Link>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+
+        {/* About - Mega Menu */}
+        <li className="visible_list megamenu_style">
+          <a
+            className={`list-item ${
+              ["/about", "/pricing", "/faq", "/help", "/blog"].some((p) =>
+                path.startsWith(p)
+              )
+                ? "ui-active"
+                : ""
+            }`}
+          >
+            <span className="title">About</span>
+            <span className="arrow"></span>
+          </a>
+          <ul className="dropdown-megamenu">
+            <li className="mega_menu_list">
+              <ul className="sub-menu">
+                <li>
+                  <Link href="/about">About Us</Link>
+                </li>
+                <li>
+                  <Link href="/pricing">Pricing</Link>
+                </li>
+                <li>
+                  <Link href="/blog">Blog</Link>
+                </li>
+              </ul>
+            </li>
+            <li className="mega_menu_list">
+              <ul className="sub-menu">
+                <li>
+                  <Link href="/faq">FAQ</Link>
+                </li>
+                <li>
+                  <Link href="/help">Help</Link>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+
+        {/* Contact */}
+        <li className="visible_list">
+          <Link
+            href="/contact"
+            className={`list-item ${path === "/contact" ? "ui-active" : ""}`}
+          >
+            <span className="title">Contact</span>
+          </Link>
+        </li>
       </ul>
     </>
   );
