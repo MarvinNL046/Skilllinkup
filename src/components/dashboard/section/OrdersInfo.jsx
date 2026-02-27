@@ -4,6 +4,7 @@ import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import DashboardNavigation from "../header/DashboardNavigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const STATUS_COLORS = {
   pending: "pending-style",
@@ -18,7 +19,8 @@ export default function OrdersInfo() {
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const [role, setRole] = useState("client");
   const [actionLoading, setActionLoading] = useState(null);
-  const [actionError, setActionError] = useState(null);
+  const [revisionOrderId, setRevisionOrderId] = useState(null);
+  const [revisionMessage, setRevisionMessage] = useState("");
 
   const orders = useQuery(
     api.marketplace.orders.getByUser,
@@ -35,21 +37,30 @@ export default function OrdersInfo() {
     try {
       if (action === "deliver") {
         await deliverOrder({ orderId });
+        toast.success("Order marked as delivered!");
       } else if (action === "approve") {
         await approveOrder({ orderId });
+        toast.success("Order approved!");
       } else if (action === "revision") {
         await requestRevision({ orderId, message: extra });
+        toast.success("Revision requested.");
+        setRevisionOrderId(null);
+        setRevisionMessage("");
       }
     } catch (err) {
-      setActionError(err.message);
+      toast.error(err.message || "Something went wrong.");
     }
     setActionLoading(null);
   };
 
   const handleRevision = (orderId) => {
-    const msg = prompt("Please describe what needs to be revised:");
-    if (msg && msg.trim()) {
-      handleAction("revision", orderId, msg.trim());
+    setRevisionOrderId(orderId);
+    setRevisionMessage("");
+  };
+
+  const submitRevision = () => {
+    if (revisionMessage.trim()) {
+      handleAction("revision", revisionOrderId, revisionMessage.trim());
     }
   };
 
@@ -98,11 +109,34 @@ export default function OrdersInfo() {
       <div className="row">
         <div className="col-xl-12">
           <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
-            {/* Error banner */}
-            {actionError && (
-              <div className="alert alert-danger alert-dismissible fz14 mb20" role="alert">
-                {actionError}
-                <button type="button" className="btn-close" onClick={() => setActionError(null)} />
+            {/* Revision message inline form */}
+            {revisionOrderId && (
+              <div className="bgc-thm4 bdrs4 p20 mb20">
+                <p className="fz14 fw500 mb10">Describe what needs to be revised:</p>
+                <textarea
+                  className="form-control mb10"
+                  rows={3}
+                  value={revisionMessage}
+                  onChange={(e) => setRevisionMessage(e.target.value)}
+                  placeholder="e.g. Please adjust the logo colors..."
+                />
+                <div className="d-flex gap-2">
+                  <button
+                    className="ud-btn btn-thm btn-sm fz14"
+                    disabled={!revisionMessage.trim() || actionLoading === revisionOrderId}
+                    onClick={submitRevision}
+                  >
+                    {actionLoading === revisionOrderId ? (
+                      <span className="spinner-border spinner-border-sm" role="status" />
+                    ) : "Submit Revision"}
+                  </button>
+                  <button
+                    className="ud-btn btn-white btn-sm fz14"
+                    onClick={() => { setRevisionOrderId(null); setRevisionMessage(""); }}
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             )}
 
