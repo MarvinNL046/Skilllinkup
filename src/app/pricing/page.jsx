@@ -44,7 +44,8 @@ export default function PricingPage() {
                 >
                   3.5% + 3.5%
                 </h2>
-                <p className="body-color fz15 mb0">buyer fee + seller fee per completed order</p>
+                <p className="body-color fz15 mb10">buyer fee + seller fee per completed order</p>
+                <p className="fz13 mb0" style={{ color: "#22c55e" }}>Payment processing costs included — no extra charges</p>
               </div>
             </div>
           </div>
@@ -181,8 +182,9 @@ export default function PricingPage() {
               <div className="mb20">
                 <h6 className="mb10">Are there any hidden fees?</h6>
                 <p className="body-color fz14">
-                  No. The 3.5% on each side is the only fee we charge. There are no
-                  listing fees, subscription fees, or withdrawal fees.
+                  No. The 3.5% on each side is the only fee we charge. Payment
+                  processing costs (Stripe) are included — we cover those. There are
+                  no listing fees, subscription fees, or withdrawal fees.
                 </p>
               </div>
               <div className="mb20">
