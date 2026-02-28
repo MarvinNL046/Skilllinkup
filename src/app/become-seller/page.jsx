@@ -1,30 +1,19 @@
-import AboutArea1 from "@/components/section/AboutArea1";
-import Breadcumb1 from "@/components/breadcumb/Breadcumb1";
-import CtaBanner1 from "@/components/section/CtaBanner1";
-import OurFaq1 from "@/components/section/OurFaq1";
-import OurFeature1 from "@/components/section/OurFeature1";
 import Header20 from "@/components/header/Header20";
 import Footer14 from "@/components/footer/Footer14";
+import BecomeSeller from "@/components/section/BecomeSeller";
 
 export const metadata = {
-    title: "Become a Seller | SkillLinkup",
-    description: "Start selling your freelance services on SkillLinkup. Create your profile, list your skills, and connect with clients looking for your expertise.",
+  title: "Become a Seller | SkillLinkup",
+  description:
+    "Start selling your freelance services on SkillLinkup. Offer digital services online, get local leads, or find employment opportunities.",
 };
 
 export default function page() {
-    return (
-        <>
-            <Header20 />
-            <Breadcumb1
-                title={"Work Your Way"}
-                brief="Start freelancing or hire talent on your terms. SkillLinkup connects you with the right platforms."
-                isBtnActive={true}
-            />
-            <AboutArea1 />
-            <OurFeature1 />
-            <CtaBanner1 />
-            <OurFaq1 />
-            <Footer14 />
-        </>
-    );
+  return (
+    <>
+      <Header20 />
+      <BecomeSeller />
+      <Footer14 />
+    </>
+  );
 }
