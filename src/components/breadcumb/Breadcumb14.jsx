@@ -29,8 +29,7 @@ export default function Breadcumb14() {
                 <div className="position-relative">
                   <h2>Employer List</h2>
                   <p className="text">
-                    All the Lorem Ipsum generators on the Internet tend to
-                    repeat.
+                    Discover top companies and employers hiring on SkillLinkup.
                   </p>
                 </div>
                 <div className="advance-search-tab bgc-white p10 bdrs4 mt30">

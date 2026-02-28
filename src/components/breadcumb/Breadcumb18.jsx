@@ -21,29 +21,13 @@ export default function Breadcumb18() {
           src="/images/vector-img/right-bottom.png"
           alt=" image "
         />
-        <Image
-          width={275}
-          height={289}
-          style={{ height: "fit-content" }}
-           className="service-v1-vector d-none d-lg-block zi1"
-          src="/images/about/about-11.png"
-          alt=" image "
-        />
-        <Image
-          width={269}
-          height={300}
-          style={{ height: "fit-content" }}
-           className="vector-v12 bounce-y d-none d-lg-block"
-          src="/images/about/element-12.png"
-          alt=" image "
-        />
         <div  className="container">
           <div  className="row wow fadeInUp">
             <div  className="col-xl-7">
               <div  className="position-relative">
                 <h2  className="text-white">Projects List</h2>
                 <p  className="text text-white">
-                  All the Lorem Ipsum generators on the Internet tend to repeat.
+                  Find projects that match your skills and start collaborating.
                 </p>
                 <div  className="advance-search-tab at-home6 bgc-white bdrs12 p10 position-relative border-0">
                   <div  className="row">

@@ -56,7 +56,7 @@ export default function Breadcumb15() {
                         <h5 className="title mb-1">Invision</h5>
                       )}
                       <p className="text fz14 mb-2">
-                        Lorem Ipsum Dolar Sit Amet
+                        Company Profile
                       </p>
                       <p className="mb-0 dark-color fz15 fw500 list-inline-item mb5-sm">
                         <i className="fas fa-star vam fz10 review-color me-2" />{" "}

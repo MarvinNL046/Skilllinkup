@@ -51,8 +51,7 @@ export default function Breadcumb12() {
                 <div className="position-relative">
                   <h2>Job List</h2>
                   <p className="text">
-                    All the Lorem Ipsum generators on the Internet tend to
-                    repeat.
+                    Browse open positions from companies looking for your skills.
                   </p>
                 </div>
                 <div className="advance-search-tab bgc-white p10 bdrs4 mt30">
