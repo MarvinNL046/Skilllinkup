@@ -21,12 +21,9 @@ import { stripe } from "@/lib/stripe";
 
 /**
  * Calculate the platform fee in cents based on the order amount.
- * Mirrors the fee logic in convex/marketplace/orders.ts.
  *
- * Tiers:
- *   < $50   → 15 %
- *   $50–500 → 12 %
- *   > $500  → 10 %
+ * IMPORTANT: Fee tiers must match convex/marketplace/orders.ts:calculatePlatformFee
+ * Tiers: <$50 → 15%, $50-500 → 12%, >$500 → 10%
  */
 function calculateApplicationFeeAmountCents(amountCents) {
   const amount = amountCents / 100;

@@ -212,8 +212,8 @@ async function handleCheckoutSessionCompleted(session) {
       amount,
       currency,
       deliveryDays: gigPackage.deliveryDays,
-      // clientId and freelancerId are required IDs; fall back gracefully.
-      clientId: clientUser?._id ?? gig.freelancerId, // placeholder if buyer unknown
+      // clientId is required; fall back to freelancerId if buyer unknown (requires manual resolution).
+      clientId: clientUser?._id ?? gig.freelancerId,
       freelancerId: gig.freelancerId,
       gigId: gig._id,
       gigPackageId: gigPackage._id,
@@ -222,6 +222,15 @@ async function handleCheckoutSessionCompleted(session) {
     console.error("[stripe/webhook] Failed to create Convex order:", err);
     // Still attempt to at least log the transaction below.
     return;
+  }
+
+  // Log structured warning if buyer was not found — order needs manual client resolution.
+  if (!clientUser) {
+    console.error(
+      `[stripe/webhook] ORDER REQUIRES MANUAL RESOLUTION: Order ${orderId} ` +
+      `has freelancerId as clientId because buyer "${buyerEmail}" was not found in Convex. ` +
+      `PaymentIntent: ${paymentIntentId}, Gig: ${gigId}`
+    );
   }
 
   // Link the Stripe PaymentIntent to the Convex order.
