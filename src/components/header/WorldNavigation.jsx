@@ -11,22 +11,34 @@ export default function WorldNavigation() {
   const worldItems = worldNavigation[world] || [];
   const sharedItems = worldNavigation.shared;
 
+  const activeStyle = {
+    fontWeight: 600,
+    borderBottom: "2px solid currentColor",
+    paddingBottom: "2px",
+  };
+
   return (
     <ul className="ace-responsive-menu" style={{ display: "flex", gap: 0, listStyle: "none", margin: 0, padding: 0 }}>
-      {worldItems.map((item) => (
-        <li key={item.id} className={path.startsWith(item.path) ? "ui-active" : ""}>
-          <Link className="list-item" href={item.path}>
-            <span className="title">{item.name}</span>
-          </Link>
-        </li>
-      ))}
-      {sharedItems.map((item) => (
-        <li key={item.id} className={path === item.path ? "ui-active" : ""}>
-          <Link className="list-item" href={item.path}>
-            <span className="title">{item.name}</span>
-          </Link>
-        </li>
-      ))}
+      {worldItems.map((item) => {
+        const isActive = path.startsWith(item.path);
+        return (
+          <li key={item.id} className={isActive ? "ui-active" : ""}>
+            <Link className="list-item" href={item.path} style={isActive ? activeStyle : undefined}>
+              <span className="title">{item.name}</span>
+            </Link>
+          </li>
+        );
+      })}
+      {sharedItems.map((item) => {
+        const isActive = path === item.path;
+        return (
+          <li key={item.id} className={isActive ? "ui-active" : ""}>
+            <Link className="list-item" href={item.path} style={isActive ? activeStyle : undefined}>
+              <span className="title">{item.name}</span>
+            </Link>
+          </li>
+        );
+      })}
     </ul>
   );
 }
