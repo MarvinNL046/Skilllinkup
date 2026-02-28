@@ -12,11 +12,7 @@ const worldNavigation = {
     { id: 1, name: "Browse Jobs", path: "/jobs/browse" },
     { id: 2, name: "Companies", path: "/jobs/companies" },
   ],
-  shared: [
-    { id: 10, name: "About", path: "/about" },
-    { id: 11, name: "Blog", path: "/blog" },
-    { id: 12, name: "Contact", path: "/contact" },
-  ],
+  shared: [],
 };
 
 export default worldNavigation;

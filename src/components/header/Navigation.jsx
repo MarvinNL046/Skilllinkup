@@ -139,56 +139,6 @@ export default function Navigation() {
           </ul>
         </li>
 
-        {/* About - Mega Menu */}
-        <li className="visible_list megamenu_style">
-          <a
-            className={`list-item ${
-              ["/about", "/pricing", "/faq", "/help", "/blog"].some((p) =>
-                path.startsWith(p)
-              )
-                ? "ui-active"
-                : ""
-            }`}
-          >
-            <span className="title">About</span>
-            <span className="arrow"></span>
-          </a>
-          <ul className="dropdown-megamenu">
-            <li className="mega_menu_list">
-              <ul className="sub-menu">
-                <li>
-                  <Link href="/about">About Us</Link>
-                </li>
-                <li>
-                  <Link href="/pricing">Pricing</Link>
-                </li>
-                <li>
-                  <Link href="/blog">Blog</Link>
-                </li>
-              </ul>
-            </li>
-            <li className="mega_menu_list">
-              <ul className="sub-menu">
-                <li>
-                  <Link href="/faq">FAQ</Link>
-                </li>
-                <li>
-                  <Link href="/help">Help</Link>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-
-        {/* Contact */}
-        <li className="visible_list">
-          <Link
-            href="/contact"
-            className={`list-item ${path === "/contact" ? "ui-active" : ""}`}
-          >
-            <span className="title">Contact</span>
-          </Link>
-        </li>
       </ul>
     </>
   );
