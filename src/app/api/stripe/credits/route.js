@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
-import { CREDIT_PACKAGES } from "../../../../convex/marketplace/leadPricing";
+
+// Credit packages — must match convex/marketplace/leadPricing.ts CREDIT_PACKAGES
+const CREDIT_PACKAGES = [
+  { id: "starter", name: "Starter", credits: 5, priceEur: 25, priceCents: 2500 },
+  { id: "popular", name: "Popular", credits: 10, priceEur: 45, priceCents: 4500 },
+  { id: "pro", name: "Pro", credits: 25, priceEur: 99, priceCents: 9900 },
+];
 
 export async function POST(request) {
   if (!stripe) {

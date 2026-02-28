@@ -1,8 +1,14 @@
 "use client";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { CREDIT_PACKAGES } from "../../../../convex/marketplace/leadPricing";
 import { useState } from "react";
+
+// Credit packages — must match convex/marketplace/leadPricing.ts
+const CREDIT_PACKAGES = [
+  { id: "starter", name: "Starter", credits: 5, priceEur: 25, priceCents: 2500 },
+  { id: "popular", name: "Popular", credits: 10, priceEur: 45, priceCents: 4500 },
+  { id: "pro", name: "Pro", credits: 25, priceEur: 99, priceCents: 9900 },
+];
 import { toast } from "sonner";
 
 export default function CreditsInfo() {
