@@ -26,11 +26,9 @@ export default function LocationOption1() {
                 onChange={() => locationHandler(item.value)}
               />
               <span className="checkmark" />
-              <span className="right-tags">({item.total})</span>
             </label>
           ))}
         </div>
-        <a className="text-thm">+20 more</a>
       </div>
     </>
   );

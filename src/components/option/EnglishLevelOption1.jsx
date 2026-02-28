@@ -23,7 +23,6 @@ export default function EnglishLevelOption1() {
               checked={getEnglishLevel.includes(item.title)}
             />
             <span className="checkmark" />
-            <span className="right-tags">({item.total})</span>
           </label>
         ))}
       </div>

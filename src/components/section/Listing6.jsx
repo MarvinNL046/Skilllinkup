@@ -1,4 +1,6 @@
 "use client";
+import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import useConvexGigs from "@/hook/useConvexGigs";
 import ListingOption2 from "../element/ListingOption2";
 import ListingSidebarModal1 from "../modal/ListingSidebarModal1";
@@ -12,6 +14,8 @@ import EmptyState from "@/components/ui/EmptyState";
 import Link from "next/link";
 
 export default function Listing6() {
+  const searchParams = useSearchParams();
+  const setSearch = listingStore((state) => state.setSearch);
   const getDeliveryTime = listingStore((state) => state.getDeliveryTime);
   const getPriceRange = priceStore((state) => state.priceRange);
   const getLevel = listingStore((state) => state.getLevel);
@@ -20,6 +24,12 @@ export default function Listing6() {
   const getDesginTool = listingStore((state) => state.getDesginTool);
   const getSpeak = listingStore((state) => state.getSpeak);
   const getSearch = listingStore((state) => state.getSearch);
+
+  // Sync URL search params to Zustand store on mount
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q) setSearch(q);
+  }, [searchParams, setSearch]);
 
   const product1 = useConvexGigs();
 
@@ -39,30 +49,7 @@ export default function Listing6() {
     );
   }
 
-  // Empty state when no services exist yet
-  if (product1.length === 0) {
-    return (
-      <section className="pt30 pb90">
-        <div className="container">
-          <div className="row mb30">
-            <div className="col-12">
-              <h2 className="title mb5">Browse Services</h2>
-              <p className="body-color">
-                Find freelance services for your next project.
-              </p>
-            </div>
-          </div>
-          <EmptyState
-            icon="🎨"
-            title="No services yet"
-            description="Be the first to offer your services on SkillLinkup"
-            actionLabel="Become a Seller"
-            actionHref="/become-seller"
-          />
-        </div>
-      </section>
-    );
-  }
+  // Handle empty state within the normal layout (sidebar stays visible)
 
   // Filter functions
   const deliveryFilter = (item) =>
@@ -77,8 +64,10 @@ export default function Listing6() {
     getLocation?.length !== 0 ? getLocation.includes(item.location) : true;
   const searchFilter = (item) =>
     getSearch !== ""
-      ? item.location.split("-").join(" ").includes(getSearch.toLowerCase())
-      : item;
+      ? (item.title || "").toLowerCase().includes(getSearch.toLowerCase()) ||
+        (item.category || "").toLowerCase().includes(getSearch.toLowerCase()) ||
+        (item.location || "").toLowerCase().includes(getSearch.toLowerCase())
+      : true;
   const sortByFilter = (item) =>
     getBestSeller === "best-seller" ? true : item.sort === getBestSeller;
   const designToolFilter = (item) =>
@@ -110,21 +99,21 @@ export default function Listing6() {
     <>
       <section className="pt30 pb90">
         <div className="container">
-          <div className="row mb30">
-            <div className="col-12">
-              <h2 className="title mb5">Browse Services</h2>
-              <p className="body-color">
-                Find freelance services for your next project.
-              </p>
-            </div>
-          </div>
           <div className="row">
             <div className="col-lg-3">
               <ListingSidebar1 />
             </div>
             <div className="col-lg-9">
               <ListingOption2 itemLength={content?.length} />
-              {content.length === 0 ? (
+              {product1.length === 0 ? (
+                <EmptyState
+                  icon="🎨"
+                  title="No services yet"
+                  description="Be the first to offer your services on SkillLinkup"
+                  actionLabel="Become a Seller"
+                  actionHref="/become-seller"
+                />
+              ) : content.length === 0 ? (
                 <EmptyState
                   icon="🔍"
                   title="No matching services"

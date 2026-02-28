@@ -33,7 +33,6 @@ export default function DeliveryTimeOption1() {
               >
                 {item.title}
               </label>
-              <span className="right-tags">({item.total})</span>
             </div>
           ))}
         </div>

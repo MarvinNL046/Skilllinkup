@@ -1,4 +1,6 @@
 "use client";
+import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import listingStore from "@/store/listingStore";
 import ListingOption2 from "../element/ListingOption2";
 import ListingSidebar5 from "../sidebar/ListingSidebar5";
@@ -10,6 +12,8 @@ import ListingSidebarModal5 from "../modal/ListingSidebarModal5";
 import EmptyState from "@/components/ui/EmptyState";
 
 export default function Listing14() {
+  const searchParams = useSearchParams();
+  const setSearch = listingStore((state) => state.setSearch);
   const getCategory = listingStore((state) => state.getCategory);
   const priceRange = priceStore((state) => state.priceRange);
   const getLocation = listingStore((state) => state.getLocation);
@@ -17,6 +21,12 @@ export default function Listing14() {
   const getLevel = listingStore((state) => state.getLevel);
   const getSpeak = listingStore((state) => state.getSpeak);
   const getBestSeller = listingStore((state) => state.getBestSeller);
+
+  // Sync URL search params to Zustand store on mount
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q) setSearch(q);
+  }, [searchParams, setSearch]);
 
   // category filter
   const categoryFilter = (item) =>
@@ -34,8 +44,10 @@ export default function Listing14() {
 
   const searchFilter = (item) =>
     getSearch !== ""
-      ? item.location.split("-").join(" ").includes(getSearch.toLowerCase())
-      : item;
+      ? (item.name || "").toLowerCase().includes(getSearch.toLowerCase()) ||
+        (item.skill || "").toLowerCase().includes(getSearch.toLowerCase()) ||
+        (item.location || "").toLowerCase().includes(getSearch.toLowerCase())
+      : true;
 
   // level filter
   const levelFilter = (item) =>

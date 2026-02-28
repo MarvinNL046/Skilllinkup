@@ -23,7 +23,6 @@ export default function CategoryOption2() {
               checked={getCategory.includes(item.title)}
             />
             <span className="checkmark" />
-            <span className="right-tags">({item.total})</span>
           </label>
         ))}
       </div>

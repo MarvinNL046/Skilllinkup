@@ -1,5 +1,5 @@
 "use client";
-import { clientNavigation, freelancerNavigation } from "@/data/dashboard";
+import { dashboardNavigation } from "@/data/dashboard";
 import toggleStore from "@/store/toggleStore";
 import useConvexUser from "@/hook/useConvexUser";
 import Image from "next/image";
@@ -15,11 +15,10 @@ export default function DashboardHeader() {
   const { signOut } = useClerk();
   const { convexUser } = useConvexUser();
 
-  const isFreelancer = convexUser?.userType === "freelancer";
-  const nav = isFreelancer ? freelancerNavigation : clientNavigation;
-  const navItems = nav.filter((item) => item.name !== "Logout");
-  const startEnd = isFreelancer ? 5 : 5;
-  const organizeEnd = isFreelancer ? 10 : 7;
+  const role = convexUser?.userType === "freelancer" ? "freelancer" : "client";
+  const world = convexUser?.preferredWorld || "online";
+  const sections = dashboardNavigation[role]?.[world]
+    || dashboardNavigation[role]?.online;
 
   return (
     <>
@@ -104,6 +103,7 @@ export default function DashboardHeader() {
                         </div>
                       </div>
                     </li>
+                    {/* Saved — standalone icon link (from main) */}
                     <li className="d-none d-sm-block">
                       <Link
                         href="/saved"
@@ -128,7 +128,7 @@ export default function DashboardHeader() {
                             <p className="fz15 fw400 ff-heading mb10 pl30">
                               Start
                             </p>
-                            {navItems.slice(0, startEnd).map((item, i) => (
+                            {sections.start.map((item, i) => (
                               <Link
                                 key={i}
                                 className={`dropdown-item ${
@@ -143,7 +143,7 @@ export default function DashboardHeader() {
                             <p className="fz15 fw400 ff-heading mt30 pl30">
                               Organize and Manage
                             </p>
-                            {navItems.slice(startEnd, organizeEnd).map((item, i) => (
+                            {sections.organize.map((item, i) => (
                               <Link
                                 key={i}
                                 className={`dropdown-item ${
@@ -158,7 +158,7 @@ export default function DashboardHeader() {
                             <p className="fz15 fw400 ff-heading mt30 pl30">
                               Account
                             </p>
-                            {navItems.slice(organizeEnd).map((item, i) => (
+                            {sections.account.map((item, i) => (
                               <Link
                                 key={i}
                                 className={`dropdown-item ${

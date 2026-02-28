@@ -24,7 +24,6 @@ export default function SpeakOption1() {
                 checked={getSpeak.includes(item.value)}
               />
               <span className="checkmark" />
-              <span className="right-tags">({item.total})</span>
             </label>
           ))}
         </div>

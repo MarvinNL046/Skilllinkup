@@ -12,7 +12,7 @@ export default function ListingSidebar6() {
     <>
       <div className="list-sidebar-style1 d-none d-lg-block">
         <div className="accordion" id="accordionExample">
-          <div className="card mb20 pb10 mt-0 bgc-thm3">
+          <div className="card mb20 pb10 mt-0 bgc-white">
             <div className="card-header" id="heading0">
               <h4>
                 <button
@@ -39,7 +39,7 @@ export default function ListingSidebar6() {
               </div>
             </div>
           </div>
-          <div className="card mb20 pb10 bgc-thm3">
+          <div className="card mb20 pb10 bgc-white">
             <div className="card-header" id="heading01">
               <h4>
                 <button
@@ -65,7 +65,7 @@ export default function ListingSidebar6() {
               </div>
             </div>
           </div>
-          <div className="card mb20 pb0 bgc-thm3">
+          <div className="card mb20 pb0 bgc-white">
             <div className="card-header" id="heading1">
               <h4>
                 <button
@@ -91,7 +91,7 @@ export default function ListingSidebar6() {
               </div>
             </div>
           </div>
-          <div className="card mb20 pb10 bgc-thm3">
+          <div className="card mb20 pb10 bgc-white">
             <div className="card-header" id="heading0">
               <h4>
                 <button
@@ -117,7 +117,7 @@ export default function ListingSidebar6() {
               </div>
             </div>
           </div>
-          <div className="card mb20 pb5 bgc-thm3">
+          <div className="card mb20 pb5 bgc-white">
             <div className="card-header" id="heading2">
               <h4>
                 <button
@@ -143,7 +143,7 @@ export default function ListingSidebar6() {
               </div>
             </div>
           </div>
-          <div className="card mb20 pb5 bgc-thm3">
+          <div className="card mb20 pb5 bgc-white">
             <div className="card-header" id="heading3">
               <h4>
                 <button
@@ -169,7 +169,7 @@ export default function ListingSidebar6() {
               </div>
             </div>
           </div>
-          <div className="card mb20 pb5 bgc-thm3">
+          <div className="card mb20 pb5 bgc-white">
             <div className="card-header" id="heading4">
               <h4>
                 <button

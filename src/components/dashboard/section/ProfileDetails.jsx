@@ -105,21 +105,35 @@ export default function ProfileDetails() {
     );
   }
 
-  // User is a client, not a freelancer
-  if (convexUser?.userType === "client" || (profile === null && convexUser?.userType !== "freelancer")) {
+  // Non-freelancer: show a basic profile card with account info
+  const isFreelancer = convexUser?.userType === "freelancer";
+  if (!isFreelancer && profile === null) {
     return (
       <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
         <div className="bdrb1 pb15 mb25">
           <h5 className="list-title">Profile Details</h5>
         </div>
-        <div className="alert alert-info" role="alert">
-          <strong>This page is for freelancers.</strong> Switch to freelancer
-          mode to set up your profile.
+        <div className="row">
+          <div className="col-sm-6 mb20">
+            <label className="heading-color ff-heading fw500 mb10">Name</label>
+            <input type="text" className="form-control" value={convexUser?.name || ""} disabled />
+          </div>
+          <div className="col-sm-6 mb20">
+            <label className="heading-color ff-heading fw500 mb10">Email</label>
+            <input type="text" className="form-control" value={convexUser?.email || ""} disabled />
+          </div>
+          <div className="col-sm-6 mb20">
+            <label className="heading-color ff-heading fw500 mb10">Account Type</label>
+            <input type="text" className="form-control" value={convexUser?.userType || "Not set"} disabled />
+          </div>
+          <div className="col-sm-6 mb20">
+            <label className="heading-color ff-heading fw500 mb10">World</label>
+            <input type="text" className="form-control" value={convexUser?.preferredWorld || "online"} disabled />
+          </div>
         </div>
-        <Link href="/dashboard" className="ud-btn btn-thm mt15">
-          Go to Dashboard
-          <i className="fal fa-arrow-right-long" />
-        </Link>
+        <div className="alert alert-light mt10" role="alert">
+          Want to offer your services? <Link href="/onboarding?role=freelancer" className="fw500 text-thm">Switch to freelancer mode</Link> to set up your full profile with skills, hourly rate, and more.
+        </div>
       </div>
     );
   }

@@ -5,9 +5,9 @@ import { Doc } from "../_generated/dataModel";
 
 /**
  * Calculate the platform fee based on the order amount.
- * - < $50:   15%
- * - $50-500: 12%
- * - > $500:  10%
+ *
+ * IMPORTANT: Fee tiers must match src/app/api/stripe/checkout/route.js:calculateApplicationFeeAmountCents
+ * Tiers: <$50 → 15%, $50-500 → 12%, >$500 → 10%
  */
 function calculatePlatformFee(amount: number): number {
   if (amount < 50) return Math.round(amount * 0.15 * 100) / 100;

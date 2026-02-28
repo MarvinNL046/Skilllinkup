@@ -23,7 +23,15 @@ function StarRating({ rating }) {
 
 function stripHtml(html) {
   if (!html) return "";
-  return html.replace(/<[^>]*>/g, "").trim();
+  let text = html.replace(/<[^>]*>/g, "");
+  text = text
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&nbsp;/g, " ");
+  return text.trim();
 }
 
 export default function PlatformCard({ data }) {
@@ -96,7 +104,7 @@ export default function PlatformCard({ data }) {
         </div>
 
         {/* Rating */}
-        {rating != null && (
+        {rating !== null && rating !== undefined && (
           <div className="review-meta d-flex align-items-center mb10">
             <StarRating rating={rating} />
             <span className="body-color fz13 ms-2">{rating.toFixed(1)}</span>

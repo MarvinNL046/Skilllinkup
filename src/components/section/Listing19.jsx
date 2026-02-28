@@ -1,4 +1,6 @@
 "use client";
+import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import useConvexProjects from "@/hook/useConvexProjects";
 import ListingOption2 from "../element/ListingOption2";
 import Pagination1 from "./Pagination1";
@@ -10,6 +12,8 @@ import ListingSidebar6 from "../sidebar/ListingSidebar6";
 import EmptyState from "@/components/ui/EmptyState";
 
 export default function Listing19() {
+  const searchParams = useSearchParams();
+  const setSearch = listingStore((state) => state.setSearch);
   const getCategory = listingStore((state) => state.getCategory);
   const getProjectType = listingStore((state) => state.getProjectType);
   const getPrice = priceStore((state) => state.priceRange);
@@ -19,6 +23,12 @@ export default function Listing19() {
   const getSpeak = listingStore((state) => state.getSpeak);
   const getBestSeller = listingStore((state) => state.getBestSeller);
   const getEnglishLevel = listingStore((state) => state.getEnglishLevel);
+
+  // Sync URL search params to Zustand store on mount
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q) setSearch(q);
+  }, [searchParams, setSearch]);
 
   // category filter
   const categoryFilter = (item) =>
@@ -49,12 +59,10 @@ export default function Listing19() {
   // search filter
   const searchFilter = (item) =>
     getSearch !== ""
-      ? item.location
-          .split("-")
-          .join(" ")
-          .toLowerCase()
-          .includes(getSearch.toLowerCase())
-      : item;
+      ? (item.title || "").toLowerCase().includes(getSearch.toLowerCase()) ||
+        (item.category || "").toLowerCase().includes(getSearch.toLowerCase()) ||
+        (item.location || "").toLowerCase().includes(getSearch.toLowerCase())
+      : true;
 
   // speak filter
   const speakFilter = (item) =>

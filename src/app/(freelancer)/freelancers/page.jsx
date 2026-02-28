@@ -1,7 +1,7 @@
+import { Suspense } from "react";
 import Breadcumb1 from "@/components/breadcumb/Breadcumb1";
 import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
-
 import Listing14 from "@/components/section/Listing14";
 
 export const metadata = {
@@ -18,7 +18,9 @@ export default function page() {
                 brief="Browse talented professionals ready to work on your project."
                 isBtnActive={false}
             />
-            <Listing14 />
+            <Suspense>
+                <Listing14 />
+            </Suspense>
             <Footer14 />
         </>
     );

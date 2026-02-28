@@ -30,7 +30,6 @@ export default function JobTypeOption1() {
               >
                 {item.title}
               </label>
-              <span className="right-tags">({item.total})</span>
             </div>
           </div>
         ))}

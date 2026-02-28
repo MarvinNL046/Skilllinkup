@@ -15,36 +15,30 @@ export default function EmplyeeDetail1() {
               <div className="service-about">
                 <h4 className="mb20">About Company</h4>
                 <p className="text mb30">
-                  It is a long established fact that a reader will be distracted
-                  by the readable content of a page when looking at its layout.
-                  The point of using Lorem Ipsum is that it has a more-or-less
-                  normal distribution of letters, as opposed to using 'Content
-                  here, content here', making it look like readable English.
+                  This company uses SkillLinkup to connect with top freelance
+                  talent. They focus on delivering high-quality projects by
+                  collaborating with skilled professionals across design,
+                  development, and digital marketing.
                 </p>
                 <p className="text mb30">
-                  Many desktop publishing packages and web page editors now use
-                  Lorem Ipsum as their default model text, and a search for
-                  'lorem ipsum' will uncover many web sites still in their
-                  infancy. Various versions have evolved over the years,
-                  sometimes by accident, sometimes on purpose (injected humour
-                  and the like).
+                  With a strong track record on the platform, they provide
+                  clear project briefs, timely feedback, and secure payments
+                  through our escrow system. Freelancers consistently rate
+                  their experience working with this employer highly.
                 </p>
                 <h5 className="mb20 mt60">Who are we?</h5>
                 <p className="text mb30">
-                  It is a long established fact that a reader will be distracted
-                  by the readable content of a page when looking at its layout.
-                  The point of using Lorem Ipsum is that it has a more-or-less
-                  normal distribution of letters, as opposed to using 'Content
-                  here, content here', making it look like readable English.
+                  A growing team that values quality craftsmanship and
+                  professional collaboration. We believe the best work happens
+                  when talented people are given clear goals and the freedom
+                  to deliver their best.
                 </p>
                 <h5 className="mb20 mt60">What do we do?</h5>
                 <p className="text mb30">
-                  Many desktop publishing packages and web page editors now use
-                  Lorem Ipsum as their default model text, and a search for
-                  'lorem ipsum' will uncover many web sites still in their
-                  infancy. Various versions have evolved over the years,
-                  sometimes by accident, sometimes on purpose (injected humour
-                  and the like).
+                  We hire freelancers for a range of projects including web
+                  development, graphic design, content creation, and digital
+                  strategy. Every project is managed through SkillLinkup with
+                  milestone-based payments and direct communication.
                 </p>
                 <EmployeeDetailSlider1 />
                 <div className="row">

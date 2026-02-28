@@ -1,7 +1,7 @@
+import { Suspense } from "react";
 import Breadcumb18 from "@/components/breadcumb/Breadcumb18";
 import Breadcumb3 from "@/components/breadcumb/Breadcumb3";
 import Header20 from "@/components/header/Header20";
-
 import Listing19 from "@/components/section/Listing19";
 
 export const metadata = {
@@ -14,8 +14,10 @@ export default function page() {
         <>
             <Header20 />
             <Breadcumb3 path={["Home", "Projects"]} />
-            <Breadcumb18 />
-            <Listing19 />
+            <Suspense>
+                <Breadcumb18 />
+                <Listing19 />
+            </Suspense>
         </>
     );
 }

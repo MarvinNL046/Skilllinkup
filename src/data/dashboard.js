@@ -1,50 +1,84 @@
-// Client navigation: projects, orders, saved
-export const clientNavigation = [
-  { id: 1, name: "Dashboard", icon: "flaticon-home", path: "/dashboard" },
-  { id: 2, name: "My Projects", icon: "flaticon-content", path: "/manage-projects" },
-  { id: 3, name: "Create Project", icon: "flaticon-content", path: "/create-projects" },
-  { id: 4, name: "My Orders", icon: "flaticon-receipt", path: "/orders" },
-  { id: 5, name: "Saved", icon: "flaticon-like", path: "/saved" },
-  { id: 6, name: "Message", icon: "flaticon-chat", path: "/message" },
-  { id: 7, name: "Reviews", icon: "flaticon-review-1", path: "/reviews" },
-  { id: 8, name: "My Profile", icon: "flaticon-photo", path: "/my-profile" },
-  { id: 9, name: "Logout", icon: "flaticon-logout", path: "/login" },
-];
+// ============================================================
+// Shared nav items (reused across worlds)
+// ============================================================
+const _dashboard    = { id: 1,  name: "Dashboard",        icon: "flaticon-home",         path: "/dashboard" };
+const _manageServ   = { id: 2,  name: "Manage Services",  icon: "flaticon-presentation", path: "/manage-services" };
+const _addServ      = { id: 3,  name: "Add Services",     icon: "flaticon-document",     path: "/add-services" };
+const _proposals    = { id: 4,  name: "My Proposals",     icon: "flaticon-document",     path: "/proposal" };
+const _orders       = { id: 5,  name: "My Orders",        icon: "flaticon-receipt",      path: "/orders" };
+const _message      = { id: 6,  name: "Message",          icon: "flaticon-chat",         path: "/message" };
+const _reviews      = { id: 7,  name: "Reviews",          icon: "flaticon-review-1",     path: "/reviews" };
+const _payouts      = { id: 8,  name: "Payouts",          icon: "flaticon-dollar",       path: "/payouts" };
+const _statements   = { id: 9,  name: "Statements",       icon: "flaticon-web",          path: "/statements" };
+const _invoice      = { id: 10, name: "Invoice",          icon: "flaticon-receipt",      path: "/invoice" };
+const _profile      = { id: 11, name: "My Profile",       icon: "flaticon-photo",        path: "/my-profile" };
+const _logout       = { id: 12, name: "Logout",           icon: "flaticon-logout",       path: "/login" };
+const _credits      = { id: 13, name: "Credits",          icon: "flaticon-dollar",       path: "/dashboard/credits" };
+const _leads        = { id: 14, name: "My Leads",         icon: "flaticon-place",        path: "/dashboard/my-leads" };
+const _manageJobs   = { id: 15, name: "Manage Jobs",      icon: "flaticon-briefcase",    path: "/manage-jobs" };
+const _myProjects   = { id: 16, name: "My Projects",      icon: "flaticon-content",      path: "/manage-projects" };
+const _createProj   = { id: 17, name: "Create Project",   icon: "flaticon-content",      path: "/create-projects" };
+const _saved        = { id: 18, name: "Saved",            icon: "flaticon-like",         path: "/saved" };
+const _quoteReqs    = { id: 19, name: "My Quote Requests", icon: "flaticon-document",    path: "/dashboard/quote-requests" };
 
-// Freelancer navigation: services, proposals, payouts
+// ============================================================
+// World-specific navigation: dashboardNavigation[role][world]
+// Each entry has pre-split { start, organize, account } arrays
+// ============================================================
+export const dashboardNavigation = {
+  freelancer: {
+    online: {
+      start:    [_dashboard, _manageServ, _addServ, _proposals, _orders],
+      organize: [_message, _reviews, _payouts, _statements, _invoice],
+      account:  [_profile, _logout],
+    },
+    local: {
+      start:    [_dashboard, _leads, _credits, _orders],
+      organize: [_message, _reviews, _payouts],
+      account:  [_profile, _logout],
+    },
+    jobs: {
+      start:    [_dashboard, _manageJobs, _proposals, _orders],
+      organize: [_message, _reviews, _payouts],
+      account:  [_profile, _logout],
+    },
+  },
+  client: {
+    online: {
+      start:    [_dashboard, _myProjects, _createProj, _orders, _saved],
+      organize: [_message, _reviews],
+      account:  [_profile, _logout],
+    },
+    local: {
+      start:    [_dashboard, _quoteReqs, _orders, _saved],
+      organize: [_message, _reviews],
+      account:  [_profile, _logout],
+    },
+    jobs: {
+      start:    [_dashboard, _myProjects, _createProj, _orders, _saved],
+      organize: [_message, _reviews],
+      account:  [_profile, _logout],
+    },
+  },
+};
+
+// Backward compat: flat arrays = "online" world (default)
 export const freelancerNavigation = [
-  { id: 1, name: "Dashboard", icon: "flaticon-home", path: "/dashboard" },
-  { id: 2, name: "Manage Services", icon: "flaticon-presentation", path: "/manage-services" },
-  { id: 3, name: "Add Services", icon: "flaticon-document", path: "/add-services" },
-  { id: 4, name: "My Proposals", icon: "flaticon-document", path: "/proposal" },
-  { id: 5, name: "My Orders", icon: "flaticon-receipt", path: "/orders" },
-  { id: 6, name: "Message", icon: "flaticon-chat", path: "/message" },
-  { id: 7, name: "Reviews", icon: "flaticon-review-1", path: "/reviews" },
-  { id: 8, name: "Payouts", icon: "flaticon-dollar", path: "/payouts" },
-  { id: 9, name: "Statements", icon: "flaticon-web", path: "/statements" },
-  { id: 10, name: "Invoice", icon: "flaticon-receipt", path: "/invoice" },
-  { id: 11, name: "My Profile", icon: "flaticon-photo", path: "/my-profile" },
-  { id: 12, name: "Logout", icon: "flaticon-logout", path: "/login" },
+  ...dashboardNavigation.freelancer.online.start,
+  ...dashboardNavigation.freelancer.online.organize,
+  ...dashboardNavigation.freelancer.online.account,
 ];
 
-// Backward compat: default export combines both (used by legacy code)
+export const clientNavigation = [
+  ...dashboardNavigation.client.online.start,
+  ...dashboardNavigation.client.online.organize,
+  ...dashboardNavigation.client.online.account,
+];
+
 export const dasboardNavigation = [
-  { id: 1, name: "Dashboard", icon: "flaticon-home", path: "/dashboard" },
-  { id: 2, name: "My Proposals", icon: "flaticon-document", path: "/proposal" },
-  { id: 16, name: "My Orders", icon: "flaticon-receipt", path: "/orders" },
-  { id: 3, name: "Saved", icon: "flaticon-like", path: "/saved" },
-  { id: 4, name: "Message", icon: "flaticon-chat", path: "/message" },
-  { id: 5, name: "Reviews", icon: "flaticon-review-1", path: "/reviews" },
-  { id: 6, name: "Invoice", icon: "flaticon-receipt", path: "/invoice" },
-  { id: 7, name: "Payouts", icon: "flaticon-dollar", path: "/payouts" },
-  { id: 8, name: "Statements", icon: "flaticon-web", path: "/statements" },
-  { id: 9, name: "Manage Services", icon: "flaticon-presentation", path: "/manage-services" },
-  { id: 10, name: "Manage Jobs", icon: "flaticon-briefcase", path: "/manage-jobs" },
-  { id: 11, name: "Manage Project", icon: "flaticon-content", path: "/manage-projects" },
-  { id: 12, name: "Add Services", icon: "flaticon-document", path: "/add-services" },
-  { id: 13, name: "Create Project", icon: "flaticon-content", path: "/create-projects" },
-  { id: 14, name: "My Profile", icon: "flaticon-photo", path: "/my-profile" },
-  { id: 15, name: "Logout", icon: "flaticon-logout", path: "/login" },
+  _dashboard, _proposals, _orders, _saved, _message, _reviews,
+  _invoice, _payouts, _statements, _manageServ, _manageJobs,
+  _myProjects, _addServ, _createProj, _profile, _logout,
 ];
 
 export const invoice = [

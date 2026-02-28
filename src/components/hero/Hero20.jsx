@@ -1,25 +1,19 @@
 "use client";
 import Image from "next/image";
-import HeroSearch1 from "../element/HeroSearch1";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-const role = ["City, state, or zip", "Miami", "New York"];
-
-const popular = ["Designer", "Developer", "Web", "IOS", "PHP", "Senior"];
+const popular = ["Designer", "Developer", "Web", "WordPress", "Marketing", "SEO"];
 
 export default function Hero20() {
-  const [getSelectedRole, setSelectedRole] = useState(null);
-
-  // role handler
-  const roleHandler = (select) => {
-    setSelectedRole(select);
-  };
   const router = useRouter();
+  const [search, setSearch] = useState("");
 
-  // search handler
-  const searchHandler = () => {
-    router.push("/projects");
+  const handleSearch = (e) => {
+    e?.preventDefault?.();
+    const params = new URLSearchParams();
+    if (search) params.set("q", search);
+    router.push(`/online/services${params.toString() ? `?${params}` : ""}`);
   };
 
   return (
@@ -89,82 +83,61 @@ export default function Hero20() {
           <div className="col-xl-7">
             <div className="home20-hero-content text-center">
               <h1 className="animate-up-1 mb25 title">
-                Join us & Explore <br className="d-none d-xl-block" />
-                Thousands of Freelancer
+                Find Freelance Services <br className="d-none d-xl-block" />
+                For Your Business
               </h1>
               <p className="text mb30 animate-up-2">
-                Work with talented people at the most affordable price to get
+                Work with talented freelancers at competitive prices to get
                 the most <br className="d-none d-lg-block" />
-                out of your time and cost
+                out of your time and budget
               </p>
               <div className="advance-search-tab bgc-white bdr1-dark bdrs60 p10 bdrs4-sm banner-btn position-relative zi9 animate-up-3">
-                <div className="row">
-                  <div className="col-md-5 col-lg-6 col-xl-6">
-                    <div className="advance-search-field mb10-sm bdrr1 bdrn-sm">
-                      <HeroSearch1 />
-                    </div>
-                  </div>
-                  <div className="col-md-4 col-lg-4 col-xl-3">
-                    <div className="bselect-style1">
-                      <div className="dropdown bootstrap-select">
-                        <button
-                          type="button"
-                          className="btn dropdown-toggle btn-light"
-                          data-bs-toggle="dropdown"
-                        >
-                          <div className="filter-option">
-                            <div className="filter-option-inner">
-                              <div className="filter-option-inner-inner">
-                                {getSelectedRole !== null
-                                  ? getSelectedRole
-                                  : "City, state, or zip"}
-                              </div>
-                            </div>{" "}
-                          </div>
-                        </button>
-                        <div className="dropdown-menu ">
-                          <div className="inner show">
-                            <ul className="dropdown-menu inner show">
-                              {role.map((item, index) => (
-                                <li
-                                  onClick={() => roleHandler(item)}
-                                  key={index}
-                                  className="selected active"
-                                >
-                                  <a
-                                    className={`dropdown-item selected ${
-                                      getSelectedRole === item ? "active" : ""
-                                    }`}
-                                  >
-                                    <span className="text">{item}</span>
-                                  </a>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
+                <form onSubmit={handleSearch} className="row">
+                  <div className="col-md-8 col-lg-9">
+                    <div className="advance-search-field mb10-sm">
+                      <div className="form-search position-relative">
+                        <div className="box-search">
+                          <span className="icon far fa-magnifying-glass" />
+                          <input
+                            className="form-control"
+                            type="text"
+                            name="search"
+                            placeholder="What service are you looking for?"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                          />
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-3 col-lg-2 col-xl-3">
+                  <div className="col-md-4 col-lg-3">
                     <div className="text-center text-xl-start">
                       <button
                         className="ud-btn btn-thm default-box-shadow2 bdrs60 bdrs4-sm w-100"
-                        type="button"
-                        onClick={searchHandler}
+                        type="submit"
                       >
                         Search
                       </button>
                     </div>
                   </div>
-                </div>
+                </form>
               </div>
               <div className="d-block d-md-flex justify-content-center mt30 text-center animate-up-4">
-                <p className="hero-text fz15 me-2 mb-0">Popular Searches</p>
-
-                {popular.map((elm,i)=><a key={i} className="text" style={{marginRight:'5px'}} >
-                          {`${elm}${(i != (popular.length -1)) ? ',':' '}`}
-                        </a>)}
+                <p className="hero-text fz15 me-2 mb-0">Popular:</p>
+                {popular.map((term, i) => (
+                  <a
+                    key={i}
+                    className="text"
+                    style={{ marginRight: "5px", cursor: "pointer" }}
+                    onClick={() => {
+                      setSearch(term);
+                      const params = new URLSearchParams({ q: term });
+                      router.push(`/online/services?${params}`);
+                    }}
+                  >
+                    {`${term}${i !== popular.length - 1 ? "," : ""} `}
+                  </a>
+                ))}
               </div>
             </div>
           </div>

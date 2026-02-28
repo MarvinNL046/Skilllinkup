@@ -208,7 +208,7 @@ export default function OrdersInfo() {
                               ? (order.freelancerEarnings ?? order.amount ?? 0).toFixed(2)
                               : (order.amount ?? 0).toFixed(2)}
                           </span>
-                          {role === "freelancer" && order.freelancerEarnings != null && (
+                          {role === "freelancer" && order.freelancerEarnings !== null && order.freelancerEarnings !== undefined && (
                             <span className="fz12 text d-block">after fee</span>
                           )}
                         </td>

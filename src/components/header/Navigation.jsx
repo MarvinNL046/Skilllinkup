@@ -47,7 +47,7 @@ export default function Navigation() {
         <li className="visible_list megamenu_style">
           <a
             className={`list-item ${
-              path.startsWith("/services") ? "ui-active" : ""
+              path.startsWith("/online") ? "ui-active" : ""
             }`}
           >
             <span className="title">Categories</span>
@@ -68,7 +68,7 @@ export default function Navigation() {
                   <ul className="sub-menu">
                     {group.map((cat) => (
                       <li key={cat._id}>
-                        <Link href={`/services/${cat.slug}`}>
+                        <Link href={`/online/services/${cat.slug}`}>
                           {cat.icon && (
                             <span className={`${cat.icon} mr5`} />
                           )}
@@ -87,7 +87,7 @@ export default function Navigation() {
         <li className="visible_list megamenu_style">
           <a
             className={`list-item ${
-              ["/projects", "/jobs", "/freelancers", "/platforms"].some((p) =>
+              ["/online", "/jobs", "/platforms"].some((p) =>
                 path.startsWith(p)
               )
                 ? "ui-active"
@@ -101,19 +101,19 @@ export default function Navigation() {
             <li className="mega_menu_list">
               <ul className="sub-menu">
                 <li>
-                  <Link href="/services">
+                  <Link href="/online/services">
                     <span className="flaticon-developer mr5" />
                     All Services
                   </Link>
                 </li>
                 <li>
-                  <Link href="/projects">
+                  <Link href="/online/projects">
                     <span className="flaticon-document mr5" />
                     Projects
                   </Link>
                 </li>
                 <li>
-                  <Link href="/jobs">
+                  <Link href="/jobs/browse">
                     <span className="flaticon-briefcase mr5" />
                     Jobs
                   </Link>
@@ -123,7 +123,7 @@ export default function Navigation() {
             <li className="mega_menu_list">
               <ul className="sub-menu">
                 <li>
-                  <Link href="/freelancers">
+                  <Link href="/online/freelancers">
                     <span className="flaticon-user mr5" />
                     Freelancers
                   </Link>
@@ -139,56 +139,6 @@ export default function Navigation() {
           </ul>
         </li>
 
-        {/* About - Mega Menu */}
-        <li className="visible_list megamenu_style">
-          <a
-            className={`list-item ${
-              ["/about", "/pricing", "/faq", "/help", "/blog"].some((p) =>
-                path.startsWith(p)
-              )
-                ? "ui-active"
-                : ""
-            }`}
-          >
-            <span className="title">About</span>
-            <span className="arrow"></span>
-          </a>
-          <ul className="dropdown-megamenu">
-            <li className="mega_menu_list">
-              <ul className="sub-menu">
-                <li>
-                  <Link href="/about">About Us</Link>
-                </li>
-                <li>
-                  <Link href="/pricing">Pricing</Link>
-                </li>
-                <li>
-                  <Link href="/blog">Blog</Link>
-                </li>
-              </ul>
-            </li>
-            <li className="mega_menu_list">
-              <ul className="sub-menu">
-                <li>
-                  <Link href="/faq">FAQ</Link>
-                </li>
-                <li>
-                  <Link href="/help">Help</Link>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-
-        {/* Contact */}
-        <li className="visible_list">
-          <Link
-            href="/contact"
-            className={`list-item ${path === "/contact" ? "ui-active" : ""}`}
-          >
-            <span className="title">Contact</span>
-          </Link>
-        </li>
       </ul>
     </>
   );
