@@ -30,34 +30,34 @@ export const dashboardNavigation = {
     online: {
       start:    [_dashboard, _manageServ, _addServ, _proposals, _orders],
       organize: [_message, _reviews, _payouts, _statements, _invoice],
-      account:  [_profile, _logout],
+      account:  [_profile],
     },
     local: {
       start:    [_dashboard, _leads, _credits, _orders],
       organize: [_message, _reviews, _payouts],
-      account:  [_profile, _logout],
+      account:  [_profile],
     },
     jobs: {
       start:    [_dashboard, _manageJobs, _proposals, _orders],
       organize: [_message, _reviews, _payouts],
-      account:  [_profile, _logout],
+      account:  [_profile],
     },
   },
   client: {
     online: {
       start:    [_dashboard, _myProjects, _createProj, _orders, _saved],
       organize: [_message, _reviews],
-      account:  [_profile, _logout],
+      account:  [_profile],
     },
     local: {
       start:    [_dashboard, _quoteReqs, _orders, _saved],
       organize: [_message, _reviews],
-      account:  [_profile, _logout],
+      account:  [_profile],
     },
     jobs: {
       start:    [_dashboard, _myProjects, _createProj, _orders, _saved],
       organize: [_message, _reviews],
-      account:  [_profile, _logout],
+      account:  [_profile],
     },
   },
 };

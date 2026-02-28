@@ -2,12 +2,13 @@
 import Link from "next/link";
 import DashboardNavigation from "../header/DashboardNavigation";
 import { useState } from "react";
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import ManageProjectCard from "../card/ManageProjectCard";
 import ProposalModal1 from "../modal/ProposalModal1";
 import DeleteModal from "../modal/DeleteModal";
 import useConvexUser from "@/hook/useConvexUser";
+import { toast } from "sonner";
 
 const tabs = [
   { label: "All Projects", status: null },
@@ -20,7 +21,11 @@ const tabs = [
 
 export default function ManageProjectInfo() {
   const [selectedTab, setSelectedTab] = useState(0);
+  const [selectedProject, setSelectedProject] = useState(null);
   const { convexUser, isLoaded } = useConvexUser();
+
+  const updateProject = useMutation(api.marketplace.projects.update);
+  const removeProject = useMutation(api.marketplace.projects.remove);
 
   const projects = useQuery(
     api.marketplace.projects.getByClient,
@@ -36,6 +41,26 @@ export default function ManageProjectInfo() {
     : [];
 
   const isLoading = !isLoaded || (convexUser?._id && projects === undefined);
+
+  const handleDelete = async (projectId) => {
+    try {
+      await removeProject({ projectId });
+      toast.success("Project deleted successfully");
+    } catch (err) {
+      toast.error(err.message || "Failed to delete project");
+      throw err; // re-throw so modal knows it failed
+    }
+  };
+
+  const handleUpdate = async (fields) => {
+    try {
+      await updateProject(fields);
+      toast.success("Project updated successfully");
+    } catch (err) {
+      toast.error(err.message || "Failed to update project");
+      throw err;
+    }
+  };
 
   return (
     <>
@@ -122,7 +147,12 @@ export default function ManageProjectInfo() {
                       </thead>
                       <tbody className="t-body">
                         {filteredProjects.map((project) => (
-                          <ManageProjectCard key={project._id} project={project} />
+                          <ManageProjectCard
+                            key={project._id}
+                            project={project}
+                            onEdit={(p) => setSelectedProject(p)}
+                            onDelete={(p) => setSelectedProject(p)}
+                          />
                         ))}
                       </tbody>
                     </table>
@@ -133,8 +163,15 @@ export default function ManageProjectInfo() {
           </div>
         </div>
       </div>
-      <ProposalModal1 />
-      <DeleteModal />
+      <ProposalModal1
+        project={selectedProject}
+        onUpdate={handleUpdate}
+      />
+      <DeleteModal
+        projectId={selectedProject?._id}
+        projectTitle={selectedProject?.title}
+        onDelete={handleDelete}
+      />
     </>
   );
 }

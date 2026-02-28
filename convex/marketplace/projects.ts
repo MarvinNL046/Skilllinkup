@@ -378,6 +378,88 @@ export const getMyBids = query({
 });
 
 /**
+ * Soft-delete a project (set status to "cancelled").
+ * Requires authentication — caller must be the project owner.
+ */
+export const remove = mutation({
+  args: {
+    projectId: v.id("projects"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Authentication required");
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", identity.email!))
+      .first();
+    if (!user) throw new Error("User not found");
+
+    const project = await ctx.db.get(args.projectId);
+    if (!project) throw new Error("Project not found");
+
+    if (project.clientId !== user._id) {
+      throw new Error("Access denied: only the project owner can delete this project");
+    }
+
+    await ctx.db.patch(args.projectId, {
+      status: "cancelled",
+      updatedAt: Date.now(),
+    });
+
+    return args.projectId;
+  },
+});
+
+/**
+ * Update an existing project. Authentication required.
+ * Caller must be the project owner.
+ */
+export const update = mutation({
+  args: {
+    projectId: v.id("projects"),
+    title: v.optional(v.string()),
+    description: v.optional(v.string()),
+    budgetMin: v.optional(v.number()),
+    budgetMax: v.optional(v.number()),
+    deadline: v.optional(v.number()),
+    workType: v.optional(v.string()),
+    status: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Authentication required");
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", identity.email!))
+      .first();
+    if (!user) throw new Error("User not found");
+
+    const project = await ctx.db.get(args.projectId);
+    if (!project) throw new Error("Project not found");
+
+    if (project.clientId !== user._id) {
+      throw new Error("Access denied: only the project owner can update this project");
+    }
+
+    const { projectId, ...fields } = args;
+
+    // Build patch object with only defined fields
+    const patch: Record<string, unknown> = { updatedAt: Date.now() };
+    for (const [key, value] of Object.entries(fields)) {
+      if (value !== undefined) {
+        patch[key] = value;
+      }
+    }
+
+    await ctx.db.patch(projectId, patch);
+
+    return projectId;
+  },
+});
+
+/**
  * Client accepts a bid.
  * Sets bid status to "accepted" and project status to "in_progress".
  * Requires authentication — caller must be the project owner.

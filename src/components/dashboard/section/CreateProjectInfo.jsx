@@ -5,6 +5,7 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import DashboardNavigation from "../header/DashboardNavigation";
 import useConvexUser from "@/hook/useConvexUser";
+import { toast } from "sonner";
 
 function generateSlug(title) {
   return title
@@ -40,6 +41,11 @@ export default function CreateProjectInfo() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+
+    // Clear error when user starts typing
+    if (status.error) {
+      setStatus((prev) => ({ ...prev, error: null }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -50,9 +56,44 @@ export default function CreateProjectInfo() {
       return;
     }
 
-    if (!form.title.trim() || !form.description.trim()) {
-      setStatus({ loading: false, error: "Title and description are required.", success: false });
+    if (!form.title.trim()) {
+      setStatus({ loading: false, error: "Project title is required.", success: false });
       return;
+    }
+
+    if (!form.description.trim()) {
+      setStatus({ loading: false, error: "Project description is required.", success: false });
+      return;
+    }
+
+    // Budget validation
+    const parsedMin = form.budgetMin ? parseFloat(form.budgetMin) : NaN;
+    const parsedMax = form.budgetMax ? parseFloat(form.budgetMax) : NaN;
+
+    if (Number.isFinite(parsedMin) && parsedMin < 0) {
+      setStatus({ loading: false, error: "Budget minimum cannot be negative.", success: false });
+      return;
+    }
+
+    if (Number.isFinite(parsedMax) && parsedMax < 0) {
+      setStatus({ loading: false, error: "Budget maximum cannot be negative.", success: false });
+      return;
+    }
+
+    if (Number.isFinite(parsedMin) && Number.isFinite(parsedMax) && parsedMin > parsedMax) {
+      setStatus({ loading: false, error: "Budget minimum cannot be higher than budget maximum.", success: false });
+      return;
+    }
+
+    // Deadline validation — must be in the future
+    if (form.deadline) {
+      const deadlineDate = new Date(form.deadline);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (deadlineDate < today) {
+        setStatus({ loading: false, error: "Deadline must be a future date.", success: false });
+        return;
+      }
     }
 
     setStatus({ loading: true, error: null, success: false });
@@ -64,8 +105,6 @@ export default function CreateProjectInfo() {
         ? form.requiredSkills.split(",").map((s) => s.trim()).filter(Boolean)
         : undefined;
 
-      const parsedMin = form.budgetMin ? parseFloat(form.budgetMin) : NaN;
-      const parsedMax = form.budgetMax ? parseFloat(form.budgetMax) : NaN;
       const budgetMin = Number.isFinite(parsedMin) ? parsedMin : undefined;
       const budgetMax = Number.isFinite(parsedMax) ? parsedMax : undefined;
       const deadlineMs = form.deadline ? new Date(form.deadline).getTime() : undefined;
@@ -85,6 +124,7 @@ export default function CreateProjectInfo() {
       });
 
       setStatus({ loading: false, error: null, success: true });
+      toast.success("Project created successfully!");
 
       // Reset form
       setForm({
@@ -103,9 +143,39 @@ export default function CreateProjectInfo() {
         router.push("/manage-projects");
       }, 1500);
     } catch (err) {
-      setStatus({ loading: false, error: err.message || "Failed to create project.", success: false });
+      const message = err.message || "Failed to create project.";
+      setStatus({ loading: false, error: message, success: false });
+      toast.error(message);
     }
   };
+
+  // Show login prompt if user is not authenticated
+  if (isLoaded && !convexUser) {
+    return (
+      <div className="dashboard__content hover-bgc-color">
+        <div className="row pb40">
+          <div className="col-lg-12">
+            <DashboardNavigation />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-xl-12">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 text-center">
+              <h4 className="mb15">Sign in required</h4>
+              <p className="text-muted mb20">You need to be logged in to create a project.</p>
+              <button
+                onClick={() => router.push("/login")}
+                className="ud-btn btn-thm"
+              >
+                Sign In
+                <i className="fal fa-arrow-right-long" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -250,7 +320,7 @@ export default function CreateProjectInfo() {
                           onChange={handleChange}
                         >
                           <option value="remote">Remote</option>
-                          <option value="local">Local</option>
+                          <option value="local">On-site</option>
                           <option value="hybrid">Hybrid</option>
                         </select>
                       </div>
@@ -267,6 +337,7 @@ export default function CreateProjectInfo() {
                           className="form-control"
                           value={form.deadline}
                           onChange={handleChange}
+                          min={new Date().toISOString().split("T")[0]}
                         />
                       </div>
                     </div>
@@ -312,8 +383,17 @@ export default function CreateProjectInfo() {
                           className="ud-btn btn-thm"
                           disabled={status.loading || !isLoaded}
                         >
-                          {status.loading ? "Saving..." : "Save & Publish"}
-                          <i className="fal fa-arrow-right-long" />
+                          {status.loading ? (
+                            <>
+                              <span className="spinner-border spinner-border-sm me-2" role="status" />
+                              Saving...
+                            </>
+                          ) : (
+                            <>
+                              Save & Publish
+                              <i className="fal fa-arrow-right-long" />
+                            </>
+                          )}
                         </button>
                       </div>
                     </div>
