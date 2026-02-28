@@ -347,6 +347,7 @@ export default defineSchema({
     ratingCount: v.optional(v.number()),
     isAvailable: v.optional(v.boolean()),
     featured: v.optional(v.boolean()),
+    creditBalance: v.optional(v.number()), // pay-per-lead credits (default 0)
     status: v.string(), // pending, active, suspended
     locale: v.optional(v.string()),
     createdAt: v.number(),
@@ -730,6 +731,9 @@ export default defineSchema({
     preferredDate: v.optional(v.number()),
     status: v.string(), // open, closed
     quoteCount: v.optional(v.number()),
+    maxSlots: v.optional(v.number()),      // default 3
+    claimedSlots: v.optional(v.number()),  // default 0
+    isExclusive: v.optional(v.boolean()),  // default false
     createdAt: v.number(),
     updatedAt: v.number(),
   })
@@ -749,6 +753,30 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_quoteRequest", ["quoteRequestId"])
+    .index("by_freelancer", ["freelancerId"]),
+
+  // ============================================================
+  // LOCAL SERVICES: PAY-PER-LEAD
+  // ============================================================
+
+  leadClaims: defineTable({
+    quoteRequestId: v.id("quoteRequests"),
+    freelancerId: v.id("users"),
+    creditsSpent: v.number(),
+    claimType: v.union(v.literal("shared"), v.literal("exclusive")),
+    claimedAt: v.number(),
+  })
+    .index("by_quoteRequest", ["quoteRequestId"])
+    .index("by_freelancer", ["freelancerId"]),
+
+  creditTransactions: defineTable({
+    freelancerId: v.id("users"),
+    amount: v.number(), // positive = purchase, negative = spend
+    type: v.union(v.literal("purchase"), v.literal("spend"), v.literal("refund")),
+    description: v.string(),
+    referenceId: v.optional(v.string()), // Stripe session ID or leadClaim ID
+    createdAt: v.number(),
+  })
     .index("by_freelancer", ["freelancerId"]),
 
   // ============================================================
