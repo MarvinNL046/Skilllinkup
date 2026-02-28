@@ -13,7 +13,7 @@ export default function DashboardNavigation() {
   const isFreelancer = convexUser?.userType === "freelancer";
   const nav = isFreelancer ? freelancerNavigation : clientNavigation;
   const startEnd = isFreelancer ? 5 : 5;
-  const organizeEnd = isFreelancer ? 10 : 7;
+  const organizeEnd = isFreelancer ? 12 : 7;
 
   return (
     <>

@@ -23,6 +23,8 @@ export const freelancerNavigation = [
   { id: 8, name: "Payouts", icon: "flaticon-dollar", path: "/payouts" },
   { id: 9, name: "Statements", icon: "flaticon-web", path: "/statements" },
   { id: 10, name: "Invoice", icon: "flaticon-receipt", path: "/invoice" },
+  { id: 13, name: "Credits", icon: "flaticon-dollar", path: "/dashboard/credits" },
+  { id: 14, name: "My Leads", icon: "flaticon-place", path: "/dashboard/my-leads" },
   { id: 11, name: "My Profile", icon: "flaticon-photo", path: "/my-profile" },
   { id: 12, name: "Logout", icon: "flaticon-logout", path: "/login" },
 ];
