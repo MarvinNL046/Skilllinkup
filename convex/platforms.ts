@@ -64,9 +64,9 @@ export const getFeatured = query({
       .withIndex("by_featured", (q) =>
         q.eq("featured", true).eq("status", "published").eq("locale", args.locale)
       )
-      .collect();
+      .take(limit);
 
-    return platforms.slice(0, limit);
+    return platforms;
   },
 });
 
@@ -110,9 +110,9 @@ export const getByCategory = query({
         q.eq("status", "published").eq("locale", args.locale)
       )
       .filter((q) => q.eq(q.field("category"), args.category))
-      .collect();
+      .take(limit);
 
-    return platforms.slice(0, limit);
+    return platforms;
   },
 });
 

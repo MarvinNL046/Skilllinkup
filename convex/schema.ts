@@ -94,6 +94,8 @@ export default defineSchema({
     .index("by_category", ["categoryId"])
     .index("by_author", ["authorId"])
     .index("by_featured", ["featured", "status", "locale"])
+    .index("by_status_locale_publishedAt", ["status", "locale", "publishedAt"])
+    .index("by_status_locale_views", ["status", "locale", "views"])
     .index("by_tenant", ["tenantId"])
     .searchIndex("search_posts", {
       searchField: "title",
@@ -354,6 +356,7 @@ export default defineSchema({
   })
     .index("by_userId", ["userId"])
     .index("by_status", ["status"])
+    .index("by_status_locale", ["status", "locale"])
     .index("by_tenant", ["tenantId"])
     .searchIndex("search_freelancers", {
       searchField: "bio",
@@ -417,6 +420,7 @@ export default defineSchema({
     .index("by_slug_locale", ["slug", "locale"])
     .index("by_freelancer", ["freelancerId"])
     .index("by_category", ["categoryId"])
+    .index("by_category_status_locale", ["categoryId", "status", "locale"])
     .index("by_status_locale", ["status", "locale"])
     .searchIndex("search_gigs", {
       searchField: "title",
@@ -435,7 +439,9 @@ export default defineSchema({
     features: v.optional(v.array(v.any())),
     createdAt: v.number(),
     updatedAt: v.number(),
-  }).index("by_gig", ["gigId"]),
+  })
+    .index("by_gig", ["gigId"])
+    .index("by_gig_price", ["gigId", "price"]),
 
   gigImages: defineTable({
     gigId: v.id("gigs"),
@@ -443,7 +449,9 @@ export default defineSchema({
     altText: v.optional(v.string()),
     sortOrder: v.optional(v.number()),
     createdAt: v.number(),
-  }).index("by_gig", ["gigId"]),
+  })
+    .index("by_gig", ["gigId"])
+    .index("by_gig_sortOrder", ["gigId", "sortOrder"]),
 
   // ============================================================
   // MARKETPLACE: PROJECTS & BIDS
@@ -527,6 +535,7 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_status", ["status"])
+    .index("by_status_locale", ["status", "locale"])
     .index("by_slug_locale", ["slug", "locale"])
     .index("by_client", ["clientId"]),
 
@@ -566,7 +575,8 @@ export default defineSchema({
     .index("by_client", ["clientId"])
     .index("by_freelancer", ["freelancerId"])
     .index("by_status", ["status"])
-    .index("by_orderNumber", ["orderNumber"]),
+    .index("by_orderNumber", ["orderNumber"])
+    .index("by_stripePaymentIntentId", ["stripePaymentIntentId"]),
 
   orderMilestones: defineTable({
     orderId: v.id("orders"),

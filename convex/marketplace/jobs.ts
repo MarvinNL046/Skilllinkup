@@ -14,14 +14,14 @@ export const list = query({
 
     const jobs = await ctx.db
       .query("jobs")
-      .withIndex("by_status", (q) => q.eq("status", "open"))
+      .withIndex("by_status_locale", (q) =>
+        q.eq("status", "open").eq("locale", args.locale)
+      )
       .order("desc")
       .take(limit);
 
-    const filtered = jobs.filter((j) => j.locale === args.locale);
-
     const enriched = await Promise.all(
-      filtered.map(async (job) => {
+      jobs.map(async (job) => {
         try {
           const client = await ctx.db.get(job.clientId);
           const category = job.categoryId

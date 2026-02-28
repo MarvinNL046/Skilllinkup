@@ -15,20 +15,16 @@ export const list = query({
     const limit = args.limit ?? 10;
     const offset = args.offset ?? 0;
 
+    // Use publishedAt compound index — results already ordered by publishedAt
     const posts = await ctx.db
       .query("posts")
-      .withIndex("by_status_locale", (q) =>
+      .withIndex("by_status_locale_publishedAt", (q) =>
         q.eq("status", "published").eq("locale", args.locale)
       )
       .order("desc")
-      .collect();
+      .take(offset + limit);
 
-    // Sort by publishedAt desc (index order is by _creationTime, so we sort manually)
-    const sorted = posts
-      .slice()
-      .sort((a, b) => (b.publishedAt ?? 0) - (a.publishedAt ?? 0));
-
-    const paginated = sorted.slice(offset, offset + limit);
+    const paginated = posts.slice(offset);
 
     // Enrich each post with author and category
     const enriched = await Promise.all(
@@ -117,21 +113,17 @@ export const getTrending = query({
   handler: async (ctx, args) => {
     const limit = args.limit ?? 6;
 
+    // Use views compound index — results already ordered by views
     const posts = await ctx.db
       .query("posts")
-      .withIndex("by_status_locale", (q) =>
+      .withIndex("by_status_locale_views", (q) =>
         q.eq("status", "published").eq("locale", args.locale)
       )
-      .collect();
-
-    // Sort by views desc
-    const sorted = posts
-      .slice()
-      .sort((a, b) => (b.views ?? 0) - (a.views ?? 0))
-      .slice(0, limit);
+      .order("desc")
+      .take(limit);
 
     const enriched = await Promise.all(
-      sorted.map(async (post) => {
+      posts.map(async (post) => {
         const author = post.authorId ? await ctx.db.get(post.authorId) : null;
         const category = post.categoryId
           ? await ctx.db.get(post.categoryId)

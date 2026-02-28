@@ -127,10 +127,13 @@ export const create = mutation({
 export const getByStripePaymentIntentId = query({
   args: { stripePaymentIntentId: v.string() },
   handler: async (ctx, args) => {
-    // No index on stripePaymentIntentId — full table scan is acceptable
-    // since this is only called from the webhook and idempotency is rare.
-    const orders = await ctx.db.query("orders").collect();
-    return orders.find((o) => o.stripePaymentIntentId === args.stripePaymentIntentId) ?? null;
+    const order = await ctx.db
+      .query("orders")
+      .withIndex("by_stripePaymentIntentId", (q) =>
+        q.eq("stripePaymentIntentId", args.stripePaymentIntentId)
+      )
+      .first();
+    return order ?? null;
   },
 });
 

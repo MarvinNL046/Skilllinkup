@@ -37,33 +37,25 @@ export const list = query({
         const freelancerProfile = await ctx.db.get(gig.freelancerId);
         const category = gig.categoryId ? await ctx.db.get(gig.categoryId) : null;
 
-        // Get all packages to find minimum price
-        const packages = await ctx.db
+        // Get cheapest package via price-sorted index
+        const cheapestPackage = await ctx.db
           .query("gigPackages")
-          .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
-          .collect();
+          .withIndex("by_gig_price", (q) => q.eq("gigId", gig._id))
+          .order("asc")
+          .first();
 
-        const minPrice =
-          packages.length > 0
-            ? Math.min(...packages.map((p) => p.price))
-            : null;
-
-        // Get only the first image (lowest sortOrder)
-        const images = await ctx.db
+        // Get first image via sortOrder index
+        const firstImage = await ctx.db
           .query("gigImages")
-          .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
-          .collect();
-
-        const firstImage =
-          images.length > 0
-            ? images.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))[0]
-            : null;
+          .withIndex("by_gig_sortOrder", (q) => q.eq("gigId", gig._id))
+          .order("asc")
+          .first();
 
         return {
           ...gig,
           freelancerProfile,
           category,
-          minPrice,
+          minPrice: cheapestPackage?.price ?? null,
           firstImage,
         };
       })
@@ -106,17 +98,13 @@ export const listByCategory = query({
       categoryIds.push(child._id);
     }
 
-    // Find gigs in any of these categories
+    // Find gigs using compound index (category + status + locale)
     const allGigs = [];
     for (const catId of categoryIds) {
       const gigs = await ctx.db
         .query("gigs")
-        .withIndex("by_category", (q) => q.eq("categoryId", catId))
-        .filter((q) =>
-          q.and(
-            q.eq(q.field("status"), "active"),
-            q.eq(q.field("locale"), args.locale)
-          )
+        .withIndex("by_category_status_locale", (q) =>
+          q.eq("categoryId", catId).eq("status", "active").eq("locale", args.locale)
         )
         .collect();
       allGigs.push(...gigs);
@@ -139,30 +127,22 @@ export const listByCategory = query({
         const gigCategory = gig.categoryId
           ? await ctx.db.get(gig.categoryId)
           : null;
-        const packages = await ctx.db
+        const cheapestPackage = await ctx.db
           .query("gigPackages")
-          .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
-          .collect();
-        const minPrice =
-          packages.length > 0
-            ? Math.min(...packages.map((p) => p.price))
-            : null;
-        const images = await ctx.db
+          .withIndex("by_gig_price", (q) => q.eq("gigId", gig._id))
+          .order("asc")
+          .first();
+        const firstImage = await ctx.db
           .query("gigImages")
-          .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
-          .collect();
-        const firstImage =
-          images.length > 0
-            ? images.sort(
-                (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
-              )[0]
-            : null;
+          .withIndex("by_gig_sortOrder", (q) => q.eq("gigId", gig._id))
+          .order("asc")
+          .first();
 
         return {
           ...gig,
           freelancerProfile,
           category: gigCategory,
-          minPrice,
+          minPrice: cheapestPackage?.price ?? null,
           firstImage,
         };
       })
@@ -203,25 +183,19 @@ export const getBySlug = query({
     const freelancerProfile = await ctx.db.get(gig.freelancerId);
     const category = gig.categoryId ? await ctx.db.get(gig.categoryId) : null;
 
-    // Fetch all packages sorted by price ASC
-    const packagesRaw = await ctx.db
+    // Fetch all packages sorted by price ASC via index
+    const packages = await ctx.db
       .query("gigPackages")
-      .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
+      .withIndex("by_gig_price", (q) => q.eq("gigId", gig._id))
+      .order("asc")
       .collect();
 
-    const packages = packagesRaw
-      .slice()
-      .sort((a, b) => a.price - b.price);
-
-    // Fetch all images sorted by sortOrder ASC
-    const imagesRaw = await ctx.db
+    // Fetch all images sorted by sortOrder ASC via index
+    const images = await ctx.db
       .query("gigImages")
-      .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
+      .withIndex("by_gig_sortOrder", (q) => q.eq("gigId", gig._id))
+      .order("asc")
       .collect();
-
-    const images = imagesRaw
-      .slice()
-      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
 
     return {
       ...gig,
@@ -245,39 +219,32 @@ export const getByFreelancer = query({
     const gigs = await ctx.db
       .query("gigs")
       .withIndex("by_freelancer", (q) => q.eq("freelancerId", args.freelancerId))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("status"), "active"),
+          q.eq(q.field("locale"), args.locale)
+        )
+      )
       .collect();
 
-    // Filter to active gigs for the requested locale
-    const filtered = gigs.filter(
-      (g) => g.status === "active" && g.locale === args.locale
-    );
-
-    // Enrich with category, packages min price and first image
+    // Enrich with category, cheapest package price and first image
     const enriched = await Promise.all(
-      filtered.map(async (gig) => {
+      gigs.map(async (gig) => {
         const category = gig.categoryId ? await ctx.db.get(gig.categoryId) : null;
 
-        const packages = await ctx.db
+        const cheapestPackage = await ctx.db
           .query("gigPackages")
-          .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
-          .collect();
+          .withIndex("by_gig_price", (q) => q.eq("gigId", gig._id))
+          .order("asc")
+          .first();
 
-        const minPrice =
-          packages.length > 0
-            ? Math.min(...packages.map((p) => p.price))
-            : null;
-
-        const images = await ctx.db
+        const firstImage = await ctx.db
           .query("gigImages")
-          .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
-          .collect();
+          .withIndex("by_gig_sortOrder", (q) => q.eq("gigId", gig._id))
+          .order("asc")
+          .first();
 
-        const firstImage =
-          images.length > 0
-            ? images.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))[0]
-            : null;
-
-        return { ...gig, category, minPrice, firstImage };
+        return { ...gig, category, minPrice: cheapestPackage?.price ?? null, firstImage };
       })
     );
 
@@ -311,27 +278,19 @@ export const search = query({
         const freelancerProfile = await ctx.db.get(gig.freelancerId);
         const category = gig.categoryId ? await ctx.db.get(gig.categoryId) : null;
 
-        const packages = await ctx.db
+        const cheapestPackage = await ctx.db
           .query("gigPackages")
-          .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
-          .collect();
+          .withIndex("by_gig_price", (q) => q.eq("gigId", gig._id))
+          .order("asc")
+          .first();
 
-        const minPrice =
-          packages.length > 0
-            ? Math.min(...packages.map((p) => p.price))
-            : null;
-
-        const images = await ctx.db
+        const firstImage = await ctx.db
           .query("gigImages")
-          .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
-          .collect();
+          .withIndex("by_gig_sortOrder", (q) => q.eq("gigId", gig._id))
+          .order("asc")
+          .first();
 
-        const firstImage =
-          images.length > 0
-            ? images.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))[0]
-            : null;
-
-        return { ...gig, freelancerProfile, category, minPrice, firstImage };
+        return { ...gig, freelancerProfile, category, minPrice: cheapestPackage?.price ?? null, firstImage };
       })
     );
 
@@ -435,32 +394,24 @@ export const getAllByFreelancer = query({
       .order("desc")
       .collect();
 
-    // Enrich with packages min price and first image
+    // Enrich with cheapest package price and first image
     const enriched = await Promise.all(
       gigs.map(async (gig) => {
         const category = gig.categoryId ? await ctx.db.get(gig.categoryId) : null;
 
-        const packages = await ctx.db
+        const cheapestPackage = await ctx.db
           .query("gigPackages")
-          .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
-          .collect();
+          .withIndex("by_gig_price", (q) => q.eq("gigId", gig._id))
+          .order("asc")
+          .first();
 
-        const minPrice =
-          packages.length > 0
-            ? Math.min(...packages.map((p) => p.price))
-            : null;
-
-        const images = await ctx.db
+        const firstImage = await ctx.db
           .query("gigImages")
-          .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
-          .collect();
+          .withIndex("by_gig_sortOrder", (q) => q.eq("gigId", gig._id))
+          .order("asc")
+          .first();
 
-        const firstImage =
-          images.length > 0
-            ? images.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))[0]
-            : null;
-
-        return { ...gig, category, minPrice, firstImage };
+        return { ...gig, category, minPrice: cheapestPackage?.price ?? null, firstImage };
       })
     );
 

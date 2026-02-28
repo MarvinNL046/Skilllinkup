@@ -13,20 +13,24 @@ export const list = query({
   handler: async (ctx, args) => {
     const limit = args.limit ?? 20;
 
-    const profiles = await ctx.db
-      .query("freelancerProfiles")
-      .withIndex("by_status", (q) => q.eq("status", "active"))
-      .collect();
-
-    // Optionally filter by locale if provided
-    const filtered =
-      args.locale
-        ? profiles.filter((p) => !p.locale || p.locale === args.locale)
-        : profiles;
+    let profiles;
+    if (args.locale) {
+      // Use compound index for status + locale
+      profiles = await ctx.db
+        .query("freelancerProfiles")
+        .withIndex("by_status_locale", (q) =>
+          q.eq("status", "active").eq("locale", args.locale)
+        )
+        .collect();
+    } else {
+      profiles = await ctx.db
+        .query("freelancerProfiles")
+        .withIndex("by_status", (q) => q.eq("status", "active"))
+        .collect();
+    }
 
     // Sort by isVerified DESC, ratingAverage DESC
-    const sorted = filtered
-      .slice()
+    const sorted = profiles
       .sort((a, b) => {
         const verifiedA = a.isVerified ? 1 : 0;
         const verifiedB = b.isVerified ? 1 : 0;
