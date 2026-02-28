@@ -125,6 +125,12 @@ async function handleCheckoutSessionCompleted(session) {
   const paymentIntentId = session.payment_intent;
   const { gigId, packageId } = session.metadata || {};
 
+  // Check if this is a credit purchase (pay-per-lead)
+  if (session.metadata?.type === "credit_purchase") {
+    await handleCreditPurchase(session);
+    return;
+  }
+
   if (!paymentIntentId) {
     console.warn("[stripe/webhook] checkout.session.completed: no payment_intent on session.");
     return;
@@ -260,6 +266,43 @@ async function handleCheckoutSessionCompleted(session) {
   console.log(
     `[stripe/webhook] Order ${orderId} created for PaymentIntent ${paymentIntentId}.`
   );
+}
+
+// ---------------------------------------------------------------------------
+// Handler: credit purchase (pay-per-lead)
+// ---------------------------------------------------------------------------
+
+async function handleCreditPurchase(session) {
+  const { credits, freelancerUserId, packageId } = session.metadata || {};
+
+  if (!credits || !freelancerUserId) {
+    console.error(
+      "[stripe/webhook] Credit purchase missing metadata:",
+      session.metadata
+    );
+    return;
+  }
+
+  const creditsNum = parseInt(credits, 10);
+  if (!creditsNum || creditsNum <= 0) {
+    console.error("[stripe/webhook] Invalid credits value:", credits);
+    return;
+  }
+
+  try {
+    await convex.mutation(api.marketplace.leads.addCredits, {
+      freelancerUserId,
+      credits: creditsNum,
+      stripeSessionId: session.id,
+      description: `Purchased ${creditsNum} credits (${packageId} package)`,
+    });
+
+    console.log(
+      `[stripe/webhook] Added ${creditsNum} credits to user ${freelancerUserId} (session: ${session.id})`
+    );
+  } catch (err) {
+    console.error("[stripe/webhook] Failed to add credits:", err);
+  }
 }
 
 // ---------------------------------------------------------------------------
