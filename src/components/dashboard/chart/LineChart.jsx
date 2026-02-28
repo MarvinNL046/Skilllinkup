@@ -12,6 +12,8 @@ import {
 } from "chart.js";
 import { useState } from "react";
 import { Line } from "react-chartjs-2";
+import { useQuery } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
 
 ChartJS.register(
   CategoryScale,
@@ -24,38 +26,37 @@ ChartJS.register(
   Filler,
 );
 
-const dropdownData = ["This Week", "This Month", "This Year"];
+const dropdownData = ["Last 3 Months", "Last 6 Months", "Last 12 Months"];
 
-export default function LineChart() {
-  const [getSelected, setSelected] = useState(0);
+export default function LineChart({ userId }) {
+  const [getSelected, setSelected] = useState(2); // default: 12 months
 
-  const d = {
-    0: [148, 140, 210, 120, 160, 120, 190, 170, 135, 210, 180, 249],
-    1: [140, 148, 120, 210, 140, 160, 140, 190, 210, 135, 249, 180],
-    2: [170, 190, 210, 135, 249, 180, 140, 148, 120, 210, 140, 160],
-  };
+  const chartData = useQuery(
+    api.marketplace.dashboard.getChartData,
+    userId ? { userId } : "skip"
+  );
+
+  const isLoading = userId && chartData === undefined;
+  const monthlyOrders = chartData?.monthlyOrders ?? [];
+
+  // Slice based on selected timeframe
+  const sliceMap = { 0: 3, 1: 6, 2: 12 };
+  const sliceCount = sliceMap[getSelected] ?? 12;
+  const visible = monthlyOrders.slice(-sliceCount);
+
+  const labels = visible.map((m) => m.month);
+  const values = visible.map((m) => m.count);
+  const maxVal = Math.max(...values, 5);
+  const hasData = values.some((v) => v > 0);
 
   const data = {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
+    labels,
     datasets: [
       {
-        label: "Dataset",
+        label: "Orders",
         backgroundColor: "rgba(251, 247, 237, 0.9)",
         borderColor: "#5BBB7B",
-        data: d[getSelected],
+        data: values,
         tension: 0.4,
         fill: true,
       },
@@ -66,7 +67,10 @@ export default function LineChart() {
     scales: {
       y: {
         min: 0,
-        max: 300,
+        max: maxVal + Math.ceil(maxVal * 0.2),
+        ticks: {
+          stepSize: Math.max(1, Math.ceil(maxVal / 5)),
+        },
       },
     },
   };
@@ -76,7 +80,7 @@ export default function LineChart() {
       <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
         <div className="navtab-style1">
           <div className="d-sm-flex align-items-center justify-content-between">
-            <h4 className="title fz17 mb20">Profile Views</h4>
+            <h4 className="title fz17 mb20">Orders</h4>
             <div className="page_control_shorting dark-color pr10 text-center text-md-end">
               <div className="dropdown bootstrap-select show-tick">
                 <button
@@ -117,7 +121,19 @@ export default function LineChart() {
               </div>
             </div>
           </div>
-          <Line options={options} data={data} />
+          {isLoading ? (
+            <div className="text-center py-5">
+              <div className="spinner-border spinner-border-sm text-thm" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          ) : !hasData ? (
+            <div className="text-center py-5">
+              <p className="text mb-0">No orders yet</p>
+            </div>
+          ) : (
+            <Line options={options} data={data} />
+          )}
         </div>
       </div>
     </>

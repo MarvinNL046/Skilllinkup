@@ -165,10 +165,10 @@ export default function DashboardInfo() {
         </div>
         <div className="row">
           <div className="col-xl-8">
-            <LineChart />
+            <LineChart userId={userId} />
           </div>
           <div className="col-xl-4">
-            <DoughnutChart />
+            <DoughnutChart userId={userId} />
           </div>
         </div>
         <div className="row">

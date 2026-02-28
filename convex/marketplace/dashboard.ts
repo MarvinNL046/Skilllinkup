@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query } from "../_generated/server";
+import { Id } from "../_generated/dataModel";
 
 /**
  * Fetch aggregated dashboard stats for a given user.
@@ -149,5 +150,104 @@ export const getRecentOrders = query({
     );
 
     return enriched;
+  },
+});
+
+/**
+ * Fetch chart data for dashboard: monthly order counts + status breakdown.
+ */
+export const getChartData = query({
+  args: { userId: v.optional(v.id("users")) },
+  handler: async (ctx, args) => {
+    const empty = {
+      monthlyOrders: [] as { month: string; count: number }[],
+      statusBreakdown: {
+        completed: 0,
+        active: 0,
+        pending: 0,
+        cancelled: 0,
+      },
+    };
+
+    if (!args.userId) return empty;
+
+    // Fetch the freelancer profile for this user (if any)
+    const profile = await ctx.db
+      .query("freelancerProfiles")
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId as Id<"users">))
+      .first();
+
+    // Fetch orders where user is client
+    const clientOrders = await ctx.db
+      .query("orders")
+      .withIndex("by_client", (q) => q.eq("clientId", args.userId as Id<"users">))
+      .collect();
+
+    // Fetch orders where user is freelancer (via profile)
+    const freelancerOrders = profile
+      ? await ctx.db
+          .query("orders")
+          .withIndex("by_freelancer", (q) => q.eq("freelancerId", profile._id))
+          .collect()
+      : [];
+
+    // Deduplicate
+    const seen = new Set<string>();
+    const allOrders = [...clientOrders, ...freelancerOrders].filter((o) => {
+      if (seen.has(o._id)) return false;
+      seen.add(o._id);
+      return true;
+    });
+
+    if (allOrders.length === 0) return empty;
+
+    // --- Monthly order counts (last 12 months) ---
+    const now = new Date();
+    const months: { month: string; start: number; end: number }[] = [];
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const nextMonth = new Date(d.getFullYear(), d.getMonth() + 1, 1);
+      months.push({
+        month: d.toLocaleString("en-US", { month: "short" }),
+        start: d.getTime(),
+        end: nextMonth.getTime(),
+      });
+    }
+
+    const monthlyOrders = months.map(({ month, start, end }) => ({
+      month,
+      count: allOrders.filter((o) => o.createdAt >= start && o.createdAt < end).length,
+    }));
+
+    // --- Status breakdown ---
+    const statusBreakdown = {
+      completed: 0,
+      active: 0,
+      pending: 0,
+      cancelled: 0,
+    };
+
+    for (const order of allOrders) {
+      switch (order.status) {
+        case "completed":
+          statusBreakdown.completed++;
+          break;
+        case "active":
+        case "in_progress":
+        case "delivered":
+        case "revision_requested":
+          statusBreakdown.active++;
+          break;
+        case "pending":
+          statusBreakdown.pending++;
+          break;
+        case "cancelled":
+        case "disputed":
+          statusBreakdown.cancelled++;
+          break;
+      }
+    }
+
+    return { monthlyOrders, statusBreakdown };
   },
 });
