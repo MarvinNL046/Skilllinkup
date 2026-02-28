@@ -24,7 +24,6 @@ export default function LevelOption1() {
                 checked={getLevel.includes(item.value)}
               />
               <span className="checkmark" />
-              <span className="right-tags">({item.total})</span>
             </label>
           ))}
         </div>

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 import Listing6 from "@/components/section/Listing6";
@@ -11,7 +12,9 @@ export default function page() {
     return (
         <>
             <Header20 />
-            <Listing6 />
+            <Suspense>
+                <Listing6 />
+            </Suspense>
             <Footer14 />
         </>
     );

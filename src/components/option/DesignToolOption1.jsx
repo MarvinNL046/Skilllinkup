@@ -24,7 +24,6 @@ export default function DesignToolOption1() {
                 onChange={() => designToolsHandler(item.value)}
               />
               <span className="checkmark" />
-              <span className="right-tags">({item.total})</span>
             </label>
           ))}
         </div>

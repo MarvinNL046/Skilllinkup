@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Breadcumb1 from "@/components/breadcumb/Breadcumb1";
 import Listing14 from "@/components/section/Listing14";
 
@@ -14,7 +15,9 @@ export default function CraftsmenPage() {
         brief="Browse skilled professionals in your area ready to help with your project."
         isBtnActive={false}
       />
-      <Listing14 />
+      <Suspense>
+        <Listing14 />
+      </Suspense>
     </>
   );
 }

@@ -1,4 +1,6 @@
 "use client";
+import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import useConvexGigs from "@/hook/useConvexGigs";
 import ListingOption2 from "../element/ListingOption2";
 import ListingSidebarModal1 from "../modal/ListingSidebarModal1";
@@ -12,6 +14,8 @@ import EmptyState from "@/components/ui/EmptyState";
 import Link from "next/link";
 
 export default function Listing6() {
+  const searchParams = useSearchParams();
+  const setSearch = listingStore((state) => state.setSearch);
   const getDeliveryTime = listingStore((state) => state.getDeliveryTime);
   const getPriceRange = priceStore((state) => state.priceRange);
   const getLevel = listingStore((state) => state.getLevel);
@@ -20,6 +24,12 @@ export default function Listing6() {
   const getDesginTool = listingStore((state) => state.getDesginTool);
   const getSpeak = listingStore((state) => state.getSpeak);
   const getSearch = listingStore((state) => state.getSearch);
+
+  // Sync URL search params to Zustand store on mount
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q) setSearch(q);
+  }, [searchParams, setSearch]);
 
   const product1 = useConvexGigs();
 
@@ -77,8 +87,10 @@ export default function Listing6() {
     getLocation?.length !== 0 ? getLocation.includes(item.location) : true;
   const searchFilter = (item) =>
     getSearch !== ""
-      ? item.location.split("-").join(" ").includes(getSearch.toLowerCase())
-      : item;
+      ? (item.title || "").toLowerCase().includes(getSearch.toLowerCase()) ||
+        (item.category || "").toLowerCase().includes(getSearch.toLowerCase()) ||
+        (item.location || "").toLowerCase().includes(getSearch.toLowerCase())
+      : true;
   const sortByFilter = (item) =>
     getBestSeller === "best-seller" ? true : item.sort === getBestSeller;
   const designToolFilter = (item) =>

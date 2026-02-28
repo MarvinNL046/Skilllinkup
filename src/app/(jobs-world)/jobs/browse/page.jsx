@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Breadcumb3 from "@/components/breadcumb/Breadcumb3";
 import Breadcumb12 from "@/components/breadcumb/Breadcumb12";
 import Listing16 from "@/components/section/Listing16";
@@ -11,8 +12,10 @@ export default function BrowseJobsPage() {
   return (
     <>
       <Breadcumb3 path={["Home", "Jobs", "Browse"]} />
-      <Breadcumb12 />
-      <Listing16 />
+      <Suspense>
+        <Breadcumb12 />
+        <Listing16 />
+      </Suspense>
     </>
   );
 }

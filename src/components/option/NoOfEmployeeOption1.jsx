@@ -18,7 +18,6 @@ export default function NoOfEmployeeOption1() {
               onChange={() => setNoOfEmployee(item.totalEmployee)}
             />
             <span className="checkmark" />
-            <span className="right-tags">({item.total})</span>
           </label>
         ))}
       </div>

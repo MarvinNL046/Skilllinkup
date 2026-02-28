@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Listing6 from "@/components/section/Listing6";
 
 export const metadata = {
@@ -7,6 +8,8 @@ export const metadata = {
 
 export default function page() {
   return (
-    <Listing6 />
+    <Suspense>
+      <Listing6 />
+    </Suspense>
   );
 }
