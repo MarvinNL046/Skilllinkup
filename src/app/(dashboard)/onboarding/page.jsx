@@ -16,10 +16,10 @@ function OnboardingContent() {
   const [selected, setSelected] = useState(roleParam || null);
   const [saving, setSaving] = useState(false);
 
-  // If user already has a userType that was explicitly set, skip onboarding
+  // If user already has a userType set, skip onboarding
   useEffect(() => {
-    if (convexUser?.userType === "freelancer" || convexUser?.userType === "client") {
-      router.replace("/services");
+    if (convexUser && convexUser.userType) {
+      router.replace("/dashboard");
     }
   }, [convexUser, router]);
 
@@ -35,7 +35,7 @@ function OnboardingContent() {
     setSaving(true);
     try {
       await setUserType({ email: convexUser.email, userType: type });
-      router.push("/services");
+      router.push("/dashboard");
     } catch (err) {
       console.error("Failed to set user type:", err);
       setSaving(false);

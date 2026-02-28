@@ -56,7 +56,7 @@ export const syncUser = mutation({
       throw new Error("No tenant found — run data migration first");
     }
 
-    // Create new user
+    // Create new user — do NOT set userType here; onboarding page handles that
     const userId = await ctx.db.insert("users", {
       tenantId: tenant._id,
       email: args.email,
@@ -64,7 +64,7 @@ export const syncUser = mutation({
       passwordHash: "clerk-managed",
       image: args.image,
       role: "author",
-      userType: args.userType || "client",
+      userType: args.userType,
       stackAuthId: args.clerkId,
       emailVerified: true,
       lastLogin: Date.now(),
