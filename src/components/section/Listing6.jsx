@@ -49,30 +49,7 @@ export default function Listing6() {
     );
   }
 
-  // Empty state when no services exist yet
-  if (product1.length === 0) {
-    return (
-      <section className="pt30 pb90">
-        <div className="container">
-          <div className="row mb30">
-            <div className="col-12">
-              <h2 className="title mb5">Browse Services</h2>
-              <p className="body-color">
-                Find freelance services for your next project.
-              </p>
-            </div>
-          </div>
-          <EmptyState
-            icon="🎨"
-            title="No services yet"
-            description="Be the first to offer your services on SkillLinkup"
-            actionLabel="Become a Seller"
-            actionHref="/become-seller"
-          />
-        </div>
-      </section>
-    );
-  }
+  // Handle empty state within the normal layout (sidebar stays visible)
 
   // Filter functions
   const deliveryFilter = (item) =>
@@ -122,21 +99,21 @@ export default function Listing6() {
     <>
       <section className="pt30 pb90">
         <div className="container">
-          <div className="row mb30">
-            <div className="col-12">
-              <h2 className="title mb5">Browse Services</h2>
-              <p className="body-color">
-                Find freelance services for your next project.
-              </p>
-            </div>
-          </div>
           <div className="row">
             <div className="col-lg-3">
               <ListingSidebar1 />
             </div>
             <div className="col-lg-9">
               <ListingOption2 itemLength={content?.length} />
-              {content.length === 0 ? (
+              {product1.length === 0 ? (
+                <EmptyState
+                  icon="🎨"
+                  title="No services yet"
+                  description="Be the first to offer your services on SkillLinkup"
+                  actionLabel="Become a Seller"
+                  actionHref="/become-seller"
+                />
+              ) : content.length === 0 ? (
                 <EmptyState
                   icon="🔍"
                   title="No matching services"

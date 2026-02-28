@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Breadcumb1 from "@/components/breadcumb/Breadcumb1";
 import Listing6 from "@/components/section/Listing6";
 
 export const metadata = {
@@ -8,8 +9,15 @@ export const metadata = {
 
 export default function page() {
   return (
-    <Suspense>
-      <Listing6 />
-    </Suspense>
+    <>
+      <Breadcumb1
+        title="Browse Services"
+        brief="Explore freelance services for your next project — design, development, marketing and more."
+        isBtnActive={false}
+      />
+      <Suspense>
+        <Listing6 />
+      </Suspense>
+    </>
   );
 }
