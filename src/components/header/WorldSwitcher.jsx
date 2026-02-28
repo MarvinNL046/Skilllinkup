@@ -4,7 +4,7 @@ import { useWorld } from "@/context/WorldContext";
 
 const worlds = [
   { key: "online", label: "Online", href: "/online", icon: "flaticon-web" },
-  { key: "local", label: "Local", href: "/local", icon: "flaticon-location" },
+  { key: "local", label: "Local", href: "/local", icon: "flaticon-place" },
   { key: "jobs", label: "Jobs", href: "/jobs", icon: "flaticon-briefcase" },
 ];
 

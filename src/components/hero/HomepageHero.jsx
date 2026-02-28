@@ -9,7 +9,7 @@ const worlds = [
     color: "#ef2b70",
   },
   {
-    icon: "flaticon-location",
+    icon: "flaticon-place",
     title: "Local Marketplace",
     description: "Connect with skilled craftsmen in your area for home improvement, repairs and services.",
     href: "/local",
