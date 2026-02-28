@@ -24,6 +24,7 @@
     "eslint-config-next": "^15.5.12",
     "fslightbox-react": "^1.8.0",
     "next": "^15.5.12",
+    "posthog-js": "^1.356.1",
     "prop-types": "^15.8.1",
     "rc-slider": "^11.1.8",
     "react": "19.1.0",
