@@ -4,6 +4,7 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import ReviewForm from "@/components/element/ReviewForm";
 import useConvexUser from "@/hook/useConvexUser";
+import { toast } from "sonner";
 
 const STATUS_CONFIG = {
   pending: { label: "Pending", className: "pending-style" },
@@ -32,8 +33,9 @@ function formatDate(timestamp) {
 
 export default function OrderCard({ order, role }) {
   const [actionLoading, setActionLoading] = useState(false);
-  const [actionError, setActionError] = useState(null);
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const [showRevisionForm, setShowRevisionForm] = useState(false);
+  const [revisionMessage, setRevisionMessage] = useState("");
 
   const { convexUser } = useConvexUser();
 
@@ -60,35 +62,36 @@ export default function OrderCard({ order, role }) {
 
   const handleDeliver = async () => {
     setActionLoading(true);
-    setActionError(null);
     try {
       await deliverOrder({ orderId: order._id });
+      toast.success("Order marked as delivered!");
     } catch (err) {
-      setActionError(err.message);
+      toast.error(err.message || "Failed to deliver order.");
     }
     setActionLoading(false);
   };
 
   const handleApprove = async () => {
     setActionLoading(true);
-    setActionError(null);
     try {
       await approveOrder({ orderId: order._id });
+      toast.success("Order approved! Payment released.");
     } catch (err) {
-      setActionError(err.message);
+      toast.error(err.message || "Failed to approve order.");
     }
     setActionLoading(false);
   };
 
   const handleRevision = async () => {
-    const msg = prompt("Please describe what needs to be revised:");
-    if (!msg || !msg.trim()) return;
+    if (!revisionMessage.trim()) return;
     setActionLoading(true);
-    setActionError(null);
     try {
-      await requestRevision({ orderId: order._id, message: msg.trim() });
+      await requestRevision({ orderId: order._id, message: revisionMessage.trim() });
+      toast.success("Revision requested.");
+      setShowRevisionForm(false);
+      setRevisionMessage("");
     } catch (err) {
-      setActionError(err.message);
+      toast.error(err.message || "Failed to request revision.");
     }
     setActionLoading(false);
   };
@@ -157,7 +160,7 @@ export default function OrderCard({ order, role }) {
             <div className="text-lg-end mb10">
               <h5 className="mb-0">
                 {currencySymbol}
-                {displayAmount.toFixed(2)}
+                {(displayAmount ?? 0).toFixed(2)}
               </h5>
               {role === "freelancer" && order.freelancerEarnings != null && (
                 <span className="fz12 text">after platform fee</span>
@@ -168,13 +171,6 @@ export default function OrderCard({ order, role }) {
             <div className="text-lg-end mb10">
               <span className={statusConfig.className}>{statusConfig.label}</span>
             </div>
-
-            {/* Error message */}
-            {actionError && (
-              <div className="alert alert-danger fz13 py-2 mb10" role="alert">
-                {actionError}
-              </div>
-            )}
 
             {/* Action buttons */}
             <div className="d-grid gap-2 mt10">
@@ -214,9 +210,9 @@ export default function OrderCard({ order, role }) {
                   <button
                     className="ud-btn btn-white fz14"
                     disabled={actionLoading}
-                    onClick={handleRevision}
+                    onClick={() => setShowRevisionForm((prev) => !prev)}
                   >
-                    Request Revision
+                    {showRevisionForm ? "Cancel" : "Request Revision"}
                     <i className="fal fa-arrow-right-long" />
                   </button>
                 </>
@@ -245,6 +241,34 @@ export default function OrderCard({ order, role }) {
           </div>
         </div>
       </div>
+
+      {/* Inline revision form */}
+      {showRevisionForm && (
+        <div className="row mt15">
+          <div className="col-12">
+            <div className="bdrb1 mb15" />
+            <div className="bgc-thm4 bdrs4 p20">
+              <p className="fz14 fw500 mb10">Describe what needs to be revised:</p>
+              <textarea
+                className="form-control mb10"
+                rows={3}
+                value={revisionMessage}
+                onChange={(e) => setRevisionMessage(e.target.value)}
+                placeholder="e.g. Please adjust the logo colors..."
+              />
+              <button
+                className="ud-btn btn-thm btn-sm fz14"
+                disabled={!revisionMessage.trim() || actionLoading}
+                onClick={handleRevision}
+              >
+                {actionLoading ? (
+                  <span className="spinner-border spinner-border-sm" role="status" />
+                ) : "Submit Revision Request"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Inline review form for completed orders */}
       {isCompleted && showReviewForm && revieweeId && !alreadyReviewed && (

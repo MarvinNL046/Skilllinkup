@@ -1,14 +1,16 @@
 "use client";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import Pagination1 from "@/components/section/Pagination1";
 import ProposalCard1 from "../card/ProposalCard1";
 import DashboardNavigation from "../header/DashboardNavigation";
 import DeleteModal from "../modal/DeleteModal";
 import ProposalModal1 from "../modal/ProposalModal1";
 import useConvexProfile from "@/hook/useConvexProfile";
+import useConvexUser from "@/hook/useConvexUser";
+import Link from "next/link";
 
 export default function ProposalInfo() {
+  const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const { profile } = useConvexProfile();
 
   const bids = useQuery(
@@ -16,7 +18,14 @@ export default function ProposalInfo() {
     profile?._id ? { freelancerId: profile._id } : "skip"
   );
 
-  const isLoading = profile === undefined || (profile?._id && bids === undefined);
+  // Loading: still fetching convexUser or profile or bids
+  const isLoading = isAuthenticated && (
+    convexUser === undefined ||
+    (convexUser?._id && profile === undefined) ||
+    (profile?._id && bids === undefined)
+  );
+  // No freelancer profile exists (convexUser exists but no freelancer record)
+  const noProfile = isAuthenticated && convexUser !== undefined && convexUser !== null && profile === null;
   const hasBids = bids && bids.length > 0;
 
   return (
@@ -37,7 +46,18 @@ export default function ProposalInfo() {
           <div className="col-xl-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
               <div className="packages_table table-responsive">
-                {isLoading ? (
+                {isLoaded && !isAuthenticated ? (
+                  <div className="text-center py-5">
+                    <p className="text mb-0">Please sign in to view your proposals.</p>
+                  </div>
+                ) : noProfile ? (
+                  <div className="text-center py-5">
+                    <p className="text mb-0">
+                      You need a freelancer profile to submit proposals.{" "}
+                      <Link href="/onboarding" className="text-thm">Complete your profile</Link>
+                    </p>
+                  </div>
+                ) : isLoading ? (
                   <div className="text-center py30">
                     <div className="spinner-border text-primary" role="status">
                       <span className="visually-hidden">Loading...</span>
@@ -64,9 +84,6 @@ export default function ProposalInfo() {
                         ))}
                       </tbody>
                     </table>
-                    <div className="mt30">
-                      <Pagination1 />
-                    </div>
                   </>
                 )}
               </div>

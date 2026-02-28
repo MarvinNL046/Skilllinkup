@@ -18,7 +18,7 @@ const getTabForReview = (review) => {
 
 export default function ReviewsInfo() {
   const [getCurrentTab, setCurrentTab] = useState(0);
-  const { convexUser } = useConvexUser();
+  const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
 
   const reviews = useQuery(
     api.marketplace.reviews.getByUserId,
@@ -81,8 +81,15 @@ export default function ReviewsInfo() {
                     </div>
                   </nav>
 
+                  {/* Not authenticated */}
+                  {isLoaded && !isAuthenticated && (
+                    <div className="text-center py-5">
+                      <p className="text mb-0">Please sign in to view your reviews.</p>
+                    </div>
+                  )}
+
                   {/* Loading state */}
-                  {reviews === undefined && (
+                  {isAuthenticated && reviews === undefined && (
                     <div className="text-center py-5">
                       <div className="spinner-border text-thm" role="status" />
                     </div>

@@ -8,7 +8,7 @@ import DashboardNavigation from "../header/DashboardNavigation";
 import Link from "next/link";
 
 export default function DashboardInfo() {
-  const { convexUser } = useConvexUser();
+  const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const userId = convexUser?._id;
 
   const stats = useQuery(
@@ -21,7 +21,8 @@ export default function DashboardInfo() {
     userId ? { userId, limit: 5 } : "skip"
   );
 
-  const isLoading = stats === undefined || recentOrders === undefined;
+  const isLoading = isAuthenticated && (stats === undefined || recentOrders === undefined);
+  const notAuthenticated = isLoaded && !isAuthenticated;
 
   function formatCurrency(amount) {
     if (!amount && amount !== 0) return "$0";
@@ -73,7 +74,14 @@ export default function DashboardInfo() {
             </div>
           </div>
         </div>
-        <div className="row">
+        {notAuthenticated && (
+          <div className="row"><div className="col-12">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30">
+              <p className="text text-center mb-0">Please sign in to view your dashboard.</p>
+            </div>
+          </div></div>
+        )}
+        {!notAuthenticated && (<><div className="row">
           <div className="col-sm-6 col-xxl-3">
             <div className="d-flex align-items-center justify-content-between statistics_funfact">
               <div className="details">
@@ -286,6 +294,7 @@ export default function DashboardInfo() {
             </div>
           </div>
         </div>
+        </>)}
       </div>
     </>
   );

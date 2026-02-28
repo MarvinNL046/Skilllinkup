@@ -1,9 +1,18 @@
-import Link from "next/link";
+"use client";
+
+import { toast } from "sonner";
 
 export default function PayoutForm() {
+  function handleSave(e) {
+    e.preventDefault();
+    toast.success(
+      "Payout details saved! Note: Bank payouts will be available soon. We currently support Stripe payouts."
+    );
+  }
+
   return (
     <>
-      <form className="form-style1">
+      <form className="form-style1" onSubmit={handleSave}>
         <div className="row">
           <div className="col-sm-6">
             <div className="mb20">
@@ -13,7 +22,7 @@ export default function PayoutForm() {
               <input
                 type="text"
                 className="form-control"
-                placeholder="creativelayers088@gmail.com"
+                placeholder="e.g. ING Bank"
               />
             </div>
           </div>
@@ -25,7 +34,7 @@ export default function PayoutForm() {
               <input
                 type="text"
                 className="form-control"
-                placeholder="creativelayers088@gmail.com"
+                placeholder="e.g. NL91ABNA0417164300"
               />
             </div>
           </div>
@@ -37,7 +46,7 @@ export default function PayoutForm() {
               <input
                 type="text"
                 className="form-control"
-                placeholder="creativelayers088@gmail.com"
+                placeholder="Your full name"
               />
             </div>
           </div>
@@ -49,7 +58,7 @@ export default function PayoutForm() {
               <input
                 type="text"
                 className="form-control"
-                placeholder="creativelayers088@gmail.com"
+                placeholder="e.g. INGBNL2A"
               />
             </div>
           </div>
@@ -61,7 +70,7 @@ export default function PayoutForm() {
               <input
                 type="text"
                 className="form-control"
-                placeholder="creativelayers088@gmail.com"
+                placeholder="e.g. NL91ABNA0417164300"
               />
             </div>
           </div>
@@ -73,7 +82,7 @@ export default function PayoutForm() {
               <input
                 type="text"
                 className="form-control"
-                placeholder="creativelayers088@gmail.com"
+                placeholder="e.g. INGBNL2A"
               />
             </div>
           </div>
@@ -81,10 +90,10 @@ export default function PayoutForm() {
         <div className="row">
           <div className="col-md-12">
             <div className="text-start">
-              <Link className="ud-btn btn-thm" href="/contact">
+              <button type="submit" className="ud-btn btn-thm">
                 Save Detail
                 <i className="fal fa-arrow-right-long" />
-              </Link>
+              </button>
             </div>
           </div>
         </div>

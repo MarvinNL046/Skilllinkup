@@ -122,7 +122,7 @@ export default function AddServiceInfo() {
 
       setSaveSuccess(true);
       setTimeout(() => {
-        router.push("/dashboard/manage-services");
+        router.push("/manage-services");
       }, 1500);
     } catch (error) {
       console.error("Failed to create gig:", error);
