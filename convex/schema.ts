@@ -34,6 +34,7 @@ export default defineSchema({
     bio: v.optional(v.string()),
     emailVerified: v.optional(v.boolean()),
     userType: v.optional(v.string()), // client, freelancer
+    preferredWorld: v.optional(v.string()), // "online", "local", "jobs"
     stackAuthId: v.optional(v.string()), // Stack Auth user ID
     lastLogin: v.optional(v.number()),
     lastActiveAt: v.optional(v.number()),

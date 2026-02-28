@@ -14,11 +14,11 @@ export default function DashboardLayout({ children }) {
   const pathname = usePathname();
   const { convexUser } = useConvexUser();
 
-  // Redirect to onboarding if user has no userType set
+  // Redirect to onboarding if user has no userType or preferredWorld
   useEffect(() => {
     if (
       convexUser &&
-      !convexUser.userType &&
+      (!convexUser.userType || !convexUser.preferredWorld) &&
       pathname !== "/onboarding"
     ) {
       router.replace("/onboarding");

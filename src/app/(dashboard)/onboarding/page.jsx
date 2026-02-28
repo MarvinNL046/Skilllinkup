@@ -1,27 +1,63 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import Image from "next/image";
 
+const WORLDS = [
+  {
+    id: "online",
+    icon: "flaticon-web",
+    title: "Online",
+    desc: "Digital services — design, development, marketing",
+  },
+  {
+    id: "local",
+    icon: "flaticon-place",
+    title: "Local",
+    desc: "Local services — find or offer services in your area",
+  },
+  {
+    id: "jobs",
+    icon: "flaticon-briefcase",
+    title: "Jobs",
+    desc: "Job market — browse or post opportunities",
+  },
+];
+
 function OnboardingContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const roleParam = searchParams.get("role");
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const setUserType = useMutation(api.users.setUserType);
-  const [selected, setSelected] = useState(roleParam || null);
+
+  // Check if user arrived with ?role=freelancer (switching roles)
+  const [searchParams] = useState(() => {
+    if (typeof window !== "undefined") {
+      return new URLSearchParams(window.location.search);
+    }
+    return new URLSearchParams();
+  });
+  const switchRole = searchParams.get("role");
+
+  const [step, setStep] = useState(switchRole ? 2 : 1);
+  const [role, setRole] = useState(switchRole || null);
   const [saving, setSaving] = useState(false);
 
-  // If user already has a userType that was explicitly set, skip onboarding
+  // If user already completed onboarding, redirect — unless they're switching roles
   useEffect(() => {
-    if (convexUser?.userType === "freelancer" || convexUser?.userType === "client") {
-      router.replace("/services");
+    if (switchRole) return; // Skip redirect when explicitly switching
+    if (convexUser?.userType && convexUser?.preferredWorld) {
+      router.replace(`/${convexUser.preferredWorld}`);
     }
-  }, [convexUser, router]);
+    // Existing user with userType but no preferredWorld → show step 2 only
+    if (convexUser?.userType && !convexUser?.preferredWorld) {
+      setRole(convexUser.userType);
+      setStep(2);
+    }
+  }, [convexUser, router, switchRole]);
 
   // Redirect unauthenticated users
   useEffect(() => {
@@ -30,14 +66,22 @@ function OnboardingContent() {
     }
   }, [isLoaded, isAuthenticated, router]);
 
-  async function handleSelect(type) {
-    setSelected(type);
+  function handleRoleSelect(type) {
+    setRole(type);
+    setStep(2);
+  }
+
+  async function handleWorldSelect(world) {
     setSaving(true);
     try {
-      await setUserType({ email: convexUser.email, userType: type });
-      router.push("/services");
+      await setUserType({
+        email: convexUser.email,
+        userType: role,
+        preferredWorld: world,
+      });
+      router.push(`/${world}`);
     } catch (err) {
-      console.error("Failed to set user type:", err);
+      console.error("Failed to save onboarding:", err);
       setSaving(false);
     }
   }
@@ -71,106 +115,174 @@ function OnboardingContent() {
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-8 col-xl-7">
-              <div className="text-center mb-5">
-                <h2 className="title mb-2">Welcome to SkillLinkup!</h2>
-                <p className="text fz17">
-                  What would you like to do? You can always change this later.
-                </p>
+              {/* Progress dots */}
+              <div className="d-flex justify-content-center gap-2 mb-4">
+                {[1, 2].map((s) => (
+                  <div
+                    key={s}
+                    style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: "50%",
+                      background: step >= s ? "#ef2b70" : "#d1d5db",
+                      transition: "background 0.2s ease",
+                    }}
+                  />
+                ))}
               </div>
 
-              <div className="row g-4 justify-content-center">
-                {/* Client card */}
-                <div className="col-sm-6">
-                  <button
-                    onClick={() => handleSelect("client")}
-                    disabled={saving}
-                    className="w-100 border-0 p-0 bg-transparent"
-                    style={{ cursor: saving ? "wait" : "pointer" }}
-                  >
-                    <div
-                      className={`p-4 bdrs12 text-center ${
-                        selected === "client"
-                          ? "border border-2 border-primary bgc-light shadow-lg"
-                          : "border border-1 bg-white shadow-sm"
-                      }`}
-                      style={{
-                        minHeight: 260,
-                        transition: "all 0.2s ease",
-                      }}
-                    >
-                      <div
-                        className="d-flex align-items-center justify-content-center mx-auto mb-4 rounded-circle"
-                        style={{
-                          width: 80,
-                          height: 80,
-                          background: selected === "client" ? "#ef2b70" : "#f0f0f0",
-                          transition: "all 0.2s ease",
-                        }}
-                      >
-                        <i
-                          className="flaticon-search-1 fz30"
-                          style={{
-                            color: selected === "client" ? "#fff" : "#555",
-                          }}
-                        />
-                      </div>
-                      <h4 className="title mb-2">I&apos;m looking for freelancers</h4>
-                      <p className="text fz14 mb-0">
-                        Post projects, hire talent, and manage your team.
-                      </p>
-                    </div>
-                  </button>
-                </div>
+              {step === 1 && (
+                <>
+                  <div className="text-center mb-5">
+                    <h2 className="title mb-2">Welcome to SkillLinkup!</h2>
+                    <p className="text fz17">
+                      What would you like to do? You can always change this later.
+                    </p>
+                  </div>
 
-                {/* Freelancer card */}
-                <div className="col-sm-6">
-                  <button
-                    onClick={() => handleSelect("freelancer")}
-                    disabled={saving}
-                    className="w-100 border-0 p-0 bg-transparent"
-                    style={{ cursor: saving ? "wait" : "pointer" }}
-                  >
-                    <div
-                      className={`p-4 bdrs12 text-center ${
-                        selected === "freelancer"
-                          ? "border border-2 border-primary bgc-light shadow-lg"
-                          : "border border-1 bg-white shadow-sm"
-                      }`}
-                      style={{
-                        minHeight: 260,
-                        transition: "all 0.2s ease",
-                      }}
-                    >
-                      <div
-                        className="d-flex align-items-center justify-content-center mx-auto mb-4 rounded-circle"
-                        style={{
-                          width: 80,
-                          height: 80,
-                          background: selected === "freelancer" ? "#ef2b70" : "#f0f0f0",
-                          transition: "all 0.2s ease",
-                        }}
+                  <div className="row g-4 justify-content-center">
+                    {/* Client card */}
+                    <div className="col-sm-6">
+                      <button
+                        onClick={() => handleRoleSelect("client")}
+                        className="w-100 border-0 p-0 bg-transparent"
+                        style={{ cursor: "pointer" }}
                       >
-                        <i
-                          className="flaticon-presentation fz30"
+                        <div
+                          className="p-4 bdrs12 text-center border border-1 bg-white shadow-sm"
                           style={{
-                            color: selected === "freelancer" ? "#fff" : "#555",
+                            minHeight: 260,
+                            transition: "all 0.2s ease",
                           }}
-                        />
-                      </div>
-                      <h4 className="title mb-2">I offer services</h4>
-                      <p className="text fz14 mb-0">
-                        Create gigs, find clients, and grow your freelance business.
-                      </p>
+                        >
+                          <div
+                            className="d-flex align-items-center justify-content-center mx-auto mb-4 rounded-circle"
+                            style={{
+                              width: 80,
+                              height: 80,
+                              background: "#f0f0f0",
+                              transition: "all 0.2s ease",
+                            }}
+                          >
+                            <i
+                              className="flaticon-search-1 fz30"
+                              style={{ color: "#555" }}
+                            />
+                          </div>
+                          <h4 className="title mb-2">I&apos;m looking for talent</h4>
+                          <p className="text fz14 mb-0">
+                            Post projects, hire talent, and manage your team.
+                          </p>
+                        </div>
+                      </button>
                     </div>
-                  </button>
-                </div>
-              </div>
 
-              {saving && (
-                <div className="text-center mt-4">
-                  <div className="spinner-border spinner-border-sm text-primary me-2" role="status" />
-                  <span className="text fz14">Setting up your account...</span>
-                </div>
+                    {/* Freelancer card */}
+                    <div className="col-sm-6">
+                      <button
+                        onClick={() => handleRoleSelect("freelancer")}
+                        className="w-100 border-0 p-0 bg-transparent"
+                        style={{ cursor: "pointer" }}
+                      >
+                        <div
+                          className="p-4 bdrs12 text-center border border-1 bg-white shadow-sm"
+                          style={{
+                            minHeight: 260,
+                            transition: "all 0.2s ease",
+                          }}
+                        >
+                          <div
+                            className="d-flex align-items-center justify-content-center mx-auto mb-4 rounded-circle"
+                            style={{
+                              width: 80,
+                              height: 80,
+                              background: "#f0f0f0",
+                              transition: "all 0.2s ease",
+                            }}
+                          >
+                            <i
+                              className="flaticon-presentation fz30"
+                              style={{ color: "#555" }}
+                            />
+                          </div>
+                          <h4 className="title mb-2">I offer services</h4>
+                          <p className="text fz14 mb-0">
+                            Create gigs, find clients, and grow your freelance business.
+                          </p>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {step === 2 && (
+                <>
+                  <div className="text-center mb-5">
+                    <h2 className="title mb-2">Choose your world</h2>
+                    <p className="text fz17">
+                      Where would you like to start? You can explore all worlds anytime.
+                    </p>
+                  </div>
+
+                  <div className="row g-4 justify-content-center">
+                    {WORLDS.map((w) => (
+                      <div className="col-sm-4" key={w.id}>
+                        <button
+                          onClick={() => handleWorldSelect(w.id)}
+                          disabled={saving}
+                          className="w-100 border-0 p-0 bg-transparent"
+                          style={{ cursor: saving ? "wait" : "pointer" }}
+                        >
+                          <div
+                            className="p-4 bdrs12 text-center border border-1 bg-white shadow-sm"
+                            style={{
+                              minHeight: 220,
+                              transition: "all 0.2s ease",
+                            }}
+                          >
+                            <div
+                              className="d-flex align-items-center justify-content-center mx-auto mb-3 rounded-circle"
+                              style={{
+                                width: 70,
+                                height: 70,
+                                background: "#f0f0f0",
+                                transition: "all 0.2s ease",
+                              }}
+                            >
+                              <i
+                                className={`${w.icon} fz28`}
+                                style={{ color: "#555" }}
+                              />
+                            </div>
+                            <h5 className="title mb-2">{w.title}</h5>
+                            <p className="text fz13 mb-0">{w.desc}</p>
+                          </div>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Back button */}
+                  {!convexUser?.userType && (
+                    <div className="text-center mt-4">
+                      <button
+                        onClick={() => setStep(1)}
+                        className="btn btn-link text-decoration-none"
+                        disabled={saving}
+                      >
+                        <i className="fas fa-arrow-left me-1" /> Back
+                      </button>
+                    </div>
+                  )}
+
+                  {saving && (
+                    <div className="text-center mt-4">
+                      <div className="spinner-border spinner-border-sm text-primary me-2" role="status" />
+                      <span className="text fz14">Setting up your account...</span>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>

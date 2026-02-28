@@ -24,7 +24,7 @@ function RegisterContent() {
 export default function RegisterPage() {
     return (
         <>
-            <div className="bgc-thm4">
+            <div style={{ backgroundColor: "#fff" }}>
                 <Header20 />
                 <section className="our-register">
                     <div className="container">

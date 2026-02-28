@@ -64,7 +64,7 @@ export const syncUser = mutation({
       passwordHash: "clerk-managed",
       image: args.image,
       role: "author",
-      userType: args.userType || "client",
+      userType: args.userType,
       stackAuthId: args.clerkId,
       emailVerified: true,
       lastLogin: Date.now(),
@@ -154,6 +154,7 @@ export const setUserType = mutation({
   args: {
     email: v.string(),
     userType: v.string(),
+    preferredWorld: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const user = await ctx.db
@@ -163,10 +164,14 @@ export const setUserType = mutation({
 
     if (!user) throw new Error("User not found");
 
-    await ctx.db.patch(user._id, {
+    const patch: Record<string, unknown> = {
       userType: args.userType,
       updatedAt: Date.now(),
-    });
+    };
+    if (args.preferredWorld) {
+      patch.preferredWorld = args.preferredWorld;
+    }
+    await ctx.db.patch(user._id, patch);
 
     // If becoming a freelancer, create basic profile
     if (args.userType === "freelancer") {
@@ -187,6 +192,32 @@ export const setUserType = mutation({
         });
       }
     }
+
+    return { success: true };
+  },
+});
+
+/**
+ * Switch the user's preferred world (online/local/jobs).
+ * Called from the dashboard world-switcher.
+ */
+export const setPreferredWorld = mutation({
+  args: {
+    email: v.string(),
+    preferredWorld: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .first();
+
+    if (!user) throw new Error("User not found");
+
+    await ctx.db.patch(user._id, {
+      preferredWorld: args.preferredWorld,
+      updatedAt: Date.now(),
+    });
 
     return { success: true };
   },

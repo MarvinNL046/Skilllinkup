@@ -19,11 +19,16 @@ function ClerkConvexAdapter() {
 
   const fetchToken = useCallback(
     async ({ forceRefreshToken }) => {
-      const token = await getToken({
-        template: "convex",
-        skipCache: forceRefreshToken,
-      });
-      return token ?? null;
+      try {
+        const token = await getToken({
+          template: "convex",
+          skipCache: forceRefreshToken,
+        });
+        return token ?? null;
+      } catch (err) {
+        console.warn("Clerk JWT template 'convex' not available:", err.message);
+        return null;
+      }
     },
     [getToken]
   );
