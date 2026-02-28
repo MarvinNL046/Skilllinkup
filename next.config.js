@@ -44,6 +44,17 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      { source: "/services", destination: "/online/services", permanent: true },
+      { source: "/services/:slug", destination: "/online/services/:slug", permanent: true },
+      { source: "/service/:id", destination: "/online/service/:id", permanent: true },
+      { source: "/freelancers", destination: "/online/freelancers", permanent: true },
+      { source: "/freelancer/:id", destination: "/online/freelancer/:id", permanent: true },
+      { source: "/projects", destination: "/online/projects", permanent: true },
+      { source: "/project/:id", destination: "/online/project/:id", permanent: true },
+    ];
+  },
 };
 
 module.exports = nextConfig;
