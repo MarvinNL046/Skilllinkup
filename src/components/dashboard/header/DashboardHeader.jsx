@@ -17,6 +17,7 @@ export default function DashboardHeader() {
 
   const isFreelancer = convexUser?.userType === "freelancer";
   const nav = isFreelancer ? freelancerNavigation : clientNavigation;
+  const navItems = nav.filter((item) => item.name !== "Logout");
   const startEnd = isFreelancer ? 5 : 5;
   const organizeEnd = isFreelancer ? 10 : 7;
 
@@ -104,83 +105,16 @@ export default function DashboardHeader() {
                       </div>
                     </li>
                     <li className="d-none d-sm-block">
-                      <a
-                        className="text-center mr5 text-thm2 dropdown-toggle fz20"
-                        type="button"
-                        data-bs-toggle="dropdown"
+                      <Link
+                        href="/saved"
+                        className="text-center mr5 text-thm2 fz20"
                       >
                         <span className="flaticon-like" />
-                      </a>
-                      <div className="dropdown-menu">
-                        <div className="dboard_notific_dd px30 pt10 pb15">
-                          <div className="notif_list d-flex align-items-center bdrb1 pb15 mb10">
-                            <Image
-                              height={40}
-                              width={40}
-                              src="/images/resource/notif-1.png"
-                              alt="notif"
-                            />
-                            <div className="details ml10">
-                              <p className="text mb-0">Your resume</p>
-                              <p className="text mb-0">updated!</p>
-                            </div>
-                          </div>
-                          <div className="notif_list d-flex align-items-center bdrb1 pb15 mb10">
-                            <Image
-                              height={40}
-                              width={40}
-                              src="/images/resource/notif-2.png"
-                              alt="notif"
-                            />
-                            <div className="details ml10">
-                              <p className="text mb-0">You changed</p>
-                              <p className="text mb-0">password</p>
-                            </div>
-                          </div>
-                          <div className="notif_list d-flex align-items-center bdrb1 pb15 mb10">
-                            <Image
-                              height={40}
-                              width={40}
-                              src="/images/resource/notif-3.png"
-                              alt="notif"
-                            />
-                            <div className="details ml10">
-                              <p className="text mb-0">Your account has been</p>
-                              <p className="text mb-0">created successfully</p>
-                            </div>
-                          </div>
-                          <div className="notif_list d-flex align-items-center bdrb1 pb15 mb10">
-                            <Image
-                              height={40}
-                              width={40}
-                              src="/images/resource/notif-4.png"
-                              alt="notif"
-                            />
-                            <div className="details ml10">
-                              <p className="text mb-0">
-                                You applied for a job{" "}
-                              </p>
-                              <p className="text mb-0">Front-end Developer</p>
-                            </div>
-                          </div>
-                          <div className="notif_list d-flex align-items-center">
-                            <Image
-                              height={40}
-                              width={40}
-                              src="/images/resource/notif-5.png"
-                              alt="notif"
-                            />
-                            <div className="details ml10">
-                              <p className="text mb-0">Your course uploaded</p>
-                              <p className="text mb-0">successfully</p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      </Link>
                     </li>
                     <li className="user_setting">
                       <div className="dropdown">
-                        <a className="btn" data-bs-toggle="dropdown">
+                        <a className="btn" data-bs-toggle="dropdown" role="button">
                           <Image
                             height={50}
                             width={50}
@@ -189,12 +123,12 @@ export default function DashboardHeader() {
                             className="rounded-circle"
                           />
                         </a>
-                        <div className="dropdown-menu">
+                        <div className="dropdown-menu dropdown-menu-end">
                           <div className="user_setting_content">
                             <p className="fz15 fw400 ff-heading mb10 pl30">
                               Start
                             </p>
-                            {nav.slice(0, startEnd).map((item, i) => (
+                            {navItems.slice(0, startEnd).map((item, i) => (
                               <Link
                                 key={i}
                                 className={`dropdown-item ${
@@ -209,7 +143,7 @@ export default function DashboardHeader() {
                             <p className="fz15 fw400 ff-heading mt30 pl30">
                               Organize and Manage
                             </p>
-                            {nav.slice(startEnd, organizeEnd).map((item, i) => (
+                            {navItems.slice(startEnd, organizeEnd).map((item, i) => (
                               <Link
                                 key={i}
                                 className={`dropdown-item ${
@@ -224,7 +158,7 @@ export default function DashboardHeader() {
                             <p className="fz15 fw400 ff-heading mt30 pl30">
                               Account
                             </p>
-                            {nav.slice(organizeEnd).map((item, i) => (
+                            {navItems.slice(organizeEnd).map((item, i) => (
                               <Link
                                 key={i}
                                 className={`dropdown-item ${

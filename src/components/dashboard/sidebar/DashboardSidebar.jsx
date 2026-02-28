@@ -69,14 +69,14 @@ export default function DashboardSidebar() {
             </div>
           ))}
           <div className="sidebar_list_item mb-1">
-            <button
+            <a
               onClick={() => signOut({ redirectUrl: "/" })}
-              className="items-center w-100 border-0 bg-transparent text-start"
+              className="items-center"
               style={{ cursor: "pointer" }}
             >
               <i className="flaticon-logout mr15" />
               Logout
-            </button>
+            </a>
           </div>
         </div>
       </div>
