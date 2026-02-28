@@ -14,32 +14,32 @@ export default function Header20() {
 
     return (
         <>
-            <header className="header-nav nav-innerpage-style main-menu  ">
+            <header className="header-nav nav-innerpage-style at-home20 main-menu border-0">
                 <nav className="posr">
-                    <div className="container-fluid posr menu_bdrt1">
+                    <div className="container-fluid custom-container custom-container2 posr">
                         <div className="row align-items-center justify-content-between">
-                            <div className="col-auto pe-0">
+                            <div className="col-auto px-0 px-xl-3">
                                 <div className="d-flex align-items-center">
-                                    <Link
-                                        className="header-logo bdrr1 pr30 pr5-xl"
-                                        href="/"
-                                    >
-                                        <Image
-                                            height={40}
-                                            width={172}
-                                            className="w-100 h-100 object-fit-contain"
-                                            src="/images/logo/skilllinkup-transparant-rozepunt.webp"
-                                            alt="Header Logo"
-                                            priority
-                                        />
-                                    </Link>
+                                    <div className="logos">
+                                        <Link className="header-logo logo1" href="/">
+                                            <Image
+                                                height={40}
+                                                width={172}
+                                                src="/images/logo/skilllinkup-transparant-rozepunt.webp"
+                                                alt="Header Logo"
+                                                priority
+                                            />
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="col-auto">
+                            <div className="col-auto px-0 px-xl-3">
+                                <Navigation />
+                            </div>
+                            <div className="col-auto pe-0">
                                 <div className="d-flex align-items-center">
-                                    <Navigation />
                                     <a
-                                        className="login-info bdrl1 pl15-lg pl30"
+                                        className="login-info"
                                         data-bs-toggle="modal"
                                         href="#exampleModalToggle"
                                     >
@@ -48,7 +48,7 @@ export default function Header20() {
                                     {isSignedIn ? (
                                         <>
                                             <Link
-                                                className="login-info mx15-lg mx30"
+                                                className="login-info ml15"
                                                 href="/dashboard"
                                             >
                                                 Dashboard
@@ -73,7 +73,7 @@ export default function Header20() {
                                                 )}
                                             </Link>
                                             <button
-                                                className="ud-btn btn-thm add-joining"
+                                                className="ud-btn add-joining home20-join-btn bdrs12 text-white"
                                                 onClick={() => signOut({ redirectUrl: "/" })}
                                             >
                                                 Logout
@@ -82,11 +82,7 @@ export default function Header20() {
                                     ) : (
                                         <>
                                             <Link
-                                                className={`login-info mx15-lg mx30 ${
-                                                    path === "/become-seller"
-                                                        ? "ui-active"
-                                                        : ""
-                                                }`}
+                                                className="login-info ml15"
                                                 href="/become-seller"
                                             >
                                                 <span className="d-none d-xl-inline-block">
@@ -95,15 +91,13 @@ export default function Header20() {
                                                 Seller
                                             </Link>
                                             <Link
-                                                className={`login-info mr15-lg mr30 ${
-                                                    path === "/login" ? "ui-active" : ""
-                                                }`}
+                                                className="login-info mr10 home18-sign-btn px30 py-1 bdrs12 ml30 bdr1-dark"
                                                 href="/login"
                                             >
                                                 Sign in
                                             </Link>
                                             <Link
-                                                className="ud-btn btn-thm add-joining"
+                                                className="ud-btn add-joining home20-join-btn bdrs12 text-white"
                                                 href="/register"
                                             >
                                                 Join
