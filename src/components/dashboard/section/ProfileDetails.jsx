@@ -3,10 +3,14 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
+import { useMutation } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
 import useConvexProfile from "@/hook/useConvexProfile";
 
 export default function ProfileDetails() {
   const { convexUser, profile, updateProfile } = useConvexProfile();
+  const generateUploadUrl = useMutation(api.marketplace.freelancers.generateAvatarUploadUrl);
+  const saveAvatarStorageId = useMutation(api.marketplace.freelancers.saveAvatarStorageId);
 
   const [displayName, setDisplayName] = useState("");
   const [tagline, setTagline] = useState("");
@@ -19,7 +23,8 @@ export default function ProfileDetails() {
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [linkedinUrl, setLinkedinUrl] = useState("");
   const [saving, setSaving] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   // Pre-fill form fields once profile loads
   useEffect(() => {
@@ -48,7 +53,8 @@ export default function ProfileDetails() {
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setSelectedImage(URL.createObjectURL(file));
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
     }
   };
 
@@ -70,6 +76,20 @@ export default function ProfileDetails() {
       .filter((l) => l.length > 0);
 
     try {
+      // Upload avatar to Convex storage if a new file was selected
+      if (selectedFile) {
+        const uploadUrl = await generateUploadUrl();
+        const result = await fetch(uploadUrl, {
+          method: "POST",
+          headers: { "Content-Type": selectedFile.type },
+          body: selectedFile,
+        });
+        if (!result.ok) throw new Error("Avatar upload failed");
+        const { storageId } = await result.json();
+        await saveAvatarStorageId({ profileId: profile._id, storageId });
+        setSelectedFile(null);
+      }
+
       await updateProfile({
         profileId: profile._id,
         displayName: displayName || undefined,
@@ -166,8 +186,8 @@ export default function ProfileDetails() {
                 width={71}
                 className="rounded-circle wa-xs"
                 src={
-                  selectedImage
-                    ? selectedImage
+                  previewUrl
+                    ? previewUrl
                     : profile?.avatarUrl || "/images/team/fl-1.png"
                 }
                 style={{
@@ -182,7 +202,7 @@ export default function ProfileDetails() {
               <div className="d-flex align-items-center my-3">
                 <a
                   className="tag-delt text-thm2"
-                  onClick={() => setSelectedImage(null)}
+                  onClick={() => { setSelectedFile(null); setPreviewUrl(null); }}
                   style={{ cursor: "pointer" }}
                 >
                   <span className="flaticon-delete text-thm2" />

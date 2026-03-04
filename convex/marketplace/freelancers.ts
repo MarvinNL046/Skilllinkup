@@ -143,6 +143,44 @@ export const updateProfile = mutation({
 });
 
 /**
+ * Generate a short-lived upload URL for storing an avatar image in Convex file storage.
+ * Authentication required.
+ */
+export const generateAvatarUploadUrl = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Authentication required");
+    return await ctx.storage.generateUploadUrl();
+  },
+});
+
+/**
+ * Save a Convex storage file ID as the avatar URL on a freelancer profile.
+ * Converts the storage ID to a public URL and patches the profile.
+ */
+export const saveAvatarStorageId = mutation({
+  args: {
+    profileId: v.id("freelancerProfiles"),
+    storageId: v.id("_storage"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Authentication required");
+
+    const url = await ctx.storage.getUrl(args.storageId);
+    if (!url) throw new Error("Failed to get storage URL");
+
+    await ctx.db.patch(args.profileId, {
+      avatarUrl: url,
+      updatedAt: Date.now(),
+    });
+
+    return url;
+  },
+});
+
+/**
  * Update the Stripe Express account ID for a freelancer profile.
  * Looks up the profile by the Convex user ID (not Clerk ID).
  */
