@@ -63,10 +63,28 @@ export const getByUserId = query({
   handler: async (ctx, args) => {
     const limit = args.limit ?? 50;
 
-    const reviews = await ctx.db
+    const allReviews = await ctx.db
       .query("marketplaceReviews")
       .withIndex("by_reviewee", (q) => q.eq("revieweeId", args.userId))
       .collect();
+
+    // Only the reviewee themselves can see pending (isPublic: false) reviews.
+    const identity = await ctx.auth.getUserIdentity();
+    let isOwner = false;
+    if (identity) {
+      const email = identity.email;
+      if (email) {
+        const caller = await ctx.db
+          .query("users")
+          .withIndex("by_email", (q) => q.eq("email", email))
+          .first();
+        isOwner = caller?._id === args.userId;
+      }
+    }
+
+    const reviews = isOwner
+      ? allReviews
+      : allReviews.filter((r) => r.isPublic !== false);
 
     const sorted = reviews
       .sort((a, b) => b.createdAt - a.createdAt)
