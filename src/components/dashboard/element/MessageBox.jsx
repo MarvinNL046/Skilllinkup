@@ -24,6 +24,7 @@ export default function MessageBox({
 }) {
   const [inputValue, setInputValue] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [sendError, setSendError] = useState(null);
   const messagesEndRef = useRef(null);
   const blockError = inputValue.trim() && containsContactInfo(inputValue) ? BLOCK_ERROR : null;
 
@@ -36,14 +37,16 @@ export default function MessageBox({
 
   async function handleSend(e) {
     e.preventDefault();
-    if (!inputValue.trim() || isSending) return;
+    if (!inputValue.trim() || isSending || blockError) return;
 
+    setSendError(null);
     setIsSending(true);
     try {
       await onSend(inputValue);
       setInputValue("");
     } catch (err) {
-      console.error("Failed to send message:", err);
+      const msg = err?.data ?? err?.message ?? "Bericht kon niet worden verstuurd.";
+      setSendError(msg);
     } finally {
       setIsSending(false);
     }
@@ -174,7 +177,7 @@ export default function MessageBox({
                 type="text"
                 placeholder="Type a Message"
                 value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
+                onChange={(e) => { setInputValue(e.target.value); setSendError(null); }}
                 onKeyDown={handleKeyDown}
                 disabled={isSending}
               />
@@ -189,6 +192,9 @@ export default function MessageBox({
             </form>
             {blockError && (
               <p className="text-danger fz12 mt5 mb0 px10">{blockError}</p>
+            )}
+            {sendError && !blockError && (
+              <p className="text-danger fz12 mt5 mb0 px10">{sendError}</p>
             )}
           </div>
         </div>
