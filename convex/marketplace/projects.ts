@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
 import { internal } from "../_generated/api";
+import { requireOwner } from "../lib/authHelpers";
 
 /**
  * List open projects with client info, category name, and bid count.
@@ -171,6 +172,8 @@ export const getByClient = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireOwner(ctx, args.clientId);
+
     const limit = args.limit ?? 50;
 
     const projects = await ctx.db

@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
 import { internal } from "../_generated/api";
 import { Doc } from "../_generated/dataModel";
+import { requireOwner } from "../lib/authHelpers";
 
 /**
  * Calculate the platform fee based on the order amount.
@@ -211,6 +212,8 @@ export const getByUser = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireOwner(ctx, args.userId);
+
     const limit = args.limit ?? 20;
 
     let orders: Doc<"orders">[];

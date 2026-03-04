@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
+import { requireOwner } from "../lib/authHelpers";
 
 /**
  * List open jobs with client info and category name.
@@ -97,6 +98,8 @@ export const getByClient = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireOwner(ctx, args.clientId);
+
     const limit = args.limit ?? 50;
 
     const jobs = await ctx.db
