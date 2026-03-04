@@ -1,24 +1,14 @@
 "use client";
-import { dashboardNavigation } from "@/data/dashboard";
 import toggleStore from "@/store/toggleStore";
-import useConvexUser from "@/hook/useConvexUser";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useUser, useClerk } from "@clerk/nextjs";
 import NotificationBell from "@/components/header/NotificationBell";
 
 export default function DashboardHeader() {
   const toggle = toggleStore((state) => state.dashboardSlidebarToggleHandler);
-  const path = usePathname();
   const { user } = useUser();
   const { signOut } = useClerk();
-  const { convexUser } = useConvexUser();
-
-  const role = convexUser?.userType === "freelancer" ? "freelancer" : "client";
-  const world = convexUser?.preferredWorld || "online";
-  const sections = dashboardNavigation[role]?.[world]
-    || dashboardNavigation[role]?.online;
 
   return (
     <>
@@ -113,73 +103,60 @@ export default function DashboardHeader() {
                         <span className="flaticon-like" />
                       </Link>
                     </li>
-                    <li className="user_setting">
+                    <li className="user_setting" style={{ position: "relative" }}>
                       <div className="dropdown">
-                        <a className="btn" data-bs-toggle="dropdown" role="button">
+                        <a
+                          className="btn p-0 d-flex align-items-center"
+                          data-bs-toggle="dropdown"
+                          role="button"
+                          style={{ gap: "8px" }}
+                        >
                           <Image
-                            height={50}
-                            width={50}
+                            height={36}
+                            width={36}
                             src={user?.imageUrl || "/images/resource/user.png"}
                             alt={user?.fullName || "user"}
                             className="rounded-circle"
+                            style={{ objectFit: "cover" }}
                           />
                         </a>
-                        <div className="dropdown-menu dropdown-menu-end">
-                          <div className="user_setting_content">
-                            <p className="fz15 fw400 ff-heading mb10 pl30">
-                              Start
+                        <div
+                          className="dropdown-menu dropdown-menu-end"
+                          style={{
+                            minWidth: "220px",
+                            borderRadius: "12px",
+                            border: "1px solid rgba(0,0,0,0.08)",
+                            boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+                            padding: "8px",
+                            marginTop: "10px",
+                          }}
+                        >
+                          {/* User info */}
+                          <div style={{ padding: "8px 12px 10px", borderBottom: "1px solid rgba(0,0,0,0.06)", marginBottom: "4px" }}>
+                            <p style={{ fontWeight: 600, fontSize: "14px", margin: 0, color: "#111827", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                              {user?.fullName || "Account"}
                             </p>
-                            {sections.start.map((item, i) => (
-                              <Link
-                                key={i}
-                                className={`dropdown-item ${
-                                  path === item.path ? "active" : ""
-                                }`}
-                                href={item.path}
-                              >
-                                <i className={`${item.icon} mr10`} />
-                                {item.name}
-                              </Link>
-                            ))}
-                            <p className="fz15 fw400 ff-heading mt30 pl30">
-                              Organize and Manage
+                            <p style={{ fontSize: "12px", color: "#9ca3af", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                              {user?.primaryEmailAddress?.emailAddress}
                             </p>
-                            {sections.organize.map((item, i) => (
-                              <Link
-                                key={i}
-                                className={`dropdown-item ${
-                                  path === item.path ? "active" : ""
-                                }`}
-                                href={item.path}
-                              >
-                                <i className={`${item.icon} mr10`} />
-                                {item.name}
-                              </Link>
-                            ))}
-                            <p className="fz15 fw400 ff-heading mt30 pl30">
-                              Account
-                            </p>
-                            {sections.account.map((item, i) => (
-                              <Link
-                                key={i}
-                                className={`dropdown-item ${
-                                  path === item.path ? "active" : ""
-                                }`}
-                                href={item.path}
-                              >
-                                <i className={`${item.icon} mr10`} />
-                                {item.name}
-                              </Link>
-                            ))}
-                            <hr className="my-2" />
-                            <button
-                              className="dropdown-item text-danger"
-                              onClick={() => signOut({ redirectUrl: "/" })}
-                            >
-                              <i className="flaticon-logout mr10" />
-                              Logout
-                            </button>
                           </div>
+                          <Link
+                            href="/my-profile"
+                            className="dropdown-item"
+                            style={{ borderRadius: "8px", padding: "8px 12px", fontSize: "14px", color: "#374151" }}
+                          >
+                            <i className="flaticon-photo mr10" />
+                            My Profile
+                          </Link>
+                          <hr style={{ margin: "4px 0", borderColor: "rgba(0,0,0,0.06)" }} />
+                          <button
+                            className="dropdown-item"
+                            onClick={() => signOut({ redirectUrl: "/" })}
+                            style={{ borderRadius: "8px", padding: "8px 12px", fontSize: "14px", color: "#ef4444", width: "100%", textAlign: "left" }}
+                          >
+                            <i className="flaticon-logout mr10" />
+                            Logout
+                          </button>
                         </div>
                       </div>
                     </li>
