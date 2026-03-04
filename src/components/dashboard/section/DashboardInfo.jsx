@@ -83,7 +83,7 @@ export default function DashboardInfo() {
         )}
         {!notAuthenticated && (<><div className="row">
           <div className="col-sm-6 col-xxl-3">
-            <div className="d-flex align-items-center justify-content-between statistics_funfact">
+            <div className="d-flex align-items-center justify-content-between statistics_funfact" style={{ borderLeft: "4px solid #ef2b70" }}>
               <div className="details">
                 <div className="fz15">Active Gigs</div>
                 <div className="title">
@@ -103,7 +103,7 @@ export default function DashboardInfo() {
             </div>
           </div>
           <div className="col-sm-6 col-xxl-3">
-            <div className="d-flex align-items-center justify-content-between statistics_funfact">
+            <div className="d-flex align-items-center justify-content-between statistics_funfact" style={{ borderLeft: "4px solid #6366f1" }}>
               <div className="details">
                 <div className="fz15">Total Orders</div>
                 <div className="title">
@@ -123,7 +123,7 @@ export default function DashboardInfo() {
             </div>
           </div>
           <div className="col-sm-6 col-xxl-3">
-            <div className="d-flex align-items-center justify-content-between statistics_funfact">
+            <div className="d-flex align-items-center justify-content-between statistics_funfact" style={{ borderLeft: "4px solid #f59e0b" }}>
               <div className="details">
                 <div className="fz15">Pending Orders</div>
                 <div className="title">
@@ -143,7 +143,7 @@ export default function DashboardInfo() {
             </div>
           </div>
           <div className="col-sm-6 col-xxl-3">
-            <div className="d-flex align-items-center justify-content-between statistics_funfact">
+            <div className="d-flex align-items-center justify-content-between statistics_funfact" style={{ borderLeft: "4px solid #10b981" }}>
               <div className="details">
                 <div className="fz15">Total Earnings</div>
                 <div className="title">
