@@ -1,5 +1,5 @@
 import { MutationCtx, QueryCtx } from "../_generated/server";
-import { Doc } from "../_generated/dataModel";
+import { Doc, Id } from "../_generated/dataModel";
 
 /**
  * Resolve the authenticated caller to their Convex user doc.
@@ -11,9 +11,12 @@ export async function requireAuthUser(
   const identity = await ctx.auth.getUserIdentity();
   if (!identity) throw new Error("Authentication required.");
 
+  const email = identity.email;
+  if (!email) throw new Error("Authentication required: no email in identity.");
+
   const user = await ctx.db
     .query("users")
-    .withIndex("by_email", (q) => q.eq("email", identity.email!))
+    .withIndex("by_email", (q) => q.eq("email", email))
     .first();
 
   if (!user) throw new Error("User not found.");
@@ -26,7 +29,7 @@ export async function requireAuthUser(
  */
 export async function requireOwner(
   ctx: QueryCtx | MutationCtx,
-  expectedOwnerId: string
+  expectedOwnerId: Id<"users">
 ): Promise<Doc<"users">> {
   const user = await requireAuthUser(ctx);
   if (user._id !== expectedOwnerId) throw new Error("Unauthorized.");
