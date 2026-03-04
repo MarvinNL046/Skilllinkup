@@ -10,6 +10,7 @@
 @import "./../../public/css/ud-custom-spacing.css";
 @import "./../../public/css/dashbord_navitaion.css";
 @import "./../../public/css/responsive.css";
+@import "./dashboard-theme.css";
 
 a {
   cursor: pointer;

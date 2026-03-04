@@ -1,0 +1,170 @@
+/* ============================================================
+   SkillLinkup Dashboard 2026 Theme
+   Overrides the Freeio template with a dark sidebar +
+   glassmorphism header + crispy cards design.
+   ============================================================ */
+
+/* ---- CSS Tokens ---- */
+:root {
+  --dash-sidebar-bg:        #0f0c1e;
+  --dash-sidebar-width:     260px;
+  --dash-sidebar-text:      rgba(255, 255, 255, 0.6);
+  --dash-sidebar-text-hover: rgba(255, 255, 255, 0.92);
+  --dash-sidebar-active-bar: #ef2b70;
+  --dash-sidebar-hover-bg:  rgba(255, 255, 255, 0.06);
+  --dash-content-bg:        #f4f3ff;
+  --dash-card-bg:           #ffffff;
+  --dash-card-border:       rgba(0, 0, 0, 0.07);
+  --dash-card-shadow:       0 2px 16px rgba(0, 0, 0, 0.06);
+  --dash-card-radius:       16px;
+  --dash-header-bg:         rgba(255, 255, 255, 0.8);
+  --dash-header-blur:       blur(24px);
+  --dash-header-border:     rgba(0, 0, 0, 0.08);
+}
+
+/* ---- Sidebar overrides ---- */
+.dashboard__sidebar {
+  background-color: var(--dash-sidebar-bg) !important;
+  width: var(--dash-sidebar-width) !important;
+  border-right: none !important;
+  padding: 20px 0 40px 0 !important;
+}
+
+.dashboard__sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Section labels: START / ORGANIZE AND MANAGE / ACCOUNT */
+.dashboard__sidebar .fz15.ff-heading {
+  color: rgba(255, 255, 255, 0.3) !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  padding-left: 24px !important;
+  margin-top: 24px !important;
+  margin-bottom: 4px !important;
+}
+
+/* Nav items */
+.dashboard_sidebar_list .sidebar_list_item a {
+  color: var(--dash-sidebar-text) !important;
+  border-radius: 0 !important;
+  padding: 11px 24px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  transition: all 0.15s ease !important;
+  border-left: 3px solid transparent;
+}
+
+.dashboard_sidebar_list .sidebar_list_item a:hover {
+  background-color: var(--dash-sidebar-hover-bg) !important;
+  color: var(--dash-sidebar-text-hover) !important;
+  border-left-color: rgba(239, 43, 112, 0.4) !important;
+}
+
+.dashboard_sidebar_list .sidebar_list_item a.-is-active,
+.dashboard_sidebar_list .sidebar_list_item a.-is-active:hover {
+  background-color: rgba(239, 43, 112, 0.12) !important;
+  color: #ffffff !important;
+  border-left-color: var(--dash-sidebar-active-bar) !important;
+  font-weight: 600 !important;
+}
+
+/* Icons in nav items */
+.dashboard_sidebar_list .sidebar_list_item a i {
+  font-size: 16px !important;
+  opacity: 0.8;
+}
+
+.dashboard_sidebar_list .sidebar_list_item a.-is-active i {
+  opacity: 1;
+}
+
+/* ---- Main content area ---- */
+.dashboard__main {
+  padding-left: var(--dash-sidebar-width) !important;
+  background-color: var(--dash-content-bg) !important;
+  min-height: 100vh;
+}
+
+/* ---- Content inner padding ---- */
+.dashboard__content {
+  padding: 40px 40px 40px !important;
+  background-color: transparent !important;
+}
+
+/* ---- Glassmorphism Header ---- */
+.header-nav.dashboard_header {
+  background: var(--dash-header-bg) !important;
+  backdrop-filter: var(--dash-header-blur) !important;
+  -webkit-backdrop-filter: var(--dash-header-blur) !important;
+  border-bottom: 1px solid var(--dash-header-border) !important;
+  box-shadow: none !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+}
+
+/* ---- Stat Cards (statistics_funfact) ---- */
+.statistics_funfact {
+  background: var(--dash-card-bg) !important;
+  border: 1px solid var(--dash-card-border) !important;
+  border-radius: var(--dash-card-radius) !important;
+  box-shadow: var(--dash-card-shadow) !important;
+  padding: 24px !important;
+}
+
+/* Stat card: big bold number */
+.statistics_funfact .title,
+.statistics_funfact h2,
+.statistics_funfact h3 {
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.02em !important;
+  color: #111827 !important;
+}
+
+/* Stat card label */
+.statistics_funfact .fz15,
+.statistics_funfact .sub-title {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #6b7280 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* Stat card subtle text */
+.statistics_funfact .fz14,
+.statistics_funfact p {
+  font-size: 12px !important;
+  color: #9ca3af !important;
+}
+
+/* ---- Widget/card boxes ---- */
+.ps-widget.bgc-white {
+  background: var(--dash-card-bg) !important;
+  border: 1px solid var(--dash-card-border) !important;
+  border-radius: var(--dash-card-radius) !important;
+  box-shadow: var(--dash-card-shadow) !important;
+}
+
+/* ---- Dashboard page title area ---- */
+.dashboard_title_area h2 {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  color: #111827 !important;
+}
+
+.dashboard_title_area p.text {
+  color: #6b7280 !important;
+  font-size: 14px !important;
+}
+
+/* ---- Hover background for content area ---- */
+.dashboard__content.hover-bgc-color {
+  background-color: transparent !important;
+}
