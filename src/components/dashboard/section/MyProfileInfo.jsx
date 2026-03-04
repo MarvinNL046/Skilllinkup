@@ -4,6 +4,7 @@ import DashboardNavigation from "../header/DashboardNavigation";
 import ProfileDetails from "./ProfileDetails";
 import PortfolioTab from "./PortfolioTab";
 import ExperienceTab from "./ExperienceTab";
+import SettingsTab from "./SettingsTab";
 
 const TABS = [
   { key: "profile", label: "Profile" },
@@ -64,11 +65,7 @@ export default function MyProfileInfo() {
           {activeTab === "profile" && <ProfileDetails />}
           {activeTab === "portfolio" && <PortfolioTab />}
           {activeTab === "experience" && <ExperienceTab />}
-          {activeTab === "settings" && (
-            <div className="ps-widget bgc-white bdrs4 p30 mb30">
-              <p className="text fz15">Settings tab — coming soon.</p>
-            </div>
-          )}
+          {activeTab === "settings" && <SettingsTab />}
         </div>
       </div>
     </div>
