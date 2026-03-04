@@ -11,6 +11,8 @@ export default function ProfileDetails() {
   const { convexUser, profile, updateProfile } = useConvexProfile();
   const generateUploadUrl = useMutation(api.marketplace.freelancers.generateAvatarUploadUrl);
   const saveAvatarStorageId = useMutation(api.marketplace.freelancers.saveAvatarStorageId);
+  const generateCoverUrl = useMutation(api.marketplace.freelancers.generateCoverUploadUrl);
+  const saveCoverStorageId = useMutation(api.marketplace.freelancers.saveCoverStorageId);
 
   const [displayName, setDisplayName] = useState("");
   const [tagline, setTagline] = useState("");
@@ -22,9 +24,13 @@ export default function ProfileDetails() {
   const [locationCountry, setLocationCountry] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [linkedinUrl, setLinkedinUrl] = useState("");
+  const [twitterUrl, setTwitterUrl] = useState("");
+  const [githubUrl, setGithubUrl] = useState("");
   const [saving, setSaving] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [selectedCoverFile, setSelectedCoverFile] = useState(null);
+  const [coverPreviewUrl, setCoverPreviewUrl] = useState(null);
 
   // Pre-fill form fields once profile loads
   useEffect(() => {
@@ -37,6 +43,8 @@ export default function ProfileDetails() {
       setLocationCountry(profile.locationCountry || "");
       setWebsiteUrl(profile.websiteUrl || "");
       setLinkedinUrl(profile.linkedinUrl || "");
+      setTwitterUrl(profile.twitterUrl || "");
+      setGithubUrl(profile.githubUrl || "");
 
       // Skills: array -> comma-separated string
       if (profile.skills && profile.skills.length > 0) {
@@ -90,6 +98,20 @@ export default function ProfileDetails() {
         setSelectedFile(null);
       }
 
+      // Upload cover image if a new file was selected
+      if (selectedCoverFile) {
+        const uploadUrl = await generateCoverUrl();
+        const result = await fetch(uploadUrl, {
+          method: "POST",
+          headers: { "Content-Type": selectedCoverFile.type },
+          body: selectedCoverFile,
+        });
+        if (!result.ok) throw new Error("Cover upload failed");
+        const { storageId } = await result.json();
+        await saveCoverStorageId({ profileId: profile._id, storageId });
+        setSelectedCoverFile(null);
+      }
+
       await updateProfile({
         profileId: profile._id,
         displayName: displayName || undefined,
@@ -102,6 +124,8 @@ export default function ProfileDetails() {
         locationCountry: locationCountry || undefined,
         websiteUrl: websiteUrl || undefined,
         linkedinUrl: linkedinUrl || undefined,
+        twitterUrl: twitterUrl || undefined,
+        githubUrl: githubUrl || undefined,
       });
 
       toast.success("Profile saved successfully!");
@@ -175,6 +199,37 @@ export default function ProfileDetails() {
       <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
         <div className="bdrb1 pb15 mb25">
           <h5 className="list-title">Profile Details</h5>
+        </div>
+
+        {/* Cover image */}
+        <div className="mb25">
+          <div
+            className="position-relative bdrs4 overflow-hidden"
+            style={{
+              height: 160,
+              background: coverPreviewUrl
+                ? `url(${coverPreviewUrl}) center/cover`
+                : profile?.coverImageUrl
+                ? `url(${profile.coverImageUrl}) center/cover`
+                : "#f0f0f0",
+            }}
+          >
+            <label
+              className="position-absolute bottom-0 end-0 m-2 ud-btn btn-white btn-sm"
+              style={{ cursor: "pointer" }}
+            >
+              <input
+                type="file"
+                accept=".png,.jpg,.jpeg"
+                className="d-none"
+                onChange={(e) => {
+                  const f = e.target.files[0];
+                  if (f) { setSelectedCoverFile(f); setCoverPreviewUrl(URL.createObjectURL(f)); }
+                }}
+              />
+              <i className="flaticon-pencil me-1" /> Edit Cover
+            </label>
+          </div>
         </div>
 
         {/* Avatar section */}
@@ -340,6 +395,38 @@ export default function ProfileDetails() {
                     placeholder="https://linkedin.com/in/yourprofile"
                     value={linkedinUrl}
                     onChange={(e) => setLinkedinUrl(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {/* Twitter/X URL */}
+              <div className="col-sm-6">
+                <div className="mb20">
+                  <label className="heading-color ff-heading fw500 mb10">
+                    Twitter / X URL
+                  </label>
+                  <input
+                    type="url"
+                    className="form-control"
+                    placeholder="https://twitter.com/yourhandle"
+                    value={twitterUrl}
+                    onChange={(e) => setTwitterUrl(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {/* GitHub URL */}
+              <div className="col-sm-6">
+                <div className="mb20">
+                  <label className="heading-color ff-heading fw500 mb10">
+                    GitHub URL
+                  </label>
+                  <input
+                    type="url"
+                    className="form-control"
+                    placeholder="https://github.com/yourusername"
+                    value={githubUrl}
+                    onChange={(e) => setGithubUrl(e.target.value)}
                   />
                 </div>
               </div>

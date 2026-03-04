@@ -117,6 +117,8 @@ export const updateProfile = mutation({
     portfolioUrls: v.optional(v.array(v.string())),
     websiteUrl: v.optional(v.string()),
     linkedinUrl: v.optional(v.string()),
+    twitterUrl: v.optional(v.string()),
+    githubUrl: v.optional(v.string()),
     isAvailable: v.optional(v.boolean()),
     locale: v.optional(v.string()),
   },
@@ -176,6 +178,36 @@ export const saveAvatarStorageId = mutation({
       updatedAt: Date.now(),
     });
 
+    return url;
+  },
+});
+
+/**
+ * Generate a short-lived upload URL for storing a cover image in Convex file storage.
+ */
+export const generateCoverUploadUrl = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Authentication required");
+    return await ctx.storage.generateUploadUrl();
+  },
+});
+
+/**
+ * Save a Convex storage file ID as the cover image URL on a freelancer profile.
+ */
+export const saveCoverStorageId = mutation({
+  args: {
+    profileId: v.id("freelancerProfiles"),
+    storageId: v.id("_storage"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Authentication required");
+    const url = await ctx.storage.getUrl(args.storageId);
+    if (!url) throw new Error("Failed to get storage URL");
+    await ctx.db.patch(args.profileId, { coverImageUrl: url, updatedAt: Date.now() });
     return url;
   },
 });

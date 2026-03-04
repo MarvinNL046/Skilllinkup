@@ -338,6 +338,10 @@ export default defineSchema({
     portfolioUrls: v.optional(v.array(v.string())),
     websiteUrl: v.optional(v.string()),
     linkedinUrl: v.optional(v.string()),
+    twitterUrl: v.optional(v.string()),
+    githubUrl: v.optional(v.string()),
+    profileVisibility: v.optional(v.string()), // "public" | "private"
+    contactPermission: v.optional(v.string()), // "everyone" | "clients_only" | "nobody"
     isVerified: v.optional(v.boolean()),
     verificationDate: v.optional(v.number()),
     stripeAccountId: v.optional(v.string()),
