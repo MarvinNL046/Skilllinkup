@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { requireAuthUser } from "./lib/authHelpers";
 
 /**
  * Sync a Clerk user to the Convex users table.
@@ -152,17 +153,11 @@ export const getByStackAuthId = query({
  */
 export const setUserType = mutation({
   args: {
-    email: v.string(),
     userType: v.string(),
     preferredWorld: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", args.email))
-      .first();
-
-    if (!user) throw new Error("User not found");
+    const user = await requireAuthUser(ctx);
 
     const patch: Record<string, unknown> = {
       userType: args.userType,
@@ -203,16 +198,10 @@ export const setUserType = mutation({
  */
 export const setPreferredWorld = mutation({
   args: {
-    email: v.string(),
     preferredWorld: v.string(),
   },
   handler: async (ctx, args) => {
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", args.email))
-      .first();
-
-    if (!user) throw new Error("User not found");
+    const user = await requireAuthUser(ctx);
 
     await ctx.db.patch(user._id, {
       preferredWorld: args.preferredWorld,

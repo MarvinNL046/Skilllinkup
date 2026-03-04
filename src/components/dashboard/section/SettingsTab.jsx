@@ -77,10 +77,9 @@ export default function SettingsTab() {
   }, [profile]);
 
   const handleSaveType = async () => {
-    if (!convexUser?.email) return;
     setSavingType(true);
     try {
-      await setUserType({ email: convexUser.email, userType: accountType });
+      await setUserType({ userType: accountType });
       toast.success("Account type updated");
     } catch (err) {
       toast.error(err.message || "Failed");

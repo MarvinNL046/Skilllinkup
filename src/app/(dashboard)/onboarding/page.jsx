@@ -75,7 +75,6 @@ function OnboardingContent() {
     setSaving(true);
     try {
       await setUserType({
-        email: convexUser.email,
         userType: role,
         preferredWorld: world,
       });

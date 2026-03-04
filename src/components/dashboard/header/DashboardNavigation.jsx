@@ -28,8 +28,8 @@ export default function DashboardNavigation() {
     || dashboardNavigation[role]?.online;
 
   const handleWorldSwitch = (newWorld) => {
-    if (!convexUser?.email || newWorld === world) return;
-    setPreferredWorld({ email: convexUser.email, preferredWorld: newWorld });
+    if (newWorld === world) return;
+    setPreferredWorld({ preferredWorld: newWorld });
   };
 
   return (
