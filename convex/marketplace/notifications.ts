@@ -1,5 +1,6 @@
 import { v } from "convex/values";
-import { query, mutation } from "../_generated/server";
+import { query, internalMutation, mutation } from "../_generated/server";
+import { requireAuthUser, requireOwner } from "../lib/authHelpers";
 
 /**
  * Get notifications for a user, sorted by most recent first.
@@ -10,6 +11,8 @@ export const list = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireOwner(ctx, args.userId);
+
     const limit = args.limit ?? 20;
 
     const notifications = await ctx.db
@@ -30,6 +33,8 @@ export const getUnreadCount = query({
     userId: v.id("users"),
   },
   handler: async (ctx, args) => {
+    await requireOwner(ctx, args.userId);
+
     const unread = await ctx.db
       .query("notifications")
       .withIndex("by_user_read", (q) =>
@@ -43,8 +48,9 @@ export const getUnreadCount = query({
 
 /**
  * Create a new notification for a user.
+ * Internal only — clients cannot call this directly.
  */
-export const create = mutation({
+export const create = internalMutation({
   args: {
     userId: v.id("users"),
     type: v.string(),
@@ -77,8 +83,10 @@ export const markRead = mutation({
     notificationId: v.id("notifications"),
   },
   handler: async (ctx, args) => {
+    const user = await requireAuthUser(ctx);
     const notification = await ctx.db.get(args.notificationId);
-    if (!notification) throw new Error("Notification not found");
+    if (!notification) throw new Error("Notification not found.");
+    if (notification.userId !== user._id) throw new Error("Unauthorized.");
 
     await ctx.db.patch(args.notificationId, { isRead: true });
 
@@ -94,6 +102,8 @@ export const markAllRead = mutation({
     userId: v.id("users"),
   },
   handler: async (ctx, args) => {
+    await requireOwner(ctx, args.userId);
+
     const unread = await ctx.db
       .query("notifications")
       .withIndex("by_user_read", (q) =>
