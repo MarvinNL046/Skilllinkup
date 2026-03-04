@@ -51,15 +51,11 @@ export default function MessageInfo() {
 
   async function handleSendMessage(content) {
     if (!selectedConversationId || !content.trim()) return;
-    try {
-      await sendMessage({
-        conversationId: selectedConversationId,
-        content: content.trim(),
-        messageType: "text",
-      });
-    } catch (err) {
-      console.error("Failed to send message:", err);
-    }
+    await sendMessage({
+      conversationId: selectedConversationId,
+      content: content.trim(),
+      messageType: "text",
+    });
   }
 
   return (

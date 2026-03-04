@@ -241,7 +241,7 @@ function GigPackageTable({ gig, recipientUserId }) {
               {packages.map((pkg) => {
                 const subject = encodeURIComponent(`${gig.title} — ${TIER_LABELS[pkg.tier] || pkg.tier}`);
                 const href = recipientUserId
-                  ? `/dashboard/messages?recipientId=${recipientUserId}&subject=${subject}`
+                  ? `/dashboard/message?recipientId=${recipientUserId}&subject=${subject}`
                   : null;
                 return (
                   <td key={pkg._id} className="p15">
