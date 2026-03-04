@@ -9,7 +9,7 @@ export default function SaveButton({ itemId, itemType, itemTitle, itemImage, ite
 
   const isSaved = useQuery(
     api.marketplace.savedItems.isSaved,
-    userId && itemId ? { userId, itemId: String(itemId) } : "skip"
+    itemId ? { itemId: String(itemId) } : "skip"
   );
   const saveItem = useMutation(api.marketplace.savedItems.save);
   const removeItem = useMutation(api.marketplace.savedItems.remove);
@@ -18,10 +18,9 @@ export default function SaveButton({ itemId, itemType, itemTitle, itemImage, ite
 
   const handleToggle = async () => {
     if (isSaved) {
-      await removeItem({ userId, itemId: String(itemId) });
+      await removeItem({ itemId: String(itemId) });
     } else {
       await saveItem({
-        userId,
         itemType: itemType || "gig",
         itemId: String(itemId),
         itemTitle,

@@ -16,7 +16,7 @@ export default function SavedInfo() {
 
   const savedItems = useQuery(
     api.marketplace.savedItems.list,
-    convexUser?._id ? { userId: convexUser._id } : "skip"
+    isAuthenticated ? {} : "skip"
   );
 
   const removeItem = useMutation(api.marketplace.savedItems.remove);
@@ -26,7 +26,7 @@ export default function SavedInfo() {
     if (!convexUser?._id) return;
     setRemovingId(itemId);
     try {
-      await removeItem({ userId: convexUser._id, itemId: String(itemId) });
+      await removeItem({ itemId: String(itemId) });
     } catch (err) {
       console.error("Failed to remove saved item:", err);
     } finally {
