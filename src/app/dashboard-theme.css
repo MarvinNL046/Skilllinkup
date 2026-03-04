@@ -92,7 +92,7 @@
 .dashboard__main {
   padding-left: var(--dash-sidebar-width) !important;
   background-color: var(--dash-content-bg) !important;
-  min-height: 100vh;
+  min-height: calc(100vh - var(--dash-header-height)) !important;
   margin-top: 0 !important;
 }
 
