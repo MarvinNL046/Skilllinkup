@@ -4,23 +4,33 @@ import { api } from "../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 
 export default function NotificationBell() {
-  const { convexUser } = useConvexUser();
+  const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const userId = convexUser?._id;
+  const authUser = useQuery(
+    api.users.getCurrentUser,
+    isLoaded && isAuthenticated ? {} : "skip"
+  );
+  const canReadNotifications =
+    !!userId &&
+    !!authUser &&
+    authUser._id === userId;
 
   const unreadCount = useQuery(
     api.marketplace.notifications.getUnreadCount,
-    userId ? { userId } : "skip"
+    canReadNotifications ? { userId } : "skip"
   );
 
   const notifications = useQuery(
     api.marketplace.notifications.list,
-    userId ? { userId, limit: 10 } : "skip"
+    canReadNotifications ? { userId, limit: 10 } : "skip"
   );
 
   const markRead = useMutation(api.marketplace.notifications.markRead);
   const markAllRead = useMutation(api.marketplace.notifications.markAllRead);
 
-  if (!userId) return null;
+  if (!isLoaded || !isAuthenticated || !userId || !canReadNotifications) {
+    return null;
+  }
 
   function formatDate(timestamp) {
     if (!timestamp) return "";
