@@ -533,8 +533,9 @@ export const getByFreelancerWithPackages = query({
   handler: async (ctx, args) => {
     const gigs = await ctx.db
       .query("gigs")
-      .withIndex("by_freelancer", (q) => q.eq("freelancerId", args.freelancerId))
-      .filter((q) => q.eq(q.field("status"), "active"))
+      .withIndex("by_freelancer_status", (q) =>
+        q.eq("freelancerId", args.freelancerId).eq("status", "active")
+      )
       .collect();
 
     const enriched = await Promise.all(
@@ -542,13 +543,13 @@ export const getByFreelancerWithPackages = query({
         const packages = await ctx.db
           .query("gigPackages")
           .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
-          .collect();
+          .take(3);
 
         // Sort packages: basic → standard → premium
         const tierOrder: Record<string, number> = { basic: 0, standard: 1, premium: 2 };
-        packages.sort((a, b) => (tierOrder[a.tier] ?? 99) - (tierOrder[b.tier] ?? 99));
+        const sortedPackages = [...packages].sort((a, b) => (tierOrder[a.tier] ?? 99) - (tierOrder[b.tier] ?? 99));
 
-        return { ...gig, packages };
+        return { ...gig, packages: sortedPackages };
       })
     );
 

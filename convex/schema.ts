@@ -425,6 +425,7 @@ export default defineSchema({
   })
     .index("by_slug_locale", ["slug", "locale"])
     .index("by_freelancer", ["freelancerId"])
+    .index("by_freelancer_status", ["freelancerId", "status"])
     .index("by_category", ["categoryId"])
     .index("by_category_status_locale", ["categoryId", "status", "locale"])
     .index("by_status_locale", ["status", "locale"])
