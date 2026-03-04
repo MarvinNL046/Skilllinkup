@@ -96,13 +96,14 @@ export default function ManageJobInfo() {
           </div>
           <div className="col-lg-3">
             <div className="text-lg-end">
-              <Link
-                href="/create-jobs"
+              <span
                 className="ud-btn btn-dark default-box-shadow2"
+                style={{ opacity: 0.5, cursor: "not-allowed" }}
+                title="Coming soon"
               >
                 Post a Job
                 <i className="fal fa-arrow-right-long" />
-              </Link>
+              </span>
             </div>
           </div>
         </div>
@@ -150,10 +151,14 @@ export default function ManageJobInfo() {
                           : "You haven't posted any jobs yet."}
                       </p>
                       {!activeStatus && (
-                        <Link href="/create-jobs" className="ud-btn btn-thm mt10">
+                        <span
+                          className="ud-btn btn-thm mt10"
+                          style={{ opacity: 0.5, cursor: "not-allowed" }}
+                          title="Coming soon"
+                        >
                           Post Your First Job
                           <i className="fal fa-arrow-right-long" />
-                        </Link>
+                        </span>
                       )}
                     </div>
                   ) : (

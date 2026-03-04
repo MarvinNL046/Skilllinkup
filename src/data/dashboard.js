@@ -50,7 +50,7 @@ export const dashboardNavigation = {
       account:  [_profile],
     },
     local: {
-      start:    [_dashboard, _quoteReqs, _orders, _saved],
+      start:    [_dashboard, _orders, _saved],
       organize: [_message, _reviews],
       account:  [_profile],
     },

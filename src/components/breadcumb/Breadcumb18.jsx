@@ -16,6 +16,7 @@ export default function Breadcumb18() {
           className="left-top-img wow zoomIn"
           src="/images/vector-img/left-top.png"
           alt=" image "
+          suppressHydrationWarning
         />
         <Image
           width={255}
@@ -24,9 +25,10 @@ export default function Breadcumb18() {
           className="right-bottom-img wow zoomIn"
           src="/images/vector-img/right-bottom.png"
           alt=" image "
+          suppressHydrationWarning
         />
         <div className="container">
-          <div className="row wow fadeInUp">
+          <div className="row wow fadeInUp" suppressHydrationWarning>
             <div className="col-xl-7">
               <div className="position-relative">
                 <h2 className="text-white">Projects List</h2>
