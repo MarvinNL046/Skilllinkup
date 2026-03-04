@@ -41,7 +41,7 @@ export default function DashboardSidebar() {
               onClick={() => handleWorldSwitch(w.key)}
               className="btn btn-sm flex-grow-1"
               style={{
-                backgroundColor: world === w.key ? "#ef2b70" : "#f3f4f6",
+                backgroundColor: world === w.key ? "#22c55e" : "#f3f4f6",
                 color: world === w.key ? "#fff" : "#6b7280",
                 border: "none",
                 borderRadius: "20px",

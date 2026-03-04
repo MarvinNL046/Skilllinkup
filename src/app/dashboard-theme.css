@@ -10,9 +10,9 @@
   --dash-sidebar-border:     rgba(0, 0, 0, 0.07);
   --dash-sidebar-text:       #4b5563;
   --dash-sidebar-text-hover: #111827;
-  --dash-sidebar-active-bar: #ef2b70;
-  --dash-sidebar-active-bg:  rgba(239, 43, 112, 0.07);
-  --dash-sidebar-active-text:#ef2b70;
+  --dash-sidebar-active-bar: #22c55e;
+  --dash-sidebar-active-bg:  rgba(34, 197, 94, 0.07);
+  --dash-sidebar-active-text:#22c55e;
   --dash-sidebar-hover-bg:   rgba(0, 0, 0, 0.04);
   --dash-content-bg:         #ffffff;
   --dash-card-bg:            #ffffff;
@@ -67,7 +67,7 @@
 .dashboard_sidebar_list .sidebar_list_item a:hover {
   background-color: var(--dash-sidebar-hover-bg) !important;
   color: var(--dash-sidebar-text-hover) !important;
-  border-left-color: rgba(239, 43, 112, 0.3) !important;
+  border-left-color: rgba(34, 197, 94, 0.3) !important;
 }
 
 .dashboard_sidebar_list .sidebar_list_item a.-is-active,
