@@ -149,6 +149,8 @@ const TIER_LABELS = { basic: "Basic", standard: "Standard", premium: "Premium" }
 function GigPackageTable({ gig, recipientUserId }) {
   const packages = gig.packages;
 
+  if (!packages || packages.length === 0) return null;
+
   return (
     <div className="mb30">
       <h5 className="mb5">{gig.title}</h5>
@@ -162,7 +164,7 @@ function GigPackageTable({ gig, recipientUserId }) {
           <thead className="bgc-thm-light">
             <tr>
               {packages.map((pkg) => (
-                <th key={pkg._id} className="fz15 fw600 p20">
+                <th key={pkg._id} scope="col" className="fz15 fw600 p20">
                   {TIER_LABELS[pkg.tier] || pkg.tier}
                 </th>
               ))}
@@ -179,7 +181,7 @@ function GigPackageTable({ gig, recipientUserId }) {
             <tr className="bgc-light">
               {packages.map((pkg) => (
                 <td key={pkg._id} className="fz20 fw700 p15 dark-color">
-                  {(pkg.price).toLocaleString("nl-NL", {
+                  {(Number(pkg.price) || 0).toLocaleString("nl-NL", {
                     style: "currency",
                     currency: pkg.currency || "EUR",
                     maximumFractionDigits: 0,
@@ -213,7 +215,7 @@ function GigPackageTable({ gig, recipientUserId }) {
                 {packages.map((pkg) => (
                   <td key={pkg._id} className="fz13 text p15" style={{ verticalAlign: "top" }}>
                     {(pkg.features || []).map((f, i) => (
-                      <div key={i} className="d-flex align-items-center justify-content-center gap-1 mb5">
+                      <div key={`${pkg._id}-f${i}`} className="d-flex align-items-center justify-content-center gap-1 mb5">
                         <i className="flaticon-check text-success fz12" />
                         <span>{String(f)}</span>
                       </div>
@@ -228,13 +230,20 @@ function GigPackageTable({ gig, recipientUserId }) {
                 const subject = encodeURIComponent(`${gig.title} — ${TIER_LABELS[pkg.tier] || pkg.tier}`);
                 const href = recipientUserId
                   ? `/dashboard/messages?recipientId=${recipientUserId}&subject=${subject}`
-                  : "#";
+                  : null;
                 return (
                   <td key={pkg._id} className="p15">
-                    <a href={href} className="ud-btn btn-thm btn-sm w-100">
-                      Contact
-                      <i className="fal fa-arrow-right-long ms-1" />
-                    </a>
+                    {href ? (
+                      <Link href={href} className="ud-btn btn-thm btn-sm w-100">
+                        Contact
+                        <i className="fal fa-arrow-right-long ms-1" />
+                      </Link>
+                    ) : (
+                      <button className="ud-btn btn-thm btn-sm w-100" disabled>
+                        Contact
+                        <i className="fal fa-arrow-right-long ms-1" />
+                      </button>
+                    )}
                   </td>
                 );
               })}
