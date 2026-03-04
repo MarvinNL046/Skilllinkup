@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { toast } from "sonner";
 
@@ -8,6 +9,7 @@ const SESSION_KEY = "exitIntentShown";
 const DELAY_MS = 5000;
 
 export default function ExitIntentPopup() {
+  const { isSignedIn } = useAuth();
   const [visible, setVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [mounted, setMounted] = useState(false);
@@ -56,7 +58,7 @@ export default function ExitIntentPopup() {
     setVisible(false);
   };
 
-  if (!visible) return null;
+  if (isSignedIn || !visible) return null;
 
   return (
     <div
