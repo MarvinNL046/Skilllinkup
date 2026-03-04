@@ -12,7 +12,7 @@
   --dash-sidebar-text-hover: rgba(255, 255, 255, 0.92);
   --dash-sidebar-active-bar: #ef2b70;
   --dash-sidebar-hover-bg:  rgba(255, 255, 255, 0.06);
-  --dash-content-bg:        #f4f3ff;
+  --dash-content-bg:        #f8f8fb;
   --dash-card-bg:           #ffffff;
   --dash-card-border:       rgba(0, 0, 0, 0.07);
   --dash-card-shadow:       0 2px 16px rgba(0, 0, 0, 0.06);
@@ -169,6 +169,7 @@
 }
 
 /* ---- Hover background for content area ---- */
-.dashboard__content.hover-bgc-color {
+.dashboard__content.hover-bgc-color,
+.hover-bgc-color {
   background-color: transparent !important;
 }
