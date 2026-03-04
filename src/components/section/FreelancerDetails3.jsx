@@ -142,6 +142,131 @@ function ProfileSidebar({ convexData }) {
   );
 }
 
+// ---- Gigs ----
+
+const TIER_LABELS = { basic: "Basic", standard: "Standard", premium: "Premium" };
+
+function GigPackageTable({ gig, recipientUserId }) {
+  const packages = gig.packages;
+
+  return (
+    <div className="mb30">
+      <h5 className="mb5">{gig.title}</h5>
+      {gig.description && (
+        <p className="text fz14 mb15" style={{ maxWidth: 680 }}>
+          {gig.description.length > 200 ? gig.description.slice(0, 200) + "…" : gig.description}
+        </p>
+      )}
+      <div className="table-responsive">
+        <table className="table table-bordered align-middle text-center mb-0" style={{ minWidth: 480 }}>
+          <thead className="bgc-thm-light">
+            <tr>
+              {packages.map((pkg) => (
+                <th key={pkg._id} className="fz15 fw600 p20">
+                  {TIER_LABELS[pkg.tier] || pkg.tier}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {/* Package title */}
+            <tr>
+              {packages.map((pkg) => (
+                <td key={pkg._id} className="fz14 fw500 p15">{pkg.title}</td>
+              ))}
+            </tr>
+            {/* Price */}
+            <tr className="bgc-light">
+              {packages.map((pkg) => (
+                <td key={pkg._id} className="fz20 fw700 p15 dark-color">
+                  {(pkg.price).toLocaleString("nl-NL", {
+                    style: "currency",
+                    currency: pkg.currency || "EUR",
+                    maximumFractionDigits: 0,
+                  })}
+                </td>
+              ))}
+            </tr>
+            {/* Delivery */}
+            <tr>
+              {packages.map((pkg) => (
+                <td key={pkg._id} className="fz13 text p15">
+                  <i className="flaticon-clock me-1" />
+                  {pkg.deliveryDays} {pkg.deliveryDays === 1 ? "day" : "days"} delivery
+                </td>
+              ))}
+            </tr>
+            {/* Revisions */}
+            {packages.some((p) => p.revisionCount != null) && (
+              <tr>
+                {packages.map((pkg) => (
+                  <td key={pkg._id} className="fz13 text p15">
+                    <i className="flaticon-cycle me-1" />
+                    {pkg.revisionCount != null ? `${pkg.revisionCount} revision${pkg.revisionCount !== 1 ? "s" : ""}` : "—"}
+                  </td>
+                ))}
+              </tr>
+            )}
+            {/* Features */}
+            {packages.some((p) => p.features && p.features.length > 0) && (
+              <tr>
+                {packages.map((pkg) => (
+                  <td key={pkg._id} className="fz13 text p15" style={{ verticalAlign: "top" }}>
+                    {(pkg.features || []).map((f, i) => (
+                      <div key={i} className="d-flex align-items-center justify-content-center gap-1 mb5">
+                        <i className="flaticon-check text-success fz12" />
+                        <span>{String(f)}</span>
+                      </div>
+                    ))}
+                  </td>
+                ))}
+              </tr>
+            )}
+            {/* CTA row */}
+            <tr>
+              {packages.map((pkg) => {
+                const subject = encodeURIComponent(`${gig.title} — ${TIER_LABELS[pkg.tier] || pkg.tier}`);
+                const href = recipientUserId
+                  ? `/dashboard/messages?recipientId=${recipientUserId}&subject=${subject}`
+                  : "#";
+                return (
+                  <td key={pkg._id} className="p15">
+                    <a href={href} className="ud-btn btn-thm btn-sm w-100">
+                      Contact
+                      <i className="fal fa-arrow-right-long ms-1" />
+                    </a>
+                  </td>
+                );
+              })}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function GigsSection({ freelancerProfileId, recipientUserId }) {
+  const gigs = useQuery(
+    api.marketplace.gigs.getByFreelancerWithPackages,
+    freelancerProfileId ? { freelancerId: freelancerProfileId } : "skip"
+  );
+
+  if (!gigs || gigs.length === 0) return null;
+
+  return (
+    <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
+      <h4 className="mb25">Services</h4>
+      {gigs.map((gig, idx) => (
+        <div key={gig._id}>
+          {idx > 0 && <hr className="my30" />}
+          <GigPackageTable gig={gig} recipientUserId={recipientUserId} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ---- Portfolio ----
 
 function PortfolioSection({ userId }) {
@@ -560,6 +685,9 @@ export default function FreelancerDetails3() {
                 <p className="text mb-0">{bio}</p>
               </div>
             )}
+
+            {/* Services */}
+            <GigsSection freelancerProfileId={id} recipientUserId={convexData.userId} />
 
             {/* Portfolio */}
             <PortfolioSection userId={convexData.userId} />
