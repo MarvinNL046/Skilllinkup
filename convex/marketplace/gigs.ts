@@ -521,3 +521,38 @@ export const update = mutation({
     return gigId;
   },
 });
+
+/**
+ * Get all active gigs for a freelancer, each enriched with all their packages.
+ * Used on the public freelancer profile page.
+ */
+export const getByFreelancerWithPackages = query({
+  args: {
+    freelancerId: v.id("freelancerProfiles"),
+  },
+  handler: async (ctx, args) => {
+    const gigs = await ctx.db
+      .query("gigs")
+      .withIndex("by_freelancer", (q) => q.eq("freelancerId", args.freelancerId))
+      .filter((q) => q.eq(q.field("status"), "active"))
+      .collect();
+
+    const enriched = await Promise.all(
+      gigs.map(async (gig) => {
+        const packages = await ctx.db
+          .query("gigPackages")
+          .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
+          .collect();
+
+        // Sort packages: basic → standard → premium
+        const tierOrder: Record<string, number> = { basic: 0, standard: 1, premium: 2 };
+        packages.sort((a, b) => (tierOrder[a.tier] ?? 99) - (tierOrder[b.tier] ?? 99));
+
+        return { ...gig, packages };
+      })
+    );
+
+    // Only return gigs that have at least one package
+    return enriched.filter((g) => g.packages.length > 0);
+  },
+});
