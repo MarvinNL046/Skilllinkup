@@ -20,6 +20,7 @@
   --dash-header-bg:         rgba(255, 255, 255, 0.8);
   --dash-header-blur:       blur(24px);
   --dash-header-border:     rgba(0, 0, 0, 0.08);
+  --dash-header-height:     92px;
 }
 
 /* ---- Sidebar overrides ---- */
@@ -28,6 +29,9 @@
   width: var(--dash-sidebar-width) !important;
   border-right: none !important;
   padding: 20px 0 40px 0 !important;
+  top: var(--dash-header-height) !important;
+  margin-top: 0 !important;
+  height: calc(100vh - var(--dash-header-height)) !important;
 }
 
 .dashboard__sidebar::-webkit-scrollbar-thumb {
