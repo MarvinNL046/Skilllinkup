@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import MyProfileInfo from "@/components/dashboard/section/MyProfileInfo";
 
@@ -10,10 +11,12 @@ export const metadata = {
 export default function page() {
   return (
     <>
-    
+
     <MobileNavigation2 />
       <DashboardLayout>
-        <MyProfileInfo />
+        <Suspense>
+          <MyProfileInfo />
+        </Suspense>
       </DashboardLayout>
     </>
   );
