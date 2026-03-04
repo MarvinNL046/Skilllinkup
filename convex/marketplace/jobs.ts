@@ -194,3 +194,73 @@ export const create = mutation({
     return jobId;
   },
 });
+
+/**
+ * Delete a job (sets status to "closed"). Authentication required.
+ * Caller must be the job owner.
+ */
+export const remove = mutation({
+  args: {
+    jobId: v.id("jobs"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Authentication required");
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", identity.email!))
+      .first();
+    if (!user) throw new Error("User not found");
+
+    const job = await ctx.db.get(args.jobId);
+    if (!job) throw new Error("Job not found");
+
+    if (job.clientId !== user._id) {
+      throw new Error("Access denied: only the job owner can delete this job");
+    }
+
+    await ctx.db.patch(args.jobId, {
+      status: "closed",
+      updatedAt: Date.now(),
+    });
+
+    return args.jobId;
+  },
+});
+
+/**
+ * Update a job. Authentication required.
+ * Caller must be the job owner.
+ */
+export const update = mutation({
+  args: {
+    jobId: v.id("jobs"),
+    title: v.optional(v.string()),
+    description: v.optional(v.string()),
+    status: v.optional(v.string()),
+    expiresAt: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Authentication required");
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", identity.email!))
+      .first();
+    if (!user) throw new Error("User not found");
+
+    const job = await ctx.db.get(args.jobId);
+    if (!job) throw new Error("Job not found");
+
+    if (job.clientId !== user._id) {
+      throw new Error("Access denied: only the job owner can update this job");
+    }
+
+    const { jobId, ...fields } = args;
+    await ctx.db.patch(jobId, { ...fields, updatedAt: Date.now() });
+
+    return jobId;
+  },
+});

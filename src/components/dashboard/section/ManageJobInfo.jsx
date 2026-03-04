@@ -2,12 +2,13 @@
 import Link from "next/link";
 import DashboardNavigation from "../header/DashboardNavigation";
 import { useState } from "react";
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import ManageJobCard from "../card/ManageJobCard";
 import ProposalModal1 from "../modal/ProposalModal1";
 import DeleteModal from "../modal/DeleteModal";
 import useConvexUser from "@/hook/useConvexUser";
+import { toast } from "sonner";
 
 const tabs = [
   { label: "All Jobs", status: null },
@@ -18,7 +19,11 @@ const tabs = [
 
 export default function ManageJobInfo() {
   const [selectedTab, setSelectedTab] = useState(0);
+  const [selectedJob, setSelectedJob] = useState(null);
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
+
+  const removeJob = useMutation(api.marketplace.jobs.remove);
+  const updateJob = useMutation(api.marketplace.jobs.update);
 
   const jobs = useQuery(
     api.marketplace.jobs.getByClient,
@@ -34,6 +39,26 @@ export default function ManageJobInfo() {
     : [];
 
   const isLoading = !isLoaded || (convexUser?._id && jobs === undefined);
+
+  const handleDelete = async (jobId) => {
+    try {
+      await removeJob({ jobId });
+      toast.success("Job deleted successfully");
+    } catch (err) {
+      toast.error(err.message || "Failed to delete job");
+      throw err;
+    }
+  };
+
+  const handleUpdate = async (fields) => {
+    try {
+      await updateJob(fields);
+      toast.success("Job updated successfully");
+    } catch (err) {
+      toast.error(err.message || "Failed to update job");
+      throw err;
+    }
+  };
 
   if (isLoaded && !isAuthenticated) {
     return (
@@ -144,7 +169,12 @@ export default function ManageJobInfo() {
                       </thead>
                       <tbody className="t-body">
                         {filteredJobs.map((job) => (
-                          <ManageJobCard key={job._id} data={job} />
+                          <ManageJobCard
+                            key={job._id}
+                            job={job}
+                            onEdit={(j) => setSelectedJob(j)}
+                            onDelete={(j) => setSelectedJob(j)}
+                          />
                         ))}
                       </tbody>
                     </table>
@@ -155,8 +185,15 @@ export default function ManageJobInfo() {
           </div>
         </div>
       </div>
-      <ProposalModal1 />
-      <DeleteModal />
+      <ProposalModal1
+        project={selectedJob}
+        onUpdate={handleUpdate}
+      />
+      <DeleteModal
+        projectId={selectedJob?._id}
+        projectTitle={selectedJob?.title}
+        onDelete={handleDelete}
+      />
     </>
   );
 }
