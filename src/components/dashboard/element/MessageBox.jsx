@@ -2,6 +2,19 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
+const CONTACT_PATTERNS = [
+  /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/,
+  /(\+?\d[\d\s\-().]{6,}\d)/,
+  /(https?:\/\/|www\.)/i,
+  /(wa\.me|t\.me|telegram|whatsapp|instagram\.com|linkedin\.com)/i,
+];
+
+function containsContactInfo(text) {
+  return CONTACT_PATTERNS.some((p) => p.test(text));
+}
+
+const BLOCK_ERROR = "Contactgegevens mogen niet gedeeld worden via de chat. Gebruik het platform voor verdere afspraken.";
+
 export default function MessageBox({
   messages = [],
   currentUserId,
@@ -12,6 +25,7 @@ export default function MessageBox({
   const [inputValue, setInputValue] = useState("");
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef(null);
+  const blockError = inputValue.trim() && containsContactInfo(inputValue) ? BLOCK_ERROR : null;
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -167,12 +181,15 @@ export default function MessageBox({
               <button
                 type="submit"
                 className="btn ud-btn btn-thm"
-                disabled={isSending || !inputValue.trim()}
+                disabled={isSending || !inputValue.trim() || !!blockError}
               >
                 {isSending ? "Sending..." : "Send Message"}
                 <i className="fal fa-arrow-right-long" />
               </button>
             </form>
+            {blockError && (
+              <p className="text-danger fz12 mt5 mb0 px10">{blockError}</p>
+            )}
           </div>
         </div>
       </div>
