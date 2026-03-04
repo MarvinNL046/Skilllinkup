@@ -83,7 +83,7 @@ export default function DashboardInfo() {
         )}
         {!notAuthenticated && (<><div className="row">
           <div className="col-sm-6 col-xxl-3">
-            <div className="d-flex align-items-center justify-content-between statistics_funfact" style={{ borderLeft: "4px solid #22c55e" }}>
+            <div className="d-flex align-items-center justify-content-between statistics_funfact" style={{ borderLeft: "4px solid #2A8703" }}>
               <div className="details">
                 <div className="fz15">Active Gigs</div>
                 <div className="title">
