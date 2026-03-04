@@ -1,4 +1,5 @@
 "use client";
+import { useState, useRef, useEffect } from "react";
 import toggleStore from "@/store/toggleStore";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +10,18 @@ export default function DashboardHeader() {
   const toggle = toggleStore((state) => state.dashboardSlidebarToggleHandler);
   const { user } = useUser();
   const { signOut } = useClerk();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <>
@@ -103,35 +116,33 @@ export default function DashboardHeader() {
                         <span className="flaticon-like" />
                       </Link>
                     </li>
-                    <li className="user_setting" style={{ position: "relative" }}>
-                      <div className="dropdown">
-                        <a
-                          className="btn p-0 d-flex align-items-center"
-                          data-bs-toggle="dropdown"
-                          role="button"
-                          style={{ gap: "8px" }}
-                        >
-                          <Image
-                            height={36}
-                            width={36}
-                            src={user?.imageUrl || "/images/resource/user.png"}
-                            alt={user?.fullName || "user"}
-                            className="rounded-circle"
-                            style={{ objectFit: "cover" }}
-                          />
-                        </a>
-                        <div
-                          className="dropdown-menu dropdown-menu-end"
-                          style={{
-                            minWidth: "220px",
-                            borderRadius: "12px",
-                            border: "1px solid rgba(0,0,0,0.08)",
-                            boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
-                            padding: "8px",
-                            marginTop: "10px",
-                          }}
-                        >
-                          {/* User info */}
+                    <li ref={dropdownRef} style={{ position: "relative", listStyle: "none" }}>
+                      <button
+                        onClick={() => setDropdownOpen((o) => !o)}
+                        style={{ background: "none", border: "none", padding: 0, cursor: "pointer", display: "flex", alignItems: "center" }}
+                      >
+                        <Image
+                          height={36}
+                          width={36}
+                          src={user?.imageUrl || "/images/resource/user.png"}
+                          alt={user?.fullName || "user"}
+                          className="rounded-circle"
+                          style={{ objectFit: "cover" }}
+                        />
+                      </button>
+                      {dropdownOpen && (
+                        <div style={{
+                          position: "absolute",
+                          top: "calc(100% + 10px)",
+                          right: 0,
+                          minWidth: "220px",
+                          background: "#ffffff",
+                          borderRadius: "12px",
+                          border: "1px solid rgba(0,0,0,0.08)",
+                          boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+                          padding: "8px",
+                          zIndex: 9999,
+                        }}>
                           <div style={{ padding: "8px 12px 10px", borderBottom: "1px solid rgba(0,0,0,0.06)", marginBottom: "4px" }}>
                             <p style={{ fontWeight: 600, fontSize: "14px", margin: 0, color: "#111827", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                               {user?.fullName || "Account"}
@@ -142,23 +153,26 @@ export default function DashboardHeader() {
                           </div>
                           <Link
                             href="/my-profile"
-                            className="dropdown-item"
-                            style={{ borderRadius: "8px", padding: "8px 12px", fontSize: "14px", color: "#374151" }}
+                            onClick={() => setDropdownOpen(false)}
+                            style={{ display: "flex", alignItems: "center", padding: "8px 12px", fontSize: "14px", color: "#374151", borderRadius: "8px", textDecoration: "none", gap: "8px" }}
+                            onMouseEnter={e => e.currentTarget.style.background = "#f9fafb"}
+                            onMouseLeave={e => e.currentTarget.style.background = "transparent"}
                           >
-                            <i className="flaticon-photo mr10" />
+                            <i className="flaticon-photo" />
                             My Profile
                           </Link>
                           <hr style={{ margin: "4px 0", borderColor: "rgba(0,0,0,0.06)" }} />
                           <button
-                            className="dropdown-item"
                             onClick={() => signOut({ redirectUrl: "/" })}
-                            style={{ borderRadius: "8px", padding: "8px 12px", fontSize: "14px", color: "#ef4444", width: "100%", textAlign: "left" }}
+                            style={{ display: "flex", alignItems: "center", width: "100%", padding: "8px 12px", fontSize: "14px", color: "#ef4444", background: "none", border: "none", borderRadius: "8px", cursor: "pointer", gap: "8px", textAlign: "left" }}
+                            onMouseEnter={e => e.currentTarget.style.background = "#fff1f2"}
+                            onMouseLeave={e => e.currentTarget.style.background = "none"}
                           >
-                            <i className="flaticon-logout mr10" />
+                            <i className="flaticon-logout" />
                             Logout
                           </button>
                         </div>
-                      </div>
+                      )}
                     </li>
                   </ul>
                 </div>
