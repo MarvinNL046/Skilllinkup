@@ -4,7 +4,8 @@ import Sticky from "react-stickynode";
 import useScreen from "@/hook/useScreen";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import useConvexFreelancerDetail from "@/hook/useConvexFreelancerDetail";
@@ -148,6 +149,17 @@ const TIER_LABELS = { basic: "Basic", standard: "Standard", premium: "Premium" }
 
 function GigPackageTable({ gig, recipientUserId }) {
   const packages = gig.packages;
+  const { isSignedIn } = useUser();
+  const gigRouter = useRouter();
+
+  function handleContactClick(e) {
+    if (!isSignedIn) {
+      e.preventDefault();
+      const returnUrl = typeof window !== "undefined" ? window.location.pathname : "";
+      gigRouter.push(`/sign-in?redirect_url=${encodeURIComponent(returnUrl)}`);
+    }
+    // signed in: Link handles navigation normally
+  }
 
   if (!packages || packages.length === 0) return null;
 
@@ -234,7 +246,7 @@ function GigPackageTable({ gig, recipientUserId }) {
                 return (
                   <td key={pkg._id} className="p15">
                     {href ? (
-                      <Link href={href} className="ud-btn btn-thm btn-sm w-100">
+                      <Link href={href} className="ud-btn btn-thm btn-sm w-100" onClick={handleContactClick}>
                         Contact
                         <i className="fal fa-arrow-right-long ms-1" />
                       </Link>
