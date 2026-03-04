@@ -54,7 +54,7 @@
   font-size: 14px !important;
   font-weight: 500 !important;
   transition: all 0.15s ease !important;
-  border-left: 3px solid transparent;
+  border-left: 3px solid transparent !important;
 }
 
 .dashboard_sidebar_list .sidebar_list_item a:hover {
@@ -74,11 +74,11 @@
 /* Icons in nav items */
 .dashboard_sidebar_list .sidebar_list_item a i {
   font-size: 16px !important;
-  opacity: 0.8;
+  opacity: 0.8 !important;
 }
 
 .dashboard_sidebar_list .sidebar_list_item a.-is-active i {
-  opacity: 1;
+  opacity: 1 !important;
 }
 
 /* ---- Main content area ---- */
@@ -90,7 +90,7 @@
 
 /* ---- Content inner padding ---- */
 .dashboard__content {
-  padding: 40px 40px 40px !important;
+  padding: 40px !important;
   background-color: transparent !important;
 }
 
