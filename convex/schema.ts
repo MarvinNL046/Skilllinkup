@@ -809,4 +809,74 @@ export default defineSchema({
   })
     .index("by_user", ["userId"])
     .index("by_user_item", ["userId", "itemId"]),
+
+  // ============================================================
+  // PROFILE: PORTFOLIO PROJECTS
+  // ============================================================
+
+  portfolioProjects: defineTable({
+    userId: v.id("users"),
+    tenantId: v.id("tenants"),
+    title: v.string(),
+    description: v.optional(v.string()),
+    imageUrls: v.optional(v.array(v.string())),
+    tags: v.optional(v.array(v.string())),
+    externalUrl: v.optional(v.string()),
+    sortOrder: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("by_user", ["userId"]),
+
+  // ============================================================
+  // PROFILE: EXPERIENCE, EDUCATION, CERTIFICATIONS
+  // ============================================================
+
+  workExperience: defineTable({
+    userId: v.id("users"),
+    tenantId: v.id("tenants"),
+    company: v.string(),
+    title: v.string(),
+    startDate: v.number(),
+    endDate: v.optional(v.number()),
+    isCurrent: v.optional(v.boolean()),
+    description: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("by_user", ["userId"]),
+
+  education: defineTable({
+    userId: v.id("users"),
+    tenantId: v.id("tenants"),
+    school: v.string(),
+    degree: v.optional(v.string()),
+    field: v.optional(v.string()),
+    startYear: v.optional(v.number()),
+    endYear: v.optional(v.number()),
+    description: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("by_user", ["userId"]),
+
+  userCertifications: defineTable({
+    userId: v.id("users"),
+    tenantId: v.id("tenants"),
+    name: v.string(),
+    issuer: v.optional(v.string()),
+    year: v.optional(v.number()),
+    url: v.optional(v.string()),
+    createdAt: v.number(),
+  }).index("by_user", ["userId"]),
+
+  // ============================================================
+  // PROFILE: NOTIFICATION SETTINGS
+  // ============================================================
+
+  userNotificationSettings: defineTable({
+    userId: v.id("users"),
+    newMessage: v.optional(v.boolean()),
+    orderUpdate: v.optional(v.boolean()),
+    reviewReceived: v.optional(v.boolean()),
+    marketingEmails: v.optional(v.boolean()),
+    updatedAt: v.number(),
+  }).index("by_user", ["userId"]),
 });
