@@ -1,11 +1,9 @@
 "use client";
 
-import FreelancerAbout1 from "../element/FreelancerAbout1";
-import FreelancerSkill1 from "../element/FreelancerSkill1";
 import Sticky from "react-stickynode";
-
 import useScreen from "@/hook/useScreen";
 import Image from "next/image";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
@@ -21,6 +19,287 @@ function formatReviewDate(timestamp) {
     year: "numeric",
   });
 }
+
+function formatMonthYear(ts) {
+  if (!ts) return "Present";
+  return new Date(ts).toLocaleDateString("en-GB", { month: "short", year: "numeric" });
+}
+
+// ---- Sidebar ----
+
+function ProfileSidebar({ convexData }) {
+  const location = convexData?.locationCity
+    ? `${convexData.locationCity}${convexData.locationCountry ? `, ${convexData.locationCountry}` : ""}`
+    : convexData?.locationCountry || null;
+
+  const memberSince = convexData?.createdAt
+    ? new Date(convexData.createdAt).toLocaleDateString("en-US", { month: "long", year: "numeric" })
+    : null;
+
+  const languages = convexData?.languages || [];
+  const skills = convexData?.skills || [];
+
+  return (
+    <>
+      {/* Hourly rate + contact */}
+      <div className="price-widget pt25 bdrs8 mb30">
+        {convexData?.hourlyRate && (
+          <h3 className="widget-title mb20">
+            ${convexData.hourlyRate}
+            <small className="fz15 fw500">/per hour</small>
+          </h3>
+        )}
+        <div className="category-list mt10">
+          {location && (
+            <div className="d-flex align-items-center justify-content-between bdrb1 pb10 mb10">
+              <span className="text">
+                <i className="flaticon-place text-thm2 pe-2 vam" />
+                Location
+              </span>
+              <span className="fw500">{location}</span>
+            </div>
+          )}
+          {memberSince && (
+            <div className="d-flex align-items-center justify-content-between bdrb1 pb10 mb10">
+              <span className="text">
+                <i className="flaticon-30-days text-thm2 pe-2 vam" />
+                Member since
+              </span>
+              <span className="fw500">{memberSince}</span>
+            </div>
+          )}
+          {languages.length > 0 && (
+            <div className="d-flex align-items-center justify-content-between bdrb1 pb10 mb10">
+              <span className="text">
+                <i className="flaticon-translator text-thm2 pe-2 vam" />
+                Languages
+              </span>
+              <span className="fw500">{languages.join(", ")}</span>
+            </div>
+          )}
+          {convexData?.isVerified && (
+            <div className="d-flex align-items-center justify-content-between pb10 mb10">
+              <span className="text">
+                <i className="flaticon-verify text-thm2 pe-2 vam" />
+                Verified
+              </span>
+              <span className="fw500 text-success">Yes</span>
+            </div>
+          )}
+        </div>
+        {convexData?.userId && (
+          <div className="d-grid mt20">
+            <ContactButton recipientId={convexData.userId} className="w-100" />
+          </div>
+        )}
+      </div>
+
+      {/* Social links */}
+      {(convexData?.websiteUrl || convexData?.linkedinUrl || convexData?.twitterUrl || convexData?.githubUrl) && (
+        <div className="sidebar-widget mb30 pb20 bdrs8">
+          <h4 className="widget-title">Links</h4>
+          <div className="d-flex flex-column gap-2 mt15">
+            {convexData.websiteUrl && (
+              <a href={convexData.websiteUrl} target="_blank" rel="noopener noreferrer" className="d-flex align-items-center gap-2 fz14 text-thm">
+                <i className="flaticon-website fz16" />
+                Website
+              </a>
+            )}
+            {convexData.linkedinUrl && (
+              <a href={convexData.linkedinUrl} target="_blank" rel="noopener noreferrer" className="d-flex align-items-center gap-2 fz14 text-thm">
+                <i className="fab fa-linkedin fz16" />
+                LinkedIn
+              </a>
+            )}
+            {convexData.twitterUrl && (
+              <a href={convexData.twitterUrl} target="_blank" rel="noopener noreferrer" className="d-flex align-items-center gap-2 fz14 text-thm">
+                <i className="fab fa-twitter fz16" />
+                Twitter / X
+              </a>
+            )}
+            {convexData.githubUrl && (
+              <a href={convexData.githubUrl} target="_blank" rel="noopener noreferrer" className="d-flex align-items-center gap-2 fz14 text-thm">
+                <i className="fab fa-github fz16" />
+                GitHub
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Skills */}
+      {skills.length > 0 && (
+        <div className="sidebar-widget mb30 pb20 bdrs8">
+          <h4 className="widget-title">Skills</h4>
+          <div className="tag-list mt20">
+            {skills.map((skill, i) => (
+              <a key={i}>{skill}</a>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+// ---- Portfolio ----
+
+function PortfolioSection({ userId }) {
+  const projects = useQuery(
+    api.marketplace.portfolio.getByUser,
+    userId ? { userId } : "skip"
+  );
+
+  if (!projects || projects.length === 0) return null;
+
+  return (
+    <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
+      <h4 className="mb25">Portfolio</h4>
+      <div className="row">
+        {projects.map((project) => (
+          <div key={project._id} className="col-sm-6 col-lg-4 mb20">
+            <div className="bdrs8 overflow-hidden bdr1">
+              <div
+                style={{
+                  height: 140,
+                  background: "#f0f0f0",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <span className="flaticon-photo fz30 text-muted" />
+              </div>
+              <div className="p15">
+                <h6 className="mb5">{project.title}</h6>
+                {project.description && (
+                  <p
+                    className="fz13 text mb10"
+                    style={{
+                      WebkitLineClamp: 2,
+                      overflow: "hidden",
+                      display: "-webkit-box",
+                      WebkitBoxOrient: "vertical",
+                    }}
+                  >
+                    {project.description}
+                  </p>
+                )}
+                {(project.tags || []).length > 0 && (
+                  <div className="d-flex flex-wrap gap-1 mb10">
+                    {project.tags.map((tag, i) => (
+                      <span key={i} className="badge bg-light text-dark fz11">{tag}</span>
+                    ))}
+                  </div>
+                )}
+                {project.externalUrl && (
+                  <a
+                    href={project.externalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="fz13 text-thm"
+                  >
+                    View project ↗
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ---- Experience ----
+
+function ExperienceSection({ userId }) {
+  const workExp = useQuery(
+    api.marketplace.experience.getWorkExperience,
+    userId ? { userId } : "skip"
+  );
+  const education = useQuery(
+    api.marketplace.experience.getEducation,
+    userId ? { userId } : "skip"
+  );
+  const certs = useQuery(
+    api.marketplace.experience.getCertifications,
+    userId ? { userId } : "skip"
+  );
+
+  const hasWork = workExp && workExp.length > 0;
+  const hasEdu = education && education.length > 0;
+  const hasCerts = certs && certs.length > 0;
+
+  if (!hasWork && !hasEdu && !hasCerts) return null;
+
+  return (
+    <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
+      <h4 className="mb25">Experience & Education</h4>
+
+      {hasWork && (
+        <>
+          <h5 className="fz16 mb15">Work Experience</h5>
+          {workExp.map((item) => (
+            <div key={item._id} className="bdrb1 pb15 mb15">
+              <h6 className="mb2">{item.title}</h6>
+              <p className="fz14 text mb2 fw500">{item.company}</p>
+              <p className="fz13 text-muted mb5">
+                {formatMonthYear(item.startDate)} —{" "}
+                {item.isCurrent ? "Present" : formatMonthYear(item.endDate)}
+              </p>
+              {item.description && <p className="fz13 text mb-0">{item.description}</p>}
+            </div>
+          ))}
+        </>
+      )}
+
+      {hasEdu && (
+        <>
+          <h5 className="fz16 mb15 mt20">Education</h5>
+          {education.map((item) => (
+            <div key={item._id} className="bdrb1 pb15 mb15">
+              <h6 className="mb2">{item.school}</h6>
+              {item.degree && (
+                <p className="fz14 text mb2">
+                  {item.degree}{item.field ? `, ${item.field}` : ""}
+                </p>
+              )}
+              {(item.startYear || item.endYear) && (
+                <p className="fz13 text-muted mb-0">
+                  {item.startYear || ""}{item.endYear ? ` — ${item.endYear}` : ""}
+                </p>
+              )}
+            </div>
+          ))}
+        </>
+      )}
+
+      {hasCerts && (
+        <>
+          <h5 className="fz16 mb15 mt20">Certifications</h5>
+          {certs.map((item) => (
+            <div key={item._id} className="bdrb1 pb15 mb15">
+              <h6 className="mb2">{item.name}</h6>
+              {item.issuer && (
+                <p className="fz14 text mb2">
+                  {item.issuer}{item.year ? ` · ${item.year}` : ""}
+                </p>
+              )}
+              {item.url && (
+                <a href={item.url} target="_blank" rel="noopener noreferrer" className="fz13 text-thm">
+                  View certificate ↗
+                </a>
+              )}
+            </div>
+          ))}
+        </>
+      )}
+    </div>
+  );
+}
+
+// ---- Reviews ----
 
 function FreelancerReviews({ freelancerId }) {
   const reviews = useQuery(
@@ -46,29 +325,27 @@ function FreelancerReviews({ freelancerId }) {
     );
   }
 
-  const totalRating = reviews.reduce((sum, r) => sum + r.overallRating, 0);
-  const avgRating = totalRating / reviews.length;
+  const avgRating = reviews.reduce((sum, r) => sum + r.overallRating, 0) / reviews.length;
 
   return (
     <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
       <div className="product_single_content">
         <div className="mbp_pagination_comments">
-          {/* Summary row */}
           <div className="d-md-flex align-items-center mb30">
             <div className="total-review-box d-flex align-items-center text-center mb30-sm me-4">
               <div className="wrapper mx-auto">
                 <div className="t-review mb5">{avgRating.toFixed(1)}</div>
                 <StarRating value={Math.round(avgRating)} readOnly size="sm" />
-                <p className="text mb-0 mt5 fz13">{reviews.length} {reviews.length === 1 ? "review" : "reviews"}</p>
+                <p className="text mb-0 mt5 fz13">
+                  {reviews.length} {reviews.length === 1 ? "review" : "reviews"}
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Individual reviews */}
           {reviews.map((review, idx) => (
             <div key={review._id} className={`col-md-12 ${idx > 0 ? "mt30" : ""}`}>
               <div className="bdrb1 pb30">
-                {/* Reviewer info */}
                 <div className="mbp_first position-relative d-flex align-items-center justify-content-start mb15">
                   {review.reviewerAvatar ? (
                     <Image
@@ -101,36 +378,24 @@ function FreelancerReviews({ freelancerId }) {
                   </div>
                 </div>
 
-                {/* Sub-ratings */}
                 {(review.communicationRating || review.qualityRating || review.timelinessRating || review.valueRating) && (
                   <div className="d-flex flex-wrap gap-3 mb15">
                     {review.communicationRating > 0 && (
-                      <span className="fz13 text">
-                        Communication: <strong>{review.communicationRating}/5</strong>
-                      </span>
+                      <span className="fz13 text">Communication: <strong>{review.communicationRating}/5</strong></span>
                     )}
                     {review.qualityRating > 0 && (
-                      <span className="fz13 text">
-                        Quality: <strong>{review.qualityRating}/5</strong>
-                      </span>
+                      <span className="fz13 text">Quality: <strong>{review.qualityRating}/5</strong></span>
                     )}
                     {review.timelinessRating > 0 && (
-                      <span className="fz13 text">
-                        Timeliness: <strong>{review.timelinessRating}/5</strong>
-                      </span>
+                      <span className="fz13 text">Timeliness: <strong>{review.timelinessRating}/5</strong></span>
                     )}
                     {review.valueRating > 0 && (
-                      <span className="fz13 text">
-                        Value: <strong>{review.valueRating}/5</strong>
-                      </span>
+                      <span className="fz13 text">Value: <strong>{review.valueRating}/5</strong></span>
                     )}
                   </div>
                 )}
 
-                {/* Review text */}
-                {review.content && (
-                  <p className="text mb-0">{review.content}</p>
-                )}
+                {review.content && <p className="text mb-0">{review.content}</p>}
               </div>
             </div>
           ))}
@@ -140,44 +405,15 @@ function FreelancerReviews({ freelancerId }) {
   );
 }
 
-export default function FreelancerDetail3() {
+// ---- Main component ----
+
+export default function FreelancerDetails3() {
   const isMatchedScreen = useScreen(1216);
   const { id } = useParams();
 
-  // The id param is a Convex document ID for freelancerProfiles
   const convexData = useConvexFreelancerDetail(id);
-
-  // convexData === undefined means still loading
-  // convexData === null means not found in Convex
   const isLoading = convexData === undefined;
 
-  const data = !isLoading
-    ? convexData
-      ? {
-          _id: convexData._id,
-          img: convexData.avatarUrl || "/images/team/fl-1.png",
-          name: convexData.displayName || "Freelancer",
-          profession: convexData.tagline || "Professional",
-          rating: convexData.ratingAverage || 0,
-          reviews: convexData.ratingCount || 0,
-          location: convexData.locationCity
-            ? `${convexData.locationCity}, ${convexData.locationCountry || ""}`
-            : convexData.locationCountry || "Remote",
-          memberSince: convexData.createdAt
-            ? new Date(convexData.createdAt).toLocaleDateString("en-US", {
-                month: "long",
-                day: "numeric",
-                year: "numeric",
-              })
-            : null,
-          bio: convexData.bio || null,
-          skills: convexData.skills || [],
-          hourlyRate: convexData.hourlyRate || null,
-        }
-      : null
-    : null;
-
-  // Loading state
   if (isLoading) {
     return (
       <section className="pt10 pb90 pb30-md">
@@ -192,143 +428,165 @@ export default function FreelancerDetail3() {
     );
   }
 
-  const profileImg = data?.img || "/images/team/fl-1.png";
-  const profileName = data?.name || "Freelancer";
-  const profession = data?.profession || "";
-  const rating = data?.rating ?? 0;
-  const reviewCount = data?.reviews ?? 0;
-  const location = data?.location || "";
-  const memberSince = data?.memberSince || null;
-  const bio = data?.bio || null;
-
-  // The id in the URL is the freelancerProfiles document ID
-  const freelancerProfileId = id;
-
-  return (
-    <>
+  if (!convexData) {
+    return (
       <section className="pt10 pb90 pb30-md">
         <div className="container">
-          <div className="row wow fadeInUp">
-            <div className="col-lg-8">
-              <div className="px30 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1">
-                <div className="position-relative overflow-hidden d-flex align-items-center pb30 mb30 bdrb1 ">
-                  <div className="row">
-                    <div className="col-xl-12">
-                      <div className="position-relative">
-                        <div className="list-meta d-sm-flex align-items-center">
-                          <a
-                            className="position-relative freelancer-single-style"
-                            href="#"
-                          >
-                            <span className="online"></span>
-                            <Image
-                              width={90}
-                              height={90}
-                              className="rounded-circle w-100 wa-sm mb15-sm"
-                              src={profileImg}
-                              alt="Freelancer Photo"
-                            />
-                          </a>
-                          <div className="ml20 ml0-xs">
-                            <h5 className="title mb-1">{profileName}</h5>
-                            {profession && <p className="mb-0">{profession}</p>}
-                            {rating > 0 && (
-                              <p className="mb-0 dark-color fz15 fw500 list-inline-item mb5-sm">
-                                <i className="fas fa-star vam fz10 review-color me-2"></i>{" "}
-                                {rating.toFixed(1)} ({reviewCount} reviews)
-                              </p>
-                            )}
-                            {location && (
-                              <p className="mb-0 dark-color fz15 fw500 list-inline-item ml15 mb5-sm ml0-xs">
-                                <i className="flaticon-place vam fz20 me-2"></i>{" "}
-                                {location}
-                              </p>
-                            )}
-                            {memberSince && (
-                              <p className="mb-0 dark-color fz15 fw500 list-inline-item ml15 mb5-sm ml0-xs">
-                                <i className="flaticon-30-days vam fz20 me-2"></i>{" "}
-                                Member since {memberSince}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  {rating > 0 && (
-                    <div className="col-sm-6 col-xl-4">
-                      <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                        <div className="icon flex-shrink-0">
-                          <span className="flaticon-goal" />
-                        </div>
-                        <div className="details">
-                          <h5 className="title">Rating</h5>
-                          <p className="mb-0 text">
-                            {rating.toFixed(1)} ({reviewCount} reviews)
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {data?.hourlyRate && (
-                    <div className="col-sm-6 col-xl-4">
-                      <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                        <div className="icon flex-shrink-0">
-                          <span className="flaticon-dollar" />
-                        </div>
-                        <div className="details">
-                          <h5 className="title">Hourly Rate</h5>
-                          <p className="mb-0 text">${data.hourlyRate}/hr</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-              {bio && (
-                <div className="service-about">
-                  <div className="px30 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1">
-                    <h4>Description</h4>
-                    <p className="text mb30">{bio}</p>
-                  </div>
-                </div>
-              )}
-
-              {/* Public reviews section */}
-              {freelancerProfileId && (
-                <FreelancerReviews freelancerId={freelancerProfileId} />
-              )}
-            </div>
-            <div className="col-lg-4" id="stikyContainer">
-              {isMatchedScreen ? (
-                <Sticky bottomBoundary="#stikyContainer">
-                  <div className="blog-sidebar ms-lg-auto">
-                    <FreelancerAbout1 />
-                    <FreelancerSkill1 />
-                    {convexData?.userId && (
-                      <div className="mt20">
-                        <ContactButton recipientId={convexData.userId} className="w-100" />
-                      </div>
-                    )}
-                  </div>
-                </Sticky>
-              ) : (
-                <div className="blog-sidebar ms-lg-auto">
-                  <FreelancerAbout1 />
-                  <FreelancerSkill1 />
-                  {convexData?.userId && (
-                    <div className="mt20">
-                      <ContactButton recipientId={convexData.userId} className="w-100" />
-                    </div>
-                  )}
-                </div>
-              )}
+          <div className="row">
+            <div className="col-12 text-center py-5">
+              <p className="text">Freelancer not found.</p>
+              <Link href="/freelancers" className="ud-btn btn-thm mt10">Browse Freelancers</Link>
             </div>
           </div>
         </div>
       </section>
-    </>
+    );
+  }
+
+  const profileImg = convexData.avatarUrl || "/images/team/fl-1.png";
+  const profileName = convexData.displayName || "Freelancer";
+  const profession = convexData.tagline || "";
+  const rating = convexData.ratingAverage || 0;
+  const reviewCount = convexData.ratingCount || 0;
+  const location = convexData.locationCity
+    ? `${convexData.locationCity}${convexData.locationCountry ? `, ${convexData.locationCountry}` : ""}`
+    : convexData.locationCountry || null;
+  const memberSince = convexData.createdAt
+    ? new Date(convexData.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+    : null;
+  const bio = convexData.bio || null;
+
+  const sidebar = <ProfileSidebar convexData={convexData} />;
+
+  return (
+    <section className="pt10 pb90 pb30-md">
+      <div className="container">
+        {/* Cover image banner */}
+        {convexData.coverImageUrl && (
+          <div
+            className="bdrs12 overflow-hidden mb30 wow fadeInUp"
+            style={{ height: 220, backgroundImage: `url(${convexData.coverImageUrl})`, backgroundSize: "cover", backgroundPosition: "center" }}
+          />
+        )}
+
+        <div className="row wow fadeInUp">
+          {/* Left column */}
+          <div className="col-lg-8">
+            {/* Profile header */}
+            <div className="px30 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1">
+              <div className="position-relative overflow-hidden d-flex align-items-center pb30 mb30 bdrb1">
+                <div className="row w-100">
+                  <div className="col-xl-12">
+                    <div className="list-meta d-sm-flex align-items-center">
+                      <a className="position-relative freelancer-single-style">
+                        <span className="online" />
+                        <Image
+                          width={90}
+                          height={90}
+                          className="rounded-circle w-100 wa-sm mb15-sm"
+                          src={profileImg}
+                          alt={profileName}
+                        />
+                      </a>
+                      <div className="ml20 ml0-xs">
+                        <h5 className="title mb-1">{profileName}</h5>
+                        {profession && <p className="mb-0">{profession}</p>}
+                        {rating > 0 && (
+                          <p className="mb-0 dark-color fz15 fw500 list-inline-item mb5-sm">
+                            <i className="fas fa-star vam fz10 review-color me-2" />
+                            {rating.toFixed(1)} ({reviewCount} reviews)
+                          </p>
+                        )}
+                        {location && (
+                          <p className="mb-0 dark-color fz15 fw500 list-inline-item ml15 mb5-sm ml0-xs">
+                            <i className="flaticon-place vam fz20 me-2" />
+                            {location}
+                          </p>
+                        )}
+                        {memberSince && (
+                          <p className="mb-0 dark-color fz15 fw500 list-inline-item ml15 mb5-sm ml0-xs">
+                            <i className="flaticon-30-days vam fz20 me-2" />
+                            Member since {memberSince}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Stats row */}
+              <div className="row">
+                {rating > 0 && (
+                  <div className="col-sm-6 col-xl-4">
+                    <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
+                      <div className="icon flex-shrink-0"><span className="flaticon-goal" /></div>
+                      <div className="details">
+                        <h5 className="title">Rating</h5>
+                        <p className="mb-0 text">{rating.toFixed(1)} ({reviewCount} reviews)</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {convexData.hourlyRate && (
+                  <div className="col-sm-6 col-xl-4">
+                    <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
+                      <div className="icon flex-shrink-0"><span className="flaticon-dollar" /></div>
+                      <div className="details">
+                        <h5 className="title">Hourly Rate</h5>
+                        <p className="mb-0 text">${convexData.hourlyRate}/hr</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {convexData.totalOrders > 0 && (
+                  <div className="col-sm-6 col-xl-4">
+                    <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
+                      <div className="icon flex-shrink-0"><span className="flaticon-contract" /></div>
+                      <div className="details">
+                        <h5 className="title">Orders</h5>
+                        <p className="mb-0 text">{convexData.totalOrders} completed</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Bio */}
+            {bio && (
+              <div className="px30 pt30 pb30 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1">
+                <h4>About</h4>
+                <p className="text mb-0">{bio}</p>
+              </div>
+            )}
+
+            {/* Portfolio */}
+            <PortfolioSection userId={convexData.userId} />
+
+            {/* Experience & Education */}
+            <ExperienceSection userId={convexData.userId} />
+
+            {/* Reviews */}
+            <FreelancerReviews freelancerId={id} />
+          </div>
+
+          {/* Right sidebar */}
+          <div className="col-lg-4" id="stikyContainer">
+            {isMatchedScreen ? (
+              <Sticky bottomBoundary="#stikyContainer">
+                <div className="blog-sidebar ms-lg-auto">
+                  {sidebar}
+                </div>
+              </Sticky>
+            ) : (
+              <div className="blog-sidebar ms-lg-auto">
+                {sidebar}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
