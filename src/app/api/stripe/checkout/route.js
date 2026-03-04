@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
+import { currentUser } from "@clerk/nextjs/server";
 
 // ---------------------------------------------------------------------------
 // POST /api/stripe/checkout
@@ -51,6 +52,20 @@ export async function POST(request) {
     );
   }
 
+  // Verify the caller is authenticated via Clerk — only authenticated users
+  // may initiate a checkout session.
+  const clerkUser = await currentUser();
+  if (!clerkUser) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const verifiedEmail = clerkUser.emailAddresses[0]?.emailAddress;
+  if (!verifiedEmail) {
+    return NextResponse.json(
+      { error: "No verified email on account" },
+      { status: 401 }
+    );
+  }
+
   let body;
   try {
     body = await request.json();
@@ -68,17 +83,6 @@ export async function POST(request) {
     freelancerStripeAccountId,
   } = body;
 
-  // Validate required fields.
-  if (!gigId || !packageId || !gigTitle || !price || !freelancerStripeAccountId) {
-    return NextResponse.json(
-      {
-        error:
-          "Missing required fields: gigId, packageId, gigTitle, price, freelancerStripeAccountId",
-      },
-      { status: 400 }
-    );
-  }
-
   // Freelancer must have a connected Stripe account before accepting payments.
   if (!freelancerStripeAccountId) {
     return NextResponse.json(
@@ -87,6 +91,14 @@ export async function POST(request) {
           "The freelancer has not set up their Stripe account yet. They need to complete onboarding before accepting payments.",
       },
       { status: 422 }
+    );
+  }
+
+  // Validate remaining required fields.
+  if (!gigId || !packageId || !gigTitle || !price) {
+    return NextResponse.json(
+      { error: "Missing required fields: gigId, packageId, gigTitle, price" },
+      { status: 400 }
     );
   }
 

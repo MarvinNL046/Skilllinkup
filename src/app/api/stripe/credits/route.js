@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
+import { ConvexHttpClient } from "convex/browser";
+import { api } from "../../../../../convex/_generated/api";
+import { currentUser } from "@clerk/nextjs/server";
+
+const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL);
 
 // Credit packages — must match convex/marketplace/leadPricing.ts CREDIT_PACKAGES
 const CREDIT_PACKAGES = [
@@ -16,6 +21,31 @@ export async function POST(request) {
     );
   }
 
+  // Verify the caller is authenticated via Clerk — do not trust userId from client.
+  const clerkUser = await currentUser();
+  if (!clerkUser) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const verifiedEmail = clerkUser.emailAddresses[0]?.emailAddress;
+  if (!verifiedEmail) {
+    return NextResponse.json(
+      { error: "No verified email on account" },
+      { status: 401 }
+    );
+  }
+
+  // Resolve the Convex user from the server-verified email.
+  const convexUser = await convex.query(api.users.getByEmail, {
+    email: verifiedEmail,
+  });
+  if (!convexUser) {
+    return NextResponse.json(
+      { error: "User not found in database" },
+      { status: 404 }
+    );
+  }
+  const freelancerUserId = convexUser._id;
+
   let body;
   try {
     body = await request.json();
@@ -23,11 +53,11 @@ export async function POST(request) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { packageId, freelancerUserId } = body;
+  const { packageId } = body;
 
-  if (!packageId || !freelancerUserId) {
+  if (!packageId) {
     return NextResponse.json(
-      { error: "Missing required fields: packageId, freelancerUserId" },
+      { error: "Missing required fields: packageId" },
       { status: 400 }
     );
   }

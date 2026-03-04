@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../../../../convex/_generated/api";
+import { currentUser } from "@clerk/nextjs/server";
 
 // ---------------------------------------------------------------------------
 // POST /api/stripe/connect
@@ -41,21 +42,32 @@ export async function POST(request) {
     );
   }
 
-  let body;
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  // Verify the caller is authenticated via Clerk — do not trust userId from client.
+  const clerkUser = await currentUser();
+  if (!clerkUser) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  const { email, freelancerUserId } = body;
-
-  if (!email || !freelancerUserId) {
+  const verifiedEmail = clerkUser.emailAddresses[0]?.emailAddress;
+  if (!verifiedEmail) {
     return NextResponse.json(
-      { error: "Missing required fields: email, freelancerUserId" },
-      { status: 400 }
+      { error: "No verified email on account" },
+      { status: 401 }
     );
   }
+
+  // Resolve the Convex user from the server-verified email.
+  const convexUser = await convex.query(api.users.getByEmail, {
+    email: verifiedEmail,
+  });
+  if (!convexUser) {
+    return NextResponse.json(
+      { error: "User not found in database" },
+      { status: 404 }
+    );
+  }
+  const freelancerUserId = convexUser._id;
+  // Use the server-verified email for Stripe — ignore any email from the body.
+  const email = verifiedEmail;
 
   const baseUrl =
     process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
