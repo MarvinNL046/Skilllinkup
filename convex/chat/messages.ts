@@ -1,6 +1,17 @@
-import { v } from "convex/values";
+import { v, ConvexError } from "convex/values";
 import { query, mutation } from "../_generated/server";
 import { internal } from "../_generated/api";
+
+const CONTACT_PATTERNS = [
+  /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/,
+  /(\+?\d[\d\s\-().]{6,}\d)/,
+  /(https?:\/\/|www\.)/i,
+  /(wa\.me|t\.me|telegram|whatsapp|instagram\.com|linkedin\.com)/i,
+];
+
+function containsContactInfo(text: string): boolean {
+  return CONTACT_PATTERNS.some((p) => p.test(text));
+}
 
 /**
  * Get messages for a conversation, sorted newest last (ascending by createdAt).
@@ -91,6 +102,11 @@ export const send = mutation({
 
     const now = Date.now();
     const messageType = args.messageType ?? "text";
+
+    // Block messages containing contact info (anti-bypass)
+    if (args.content && containsContactInfo(args.content)) {
+      throw new ConvexError("Contactgegevens mogen niet gedeeld worden via de chat. Gebruik het platform voor verdere afspraken.");
+    }
 
     // Insert the message
     const messageId = await ctx.db.insert("messages", {
