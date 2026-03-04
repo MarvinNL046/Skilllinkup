@@ -34,21 +34,21 @@ export default function DashboardSidebar() {
     <div className="dashboard__sidebar d-none d-lg-block">
       <div className="dashboard_sidebar_list">
         {/* World Switcher */}
-        <div className="d-flex gap-2 px-3 pb-3 pt-2">
+        <div className="d-flex gap-2" style={{ padding: "12px 20px 16px" }}>
           {WORLDS.map((w) => (
             <button
               key={w.key}
               onClick={() => handleWorldSwitch(w.key)}
               className="btn btn-sm flex-grow-1"
               style={{
-                backgroundColor: world === w.key ? "#ef2b70" : "#f1f1f1",
-                color: world === w.key ? "#fff" : "#555",
+                backgroundColor: world === w.key ? "#ef2b70" : "rgba(255,255,255,0.08)",
+                color: world === w.key ? "#fff" : "rgba(255,255,255,0.55)",
                 border: "none",
                 borderRadius: "20px",
-                fontSize: "13px",
+                fontSize: "12px",
                 fontWeight: world === w.key ? 600 : 400,
                 padding: "6px 10px",
-                transition: "all 0.2s ease",
+                transition: "all 0.15s ease",
               }}
             >
               <i className={`${w.icon} mr5`} style={{ fontSize: "12px" }} />
