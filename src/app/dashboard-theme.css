@@ -93,6 +93,7 @@
   padding-left: var(--dash-sidebar-width) !important;
   background-color: var(--dash-content-bg) !important;
   min-height: 100vh;
+  margin-top: 0 !important;
 }
 
 /* ---- Content inner padding ---- */
