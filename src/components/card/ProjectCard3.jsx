@@ -1,6 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
 
+function timeAgo(timestamp) {
+  if (!timestamp) return "Recently";
+  const diff = Date.now() - timestamp;
+  const minutes = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+  if (days > 0) return `${days}d ago`;
+  if (hours > 0) return `${hours}h ago`;
+  if (minutes > 0) return `${minutes}m ago`;
+  return "Just now";
+}
+
 export default function ProjectCard3({ data }) {
   return (
     <>
@@ -25,18 +37,16 @@ export default function ProjectCard3({ data }) {
               </p>
               <p  className="mb-0 fz14 list-inline-item mb5-sm pe-1">
                 <i  className="flaticon-30-days fz16 vam text-thm2 me-1 bdrl1 pl15 pl0-xs bdrn-xs"></i>{" "}
-                2 hours ago
+                {timeAgo(data.createdAt)}
               </p>
               <p  className="mb-0 fz14 list-inline-item mb5-sm">
                 <i  className="flaticon-contract fz16 vam text-thm2 me-1 bdrl1 pl15 pl0-xs bdrn-xs"></i>{" "}
-                1 Received
+                {data.bidCount ?? 0} Received
               </p>
             </div>
           </div>
           <p  className="text mt10">
-            {data.brief
-              ? data.brief
-              : "Many desktop publishing packages and web page editors now use Lorem Ipsum  as their default model text."}{" "}
+            {data.brief || ""}{" "}
           </p>
           <div  className="skill-tags d-flex align-items-center justify-content-start mb20-md">
             {data.tags.map((item, i) => (

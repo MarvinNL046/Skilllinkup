@@ -1,9 +1,12 @@
-const product1 = []; // stripped mock data
+"use client";
 import Link from "next/link";
+import useConvexGigs from "@/hook/useConvexGigs";
 import PopularServiceSlideCard1 from "../card/PopularServiceSlideCard1";
 import PopularServiceCard1 from "../card/PopularServiceCard1";
 
 export default function PopulerService() {
+  const gigs = useConvexGigs();
+
   return (
     <>
       <section className="pb40-md pb70 mt70 mt0-lg">
@@ -22,8 +25,8 @@ export default function PopulerService() {
             </div>
           </div>
           <div className="row">
-            {product1.slice(0, 4).map((item,i) => (
-              <div key={ i } className="col-sm-6 col-xl-3">
+            {(gigs || []).slice(0, 4).map((item, i) => (
+              <div key={i} className="col-sm-6 col-xl-3">
                 {item.gallery ? (
                   <PopularServiceSlideCard1
                     style="listing-style1"
