@@ -95,6 +95,41 @@ function ProfileSidebar({ convexData }) {
         )}
       </div>
 
+      {/* Level badge */}
+      {convexData?.level && convexData.level !== "new" && (
+        <div className="ps-widget bdrs8 p30 bdr1 mb30">
+          <h6 className="mb15">Seller Level</h6>
+          {(() => {
+            const LEVEL_CONFIG = {
+              top_rated: { label: "Top Rated", color: "#1a73e8" },
+              pro:       { label: "Pro",       color: "#ef2b70" },
+              rising:    { label: "Rising",    color: "#22c55e" },
+            };
+            const cfg = LEVEL_CONFIG[convexData.level];
+            if (!cfg) return null;
+            return (
+              <div className="d-flex align-items-center gap-2">
+                <span
+                  className="badge px-3 py-2 fz14 fw600"
+                  style={{ backgroundColor: cfg.color, color: "#fff", borderRadius: 12 }}
+                >
+                  {cfg.label}
+                </span>
+                {convexData.level === "top_rated" && (
+                  <span className="fz13 text-muted">Top 1% of sellers</span>
+                )}
+                {convexData.level === "pro" && (
+                  <span className="fz13 text-muted">Verified professional</span>
+                )}
+                {convexData.level === "rising" && (
+                  <span className="fz13 text-muted">Up-and-coming seller</span>
+                )}
+              </div>
+            );
+          })()}
+        </div>
+      )}
+
       {/* Social links */}
       {(convexData?.websiteUrl || convexData?.linkedinUrl || convexData?.twitterUrl || convexData?.githubUrl) && (
         <div className="sidebar-widget mb30 pb20 bdrs8">
