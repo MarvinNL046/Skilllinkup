@@ -21,36 +21,38 @@ export default function FreelancerCard2({ data }) {
           <div className="review">
             <p>
               <i className="fas fa-star fz10 review-color pr10" />
-              <span className="dark-color fw500">{data.rating}</span>(
-              {data.reviews} reviews)
+              <span className="dark-color fw500">{data.rating || "New"}</span>
+              {data.reviews > 0 && ` (${data.reviews} reviews)`}
             </p>
           </div>
-          <div className="skill-tags d-flex align-items-center justify-content-center mb5">
-            <span className="tag">Figma</span>
-            <span className="tag mx10">Sketch</span>
-            <span className="tag">HTML5</span>
-          </div>
+          {data.tags && data.tags.length > 0 && (
+            <div className="skill-tags d-flex align-items-center justify-content-center mb5 flex-wrap gap-1">
+              {data.tags.slice(0, 3).map((tag, i) => (
+                <span key={i} className="tag">{tag}</span>
+              ))}
+            </div>
+          )}
           <hr className="opacity-100 mt20 mb15" />
           <div className="fl-meta d-flex align-items-center justify-content-between">
             <a className="meta fw500 text-start">
               Location
               <br />
-              <span className="fz14 fw400">London</span>
+              <span className="fz14 fw400">{data.location || "Remote"}</span>
             </a>
             <a className="meta fw500 text-start">
               Rate
               <br />
-              <span className="fz14 fw400">$90 / hr</span>
+              <span className="fz14 fw400">{data.price ? `€${data.price}/hr` : "On request"}</span>
             </a>
             <a className="meta fw500 text-start">
-              Job Success
+              Level
               <br />
-              <span className="fz14 fw400">%98</span>
+              <span className="fz14 fw400">{data.level === "top-rated" ? "Top Rated" : "New"}</span>
             </a>
           </div>
           <div className="d-grid mt15">
             <Link
-              href={`/freelancer/${data.id}`}
+              href={`/online/freelancer/${data._id || data.id}`}
               className="ud-btn btn-light-thm"
             >
               View Profile
