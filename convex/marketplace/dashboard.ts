@@ -125,7 +125,7 @@ export const getRecentOrders = query({
     // Enrich with counterpart display name
     const enriched = await Promise.all(
       merged.map(async (order) => {
-        const clientUser = order.clientId ? await ctx.db.get(order.clientId) : null;
+        const clientUser = await ctx.db.get(order.clientId);
         const freelancerProfile = order.freelancerId
           ? await ctx.db.get(order.freelancerId)
           : null;

@@ -35,7 +35,7 @@ export default defineSchema({
     emailVerified: v.optional(v.boolean()),
     userType: v.optional(v.string()), // client, freelancer
     preferredWorld: v.optional(v.string()), // "online", "local", "jobs"
-    stackAuthId: v.optional(v.string()), // Stack Auth user ID
+    stackAuthId: v.optional(v.string()), // Clerk user ID (field kept as-is for backward compat — stores Clerk IDs since migration from Stack Auth)
     lastLogin: v.optional(v.number()),
     lastActiveAt: v.optional(v.number()),
     createdAt: v.number(),
@@ -554,7 +554,7 @@ export default defineSchema({
     tenantId: v.id("tenants"),
     orderNumber: v.string(),
     orderType: v.string(), // gig, project
-    clientId: v.optional(v.id("users")),
+    clientId: v.id("users"),
     freelancerId: v.optional(v.id("freelancerProfiles")),
     gigId: v.optional(v.id("gigs")),
     gigPackageId: v.optional(v.id("gigPackages")),
@@ -696,6 +696,7 @@ export default defineSchema({
   })
     .index("by_participant1", ["participant1"])
     .index("by_participant2", ["participant2"])
+    .index("by_participants", ["participant1", "participant2"])
     .index("by_lastMessage", ["lastMessageAt"]),
 
   messages: defineTable({
@@ -777,7 +778,7 @@ export default defineSchema({
 
   leadClaims: defineTable({
     quoteRequestId: v.id("quoteRequests"),
-    freelancerId: v.id("users"),
+    freelancerId: v.id("freelancerProfiles"),
     creditsSpent: v.number(),
     claimType: v.union(v.literal("shared"), v.literal("exclusive")),
     claimedAt: v.number(),

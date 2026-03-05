@@ -79,37 +79,24 @@ export const create = mutation({
     projectId: v.optional(v.id("projects")),
   },
   handler: async (ctx, args) => {
-    // Check if a conversation already exists between these two users (in either order)
-    const existingAsP1 = await ctx.db
+    // Check if a conversation already exists between these two users (either order)
+    const existing = await ctx.db
       .query("conversations")
-      .withIndex("by_participant1", (q) =>
-        q.eq("participant1", args.participant1)
+      .withIndex("by_participants", (q) =>
+        q.eq("participant1", args.participant1).eq("participant2", args.participant2)
       )
-      .collect();
+      .first();
 
-    const existing = existingAsP1.find(
-      (c) => c.participant2 === args.participant2
-    );
+    if (existing) return existing._id;
 
-    if (existing) {
-      return existing._id;
-    }
-
-    // Also check the reverse direction
-    const existingAsP1Reverse = await ctx.db
+    const existingReverse = await ctx.db
       .query("conversations")
-      .withIndex("by_participant1", (q) =>
-        q.eq("participant1", args.participant2)
+      .withIndex("by_participants", (q) =>
+        q.eq("participant1", args.participant2).eq("participant2", args.participant1)
       )
-      .collect();
+      .first();
 
-    const existingReverse = existingAsP1Reverse.find(
-      (c) => c.participant2 === args.participant1
-    );
-
-    if (existingReverse) {
-      return existingReverse._id;
-    }
+    if (existingReverse) return existingReverse._id;
 
     // Get tenantId from first tenant
     const tenant = await ctx.db.query("tenants").first();

@@ -64,9 +64,15 @@ export const getMyClaims = query({
       .first();
     if (!user) return [];
 
+    const profile = await ctx.db
+      .query("freelancerProfiles")
+      .withIndex("by_userId", (q) => q.eq("userId", user._id))
+      .first();
+    if (!profile) return [];
+
     const claims = await ctx.db
       .query("leadClaims")
-      .withIndex("by_freelancer", (q) => q.eq("freelancerId", user._id))
+      .withIndex("by_freelancer", (q) => q.eq("freelancerId", profile._id))
       .order("desc")
       .collect();
 
@@ -129,7 +135,13 @@ export const getLeadStatus = query({
         .withIndex("by_email", (q) => q.eq("email", identity.email!))
         .first();
       if (user) {
-        alreadyClaimed = claims.some((c) => c.freelancerId === user._id);
+        const profile = await ctx.db
+          .query("freelancerProfiles")
+          .withIndex("by_userId", (q) => q.eq("userId", user._id))
+          .first();
+        if (profile) {
+          alreadyClaimed = claims.some((c) => c.freelancerId === profile._id);
+        }
       }
     }
 
@@ -182,7 +194,7 @@ export const claimLead = mutation({
       )
       .collect();
 
-    if (existingClaims.some((c) => c.freelancerId === user._id)) {
+    if (existingClaims.some((c) => c.freelancerId === profile._id)) {
       throw new Error("You have already claimed this lead.");
     }
 
@@ -219,7 +231,7 @@ export const claimLead = mutation({
 
     const claimId = await ctx.db.insert("leadClaims", {
       quoteRequestId: args.quoteRequestId,
-      freelancerId: user._id,
+      freelancerId: profile._id,
       creditsSpent: creditCost,
       claimType: args.claimType,
       claimedAt: now,

@@ -243,7 +243,7 @@ export const getByUser = query({
     // Enrich with names
     const enriched = await Promise.all(
       orders.map(async (order) => {
-        const client = order.clientId ? await ctx.db.get(order.clientId) : null;
+        const client = await ctx.db.get(order.clientId);
         const freelancerProfile = order.freelancerId
           ? await ctx.db.get(order.freelancerId)
           : null;
@@ -298,7 +298,7 @@ export const getById = query({
       throw new Error("Access denied: you are not a party to this order");
     }
 
-    const client = order.clientId ? await ctx.db.get(order.clientId) : null;
+    const client = await ctx.db.get(order.clientId);
     const freelancerUser = freelancerProfile
       ? await ctx.db.get(freelancerProfile.userId)
       : null;
