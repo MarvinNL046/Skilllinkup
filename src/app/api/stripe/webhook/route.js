@@ -19,6 +19,8 @@ import { api } from "../../../../../convex/_generated/api";
 //   Events to subscribe to in the Stripe dashboard:
 //     - checkout.session.completed
 //     - account.updated
+//     - payment_intent.succeeded
+//     - charge.dispute.created
 //
 // HOW IT WORKS:
 //   checkout.session.completed
