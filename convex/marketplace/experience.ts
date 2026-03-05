@@ -60,9 +60,11 @@ export const updateWorkExperience = mutation({
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Authentication required");
+    const { user } = await requireUser(ctx);
     const { id, ...fields } = args;
+    const record = await ctx.db.get(id);
+    if (!record) throw new Error("Work experience not found.");
+    if (record.userId !== user._id) throw new Error("Unauthorized.");
     const patch: Record<string, unknown> = { updatedAt: Date.now() };
     for (const [k, val] of Object.entries(fields)) {
       if (val !== undefined) patch[k] = val;
@@ -75,8 +77,10 @@ export const updateWorkExperience = mutation({
 export const removeWorkExperience = mutation({
   args: { id: v.id("workExperience") },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Authentication required");
+    const { user } = await requireUser(ctx);
+    const record = await ctx.db.get(args.id);
+    if (!record) throw new Error("Work experience not found.");
+    if (record.userId !== user._id) throw new Error("Unauthorized.");
     await ctx.db.delete(args.id);
     return args.id;
   },
@@ -128,9 +132,11 @@ export const updateEducation = mutation({
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Authentication required");
+    const { user } = await requireUser(ctx);
     const { id, ...fields } = args;
+    const record = await ctx.db.get(id);
+    if (!record) throw new Error("Education not found.");
+    if (record.userId !== user._id) throw new Error("Unauthorized.");
     const patch: Record<string, unknown> = { updatedAt: Date.now() };
     for (const [k, val] of Object.entries(fields)) {
       if (val !== undefined) patch[k] = val;
@@ -143,8 +149,10 @@ export const updateEducation = mutation({
 export const removeEducation = mutation({
   args: { id: v.id("education") },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Authentication required");
+    const { user } = await requireUser(ctx);
+    const record = await ctx.db.get(args.id);
+    if (!record) throw new Error("Education not found.");
+    if (record.userId !== user._id) throw new Error("Unauthorized.");
     await ctx.db.delete(args.id);
     return args.id;
   },
@@ -184,8 +192,10 @@ export const addCertification = mutation({
 export const removeCertification = mutation({
   args: { id: v.id("userCertifications") },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Authentication required");
+    const { user } = await requireUser(ctx);
+    const record = await ctx.db.get(args.id);
+    if (!record) throw new Error("Certification not found.");
+    if (record.userId !== user._id) throw new Error("Unauthorized.");
     await ctx.db.delete(args.id);
     return args.id;
   },

@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
+import { requireAuthUser } from "../lib/authHelpers";
 
 /**
  * List active freelancer profiles.
@@ -123,12 +124,14 @@ export const updateProfile = mutation({
     locale: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Authentication required to update a freelancer profile.");
-    }
+    const user = await requireAuthUser(ctx);
 
     const { profileId, ...fields } = args;
+
+    // Verify caller owns this profile
+    const profile = await ctx.db.get(profileId);
+    if (!profile) throw new Error("Profile not found.");
+    if (profile.userId !== user._id) throw new Error("Unauthorized.");
 
     // Build patch object with only defined fields
     const patch: Record<string, unknown> = { updatedAt: Date.now() };
@@ -167,8 +170,12 @@ export const saveAvatarStorageId = mutation({
     storageId: v.id("_storage"),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Authentication required");
+    const user = await requireAuthUser(ctx);
+
+    // Verify caller owns this profile
+    const profile = await ctx.db.get(args.profileId);
+    if (!profile) throw new Error("Profile not found.");
+    if (profile.userId !== user._id) throw new Error("Unauthorized.");
 
     const url = await ctx.storage.getUrl(args.storageId);
     if (!url) throw new Error("Failed to get storage URL");
@@ -203,8 +210,13 @@ export const saveCoverStorageId = mutation({
     storageId: v.id("_storage"),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Authentication required");
+    const user = await requireAuthUser(ctx);
+
+    // Verify caller owns this profile
+    const profile = await ctx.db.get(args.profileId);
+    if (!profile) throw new Error("Profile not found.");
+    if (profile.userId !== user._id) throw new Error("Unauthorized.");
+
     const url = await ctx.storage.getUrl(args.storageId);
     if (!url) throw new Error("Failed to get storage URL");
     await ctx.db.patch(args.profileId, { coverImageUrl: url, updatedAt: Date.now() });

@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
+import { requireAuthUser } from "../lib/authHelpers";
 
 /**
  * List active gigs with enriched freelancer, category, min price and first image.
@@ -427,10 +428,13 @@ export const remove = mutation({
     gigId: v.id("gigs"),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Authentication required to remove a gig.");
-    }
+    const user = await requireAuthUser(ctx);
+
+    // Verify caller owns this gig (via freelancer profile)
+    const gig = await ctx.db.get(args.gigId);
+    if (!gig) throw new Error("Gig not found.");
+    const gigProfile = await ctx.db.get(gig.freelancerId);
+    if (!gigProfile || gigProfile.userId !== user._id) throw new Error("Unauthorized.");
 
     await ctx.db.patch(args.gigId, {
       status: "deleted",
@@ -457,10 +461,13 @@ export const createPackage = mutation({
     features: v.optional(v.array(v.any())),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Authentication required to create a package.");
-    }
+    const user = await requireAuthUser(ctx);
+
+    // Verify caller owns this gig
+    const gig = await ctx.db.get(args.gigId);
+    if (!gig) throw new Error("Gig not found.");
+    const gigProfile = await ctx.db.get(gig.freelancerId);
+    if (!gigProfile || gigProfile.userId !== user._id) throw new Error("Unauthorized.");
 
     const now = Date.now();
     const packageId = await ctx.db.insert("gigPackages", {
@@ -501,10 +508,13 @@ export const update = mutation({
     locale: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Authentication required to update a gig.");
-    }
+    const user = await requireAuthUser(ctx);
+
+    // Verify caller owns this gig
+    const gigDoc = await ctx.db.get(args.gigId);
+    if (!gigDoc) throw new Error("Gig not found.");
+    const gigProfile = await ctx.db.get(gigDoc.freelancerId);
+    if (!gigProfile || gigProfile.userId !== user._id) throw new Error("Unauthorized.");
 
     const { gigId, ...fields } = args;
 

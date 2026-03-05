@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
+import { requireAuthUser } from "../lib/authHelpers";
 
 export const getByUser = query({
   args: { userId: v.id("users") },
@@ -56,11 +57,11 @@ export const update = mutation({
     externalUrl: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Authentication required");
+    const user = await requireAuthUser(ctx);
     const { projectId, ...fields } = args;
     const project = await ctx.db.get(projectId);
     if (!project) throw new Error("Project not found");
+    if (project.userId !== user._id) throw new Error("Unauthorized.");
     const patch: Record<string, unknown> = { updatedAt: Date.now() };
     for (const [k, val] of Object.entries(fields)) {
       if (val !== undefined) patch[k] = val;
@@ -73,10 +74,10 @@ export const update = mutation({
 export const remove = mutation({
   args: { projectId: v.id("portfolioProjects") },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Authentication required");
+    const user = await requireAuthUser(ctx);
     const project = await ctx.db.get(args.projectId);
     if (!project) throw new Error("Project not found");
+    if (project.userId !== user._id) throw new Error("Unauthorized.");
     await ctx.db.delete(args.projectId);
     return args.projectId;
   },
