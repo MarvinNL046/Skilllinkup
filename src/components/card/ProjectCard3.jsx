@@ -56,7 +56,7 @@ export default function ProjectCard3({ data }) {
             </div>
             <div  className="d-grid mt15">
               <Link
-                href={`/project/${data.id}`}
+                href={`/project/${data.slug || data.id}`}
                 className="ud-btn btn-thm-border bdrs12 hover-default-box-shadow1"
               >
                 Send Proposal
