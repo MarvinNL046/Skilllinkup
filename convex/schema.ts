@@ -901,4 +901,31 @@ export default defineSchema({
   })
     .index("by_user", ["userId"])
     .index("by_user_createdAt", ["userId", "createdAt"]),
+
+  // ============================================================
+  // FEEDBACK
+  // ============================================================
+
+  feedback: defineTable({
+    type: v.string(),                    // "feedback" | "bug" | "feature"
+    message: v.string(),
+    rating: v.optional(v.number()),      // 1–5, only for type "feedback"
+    pageUrl: v.optional(v.string()),     // page where feedback was submitted
+    userId: v.optional(v.id("users")),   // null for anonymous
+    email: v.optional(v.string()),       // if user left email
+    status: v.string(),                  // "new" | "reviewed" | "resolved"
+    createdAt: v.number(),
+  })
+    .index("by_type", ["type"])
+    .index("by_status", ["status"])
+    .index("by_createdAt", ["createdAt"]),
+
+  // ============================================================
+  // WAITLIST
+  // ============================================================
+
+  waitlist: defineTable({
+    email: v.string(),
+    createdAt: v.number(),
+  }).index("by_email", ["email"]),
 });
