@@ -25,14 +25,14 @@ export default function AnnouncementBar() {
       style={{ background: "#ef2b70", fontSize: 13, lineHeight: 1.4, position: "relative" }}
     >
       <span>
-        🚀 <strong>SkillLinkup is in de pre-launch fase.</strong> We werken hard aan het beste platform voor freelancers en opdrachtgevers — en we kunnen niet wachten om jou te verwelkomen!
+        🚀 <strong>SkillLinkup is in pre-launch.</strong> We're working hard to build the best platform for freelancers and clients — we can't wait to welcome you!
       </span>
       <button
         type="button"
         onClick={dismiss}
         className="btn-close btn-close-white ms-3"
         style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", opacity: 0.8 }}
-        aria-label="Sluiten"
+        aria-label="Close"
       />
     </div>
   );

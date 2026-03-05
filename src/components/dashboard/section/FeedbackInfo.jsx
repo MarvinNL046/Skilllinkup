@@ -6,9 +6,9 @@ import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 
 const STATUS_CONFIG = {
-  new:      { label: "Open",           className: "bg-warning text-dark" },
-  reviewed: { label: "In behandeling", className: "bg-info text-white" },
-  resolved: { label: "Compleet",       className: "bg-success text-white" },
+  new:      { label: "Open",        className: "bg-warning text-dark" },
+  reviewed: { label: "In progress", className: "bg-info text-white" },
+  resolved: { label: "Resolved",    className: "bg-success text-white" },
 };
 
 const TYPE_CONFIG = {
@@ -44,11 +44,11 @@ function StarRating({ value, onChange }) {
 function timeAgo(ts) {
   const diff = Date.now() - ts;
   const mins = Math.floor(diff / 60000);
-  if (mins < 60) return `${mins}m geleden`;
+  if (mins < 60) return `${mins}m ago`;
   const hrs = Math.floor(diff / 3600000);
-  if (hrs < 24) return `${hrs}u geleden`;
+  if (hrs < 24) return `${hrs}h ago`;
   const days = Math.floor(diff / 86400000);
-  return `${days}d geleden`;
+  return `${days}d ago`;
 }
 
 export default function FeedbackInfo() {
@@ -84,7 +84,7 @@ export default function FeedbackInfo() {
       setSuccess(true);
       setTimeout(() => setSuccess(false), 4000);
     } catch (err) {
-      setError("Er ging iets mis. Probeer het opnieuw.");
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -99,7 +99,7 @@ export default function FeedbackInfo() {
       {/* Submit form */}
       <div className="col-lg-5 mb-4">
         <div className="ps-widget bdrs8 p30 bdr1">
-          <h6 className="mb20">Stuur feedback</h6>
+          <h6 className="mb20">Send feedback</h6>
           <form onSubmit={handleSubmit}>
             {/* Type tabs */}
             <div className="d-flex gap-2 mb20">
@@ -118,23 +118,23 @@ export default function FeedbackInfo() {
             {/* Star rating — only for feedback type */}
             {type === "feedback" && (
               <div className="mb-2">
-                <label className="form-label fz14 fw500">Beoordeling</label>
+                <label className="form-label fz14 fw500">Rating</label>
                 <StarRating value={rating} onChange={setRating} />
               </div>
             )}
 
             <div className="mb20">
               <label className="form-label fz14 fw500">
-                {type === "feedback" && "Wat vind je van het platform?"}
-                {type === "bug" && "Beschrijf het probleem"}
-                {type === "feature" && "Welke functie mis je?"}
+                {type === "feedback" && "What do you think of the platform?"}
+                {type === "bug" && "Describe the issue"}
+                {type === "feature" && "Which feature are you missing?"}
               </label>
               <textarea
                 className="form-control"
                 rows={5}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Schrijf hier je bericht..."
+                placeholder="Write your message here..."
                 required
               />
             </div>
@@ -142,7 +142,7 @@ export default function FeedbackInfo() {
             {error && <p className="text-danger fz13 mb10">{error}</p>}
             {success && (
               <p className="text-success fz13 mb10">
-                Bedankt! Je feedback is ontvangen.
+                Thank you! Your feedback has been received.
               </p>
             )}
 
@@ -151,7 +151,7 @@ export default function FeedbackInfo() {
               className="ud-btn btn-thm w-100"
               disabled={loading || !message.trim()}
             >
-              {loading ? "Verzenden..." : "Verstuur"}
+              {loading ? "Submitting..." : "Submit"}
               <i className="fal fa-arrow-right-long" />
             </button>
           </form>
@@ -161,7 +161,7 @@ export default function FeedbackInfo() {
       {/* Feedback history */}
       <div className="col-lg-7 mb-4">
         <div className="ps-widget bdrs8 p30 bdr1">
-          <h6 className="mb20">Jouw ingestuurde feedback</h6>
+          <h6 className="mb20">Your submitted feedback</h6>
 
           {feedbackList === undefined && (
             <div className="text-center py-4">
@@ -170,7 +170,7 @@ export default function FeedbackInfo() {
           )}
 
           {feedbackList?.length === 0 && (
-            <p className="text-muted fz14">Je hebt nog geen feedback ingestuurd.</p>
+            <p className="text-muted fz14">You haven't submitted any feedback yet.</p>
           )}
 
           {feedbackList && feedbackList.length > 0 && (

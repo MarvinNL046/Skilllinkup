@@ -18,11 +18,11 @@ export default function WaitlistButton({ className = "ud-btn btn-thm bdrs12 text
     setLoading(true);
     setError("");
     try {
-      const result = await joinWaitlist({ email: email.trim() });
+      await joinWaitlist({ email: email.trim() });
       setDone(true);
       setEmail("");
     } catch (err) {
-      setError("Er ging iets mis. Probeer het opnieuw.");
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -43,7 +43,6 @@ export default function WaitlistButton({ className = "ud-btn btn-thm bdrs12 text
         Join Waitlist
       </button>
 
-      {/* Modal overlay */}
       {open && (
         <div
           className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
@@ -58,18 +57,18 @@ export default function WaitlistButton({ className = "ud-btn btn-thm bdrs12 text
             {!done ? (
               <>
                 <div className="d-flex justify-content-between align-items-center mb20">
-                  <h5 className="mb-0">Join de waitlist</h5>
+                  <h5 className="mb-0">Join the waitlist</h5>
                   <button type="button" className="btn-close" onClick={handleClose} />
                 </div>
                 <p className="fz14 text-muted mb25">
-                  We zijn druk bezig het beste platform te bouwen voor freelancers en opdrachtgevers.
-                  Laat je email achter en we laten je als eerste weten wanneer we live gaan.
+                  We're working hard to build the best platform for freelancers and clients.
+                  Leave your email and we'll let you know as soon as we go live.
                 </p>
                 <form onSubmit={handleSubmit}>
                   <input
                     type="email"
                     className="form-control mb15"
-                    placeholder="jouw@email.nl"
+                    placeholder="your@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -81,7 +80,7 @@ export default function WaitlistButton({ className = "ud-btn btn-thm bdrs12 text
                     className="ud-btn btn-thm w-100"
                     disabled={loading}
                   >
-                    {loading ? "Even geduld..." : "Aanmelden"}
+                    {loading ? "Submitting..." : "Join now"}
                     <i className="fal fa-arrow-right-long" />
                   </button>
                 </form>
@@ -89,12 +88,12 @@ export default function WaitlistButton({ className = "ud-btn btn-thm bdrs12 text
             ) : (
               <div className="text-center py-3">
                 <div className="mb20" style={{ fontSize: 48 }}>🎉</div>
-                <h5 className="mb10">Je staat op de lijst!</h5>
+                <h5 className="mb10">You're on the list!</h5>
                 <p className="fz14 text-muted mb25">
-                  We laten je weten zodra SkillLinkup live gaat.
+                  We'll notify you as soon as SkillLinkup goes live.
                 </p>
                 <button className="ud-btn btn-thm" onClick={handleClose}>
-                  Sluiten
+                  Close
                 </button>
               </div>
             )}

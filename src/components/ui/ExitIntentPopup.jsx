@@ -54,16 +54,16 @@ export default function ExitIntentPopup() {
   const handleSubscribe = async () => {
     const trimmed = email.trim();
     if (!trimmed || !trimmed.includes("@")) {
-      toast.error("Vul een geldig e-mailadres in.");
+      toast.error("Please enter a valid email address.");
       return;
     }
     setLoading(true);
     try {
       await joinWaitlist({ email: trimmed });
-      toast.success("Je staat op de lijst! We laten je weten wanneer we live gaan.");
+      toast.success("You're on the list! We'll notify you when we go live.");
       setVisible(false);
     } catch (err) {
-      toast.error("Er ging iets mis. Probeer het opnieuw.");
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -237,7 +237,7 @@ export default function ExitIntentPopup() {
               transition: "background-color 0.2s",
             }}
           >
-            {loading ? "Even geduld..." : "Aanmelden"}
+            {loading ? "Submitting..." : "Join now"}
           </button>
 
           <button
@@ -256,7 +256,7 @@ export default function ExitIntentPopup() {
               transition: "background-color 0.2s, color 0.2s, border-color 0.2s",
             }}
           >
-            Misschien later
+            Maybe later
           </button>
         </div>
 
