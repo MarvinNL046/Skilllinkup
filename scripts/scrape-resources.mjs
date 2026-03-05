@@ -245,7 +245,7 @@ async function upsertToConvex(resource, structured, dryRun) {
   const tmpFile = path.join(__dirname, '..', '.tmp-resource.json');
   writeFileSync(tmpFile, JSON.stringify(payload));
   try {
-    execSync(`npx convex run resources:upsert "$(cat .tmp-resource.json)"`, {
+    execSync(`npx convex run resources:upsert "$(cat '${tmpFile}')"`, {
       cwd: path.join(__dirname, '..'),
       stdio: 'inherit',
       shell: true,
