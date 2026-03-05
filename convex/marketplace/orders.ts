@@ -346,6 +346,16 @@ export const deliver = mutation({
       updatedAt: Date.now(),
     });
 
+    // Schedule automatic escrow release after 7 days if client takes no action
+    const releaseJobId = await ctx.scheduler.runAfter(
+      7 * 24 * 60 * 60 * 1000, // 7 days in ms
+      internal.marketplace.escrow.releaseToFreelancer,
+      { orderId: args.orderId }
+    );
+    await ctx.db.patch(args.orderId, {
+      autoReleaseJobId: releaseJobId,
+    });
+
     // Send delivery notification to client
     const client = await ctx.db.get(order.clientId);
     if (client?.email) {
