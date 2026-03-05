@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { query, mutation } from "../_generated/server";
+import { query, mutation, internalQuery, internalMutation } from "../_generated/server";
 import { internal } from "../_generated/api";
 import { Doc } from "../_generated/dataModel";
 import { requireOwner } from "../lib/authHelpers";
@@ -462,5 +462,41 @@ export const requestRevision = mutation({
     });
 
     return { success: true, revisionsUsed };
+  },
+});
+
+/** Internal: fetch an order by ID without auth check (used by escrow actions). */
+export const getByIdInternal = internalQuery({
+  args: { orderId: v.id("orders") },
+  handler: async (ctx, args) => ctx.db.get(args.orderId),
+});
+
+/** Internal: mark order escrow as released after Stripe transfer. */
+export const markReleased = internalMutation({
+  args: {
+    orderId: v.id("orders"),
+    stripeTransferId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.orderId, {
+      escrowStatus: "released",
+      stripeTransferId: args.stripeTransferId,
+      status: "completed",
+      completedAt: Date.now(),
+      updatedAt: Date.now(),
+    });
+  },
+});
+
+/** Internal: mark order as refunded after Stripe refund. */
+export const markRefunded = internalMutation({
+  args: { orderId: v.id("orders") },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.orderId, {
+      escrowStatus: "refunded",
+      status: "cancelled",
+      cancelledAt: Date.now(),
+      updatedAt: Date.now(),
+    });
   },
 });

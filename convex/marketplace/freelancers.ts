@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { query, mutation } from "../_generated/server";
+import { query, mutation, internalQuery } from "../_generated/server";
 import { requireAuthUser } from "../lib/authHelpers";
 
 /**
@@ -320,4 +320,10 @@ export const getReviews = query({
 
     return enriched;
   },
+});
+
+/** Internal: get freelancer profile by ID (used by escrow actions). */
+export const getProfileById = internalQuery({
+  args: { profileId: v.id("freelancerProfiles") },
+  handler: async (ctx, args) => ctx.db.get(args.profileId),
 });
