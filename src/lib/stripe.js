@@ -20,6 +20,6 @@ if (!process.env.STRIPE_SECRET_KEY) {
 export const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY, {
       // Pin the API version so upgrades are intentional and never silent.
-      apiVersion: "2024-06-20",
+      apiVersion: "2026-02-25.clover",
     })
   : null;
