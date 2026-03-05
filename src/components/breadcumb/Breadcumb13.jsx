@@ -1,12 +1,31 @@
 "use client";
-const job1 = []; // stripped mock data
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
 export default function Breadcumb13() {
   const { id } = useParams();
-  const data = job1.find((item) => item.id == id);
+  const job = useQuery(
+    api.marketplace.jobs.getBySlug,
+    id ? { slug: id, locale: "en" } : "skip"
+  );
+
+  const title = job?.title || "Job Opening";
+  const company = job?.company || "";
+  const salaryMin = job?.salaryMin;
+  const salaryMax = job?.salaryMax;
+  const currency = job?.currency || "EUR";
+  const workType = job?.workType || "Remote";
+  const jobType = job?.jobType || "";
+
+  const salaryLabel = salaryMin && salaryMax
+    ? `€${salaryMin.toLocaleString()}–€${salaryMax.toLocaleString()}`
+    : salaryMin
+    ? `From €${salaryMin.toLocaleString()}`
+    : "";
+
   return (
     <>
       <section className="breadcumb-section pt-0">
@@ -32,42 +51,27 @@ export default function Breadcumb13() {
                   <div className="list-meta d-lg-flex align-items-end justify-content-between">
                     <div className="wrapper d-sm-flex align-items-center mb20-md">
                       <a className="position-relative freelancer-single-style">
-                        {data ? (
-                          <Image
-                            height={100}
-                            width={100}
-                            className="wa"
-                            src={data.img}
-                            alt="job-single"
-                          />
-                        ) : (
-                          <Image
-                            height={100}
-                            width={100}
-                            className="wa"
-                            src="/images/team/job.png"
-                            alt="job-single"
-                          />
-                        )}
+                        <Image
+                          height={100}
+                          width={100}
+                          className="wa"
+                          src="/images/team/job.png"
+                          alt="job-single"
+                        />
                       </a>
                       <div className="ml20 ml0-xs mt15-sm">
-                        {data ? (
-                          <h4 className="title">{data.title}</h4>
-                        ) : (
-                          <h4 className="title">UX/UI Designer</h4>
+                        <h4 className="title">{title}</h4>
+                        {company && <h6 className="mb-3 text-thm">{company}</h6>}
+                        {salaryLabel && (
+                          <h6 className="list-inline-item mb-0">{salaryLabel}</h6>
                         )}
-                        <h6 className="mb-3 text-thm">Medium</h6>
-                        <h6 className="list-inline-item mb-0">
-                          $125k-$135k Hourly
-                        </h6>
+                        {jobType && (
+                          <h6 className="list-inline-item mb-0 bdrl-eunry pl15">
+                            {jobType.replace("_", " ")}
+                          </h6>
+                        )}
                         <h6 className="list-inline-item mb-0 bdrl-eunry pl15">
-                          1-5 Days
-                        </h6>
-                        <h6 className="list-inline-item mb-0 bdrl-eunry pl15">
-                          Expensive
-                        </h6>
-                        <h6 className="list-inline-item mb-0 bdrl-eunry pl15">
-                          Remote
+                          {workType}
                         </h6>
                       </div>
                     </div>

@@ -8,46 +8,9 @@ export default function ServiceDetailPrice1({ packages = [], gigId }) {
   const router = useRouter();
   const { isSignedIn } = useUser();
 
-  // Fall back to static dummy data when no real packages are available yet
   const hasPackages = packages && packages.length > 0;
 
-  const staticPackages = [
-    {
-      tier: "Basic",
-      title: "Basic Package",
-      description:
-        "I will redesign your current landing page or create one for you (upto 4 sections)",
-      price: 50,
-      currency: "EUR",
-      deliveryDays: 3,
-      revisionCount: 2,
-      features: [],
-    },
-    {
-      tier: "Standard",
-      title: "Standard Package",
-      description:
-        "I will redesign your current landing page or create one for you (upto 4 sections)",
-      price: 29,
-      currency: "EUR",
-      deliveryDays: 3,
-      revisionCount: 2,
-      features: [],
-    },
-    {
-      tier: "Premium",
-      title: "Premium Package",
-      description:
-        "I will redesign your current landing page or create one for you (upto 4 sections)",
-      price: 250,
-      currency: "EUR",
-      deliveryDays: 3,
-      revisionCount: 2,
-      features: [],
-    },
-  ];
-
-  const displayPackages = hasPackages ? packages : staticPackages;
+  const displayPackages = packages;
 
   // Clamp selectedTab in case the number of packages differs from 3
   const activeIndex = Math.min(selectedTab, displayPackages.length - 1);
@@ -76,6 +39,14 @@ export default function ServiceDetailPrice1({ packages = [], gigId }) {
 
     // Logged-in user: redirect to orders dashboard (Stripe not set up yet)
     router.push("/dashboard/orders");
+  }
+
+  if (!hasPackages) {
+    return (
+      <div className="price-widget bdrs12 p30 bdr1">
+        <p className="text-muted fz14 mb0">No packages available for this service.</p>
+      </div>
+    );
   }
 
   return (
