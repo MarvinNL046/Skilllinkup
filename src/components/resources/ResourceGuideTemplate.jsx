@@ -16,9 +16,9 @@ export default function ResourceGuideTemplate({ resource }) {
                 <span className="badge bg-thm text-white px-3 py-2 bdrs8 fz13 mb20">Guide</span>
                 <h1 className="fz40 fw700 mb20">{resource.metaTitle}</h1>
                 <p className="fz17 text-muted">{resource.intro}</p>
-                {resource.publishedAt && (
+                {(resource.updatedAt || resource.publishedAt) && (
                   <p className="fz13 text-muted mt15">
-                    Last updated: {new Date(resource.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long" })}
+                    Last updated: {new Date(resource.updatedAt || resource.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long" })}
                   </p>
                 )}
               </div>

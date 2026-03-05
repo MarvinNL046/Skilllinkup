@@ -11,7 +11,7 @@ export async function generateMetadata({ params }) {
   const { slug } = await params;
   try {
     const resource = await fetchQuery(api.resources.getBySlug, { slug, locale: "en" });
-    if (!resource) return { title: "Resource | SkillLinkup" };
+    if (!resource || resource.status !== "published") return { title: "Resource | SkillLinkup" };
     return {
       title: resource.metaTitle,
       description: resource.metaDescription,
@@ -34,6 +34,7 @@ export default async function ResourcePage({ params }) {
   const resource = await fetchQuery(api.resources.getBySlug, { slug, locale: "en" }).catch(() => null);
 
   if (!resource || resource.status !== "published") notFound();
+  if (!["pricing", "comparison", "guide"].includes(resource.type)) notFound();
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -44,7 +45,7 @@ export default async function ResourcePage({ params }) {
         description: resource.metaDescription,
         url: `${BASE_URL}/resources/${slug}`,
         datePublished: resource.publishedAt ? new Date(resource.publishedAt).toISOString() : undefined,
-        dateModified: new Date(resource.updatedAt).toISOString(),
+        dateModified: resource.updatedAt ? new Date(resource.updatedAt).toISOString() : undefined,
         publisher: { "@type": "Organization", name: "SkillLinkup", url: BASE_URL },
       },
       resource.faqItems?.length > 0 && {

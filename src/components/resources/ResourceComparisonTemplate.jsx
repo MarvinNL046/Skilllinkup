@@ -26,6 +26,25 @@ export default function ResourceComparisonTemplate({ resource }) {
           </div>
         </section>
 
+        {/* Key takeaways */}
+        {resource.keyTakeaways?.length > 0 && (
+          <section className="pt60 pb40">
+            <div className="container">
+              <div className="col-lg-8 mx-auto bdr1 bdrs12 p30" style={{ borderLeft: "4px solid #ef2b70" }}>
+                <h2 className="fz20 fw700 mb20">Key Takeaways</h2>
+                <ul className="mb-0 ps-0" style={{ listStyle: "none" }}>
+                  {resource.keyTakeaways.map((t, i) => (
+                    <li key={i} className="d-flex align-items-start gap-2 mb10 fz15">
+                      <i className="fas fa-check-circle text-success mt-1" />
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Comparison table */}
         {resource.comparisonData?.length > 0 && (
           <section className="pt60 pb40">
