@@ -106,6 +106,16 @@ export default function PayoutInfo() {
           </div></div>
         )}
 
+        {isAuthenticated && convexUser === undefined && (
+          <div className="row"><div className="col-12">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30">
+              <div className="text-center py-4">
+                <div className="spinner-border spinner-border-sm text-success" role="status" />
+              </div>
+            </div>
+          </div></div>
+        )}
+
         {noConvexProfile && (
           <div className="row"><div className="col-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30">

@@ -61,8 +61,22 @@ export default function InvoiceInfo() {
                 </div>
               )}
 
+              {/* Convex user still loading */}
+              {isAuthenticated && convexUser === undefined && (
+                <div className="text-center py-4">
+                  <div className="spinner-border spinner-border-sm text-success" role="status" />
+                </div>
+              )}
+
+              {/* Clerk authenticated but not yet in Convex */}
+              {isAuthenticated && convexUser === null && (
+                <div className="text-center py-4">
+                  <p className="text mb-0">Setting up your account...</p>
+                </div>
+              )}
+
               {/* Loading */}
-              {isAuthenticated && invoices === undefined && (
+              {isAuthenticated && convexUser !== undefined && convexUser !== null && invoices === undefined && (
                 <div className="text-center py-5">
                   <div className="spinner-border text-thm" role="status" />
                   <p className="text mt10 mb-0">Loading invoices...</p>

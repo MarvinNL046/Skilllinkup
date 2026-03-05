@@ -4,7 +4,7 @@ import { api } from "../../convex/_generated/api";
 import useConvexUser from "./useConvexUser";
 
 export default function useConvexProfile() {
-  const { convexUser } = useConvexUser();
+  const { convexUser, isLoaded } = useConvexUser();
 
   const profile = useQuery(
     api.marketplace.freelancers.getByUserId,
@@ -13,5 +13,5 @@ export default function useConvexProfile() {
 
   const updateProfile = useMutation(api.marketplace.freelancers.updateProfile);
 
-  return { convexUser, profile, updateProfile };
+  return { convexUser, isLoaded, profile, updateProfile };
 }

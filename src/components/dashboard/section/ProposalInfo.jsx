@@ -46,7 +46,15 @@ export default function ProposalInfo() {
           <div className="col-xl-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
               <div className="packages_table table-responsive">
-                {isLoaded && !isAuthenticated ? (
+                {isAuthenticated && convexUser === undefined ? (
+                  <div className="text-center py-4">
+                    <div className="spinner-border spinner-border-sm text-success" role="status" />
+                  </div>
+                ) : isAuthenticated && convexUser === null ? (
+                  <div className="text-center py-4">
+                    <p className="text mb-0">Setting up your account...</p>
+                  </div>
+                ) : isLoaded && !isAuthenticated ? (
                   <div className="text-center py-5">
                     <p className="text mb-0">Please sign in to view your proposals.</p>
                   </div>

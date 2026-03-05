@@ -60,6 +60,48 @@ export default function ManageJobInfo() {
     }
   };
 
+  if (isAuthenticated && convexUser === undefined) {
+    return (
+      <div className="dashboard__content hover-bgc-color">
+        <div className="row pb40">
+          <div className="col-lg-12">
+            <DashboardNavigation />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-xl-12">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+              <div className="text-center py-4">
+                <div className="spinner-border spinner-border-sm text-success" role="status" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isAuthenticated && convexUser === null) {
+    return (
+      <div className="dashboard__content hover-bgc-color">
+        <div className="row pb40">
+          <div className="col-lg-12">
+            <DashboardNavigation />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-xl-12">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+              <div className="text-center py-4">
+                <p className="text mb-0">Setting up your account...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (isLoaded && !isAuthenticated) {
     return (
       <div className="dashboard__content hover-bgc-color">

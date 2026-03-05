@@ -8,7 +8,7 @@ import { api } from "../../../../convex/_generated/api";
 import useConvexProfile from "@/hook/useConvexProfile";
 
 export default function ProfileDetails() {
-  const { convexUser, profile, updateProfile } = useConvexProfile();
+  const { convexUser, isLoaded, profile, updateProfile } = useConvexProfile();
   const generateUploadUrl = useMutation(api.marketplace.freelancers.generateAvatarUploadUrl);
   const saveAvatarStorageId = useMutation(api.marketplace.freelancers.saveAvatarStorageId);
   const generateCoverUrl = useMutation(api.marketplace.freelancers.generateCoverUploadUrl);
@@ -137,14 +137,25 @@ export default function ProfileDetails() {
     }
   };
 
-  // Still loading: convexUser not yet resolved
-  if (convexUser === undefined) {
+  // Still loading: Clerk or Convex user not yet resolved
+  if (!isLoaded || convexUser === undefined) {
     return (
       <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
-        <div className="bdrb1 pb15 mb25">
-          <h5 className="list-title">Profile Details</h5>
+        <div className="bdrb1 pb15 mb25"><h5 className="list-title">Profile Details</h5></div>
+        <div className="d-flex align-items-center gap-2">
+          <div className="spinner-border spinner-border-sm text-success" role="status" />
+          <p className="text mb-0">Loading profile...</p>
         </div>
-        <p className="text">Loading profile...</p>
+      </div>
+    );
+  }
+
+  // Clerk is loaded but no Convex user yet (being synced)
+  if (isLoaded && !convexUser && convexUser !== undefined) {
+    return (
+      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+        <div className="bdrb1 pb15 mb25"><h5 className="list-title">Profile Details</h5></div>
+        <p className="text">Setting up your account... Please refresh in a moment.</p>
       </div>
     );
   }
@@ -186,10 +197,11 @@ export default function ProfileDetails() {
   if (profile === undefined) {
     return (
       <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
-        <div className="bdrb1 pb15 mb25">
-          <h5 className="list-title">Profile Details</h5>
+        <div className="bdrb1 pb15 mb25"><h5 className="list-title">Profile Details</h5></div>
+        <div className="d-flex align-items-center gap-2">
+          <div className="spinner-border spinner-border-sm text-success" role="status" />
+          <p className="text mb-0">Loading profile...</p>
         </div>
-        <p className="text">Loading profile...</p>
       </div>
     );
   }

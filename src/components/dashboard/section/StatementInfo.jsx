@@ -103,6 +103,26 @@ export default function StatementInfo() {
           </div></div>
         )}
 
+        {isAuthenticated && convexUser === undefined && (
+          <div className="row"><div className="col-12">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30">
+              <div className="text-center py-4">
+                <div className="spinner-border spinner-border-sm text-success" role="status" />
+              </div>
+            </div>
+          </div></div>
+        )}
+
+        {isAuthenticated && convexUser === null && (
+          <div className="row"><div className="col-12">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30">
+              <div className="text-center py-4">
+                <p className="text mb-0">Setting up your account...</p>
+              </div>
+            </div>
+          </div></div>
+        )}
+
         {(isAuthenticated || !isLoaded) && (<><div className="row">
           <div className="col-sm-6 col-xxl-3">
             <div className="d-flex align-items-center justify-content-between statistics_funfact">

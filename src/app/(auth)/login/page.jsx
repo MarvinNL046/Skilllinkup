@@ -20,7 +20,8 @@ export default function LoginPage() {
                         <div className="row wow fadeInRight" data-wow-delay="300ms">
                             <div className="col-xl-6 mx-auto d-flex justify-content-center">
                                 <SignIn
-                                    routing="hash"
+                                    routing="path"
+                                    path="/login"
                                     fallbackRedirectUrl="/dashboard"
                                     signUpUrl="/register"
                                 />

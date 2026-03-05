@@ -94,9 +94,13 @@ export default function MessageInfo() {
                   </div>
                 </div>
                 <div className="chat-member-list pr20">
-                  {!userId ? (
+                  {convexUser === undefined ? (
                     <div className="text-center py-4">
-                      <p className="text mb-0">Please sign in to view messages.</p>
+                      <div className="spinner-border spinner-border-sm text-success" role="status" />
+                    </div>
+                  ) : !userId ? (
+                    <div className="text-center py-4">
+                      <p className="text mb-0">Setting up your account...</p>
                     </div>
                   ) : conversations === null || conversations.length === 0 ? (
                     <div className="text-center py-4">

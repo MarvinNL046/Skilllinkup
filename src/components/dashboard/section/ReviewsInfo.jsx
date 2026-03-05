@@ -81,6 +81,20 @@ export default function ReviewsInfo() {
                     </div>
                   </nav>
 
+                  {/* Still loading Convex user */}
+                  {isAuthenticated && convexUser === undefined && (
+                    <div className="text-center py-5">
+                      <div className="spinner-border spinner-border-sm text-success" role="status" />
+                    </div>
+                  )}
+
+                  {/* Clerk authenticated but not yet in Convex */}
+                  {isAuthenticated && convexUser === null && (
+                    <div className="text-center py-5">
+                      <p className="text mb-0">Setting up your account...</p>
+                    </div>
+                  )}
+
                   {/* Not authenticated */}
                   {isLoaded && !isAuthenticated && (
                     <div className="text-center py-5">
