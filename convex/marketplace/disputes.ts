@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
+import { internal } from "../_generated/api";
 
 /**
  * List disputes, optionally filtered by status.
@@ -115,9 +116,17 @@ export const open = mutation({
       updatedAt: now,
     });
 
-    // Update the order status to "disputed"
+    // Cancel auto-release so funds aren't paid out during an active dispute
+    const disputedOrder = await ctx.db.get(args.orderId);
+    if (disputedOrder?.autoReleaseJobId) {
+      await ctx.scheduler.cancel(disputedOrder.autoReleaseJobId);
+    }
+
+    // Update the order status to "disputed" and freeze escrow
     await ctx.db.patch(args.orderId, {
       status: "disputed",
+      escrowStatus: "disputed",
+      autoReleaseJobId: undefined,
       updatedAt: now,
     });
 
@@ -176,6 +185,17 @@ export const resolve = mutation({
       resolvedAt: now,
       updatedAt: now,
     });
+
+    // Trigger Stripe action based on dispute resolution outcome
+    if (args.resolution === "freelancer_wins") {
+      await ctx.scheduler.runAfter(0, internal.marketplace.escrow.releaseToFreelancer, {
+        orderId: dispute.orderId,
+      });
+    } else if (args.resolution === "client_wins") {
+      await ctx.scheduler.runAfter(0, internal.marketplace.escrow.refundToClient, {
+        orderId: dispute.orderId,
+      });
+    }
 
     return { success: true, disputeId: args.disputeId };
   },
