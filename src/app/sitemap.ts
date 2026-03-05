@@ -19,11 +19,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   try {
-    const [freelancers, gigs, jobs, projects] = await Promise.all([
+    const [freelancers, gigs, jobs, projects, resources] = await Promise.all([
       fetchQuery(api.marketplace.freelancers.list, { limit: 1000 }).catch(() => []),
       fetchQuery(api.marketplace.gigs.list, { locale: "en", limit: 1000 }).catch(() => []),
       fetchQuery(api.marketplace.jobs.list, { locale: "en", limit: 1000 }).catch(() => []),
       fetchQuery(api.marketplace.projects.list, { locale: "en", limit: 1000 }).catch(() => []),
+      fetchQuery(api.resources.list, { locale: "en", status: "published", limit: 500 }).catch(() => []),
     ]);
 
     const freelancerRoutes: MetadataRoute.Sitemap = (freelancers ?? []).map((f: any) => ({
@@ -54,7 +55,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }));
 
-    return [...staticRoutes, ...freelancerRoutes, ...gigRoutes, ...jobRoutes, ...projectRoutes];
+    const resourceRoutes: MetadataRoute.Sitemap = (resources ?? []).map((r: any) => ({
+      url: `${BASE_URL}/resources/${r.slug}`,
+      lastModified: new Date(r.updatedAt),
+      changeFrequency: "monthly" as const,
+      priority: 0.85,
+    }));
+
+    return [...staticRoutes, ...freelancerRoutes, ...gigRoutes, ...jobRoutes, ...projectRoutes, ...resourceRoutes];
   } catch {
     return staticRoutes;
   }
