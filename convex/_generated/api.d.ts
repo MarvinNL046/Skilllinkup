@@ -13,6 +13,7 @@ import type * as categories from "../categories.js";
 import type * as chat_conversations from "../chat/conversations.js";
 import type * as chat_messages from "../chat/messages.js";
 import type * as comments from "../comments.js";
+import type * as feedback from "../feedback.js";
 import type * as http from "../http.js";
 import type * as lib_authHelpers from "../lib/authHelpers.js";
 import type * as lib_email from "../lib/email.js";
@@ -40,6 +41,7 @@ import type * as platforms from "../platforms.js";
 import type * as posts from "../posts.js";
 import type * as tools from "../tools.js";
 import type * as users from "../users.js";
+import type * as waitlist from "../waitlist.js";
 
 import type {
   ApiFromModules,
@@ -53,6 +55,7 @@ declare const fullApi: ApiFromModules<{
   "chat/conversations": typeof chat_conversations;
   "chat/messages": typeof chat_messages;
   comments: typeof comments;
+  feedback: typeof feedback;
   http: typeof http;
   "lib/authHelpers": typeof lib_authHelpers;
   "lib/email": typeof lib_email;
@@ -80,6 +83,7 @@ declare const fullApi: ApiFromModules<{
   posts: typeof posts;
   tools: typeof tools;
   users: typeof users;
+  waitlist: typeof waitlist;
 }>;
 
 /**

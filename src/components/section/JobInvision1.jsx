@@ -1,7 +1,28 @@
-const job1 = []; // stripped mock data
+"use client";
+
+import { useParams } from "next/navigation";
+import useConvexClients from "@/hook/useConvexClients";
+import useConvexJobs from "@/hook/useConvexJobs";
 import JobCard4 from "../card/JobCard4";
 
 export default function JobInvision1() {
+  const { id } = useParams();
+  const clients = useConvexClients();
+  const jobs = useConvexJobs();
+
+  if (clients === undefined || jobs === undefined) {
+    return null;
+  }
+
+  const company = clients.find((item) => String(item._id) === String(id));
+  const companyJobs = jobs
+    .filter((job) => String(job.clientId) === String(id))
+    .slice(0, 4);
+
+  if (!company || companyJobs.length === 0) {
+    return null;
+  }
+
   return (
     <>
       <section className="pt-0 pb90 pb30-md">
@@ -9,14 +30,16 @@ export default function JobInvision1() {
           <div className="row">
             <div className="col-lg-12">
               <div className="mb30">
-                <h2>3 jobs at Invision</h2>
-                <p className="text">2022 jobs live - 293 added today</p>
+                <h2>{companyJobs.length} jobs at {company.server}</h2>
+                <p className="text">
+                  Browse the latest open roles from this company.
+                </p>
               </div>
             </div>
           </div>
           <div className="row">
-            {job1.slice(0, 4).map((item,i) => (
-              <div key={ i } className="col-sm-6 col-lg-4 col-xl-3">
+            {companyJobs.map((item) => (
+              <div key={item._id} className="col-sm-6 col-lg-4 col-xl-3">
                 <JobCard4 data={item} />
               </div>
             ))}

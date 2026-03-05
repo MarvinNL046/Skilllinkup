@@ -918,7 +918,8 @@ export default defineSchema({
   })
     .index("by_type", ["type"])
     .index("by_status", ["status"])
-    .index("by_createdAt", ["createdAt"]),
+    .index("by_createdAt", ["createdAt"])
+    .index("by_user", ["userId"]),
 
   // ============================================================
   // WAITLIST

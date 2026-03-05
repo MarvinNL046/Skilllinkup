@@ -6,6 +6,7 @@ import Navigation from "./Navigation";
 import MobileNavigation2 from "./MobileNavigation2";
 import NotificationBell from "./NotificationBell";
 import { useUser, useClerk } from "@clerk/nextjs";
+import WaitlistButton from "@/components/ui/WaitlistButton";
 
 export default function Header19() {
   const { user, isSignedIn } = useUser();
@@ -80,12 +81,7 @@ export default function Header19() {
                       >
                         Sign in
                       </Link>
-                      <Link
-                        className="ud-btn add-joining home20-join-btn bdrs12 text-white"
-                        href="/register"
-                      >
-                        Join
-                      </Link>
+                      <WaitlistButton className="ud-btn add-joining home20-join-btn bdrs12 text-white" />
                     </>
                   )}
                 </div>

@@ -21,6 +21,7 @@ const _createProj   = { id: 17, name: "Create Project",   icon: "flaticon-conten
 const _saved        = { id: 18, name: "Saved",            icon: "flaticon-like",         path: "/saved" };
 const _quoteReqs    = { id: 19, name: "My Quote Requests", icon: "flaticon-document",    path: "/dashboard/quote-requests" };
 const _rewards      = { id: 20, name: "Rewards",           icon: "flaticon-star",         path: "/dashboard/rewards" };
+const _feedback     = { id: 21, name: "Feedback",          icon: "flaticon-chat-1",       path: "/dashboard/feedback" };
 
 // ============================================================
 // World-specific navigation: dashboardNavigation[role][world]
@@ -31,34 +32,34 @@ export const dashboardNavigation = {
     online: {
       start:    [_dashboard, _manageServ, _addServ, _proposals, _orders],
       organize: [_message, _reviews, _payouts, _statements, _invoice],
-      account:  [_profile],
+      account:  [_profile, _feedback],
     },
     local: {
       start:    [_dashboard, _leads, _credits, _orders],
       organize: [_message, _reviews, _payouts],
-      account:  [_profile],
+      account:  [_profile, _feedback],
     },
     jobs: {
       start:    [_dashboard, _manageJobs, _proposals, _orders],
       organize: [_message, _reviews, _payouts],
-      account:  [_profile],
+      account:  [_profile, _feedback],
     },
   },
   client: {
     online: {
       start:    [_dashboard, _myProjects, _createProj, _orders, _saved],
       organize: [_message, _reviews, _rewards],
-      account:  [_profile],
+      account:  [_profile, _feedback],
     },
     local: {
       start:    [_dashboard, _orders, _saved],
       organize: [_message, _reviews, _rewards],
-      account:  [_profile],
+      account:  [_profile, _feedback],
     },
     jobs: {
       start:    [_dashboard, _myProjects, _createProj, _orders, _saved],
       organize: [_message, _reviews, _rewards],
-      account:  [_profile],
+      account:  [_profile, _feedback],
     },
   },
 };

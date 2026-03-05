@@ -1,5 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { requireAuthUser } from "./lib/authHelpers";
 
 // Submit feedback (public — works for anonymous and logged-in users)
 export const submit = mutation({
@@ -34,6 +35,19 @@ export const submit = mutation({
     });
 
     return { success: true };
+  },
+});
+
+// User: get own feedback (newest first)
+export const getByUser = query({
+  args: {},
+  handler: async (ctx) => {
+    const user = await requireAuthUser(ctx);
+    return await ctx.db
+      .query("feedback")
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .order("desc")
+      .collect();
   },
 });
 

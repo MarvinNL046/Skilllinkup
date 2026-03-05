@@ -1,11 +1,49 @@
-const job1 = []; // stripped mock data
-import AboutMe1 from "../element/AboutMe1";
-import EmployeeDetailSlider1 from "../element/EmployeeDetailSlider1";
-import ServiceDetailComment1 from "../element/ServiceDetailComment1";
-import ServiceDetailReviewInfo1 from "../element/ServiceDetailReviewInfo1";
-import JobCard5 from "../card/JobCard5";
+"use client";
+
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import useConvexClients from "@/hook/useConvexClients";
+import useConvexJobs from "@/hook/useConvexJobs";
+import JobCard4 from "../card/JobCard4";
+
+function formatMonthYear(timestamp) {
+  if (!timestamp) return null;
+  return new Date(timestamp).toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+  });
+}
 
 export default function EmplyeeDetail1() {
+  const { id } = useParams();
+  const clients = useConvexClients();
+  const jobs = useConvexJobs();
+
+  if (clients === undefined || jobs === undefined) {
+    return (
+      <section className="pt10 pb90 pb30-md">
+        <div className="container">
+          <div className="text-center py-5">
+            <div className="spinner-border text-thm" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const company =
+    clients && id
+      ? clients.find((item) => String(item._id) === String(id))
+      : null;
+
+  const companyJobs = (jobs || [])
+    .filter((job) => String(job.clientId) === String(id))
+    .slice(0, 3);
+
+  const memberSince = formatMonthYear(company?.createdAt);
+
   return (
     <>
       <section className="pt10 pb90 pb30-md">
@@ -15,47 +53,72 @@ export default function EmplyeeDetail1() {
               <div className="service-about">
                 <h4 className="mb20">About Company</h4>
                 <p className="text mb30">
-                  This company uses SkillLinkup to connect with top freelance
-                  talent. They focus on delivering high-quality projects by
-                  collaborating with skilled professionals across design,
-                  development, and digital marketing.
+                  {company?.bio
+                    ? company.bio
+                    : "This company has not added a public description yet."}
                 </p>
-                <p className="text mb30">
-                  With a strong track record on the platform, they provide
-                  clear project briefs, timely feedback, and secure payments
-                  through our escrow system. Freelancers consistently rate
-                  their experience working with this employer highly.
-                </p>
-                <h5 className="mb20 mt60">Who are we?</h5>
-                <p className="text mb30">
-                  A growing team that values quality craftsmanship and
-                  professional collaboration. We believe the best work happens
-                  when talented people are given clear goals and the freedom
-                  to deliver their best.
-                </p>
-                <h5 className="mb20 mt60">What do we do?</h5>
-                <p className="text mb30">
-                  We hire freelancers for a range of projects including web
-                  development, graphic design, content creation, and digital
-                  strategy. Every project is managed through SkillLinkup with
-                  milestone-based payments and direct communication.
-                </p>
-                <EmployeeDetailSlider1 />
-                <div className="row">
-                  <h4 className="mb25">Projects</h4>
-                  {job1.slice(0, 3).map((item,i) => (
-                    <div key={ i } className="col-sm-6 col-xl-12">
-                      <JobCard5 data={item} />
-                    </div>
-                  ))}
-                </div>
 
-                <ServiceDetailReviewInfo1 />
-                <ServiceDetailComment1 />
+                <h4 className="mb25 mt40">Open Jobs</h4>
+                {companyJobs.length === 0 ? (
+                  <p className="text mb30">
+                    No open jobs from this company right now.
+                  </p>
+                ) : (
+                  <div className="row">
+                    {companyJobs.map((item) => (
+                      <div key={item._id} className="col-sm-6 col-xl-12 mb20">
+                        <JobCard4 data={item} />
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
+
             <div className="col-lg-4">
-              <AboutMe1 />
+              <div className="blog-sidebar ms-lg-auto">
+                <div className="price-widget pt25 widget-mt-minus bdrs8">
+                  <h4 className="widget-title">Company Info</h4>
+                  <div className="category-list mt20">
+                    <a className="d-flex align-items-center justify-content-between bdrb1 pb-2">
+                      <span className="text">
+                        <i className="flaticon-factory text-thm2 pe-2 vam" />
+                        Company
+                      </span>
+                      <span>{company?.server || "Unknown"}</span>
+                    </a>
+                    {memberSince && (
+                      <a className="d-flex align-items-center justify-content-between bdrb1 pb-2">
+                        <span className="text">
+                          <i className="flaticon-calendar text-thm2 pe-2 vam" />
+                          Member since
+                        </span>
+                        <span>{memberSince}</span>
+                      </a>
+                    )}
+                    <a className="d-flex align-items-center justify-content-between bdrb1 pb-2">
+                      <span className="text">
+                        <i className="flaticon-place text-thm2 pe-2 vam" />
+                        Location
+                      </span>
+                      <span>{company?.location || "Remote"}</span>
+                    </a>
+                    <a className="d-flex align-items-center justify-content-between">
+                      <span className="text">
+                        <i className="flaticon-briefcase text-thm2 pe-2 vam" />
+                        Open jobs
+                      </span>
+                      <span>{companyJobs.length}</span>
+                    </a>
+                  </div>
+                  <div className="d-grid mt20">
+                    <Link href="/contact" className="ud-btn btn-thm">
+                      Contact
+                      <i className="fal fa-arrow-right-long" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

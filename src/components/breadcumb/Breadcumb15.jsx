@@ -1,11 +1,30 @@
 "use client";
-const employee = []; // stripped mock data
 import Image from "next/image";
 import { useParams } from "next/navigation";
+import useConvexClients from "@/hook/useConvexClients";
+
+function formatMonthYear(timestamp) {
+  if (!timestamp) return null;
+  return new Date(timestamp).toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+  });
+}
 
 export default function Breadcumb15() {
   const { id } = useParams();
-  const data = employee.find((item) => item.id == id);
+  const clients = useConvexClients();
+
+  const company =
+    clients && id
+      ? clients.find((item) => String(item._id) === String(id))
+      : null;
+
+  const title = company?.server || "Company Profile";
+  const location = company?.location || null;
+  const memberSince = formatMonthYear(company?.createdAt);
+  const avatar = company?.img || "/images/team/employee-single.png";
+
   return (
     <>
       <section className="breadcumb-section pt-0">
@@ -30,46 +49,30 @@ export default function Breadcumb15() {
                 <div className="position-relative">
                   <div className="list-meta d-sm-flex align-items-center">
                     <a className="position-relative freelancer-single-style">
-                      {data ? (
-                        <Image
-                          height={120}
-                          width={120}
-                          className="rounded-circle w-100 wa-sm mb15-sm"
-                          src={data.img}
-                          alt="Freelancer Photo"
-                        />
-                      ) : (
-                        <Image
-                          height={120}
-                          width={120}
-                          className="rounded-circle w-100 wa-sm mb15-sm"
-                          src="/images/team/employee-single.png"
-                          alt="Freelancer Photo"
-                        />
-                      )}
+                      <Image
+                        height={120}
+                        width={120}
+                        className="rounded-circle w-100 wa-sm mb15-sm"
+                        src={avatar}
+                        alt={`${title} logo`}
+                      />
                       <span className="online2" />
                     </a>
                     <div className="ml20 ml0-xs">
-                      {data ? (
-                        <h5 className="title mb-1">{data.server}</h5>
-                      ) : (
-                        <h5 className="title mb-1">Invision</h5>
+                      <h5 className="title mb-1">{title}</h5>
+                      <p className="text fz14 mb-2">Company Profile</p>
+                      {location && (
+                        <p className="mb-0 dark-color fz15 fw500 list-inline-item mb5-sm">
+                          <i className="flaticon-place vam fz20 me-2" />
+                          {location}
+                        </p>
                       )}
-                      <p className="text fz14 mb-2">
-                        Company Profile
-                      </p>
-                      <p className="mb-0 dark-color fz15 fw500 list-inline-item mb5-sm">
-                        <i className="fas fa-star vam fz10 review-color me-2" />{" "}
-                        4.82 94 reviews
-                      </p>
-                      <p className="mb-0 dark-color fz15 fw500 list-inline-item ml15 mb5-sm ml0-xs">
-                        <i className="flaticon-place vam fz20 me-2" /> London,
-                        UK
-                      </p>
-                      <p className="mb-0 dark-color fz15 fw500 list-inline-item ml15 mb5-sm ml0-xs">
-                        <i className="flaticon-30-days vam fz20 me-2" /> Since
-                        April 1, 2022
-                      </p>
+                      {memberSince && (
+                        <p className="mb-0 dark-color fz15 fw500 list-inline-item ml15 mb5-sm ml0-xs">
+                          <i className="flaticon-30-days vam fz20 me-2" />
+                          Since {memberSince}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>

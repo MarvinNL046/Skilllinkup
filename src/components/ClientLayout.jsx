@@ -6,6 +6,7 @@ import SearchModal1 from "@/components/modal/SearchModal1";
 import NavSidebar from "@/components/sidebar/NavSidebar";
 import Providers from "@/components/Providers";
 import ExitIntentPopup from "@/components/ui/ExitIntentPopup";
+import AnnouncementBar from "@/components/ui/AnnouncementBar";
 import { Toaster } from "sonner";
 
 if (typeof window !== "undefined") {
@@ -27,6 +28,7 @@ export default function ClientLayout({ children }) {
 
   return (
     <Providers>
+      <AnnouncementBar />
       <SearchModal1 />
       {children}
 

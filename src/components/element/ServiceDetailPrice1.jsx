@@ -25,7 +25,6 @@ export default function ServiceDetailPrice1({ packages = [], gigId }) {
 
   function handleOrder() {
     if (!hasPackages) {
-      // Static dummy — nothing to order yet
       return;
     }
 

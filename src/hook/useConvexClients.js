@@ -11,6 +11,9 @@ function mapConvexClient(client, index) {
     rating: 0,
     review: 0,
     location: client.locationCity || client.locationCountry || "Remote",
+    bio: client.bio || "",
+    email: client.email || "",
+    createdAt: client.createdAt || null,
     // Fields used by filters in Listing12
     category: "",
     jobs: 0,

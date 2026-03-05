@@ -1,5 +1,7 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import WaitlistButton from "@/components/ui/WaitlistButton";
 
 export default function MobileNavigation2() {
   return (
@@ -18,7 +20,7 @@ export default function MobileNavigation2() {
                   />
                 </Link>
                 <div className="right-side text-end">
-                  <Link href="/login">join</Link>
+                  <WaitlistButton className="ud-btn btn-thm btn-sm py-1 px-3 bdrs8 text-white" />
                   <a
                     className="menubar ml30"
                     data-bs-toggle="offcanvas"

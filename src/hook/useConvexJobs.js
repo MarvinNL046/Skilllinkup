@@ -14,6 +14,7 @@ function mapConvexJob(job, index) {
   return {
     id: index + 1,
     _id: job._id,
+    clientId: job.clientId,
     img: job.companyLogo || "/images/listings/g-1.jpg",
     title: job.title || "Untitled Job",
     server: job.company || job.clientName || "Company",
@@ -24,6 +25,7 @@ function mapConvexJob(job, index) {
     level: "lavel-1",
     sort: "new-arrivals",
     slug: job.slug,
+    createdAt: job.createdAt || null,
   };
 }
 
