@@ -58,6 +58,10 @@ export const upsert = mutation({
     publishedAt: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    if (!["published", "draft"].includes(args.status)) {
+      throw new Error("Invalid status value");
+    }
+
     const existing = await ctx.db
       .query("resources")
       .withIndex("by_slug_locale", (q) =>

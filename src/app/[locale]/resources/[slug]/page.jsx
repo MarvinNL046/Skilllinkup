@@ -33,8 +33,43 @@ export default async function LocaleResourcePage({ params }) {
   if (!resource || resource.status !== "published") notFound();
   if (!["pricing", "comparison", "guide"].includes(resource.type)) notFound();
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        headline: resource.metaTitle,
+        description: resource.metaDescription,
+        url: `${BASE_URL}/${locale}/resources/${slug}`,
+        datePublished: resource.publishedAt ? new Date(resource.publishedAt).toISOString() : undefined,
+        dateModified: resource.updatedAt ? new Date(resource.updatedAt).toISOString() : undefined,
+        publisher: { "@type": "Organization", name: "SkillLinkup", url: BASE_URL },
+      },
+      resource.faqItems?.length > 0 && {
+        "@type": "FAQPage",
+        mainEntity: resource.faqItems.map((f) => ({
+          "@type": "Question",
+          name: f.question,
+          acceptedAnswer: { "@type": "Answer", text: f.answer },
+        })),
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+          { "@type": "ListItem", position: 2, name: "Resources", item: `${BASE_URL}/${locale}/resources` },
+          { "@type": "ListItem", position: 3, name: resource.metaTitle, item: `${BASE_URL}/${locale}/resources/${slug}` },
+        ],
+      },
+    ].filter(Boolean),
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {resource.type === "pricing" && <ResourcePricingTemplate resource={resource} />}
       {resource.type === "comparison" && <ResourceComparisonTemplate resource={resource} />}
       {resource.type === "guide" && <ResourceGuideTemplate resource={resource} />}

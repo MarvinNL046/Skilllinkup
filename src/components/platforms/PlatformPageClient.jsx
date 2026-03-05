@@ -147,6 +147,7 @@ function PlatformDetailContent({ slug }) {
                       alt={`${name} logo`}
                       fill
                       className="object-fit-contain"
+                      unoptimized
                     />
                   </div>
                 ) : (
