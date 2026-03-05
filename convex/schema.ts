@@ -929,4 +929,40 @@ export default defineSchema({
     email: v.string(),
     createdAt: v.number(),
   }).index("by_email", ["email"]),
+
+  // ============================================================
+  // RESOURCES (SEO articles: pricing guides, comparisons, how-tos)
+  // ============================================================
+
+  resources: defineTable({
+    slug: v.string(),
+    locale: v.string(),                        // "en" | "nl"
+    type: v.string(),                          // "pricing" | "comparison" | "guide"
+    status: v.string(),                        // "draft" | "published"
+
+    // SEO
+    metaTitle: v.string(),
+    metaDescription: v.string(),
+
+    // Content
+    intro: v.string(),
+    sections: v.array(v.object({
+      heading: v.string(),
+      body: v.string(),
+    })),
+    pricingData: v.optional(v.any()),          // [{tier, price, features[]}]
+    comparisonData: v.optional(v.any()),       // [{category, a, b}]
+    faqItems: v.array(v.object({
+      question: v.string(),
+      answer: v.string(),
+    })),
+    keyTakeaways: v.optional(v.array(v.string())),
+
+    publishedAt: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_slug_locale", ["slug", "locale"])
+    .index("by_status", ["status"])
+    .index("by_type_status", ["type", "status"]),
 });
