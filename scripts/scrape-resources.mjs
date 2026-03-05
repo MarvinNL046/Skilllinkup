@@ -153,6 +153,36 @@ const RESOURCES = [
     ],
     searchQuery: 'beste freelance platforms voor copywriters Nederland 2026',
   },
+  {
+    slug: 'fiverr-vs-upwork',
+    locale: 'en',
+    type: 'comparison',
+    sources: [
+      'https://www.fiverr.com/resources/guides/freelancing/fiverr-vs-upwork',
+      'https://www.upwork.com/pricing',
+    ],
+    searchQuery: 'Fiverr vs Upwork comparison fees talent quality 2026',
+  },
+  {
+    slug: 'is-upwork-free',
+    locale: 'en',
+    type: 'guide',
+    sources: [
+      'https://www.upwork.com/pricing',
+      'https://support.upwork.com/hc/en-us/articles/211063538',
+    ],
+    searchQuery: 'is Upwork free to use for freelancers clients costs 2026',
+  },
+  {
+    slug: 'what-is-upwork',
+    locale: 'en',
+    type: 'guide',
+    sources: [
+      'https://www.upwork.com/about',
+      'https://www.upwork.com/resources/beginners-guide-to-freelancing',
+    ],
+    searchQuery: 'what is Upwork how does it work beginners 2026',
+  },
 ];
 
 // ---------------------------------------------------------------------------
