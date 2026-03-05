@@ -577,7 +577,8 @@ export default defineSchema({
     status: v.string(), // pending, active, delivered, revision_requested, completed, cancelled, disputed
     stripePaymentIntentId: v.optional(v.string()),
     stripeTransferId: v.optional(v.string()),
-    escrowStatus: v.optional(v.string()), // held, released, refunded
+    escrowStatus: v.optional(v.string()), // held | released | refunded | disputed
+    autoReleaseJobId: v.optional(v.id("_scheduled_functions")),
     completedAt: v.optional(v.number()),
     cancelledAt: v.optional(v.number()),
     createdAt: v.number(),
