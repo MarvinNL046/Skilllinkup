@@ -398,12 +398,23 @@ export const approve = mutation({
       throw new Error("Access denied: only the client can approve this order");
     }
 
+    // Cancel the 7-day auto-release job — client approved before timeout
+    if (order.autoReleaseJobId) {
+      await ctx.scheduler.cancel(order.autoReleaseJobId);
+    }
+
     const now = Date.now();
+    // NOTE: escrowStatus is NOT set here — markReleased (called after Stripe transfer) will set it
     await ctx.db.patch(args.orderId, {
       status: "completed",
-      escrowStatus: "released",
       completedAt: now,
       updatedAt: now,
+      autoReleaseJobId: undefined,
+    });
+
+    // Trigger Stripe transfer — runs asynchronously after this mutation
+    await ctx.scheduler.runAfter(0, internal.marketplace.escrow.releaseToFreelancer, {
+      orderId: args.orderId,
     });
 
     // Schedule reward processing
