@@ -134,13 +134,14 @@ export async function POST(request) {
         application_fee_amount: applicationFeeAmountCents,
       },
 
-      // Attach metadata so the webhook can link back to Convex records.
-      // freelancerStripeAccountId is stored here so the webhook can create
-      // the transfer to the freelancer once the order is completed.
+      // Metadata is stored on the PaymentIntent for webhook reference.
+      // NOTE: freelancerStripeAccountId here is a convenience passthrough only.
+      // The actual Stripe transfer always reads the account ID from Convex DB
+      // (via the releaseToFreelancer internal action) — never trusts this value blindly.
       metadata: {
         gigId,
         packageId,
-        amountCents,
+        amountCents: String(amountCents),
         currency: currency.toLowerCase(),
         freelancerStripeAccountId: freelancerStripeAccountId || "",
       },
