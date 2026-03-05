@@ -53,6 +53,10 @@ const nextConfig = {
       { source: "/freelancer/:id", destination: "/online/freelancer/:id", permanent: true },
       { source: "/projects", destination: "/online/projects", permanent: true },
       { source: "/project/:id", destination: "/online/project/:id", permanent: true },
+      // Resources: redirect old /en/resources/* URLs to canonical /resources/*
+      { source: "/en/resources/:slug", destination: "/resources/:slug", permanent: true },
+      // Platforms: redirect old /en/platforms/* URLs to canonical /platforms/*
+      { source: "/en/platforms/:slug", destination: "/platforms/:slug", permanent: true },
     ];
   },
 };

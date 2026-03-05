@@ -27,6 +27,10 @@ const isPublicRoute = createRouteMatcher([
   "/api/webhooks(.*)",
   // Marketplace public pages
   "/online(.*)",
+  // Resources and platforms (public SEO pages)
+  "/resources(.*)",
+  "/nl/resources(.*)",
+  "/platforms(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
