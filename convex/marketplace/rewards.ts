@@ -139,14 +139,12 @@ export const getClientRewards = query({
   args: { userId: v.id("users") },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (identity) {
-      // If authenticated, verify caller owns this data
-      const caller = await ctx.db
-        .query("users")
-        .withIndex("by_email", (q) => q.eq("email", identity.email!))
-        .first();
-      if (caller && caller._id !== args.userId) throw new Error("Unauthorized.");
-    }
+    if (!identity) throw new Error("Unauthorized.");
+    const caller = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", identity.email!))
+      .first();
+    if (!caller || caller._id !== args.userId) throw new Error("Unauthorized.");
     const user = await ctx.db.get(args.userId);
     if (!user) return null;
 
@@ -208,14 +206,12 @@ export const getRewardHistory = query({
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (identity) {
-      // If authenticated, verify caller owns this data
-      const caller = await ctx.db
-        .query("users")
-        .withIndex("by_email", (q) => q.eq("email", identity.email!))
-        .first();
-      if (caller && caller._id !== args.userId) throw new Error("Unauthorized.");
-    }
+    if (!identity) throw new Error("Unauthorized.");
+    const caller = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", identity.email!))
+      .first();
+    if (!caller || caller._id !== args.userId) throw new Error("Unauthorized.");
     return await ctx.db
       .query("rewardTransactions")
       .withIndex("by_user_createdAt", (q) => q.eq("userId", args.userId))
