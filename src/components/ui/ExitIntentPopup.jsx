@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@clerk/nextjs";
-import Link from "next/link";
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { toast } from "sonner";
 
 const SESSION_KEY = "exitIntentShown";
@@ -10,8 +11,10 @@ const DELAY_MS = 5000;
 
 export default function ExitIntentPopup() {
   const { isSignedIn } = useAuth();
+  const joinWaitlist = useMutation(api.waitlist.join);
   const [visible, setVisible] = useState(false);
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [readyToShow, setReadyToShow] = useState(false);
 
@@ -48,14 +51,22 @@ export default function ExitIntentPopup() {
     setVisible(false);
   };
 
-  const handleSubscribe = () => {
+  const handleSubscribe = async () => {
     const trimmed = email.trim();
     if (!trimmed || !trimmed.includes("@")) {
-      toast.error("Please enter a valid email address.");
+      toast.error("Vul een geldig e-mailadres in.");
       return;
     }
-    toast.success("You're subscribed! We'll keep you updated.");
-    setVisible(false);
+    setLoading(true);
+    try {
+      await joinWaitlist({ email: trimmed });
+      toast.success("Je staat op de lijst! We laten je weten wanneer we live gaan.");
+      setVisible(false);
+    } catch (err) {
+      toast.error("Er ging iets mis. Probeer het opnieuw.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (isSignedIn || !visible) return null;
@@ -210,6 +221,7 @@ export default function ExitIntentPopup() {
         >
           <button
             onClick={handleSubscribe}
+            disabled={loading}
             className="exit-subscribe-btn"
             style={{
               flex: 1,
@@ -220,15 +232,16 @@ export default function ExitIntentPopup() {
               borderRadius: "8px",
               fontSize: "15px",
               fontWeight: 600,
-              cursor: "pointer",
+              cursor: loading ? "not-allowed" : "pointer",
+              opacity: loading ? 0.7 : 1,
               transition: "background-color 0.2s",
             }}
           >
-            Subscribe
+            {loading ? "Even geduld..." : "Aanmelden"}
           </button>
 
-          <Link
-            href="/register"
+          <button
+            onClick={handleClose}
             className="exit-register-btn"
             style={{
               flex: 1,
@@ -240,15 +253,11 @@ export default function ExitIntentPopup() {
               fontSize: "15px",
               fontWeight: 600,
               cursor: "pointer",
-              textDecoration: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
               transition: "background-color 0.2s, color 0.2s, border-color 0.2s",
             }}
           >
-            Create Free Account
-          </Link>
+            Misschien later
+          </button>
         </div>
 
         {/* No thanks */}
