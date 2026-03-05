@@ -74,7 +74,7 @@ export const processOrderCashback = internalMutation({
     const currentBalance = client.clientCreditBalance ?? 0;
     const newBalance = currentBalance + cashbackCents;
 
-    await ctx.db.patch(order.clientId, {
+    await ctx.db.patch(client._id, {
       clientCreditBalance: newBalance,
       clientTier: tier,
       clientYearlySpend: newYearlySpend,
@@ -138,6 +138,15 @@ export const recalculateFreelancerLevel = internalMutation({
 export const getClientRewards = query({
   args: { userId: v.id("users") },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (identity) {
+      // If authenticated, verify caller owns this data
+      const caller = await ctx.db
+        .query("users")
+        .withIndex("by_email", (q) => q.eq("email", identity.email!))
+        .first();
+      if (caller && caller._id !== args.userId) throw new Error("Unauthorized.");
+    }
     const user = await ctx.db.get(args.userId);
     if (!user) return null;
 
@@ -198,11 +207,20 @@ export const getRewardHistory = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (identity) {
+      // If authenticated, verify caller owns this data
+      const caller = await ctx.db
+        .query("users")
+        .withIndex("by_email", (q) => q.eq("email", identity.email!))
+        .first();
+      if (caller && caller._id !== args.userId) throw new Error("Unauthorized.");
+    }
     return await ctx.db
       .query("rewardTransactions")
       .withIndex("by_user_createdAt", (q) => q.eq("userId", args.userId))
       .order("desc")
-      .take(args.limit ?? 20);
+      .take(Math.min(args.limit ?? 20, 100));
   },
 });
 
@@ -224,7 +242,10 @@ export const applyCredits = mutation({
     }
 
     const maxCredits = Math.round(order.amount * 100 * 0.5);
-    const actualCredits = Math.min(args.creditsToUseCents, maxCredits);
+    if (args.creditsToUseCents > maxCredits) {
+      throw new Error(`Cannot apply more than 50% of order amount (max ${maxCredits} cents).`);
+    }
+    const actualCredits = args.creditsToUseCents;
 
     await ctx.db.patch(user._id, {
       clientCreditBalance: currentBalance - actualCredits,
