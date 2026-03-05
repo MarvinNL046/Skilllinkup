@@ -1,6 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
 
+const LEVEL_CONFIG = {
+  top_rated: { label: "Top Rated", color: "#1a73e8", textColor: "#fff" },
+  pro:       { label: "Pro",       color: "#ef2b70", textColor: "#fff" },
+  rising:    { label: "Rising",    color: "#22c55e", textColor: "#fff" },
+  new:       { label: "New",       color: "#9ca3af", textColor: "#fff" },
+};
+
+function LevelBadge({ level }) {
+  const config = LEVEL_CONFIG[level] || LEVEL_CONFIG.new;
+  return (
+    <span
+      className="badge fz11 fw500 px-2 py-1"
+      style={{ backgroundColor: config.color, color: config.textColor, borderRadius: 12 }}
+    >
+      {config.label}
+    </span>
+  );
+}
+
 export default function FreelancerCard2({ data }) {
   return (
     <>
@@ -47,7 +66,7 @@ export default function FreelancerCard2({ data }) {
             <a className="meta fw500 text-start">
               Level
               <br />
-              <span className="fz14 fw400">{data.level === "top-rated" ? "Top Rated" : "New"}</span>
+              <LevelBadge level={data.level} />
             </a>
           </div>
           <div className="d-grid mt15">
