@@ -57,6 +57,12 @@ const nextConfig = {
       { source: "/en/resources/:slug", destination: "/resources/:slug", permanent: true },
       // Platforms: redirect old /en/platforms/* URLs to canonical /platforms/*
       { source: "/en/platforms/:slug", destination: "/platforms/:slug", permanent: true },
+      // Old blog post URL format
+      { source: "/post/ai-tools-for-freelancers", destination: "/resources/project-management-tools-freelancers", permanent: true },
+      // Old comparisons listing
+      { source: "/comparisons", destination: "/resources", permanent: false },
+      // Old NL guides
+      { source: "/guides/niche-gidsen/:slug", destination: "/nl/resources/:slug", permanent: true },
     ];
   },
 };

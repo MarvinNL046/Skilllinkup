@@ -103,6 +103,56 @@ const RESOURCES = [
     ],
     searchQuery: 'Toptal how it works beginners guide requirements 2026',
   },
+  {
+    slug: 'freelance-profile-templates',
+    locale: 'en',
+    type: 'guide',
+    sources: [
+      'https://www.upwork.com/resources/freelancer-profile',
+      'https://www.fiverr.com/resources/guides/freelancing/create-a-gig',
+    ],
+    searchQuery: 'freelance profile template examples Upwork Fiverr 2026',
+  },
+  {
+    slug: 'is-toptal-legit',
+    locale: 'en',
+    type: 'guide',
+    sources: [
+      'https://www.toptal.com/faq',
+      'https://www.toptal.com/how-it-works',
+    ],
+    searchQuery: 'Is Toptal legit trustworthy review scam or real 2026',
+  },
+  {
+    slug: 'freelance-beginners-guide',
+    locale: 'en',
+    type: 'guide',
+    sources: [
+      'https://www.upwork.com/resources/beginners-guide-to-freelancing',
+      'https://www.fiverr.com/resources/guides/freelancing/how-to-become-a-freelancer',
+    ],
+    searchQuery: 'how to start freelancing beginners guide 2026 tips',
+  },
+  {
+    slug: 'project-management-tools-freelancers',
+    locale: 'en',
+    type: 'guide',
+    sources: [
+      'https://trello.com/tour',
+      'https://asana.com/uses/freelancers',
+    ],
+    searchQuery: 'best project management tools for freelancers 2026',
+  },
+  {
+    slug: 'platforms-for-copywriters',
+    locale: 'nl',
+    type: 'guide',
+    sources: [
+      'https://www.textbroker.nl/copywriters',
+      'https://www.malt.nl/profil/copywriter',
+    ],
+    searchQuery: 'beste freelance platforms voor copywriters Nederland 2026',
+  },
 ];
 
 // ---------------------------------------------------------------------------
