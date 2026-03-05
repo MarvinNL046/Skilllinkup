@@ -20,6 +20,7 @@ const _myProjects   = { id: 16, name: "My Projects",      icon: "flaticon-conten
 const _createProj   = { id: 17, name: "Create Project",   icon: "flaticon-content",      path: "/create-projects" };
 const _saved        = { id: 18, name: "Saved",            icon: "flaticon-like",         path: "/saved" };
 const _quoteReqs    = { id: 19, name: "My Quote Requests", icon: "flaticon-document",    path: "/dashboard/quote-requests" };
+const _rewards      = { id: 20, name: "Rewards",           icon: "flaticon-star",         path: "/dashboard/rewards" };
 
 // ============================================================
 // World-specific navigation: dashboardNavigation[role][world]
@@ -46,17 +47,17 @@ export const dashboardNavigation = {
   client: {
     online: {
       start:    [_dashboard, _myProjects, _createProj, _orders, _saved],
-      organize: [_message, _reviews],
+      organize: [_message, _reviews, _rewards],
       account:  [_profile],
     },
     local: {
       start:    [_dashboard, _orders, _saved],
-      organize: [_message, _reviews],
+      organize: [_message, _reviews, _rewards],
       account:  [_profile],
     },
     jobs: {
       start:    [_dashboard, _myProjects, _createProj, _orders, _saved],
-      organize: [_message, _reviews],
+      organize: [_message, _reviews, _rewards],
       account:  [_profile],
     },
   },
