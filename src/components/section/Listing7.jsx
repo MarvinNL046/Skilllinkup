@@ -6,7 +6,7 @@ import Pagination1 from "./Pagination1";
 import priceStore from "@/store/priceStore";
 import PopularServiceSlideCard1 from "../card/PopularServiceSlideCard1";
 import TrendingServiceCard1 from "../card/TrendingServiceCard1";
-import { product1 } from "@/data/product";
+const product1 = []; // stripped mock data
 import ListingMap1 from "../element/ListingMap1";
 
 export default function Listing7() {

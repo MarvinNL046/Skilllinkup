@@ -7,7 +7,7 @@ import {
   InfoWindow,
 } from "@react-google-maps/api";
 import { useMemo, useState } from "react";
-import { product1 } from "@/data/product";
+const product1 = []; // stripped mock data
 import TrendingServiceCard1 from "../card/TrendingServiceCard1";
 
 const option = {

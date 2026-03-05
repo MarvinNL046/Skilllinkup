@@ -1,5 +1,5 @@
 "use client";
-import { blog1 } from "@/data/blog";
+const blog1 = []; // stripped mock data
 import BlogCard1 from "../card/BlogCard1";
 import { usePathname } from "next/navigation";
 import Link from "next/link";

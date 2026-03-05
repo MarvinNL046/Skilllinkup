@@ -1,5 +1,5 @@
 "use client";
-import { freelancer1 } from "@/data/product";
+const freelancer1 = []; // stripped mock data
 import Image from "next/image";
 import { useParams } from "next/navigation";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { product1 } from "@/data/product";
+const product1 = []; // stripped mock data
 import PopularServiceCard2 from "../card/PopularServiceCard2";
 
 const categories = [

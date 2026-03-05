@@ -1,4 +1,4 @@
-import { blog1 } from "@/data/blog";
+const blog1 = []; // stripped mock data
 import BlogCard3 from "../card/BlogCard3";
 import Category1 from "../element/Category1";
 import RecentPost1 from "../element/RecentPost1";

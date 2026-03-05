@@ -1,4 +1,5 @@
-import { inspiringProjects, product1 } from "@/data/product";
+const inspiringProjects = []; // stripped mock data
+const product1 = []; // stripped mock data
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";

@@ -1,11 +1,12 @@
 "use client";
-import { employee as staticEmployee } from "@/data/product";
 import ListingSidebar4 from "../sidebar/ListingSidebar4";
 import Pagination1 from "./Pagination1";
 import listingStore from "@/store/listingStore";
 import EmployeeCard1 from "../card/EmployeeCard1";
 import ListingOption2 from "../element/ListingOption2";
 import ListingSidebarModal4 from "../modal/ListingSidebarModal4";
+import useConvexClients from "@/hook/useConvexClients";
+import EmptyState from "@/components/ui/EmptyState";
 
 export default function Listing12() {
   const getCategory = listingStore((state) => state.getCategory);
@@ -24,17 +25,27 @@ export default function Listing12() {
   const sortByFilter = (item) =>
     getBestSeller === "best-seller" ? true : item.sort === getBestSeller;
 
-  // Employee data - uses static data (employees are a separate concept from freelancers)
-  const employee = staticEmployee;
+  const clients = useConvexClients();
+
+  // Show spinner while Convex data is loading
+  if (clients === undefined) {
+    return (
+      <div className="text-center py-5">
+        <div className="spinner-border text-thm" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
   // content
-  const content = employee
+  const content = clients
     .slice(0, 12)
     .filter(categoryFilter)
     .filter(noOfEmployeeFilter)
     .filter(sortByFilter)
-    .map((item,i) => (
-      <div key={ i } className="col-sm-6 col-xl-4">
+    .map((item, i) => (
+      <div key={i} className="col-sm-6 col-xl-4">
         <EmployeeCard1 data={item} />
       </div>
     ));
@@ -49,7 +60,19 @@ export default function Listing12() {
             </div>
             <div className="col-lg-9">
               <ListingOption2 itemLength={content?.length} />
-              <div className="row">{content}</div>
+              <div className="row">
+                {content.length === 0 ? (
+                  <EmptyState
+                    icon="🏢"
+                    title="No clients yet"
+                    description="Be the first to sign up as a client and post a project"
+                    actionLabel="Get Started"
+                    actionHref="/register"
+                  />
+                ) : (
+                  content
+                )}
+              </div>
               <div className="row mt30">
                 <Pagination1 />
               </div>

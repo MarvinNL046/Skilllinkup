@@ -1,5 +1,5 @@
 "use client";
-import { projectProposal1 } from "@/data/product";
+const projectProposal1 = []; // stripped mock data
 import ProjectProposalCard1 from "../card/ProjectProposalCard1";
 import ServiceDetailExtra1 from "../element/ServiceDetailExtra1";
 import Sticky from "react-stickynode";

@@ -2,8 +2,7 @@
 import { useState } from "react";
 import Pagination1 from "./Pagination1";
 import BlogCard2 from "../card/BlogCard2";
-import { blog1 } from "@/data/blog";
-
+const blog1 = []; // stripped mock data
 const tabs = [
   "All",
   "Freelancer",

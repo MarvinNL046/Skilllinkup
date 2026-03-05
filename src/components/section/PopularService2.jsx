@@ -6,8 +6,7 @@ import "swiper/css/pagination";
 import { Navigation, Pagination } from "swiper/modules";
 import { useEffect, useState } from "react";
 import PopularServiceCard1 from "../card/PopularServiceCard1";
-import { product1 } from "@/data/product";
-
+const product1 = []; // stripped mock data
 const categories = [
   "Development & IT",
   "Design & Creative",

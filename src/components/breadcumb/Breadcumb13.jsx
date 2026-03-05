@@ -1,5 +1,5 @@
 "use client";
-import { job1 } from "@/data/job";
+const job1 = []; // stripped mock data
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";

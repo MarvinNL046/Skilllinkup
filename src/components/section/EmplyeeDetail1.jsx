@@ -1,4 +1,4 @@
-import { job1 } from "@/data/job";
+const job1 = []; // stripped mock data
 import AboutMe1 from "../element/AboutMe1";
 import EmployeeDetailSlider1 from "../element/EmployeeDetailSlider1";
 import ServiceDetailComment1 from "../element/ServiceDetailComment1";

@@ -1,5 +1,5 @@
 "use client";
-import { employee } from "@/data/product";
+const employee = []; // stripped mock data
 import Image from "next/image";
 import { useParams } from "next/navigation";
 

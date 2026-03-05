@@ -1,6 +1,6 @@
 "use client";
 
-import { testimonials } from "@/data/testimonials";
+const testimonials = []; // stripped mock data
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 

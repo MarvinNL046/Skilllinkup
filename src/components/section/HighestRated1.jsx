@@ -5,7 +5,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination } from "swiper/modules";
-import { freelancer1, hightedRated1 } from "@/data/product";
+const freelancer1 = []; // stripped mock data
+const hightedRated1 = []; // stripped mock data
 import Link from "next/link";
 
 export default function HighestRated1() {

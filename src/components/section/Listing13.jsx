@@ -3,7 +3,7 @@ import listingStore from "@/store/listingStore";
 import FreelancerCard1 from "../card/FreelancerCard1";
 import ListingOption6 from "../element/ListingOption6";
 import Pagination1 from "./Pagination1";
-import { freelancer1 } from "@/data/product";
+const freelancer1 = []; // stripped mock data
 import priceStore from "@/store/priceStore";
 import ListingSidebarModal5 from "../modal/ListingSidebarModal5";
 

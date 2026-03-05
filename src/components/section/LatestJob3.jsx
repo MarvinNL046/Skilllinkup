@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { job1 } from "@/data/job";
+const job1 = []; // stripped mock data
 import JobCard3 from "../card/JobCard3";
 
 export default function LatestJob3() {

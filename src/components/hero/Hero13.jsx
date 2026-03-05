@@ -14,7 +14,7 @@ const role = [
 
 const popular = ["Designer", "Developer", "Web", "IOS", "PHP", "Senior"];
 
-import { funfactsData } from "@/data/fanfact";
+const funfactsData = []; // stripped mock data
 import React from "react";
 import CountUp from "react-countup";
 

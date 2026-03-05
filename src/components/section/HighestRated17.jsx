@@ -7,7 +7,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination } from "swiper/modules";
 
-import { teamData } from "@/data/testimonials";
+const teamData = []; // stripped mock data
 import Image from "next/image";
 import Link from "next/link";
 

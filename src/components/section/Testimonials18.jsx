@@ -7,7 +7,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination } from "swiper/modules";
 import { useEffect, useState } from "react";
-import { testimonialsTwo } from "@/data/testimonials";
+const testimonialsTwo = []; // stripped mock data
 import React from "react";
 import Image from "next/image";
 

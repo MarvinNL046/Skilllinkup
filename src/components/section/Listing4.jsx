@@ -1,5 +1,5 @@
 "use client";
-import { product1 } from "@/data/product";
+const product1 = []; // stripped mock data
 import ListingOption2 from "../element/ListingOption2";
 import ListingSidebarModal1 from "../modal/ListingSidebarModal1";
 import ListingSidebar1 from "../sidebar/ListingSidebar1";

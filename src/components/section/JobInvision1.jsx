@@ -1,4 +1,4 @@
-import { job1 } from "@/data/job";
+const job1 = []; // stripped mock data
 import JobCard4 from "../card/JobCard4";
 
 export default function JobInvision1() {

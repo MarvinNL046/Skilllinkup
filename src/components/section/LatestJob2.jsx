@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { job1 } from "@/data/job";
+const job1 = []; // stripped mock data
 import JobCard2 from "../card/JobCard2";
 import { Pagination, Navigation } from "swiper/modules";
 

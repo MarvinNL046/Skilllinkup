@@ -1,5 +1,5 @@
 "use client";
-import { shopProduct1 } from "@/data/product";
+const shopProduct1 = []; // stripped mock data
 import shopStore from "@/store/shopStore";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";

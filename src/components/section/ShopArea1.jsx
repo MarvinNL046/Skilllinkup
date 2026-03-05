@@ -1,6 +1,6 @@
 "use client";
 
-import { shopProduct1 } from "@/data/product";
+const shopProduct1 = []; // stripped mock data
 import ShopListCard1 from "../card/ShopListCard1";
 import ShopListInfo1 from "../element/ShopListInfo1";
 import ShopAreaSidebar1 from "../sidebar/ShopAreaSidebar1";

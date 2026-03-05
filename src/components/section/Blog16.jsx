@@ -1,4 +1,4 @@
-import { blog1 } from "@/data/blog";
+const blog1 = []; // stripped mock data
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";

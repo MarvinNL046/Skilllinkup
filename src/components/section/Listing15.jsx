@@ -4,7 +4,7 @@ import ListingOption2 from "../element/ListingOption2";
 import ListingSidebar5 from "../sidebar/ListingSidebar5";
 import Pagination1 from "./Pagination1";
 import priceStore from "@/store/priceStore";
-import { freelancer1 } from "@/data/product";
+const freelancer1 = []; // stripped mock data
 import ListingSidebarModal5 from "../modal/ListingSidebarModal5";
 import FreelancerCard3 from "../card/FreelancerCard3";
 

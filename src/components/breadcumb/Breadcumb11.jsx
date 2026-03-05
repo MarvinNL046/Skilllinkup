@@ -1,5 +1,5 @@
 "use client";
-import { project1 } from "@/data/product";
+const project1 = []; // stripped mock data
 import Image from "next/image";
 import { useParams } from "next/navigation";
 

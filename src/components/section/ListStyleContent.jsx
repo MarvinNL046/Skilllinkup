@@ -1,4 +1,4 @@
-import { product1 } from "@/data/product";
+const product1 = []; // stripped mock data
 import Pagination1 from "./Pagination1";
 import PopularServiceSlideCard1 from "../card/PopularServiceSlideCard1";
 import PopularServiceCard1 from "../card/PopularServiceCard1";

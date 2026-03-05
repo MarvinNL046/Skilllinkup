@@ -4,7 +4,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination } from "swiper/modules";
-import { freelancer1 } from "@/data/product";
+const freelancer1 = []; // stripped mock data
 import Link from "next/link";
 import HeighestRetedCard3 from "../card/HighestRatedCard3";
 

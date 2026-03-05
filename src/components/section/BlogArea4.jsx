@@ -3,8 +3,7 @@ import Image from "next/image";
 import Comment1 from "../element/Comment1";
 import ReviewForm1 from "../element/ReviewForm1";
 import { useParams } from "next/navigation";
-import { blog1 } from "@/data/blog";
-
+const blog1 = []; // stripped mock data
 export default function BlogArea4() {
   const param = useParams();
 

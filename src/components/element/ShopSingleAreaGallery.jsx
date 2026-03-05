@@ -1,5 +1,5 @@
 "use client";
-import { shopProduct1 } from "@/data/product";
+const shopProduct1 = []; // stripped mock data
 import FsLightbox from "fslightbox-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";

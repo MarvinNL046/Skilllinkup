@@ -1,5 +1,5 @@
 "use client";
-import { funfactsData } from "@/data/fanfact";
+const funfactsData = []; // stripped mock data
 import React from "react";
 import CountUp from "react-countup";
 

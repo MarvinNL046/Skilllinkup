@@ -1,4 +1,4 @@
-import { blog1 } from "@/data/blog";
+const blog1 = []; // stripped mock data
 import BlogCard1 from "../card/BlogCard1";
 
 export default function RecentPostArea1() {

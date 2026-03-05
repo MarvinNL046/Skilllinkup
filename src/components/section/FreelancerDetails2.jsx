@@ -1,6 +1,7 @@
 "use client";
 
-import { freelancer1, product1 } from "@/data/product";
+const freelancer1 = []; // stripped mock data
+const product1 = []; // stripped mock data
 import FreelancerAbout1 from "../element/FreelancerAbout1";
 import FreelancerSkill1 from "../element/FreelancerSkill1";
 import ServiceDetailComment1 from "../element/ServiceDetailComment1";

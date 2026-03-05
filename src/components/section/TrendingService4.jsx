@@ -5,7 +5,7 @@ import "swiper/css/navigation";
 import "swiper/css/free-mode";
 import { Navigation } from "swiper/modules";
 import TrendingServiceCard1 from "../card/TrendingServiceCard1";
-import { product1 } from "@/data/product";
+const product1 = []; // stripped mock data
 import Link from "next/link";
 
 export default function TrendingService4() {

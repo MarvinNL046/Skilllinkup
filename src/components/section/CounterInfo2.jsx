@@ -1,6 +1,6 @@
 "use client";
 
-import { features } from "@/data/features";
+const features = []; // stripped mock data
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";

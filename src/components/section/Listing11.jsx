@@ -1,5 +1,5 @@
 "use client";
-import { employee } from "@/data/product";
+const employee = []; // stripped mock data
 import EmployeeCard1 from "../card/EmployeeCard1";
 import ListingOption5 from "../element/ListingOption5";
 import Pagination1 from "./Pagination1";

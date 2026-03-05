@@ -12,8 +12,7 @@ import useScreen from "@/hook/useScreen";
 import ServiceContactWidget1 from "../element/ServiceContactWidget1";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { product1 } from "@/data/product";
-
+const product1 = []; // stripped mock data
 export default function ServiceDetail2() {
   const isMatchedScreen = useScreen(1216);
   const { id } = useParams();

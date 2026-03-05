@@ -4,7 +4,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/free-mode";
 import { Navigation, Pagination } from "swiper/modules";
-import { product1 } from "@/data/product";
+const product1 = []; // stripped mock data
 import BestServiceCard1 from "../card/BestServiceCard1";
 
 export default function BestService2() {
