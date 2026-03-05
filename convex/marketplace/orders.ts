@@ -396,6 +396,17 @@ export const approve = mutation({
       updatedAt: now,
     });
 
+    // Schedule reward processing
+    await ctx.scheduler.runAfter(0, internal.marketplace.rewards.processOrderCashback, {
+      orderId: args.orderId,
+    });
+
+    if (order.freelancerId) {
+      await ctx.scheduler.runAfter(0, internal.marketplace.rewards.recalculateFreelancerLevel, {
+        freelancerProfileId: order.freelancerId,
+      });
+    }
+
     // Send completion notification to freelancer
     const freelancerProfile = order.freelancerId ? await ctx.db.get(order.freelancerId) : null;
     const freelancerUser = freelancerProfile ? await ctx.db.get(freelancerProfile.userId) : null;

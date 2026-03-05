@@ -33,6 +33,7 @@ import type * as marketplace_portfolio from "../marketplace/portfolio.js";
 import type * as marketplace_projects from "../marketplace/projects.js";
 import type * as marketplace_quotes from "../marketplace/quotes.js";
 import type * as marketplace_reviews from "../marketplace/reviews.js";
+import type * as marketplace_rewards from "../marketplace/rewards.js";
 import type * as marketplace_savedItems from "../marketplace/savedItems.js";
 import type * as platformReviews from "../platformReviews.js";
 import type * as platforms from "../platforms.js";
@@ -72,6 +73,7 @@ declare const fullApi: ApiFromModules<{
   "marketplace/projects": typeof marketplace_projects;
   "marketplace/quotes": typeof marketplace_quotes;
   "marketplace/reviews": typeof marketplace_reviews;
+  "marketplace/rewards": typeof marketplace_rewards;
   "marketplace/savedItems": typeof marketplace_savedItems;
   platformReviews: typeof platformReviews;
   platforms: typeof platforms;
