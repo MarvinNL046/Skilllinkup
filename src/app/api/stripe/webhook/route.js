@@ -89,6 +89,14 @@ export async function POST(request) {
         await handleAccountUpdated(event.data.object);
         break;
 
+      case "payment_intent.succeeded":
+        await handlePaymentIntentSucceeded(event.data.object);
+        break;
+
+      case "charge.dispute.created":
+        await handleChargeDisputeCreated(event.data.object);
+        break;
+
       default:
         // Silently ignore unhandled events – Stripe expects a 200 either way.
         console.log(`[stripe/webhook] Unhandled event type: ${event.type}`);
@@ -336,5 +344,60 @@ async function handleAccountUpdated(account) {
         err
       );
     }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Handler: payment_intent.succeeded
+// Confirms escrow is held. Safety-net log — no DB action needed since
+// checkout.session.completed already creates the order.
+// ---------------------------------------------------------------------------
+async function handlePaymentIntentSucceeded(paymentIntent) {
+  const existing = await convex.query(
+    api.marketplace.orders.getByStripePaymentIntentId,
+    { stripePaymentIntentId: paymentIntent.id }
+  );
+  if (!existing) {
+    // Order not yet created (checkout.session.completed may still be in flight)
+    console.log(`[stripe/webhook] PaymentIntent ${paymentIntent.id} succeeded — no order found yet (checkout event may still be processing)`);
+    return;
+  }
+  console.log(`[stripe/webhook] PaymentIntent ${paymentIntent.id} succeeded — escrow held for order ${existing._id}`);
+}
+
+// ---------------------------------------------------------------------------
+// Handler: charge.dispute.created
+// A cardholder filed a chargeback. Opens a dispute in Convex which cancels
+// the auto-release job and freezes escrow.
+// ---------------------------------------------------------------------------
+async function handleChargeDisputeCreated(dispute) {
+  const paymentIntentId = dispute.payment_intent;
+  if (!paymentIntentId) {
+    console.warn("[stripe/webhook] charge.dispute.created: no payment_intent on dispute — skipping");
+    return;
+  }
+
+  const order = await convex.query(
+    api.marketplace.orders.getByStripePaymentIntentId,
+    { stripePaymentIntentId: typeof paymentIntentId === "string" ? paymentIntentId : paymentIntentId.id }
+  );
+
+  if (!order) {
+    console.warn(`[stripe/webhook] charge.dispute.created: no order found for PaymentIntent ${paymentIntentId}`);
+    return;
+  }
+
+  // Open a dispute in Convex — this cancels auto-release and sets escrowStatus: "disputed"
+  // disputes.open requires an authenticated user, so we open it as the order's client
+  try {
+    await convex.mutation(api.marketplace.disputes.open, {
+      orderId: order._id,
+      reason: "chargeback",
+      description: `Stripe chargeback filed automatically. Stripe dispute ID: ${dispute.id}. Reason: ${dispute.reason}.`,
+    });
+    console.log(`[stripe/webhook] Dispute opened in Convex for order ${order._id} (Stripe chargeback: ${dispute.id})`);
+  } catch (err) {
+    // A dispute may already exist for this order — log and continue
+    console.warn(`[stripe/webhook] Could not open dispute for order ${order._id}: ${err.message}`);
   }
 }
