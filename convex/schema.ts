@@ -965,5 +965,6 @@ export default defineSchema({
   })
     .index("by_slug_locale", ["slug", "locale"])
     .index("by_status", ["status"])
+    .index("by_status_locale", ["status", "locale"])
     .index("by_type_status", ["type", "status"]),
 });

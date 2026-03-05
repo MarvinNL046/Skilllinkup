@@ -22,16 +22,21 @@ export const list = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const results = await ctx.db
-      .query("resources")
-      .withIndex("by_status", (q) =>
-        q.eq("status", args.status ?? "published")
-      )
-      .order("desc")
-      .collect();
-    return results
-      .filter((r) => !args.locale || r.locale === args.locale)
-      .slice(0, args.limit ?? 100);
+    const status = args.status ?? "published";
+    const results = args.locale
+      ? await ctx.db
+          .query("resources")
+          .withIndex("by_status_locale", (q) =>
+            q.eq("status", status).eq("locale", args.locale!)
+          )
+          .order("desc")
+          .collect()
+      : await ctx.db
+          .query("resources")
+          .withIndex("by_status", (q) => q.eq("status", status))
+          .order("desc")
+          .collect();
+    return results.slice(0, Math.min(args.limit ?? 100, 500));
   },
 });
 
@@ -64,7 +69,8 @@ export const upsert = mutation({
     const data = { ...args, updatedAt: now };
 
     if (existing) {
-      await ctx.db.patch(existing._id, data);
+      const { slug: _slug, locale: _locale, ...patchData } = data;
+      await ctx.db.patch(existing._id, patchData);
       return existing._id;
     } else {
       return await ctx.db.insert("resources", { ...data, createdAt: now });
