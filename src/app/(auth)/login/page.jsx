@@ -22,7 +22,7 @@ export default function LoginPage() {
                                 <SignIn
                                     routing="path"
                                     path="/login"
-                                    fallbackRedirectUrl="/dashboard"
+                                    fallbackRedirectUrl="/onboarding"
                                     signUpUrl="/register"
                                 />
                             </div>
