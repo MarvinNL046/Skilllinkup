@@ -83,17 +83,6 @@ export async function POST(request) {
     freelancerStripeAccountId,
   } = body;
 
-  // Freelancer must have a connected Stripe account before accepting payments.
-  if (!freelancerStripeAccountId) {
-    return NextResponse.json(
-      {
-        error:
-          "The freelancer has not set up their Stripe account yet. They need to complete onboarding before accepting payments.",
-      },
-      { status: 422 }
-    );
-  }
-
   // Validate remaining required fields.
   if (!gigId || !packageId || !gigTitle || !price) {
     return NextResponse.json(
@@ -138,23 +127,22 @@ export async function POST(request) {
         },
       ],
 
-      // Split the payment: platform fee to SkillLinkup, rest to the freelancer.
+      // Funds land on the platform account (escrow). The transfer to the
+      // freelancer happens later via the webhook after order completion.
       payment_intent_data: {
         // SkillLinkup platform fee (retained by the platform account).
         application_fee_amount: applicationFeeAmountCents,
-
-        // Automatically transfer the remainder to the freelancer's Express account.
-        transfer_data: {
-          destination: freelancerStripeAccountId,
-        },
       },
 
       // Attach metadata so the webhook can link back to Convex records.
+      // freelancerStripeAccountId is stored here so the webhook can create
+      // the transfer to the freelancer once the order is completed.
       metadata: {
         gigId,
         packageId,
         amountCents,
         currency: currency.toLowerCase(),
+        freelancerStripeAccountId: freelancerStripeAccountId || "",
       },
 
       // Where Stripe redirects after checkout.
