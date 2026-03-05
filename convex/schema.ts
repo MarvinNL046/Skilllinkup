@@ -932,6 +932,7 @@ export default defineSchema({
 
   // ============================================================
   // RESOURCES (SEO articles: pricing guides, comparisons, how-tos)
+  // No tenantId: resources are platform-global, shared across all tenants (intentional)
   // ============================================================
 
   resources: defineTable({
