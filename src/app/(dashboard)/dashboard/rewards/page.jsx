@@ -6,7 +6,7 @@ export const metadata = {
   title: "SkillLinkup | My Rewards",
 };
 
-export default function page() {
+export default function RewardsPage() {
   return (
     <>
       <MobileNavigation2 />

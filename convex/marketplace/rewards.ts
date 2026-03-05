@@ -81,12 +81,11 @@ export const processOrderCashback = internalMutation({
       updatedAt: now,
     });
 
-    const tenant = await ctx.db.query("tenants").first();
-    if (!tenant) return;
+    const tenantId = order.tenantId;
 
     await ctx.db.insert("rewardTransactions", {
       userId: order.clientId,
-      tenantId: tenant._id,
+      tenantId: tenantId,
       type: "cashback_earned",
       amount: cashbackCents,
       orderId: args.orderId,
@@ -97,7 +96,7 @@ export const processOrderCashback = internalMutation({
     if (tier !== previousTier) {
       await ctx.db.insert("rewardTransactions", {
         userId: order.clientId,
-        tenantId: tenant._id,
+        tenantId: tenantId,
         type: "tier_upgrade",
         amount: 0,
         orderId: args.orderId,
@@ -232,6 +231,10 @@ export const applyCredits = mutation({
     if (!order) throw new Error("Order not found.");
     if (order.clientId !== user._id) throw new Error("Unauthorized.");
 
+    if (!["pending", "in_progress"].includes(order.status)) {
+      throw new Error("Credits can only be applied to active orders.");
+    }
+
     const currentBalance = user.clientCreditBalance ?? 0;
     if (args.creditsToUseCents > currentBalance) {
       throw new Error("Insufficient credit balance.");
@@ -248,12 +251,11 @@ export const applyCredits = mutation({
       updatedAt: Date.now(),
     });
 
-    const tenant = await ctx.db.query("tenants").first();
-    if (!tenant) throw new Error("No tenant found.");
+    const tenantId = order.tenantId;
 
     await ctx.db.insert("rewardTransactions", {
       userId: user._id,
-      tenantId: tenant._id,
+      tenantId: tenantId,
       type: "credit_used",
       amount: -actualCredits,
       orderId: args.orderId,
