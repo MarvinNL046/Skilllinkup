@@ -18,7 +18,7 @@ function getStripe(): Stripe {
 export const releaseToFreelancer = internalAction({
   args: { orderId: v.id("orders") },
   handler: async (ctx, args) => {
-    const order = await ctx.runQuery(internal.marketplace.orders.getById, {
+    const order = await ctx.runQuery(internal.marketplace.orders.getByIdInternal, {
       orderId: args.orderId,
     });
     if (!order) throw new Error(`Order ${args.orderId} not found`);
@@ -38,19 +38,37 @@ export const releaseToFreelancer = internalAction({
       : null;
     const stripeAccountId = freelancerProfile?.stripeAccountId;
     if (!stripeAccountId) {
-      throw new Error(`Freelancer for order ${args.orderId} has no Stripe account`);
+      throw new Error(
+        `Freelancer for order ${args.orderId} has no Stripe account (freelancerId: ${order.freelancerId ?? "missing"})`
+      );
     }
 
     const stripe = getStripe();
-    const amountCents = Math.round(order.freelancerEarnings * 100);
 
-    const transfer = await stripe.transfers.create({
-      amount: amountCents,
-      currency: (order.currency ?? "EUR").toLowerCase(),
-      destination: stripeAccountId,
-      source_transaction: order.stripePaymentIntentId,
-      metadata: { orderId: args.orderId },
-    });
+    // Retrieve the charge ID from the PaymentIntent (source_transaction requires a charge ID, not PI ID)
+    const paymentIntent = await stripe.paymentIntents.retrieve(
+      order.stripePaymentIntentId
+    );
+    const chargeId = typeof paymentIntent.latest_charge === "string"
+      ? paymentIntent.latest_charge
+      : paymentIntent.latest_charge?.id;
+    if (!chargeId) throw new Error(`No charge found on PaymentIntent ${order.stripePaymentIntentId}`);
+
+    const amountCents = Math.round(order.freelancerEarnings * 100);
+    if (!amountCents || amountCents <= 0) {
+      throw new Error(`Invalid freelancerEarnings for order ${args.orderId}: ${order.freelancerEarnings}`);
+    }
+
+    const transfer = await stripe.transfers.create(
+      {
+        amount: amountCents,
+        currency: (order.currency ?? "EUR").toLowerCase(),
+        destination: stripeAccountId,
+        source_transaction: chargeId,
+        metadata: { orderId: args.orderId },
+      },
+      { idempotencyKey: `release-${args.orderId}` }
+    );
 
     await ctx.runMutation(internal.marketplace.orders.markReleased, {
       orderId: args.orderId,
@@ -68,7 +86,7 @@ export const releaseToFreelancer = internalAction({
 export const refundToClient = internalAction({
   args: { orderId: v.id("orders") },
   handler: async (ctx, args) => {
-    const order = await ctx.runQuery(internal.marketplace.orders.getById, {
+    const order = await ctx.runQuery(internal.marketplace.orders.getByIdInternal, {
       orderId: args.orderId,
     });
     if (!order) throw new Error(`Order ${args.orderId} not found`);
@@ -92,7 +110,10 @@ export const refundToClient = internalAction({
 
     if (!chargeId) throw new Error(`No charge found on PaymentIntent ${order.stripePaymentIntentId}`);
 
-    await stripe.refunds.create({ charge: chargeId });
+    await stripe.refunds.create(
+      { charge: chargeId },
+      { idempotencyKey: `refund-${args.orderId}` }
+    );
 
     await ctx.runMutation(internal.marketplace.orders.markRefunded, {
       orderId: args.orderId,
