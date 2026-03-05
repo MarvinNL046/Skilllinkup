@@ -240,18 +240,19 @@ async function upsertToConvex(resource, structured, dryRun) {
     return;
   }
 
-  // Write payload to temp file to avoid shell escaping issues
-  const { writeFileSync, unlinkSync } = await import('fs');
-  const tmpFile = path.join(__dirname, '..', '.tmp-resource.json');
-  writeFileSync(tmpFile, JSON.stringify(payload));
-  try {
-    execSync(`npx convex run resources:upsert "$(cat '${tmpFile}')"`, {
-      cwd: path.join(__dirname, '..'),
-      stdio: 'inherit',
-      shell: true,
-    });
-  } finally {
-    unlinkSync(tmpFile);
+  // Use Convex HTTP API directly to avoid npx convex run .env.local parsing issues
+  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
+  if (!convexUrl) throw new Error('NEXT_PUBLIC_CONVEX_URL missing in .env.local');
+
+  const res = await fetchWithTimeout(`${convexUrl}/api/mutation`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ path: 'resources:upsert', format: 'json', args: [payload] }),
+  }, 30000);
+
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Convex mutation failed ${res.status}: ${body}`);
   }
 }
 
