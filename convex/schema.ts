@@ -38,6 +38,9 @@ export default defineSchema({
     stackAuthId: v.optional(v.string()), // Clerk user ID (field kept as-is for backward compat — stores Clerk IDs since migration from Stack Auth)
     lastLogin: v.optional(v.number()),
     lastActiveAt: v.optional(v.number()),
+    clientCreditBalance: v.optional(v.number()), // cents, default 0
+    clientTier: v.optional(v.string()),           // "bronze" | "silver" | "gold"
+    clientYearlySpend: v.optional(v.number()),    // cents, cumulative this calendar year
     createdAt: v.number(),
     updatedAt: v.number(),
   })
@@ -355,6 +358,7 @@ export default defineSchema({
     isAvailable: v.optional(v.boolean()),
     featured: v.optional(v.boolean()),
     creditBalance: v.optional(v.number()), // pay-per-lead credits (default 0)
+    level: v.optional(v.string()), // "new" | "rising" | "pro" | "top_rated"
     status: v.string(), // pending, active, suspended
     locale: v.optional(v.string()),
     createdAt: v.number(),
@@ -881,4 +885,20 @@ export default defineSchema({
     marketingEmails: v.optional(v.boolean()),
     updatedAt: v.number(),
   }).index("by_user", ["userId"]),
+
+  // ============================================================
+  // REWARDS
+  // ============================================================
+
+  rewardTransactions: defineTable({
+    userId: v.id("users"),
+    tenantId: v.id("tenants"),
+    type: v.string(), // "cashback_earned" | "credit_used" | "tier_upgrade"
+    amount: v.number(), // in cents
+    orderId: v.optional(v.id("orders")),
+    description: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_createdAt", ["userId", "createdAt"]),
 });
