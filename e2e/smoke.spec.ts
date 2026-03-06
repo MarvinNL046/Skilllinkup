@@ -1,9 +1,13 @@
 import fs from "fs";
 import path from "path";
 import { test, expect } from "@playwright/test";
-import { setupClerkTestingToken } from "@clerk/testing/playwright";
+import { clerk, setupClerkTestingToken } from "@clerk/testing/playwright";
 
 const manifestPath = path.join(process.cwd(), "e2e", ".smoke-data.json");
+const dashboardUserEmail =
+  process.env.PLAYWRIGHT_SIGN_IN_EMAIL
+  || process.env.SMOKE_CLIENT_EMAIL
+  || "testonboarding@skilllinkup.com";
 
 function readManifest() {
   if (!fs.existsSync(manifestPath)) {
@@ -17,6 +21,21 @@ function readManifest() {
 test.beforeEach(async ({ page }) => {
   await setupClerkTestingToken({ page });
 });
+
+async function signInToDashboardUser(page, baseURL) {
+  if (!baseURL) {
+    throw new Error("Playwright baseURL is required for Clerk sign-in.");
+  }
+
+  await page.goto(baseURL, {
+    waitUntil: "domcontentloaded",
+  });
+
+  await clerk.signIn({
+    page,
+    emailAddress: dashboardUserEmail,
+  });
+}
 
 test("service detail renders", async ({ page, baseURL }) => {
   const manifest = readManifest();
@@ -76,4 +95,20 @@ test("dashboard redirects to login when signed out", async ({ page, baseURL }) =
   });
 
   await expect(page).toHaveURL(/\/login/, { timeout: 15_000 });
+});
+
+test("dashboard renders when signed in", async ({ page, baseURL }) => {
+  await signInToDashboardUser(page, baseURL);
+
+  await page.goto(new URL("/dashboard", baseURL).toString(), {
+    waitUntil: "domcontentloaded",
+  });
+
+  await expect(page).toHaveURL(/\/dashboard/, { timeout: 15_000 });
+  await expect(
+    page.getByRole("heading", { name: "Dashboard" }).first()
+  ).toBeVisible();
+  await expect(
+    page.getByText("Welcome back! Here is what is happening with your account.")
+  ).toBeVisible();
 });
