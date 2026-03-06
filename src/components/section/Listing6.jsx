@@ -76,8 +76,8 @@ export default function Listing6() {
     .filter(designToolFilter)
     .filter(speakFilter)
     .slice(0, 9)
-    .map((item, i) => (
-      <div key={i} className="col-sm-6 col-xl-4">
+    .map((item) => (
+      <div key={item._id} className="col-sm-6 col-xl-4">
         {item?.gallery ? (
           <PopularServiceSlideCard1 data={item} />
         ) : (
