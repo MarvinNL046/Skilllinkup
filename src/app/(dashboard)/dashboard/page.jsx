@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import DashboardInfo from "@/components/dashboard/section/DashboardInfo";
 
