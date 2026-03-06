@@ -176,11 +176,12 @@ export default function SearchBarWithDropdown({
           ) : suggestions.length > 0 ? (
             // Autocomplete suggesties
             <ul style={{ margin: 0, padding: "8px 0", listStyle: "none" }}>
-              {suggestions.map((title, i) => (
-                <li key={i}>
+              {suggestions.map((title) => (
+                <li key={title}>
                   <button
                     type="button"
                     onClick={() => navigate(title)}
+                    className="search-suggestion-btn"
                     style={{
                       display: "flex",
                       alignItems: "center",
@@ -194,12 +195,6 @@ export default function SearchBarWithDropdown({
                       cursor: "pointer",
                       color: "#222",
                     }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.background = "#f9f9f9")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.background = "none")
-                    }
                   >
                     <span
                       className="flaticon-loupe"

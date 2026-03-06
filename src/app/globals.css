@@ -407,3 +407,7 @@ header.nav-innerpage-style .row {
   from { opacity: 0; transform: translateX(-40px); }
   to   { opacity: 1; transform: translateX(0); }
 }
+
+.search-suggestion-btn:hover {
+  background: #f9f9f9 !important;
+}
