@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
+import { requireAuthUser, requireOwner } from "../lib/authHelpers";
 
 /**
  * List all conversations for a user.
@@ -12,6 +13,8 @@ export const list = query({
     userId: v.id("users"),
   },
   handler: async (ctx, args) => {
+    await requireOwner(ctx, args.userId);
+
     // Fetch conversations where user is participant1
     const asParticipant1 = await ctx.db
       .query("conversations")
@@ -79,6 +82,18 @@ export const create = mutation({
     projectId: v.optional(v.id("projects")),
   },
   handler: async (ctx, args) => {
+    const user = await requireAuthUser(ctx);
+
+    if (
+      args.participant1 !== user._id &&
+      args.participant2 !== user._id
+    ) {
+      throw new Error("Unauthorized.");
+    }
+    if (args.participant1 === args.participant2) {
+      throw new Error("Cannot create a conversation with yourself.");
+    }
+
     // Check if a conversation already exists between these two users (either order)
     const existing = await ctx.db
       .query("conversations")
@@ -132,8 +147,16 @@ export const getById = query({
     conversationId: v.id("conversations"),
   },
   handler: async (ctx, args) => {
+    const user = await requireAuthUser(ctx);
     const conversation = await ctx.db.get(args.conversationId);
     if (!conversation) return null;
+
+    const isParticipant =
+      conversation.participant1 === user._id ||
+      conversation.participant2 === user._id;
+    if (!isParticipant) {
+      throw new Error("Unauthorized.");
+    }
 
     const participant1User = await ctx.db.get(conversation.participant1);
     const participant2User = await ctx.db.get(conversation.participant2);

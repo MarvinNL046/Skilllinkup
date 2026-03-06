@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "../_generated/server";
+import { requireServerSecret } from "../lib/authHelpers";
 
 /**
  * Get all marketplace categories as a tree (parents with nested children),
@@ -117,8 +118,10 @@ export const seedAll = mutation({
       })
     ),
     locale: v.optional(v.string()),
+    serverSecret: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    requireServerSecret(args.serverSecret);
     const locale = args.locale ?? "en";
     const now = Date.now();
     let inserted = 0;

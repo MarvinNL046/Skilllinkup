@@ -1,6 +1,10 @@
 import { v } from "convex/values";
 import { query, mutation, internalQuery } from "../_generated/server";
-import { requireAuthUser } from "../lib/authHelpers";
+import { requireAuthUser, requireOwner, requireServerSecret } from "../lib/authHelpers";
+import {
+  isPublicFreelancerProfile,
+  toPublicFreelancerProfile,
+} from "../lib/publicData";
 
 /**
  * List active freelancer profiles.
@@ -40,7 +44,9 @@ export const list = query({
       })
       .slice(0, limit);
 
-    return sorted;
+    return sorted
+      .filter(isPublicFreelancerProfile)
+      .map((profile) => toPublicFreelancerProfile(profile));
   },
 });
 
@@ -52,6 +58,7 @@ export const getByUserId = query({
     userId: v.id("users"),
   },
   handler: async (ctx, args) => {
+    await requireOwner(ctx, args.userId);
     const profile = await ctx.db
       .query("freelancerProfiles")
       .withIndex("by_userId", (q) => q.eq("userId", args.userId))
@@ -70,7 +77,8 @@ export const getById = query({
   },
   handler: async (ctx, args) => {
     const profile = await ctx.db.get(args.profileId);
-    return profile ?? null;
+    if (!isPublicFreelancerProfile(profile)) return null;
+    return toPublicFreelancerProfile(profile);
   },
 });
 
@@ -90,7 +98,9 @@ export const search = query({
       )
       .collect();
 
-    return results;
+    return results
+      .filter(isPublicFreelancerProfile)
+      .map((profile) => toPublicFreelancerProfile(profile));
   },
 });
 
@@ -121,6 +131,8 @@ export const updateProfile = mutation({
     twitterUrl: v.optional(v.string()),
     githubUrl: v.optional(v.string()),
     isAvailable: v.optional(v.boolean()),
+    profileVisibility: v.optional(v.string()),
+    contactPermission: v.optional(v.string()),
     locale: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
@@ -232,8 +244,15 @@ export const updateStripeAccount = mutation({
   args: {
     userId: v.id("users"),
     stripeAccountId: v.string(),
+    serverSecret: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    if (args.serverSecret) {
+      requireServerSecret(args.serverSecret);
+    } else {
+      await requireOwner(ctx, args.userId);
+    }
+
     const profile = await ctx.db
       .query("freelancerProfiles")
       .withIndex("by_userId", (q) => q.eq("userId", args.userId))
@@ -256,8 +275,10 @@ export const updateStripeAccount = mutation({
 export const setOnboardingComplete = mutation({
   args: {
     userId: v.id("users"),
+    serverSecret: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    requireServerSecret(args.serverSecret);
     const profile = await ctx.db
       .query("freelancerProfiles")
       .withIndex("by_userId", (q) => q.eq("userId", args.userId))

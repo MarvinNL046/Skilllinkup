@@ -1,5 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { requireServerSecret } from "./lib/authHelpers";
 
 /**
  * List all categories for a given locale, sorted by name ASC.
@@ -78,8 +79,10 @@ export const seedAll = mutation({
         locale: v.string(),
       })
     ),
+    serverSecret: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    requireServerSecret(args.serverSecret);
     const now = Date.now();
 
     // Ensure the default tenant exists

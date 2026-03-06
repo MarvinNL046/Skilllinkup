@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query } from "../_generated/server";
+import { toPublicClient } from "../lib/publicData";
 
 /**
  * List users where userType === "client".
@@ -18,16 +19,7 @@ export const list = query({
       .filter((u) => u.userType === "client")
       .slice(0, limit);
 
-    return clients.map((c) => ({
-      _id: c._id,
-      name: c.name,
-      email: c.email,
-      avatar: c.avatar ?? c.image ?? null,
-      bio: c.bio ?? null,
-      locationCity: null as string | null,
-      locationCountry: null as string | null,
-      createdAt: c.createdAt,
-    }));
+    return clients.map((client) => toPublicClient(client));
   },
 });
 

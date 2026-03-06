@@ -1,5 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { requireServerSecret } from "./lib/authHelpers";
 
 /**
  * Get published platforms ordered by featured first, then by rating descending.
@@ -45,7 +46,7 @@ export const getBySlug = query({
       )
       .first();
 
-    return platform ?? null;
+    return platform && platform.status === "published" ? platform : null;
   },
 });
 
@@ -204,8 +205,10 @@ export const seedAll = mutation({
         updatedAt: v.number(),
       })
     ),
+    serverSecret: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    requireServerSecret(args.serverSecret);
     const now = Date.now();
     let inserted = 0;
     let skipped = 0;
@@ -254,8 +257,10 @@ export const seedPlatformAffiliateLinks = mutation({
         affiliateLink: v.string(),
       })
     ),
+    serverSecret: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    requireServerSecret(args.serverSecret);
     let updated = 0;
     let notFound = 0;
 

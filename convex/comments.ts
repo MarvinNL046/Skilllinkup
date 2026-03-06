@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { requireAdmin } from "./lib/authHelpers";
 
 /**
  * Get approved comments for a post, ordered by createdAt descending.
@@ -61,6 +62,7 @@ export const approve = mutation({
     commentId: v.id("comments"),
   },
   handler: async (ctx, args) => {
+    await requireAdmin(ctx);
     const comment = await ctx.db.get(args.commentId);
     if (!comment) {
       throw new Error("Comment not found");
@@ -78,6 +80,7 @@ export const approve = mutation({
 export const getPendingCount = query({
   args: {},
   handler: async (ctx) => {
+    await requireAdmin(ctx);
     const pending = await ctx.db
       .query("comments")
       .withIndex("by_status", (q) => q.eq("status", "pending"))

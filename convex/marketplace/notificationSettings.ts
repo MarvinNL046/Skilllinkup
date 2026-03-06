@@ -1,9 +1,11 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
+import { requireAuthUser, requireOwner } from "../lib/authHelpers";
 
 export const getByUser = query({
   args: { userId: v.id("users") },
   handler: async (ctx, args) => {
+    await requireOwner(ctx, args.userId);
     return await ctx.db
       .query("userNotificationSettings")
       .withIndex("by_user", (q) => q.eq("userId", args.userId))
@@ -19,13 +21,7 @@ export const upsert = mutation({
     marketingEmails: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Authentication required");
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-    if (!user) throw new Error("User not found");
+    const user = await requireAuthUser(ctx);
 
     const existing = await ctx.db
       .query("userNotificationSettings")

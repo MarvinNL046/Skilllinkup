@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
 import { internal } from "../_generated/api";
-import { requireOwner } from "../lib/authHelpers";
+import { requireAuthUser, requireOwner } from "../lib/authHelpers";
 
 /**
  * List open projects with client info, category name, and bid count.
@@ -130,6 +130,13 @@ export const getBids = query({
     projectId: v.id("projects"),
   },
   handler: async (ctx, args) => {
+    const user = await requireAuthUser(ctx);
+    const project = await ctx.db.get(args.projectId);
+    if (!project) return [];
+    if (project.clientId !== user._id) {
+      throw new Error("Unauthorized.");
+    }
+
     const bids = await ctx.db
       .query("bids")
       .withIndex("by_project", (q) => q.eq("projectId", args.projectId))
@@ -303,6 +310,9 @@ export const submitBid = mutation({
     if (project.status !== "open") {
       throw new Error("This project is no longer accepting bids");
     }
+    if (project.clientId === user._id) {
+      throw new Error("You cannot bid on your own project.");
+    }
 
     const now = Date.now();
 
@@ -357,6 +367,13 @@ export const getMyBids = query({
     freelancerId: v.id("freelancerProfiles"),
   },
   handler: async (ctx, args) => {
+    const user = await requireAuthUser(ctx);
+    const profile = await ctx.db.get(args.freelancerId);
+    if (!profile) return [];
+    if (profile.userId !== user._id) {
+      throw new Error("Unauthorized.");
+    }
+
     const bids = await ctx.db
       .query("bids")
       .withIndex("by_freelancer", (q) => q.eq("freelancerId", args.freelancerId))

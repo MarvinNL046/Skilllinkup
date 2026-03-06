@@ -5,7 +5,10 @@ import { api } from "../../../convex/_generated/api";
 import Image from "next/image";
 
 export default function BidList({ projectId, isOwner }) {
-  const bids = useQuery(api.marketplace.projects.getBids, { projectId });
+  const bids = useQuery(
+    api.marketplace.projects.getBids,
+    isOwner && projectId ? { projectId } : "skip"
+  );
   const acceptBid = useMutation(api.marketplace.projects.acceptBid);
   const [acceptingId, setAcceptingId] = useState(null);
   const [acceptError, setAcceptError] = useState("");
@@ -21,6 +24,12 @@ export default function BidList({ projectId, isOwner }) {
       setAcceptingId(null);
     }
   };
+
+  if (!isOwner) {
+    return (
+      <p className="text mb20">Proposals are visible only to the project owner.</p>
+    );
+  }
 
   if (bids === undefined) {
     return (

@@ -1,6 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
-import { requireAuthUser } from "./lib/authHelpers";
+import { requireAdmin, requireAuthUser } from "./lib/authHelpers";
 
 // Submit feedback (public — works for anonymous and logged-in users)
 export const submit = mutation({
@@ -58,6 +58,7 @@ export const list = query({
     type: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireAdmin(ctx);
     let q = ctx.db.query("feedback").withIndex("by_createdAt").order("desc");
     const results = await q.collect();
 

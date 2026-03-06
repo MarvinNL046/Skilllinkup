@@ -57,7 +57,7 @@ export default function Listing10() {
               <ListingSidebar3 />
             </div>
             <div className="col-lg-9">
-              <ListingOption2 itemLength={content?.length} />
+              <ListingOption2 itemLength={content?.length} itemLabel="jobs" />
               <div className="row">{content}</div>
               <div className="row mt30">
                 <Pagination1 />

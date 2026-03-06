@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
 import { internal } from "../_generated/api";
+import { requireAdmin, requireAuthUser, requireServerSecret } from "../lib/authHelpers";
 
 /**
  * List disputes, optionally filtered by status.
@@ -11,6 +12,7 @@ export const list = query({
     status: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireAdmin(ctx);
     let disputes;
 
     if (args.status) {
@@ -39,6 +41,21 @@ export const getByOrder = query({
     orderId: v.id("orders"),
   },
   handler: async (ctx, args) => {
+    const currentUser = await requireAuthUser(ctx);
+    const order = await ctx.db.get(args.orderId);
+    if (!order) return null;
+
+    const freelancerProfile = order.freelancerId
+      ? await ctx.db.get(order.freelancerId)
+      : null;
+    const isOrderParty =
+      order.clientId === currentUser._id ||
+      freelancerProfile?.userId === currentUser._id;
+
+    if (currentUser.role !== "admin" && !isOrderParty) {
+      throw new Error("Unauthorized.");
+    }
+
     const dispute = await ctx.db
       .query("disputes")
       .withIndex("by_order", (q) => q.eq("orderId", args.orderId))
@@ -58,27 +75,35 @@ export const open = mutation({
     reason: v.string(),
     description: v.string(),
     evidence: v.optional(v.array(v.any())),
+    serverSecret: v.optional(v.string()),
+    openedByUserId: v.optional(v.id("users")),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Authentication required to open a dispute.");
-    }
-
-    // Resolve current user by email
-    const currentUser = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-
-    if (!currentUser) {
-      throw new Error("User not found in database.");
-    }
-
     // Verify the order exists
     const order = await ctx.db.get(args.orderId);
     if (!order) {
       throw new Error("Order not found.");
+    }
+
+    const freelancerProfile = order.freelancerId
+      ? await ctx.db.get(order.freelancerId)
+      : null;
+    const isOrderParty = (userId: typeof order.clientId) =>
+      order.clientId === userId || freelancerProfile?.userId === userId;
+
+    let openedBy = order.clientId;
+    if (args.serverSecret) {
+      requireServerSecret(args.serverSecret);
+      openedBy = args.openedByUserId ?? order.clientId;
+      if (!isOrderParty(openedBy)) {
+        throw new Error("Unauthorized.");
+      }
+    } else {
+      const currentUser = await requireAuthUser(ctx);
+      if (!isOrderParty(currentUser._id)) {
+        throw new Error("Unauthorized.");
+      }
+      openedBy = currentUser._id;
     }
 
     // Check if a dispute already exists for this order
@@ -106,7 +131,7 @@ export const open = mutation({
     const disputeId = await ctx.db.insert("disputes", {
       tenantId,
       orderId: args.orderId,
-      openedBy: currentUser._id,
+      openedBy,
       reason: args.reason,
       description: args.description,
       evidence: args.evidence,
@@ -145,25 +170,7 @@ export const resolve = mutation({
     resolutionNote: v.string(),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Authentication required to resolve a dispute.");
-    }
-
-    // Resolve current user by email (admin check)
-    const currentUser = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-
-    if (!currentUser) {
-      throw new Error("User not found in database.");
-    }
-
-    // Only admins can resolve disputes
-    if (currentUser.role !== "admin") {
-      throw new Error("Only administrators can resolve disputes.");
-    }
+    const currentUser = await requireAdmin(ctx);
 
     // Get the dispute
     const dispute = await ctx.db.get(args.disputeId);

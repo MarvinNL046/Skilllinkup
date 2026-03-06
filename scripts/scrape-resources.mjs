@@ -36,6 +36,7 @@ try {
 
 const JINA_API_KEY = process.env.JINA_READER_API_KEY || process.env.JINA_API_KEY;
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const INTERNAL_EMAIL_SECRET = process.env.INTERNAL_EMAIL_SECRET;
 const DELAY_MS = 2000;
 const TIMEOUT_MS = 30000;
 
@@ -323,11 +324,16 @@ async function upsertToConvex(resource, structured, dryRun) {
   // Use Convex HTTP API directly to avoid npx convex run .env.local parsing issues
   const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
   if (!convexUrl) throw new Error('NEXT_PUBLIC_CONVEX_URL missing in .env.local');
+  if (!INTERNAL_EMAIL_SECRET) throw new Error('INTERNAL_EMAIL_SECRET missing in .env.local');
 
   const res = await fetchWithTimeout(`${convexUrl}/api/mutation`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ path: 'resources:upsert', format: 'json', args: [payload] }),
+    body: JSON.stringify({
+      path: 'resources:upsert',
+      format: 'json',
+      args: [{ ...payload, serverSecret: INTERNAL_EMAIL_SECRET }],
+    }),
   }, 30000);
 
   if (!res.ok) {

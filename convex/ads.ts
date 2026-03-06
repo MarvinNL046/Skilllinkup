@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { requireAdmin } from "./lib/authHelpers";
 
 /**
  * Get active ads for a given placement.
@@ -35,6 +36,7 @@ export const getAll = query({
     tenantId: v.id("tenants"),
   },
   handler: async (ctx, args) => {
+    await requireAdmin(ctx);
     return await ctx.db
       .query("ads")
       .filter((q) => q.eq(q.field("tenantId"), args.tenantId))
@@ -50,6 +52,7 @@ export const getById = query({
     id: v.id("ads"),
   },
   handler: async (ctx, args) => {
+    await requireAdmin(ctx);
     return await ctx.db.get(args.id);
   },
 });
@@ -69,6 +72,7 @@ export const create = mutation({
     endDate: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireAdmin(ctx);
     const now = Date.now();
 
     const adId = await ctx.db.insert("ads", {
@@ -103,6 +107,7 @@ export const update = mutation({
     endDate: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireAdmin(ctx);
     const { id, ...fields } = args;
 
     const ad = await ctx.db.get(id);
@@ -132,6 +137,7 @@ export const remove = mutation({
     id: v.id("ads"),
   },
   handler: async (ctx, args) => {
+    await requireAdmin(ctx);
     const ad = await ctx.db.get(args.id);
     if (!ad) {
       throw new Error("Ad not found");

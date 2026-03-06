@@ -59,7 +59,7 @@ export default function Listing12() {
               <ListingSidebar4 />
             </div>
             <div className="col-lg-9">
-              <ListingOption2 itemLength={content?.length} />
+              <ListingOption2 itemLength={content?.length} itemLabel="companies" />
               <div className="row">
                 {content.length === 0 ? (
                   <EmptyState

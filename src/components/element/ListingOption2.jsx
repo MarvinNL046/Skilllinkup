@@ -4,7 +4,10 @@ import SortOption1 from "../option/SortOption1";
 import ClearButton from "../button/ClearButton";
 import Image from "next/image";
 
-export default function ListingOption2({ itemLength }) {
+export default function ListingOption2({
+  itemLength,
+  itemLabel = "services",
+}) {
   const listingToggle = toggleStore((state) => state.listingToggleHandler);
   return (
     <>
@@ -12,7 +15,7 @@ export default function ListingOption2({ itemLength }) {
         <div className="col-md-6">
           <div className="text-center text-md-start">
             <p className="text mb-0 mb10-sm">
-              <span className="fw500">{itemLength}</span> services available
+              <span className="fw500">{itemLength}</span> {itemLabel} available
             </p>
           </div>
         </div>

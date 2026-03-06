@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
+import { requireAuthUser } from "../lib/authHelpers";
 
 /**
  * List open quote requests.
@@ -26,12 +27,15 @@ export const listRequests = query({
     // Enrich with client name and category name
     const enriched = await Promise.all(
       requests.map(async (request) => {
-        const client = await ctx.db.get(request.clientId);
         const category = await ctx.db.get(request.categoryId);
 
         return {
           ...request,
-          clientName: client?.name ?? null,
+          clientName: null,
+          descriptionPreview:
+            request.description.length > 120
+              ? `${request.description.slice(0, 120)}...`
+              : request.description,
           categoryName: category?.name ?? null,
         };
       })
@@ -53,51 +57,84 @@ export const getRequestById = query({
     const request = await ctx.db.get(args.requestId);
     if (!request) return null;
 
-    const client = await ctx.db.get(request.clientId);
     const category = await ctx.db.get(request.categoryId);
+    const identity = await ctx.auth.getUserIdentity();
+    let currentUserId = null;
+    let currentFreelancerProfileId = null;
+    if (identity?.email) {
+      const currentUser = await ctx.db
+        .query("users")
+        .withIndex("by_email", (q) => q.eq("email", identity.email!))
+        .first();
+      if (currentUser) {
+        currentUserId = currentUser._id;
+        const profile = await ctx.db
+          .query("freelancerProfiles")
+          .withIndex("by_userId", (q) => q.eq("userId", currentUser._id))
+          .first();
+        currentFreelancerProfileId = profile?._id ?? null;
+      }
+    }
 
-    // Fetch all quotes for this request
-    const quotesRaw = await ctx.db
-      .query("quotes")
-      .withIndex("by_quoteRequest", (q) =>
-        q.eq("quoteRequestId", args.requestId)
-      )
+    const claims = await ctx.db
+      .query("leadClaims")
+      .withIndex("by_quoteRequest", (q) => q.eq("quoteRequestId", args.requestId))
       .collect();
+    const isOwner = currentUserId === request.clientId;
+    const alreadyClaimed =
+      !!currentFreelancerProfileId &&
+      claims.some((claim) => claim.freelancerId === currentFreelancerProfileId);
+    const canViewFullDetails = isOwner || alreadyClaimed;
+    const client = canViewFullDetails ? await ctx.db.get(request.clientId) : null;
 
-    // Enrich quotes with freelancer profile info
-    const quotes = await Promise.all(
-      quotesRaw.map(async (quote) => {
-        const freelancerProfile = await ctx.db.get(quote.freelancerId);
+    const quotes = isOwner
+      ? await ctx.db
+          .query("quotes")
+          .withIndex("by_quoteRequest", (q) =>
+            q.eq("quoteRequestId", args.requestId)
+          )
+          .collect()
+          .then((quotesRaw) =>
+            Promise.all(
+              quotesRaw.map(async (quote) => {
+                const freelancerProfile = await ctx.db.get(quote.freelancerId);
+                const freelancerUser = freelancerProfile
+                  ? await ctx.db.get(freelancerProfile.userId)
+                  : null;
 
-        // Fetch the user behind the freelancer profile for name/avatar
-        const freelancerUser = freelancerProfile
-          ? await ctx.db.get(freelancerProfile.userId)
-          : null;
-
-        return {
-          ...quote,
-          freelancerProfile: freelancerProfile
-            ? {
-                _id: freelancerProfile._id,
-                displayName: freelancerProfile.displayName,
-                tagline: freelancerProfile.tagline,
-                avatarUrl:
-                  freelancerProfile.avatarUrl ??
-                  freelancerUser?.image ??
-                  freelancerUser?.avatar,
-                ratingAverage: freelancerProfile.ratingAverage,
-                ratingCount: freelancerProfile.ratingCount,
-                isVerified: freelancerProfile.isVerified,
-              }
-            : null,
-        };
-      })
-    );
+                return {
+                  ...quote,
+                  freelancerProfile: freelancerProfile
+                    ? {
+                        _id: freelancerProfile._id,
+                        displayName: freelancerProfile.displayName,
+                        tagline: freelancerProfile.tagline,
+                        avatarUrl:
+                          freelancerProfile.avatarUrl ??
+                          freelancerUser?.image ??
+                          freelancerUser?.avatar,
+                        ratingAverage: freelancerProfile.ratingAverage,
+                        ratingCount: freelancerProfile.ratingCount,
+                        isVerified: freelancerProfile.isVerified,
+                      }
+                    : null,
+                };
+              })
+            )
+          )
+      : [];
 
     return {
       ...request,
+      isOwner,
       clientName: client?.name ?? null,
       categoryName: category?.name ?? null,
+      description: canViewFullDetails ? request.description : null,
+      descriptionPreview:
+        request.description.length > 150
+          ? `${request.description.slice(0, 150)}...`
+          : request.description,
+      canViewFullDetails,
       quotes,
     };
   },
@@ -181,20 +218,7 @@ export const submitQuote = mutation({
     validUntil: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Authentication required to submit a quote.");
-    }
-
-    // Resolve current user by email
-    const currentUser = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-
-    if (!currentUser) {
-      throw new Error("User not found in database.");
-    }
+    const currentUser = await requireAuthUser(ctx);
 
     // Resolve freelancer profile for this user
     const freelancerProfile = await ctx.db
@@ -213,6 +237,18 @@ export const submitQuote = mutation({
     }
     if (quoteRequest.status !== "open") {
       throw new Error("This quote request is no longer accepting quotes.");
+    }
+    if (quoteRequest.clientId === currentUser._id) {
+      throw new Error("You cannot submit a quote to your own request.");
+    }
+
+    const leadClaim = await ctx.db
+      .query("leadClaims")
+      .withIndex("by_quoteRequest", (q) => q.eq("quoteRequestId", args.quoteRequestId))
+      .collect()
+      .then((claims) => claims.find((claim) => claim.freelancerId === freelancerProfile._id));
+    if (!leadClaim) {
+      throw new Error("Claim this lead before submitting a quote.");
     }
 
     const now = Date.now();

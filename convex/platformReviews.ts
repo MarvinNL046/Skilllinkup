@@ -64,7 +64,7 @@ export const getById = query({
   },
   handler: async (ctx, args) => {
     const review = await ctx.db.get(args.reviewId);
-    if (!review) return null;
+    if (!review || review.status !== "approved") return null;
 
     const platform = await ctx.db.get(review.platformId);
     return {

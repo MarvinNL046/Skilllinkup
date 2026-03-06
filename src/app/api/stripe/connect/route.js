@@ -29,6 +29,7 @@ import { currentUser } from "@clerk/nextjs/server";
 // ---------------------------------------------------------------------------
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL);
+const SERVER_SECRET = process.env.INTERNAL_EMAIL_SECRET;
 
 export async function POST(request) {
   // Guard: Stripe not configured yet.
@@ -38,6 +39,12 @@ export async function POST(request) {
         error:
           "Stripe is not configured. Add STRIPE_SECRET_KEY to your .env.local file.",
       },
+      { status: 503 }
+    );
+  }
+  if (!SERVER_SECRET) {
+    return NextResponse.json(
+      { error: "Internal server secret is not configured." },
       { status: 503 }
     );
   }
@@ -58,6 +65,7 @@ export async function POST(request) {
   // Resolve the Convex user from the server-verified email.
   const convexUser = await convex.query(api.users.getByEmail, {
     email: verifiedEmail,
+    serverSecret: SERVER_SECRET,
   });
   if (!convexUser) {
     return NextResponse.json(
@@ -95,6 +103,7 @@ export async function POST(request) {
     await convex.mutation(api.marketplace.freelancers.updateStripeAccount, {
       userId: freelancerUserId,
       stripeAccountId: account.id,
+      serverSecret: SERVER_SECRET,
     });
 
     // 3. Create a one-time onboarding link for this account.

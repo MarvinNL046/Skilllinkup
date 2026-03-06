@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { query } from "../_generated/server";
 import { Id } from "../_generated/dataModel";
+import { requireOwner } from "../lib/authHelpers";
 
 /**
  * Fetch aggregated dashboard stats for a given user.
@@ -17,6 +18,8 @@ export const getStats = query({
         pendingOrders: 0,
       };
     }
+
+    await requireOwner(ctx, args.userId);
 
     // Fetch the freelancer profile for this user (if any)
     const profile = await ctx.db
@@ -87,6 +90,7 @@ export const getRecentOrders = query({
   },
   handler: async (ctx, args) => {
     if (!args.userId) return [];
+    await requireOwner(ctx, args.userId);
 
     const limit = args.limit ?? 5;
 
@@ -170,6 +174,7 @@ export const getChartData = query({
     };
 
     if (!args.userId) return empty;
+    await requireOwner(ctx, args.userId);
 
     // Fetch the freelancer profile for this user (if any)
     const profile = await ctx.db

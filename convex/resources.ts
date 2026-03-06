@@ -1,5 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { requireServerSecret } from "./lib/authHelpers";
 
 // Public: fetch single resource by slug + locale
 export const getBySlug = query({
@@ -10,7 +11,10 @@ export const getBySlug = query({
       .withIndex("by_slug_locale", (q) =>
         q.eq("slug", args.slug).eq("locale", args.locale)
       )
-      .first() ?? null;
+      .first()
+      .then((resource) =>
+        resource && resource.status === "published" ? resource : null
+      );
   },
 });
 
@@ -22,7 +26,10 @@ export const list = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const status = args.status ?? "published";
+    const status = "published";
+    if (args.status && args.status !== "published") {
+      return [];
+    }
     const results = args.locale
       ? await ctx.db
           .query("resources")
@@ -56,8 +63,10 @@ export const upsert = mutation({
     faqItems: v.array(v.object({ question: v.string(), answer: v.string() })),
     keyTakeaways: v.optional(v.array(v.string())),
     publishedAt: v.optional(v.number()),
+    serverSecret: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    requireServerSecret(args.serverSecret);
     if (!["published", "draft"].includes(args.status)) {
       throw new Error("Invalid status value");
     }
@@ -70,7 +79,8 @@ export const upsert = mutation({
       .first();
 
     const now = Date.now();
-    const data = { ...args, updatedAt: now };
+    const { serverSecret: _serverSecret, ...input } = args;
+    const data = { ...input, updatedAt: now };
 
     if (existing) {
       const { slug: _slug, locale: _locale, ...patchData } = data;

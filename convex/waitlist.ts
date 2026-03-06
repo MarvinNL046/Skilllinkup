@@ -1,5 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { requireAdmin } from "./lib/authHelpers";
 
 // Add email to waitlist (public)
 export const join = mutation({
@@ -32,6 +33,7 @@ export const join = mutation({
 export const list = query({
   args: {},
   handler: async (ctx) => {
+    await requireAdmin(ctx);
     return await ctx.db
       .query("waitlist")
       .order("desc")
@@ -43,6 +45,7 @@ export const list = query({
 export const count = query({
   args: {},
   handler: async (ctx) => {
+    await requireAdmin(ctx);
     const all = await ctx.db.query("waitlist").collect();
     return all.length;
   },

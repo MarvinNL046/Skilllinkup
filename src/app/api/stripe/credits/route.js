@@ -5,6 +5,7 @@ import { api } from "../../../../../convex/_generated/api";
 import { currentUser } from "@clerk/nextjs/server";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL);
+const SERVER_SECRET = process.env.INTERNAL_EMAIL_SECRET;
 
 // Credit packages — must match convex/marketplace/leadPricing.ts CREDIT_PACKAGES
 const CREDIT_PACKAGES = [
@@ -17,6 +18,12 @@ export async function POST(request) {
   if (!stripe) {
     return NextResponse.json(
       { error: "Stripe is not configured." },
+      { status: 503 }
+    );
+  }
+  if (!SERVER_SECRET) {
+    return NextResponse.json(
+      { error: "Internal server secret is not configured." },
       { status: 503 }
     );
   }
@@ -37,6 +44,7 @@ export async function POST(request) {
   // Resolve the Convex user from the server-verified email.
   const convexUser = await convex.query(api.users.getByEmail, {
     email: verifiedEmail,
+    serverSecret: SERVER_SECRET,
   });
   if (!convexUser) {
     return NextResponse.json(
@@ -76,6 +84,7 @@ export async function POST(request) {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card", "ideal"],
+      customer_email: verifiedEmail,
 
       line_items: [
         {

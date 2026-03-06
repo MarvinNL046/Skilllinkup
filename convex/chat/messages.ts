@@ -1,6 +1,9 @@
 import { v, ConvexError } from "convex/values";
 import { query, mutation } from "../_generated/server";
 import { internal } from "../_generated/api";
+import { Id } from "../_generated/dataModel";
+import { MutationCtx, QueryCtx } from "../_generated/server";
+import { requireAuthUser } from "../lib/authHelpers";
 
 const CONTACT_PATTERNS = [
   /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/,
@@ -11,6 +14,26 @@ const CONTACT_PATTERNS = [
 
 function containsContactInfo(text: string): boolean {
   return CONTACT_PATTERNS.some((p) => p.test(text));
+}
+
+async function requireConversationParticipant(
+  ctx: QueryCtx | MutationCtx,
+  conversationId: Id<"conversations">
+) {
+  const user = await requireAuthUser(ctx);
+  const conversation = await ctx.db.get(conversationId);
+  if (!conversation) {
+    throw new Error("Conversation not found.");
+  }
+
+  const isParticipant =
+    conversation.participant1 === user._id ||
+    conversation.participant2 === user._id;
+  if (!isParticipant) {
+    throw new Error("Unauthorized.");
+  }
+
+  return { user, conversation };
 }
 
 /**
@@ -24,6 +47,7 @@ export const getByConversation = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireConversationParticipant(ctx, args.conversationId);
     const limit = args.limit ?? 50;
 
     // Use the by_conversation index which covers [conversationId, createdAt]
@@ -79,26 +103,8 @@ export const send = mutation({
     fileSize: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Authentication required to send a message.");
-    }
-
-    // Resolve current user by email
-    const currentUser = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-
-    if (!currentUser) {
-      throw new Error("User not found in database.");
-    }
-
-    // Get the conversation to update unread counts
-    const conversation = await ctx.db.get(args.conversationId);
-    if (!conversation) {
-      throw new Error("Conversation not found.");
-    }
+    const { user: currentUser, conversation } =
+      await requireConversationParticipant(ctx, args.conversationId);
 
     const now = Date.now();
     const messageType = args.messageType ?? "text";
@@ -181,26 +187,8 @@ export const markRead = mutation({
     conversationId: v.id("conversations"),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Authentication required to mark messages as read.");
-    }
-
-    // Resolve current user by email
-    const currentUser = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-
-    if (!currentUser) {
-      throw new Error("User not found in database.");
-    }
-
-    // Get the conversation
-    const conversation = await ctx.db.get(args.conversationId);
-    if (!conversation) {
-      throw new Error("Conversation not found.");
-    }
+    const { user: currentUser, conversation } =
+      await requireConversationParticipant(ctx, args.conversationId);
 
     // Determine the other participant (whose messages we are marking as read)
     const otherParticipantId =

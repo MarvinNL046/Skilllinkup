@@ -120,14 +120,14 @@ export default function Listing19() {
               <ListingSidebar6 />
             </div>
             <div className="col-lg-9">
-              <ListingOption2 itemLength={content?.length} />
+              <ListingOption2 itemLength={content?.length} itemLabel="projects" />
               {content.length === 0 ? (
                 <EmptyState
                   icon="📋"
                   title="No projects yet"
                   description="Post a project and receive bids from freelancers"
                   actionLabel="Post a Project"
-                  actionHref="/dashboard/create-projects"
+                  actionHref="/create-projects"
                 />
               ) : (
                 <div className="row">{content}</div>

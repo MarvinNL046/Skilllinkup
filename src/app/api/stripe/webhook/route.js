@@ -32,6 +32,7 @@ import { api } from "../../../../../convex/_generated/api";
 
 // Convex HTTP client for calling mutations from outside Convex.
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL);
+const SERVER_SECRET = process.env.INTERNAL_EMAIL_SECRET;
 
 // Next.js App Router requires raw body access for signature verification.
 // This config disables the automatic body parser so we can read raw bytes.
@@ -61,6 +62,13 @@ export async function POST(request) {
     );
     return NextResponse.json(
       { error: "Webhook secret not configured" },
+      { status: 503 }
+    );
+  }
+  if (!SERVER_SECRET) {
+    console.error("[stripe/webhook] INTERNAL_EMAIL_SECRET is not set.");
+    return NextResponse.json(
+      { error: "Server secret not configured" },
       { status: 503 }
     );
   }
@@ -149,7 +157,10 @@ async function handleCheckoutSessionCompleted(session) {
   // Idempotency check: bail out if we already processed this payment.
   const existing = await convex.query(
     api.marketplace.orders.getByStripePaymentIntentId,
-    { stripePaymentIntentId: paymentIntentId }
+    {
+      stripePaymentIntentId: paymentIntentId,
+      serverSecret: SERVER_SECRET,
+    }
   );
 
   if (existing) {
@@ -192,22 +203,22 @@ async function handleCheckoutSessionCompleted(session) {
 
   // Resolve buyer's Convex user ID from the Stripe customer email.
   // The buyer's email is available on the checkout session.
-  const buyerEmail = session.customer_details?.email;
+  const buyerEmail = session.customer_details?.email || session.customer_email;
   let clientUser;
   if (buyerEmail) {
     try {
-      clientUser = await convex.query(api.users.getByEmail, { email: buyerEmail });
-      if (!clientUser) {
-        console.warn(
-          `[stripe/webhook] Buyer email ${buyerEmail} not found in Convex users table. ` +
-          `Order will be created with freelancer as placeholder client.`
-        );
-      }
+      clientUser = await convex.query(api.users.getByEmail, {
+        email: buyerEmail,
+        serverSecret: SERVER_SECRET,
+      });
     } catch (err) {
       console.error("[stripe/webhook] Failed to resolve buyer email to Convex user:", err);
     }
-  } else {
-    console.warn("[stripe/webhook] No customer email on checkout session – buyer will be unresolved.");
+  }
+  if (!buyerEmail || !clientUser) {
+    throw new Error(
+      `Cannot resolve buyer account for checkout session ${session.id}.`
+    );
   }
 
   // Amount is stored in Stripe as cents; convert back to the display unit.
@@ -215,11 +226,7 @@ async function handleCheckoutSessionCompleted(session) {
   const amount = amountCents / 100;
   const currency = (session.currency || "eur").toUpperCase();
 
-  // Create the order in Convex.
-  // NOTE: orders.create requires an authenticated identity; since we are calling
-  // from a server-side webhook (not a logged-in session) we use a dedicated
-  // unauthenticated mutation if available, or skip auth via service role.
-  // For now we call the public mutation – Convex will allow it from HTTP client.
+  // Create the order in Convex using the shared server secret.
   let orderId;
   try {
     orderId = await convex.mutation(api.marketplace.orders.create, {
@@ -228,25 +235,15 @@ async function handleCheckoutSessionCompleted(session) {
       amount,
       currency,
       deliveryDays: gigPackage.deliveryDays,
-      // clientId is required; fall back to freelancerId if buyer unknown (requires manual resolution).
-      clientId: clientUser?._id ?? gig.freelancerId,
+      clientId: clientUser._id,
       freelancerId: gig.freelancerId,
       gigId: gig._id,
       gigPackageId: gigPackage._id,
+      serverSecret: SERVER_SECRET,
     });
   } catch (err) {
     console.error("[stripe/webhook] Failed to create Convex order:", err);
-    // Still attempt to at least log the transaction below.
-    return;
-  }
-
-  // Log structured warning if buyer was not found — order needs manual client resolution.
-  if (!clientUser) {
-    console.error(
-      `[stripe/webhook] ORDER REQUIRES MANUAL RESOLUTION: Order ${orderId} ` +
-      `has freelancerId as clientId because buyer "${buyerEmail}" was not found in Convex. ` +
-      `PaymentIntent: ${paymentIntentId}, Gig: ${gigId}`
-    );
+    throw err;
   }
 
   // Link the Stripe PaymentIntent to the Convex order.
@@ -254,6 +251,7 @@ async function handleCheckoutSessionCompleted(session) {
     await convex.mutation(api.marketplace.orders.updateStripePayment, {
       orderId,
       stripePaymentIntentId: paymentIntentId,
+      serverSecret: SERVER_SECRET,
     });
   } catch (err) {
     console.error("[stripe/webhook] Failed to update Stripe payment on order:", err);
@@ -263,11 +261,12 @@ async function handleCheckoutSessionCompleted(session) {
   try {
     await convex.mutation(api.marketplace.orders.createTransaction, {
       orderId,
-      payerId: clientUser?._id,
+      payerId: clientUser._id,
       amount,
       currency,
       stripePaymentIntentId: paymentIntentId,
       description: `Payment for gig: ${gig.title}`,
+      serverSecret: SERVER_SECRET,
     });
   } catch (err) {
     console.error("[stripe/webhook] Failed to create transaction record:", err);
@@ -305,6 +304,7 @@ async function handleCreditPurchase(session) {
       credits: creditsNum,
       stripeSessionId: session.id,
       description: `Purchased ${creditsNum} credits (${packageId} package)`,
+      serverSecret: SERVER_SECRET,
     });
 
     console.log(
@@ -336,6 +336,7 @@ async function handleAccountUpdated(account) {
     try {
       await convex.mutation(api.marketplace.freelancers.setOnboardingComplete, {
         userId: convexUserId,
+        serverSecret: SERVER_SECRET,
       });
       console.log(
         `[stripe/webhook] Marked Stripe onboarding complete for user ${convexUserId}.`
@@ -357,7 +358,10 @@ async function handleAccountUpdated(account) {
 async function handlePaymentIntentSucceeded(paymentIntent) {
   const existing = await convex.query(
     api.marketplace.orders.getByStripePaymentIntentId,
-    { stripePaymentIntentId: paymentIntent.id }
+    {
+      stripePaymentIntentId: paymentIntent.id,
+      serverSecret: SERVER_SECRET,
+    }
   );
   if (!existing) {
     // Order not yet created (checkout.session.completed may still be in flight)
@@ -381,7 +385,11 @@ async function handleChargeDisputeCreated(dispute) {
 
   const order = await convex.query(
     api.marketplace.orders.getByStripePaymentIntentId,
-    { stripePaymentIntentId: typeof paymentIntentId === "string" ? paymentIntentId : paymentIntentId.id }
+    {
+      stripePaymentIntentId:
+        typeof paymentIntentId === "string" ? paymentIntentId : paymentIntentId.id,
+      serverSecret: SERVER_SECRET,
+    }
   );
 
   if (!order) {
@@ -396,6 +404,8 @@ async function handleChargeDisputeCreated(dispute) {
       orderId: order._id,
       reason: "chargeback",
       description: `Stripe chargeback filed automatically. Stripe dispute ID: ${dispute.id}. Reason: ${dispute.reason}.`,
+      openedByUserId: order.clientId,
+      serverSecret: SERVER_SECRET,
     });
     console.log(`[stripe/webhook] Dispute opened in Convex for order ${order._id} (Stripe chargeback: ${dispute.id})`);
   } catch (err) {

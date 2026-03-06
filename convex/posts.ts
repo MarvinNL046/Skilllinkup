@@ -1,5 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { requireServerSecret } from "./lib/authHelpers";
+import { toPublicAuthor } from "./lib/publicData";
 
 /**
  * List published posts with pagination.
@@ -33,7 +35,7 @@ export const list = query({
         const category = post.categoryId
           ? await ctx.db.get(post.categoryId)
           : null;
-        return { ...post, author, category };
+        return { ...post, author: toPublicAuthor(author), category };
       })
     );
 
@@ -58,14 +60,14 @@ export const getBySlug = query({
       )
       .first();
 
-    if (!post) return null;
+    if (!post || post.status !== "published") return null;
 
     const author = post.authorId ? await ctx.db.get(post.authorId) : null;
     const category = post.categoryId
       ? await ctx.db.get(post.categoryId)
       : null;
 
-    return { ...post, author, category };
+    return { ...post, author: toPublicAuthor(author), category };
   },
 });
 
@@ -94,7 +96,7 @@ export const getFeatured = query({
         const category = post.categoryId
           ? await ctx.db.get(post.categoryId)
           : null;
-        return { ...post, author, category };
+        return { ...post, author: toPublicAuthor(author), category };
       })
     );
 
@@ -128,7 +130,7 @@ export const getTrending = query({
         const category = post.categoryId
           ? await ctx.db.get(post.categoryId)
           : null;
-        return { ...post, author, category };
+        return { ...post, author: toPublicAuthor(author), category };
       })
     );
 
@@ -174,7 +176,7 @@ export const getByCategory = query({
     const enriched = await Promise.all(
       filtered.map(async (post) => {
         const author = post.authorId ? await ctx.db.get(post.authorId) : null;
-        return { ...post, author, category };
+        return { ...post, author: toPublicAuthor(author), category };
       })
     );
 
@@ -207,7 +209,7 @@ export const getRecent = query({
         const category = post.categoryId
           ? await ctx.db.get(post.categoryId)
           : null;
-        return { ...post, author, category };
+        return { ...post, author: toPublicAuthor(author), category };
       })
     );
 
@@ -241,7 +243,7 @@ export const search = query({
         const category = post.categoryId
           ? await ctx.db.get(post.categoryId)
           : null;
-        return { ...post, author, category };
+        return { ...post, author: toPublicAuthor(author), category };
       })
     );
 
@@ -299,8 +301,10 @@ export const seedAll = mutation({
         publishedAt: v.optional(v.number()),
       })
     ),
+    serverSecret: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    requireServerSecret(args.serverSecret);
     const now = Date.now();
     let inserted = 0;
     let skipped = 0;

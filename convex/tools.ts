@@ -45,7 +45,7 @@ export const getBySlug = query({
       )
       .first();
 
-    return tool ?? null;
+    return tool && tool.status === "published" ? tool : null;
   },
 });
 

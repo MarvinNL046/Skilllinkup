@@ -4,12 +4,11 @@ import { api } from "../../convex/_generated/api";
 import { useUser } from "@clerk/nextjs";
 
 export default function useConvexUser() {
-  const { user: clerkUser, isLoaded } = useUser();
-  const email = clerkUser?.emailAddresses?.[0]?.emailAddress;
+  const { user: clerkUser, isLoaded, isSignedIn } = useUser();
 
   const convexUser = useQuery(
-    api.users.getByEmail,
-    email ? { email } : "skip"
+    api.users.getCurrentUser,
+    isLoaded && isSignedIn ? {} : "skip"
   );
 
   return {

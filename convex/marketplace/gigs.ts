@@ -1,6 +1,18 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
+import { Doc } from "../_generated/dataModel";
 import { requireAuthUser } from "../lib/authHelpers";
+import { requireServerSecret } from "../lib/authHelpers";
+import {
+  isPublicFreelancerProfile,
+  toPublicFreelancerProfile,
+} from "../lib/publicData";
+
+function asFreelancerProfile(
+  doc: unknown
+): Doc<"freelancerProfiles"> | null {
+  return doc as Doc<"freelancerProfiles"> | null;
+}
 
 /**
  * List active gigs with enriched freelancer, category, min price and first image.
@@ -35,7 +47,12 @@ export const list = query({
     // Enrich each gig with related data
     const enriched = await Promise.all(
       sorted.map(async (gig) => {
-        const freelancerProfile = await ctx.db.get(gig.freelancerId);
+        const freelancerProfile = asFreelancerProfile(
+          await ctx.db.get(gig.freelancerId)
+        );
+        if (!isPublicFreelancerProfile(freelancerProfile)) {
+          return null;
+        }
         const category = gig.categoryId ? await ctx.db.get(gig.categoryId) : null;
 
         // Get cheapest package via price-sorted index
@@ -54,7 +71,7 @@ export const list = query({
 
         return {
           ...gig,
-          freelancerProfile,
+          freelancerProfile: toPublicFreelancerProfile(freelancerProfile),
           category,
           minPrice: cheapestPackage?.price ?? null,
           firstImage,
@@ -62,7 +79,7 @@ export const list = query({
       })
     );
 
-    return enriched;
+    return enriched.filter(Boolean);
   },
 });
 
@@ -124,7 +141,12 @@ export const listByCategory = query({
     // Enrich
     const enriched = await Promise.all(
       sorted.map(async (gig) => {
-        const freelancerProfile = await ctx.db.get(gig.freelancerId);
+        const freelancerProfile = asFreelancerProfile(
+          await ctx.db.get(gig.freelancerId)
+        );
+        if (!isPublicFreelancerProfile(freelancerProfile)) {
+          return null;
+        }
         const gigCategory = gig.categoryId
           ? await ctx.db.get(gig.categoryId)
           : null;
@@ -141,7 +163,7 @@ export const listByCategory = query({
 
         return {
           ...gig,
-          freelancerProfile,
+          freelancerProfile: toPublicFreelancerProfile(freelancerProfile),
           category: gigCategory,
           minPrice: cheapestPackage?.price ?? null,
           firstImage,
@@ -156,7 +178,7 @@ export const listByCategory = query({
           (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
         ),
       },
-      gigs: enriched,
+      gigs: enriched.filter(Boolean),
     };
   },
 });
@@ -179,9 +201,12 @@ export const getBySlug = query({
       )
       .first();
 
-    if (!gig) return null;
+    if (!gig || gig.status !== "active") return null;
 
-    const freelancerProfile = await ctx.db.get(gig.freelancerId);
+    const freelancerProfile = asFreelancerProfile(
+      await ctx.db.get(gig.freelancerId)
+    );
+    if (!isPublicFreelancerProfile(freelancerProfile)) return null;
     const category = gig.categoryId ? await ctx.db.get(gig.categoryId) : null;
 
     // Fetch all packages sorted by price ASC via index
@@ -200,7 +225,7 @@ export const getBySlug = query({
 
     return {
       ...gig,
-      freelancerProfile,
+      freelancerProfile: toPublicFreelancerProfile(freelancerProfile),
       category,
       packages,
       images,
@@ -217,6 +242,11 @@ export const getByFreelancer = query({
     locale: v.string(),
   },
   handler: async (ctx, args) => {
+    const freelancerProfile = asFreelancerProfile(
+      await ctx.db.get(args.freelancerId)
+    );
+    if (!isPublicFreelancerProfile(freelancerProfile)) return [];
+
     const gigs = await ctx.db
       .query("gigs")
       .withIndex("by_freelancer", (q) => q.eq("freelancerId", args.freelancerId))
@@ -245,7 +275,12 @@ export const getByFreelancer = query({
           .order("asc")
           .first();
 
-        return { ...gig, category, minPrice: cheapestPackage?.price ?? null, firstImage };
+        return {
+          ...gig,
+          category,
+          minPrice: cheapestPackage?.price ?? null,
+          firstImage,
+        };
       })
     );
 
@@ -276,7 +311,12 @@ export const search = query({
     // Enrich each result with freelancer, category, min price and first image
     const enriched = await Promise.all(
       results.map(async (gig) => {
-        const freelancerProfile = await ctx.db.get(gig.freelancerId);
+        const freelancerProfile = asFreelancerProfile(
+          await ctx.db.get(gig.freelancerId)
+        );
+        if (!isPublicFreelancerProfile(freelancerProfile)) {
+          return null;
+        }
         const category = gig.categoryId ? await ctx.db.get(gig.categoryId) : null;
 
         const cheapestPackage = await ctx.db
@@ -291,11 +331,17 @@ export const search = query({
           .order("asc")
           .first();
 
-        return { ...gig, freelancerProfile, category, minPrice: cheapestPackage?.price ?? null, firstImage };
+        return {
+          ...gig,
+          freelancerProfile: toPublicFreelancerProfile(freelancerProfile),
+          category,
+          minPrice: cheapestPackage?.price ?? null,
+          firstImage,
+        };
       })
     );
 
-    return enriched;
+    return enriched.filter(Boolean);
   },
 });
 
@@ -306,8 +352,10 @@ export const search = query({
 export const getById = query({
   args: {
     gigId: v.id("gigs"),
+    serverSecret: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    requireServerSecret(args.serverSecret);
     const gig = await ctx.db.get(args.gigId);
     return gig ?? null;
   },
@@ -320,8 +368,10 @@ export const getById = query({
 export const getPackageById = query({
   args: {
     packageId: v.id("gigPackages"),
+    serverSecret: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    requireServerSecret(args.serverSecret);
     const pkg = await ctx.db.get(args.packageId);
     return pkg ?? null;
   },
@@ -346,15 +396,21 @@ export const create = mutation({
     locale: v.string(),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Authentication required to create a gig.");
+    const user = await requireAuthUser(ctx);
+    const freelancerProfile = asFreelancerProfile(
+      await ctx.db.get(args.freelancerId)
+    );
+    if (!freelancerProfile) {
+      throw new Error("Freelancer profile not found.");
+    }
+    if (freelancerProfile.userId !== user._id) {
+      throw new Error("Unauthorized.");
     }
 
     const now = Date.now();
 
     const gigId = await ctx.db.insert("gigs", {
-      tenantId: args.tenantId,
+      tenantId: user.tenantId,
       freelancerId: args.freelancerId,
       title: args.title,
       slug: args.slug,
@@ -389,6 +445,13 @@ export const getAllByFreelancer = query({
     freelancerId: v.id("freelancerProfiles"),
   },
   handler: async (ctx, args) => {
+    const user = await requireAuthUser(ctx);
+    const freelancerProfile = await ctx.db.get(args.freelancerId);
+    if (!freelancerProfile) return [];
+    if (freelancerProfile.userId !== user._id) {
+      throw new Error("Unauthorized.");
+    }
+
     const gigs = await ctx.db
       .query("gigs")
       .withIndex("by_freelancer", (q) => q.eq("freelancerId", args.freelancerId))
@@ -541,6 +604,9 @@ export const getByFreelancerWithPackages = query({
     freelancerId: v.id("freelancerProfiles"),
   },
   handler: async (ctx, args) => {
+    const freelancerProfile = await ctx.db.get(args.freelancerId);
+    if (!isPublicFreelancerProfile(freelancerProfile)) return [];
+
     const gigs = await ctx.db
       .query("gigs")
       .withIndex("by_freelancer_status", (q) =>

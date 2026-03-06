@@ -2,7 +2,7 @@ import { v } from "convex/values";
 import { query, mutation, internalQuery, internalMutation } from "../_generated/server";
 import { internal } from "../_generated/api";
 import { Doc } from "../_generated/dataModel";
-import { requireOwner } from "../lib/authHelpers";
+import { requireOwner, requireServerSecret } from "../lib/authHelpers";
 
 /**
  * Calculate the platform fee based on the order amount.
@@ -45,19 +45,88 @@ export const create = mutation({
     gigId: v.optional(v.id("gigs")),
     projectId: v.optional(v.id("projects")),
     gigPackageId: v.optional(v.id("gigPackages")),
+    serverSecret: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
+    if (!["gig", "project"].includes(args.orderType)) {
+      throw new Error("Unsupported order type.");
+    }
+    if (args.gigId && args.projectId) {
+      throw new Error("Order cannot reference both a gig and a project.");
+    }
+    if (args.serverSecret) {
+      requireServerSecret(args.serverSecret);
+    } else {
+      await requireOwner(ctx, args.clientId);
+    }
+
+    const freelancerProfile = await ctx.db.get(args.freelancerId);
+    if (!freelancerProfile) throw new Error("Freelancer profile not found");
+    if (freelancerProfile.userId === args.clientId) {
+      throw new Error("You cannot create an order for yourself.");
+    }
+
+    let title = args.title;
+    let amount = args.amount;
+    let currency = args.currency ?? "EUR";
+    let deliveryDays = args.deliveryDays;
+
+    if (args.orderType === "gig" && (!args.gigId || !args.gigPackageId)) {
+      throw new Error("Gig orders require both gigId and gigPackageId.");
+    }
+    if (args.orderType === "project" && !args.projectId) {
+      throw new Error("Project orders require a projectId.");
+    }
+
+    const hasGigArgs = !!args.gigId || !!args.gigPackageId;
+    if (hasGigArgs) {
+      if (!args.gigId || !args.gigPackageId) {
+        throw new Error("Gig orders require both gigId and gigPackageId.");
+      }
+
+      const gig = await ctx.db.get(args.gigId);
+      if (!gig) throw new Error("Gig not found");
+      if (gig.freelancerId !== args.freelancerId) {
+        throw new Error("Unauthorized.");
+      }
+
+      const gigPackage = await ctx.db.get(args.gigPackageId);
+      if (!gigPackage) throw new Error("Gig package not found");
+      if (gigPackage.gigId !== args.gigId) {
+        throw new Error("Unauthorized.");
+      }
+
+      title = `${gig.title} - ${gigPackage.title}`;
+      amount = gigPackage.price;
+      currency = gigPackage.currency ?? currency;
+      deliveryDays = gigPackage.deliveryDays;
+    }
+
+    if (args.projectId) {
+      const project = await ctx.db.get(args.projectId);
+      if (!project) throw new Error("Project not found");
+      if (project.clientId !== args.clientId) {
+        throw new Error("Unauthorized.");
+      }
+      if (!project.selectedFreelancerId) {
+        throw new Error("Project order cannot be created before a freelancer is selected.");
+      }
+      if (project.selectedFreelancerId !== args.freelancerId) {
+        throw new Error("Unauthorized.");
+      }
+
+      title = project.title;
+      currency = project.currency ?? currency;
+    }
 
     // Get the default tenant
     const tenant = await ctx.db.query("tenants").first();
     if (!tenant) throw new Error("No tenant found");
 
-    const platformFee = calculatePlatformFee(args.amount);
-    const freelancerEarnings = Math.round((args.amount - platformFee) * 100) / 100;
+    const platformFee = calculatePlatformFee(amount);
+    const freelancerEarnings = Math.round((amount - platformFee) * 100) / 100;
 
-    const deliveryDeadline = Date.now() + args.deliveryDays * 24 * 60 * 60 * 1000;
+    const deliveryDeadline = Date.now() + deliveryDays * 24 * 60 * 60 * 1000;
     const now = Date.now();
 
     const orderId = await ctx.db.insert("orders", {
@@ -69,11 +138,11 @@ export const create = mutation({
       gigId: args.gigId,
       projectId: args.projectId,
       gigPackageId: args.gigPackageId,
-      title: args.title,
-      amount: args.amount,
+      title,
+      amount,
       platformFee,
       freelancerEarnings,
-      currency: args.currency ?? "EUR",
+      currency,
       deliveryDeadline,
       revisionsUsed: 0,
       status: "pending",
@@ -84,7 +153,6 @@ export const create = mutation({
 
     // Fetch user data for emails
     const client = await ctx.db.get(args.clientId);
-    const freelancerProfile = await ctx.db.get(args.freelancerId);
     const freelancerUser = freelancerProfile ? await ctx.db.get(freelancerProfile.userId) : null;
 
     const order = await ctx.db.get(orderId);
@@ -95,10 +163,10 @@ export const create = mutation({
         clientEmail: client.email,
         clientName: client.name || "Customer",
         orderNumber: order!.orderNumber,
-        orderTitle: args.title,
-        amount: args.amount,
-        currency: args.currency ?? "EUR",
-        deliveryDays: args.deliveryDays,
+        orderTitle: title,
+        amount,
+        currency,
+        deliveryDays,
         orderId: orderId,
       });
     }
@@ -109,10 +177,10 @@ export const create = mutation({
         freelancerEmail: freelancerUser.email,
         freelancerName: freelancerProfile?.displayName || freelancerUser.name || "Freelancer",
         orderNumber: order!.orderNumber,
-        orderTitle: args.title,
-        amount: args.amount - platformFee,
-        currency: args.currency ?? "EUR",
-        deliveryDays: args.deliveryDays,
+        orderTitle: title,
+        amount: amount - platformFee,
+        currency,
+        deliveryDays,
         orderId: orderId,
       });
     }
@@ -126,8 +194,12 @@ export const create = mutation({
  * Used for idempotency in the webhook handler.
  */
 export const getByStripePaymentIntentId = query({
-  args: { stripePaymentIntentId: v.string() },
+  args: {
+    stripePaymentIntentId: v.string(),
+    serverSecret: v.optional(v.string()),
+  },
   handler: async (ctx, args) => {
+    requireServerSecret(args.serverSecret);
     const order = await ctx.db
       .query("orders")
       .withIndex("by_stripePaymentIntentId", (q) =>
@@ -147,8 +219,10 @@ export const updateStripePayment = mutation({
     orderId: v.id("orders"),
     stripePaymentIntentId: v.string(),
     requirements: v.optional(v.string()),
+    serverSecret: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    requireServerSecret(args.serverSecret);
     await ctx.db.patch(args.orderId, {
       stripePaymentIntentId: args.stripePaymentIntentId,
       escrowStatus: "held",
@@ -173,8 +247,10 @@ export const createTransaction = mutation({
     currency: v.string(),
     stripePaymentIntentId: v.optional(v.string()),
     description: v.optional(v.string()),
+    serverSecret: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    requireServerSecret(args.serverSecret);
     // Look up the tenant from the order
     const order = await ctx.db.get(args.orderId);
     if (!order) throw new Error("Order not found");

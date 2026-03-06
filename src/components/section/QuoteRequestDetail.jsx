@@ -38,6 +38,7 @@ export default function QuoteRequestDetail({ requestId }) {
   const isLoggedIn = credits !== null;
   const isFreelancer = credits?.profileId !== null;
   const balance = credits?.balance ?? 0;
+  const canViewFullDetails = !!request.canViewFullDetails;
 
   async function handleClaim(claimType) {
     setClaiming(true);
@@ -69,15 +70,12 @@ export default function QuoteRequestDetail({ requestId }) {
               </div>
 
               <h5 className="mb10">Description</h5>
-              {leadStatus?.alreadyClaimed ? (
-                <p className="fz15">{request.description}</p>
+              {canViewFullDetails ? (
+                <p className="fz15">{request.description || request.descriptionPreview}</p>
               ) : (
                 <div>
-                  <p className="fz15">
-                    {request.description?.slice(0, 150)}
-                    {request.description?.length > 150 && "..."}
-                  </p>
-                  {request.description?.length > 150 && (
+                  <p className="fz15">{request.descriptionPreview}</p>
+                  {request.descriptionPreview !== request.description && (
                     <p className="fz13 body-color">
                       <i className="flaticon-lock me-1" />
                       Claim this lead to see the full description and client details.
@@ -94,7 +92,7 @@ export default function QuoteRequestDetail({ requestId }) {
               )}
 
               {/* Client details (only if claimed) */}
-              {leadStatus?.alreadyClaimed && (
+              {canViewFullDetails && !request.isOwner && (
                 <div className="bgc-thm3 bdrs8 p20 mt20">
                   <h5 className="mb10">Client Contact</h5>
                   <p className="fz14 mb5">
@@ -142,6 +140,8 @@ export default function QuoteRequestDetail({ requestId }) {
                   <i className="flaticon-review-1 fz30 text-success d-block mb10" />
                   <p className="fw500">You claimed this lead</p>
                 </div>
+              ) : request.isOwner ? (
+                <p className="text-center body-color">This is your request.</p>
               ) : request.status !== "open" ? (
                 <p className="text-center body-color">This request is closed.</p>
               ) : !isLoggedIn ? (

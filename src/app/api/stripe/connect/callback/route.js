@@ -22,6 +22,7 @@ import { api } from "../../../../../../convex/_generated/api";
 // ---------------------------------------------------------------------------
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL);
+const SERVER_SECRET = process.env.INTERNAL_EMAIL_SECRET;
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
@@ -79,9 +80,15 @@ export async function GET(request) {
       const convexUserId = account.metadata?.convexUserId;
 
       if (convexUserId) {
+        if (!SERVER_SECRET) {
+          return NextResponse.redirect(
+            `${baseUrl}/dashboard/payouts?stripe_error=server_secret_missing`
+          );
+        }
         try {
           await convex.mutation(api.marketplace.freelancers.setOnboardingComplete, {
             userId: convexUserId,
+            serverSecret: SERVER_SECRET,
           });
         } catch (convexErr) {
           // Log but don't block – the Stripe account is already connected.

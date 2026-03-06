@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
 import { getLeadCreditCost, MAX_SHARED_SLOTS } from "./leadPricing";
+import { requireServerSecret } from "../lib/authHelpers";
 
 // Get credit balance for the current authenticated freelancer.
 export const getMyCredits = query({
@@ -271,8 +272,10 @@ export const addCredits = mutation({
     credits: v.number(),
     stripeSessionId: v.string(),
     description: v.string(),
+    serverSecret: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    requireServerSecret(args.serverSecret);
     const profile = await ctx.db
       .query("freelancerProfiles")
       .withIndex("by_userId", (q) => q.eq("userId", args.freelancerUserId))

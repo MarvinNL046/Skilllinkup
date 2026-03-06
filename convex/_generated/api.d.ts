@@ -17,6 +17,7 @@ import type * as feedback from "../feedback.js";
 import type * as http from "../http.js";
 import type * as lib_authHelpers from "../lib/authHelpers.js";
 import type * as lib_email from "../lib/email.js";
+import type * as lib_publicData from "../lib/publicData.js";
 import type * as marketplace_categories from "../marketplace/categories.js";
 import type * as marketplace_clients from "../marketplace/clients.js";
 import type * as marketplace_dashboard from "../marketplace/dashboard.js";
@@ -61,6 +62,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   "lib/authHelpers": typeof lib_authHelpers;
   "lib/email": typeof lib_email;
+  "lib/publicData": typeof lib_publicData;
   "marketplace/categories": typeof marketplace_categories;
   "marketplace/clients": typeof marketplace_clients;
   "marketplace/dashboard": typeof marketplace_dashboard;

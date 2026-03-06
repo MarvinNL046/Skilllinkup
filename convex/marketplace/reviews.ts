@@ -1,6 +1,38 @@
 import { v } from "convex/values";
-import { query, mutation } from "../_generated/server";
+import { query, mutation, MutationCtx, QueryCtx } from "../_generated/server";
 import { internal } from "../_generated/api";
+import { Doc, Id } from "../_generated/dataModel";
+import { requireAuthUser } from "../lib/authHelpers";
+
+async function getOrderReviewContext(
+  ctx: QueryCtx | MutationCtx,
+  orderId: Id<"orders">
+) {
+  const order = await ctx.db.get(orderId);
+  if (!order) throw new Error("Order not found");
+
+  const freelancerProfile = order.freelancerId
+    ? await ctx.db.get(order.freelancerId)
+    : null;
+
+  return {
+    order,
+    freelancerProfile,
+    freelancerUserId: freelancerProfile?.userId ?? null,
+  };
+}
+
+function canAccessOrderReviews(
+  user: Doc<"users">,
+  order: Doc<"orders">,
+  freelancerUserId: Id<"users"> | null
+) {
+  return (
+    user.role === "admin" ||
+    order.clientId === user._id ||
+    freelancerUserId === user._id
+  );
+}
 
 /**
  * Get public reviews for a freelancer (by their user ID in revieweeId).
@@ -61,6 +93,11 @@ export const getByUserId = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    const caller = await requireAuthUser(ctx);
+    if (caller._id !== args.userId && caller.role !== "admin") {
+      throw new Error("Unauthorized.");
+    }
+
     const limit = args.limit ?? 50;
 
     const allReviews = await ctx.db
@@ -68,25 +105,7 @@ export const getByUserId = query({
       .withIndex("by_reviewee", (q) => q.eq("revieweeId", args.userId))
       .collect();
 
-    // Only the reviewee themselves can see pending (isPublic: false) reviews.
-    const identity = await ctx.auth.getUserIdentity();
-    let isOwner = false;
-    if (identity) {
-      const email = identity.email;
-      if (email) {
-        const caller = await ctx.db
-          .query("users")
-          .withIndex("by_email", (q) => q.eq("email", email))
-          .first();
-        isOwner = caller?._id === args.userId;
-      }
-    }
-
-    const reviews = isOwner
-      ? allReviews
-      : allReviews.filter((r) => r.isPublic !== false);
-
-    const sorted = reviews
+    const sorted = allReviews
       .sort((a, b) => b.createdAt - a.createdAt)
       .slice(0, limit);
 
@@ -118,10 +137,25 @@ export const getByUserId = query({
 export const getByOrder = query({
   args: { orderId: v.id("orders") },
   handler: async (ctx, args) => {
-    return await ctx.db
+    const user = await requireAuthUser(ctx);
+    const { order, freelancerUserId } = await getOrderReviewContext(ctx, args.orderId);
+
+    if (!canAccessOrderReviews(user, order, freelancerUserId)) {
+      throw new Error("Unauthorized.");
+    }
+
+    const reviews = await ctx.db
       .query("marketplaceReviews")
       .withIndex("by_order", (q) => q.eq("orderId", args.orderId))
       .collect();
+
+    if (user.role === "admin" || reviews.every((review) => review.isPublic !== false)) {
+      return reviews;
+    }
+
+    return reviews.filter(
+      (review) => review.isPublic !== false || review.reviewerId === user._id
+    );
   },
 });
 
@@ -142,15 +176,7 @@ export const create = mutation({
     content: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
-    // Find the reviewer's user doc
-    const reviewer = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-    if (!reviewer) throw new Error("User not found");
+    const reviewer = await requireAuthUser(ctx);
 
     // Check if reviewer already submitted a review for this order
     const existing = await ctx.db
@@ -160,9 +186,26 @@ export const create = mutation({
       .first();
     if (existing) throw new Error("You already reviewed this order");
 
-    // Get tenant
-    const order = await ctx.db.get(args.orderId);
-    if (!order) throw new Error("Order not found");
+    const { order, freelancerUserId } = await getOrderReviewContext(ctx, args.orderId);
+    if (order.status !== "completed") {
+      throw new Error("Reviews are only allowed for completed orders.");
+    }
+
+    const isClient = order.clientId === reviewer._id;
+    const isFreelancer = freelancerUserId === reviewer._id;
+    if (!isClient && !isFreelancer) {
+      throw new Error("Unauthorized.");
+    }
+
+    const expectedRevieweeId = isClient ? freelancerUserId : order.clientId;
+    if (!expectedRevieweeId || args.revieweeId !== expectedRevieweeId) {
+      throw new Error("Unauthorized.");
+    }
+
+    const expectedReviewerRole = isClient ? "client" : "freelancer";
+    if (args.reviewerRole !== expectedReviewerRole) {
+      throw new Error("Unauthorized.");
+    }
 
     // Check if both parties have now reviewed (blind review system)
     const otherReview = await ctx.db
@@ -178,7 +221,7 @@ export const create = mutation({
       orderId: args.orderId,
       reviewerId: reviewer._id,
       revieweeId: args.revieweeId,
-      reviewerRole: args.reviewerRole,
+      reviewerRole: expectedReviewerRole,
       overallRating: args.overallRating,
       communicationRating: args.communicationRating,
       qualityRating: args.qualityRating,

@@ -1,6 +1,10 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { requireAuthUser } from "./lib/authHelpers";
+import {
+  requireAuthUser,
+  requireServerSecret,
+} from "./lib/authHelpers";
+import { toSafeUser } from "./lib/publicData";
 
 /**
  * Sync a Clerk user to the Convex users table.
@@ -15,10 +19,29 @@ export const syncUser = mutation({
     userType: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Authentication required.");
+    }
+
+    const email = identity.email;
+    if (!email) {
+      throw new Error("Authentication required: no email in identity.");
+    }
+
+    if (args.email !== email) {
+      throw new Error("Unauthorized.");
+    }
+
+    const clerkId = identity.subject;
+    if (args.clerkId !== clerkId) {
+      throw new Error("Unauthorized.");
+    }
+
     // Check if user already exists by Clerk ID
     const existing = await ctx.db
       .query("users")
-      .withIndex("by_stackAuthId", (q) => q.eq("stackAuthId", args.clerkId))
+      .withIndex("by_stackAuthId", (q) => q.eq("stackAuthId", clerkId))
       .first();
 
     if (existing) {
@@ -26,7 +49,7 @@ export const syncUser = mutation({
       await ctx.db.patch(existing._id, {
         name: args.name,
         image: args.image || existing.image,
-        email: args.email,
+        email,
         lastLogin: Date.now(),
         updatedAt: Date.now(),
       });
@@ -36,13 +59,13 @@ export const syncUser = mutation({
     // Also check by email (for users migrated from old auth)
     const existingByEmail = await ctx.db
       .query("users")
-      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .withIndex("by_email", (q) => q.eq("email", email))
       .first();
 
     if (existingByEmail) {
       // Link existing user to Clerk
       await ctx.db.patch(existingByEmail._id, {
-        stackAuthId: args.clerkId,
+        stackAuthId: clerkId,
         name: args.name,
         image: args.image || existingByEmail.image,
         lastLogin: Date.now(),
@@ -60,13 +83,13 @@ export const syncUser = mutation({
     // Create new user — do NOT set userType here; onboarding page handles that
     const userId = await ctx.db.insert("users", {
       tenantId: tenant._id,
-      email: args.email,
+      email,
       name: args.name,
       passwordHash: "clerk-managed",
       image: args.image,
       role: "author",
       userType: args.userType,
-      stackAuthId: args.clerkId,
+      stackAuthId: clerkId,
       emailVerified: true,
       lastLogin: Date.now(),
       createdAt: Date.now(),
@@ -91,7 +114,7 @@ export const getCurrentUser = query({
       .withIndex("by_email", (q) => q.eq("email", identity.email!))
       .first();
 
-    return user;
+    return toSafeUser(user);
   },
 });
 
@@ -99,8 +122,20 @@ export const getCurrentUser = query({
  * Get user by Clerk ID.
  */
 export const getByClerkId = query({
-  args: { clerkId: v.string() },
+  args: {
+    clerkId: v.string(),
+    serverSecret: v.optional(v.string()),
+  },
   handler: async (ctx, args) => {
+    if (args.serverSecret) {
+      requireServerSecret(args.serverSecret);
+    } else {
+      const user = await requireAuthUser(ctx);
+      if (user.stackAuthId !== args.clerkId && user.role !== "admin") {
+        throw new Error("Unauthorized.");
+      }
+    }
+
     return await ctx.db
       .query("users")
       .withIndex("by_stackAuthId", (q) => q.eq("stackAuthId", args.clerkId))
@@ -113,8 +148,20 @@ export const getByClerkId = query({
  * Used by the Stripe webhook to send confirmation emails.
  */
 export const getContact = query({
-  args: { userId: v.id("users") },
+  args: {
+    userId: v.id("users"),
+    serverSecret: v.optional(v.string()),
+  },
   handler: async (ctx, args) => {
+    if (args.serverSecret) {
+      requireServerSecret(args.serverSecret);
+    } else {
+      const user = await requireAuthUser(ctx);
+      if (user._id !== args.userId && user.role !== "admin") {
+        throw new Error("Unauthorized.");
+      }
+    }
+
     const user = await ctx.db.get(args.userId);
     if (!user) return null;
     return { id: user._id, email: user.email, name: user.name };
@@ -125,8 +172,20 @@ export const getContact = query({
  * Get a user by their email address.
  */
 export const getByEmail = query({
-  args: { email: v.string() },
+  args: {
+    email: v.string(),
+    serverSecret: v.optional(v.string()),
+  },
   handler: async (ctx, args) => {
+    if (args.serverSecret) {
+      requireServerSecret(args.serverSecret);
+    } else {
+      const user = await requireAuthUser(ctx);
+      if (user.email !== args.email && user.role !== "admin") {
+        throw new Error("Unauthorized.");
+      }
+    }
+
     return await ctx.db
       .query("users")
       .withIndex("by_email", (q) => q.eq("email", args.email))
@@ -139,8 +198,20 @@ export const getByEmail = query({
  * Returns the Convex user document or null.
  */
 export const getByStackAuthId = query({
-  args: { stackAuthId: v.string() },
+  args: {
+    stackAuthId: v.string(),
+    serverSecret: v.optional(v.string()),
+  },
   handler: async (ctx, args) => {
+    if (args.serverSecret) {
+      requireServerSecret(args.serverSecret);
+    } else {
+      const user = await requireAuthUser(ctx);
+      if (user.stackAuthId !== args.stackAuthId && user.role !== "admin") {
+        throw new Error("Unauthorized.");
+      }
+    }
+
     return await ctx.db
       .query("users")
       .withIndex("by_stackAuthId", (q) => q.eq("stackAuthId", args.stackAuthId))

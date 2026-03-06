@@ -91,14 +91,14 @@ export default function Listing16() {
               <ListingSidebar3 />
             </div>
             <div className="col-lg-9">
-              <ListingOption2 itemLength={content?.length} />
+              <ListingOption2 itemLength={content?.length} itemLabel="jobs" />
               {content.length === 0 ? (
                 <EmptyState
                   icon="💼"
                   title="No jobs posted yet"
                   description="Post a job to find the perfect freelancer"
                   actionLabel="Post a Job"
-                  actionHref="/dashboard/manage-jobs"
+                  actionHref="/manage-jobs"
                 />
               ) : (
                 <div className="row">{content}</div>

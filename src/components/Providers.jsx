@@ -10,7 +10,11 @@ const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL);
 
 export default function Providers({ children }) {
   return (
-    <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
+    <ClerkProvider
+      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+      signInUrl="/login"
+      signUpUrl="/register"
+    >
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
         <ConvexUserSync />
         {children}
