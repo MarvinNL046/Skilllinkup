@@ -206,9 +206,27 @@ export default function SearchBarWithDropdown({
               ))}
             </ul>
           ) : searchResults !== undefined ? (
-            <div style={{ padding: "12px 16px", fontSize: 13, color: "#888" }}>
-              No suggestions found
-            </div>
+            <button
+              type="button"
+              onClick={() => navigate(debouncedQuery.trim())}
+              className="search-suggestion-btn"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                width: "100%",
+                textAlign: "left",
+                padding: "12px 16px",
+                background: "none",
+                border: "none",
+                fontSize: 14,
+                cursor: "pointer",
+                color: "#222",
+              }}
+            >
+              <span className="flaticon-loupe" style={{ fontSize: 12, color: "#aaa" }} />
+              Search for <strong className="ml5">"{debouncedQuery.trim()}"</strong>
+            </button>
           ) : null}
         </div>
       )}
