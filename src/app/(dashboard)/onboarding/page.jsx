@@ -1,7 +1,7 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
@@ -67,9 +67,8 @@ function OnboardingContent() {
   const updateProfile = useMutation(api.marketplace.freelancers.updateProfile);
   const updateBio = useMutation(api.users.updateBio);
 
-  const [searchParams] = useState(() =>
-    typeof window !== "undefined" ? new URLSearchParams(window.location.search) : new URLSearchParams()
-  );
+  // Fix #6: use useSearchParams instead of useState + window.location.search
+  const searchParams = useSearchParams();
   const switchRole = searchParams.get("role");
 
   const [step, setStep] = useState(switchRole ? 2 : 1);
@@ -82,6 +81,11 @@ function OnboardingContent() {
   const [hourlyRate, setHourlyRate] = useState("");
   const [saving, setSaving] = useState(false);
   const [profileId, setProfileId] = useState(null);
+  // Fix #4: error state for user-visible feedback
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // Fix #5: ref to prevent useEffect redirect re-entry
+  const hasRedirected = useRef(false);
 
   const freelancerProfile = useQuery(
     api.marketplace.freelancers.getByUserId,
@@ -92,9 +96,12 @@ function OnboardingContent() {
     if (freelancerProfile?._id) setProfileId(freelancerProfile._id);
   }, [freelancerProfile]);
 
+  // Fix #5: guard with hasRedirected ref
   useEffect(() => {
     if (switchRole) return;
+    if (hasRedirected.current) return;
     if (convexUser?.userType && convexUser?.preferredWorld) {
+      hasRedirected.current = true;
       router.replace(`/${convexUser.preferredWorld}`);
     }
     if (convexUser?.userType && !convexUser?.preferredWorld) {
@@ -120,52 +127,68 @@ function OnboardingContent() {
     );
   }
 
-  async function handleRoleSelect(type) {
+  // Fix #7: remove async (no await inside)
+  // Fix #4: clear error on entry
+  function handleRoleSelect(type) {
+    setErrorMessage("");
     setRole(type);
     goTo(2);
   }
 
+  // Fix #1: don't advance on error; fix #4: set error message on failure
   async function handleWorldSelect(world) {
+    setErrorMessage("");
     setSelectedWorld(world);
     setSaving(true);
     try {
       await setUserType({ userType: role, preferredWorld: world });
+      goTo(3);
     } catch (err) {
       console.error(err);
+      setErrorMessage("Failed to save your selection. Please try again.");
     } finally {
       setSaving(false);
     }
-    goTo(3);
   }
 
+  // Fix #2: selectedWorld null guard; fix #4: clear error and set on failure
   async function handleSkillsNext() {
+    setErrorMessage("");
     if (role === "freelancer" && profileId && selectedSkills.length > 0) {
       try {
         await updateProfile({ profileId, skills: selectedSkills });
       } catch (err) {
         console.error("Skills save failed:", err);
+        setErrorMessage("Something went wrong. Please try again.");
       }
     }
     if (role === "client") {
       if (selectedSkills.length > 0) {
         try { await updateBio({ bio: selectedSkills.join(", ") }); }
-        catch (err) { console.error(err); }
+        catch (err) {
+          console.error(err);
+          setErrorMessage("Something went wrong. Please try again.");
+        }
       }
-      router.push(`/${selectedWorld}`);
+      router.push(`/${selectedWorld ?? "online"}`);
       return;
     }
     goTo(4);
   }
 
+  // Fix #2: selectedWorld null guard; fix #4: clear error on entry
   async function handleSkillsSkip() {
+    setErrorMessage("");
     if (role === "client") {
-      router.push(`/${selectedWorld}`);
+      router.push(`/${selectedWorld ?? "online"}`);
       return;
     }
     goTo(4);
   }
 
+  // Fix #2: selectedWorld null guard; fix #4: clear error and set on failure
   async function handleProfileSave() {
+    setErrorMessage("");
     setSaving(true);
     try {
       if (role === "freelancer" && profileId) {
@@ -176,20 +199,35 @@ function OnboardingContent() {
           hourlyRate: hourlyRate ? Number(hourlyRate) : undefined,
         });
       }
-      router.push(`/${selectedWorld}`);
+      router.push(`/${selectedWorld ?? "online"}`);
     } catch (err) {
       console.error(err);
+      setErrorMessage("Something went wrong. Please try again.");
       setSaving(false);
     }
   }
 
-  async function handleProfileSkip() {
-    router.push(`/${selectedWorld}`);
+  // Fix #7: remove async (no await inside)
+  // Fix #2: selectedWorld null guard
+  function handleProfileSkip() {
+    router.push(`/${selectedWorld ?? "online"}`);
   }
 
+  // Fix #9: comment — role is null before step 1 completes; ProgressBar only shown from step 2
   const totalSteps = role === "client" ? 3 : 4;
 
   if (!isLoaded || !convexUser) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Fix #3: wait for freelancer profile to resolve before showing step 3+
+  if (role === "freelancer" && step >= 3 && freelancerProfile === undefined) {
     return (
       <div className="d-flex justify-content-center align-items-center vh-100">
         <div className="spinner-border text-primary" role="status">
@@ -232,7 +270,9 @@ function OnboardingContent() {
                       { type: "freelancer", icon: "flaticon-presentation",  label: "I offer services",        desc: "Create gigs, find clients, and grow your freelance business." },
                     ].map(({ type, icon, label, desc }) => (
                       <div key={type} className="col-sm-6">
+                        {/* Fix #8: type="button" */}
                         <button
+                          type="button"
                           onClick={() => handleRoleSelect(type)}
                           className="w-100 border-0 p-0 bg-transparent"
                           style={{ cursor: "pointer" }}
@@ -269,7 +309,9 @@ function OnboardingContent() {
                   <div className="row g-4 justify-content-center">
                     {WORLDS.map((w) => (
                       <div key={w.id} className="col-sm-4">
+                        {/* Fix #8: type="button" */}
                         <button
+                          type="button"
                           onClick={() => handleWorldSelect(w.id)}
                           disabled={saving}
                           className="w-100 border-0 p-0 bg-transparent"
@@ -296,7 +338,9 @@ function OnboardingContent() {
                   </div>
                   {!convexUser?.userType && (
                     <div className="text-center mt-4">
+                      {/* Fix #8: type="button" */}
                       <button
+                        type="button"
                         onClick={() => goTo(1, "back")}
                         className="btn btn-link text-muted text-decoration-none fz14"
                         disabled={saving}
@@ -331,7 +375,9 @@ function OnboardingContent() {
                     {(role === "freelancer" ? SKILLS : CLIENT_INTERESTS).map((skill) => {
                       const active = selectedSkills.includes(skill);
                       return (
+                        // Fix #8: type="button"
                         <button
+                          type="button"
                           key={skill}
                           onClick={() => toggleSkill(skill)}
                           className="btn btn-sm bdrs20 px-3 py-2"
@@ -354,14 +400,26 @@ function OnboardingContent() {
                     </p>
                   )}
                   <div className="d-flex justify-content-between align-items-center mt-2">
-                    <button onClick={() => goTo(2, "back")} className="btn btn-link text-muted text-decoration-none fz14">
+                    {/* Fix #8: type="button" */}
+                    <button
+                      type="button"
+                      onClick={() => goTo(2, "back")}
+                      className="btn btn-link text-muted text-decoration-none fz14"
+                    >
                       ← Back
                     </button>
                     <div className="d-flex gap-3">
-                      <button onClick={handleSkillsSkip} className="btn btn-outline-secondary btn-sm bdrs8">
+                      {/* Fix #8: type="button" */}
+                      <button
+                        type="button"
+                        onClick={handleSkillsSkip}
+                        className="btn btn-outline-secondary btn-sm bdrs8"
+                      >
                         Skip
                       </button>
+                      {/* Fix #8: type="button" */}
                       <button
+                        type="button"
                         onClick={handleSkillsNext}
                         className="btn btn-sm bdrs8 text-white"
                         style={{ background: "#ef2b70", minWidth: 100 }}
@@ -426,7 +484,9 @@ function OnboardingContent() {
                     </div>
                   </div>
                   <div className="d-flex justify-content-between align-items-center">
+                    {/* Fix #8: type="button" */}
                     <button
+                      type="button"
                       onClick={() => goTo(3, "back")}
                       className="btn btn-link text-muted text-decoration-none fz14"
                       disabled={saving}
@@ -434,14 +494,18 @@ function OnboardingContent() {
                       ← Back
                     </button>
                     <div className="d-flex gap-3">
+                      {/* Fix #8: type="button" */}
                       <button
+                        type="button"
                         onClick={handleProfileSkip}
                         className="btn btn-outline-secondary btn-sm bdrs8"
                         disabled={saving}
                       >
                         Skip for now
                       </button>
+                      {/* Fix #8: type="button" */}
                       <button
+                        type="button"
                         onClick={handleProfileSave}
                         className="btn btn-sm bdrs8 text-white"
                         style={{ background: "#ef2b70", minWidth: 120 }}
@@ -454,6 +518,13 @@ function OnboardingContent() {
                     </div>
                   </div>
                 </StepWrapper>
+              )}
+
+              {/* Fix #4: error display */}
+              {errorMessage && (
+                <div className="alert alert-danger mt-3 fz14 bdrs8" role="alert">
+                  {errorMessage}
+                </div>
               )}
 
             </div>
