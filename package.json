@@ -9,6 +9,10 @@
     "start": "next start",
     "lint": "next lint",
     "auth:ensure-clerk-convex": "node scripts/ensure-clerk-convex-template.mjs",
+    "categories:fiverr:print": "node scripts/seed-fiverr-marketplace-categories.mjs --dry-run",
+    "categories:fiverr:print:nl": "node scripts/seed-fiverr-marketplace-categories.mjs --dry-run --locale=nl",
+    "categories:fiverr:seed": "node scripts/seed-fiverr-marketplace-categories.mjs",
+    "categories:fiverr:seed:nl": "node scripts/seed-fiverr-marketplace-categories.mjs --locale=nl",
     "e2e:seed": "node scripts/seed-smoke-marketplace.mjs",
     "e2e:cleanup": "node scripts/cleanup-smoke-marketplace.mjs",
     "e2e:smoke": "playwright test"
