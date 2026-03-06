@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useUser, useClerk } from "@clerk/nextjs";
 import NotificationBell from "@/components/header/NotificationBell";
+import SearchBarWithDropdown from "@/components/ui/SearchBarWithDropdown";
 
 export default function DashboardHeader() {
   const toggle = toggleStore((state) => state.dashboardSlidebarToggleHandler);
@@ -61,18 +62,8 @@ export default function DashboardHeader() {
                   >
                     <span className="flaticon-loupe" />
                   </a>
-                  <div className="ml40 d-none d-xl-block">
-                    <div className="search_area dashboard-style" style={{ background: "#f4f4f5", borderRadius: "10px", border: "none" }}>
-                      <input
-                        type="text"
-                        className="form-control border-0"
-                        placeholder="What service are you looking for today?"
-                        style={{ background: "transparent", fontSize: "14px" }}
-                      />
-                      <label>
-                        <span className="flaticon-loupe" />
-                      </label>
-                    </div>
+                  <div className="ml40 d-none d-xl-block" style={{ minWidth: 320 }}>
+                    <SearchBarWithDropdown />
                   </div>
                 </div>
               </div>
