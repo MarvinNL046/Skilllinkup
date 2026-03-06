@@ -6,6 +6,7 @@ import WorldNavigation from "./WorldNavigation";
 import WorldSwitcher from "./WorldSwitcher";
 import MobileNavigation2 from "./MobileNavigation2";
 import NotificationBell from "./NotificationBell";
+import SearchBarWithDropdown from "@/components/ui/SearchBarWithDropdown";
 import { useUser, useClerk } from "@clerk/nextjs";
 
 export default function WorldHeader() {
@@ -18,6 +19,7 @@ export default function WorldHeader() {
         <nav className="posr">
           <div className="container-fluid custom-container custom-container2 posr">
             <div className="row align-items-center justify-content-between">
+              {/* Logo + World switcher */}
               <div className="col-auto px-0 px-xl-3">
                 <div className="d-flex align-items-center justify-content-between gap-3">
                   <div className="logos">
@@ -34,10 +36,19 @@ export default function WorldHeader() {
                   <WorldSwitcher />
                 </div>
               </div>
+
+              {/* Zoekbalk — alleen desktop */}
+              <div className="col d-none d-xl-block px-3">
+                <SearchBarWithDropdown />
+              </div>
+
+              {/* Navigatie */}
               <div className="col-auto px-0 px-xl-3">
                 <WorldNavigation />
               </div>
-              <div className="col-auto pe-0 ">
+
+              {/* User buttons */}
+              <div className="col-auto pe-0">
                 <div className="d-flex align-items-center">
                   {isSignedIn ? (
                     <>
@@ -47,10 +58,7 @@ export default function WorldHeader() {
                       <span className="ml15 mr5 position-relative d-inline-flex align-items-center">
                         <NotificationBell />
                       </span>
-                      <Link
-                        className="login-info mr10 ml15"
-                        href="/dashboard"
-                      >
+                      <Link className="login-info mr10 ml15" href="/dashboard">
                         {user?.imageUrl ? (
                           <Image
                             width={36}
@@ -96,46 +104,6 @@ export default function WorldHeader() {
           </div>
         </nav>
       </header>
-      <div className="search-modal">
-        <div
-          className="modal fade"
-          id="exampleModalToggle"
-          aria-hidden="true"
-          aria-labelledby="exampleModalToggleLabel"
-          tabIndex="-1"
-        >
-          <div className="modal-dialog modal-lg">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="exampleModalToggleLabel"></h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <i className="fal fa-xmark"></i>
-                </button>
-              </div>
-              <div className="modal-body">
-                <div className="popup-search-field search_area">
-                  <input
-                    type="text"
-                    className="form-control border-0"
-                    placeholder="What service are you looking for today?"
-                  />
-                  <label>
-                    <span className="far fa-magnifying-glass"></span>
-                  </label>
-                  <button className="ud-btn btn-thm" type="submit">
-                    Search
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <MobileNavigation2 />
     </>
   );
