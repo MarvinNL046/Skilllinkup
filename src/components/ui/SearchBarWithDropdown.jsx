@@ -12,15 +12,15 @@ const POPULAR = [
   "content writing",
 ];
 
+// Bold the completion (non-typed) part — like Fiverr
 function BoldMatch({ text, query }) {
   if (!query) return <span>{text}</span>;
   const idx = text.toLowerCase().indexOf(query.toLowerCase());
-  if (idx === -1) return <span>{text}</span>;
+  if (idx === -1) return <span><strong>{text}</strong></span>;
   return (
     <span>
-      {text.slice(0, idx)}
-      <strong>{text.slice(idx, idx + query.length)}</strong>
-      {text.slice(idx + query.length)}
+      {text.slice(0, idx + query.length)}
+      <strong>{text.slice(idx + query.length)}</strong>
     </span>
   );
 }
@@ -52,17 +52,31 @@ export default function SearchBarWithDropdown({
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  const searchResults = useQuery(
+  const active = debouncedQuery.trim().length >= 2;
+
+  const gigResults = useQuery(
     api.marketplace.gigs.search,
-    debouncedQuery.trim().length >= 2
-      ? { query: debouncedQuery.trim(), locale: "en" }
-      : "skip"
+    active ? { query: debouncedQuery.trim(), locale: "en" } : "skip"
   );
 
-  const suggestions =
-    debouncedQuery.trim().length >= 2
-      ? [...new Set((searchResults || []).map((g) => g.title))].slice(0, 8)
-      : [];
+  const categoryResults = useQuery(
+    api.marketplace.categories.search,
+    active ? { query: debouncedQuery.trim(), locale: "en" } : "skip"
+  );
+
+  // Combine: categories first, then unique gig titles, max 8 total
+  const suggestions = active ? (() => {
+    const catNames = (categoryResults || []).map((c) => c.name);
+    const gigTitles = [...new Set((gigResults || []).map((g) => g.title))];
+    const seen = new Set(catNames.map((n) => n.toLowerCase()));
+    const combined = [...catNames];
+    for (const t of gigTitles) {
+      if (!seen.has(t.toLowerCase())) combined.push(t);
+    }
+    return combined.slice(0, 8);
+  })() : [];
+
+  const isLoading = active && (gigResults === undefined || categoryResults === undefined);
 
   function navigate(q) {
     setIsOpen(false);
@@ -205,7 +219,8 @@ export default function SearchBarWithDropdown({
                 </li>
               ))}
             </ul>
-          ) : searchResults !== undefined ? (
+          ) : !isLoading ? (
+            // Geen resultaten — toon zoekknop
             <button
               type="button"
               onClick={() => navigate(debouncedQuery.trim())}

@@ -63,6 +63,33 @@ export const getFirstTenant = query({
 });
 
 /**
+ * Search categories by name prefix (for autocomplete).
+ */
+export const search = query({
+  args: { query: v.string(), locale: v.optional(v.string()) },
+  handler: async (ctx, args) => {
+    const locale = args.locale ?? "en";
+    const q = args.query.toLowerCase().trim();
+    if (q.length < 2) return [];
+
+    const all = await ctx.db
+      .query("marketplaceCategories")
+      .filter((q2) => q2.eq(q2.field("locale"), locale))
+      .collect();
+
+    return all
+      .filter((cat) => cat.name.toLowerCase().includes(q))
+      .sort((a, b) => {
+        const aStarts = a.name.toLowerCase().startsWith(q) ? 0 : 1;
+        const bStarts = b.name.toLowerCase().startsWith(q) ? 0 : 1;
+        return aStarts - bStarts || a.name.localeCompare(b.name);
+      })
+      .slice(0, 8)
+      .map((cat) => ({ name: cat.name, slug: cat.slug }));
+  },
+});
+
+/**
  * Seed marketplace categories in bulk.
  * Accepts parent categories with nested children.
  * Skips categories whose slug+locale already exists.
