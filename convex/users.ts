@@ -282,3 +282,20 @@ export const setPreferredWorld = mutation({
     return { success: true };
   },
 });
+
+/**
+ * Save a simple bio/interests string for client users during onboarding.
+ */
+export const updateBio = mutation({
+  args: {
+    bio: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await requireAuthUser(ctx);
+    await ctx.db.patch(user._id, {
+      bio: args.bio,
+      updatedAt: Date.now(),
+    });
+    return { success: true };
+  },
+});
