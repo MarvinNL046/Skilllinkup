@@ -21,6 +21,27 @@ export default function DashboardInfo() {
     userId ? { userId, limit: 5 } : "skip"
   );
 
+  const freelancerProfile = useQuery(
+    api.marketplace.freelancers.getByUserId,
+    userId && convexUser?.userType === "freelancer" ? { userId } : "skip"
+  );
+
+  // Completeness for freelancers
+  const completenessItems = convexUser?.userType === "freelancer" ? [
+    { done: !!freelancerProfile?.bio,              label: "Add a bio",       href: "/my-profile" },
+    { done: !!(freelancerProfile?.skills?.length), label: "Add skills",      href: "/my-profile" },
+    { done: !!freelancerProfile?.hourlyRate,        label: "Set hourly rate", href: "/my-profile" },
+    { done: !!freelancerProfile?.tagline,           label: "Add a tagline",   href: "/my-profile" },
+  ] : [];
+  const completedCount = completenessItems.filter(i => i.done).length;
+  const completenessPct = completenessItems.length > 0
+    ? Math.round((completedCount / completenessItems.length) * 100)
+    : 100;
+  const showBanner = convexUser?.userType === "freelancer"
+    && completenessPct < 100
+    && freelancerProfile !== undefined
+    && freelancerProfile !== null;
+
   const isLoading = isAuthenticated && (stats === undefined || recentOrders === undefined);
   const notAuthenticated = isLoaded && !isAuthenticated;
 
@@ -69,8 +90,10 @@ export default function DashboardInfo() {
           </div>
           <div className="col-lg-12">
             <div className="dashboard_title_area">
-              <h2>Dashboard</h2>
-              <p className="text">Welcome back! Here is what is happening with your account.</p>
+              <h2>Hi, {convexUser?.name?.split(" ")[0] || "there"}!</h2>
+              <p className="text">
+                {freelancerProfile?.tagline || "Welcome back! Here is what is happening with your account."}
+              </p>
             </div>
           </div>
         </div>
@@ -99,7 +122,53 @@ export default function DashboardInfo() {
             </div>
           </div></div>
         )}
-        {!notAuthenticated && (<><div className="row">
+        {!notAuthenticated && (<>
+        {showBanner && (
+          <div className="row mb20">
+            <div className="col-12">
+              <div
+                className="bdrs8 p20 d-flex align-items-center justify-content-between flex-wrap gap-3"
+                style={{ background: "#fdf0f4", border: "1px solid #fbd5e2" }}
+              >
+                <div className="d-flex align-items-center gap-3">
+                  <div style={{ minWidth: 140 }}>
+                    <div className="fz13 text-muted mb-1">Profile completeness</div>
+                    <div style={{ height: 6, background: "#fbd5e2", borderRadius: 3 }}>
+                      <div
+                        style={{
+                          height: "100%",
+                          width: `${completenessPct}%`,
+                          background: "#ef2b70",
+                          borderRadius: 3,
+                          transition: "width 0.3s ease",
+                        }}
+                      />
+                    </div>
+                    <div className="fz12 text-muted mt-1">{completenessPct}% complete</div>
+                  </div>
+                  <div>
+                    {completenessItems
+                      .filter(i => !i.done)
+                      .slice(0, 2)
+                      .map(item => (
+                        <div key={item.label} className="fz13 text-muted">
+                          <span style={{ color: "#ef2b70" }}>•</span> {item.label}
+                        </div>
+                      ))}
+                  </div>
+                </div>
+                <Link
+                  href="/my-profile"
+                  className="btn btn-sm bdrs8 text-white fz13"
+                  style={{ background: "#ef2b70" }}
+                >
+                  Complete profile →
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+        <div className="row">
           <div className="col-sm-6 col-xxl-3">
             <div className="d-flex align-items-center justify-content-between statistics_funfact" style={{ borderLeft: "4px solid #2A8703" }}>
               <div className="details">
