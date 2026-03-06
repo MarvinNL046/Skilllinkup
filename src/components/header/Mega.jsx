@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import useConvexCategories from "@/hook/useConvexCategories";
+import { sortMarketplaceCategories } from "@/lib/marketplaceCategories";
 
 export default function Mega({ staticMenuClass }) {
   const categories = useConvexCategories("en");
@@ -8,9 +9,7 @@ export default function Mega({ staticMenuClass }) {
   // Split children into columns of roughly equal size (max 3 columns)
   function splitIntoColumns(children) {
     if (!children || children.length === 0) return [];
-    const sorted = [...children].sort(
-      (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
-    );
+    const sorted = sortMarketplaceCategories(children);
     const perCol = Math.ceil(sorted.length / 3);
     const cols = [];
     for (let i = 0; i < sorted.length; i += perCol) {
@@ -21,7 +20,7 @@ export default function Mega({ staticMenuClass }) {
 
   // Sort parent categories by sortOrder
   const sortedCategories = categories
-    ? [...categories].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+    ? sortMarketplaceCategories(categories)
     : [];
 
   return (
@@ -66,6 +65,22 @@ export default function Mega({ staticMenuClass }) {
                                   </span>
                                 )}
                               </Link>
+                              {child.children?.length > 0 && (
+                                <ul className="ps-3 mt-1 mb-2">
+                                  {sortMarketplaceCategories(child.children).map((grandchild) => (
+                                    <li key={grandchild._id}>
+                                      <Link href={`/services?category=${grandchild.slug}`}>
+                                        {grandchild.name}
+                                        {grandchild.gigCount > 0 && (
+                                          <span className="body-light-color fz13 ml5">
+                                            ({grandchild.gigCount})
+                                          </span>
+                                        )}
+                                      </Link>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
                             </li>
                           ))}
                         </ul>

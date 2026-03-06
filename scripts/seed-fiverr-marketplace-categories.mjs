@@ -34,12 +34,17 @@ function readEnv(filePath) {
 }
 
 const env = readEnv(envFile);
-const convexUrl = urlArg?.slice("--url=".length)
-  || (isProd ? process.env.SMOKE_CONVEX_URL_PROD : process.env.SMOKE_CONVEX_URL)
-  || env.NEXT_PUBLIC_CONVEX_URL;
+const explicitUrl = urlArg?.slice("--url=".length);
+const prodUrl = process.env.SMOKE_CONVEX_URL_PROD || env.SMOKE_CONVEX_URL_PROD;
+const defaultUrl = process.env.SMOKE_CONVEX_URL || env.SMOKE_CONVEX_URL || env.NEXT_PUBLIC_CONVEX_URL;
+const convexUrl = explicitUrl || (isProd ? prodUrl : defaultUrl);
 
 if (!convexUrl) {
-  throw new Error("No Convex URL found. Set NEXT_PUBLIC_CONVEX_URL or pass --url=...");
+  throw new Error(
+    isProd
+      ? "No production Convex URL found. Set SMOKE_CONVEX_URL_PROD or pass --url=..."
+      : "No Convex URL found. Set NEXT_PUBLIC_CONVEX_URL or pass --url=..."
+  );
 }
 
 const serverSecret = process.env.INTERNAL_EMAIL_SECRET || env.INTERNAL_EMAIL_SECRET;

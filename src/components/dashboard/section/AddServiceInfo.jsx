@@ -7,6 +7,7 @@ import DashboardNavigation from "../header/DashboardNavigation";
 import ServiceGallery from "./ServiceGallery";
 import useConvexProfile from "@/hook/useConvexProfile";
 import useConvexCategories from "@/hook/useConvexCategories";
+import { flattenLeafMarketplaceCategories } from "@/lib/marketplaceCategories";
 
 function slugify(text) {
   return text
@@ -132,18 +133,9 @@ export default function AddServiceInfo() {
     }
   };
 
-  // Flatten the category tree for the dropdown
-  const flatCategories = [];
-  if (categories) {
-    for (const cat of categories) {
-      flatCategories.push({ id: cat._id, name: cat.name, indent: false });
-      if (cat.children) {
-        for (const child of cat.children) {
-          flatCategories.push({ id: child._id, name: child.name, indent: true });
-        }
-      }
-    }
-  }
+  const flatCategories = categories
+    ? flattenLeafMarketplaceCategories(categories)
+    : [];
 
   return (
     <>
@@ -238,8 +230,8 @@ export default function AddServiceInfo() {
                         >
                           <option value="">Select a category</option>
                           {flatCategories.map((cat) => (
-                            <option key={cat.id} value={cat.id}>
-                              {cat.indent ? "\u00a0\u00a0\u2514 " : ""}{cat.name}
+                            <option key={cat._id} value={cat._id}>
+                              {cat.label}
                             </option>
                           ))}
                           {categories === undefined && (

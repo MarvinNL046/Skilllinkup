@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "../_generated/server";
 import { requireServerSecret } from "../lib/authHelpers";
+import { buildMarketplaceCategoryTree } from "../lib/marketplaceCategories";
 
 /**
  * Get all marketplace categories as a tree (parents with nested children),
@@ -16,50 +17,20 @@ export const list = query({
       .filter((q) => q.eq(q.field("locale"), locale))
       .collect();
 
-    // Enrich with gig counts
-    const enriched = await Promise.all(
-      allCategories.map(async (cat) => {
-        const gigs = await ctx.db
-          .query("gigs")
-          .withIndex("by_category", (q) => q.eq("categoryId", cat._id))
-          .filter((q) =>
-            q.and(
-              q.eq(q.field("status"), "active"),
-              q.eq(q.field("locale"), locale)
-            )
-          )
-          .collect();
+    const activeGigs = await ctx.db
+      .query("gigs")
+      .withIndex("by_status_locale", (q) =>
+        q.eq("status", "active").eq("locale", locale)
+      )
+      .collect();
 
-        return {
-          ...cat,
-          gigCount: gigs.length,
-          children: [] as typeof allCategories,
-        };
-      })
-    );
-
-    // Build tree
-    const map = new Map<string, (typeof enriched)[0]>();
-    const roots: (typeof enriched)[0][] = [];
-
-    for (const cat of enriched) {
-      map.set(cat._id, cat);
+    const gigCounts = new Map<string, number>();
+    for (const gig of activeGigs) {
+      if (!gig.categoryId) continue;
+      gigCounts.set(gig.categoryId, (gigCounts.get(gig.categoryId) ?? 0) + 1);
     }
 
-    for (const cat of enriched) {
-      if (cat.parentId) {
-        const parent = map.get(cat.parentId);
-        if (parent) {
-          parent.children.push(cat);
-        } else {
-          roots.push(cat);
-        }
-      } else {
-        roots.push(cat);
-      }
-    }
-
-    return roots;
+    return buildMarketplaceCategoryTree(allCategories as any, gigCounts);
   },
 });
 
@@ -99,24 +70,7 @@ export const getFirstTenant = query({
 export const seedAll = mutation({
   args: {
     tenantId: v.id("tenants"),
-    categories: v.array(
-      v.object({
-        name: v.string(),
-        slug: v.string(),
-        icon: v.optional(v.string()),
-        serviceType: v.optional(v.string()),
-        sortOrder: v.optional(v.number()),
-        children: v.optional(
-          v.array(
-            v.object({
-              name: v.string(),
-              slug: v.string(),
-              sortOrder: v.optional(v.number()),
-            })
-          )
-        ),
-      })
-    ),
+    categories: v.array(v.any()),
     locale: v.optional(v.string()),
     serverSecret: v.optional(v.string()),
   },
@@ -127,79 +81,53 @@ export const seedAll = mutation({
     let inserted = 0;
     let skipped = 0;
 
-    for (const cat of args.categories) {
-      // Check if parent already exists
+    const upsertCategory = async (category: any, parentId?: any) => {
+      if (!category?.name || !category?.slug) {
+        throw new Error("Each category must include name and slug.");
+      }
+
       const existing = await ctx.db
         .query("marketplaceCategories")
         .withIndex("by_slug_locale", (q) =>
-          q.eq("slug", cat.slug).eq("locale", locale)
+          q.eq("slug", category.slug).eq("locale", locale)
         )
         .first();
 
-      if (existing) {
-        skipped++;
-        // Still seed children under existing parent
-        if (cat.children) {
-          for (const child of cat.children) {
-            const childExists = await ctx.db
-              .query("marketplaceCategories")
-              .withIndex("by_slug_locale", (q) =>
-                q.eq("slug", child.slug).eq("locale", locale)
-              )
-              .first();
-            if (childExists) {
-              skipped++;
-              continue;
-            }
-            await ctx.db.insert("marketplaceCategories", {
-              tenantId: args.tenantId,
-              name: child.name,
-              slug: child.slug,
-              parentId: existing._id,
-              sortOrder: child.sortOrder,
-              isActive: true,
-              locale,
-              createdAt: now,
-              updatedAt: now,
-            });
-            inserted++;
-          }
-        }
-        continue;
-      }
-
-      // Insert parent
-      const parentId = await ctx.db.insert("marketplaceCategories", {
+      let categoryId = existing?._id;
+      const patch = {
         tenantId: args.tenantId,
-        name: cat.name,
-        slug: cat.slug,
-        icon: cat.icon,
-        serviceType: cat.serviceType ?? "digital",
-        sortOrder: cat.sortOrder,
-        isActive: true,
+        name: category.name,
+        slug: category.slug,
+        description: category.description,
+        icon: category.icon,
+        imageUrl: category.imageUrl,
+        parentId,
+        serviceType: category.serviceType,
+        sortOrder: category.sortOrder,
+        isActive: category.isActive ?? true,
         locale,
-        createdAt: now,
+        seoMetadata: category.seoMetadata,
         updatedAt: now,
-      });
-      inserted++;
+      };
 
-      // Insert children
-      if (cat.children) {
-        for (const child of cat.children) {
-          await ctx.db.insert("marketplaceCategories", {
-            tenantId: args.tenantId,
-            name: child.name,
-            slug: child.slug,
-            parentId,
-            sortOrder: child.sortOrder,
-            isActive: true,
-            locale,
-            createdAt: now,
-            updatedAt: now,
-          });
-          inserted++;
-        }
+      if (existing) {
+        await ctx.db.patch(existing._id, patch);
+        skipped++;
+      } else {
+        categoryId = await ctx.db.insert("marketplaceCategories", {
+          ...patch,
+          createdAt: now,
+        });
+        inserted++;
       }
+
+      for (const child of category.children ?? []) {
+        await upsertCategory(child, categoryId);
+      }
+    };
+
+    for (const category of args.categories) {
+      await upsertCategory(category);
     }
 
     return { inserted, skipped };

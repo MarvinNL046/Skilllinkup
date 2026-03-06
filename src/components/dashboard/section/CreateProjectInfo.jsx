@@ -5,6 +5,7 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import DashboardNavigation from "../header/DashboardNavigation";
 import useConvexUser from "@/hook/useConvexUser";
+import { flattenLeafMarketplaceCategories } from "@/lib/marketplaceCategories";
 import { toast } from "sonner";
 
 function generateSlug(title) {
@@ -24,6 +25,9 @@ export default function CreateProjectInfo() {
 
   // Fetch marketplace categories for the dropdown
   const categories = useQuery(api.marketplace.categories.list, { locale: "en" });
+  const leafCategories = categories
+    ? flattenLeafMarketplaceCategories(categories)
+    : [];
 
   const [form, setForm] = useState({
     title: "",
@@ -301,18 +305,11 @@ export default function CreateProjectInfo() {
                           {categories === undefined && (
                             <option disabled>Loading categories...</option>
                           )}
-                          {categories &&
-                            categories.map((cat) => (
-                              <optgroup key={cat._id} label={cat.name}>
-                                <option value={cat._id}>{cat.name}</option>
-                                {cat.children &&
-                                  cat.children.map((child) => (
-                                    <option key={child._id} value={child._id}>
-                                      &nbsp;&nbsp;{child.name}
-                                    </option>
-                                  ))}
-                              </optgroup>
-                            ))}
+                          {leafCategories.map((category) => (
+                            <option key={category._id} value={category._id}>
+                              {category.label}
+                            </option>
+                          ))}
                         </select>
                       </div>
                     </div>
