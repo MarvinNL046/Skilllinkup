@@ -6,9 +6,12 @@ import DoughnutChart from "../chart/DoughnutChart";
 import LineChart from "../chart/LineChart";
 import DashboardNavigation from "../header/DashboardNavigation";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function DashboardInfo() {
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
+  const router = useRouter();
   const userId = convexUser?._id;
 
   const stats = useQuery(
@@ -44,6 +47,12 @@ export default function DashboardInfo() {
 
   const isLoading = isAuthenticated && (stats === undefined || recentOrders === undefined);
   const notAuthenticated = isLoaded && !isAuthenticated;
+
+  useEffect(() => {
+    if (notAuthenticated) {
+      router.replace("/login");
+    }
+  }, [notAuthenticated, router]);
 
   function formatCurrency(amount) {
     if (!amount && amount !== 0) return "$0";
