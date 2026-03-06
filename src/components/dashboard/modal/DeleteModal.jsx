@@ -25,6 +25,7 @@ export default function DeleteModal({ projectId, projectTitle, onDelete }) {
       tabIndex={-1}
       aria-labelledby="deleteModalLabel"
       aria-hidden="true"
+      data-testid="manage-project-delete-modal"
     >
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content position-relative">
@@ -52,6 +53,7 @@ export default function DeleteModal({ projectId, projectTitle, onDelete }) {
                 className="ud-btn bg-danger text-white mb25"
                 onClick={handleDelete}
                 disabled={isDeleting}
+                data-testid="manage-project-delete-confirm"
               >
                 {isDeleting ? (
                   <>

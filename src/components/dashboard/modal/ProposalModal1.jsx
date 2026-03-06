@@ -52,6 +52,7 @@ export default function ProposalModal1({ project, onUpdate }) {
       tabIndex={-1}
       aria-labelledby="proposalModalLabel"
       aria-hidden="true"
+      data-testid="manage-project-edit-modal"
     >
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content position-relative">
@@ -74,6 +75,7 @@ export default function ProposalModal1({ project, onUpdate }) {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   required
+                  data-testid="manage-project-edit-title"
                 />
               </div>
               <div className="mb-3">
@@ -84,6 +86,7 @@ export default function ProposalModal1({ project, onUpdate }) {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   required
+                  data-testid="manage-project-edit-description"
                 />
               </div>
               <div className="row">
@@ -96,6 +99,7 @@ export default function ProposalModal1({ project, onUpdate }) {
                       value={budgetMin}
                       onChange={(e) => setBudgetMin(e.target.value)}
                       min="0"
+                      data-testid="manage-project-edit-budget-min"
                     />
                   </div>
                 </div>
@@ -108,6 +112,7 @@ export default function ProposalModal1({ project, onUpdate }) {
                       value={budgetMax}
                       onChange={(e) => setBudgetMax(e.target.value)}
                       min="0"
+                      data-testid="manage-project-edit-budget-max"
                     />
                   </div>
                 </div>
@@ -118,6 +123,7 @@ export default function ProposalModal1({ project, onUpdate }) {
                   className="form-select"
                   value={workType}
                   onChange={(e) => setWorkType(e.target.value)}
+                  data-testid="manage-project-edit-work-type"
                 >
                   <option value="remote">Remote</option>
                   <option value="local">On-site</option>
@@ -128,6 +134,7 @@ export default function ProposalModal1({ project, onUpdate }) {
                 type="submit"
                 className="ud-btn btn-thm"
                 disabled={isUpdating}
+                data-testid="manage-project-edit-submit"
               >
                 {isUpdating ? (
                   <>

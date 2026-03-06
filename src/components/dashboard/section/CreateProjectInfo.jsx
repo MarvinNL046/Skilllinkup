@@ -19,7 +19,7 @@ function generateSlug(title) {
 
 export default function CreateProjectInfo() {
   const router = useRouter();
-  const { convexUser, isLoaded } = useConvexUser();
+  const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const createProject = useMutation(api.marketplace.projects.create);
 
   // Fetch marketplace categories for the dropdown
@@ -51,7 +51,7 @@ export default function CreateProjectInfo() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!convexUser?._id) {
+    if (!isAuthenticated) {
       setStatus({ loading: false, error: "You must be logged in to create a project.", success: false });
       return;
     }
@@ -149,8 +149,45 @@ export default function CreateProjectInfo() {
     }
   };
 
-  // Show login prompt if user is not authenticated
-  if (isLoaded && !convexUser) {
+  if (isAuthenticated && convexUser === undefined) {
+    return (
+      <div className="dashboard__content hover-bgc-color">
+        <div className="row pb40">
+          <div className="col-lg-12">
+            <DashboardNavigation />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-xl-12">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 text-center">
+              <div className="spinner-border spinner-border-sm text-success" role="status" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isAuthenticated && convexUser === null) {
+    return (
+      <div className="dashboard__content hover-bgc-color">
+        <div className="row pb40">
+          <div className="col-lg-12">
+            <DashboardNavigation />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-xl-12">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 text-center">
+              <p className="text-muted mb0">Setting up your account...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoaded && !isAuthenticated) {
     return (
       <div className="dashboard__content hover-bgc-color">
         <div className="row pb40">
@@ -224,7 +261,12 @@ export default function CreateProjectInfo() {
               )}
 
               <div className="col-xl-8">
-                <form id="create-project-form" className="form-style1" onSubmit={handleSubmit}>
+                <form
+                  id="create-project-form"
+                  className="form-style1"
+                  onSubmit={handleSubmit}
+                  data-testid="create-project-form"
+                >
                   <div className="row">
                     <div className="col-sm-12">
                       <div className="mb20">
@@ -239,6 +281,7 @@ export default function CreateProjectInfo() {
                           value={form.title}
                           onChange={handleChange}
                           required
+                          data-testid="create-project-title"
                         />
                       </div>
                     </div>
@@ -287,6 +330,7 @@ export default function CreateProjectInfo() {
                           min="0"
                           value={form.budgetMin}
                           onChange={handleChange}
+                          data-testid="create-project-budget-min"
                         />
                       </div>
                     </div>
@@ -304,6 +348,7 @@ export default function CreateProjectInfo() {
                           min="0"
                           value={form.budgetMax}
                           onChange={handleChange}
+                          data-testid="create-project-budget-max"
                         />
                       </div>
                     </div>
@@ -338,6 +383,7 @@ export default function CreateProjectInfo() {
                           value={form.deadline}
                           onChange={handleChange}
                           min={new Date().toISOString().split("T")[0]}
+                          data-testid="create-project-deadline"
                         />
                       </div>
                     </div>
@@ -354,6 +400,7 @@ export default function CreateProjectInfo() {
                           placeholder="e.g. React, TypeScript, Node.js"
                           value={form.requiredSkills}
                           onChange={handleChange}
+                          data-testid="create-project-skills"
                         />
                       </div>
                     </div>
@@ -372,6 +419,7 @@ export default function CreateProjectInfo() {
                           value={form.description}
                           onChange={handleChange}
                           required
+                          data-testid="create-project-description"
                         />
                       </div>
                     </div>
@@ -382,6 +430,7 @@ export default function CreateProjectInfo() {
                           type="submit"
                           className="ud-btn btn-thm"
                           disabled={status.loading || !isLoaded}
+                          data-testid="create-project-submit"
                         >
                           {status.loading ? (
                             <>

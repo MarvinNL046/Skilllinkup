@@ -253,7 +253,9 @@ export const cleanup = mutation({
       for (const bid of bids) {
         await ctx.db.delete(bid._id);
       }
-      await ctx.db.delete(args.projectId);
+      if (await ctx.db.get(args.projectId)) {
+        await ctx.db.delete(args.projectId);
+      }
     }
 
     if (args.gigId) {
@@ -271,7 +273,9 @@ export const cleanup = mutation({
       for (const image of images) {
         await ctx.db.delete(image._id);
       }
-      await ctx.db.delete(args.gigId);
+      if (await ctx.db.get(args.gigId)) {
+        await ctx.db.delete(args.gigId);
+      }
     }
 
     if (args.quoteRequestId) {
@@ -293,11 +297,15 @@ export const cleanup = mutation({
       for (const claim of claims) {
         await ctx.db.delete(claim._id);
       }
-      await ctx.db.delete(args.quoteRequestId);
+      if (await ctx.db.get(args.quoteRequestId)) {
+        await ctx.db.delete(args.quoteRequestId);
+      }
     }
 
     if (args.jobId) {
-      await ctx.db.delete(args.jobId);
+      if (await ctx.db.get(args.jobId)) {
+        await ctx.db.delete(args.jobId);
+      }
     }
 
     return { ok: true };

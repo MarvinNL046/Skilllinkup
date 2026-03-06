@@ -46,7 +46,7 @@ export default function ManageProjectCard({ project, onEdit, onDelete }) {
   const tooltipDeleteId = `delete-${project?._id ?? Math.random()}`;
 
   return (
-    <tr>
+    <tr data-testid="manage-project-row">
       <th scope="row">
         <div className="freelancer-style1 box-shadow-none row m-0 p-0 align-items-lg-end">
           <div className="d-lg-flex px-0">
@@ -92,26 +92,30 @@ export default function ManageProjectCard({ project, onEdit, onDelete }) {
               <span className="flaticon-eye" />
             </Link>
           )}
-          <a
+          <button
+            type="button"
             className="icon me-2"
             id={tooltipEditId}
             data-bs-toggle="modal"
             data-bs-target="#proposalModal"
             onClick={() => onEdit?.(project)}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", border: "none", background: "transparent", padding: 0 }}
+            data-testid="manage-project-edit"
           >
             <Tooltip anchorSelect={`#${tooltipEditId}`} className="ui-tooltip" place="top">
               Edit
             </Tooltip>
             <span className="flaticon-pencil" />
-          </a>
-          <a
+          </button>
+          <button
+            type="button"
             className="icon"
             id={tooltipDeleteId}
             data-bs-toggle="modal"
             data-bs-target="#deleteModal"
             onClick={() => onDelete?.(project)}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", border: "none", background: "transparent", padding: 0 }}
+            data-testid="manage-project-delete"
           >
             <Tooltip
               anchorSelect={`#${tooltipDeleteId}`}
@@ -121,7 +125,7 @@ export default function ManageProjectCard({ project, onEdit, onDelete }) {
               Delete
             </Tooltip>
             <span className="flaticon-delete" />
-          </a>
+          </button>
         </div>
       </td>
     </tr>

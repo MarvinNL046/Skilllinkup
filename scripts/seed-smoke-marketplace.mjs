@@ -43,7 +43,10 @@ const payload = {
   serverSecret,
   tag,
   clientEmail: process.env.SMOKE_CLIENT_EMAIL || "testonboarding@skilllinkup.com",
-  freelancerEmail: process.env.SMOKE_FREELANCER_EMAIL || "info@staycoolairco.nl",
+  freelancerEmail:
+    process.env.SMOKE_FREELANCER_EMAIL
+    || process.env.SMOKE_CLIENT_EMAIL
+    || "testonboarding@skilllinkup.com",
   categorySlug: process.env.SMOKE_CATEGORY_SLUG || "finance-accounting",
   locale: process.env.SMOKE_LOCALE || "en",
 };

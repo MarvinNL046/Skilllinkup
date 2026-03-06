@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "auth:ensure-clerk-convex": "node scripts/ensure-clerk-convex-template.mjs",
     "e2e:seed": "node scripts/seed-smoke-marketplace.mjs",
     "e2e:cleanup": "node scripts/cleanup-smoke-marketplace.mjs",
     "e2e:smoke": "playwright test"
