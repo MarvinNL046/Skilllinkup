@@ -391,3 +391,19 @@ header.nav-innerpage-style .row {
 .ace-responsive-menu > li.megamenu_style {
   position: relative;
 }
+
+/* Onboarding step transitions */
+.onboarding-step {
+  animation: slideInRight 0.25s ease forwards;
+}
+.onboarding-step.slide-back {
+  animation: slideInLeft 0.25s ease forwards;
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
