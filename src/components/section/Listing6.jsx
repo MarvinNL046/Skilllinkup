@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import useConvexGigs from "@/hook/useConvexGigs";
+import useConvexSearch from "@/hook/useConvexSearch";
 import ListingOption2 from "../element/ListingOption2";
 import ListingSidebarModal1 from "../modal/ListingSidebarModal1";
 import ListingSidebar1 from "../sidebar/ListingSidebar1";
@@ -11,10 +11,13 @@ import priceStore from "@/store/priceStore";
 import PopularServiceSlideCard1 from "../card/PopularServiceSlideCard1";
 import TrendingServiceCard1 from "../card/TrendingServiceCard1";
 import EmptyState from "@/components/ui/EmptyState";
+import CategoryPills from "@/components/ui/CategoryPills";
 import Link from "next/link";
 
 export default function Listing6() {
   const searchParams = useSearchParams();
+  const q = searchParams.get("q") || "";
+
   const setSearch = listingStore((state) => state.setSearch);
   const getDeliveryTime = listingStore((state) => state.getDeliveryTime);
   const getPriceRange = priceStore((state) => state.priceRange);
@@ -23,17 +26,14 @@ export default function Listing6() {
   const getBestSeller = listingStore((state) => state.getBestSeller);
   const getDesginTool = listingStore((state) => state.getDesginTool);
   const getSpeak = listingStore((state) => state.getSpeak);
-  const getSearch = listingStore((state) => state.getSearch);
 
   // Sync URL search params to Zustand store on mount
   useEffect(() => {
-    const q = searchParams.get("q");
     if (q) setSearch(q);
-  }, [searchParams, setSearch]);
+  }, [q, setSearch]);
 
-  const product1 = useConvexGigs();
+  const product1 = useConvexSearch(q);
 
-  // Show spinner while Convex data is loading
   if (product1 === undefined) {
     return (
       <section className="pt30 pb90">
@@ -49,9 +49,6 @@ export default function Listing6() {
     );
   }
 
-  // Handle empty state within the normal layout (sidebar stays visible)
-
-  // Filter functions
   const deliveryFilter = (item) =>
     getDeliveryTime === "" || getDeliveryTime === "anytime"
       ? item
@@ -62,12 +59,6 @@ export default function Listing6() {
     getLevel?.length !== 0 ? getLevel.includes(item.level) : true;
   const locationFilter = (item) =>
     getLocation?.length !== 0 ? getLocation.includes(item.location) : true;
-  const searchFilter = (item) =>
-    getSearch !== ""
-      ? (item.title || "").toLowerCase().includes(getSearch.toLowerCase()) ||
-        (item.category || "").toLowerCase().includes(getSearch.toLowerCase()) ||
-        (item.location || "").toLowerCase().includes(getSearch.toLowerCase())
-      : true;
   const sortByFilter = (item) =>
     getBestSeller === "best-seller" ? true : item.sort === getBestSeller;
   const designToolFilter = (item) =>
@@ -75,16 +66,16 @@ export default function Listing6() {
   const speakFilter = (item) =>
     getSpeak?.length !== 0 ? getSpeak.includes(item.language) : true;
 
+  // Filters EERST, slice DAARNA (was omgekeerd — dat was de bug)
   let content = product1
-    .slice(0, 9)
     .filter(deliveryFilter)
     .filter(priceFilter)
     .filter(levelFilter)
     .filter(locationFilter)
-    .filter(searchFilter)
     .filter(sortByFilter)
     .filter(designToolFilter)
     .filter(speakFilter)
+    .slice(0, 9)
     .map((item, i) => (
       <div key={i} className="col-sm-6 col-xl-4">
         {item?.gallery ? (
@@ -104,6 +95,7 @@ export default function Listing6() {
               <ListingSidebar1 />
             </div>
             <div className="col-lg-9">
+              <CategoryPills />
               <ListingOption2 itemLength={content?.length} />
               {product1.length === 0 ? (
                 <EmptyState
