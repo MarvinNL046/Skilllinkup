@@ -12,10 +12,14 @@ export default function DashboardLayout({ children }) {
   const isActive = toggleStore((state) => state.isDasboardSidebarActive);
   const router = useRouter();
   const pathname = usePathname();
-  const { convexUser } = useConvexUser();
+  const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
 
-  // Redirect to onboarding if user has no userType or preferredWorld
   useEffect(() => {
+    if (isLoaded && !isAuthenticated) {
+      router.replace("/login");
+      return;
+    }
+    // Redirect to onboarding if user has no userType or preferredWorld
     if (
       convexUser &&
       (!convexUser.userType || !convexUser.preferredWorld) &&
@@ -23,7 +27,7 @@ export default function DashboardLayout({ children }) {
     ) {
       router.replace("/onboarding");
     }
-  }, [convexUser, pathname, router]);
+  }, [convexUser, isLoaded, isAuthenticated, pathname, router]);
 
   return (
     <>
