@@ -40,8 +40,15 @@ function mapGigToCard(gig) {
 function GigTable({ gigs, removeGig }) {
   if (gigs.length === 0) {
     return (
-      <div className="text-center py-4">
-        <p className="text">No services found in this category.</p>
+      <div className="text-center py-5">
+        <div style={{ fontSize: 40, marginBottom: 12 }}>🎯</div>
+        <p className="fw500 dark-color mb-1">No services here yet</p>
+        <p className="text fz14 mb20">
+          Create a gig for each skill — one for web development, one for marketing, etc.
+        </p>
+        <Link href="/add-services" className="ud-btn btn-thm bdrs8">
+          Create your first gig <i className="fal fa-arrow-right-long" />
+        </Link>
       </div>
     );
   }
@@ -63,7 +70,17 @@ function GigTable({ gigs, removeGig }) {
           ))}
         </tbody>
       </table>
-      <div className="mt30">
+      <div className="mt20 mb10">
+        <Link
+          href="/add-services"
+          className="d-flex align-items-center gap-2 fz14 fw500"
+          style={{ color: "#ef2b70", textDecoration: "none" }}
+        >
+          <span style={{ fontSize: 18, lineHeight: 1 }}>+</span>
+          Add another gig in a different category
+        </Link>
+      </div>
+      <div className="mt20">
         <Pagination1 />
       </div>
     </div>
@@ -89,16 +106,18 @@ export default function ManageServiceInfo() {
           <div className="col-lg-9">
             <div className="dashboard_title_area">
               <h2>Manage Services</h2>
-              <p className="text">View and manage your listed services.</p>
+              <p className="text">
+                Offer services in multiple categories — create a separate gig for each skill.
+              </p>
             </div>
           </div>
           <div className="col-lg-3">
             <div className="text-lg-end">
               <Link
                 href="/add-services"
-                className="ud-btn btn-dark default-box-shadow2"
+                className="ud-btn btn-thm default-box-shadow2"
               >
-                Add Service
+                + New Gig
                 <i className="fal fa-arrow-right-long" />
               </Link>
             </div>
