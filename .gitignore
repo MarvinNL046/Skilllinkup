@@ -51,6 +51,8 @@ quick-*.mjs
 *-test-report.md
 *-test-results.json
 test-results/
+playwright-report/
+e2e/.smoke-data.json
 scripts/test-*.js
 scripts/test-*.ts
 scripts/check-*.mjs
