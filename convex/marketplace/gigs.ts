@@ -1,12 +1,16 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
-import { Doc } from "../_generated/dataModel";
+import { Doc, Id } from "../_generated/dataModel";
 import { requireAuthUser } from "../lib/authHelpers";
 import { requireServerSecret } from "../lib/authHelpers";
 import {
   isPublicFreelancerProfile,
   toPublicFreelancerProfile,
 } from "../lib/publicData";
+import {
+  getMarketplaceCategoryBySlug,
+  getMarketplaceDescendantIds,
+} from "../lib/marketplaceCategories";
 
 function asFreelancerProfile(
   doc: unknown
@@ -96,25 +100,18 @@ export const listByCategory = query({
   handler: async (ctx, args) => {
     const limit = args.limit ?? 50;
 
-    // Find the category by slug
-    const category = await ctx.db
+    const allCategories = await ctx.db
       .query("marketplaceCategories")
-      .withIndex("by_slug_locale", (q) =>
-        q.eq("slug", args.categorySlug).eq("locale", args.locale)
-      )
-      .first();
+      .filter((q) => q.eq(q.field("locale"), args.locale))
+      .collect();
+    const category = getMarketplaceCategoryBySlug(
+      allCategories as any,
+      args.categorySlug
+    );
 
     if (!category) return { category: null, gigs: [] };
 
-    // Collect this category ID + child category IDs
-    const categoryIds = [category._id];
-    const children = await ctx.db
-      .query("marketplaceCategories")
-      .withIndex("by_parent", (q) => q.eq("parentId", category._id))
-      .collect();
-    for (const child of children) {
-      categoryIds.push(child._id);
-    }
+    const categoryIds = getMarketplaceDescendantIds(category);
 
     // Find gigs using compound index (category + status + locale)
     const allGigs = [];
@@ -122,7 +119,7 @@ export const listByCategory = query({
       const gigs = await ctx.db
         .query("gigs")
         .withIndex("by_category_status_locale", (q) =>
-          q.eq("categoryId", catId).eq("status", "active").eq("locale", args.locale)
+          q.eq("categoryId", catId as Id<"marketplaceCategories">).eq("status", "active").eq("locale", args.locale)
         )
         .collect();
       allGigs.push(...gigs);
@@ -172,12 +169,7 @@ export const listByCategory = query({
     );
 
     return {
-      category: {
-        ...category,
-        children: children.sort(
-          (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
-        ),
-      },
+      category,
       gigs: enriched.filter(Boolean),
     };
   },
