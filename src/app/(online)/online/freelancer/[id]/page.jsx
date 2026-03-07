@@ -4,9 +4,9 @@ import { api } from "../../../../../../convex/_generated/api";
 import Breadcumb10 from "@/components/breadcumb/Breadcumb10";
 import FreelancerDetail3 from "@/components/section/FreelancerDetails3";
 
-// Validate Convex ID format (base-32, 10+ chars, not all digits)
+// Convex IDs are alphanumeric strings (no hyphens, underscores, or special chars)
 function isValidConvexId(id) {
-  return id && typeof id === "string" && id.length > 10 && !/^\d+$/.test(id);
+  return id && typeof id === "string" && id.length > 10 && /^[a-zA-Z0-9]+$/.test(id);
 }
 
 export async function generateMetadata({ params }) {
@@ -19,7 +19,7 @@ export async function generateMetadata({ params }) {
       const name = profile.displayName || "Freelancer";
       const title = profile.title || "";
       return {
-        title: title ? `${name} — ${title} | SkillLinkup` : `${name} | SkillLinkup`,
+        title: title ? `${name} — ${title}` : name,
         description: profile.bio
           ? profile.bio.slice(0, 155)
           : `Hire ${name} on SkillLinkup. View portfolio, reviews, and services.`,
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }) {
     }
   } catch {}
   return {
-    title: "Freelancer Profile | SkillLinkup",
+    title: "Freelancer Profile",
     description: "View freelancer profile, portfolio, reviews, and services on SkillLinkup.",
   };
 }

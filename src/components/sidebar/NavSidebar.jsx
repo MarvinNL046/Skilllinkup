@@ -108,9 +108,32 @@ export default function NavSidebar() {
               </Menu>
             </Sidebar>
           </div>
-          {!isSignedIn && (
+          {isSignedIn ? (
             <div className="p-3 mt-3 border-top">
-              <WaitlistButton className="ud-btn btn-thm w-100 bdrs8 text-white" />
+              <Link
+                href="/dashboard"
+                className="ud-btn btn-thm w-100 bdrs8 text-white mb-2"
+                data-bs-dismiss="offcanvas"
+              >
+                Dashboard <i className="fal fa-arrow-right-long" />
+              </Link>
+            </div>
+          ) : (
+            <div className="p-3 mt-3 border-top d-flex flex-column gap-2">
+              <Link
+                href="/login"
+                className="ud-btn btn-white bdrs8 w-100 text-center"
+                data-bs-dismiss="offcanvas"
+              >
+                Sign in <i className="fal fa-arrow-right-long" />
+              </Link>
+              <Link
+                href="/become-seller"
+                className="ud-btn btn-thm bdrs8 w-100 text-white text-center"
+                data-bs-dismiss="offcanvas"
+              >
+                Become a Seller <i className="fal fa-arrow-right-long" />
+              </Link>
             </div>
           )}
         </div>

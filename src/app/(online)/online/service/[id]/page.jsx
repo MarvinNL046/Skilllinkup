@@ -15,7 +15,7 @@ export async function generateMetadata({ params }) {
     });
     if (gig) {
       return {
-        title: `${gig.title} | SkillLinkup`,
+        title: gig.title,
         description: gig.description
           ? gig.description.slice(0, 155)
           : `Hire a freelancer for ${gig.title} on SkillLinkup.`,
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }) {
     }
   } catch {}
   return {
-    title: "Service Details | SkillLinkup",
+    title: "Service Details",
     description: "View service details, pricing, and seller information on SkillLinkup.",
   };
 }

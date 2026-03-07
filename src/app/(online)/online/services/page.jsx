@@ -3,7 +3,7 @@ import Breadcumb1 from "@/components/breadcumb/Breadcumb1";
 import Listing6 from "@/components/section/Listing6";
 
 export const metadata = {
-  title: "Browse Services | SkillLinkup",
+  title: "Browse Services",
   description: "Explore freelance services on SkillLinkup. Find the right service for your project across design, development, writing, marketing, and more.",
 };
 

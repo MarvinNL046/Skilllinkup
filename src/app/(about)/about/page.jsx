@@ -8,7 +8,7 @@ import CtaBanner4 from "@/components/section/CtaBanner4";
 import OurFaq1 from "@/components/section/OurFaq1";
 
 export const metadata = {
-    title: "About Us | SkillLinkup",
+    title: "About Us",
     description: "Learn about SkillLinkup, our mission to connect freelancers with clients worldwide, and the team behind the platform.",
 };
 

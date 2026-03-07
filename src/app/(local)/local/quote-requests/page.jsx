@@ -2,7 +2,7 @@ import Breadcumb1 from "@/components/breadcumb/Breadcumb1";
 import QuoteRequestListing from "@/components/section/QuoteRequestListing";
 
 export const metadata = {
-  title: "Quote Requests | SkillLinkup Local",
+  title: "Quote Requests",
   description: "Browse open quote requests from homeowners and businesses looking for skilled local craftsmen.",
 };
 

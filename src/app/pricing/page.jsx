@@ -2,7 +2,7 @@ import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 
 export const metadata = {
-  title: "Pricing | SkillLinkup",
+  title: "Pricing",
   description:
     "SkillLinkup charges just 3.5% for buyers and 3.5% for sellers per transaction. No subscriptions, no hidden fees. Free to join.",
 };

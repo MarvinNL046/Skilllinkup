@@ -7,7 +7,7 @@ import TabSection1 from "@/components/section/TabSection1";
 import React from "react";
 
 export const metadata = {
-    title: "Service Details | SkillLinkup",
+    title: "Service Details",
     description: "View service details, pricing, and seller information on SkillLinkup. Order freelance services with confidence.",
 };
 

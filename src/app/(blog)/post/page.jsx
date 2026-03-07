@@ -3,7 +3,7 @@ import Header20 from "@/components/header/Header20";
 import EmptyState from "@/components/ui/EmptyState";
 
 export const metadata = {
-    title: "Blog Post | SkillLinkup",
+    title: "Blog Post",
     description: "Read articles and guides on the SkillLinkup blog.",
 };
 

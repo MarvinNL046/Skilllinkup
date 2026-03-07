@@ -17,7 +17,7 @@ export async function generateMetadata({ params }) {
         ? ` — €${job.salaryMin.toLocaleString()}–€${job.salaryMax.toLocaleString()}`
         : "";
       return {
-        title: `${job.title}${job.company ? ` at ${job.company}` : ""} | SkillLinkup`,
+        title: `${job.title}${job.company ? ` at ${job.company}` : ""}`,
         description: job.description
           ? job.description.slice(0, 155)
           : `${job.title}${salary}. Apply on SkillLinkup.`,
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }) {
     }
   } catch {}
   return {
-    title: "Job Opening | SkillLinkup",
+    title: "Job Opening",
     description: "View job details and apply on SkillLinkup.",
   };
 }

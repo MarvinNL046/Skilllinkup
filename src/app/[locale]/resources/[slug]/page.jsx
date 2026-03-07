@@ -11,7 +11,7 @@ export async function generateMetadata({ params }) {
   const { slug, locale } = await params;
   try {
     const resource = await fetchQuery(api.resources.getBySlug, { slug, locale });
-    if (!resource || resource.status !== "published") return { title: "Resource | SkillLinkup" };
+    if (!resource || resource.status !== "published") return { title: "Resource" };
     return {
       title: resource.metaTitle,
       description: resource.metaDescription,
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }) {
       },
     };
   } catch {
-    return { title: "Resource | SkillLinkup" };
+    return { title: "Resource" };
   }
 }
 

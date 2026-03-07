@@ -5,7 +5,7 @@ import Header20 from "@/components/header/Header20";
 import BlogArea3 from "@/components/section/BlogArea3";
 
 export const metadata = {
-    title: "Blog | SkillLinkup",
+    title: "Blog",
     description: "Read the latest tips, guides, and insights for freelancers and clients on the SkillLinkup blog.",
 };
 

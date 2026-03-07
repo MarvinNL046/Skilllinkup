@@ -7,7 +7,7 @@ import Footer14 from "@/components/footer/Footer14";
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://skilllinkup.com";
 
 export const metadata = {
-  title: "Freelance Platform Resources 2026: Guides, Pricing & Comparisons | SkillLinkup",
+  title: "Freelance Platform Resources 2026: Guides, Pricing & Comparisons",
   description: "In-depth guides on freelance platform pricing, comparisons, and strategies. Upwork, Toptal, 99designs, Guru and more — all the info you need to pick the right platform.",
   alternates: { canonical: `${BASE_URL}/resources` },
 };

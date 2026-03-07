@@ -2,9 +2,9 @@
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 
-// Convex IDs are long base-32 strings, not plain numbers
+// Convex IDs are alphanumeric strings (no hyphens, underscores, or special chars)
 function isConvexId(id) {
-  return id && typeof id === "string" && id.length > 10 && !/^\d+$/.test(id);
+  return id && typeof id === "string" && id.length > 10 && /^[a-zA-Z0-9]+$/.test(id);
 }
 
 export default function useConvexFreelancerDetail(profileId) {

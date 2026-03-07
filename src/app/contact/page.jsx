@@ -6,7 +6,7 @@ import ContactInfo1 from "@/components/section/ContactInfo1";
 import OurFaq1 from "@/components/section/OurFaq1";
 
 export const metadata = {
-    title: "Contact Us | SkillLinkup",
+    title: "Contact Us",
     description: "Get in touch with the SkillLinkup team. We're here to help with any questions about our freelance marketplace platform.",
 };
 

@@ -13,7 +13,7 @@ export async function generateMetadata({ params }) {
     });
     if (project) {
       return {
-        title: `${project.title} | SkillLinkup`,
+        title: project.title,
         description: project.description
           ? project.description.slice(0, 155)
           : `Project: ${project.title} on SkillLinkup.`,
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }) {
     }
   } catch {}
   return {
-    title: "Project | SkillLinkup",
+    title: "Project",
     description: "View project details on SkillLinkup.",
   };
 }

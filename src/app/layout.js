@@ -39,9 +39,6 @@ export const metadata = {
     description: "Online freelancers, local craftsmen, and job vacancies — all in one platform.",
     images: ["/images/logo/skilllinkup-og.png"],
   },
-  alternates: {
-    canonical: "https://skilllinkup.com",
-  },
 };
 
 export default function RootLayout({ children }) {

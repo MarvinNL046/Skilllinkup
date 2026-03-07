@@ -11,9 +11,9 @@ export async function generateMetadata({ params }) {
       slug,
       locale: "en",
     });
-    if (!platform) return { title: "Platform | SkillLinkup" };
+    if (!platform) return { title: "Platform Review" };
     return {
-      title: `${platform.name} Review 2026: Pricing, Features & Alternatives | SkillLinkup`,
+      title: `${platform.name} Review 2026: Pricing, Features & Alternatives`,
       description: platform.description
         ? platform.description.replace(/<[^>]+>/g, "").slice(0, 155)
         : `In-depth ${platform.name} review: pricing, features, pros & cons. Find the best freelance platform for your needs.`,
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }) {
       alternates: { canonical: `${BASE_URL}/platforms/${slug}` },
     };
   } catch {
-    return { title: "Platform Review | SkillLinkup" };
+    return { title: "Platform Review" };
   }
 }
 

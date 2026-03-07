@@ -3,7 +3,7 @@ import Header20 from "@/components/header/Header20";
 import EmptyState from "@/components/ui/EmptyState";
 
 export const metadata = {
-    title: "Freelancer Profile | SkillLinkup",
+    title: "Freelancer Profile",
     description: "View freelancer profiles on SkillLinkup.",
 };
 

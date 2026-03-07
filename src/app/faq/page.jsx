@@ -4,7 +4,7 @@ import FaqPayment from "@/components/section/FaqPayment";
 import FaqSuggestion from "@/components/section/FaqSuggestion";
 
 export const metadata = {
-    title: "FAQ | SkillLinkup",
+    title: "FAQ",
     description: "Find answers to frequently asked questions about SkillLinkup. Learn how our freelance marketplace works for both clients and freelancers.",
 };
 

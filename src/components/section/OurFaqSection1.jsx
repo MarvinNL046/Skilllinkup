@@ -15,8 +15,7 @@ export default function OurFaqSection1() {
               <div className="main-title text-center">
                 <h2 className="title">How can we help you?</h2>
                 <p className="paragraph mt10">
-                  Give your visitor a smooth online experience with a solid UX
-                  design
+                  Browse our help categories or search for answers below
                 </p>
                 <div className="search_widgets mt30">
                   <form>

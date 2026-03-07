@@ -5,12 +5,13 @@ import Header20 from "@/components/header/Header20";
 
 import FreelancerDetail3 from "@/components/section/FreelancerDetails3";
 
+// Convex IDs are alphanumeric strings (no hyphens, underscores, or special chars)
 function isValidConvexId(id) {
-  return id && typeof id === "string" && id.length > 10 && !/^\d+$/.test(id);
+  return id && typeof id === "string" && id.length > 10 && /^[a-zA-Z0-9]+$/.test(id);
 }
 
 export const metadata = {
-    title: "Freelancer Profile | SkillLinkup",
+    title: "Freelancer Profile",
     description: "View freelancer profile, portfolio, reviews, and services on SkillLinkup. Hire with confidence.",
 };
 
