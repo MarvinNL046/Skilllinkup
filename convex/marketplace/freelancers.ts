@@ -1,5 +1,6 @@
 import { v } from "convex/values";
-import { query, mutation, internalQuery, QueryCtx } from "../_generated/server";
+import { query, mutation, internalQuery } from "../_generated/server";
+import type { QueryCtx } from "../_generated/server";
 import { requireAuthUser, requireOwner, requireServerSecret } from "../lib/authHelpers";
 import {
   isPublicFreelancerProfile,
