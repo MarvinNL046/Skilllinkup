@@ -2,7 +2,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
-import WaitlistButton from "@/components/ui/WaitlistButton";
 
 export default function MobileNavigation2() {
   const { isSignedIn, user } = useUser();
@@ -16,13 +15,13 @@ export default function MobileNavigation2() {
               <div className="mobile_menu_bar d-flex justify-content-between align-items-center">
                 <Link className="mobile_logo" href="/">
                   <Image
-                    height={40}
-                    width={172}
+                    height={36}
+                    width={150}
                     src="/images/logo/skilllinkup-transparant-rozepunt.webp"
                     alt="Header Logo"
                   />
                 </Link>
-                <div className="right-side d-flex align-items-center gap-2">
+                <div className="d-flex align-items-center gap-3">
                   {isSignedIn ? (
                     <Link href="/dashboard" className="d-flex align-items-center">
                       <Image
@@ -35,19 +34,21 @@ export default function MobileNavigation2() {
                       />
                     </Link>
                   ) : (
-                    <>
-                      <Link
-                        href="/login"
-                        className="ud-btn btn-white btn-sm py-1 px-3 bdrs8"
-                        style={{ fontSize: 13, border: "1px solid #ddd" }}
-                      >
-                        Sign in
-                      </Link>
-                      <WaitlistButton className="ud-btn btn-thm btn-sm py-1 px-3 bdrs8 text-white" />
-                    </>
+                    <Link
+                      href="/login"
+                      style={{
+                        fontSize: 14,
+                        fontWeight: 600,
+                        color: "#222",
+                        textDecoration: "none",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      Sign in
+                    </Link>
                   )}
                   <a
-                    className="menubar ml10"
+                    className="menubar"
                     data-bs-toggle="offcanvas"
                     data-bs-target="#offcanvasExample"
                     aria-controls="offcanvasExample"
@@ -56,7 +57,7 @@ export default function MobileNavigation2() {
                       height={20}
                       width={20}
                       src="/images/mobile-dark-nav-icon.svg"
-                      alt="icon"
+                      alt="Menu"
                     />
                   </a>
                 </div>

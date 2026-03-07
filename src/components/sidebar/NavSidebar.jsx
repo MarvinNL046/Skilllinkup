@@ -5,11 +5,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
+import { useUser } from "@clerk/nextjs";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
+import WaitlistButton from "@/components/ui/WaitlistButton";
 
 export default function NavSidebar() {
   const path = usePathname();
   const crossRef = useRef(null);
+  const { isSignedIn } = useUser();
 
   return (
     <>
@@ -105,6 +108,11 @@ export default function NavSidebar() {
               </Menu>
             </Sidebar>
           </div>
+          {!isSignedIn && (
+            <div className="p-3 mt-3 border-top">
+              <WaitlistButton className="ud-btn btn-thm w-100 bdrs8 text-white" />
+            </div>
+          )}
         </div>
       </div>
     </>
