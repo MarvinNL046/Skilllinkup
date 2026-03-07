@@ -10,10 +10,15 @@ import { useParams } from "next/navigation";
 import useConvexProjectDetail from "@/hook/useConvexProjectDetail";
 import useConvexUser from "@/hook/useConvexUser";
 import Link from "next/link";
+import { useRef, useCallback } from "react";
 
 export default function ProjectDetail3() {
   const isMatchedScreen = useScreen(1216);
   const { id } = useParams();
+  const bidSectionRef = useRef(null);
+  const scrollToBid = useCallback(() => {
+    bidSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
 
   const convexData = useConvexProjectDetail(id);
   const { convexUser, isAuthenticated, isLoaded } = useConvexUser();
@@ -186,7 +191,7 @@ export default function ProjectDetail3() {
                       )}
 
                       {/* Bid form section */}
-                      <div className="bsp_reveiw_wrt mt25">
+                      <div ref={bidSectionRef} className="bsp_reveiw_wrt mt25">
                         {!isLoaded ? null : !isAuthenticated ? (
                           /* Not logged in */
                           <div className="text-center py20">
@@ -221,8 +226,18 @@ export default function ProjectDetail3() {
                   <Sticky bottomBoundary="#stikyContainer">
                     <div className="scrollbalance-inner">
                       <div className="blog-sidebar ms-lg-auto">
-                        <ProjectPriceWidget1 />
-                        <ProjectContactWidget1 />
+                        <ProjectPriceWidget1
+                          budgetMin={convexData?.budgetMin}
+                          budgetMax={convexData?.budgetMax}
+                          currency={convexData?.currency}
+                          scrollToBid={scrollToBid}
+                        />
+                        <ProjectContactWidget1
+                          clientName={convexData?.clientName}
+                          clientAvatar={convexData?.clientAvatar}
+                          location={data?.location}
+                          categoryName={convexData?.categoryName}
+                        />
                       </div>
                     </div>
                   </Sticky>

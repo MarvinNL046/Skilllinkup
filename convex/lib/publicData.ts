@@ -65,6 +65,7 @@ export function toPublicFreelancerProfile(
     _id: profile._id,
     userId: profile.userId,
     displayName: profile.displayName,
+    slug: profile.slug ?? null,
     tagline: profile.tagline ?? null,
     bio: profile.bio ?? null,
     avatarUrl: profile.avatarUrl ?? null,

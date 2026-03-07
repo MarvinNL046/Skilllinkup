@@ -7,9 +7,19 @@ function isConvexId(id) {
   return id && typeof id === "string" && id.length > 10 && /^[a-zA-Z0-9]+$/.test(id);
 }
 
-export default function useConvexFreelancerDetail(profileId) {
-  return useQuery(
+export default function useConvexFreelancerDetail(idOrSlug) {
+  // If it looks like a Convex ID, query by ID; otherwise query by slug
+  const isId = isConvexId(idOrSlug);
+
+  const byId = useQuery(
     api.marketplace.freelancers.getById,
-    isConvexId(profileId) ? { profileId } : "skip"
+    isId ? { profileId: idOrSlug } : "skip"
   );
+
+  const bySlug = useQuery(
+    api.marketplace.freelancers.getBySlug,
+    !isId && idOrSlug ? { slug: idOrSlug } : "skip"
+  );
+
+  return isId ? byId : bySlug;
 }

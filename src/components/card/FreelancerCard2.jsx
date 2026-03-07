@@ -71,7 +71,7 @@ export default function FreelancerCard2({ data }) {
           </div>
           <div className="d-grid mt15">
             <Link
-              href={`/online/freelancer/${data._id || data.id}`}
+              href={`/online/freelancer/${data.slug || data._id || data.id}`}
               className="ud-btn btn-light-thm"
             >
               View Profile

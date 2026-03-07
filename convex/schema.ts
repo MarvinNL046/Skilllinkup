@@ -324,6 +324,7 @@ export default defineSchema({
     userId: v.id("users"),
     tenantId: v.id("tenants"),
     displayName: v.string(),
+    slug: v.optional(v.string()),
     tagline: v.optional(v.string()),
     bio: v.optional(v.string()),
     avatarUrl: v.optional(v.string()),
@@ -365,6 +366,7 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_userId", ["userId"])
+    .index("by_slug", ["slug"])
     .index("by_status", ["status"])
     .index("by_status_locale", ["status", "locale"])
     .index("by_tenant", ["tenantId"])

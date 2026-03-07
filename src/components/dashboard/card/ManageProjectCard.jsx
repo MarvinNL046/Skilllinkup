@@ -82,14 +82,14 @@ export default function ManageProjectCard({ project, onEdit, onDelete }) {
         <div className="d-flex align-items-center">
           {slug && (
             <Link
-              href={`/en/projects/${slug}`}
+              href={`/project/${slug}`}
               className="icon me-2"
               id={tooltipViewId}
             >
               <Tooltip anchorSelect={`#${tooltipViewId}`} className="ui-tooltip" place="top">
                 View Bids
               </Tooltip>
-              <span className="flaticon-eye" />
+              <span className="flaticon-document" />
             </Link>
           )}
           <button

@@ -19,7 +19,7 @@ function mapConvexFreelancer(fl, index) {
     language: fl.languages?.[0] || "",
     sort: "best-seller",
     title: fl.bio ? fl.bio.substring(0, 80) : "",
-    slug: fl._id,
+    slug: fl.slug || fl._id,
   };
 }
 

@@ -247,10 +247,25 @@ export const setUserType = mutation({
         .first();
 
       if (!existingProfile) {
+        // Generate URL-friendly slug from name
+        const baseSlug = (user.name || "freelancer")
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          || "freelancer";
+        const existingSlug = await ctx.db
+          .query("freelancerProfiles")
+          .withIndex("by_slug", (q) => q.eq("slug", baseSlug))
+          .first();
+        const slug = existingSlug
+          ? `${baseSlug}-${Math.random().toString(36).slice(2, 6)}`
+          : baseSlug;
+
         await ctx.db.insert("freelancerProfiles", {
           userId: user._id,
           tenantId: user.tenantId,
           displayName: user.name,
+          slug,
           status: "active",
           locale: "en",
           createdAt: Date.now(),

@@ -65,14 +65,14 @@ export default function ManageJobCard({ job, onEdit, onDelete }) {
         <div className="d-flex align-items-center">
           {slug && (
             <Link
-              href={`/en/jobs/${slug}`}
+              href={`/jobs/${slug}`}
               className="icon me-2"
               id={tooltipViewId}
             >
               <Tooltip anchorSelect={`#${tooltipViewId}`} className="ui-tooltip" place="top">
                 View Job
               </Tooltip>
-              <span className="flaticon-eye" />
+              <span className="flaticon-document" />
             </Link>
           )}
           <a

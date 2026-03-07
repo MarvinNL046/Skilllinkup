@@ -1,10 +1,38 @@
 import { v } from "convex/values";
-import { query, mutation, internalQuery } from "../_generated/server";
+import { query, mutation, internalQuery, QueryCtx } from "../_generated/server";
 import { requireAuthUser, requireOwner, requireServerSecret } from "../lib/authHelpers";
 import {
   isPublicFreelancerProfile,
   toPublicFreelancerProfile,
 } from "../lib/publicData";
+
+/**
+ * Generate a URL-friendly slug from a display name.
+ * If the base slug already exists, appends a short suffix.
+ */
+async function generateSlug(
+  db: QueryCtx["db"],
+  displayName: string,
+  excludeId?: string
+): Promise<string> {
+  const base = displayName
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    || "freelancer";
+
+  // Check if base slug is available
+  const existing = await db
+    .query("freelancerProfiles")
+    .withIndex("by_slug", (q) => q.eq("slug", base))
+    .first();
+
+  if (!existing || existing._id === excludeId) return base;
+
+  // Append a short random suffix
+  const suffix = Math.random().toString(36).slice(2, 6);
+  return `${base}-${suffix}`;
+}
 
 /**
  * List active freelancer profiles.
@@ -83,6 +111,23 @@ export const getById = query({
 });
 
 /**
+ * Get a freelancer profile by its URL slug.
+ */
+export const getBySlug = query({
+  args: {
+    slug: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const profile = await ctx.db
+      .query("freelancerProfiles")
+      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
+      .first();
+    if (!isPublicFreelancerProfile(profile)) return null;
+    return toPublicFreelancerProfile(profile);
+  },
+});
+
+/**
  * Full-text search on freelancer bio using the "search_freelancers" search index.
  * Filters by active status.
  */
@@ -151,6 +196,12 @@ export const updateProfile = mutation({
       if (value !== undefined) {
         patch[key] = value;
       }
+    }
+
+    // Auto-generate slug if displayName changed or slug is missing
+    if (fields.displayName || !profile.slug) {
+      const name = fields.displayName || profile.displayName;
+      patch.slug = await generateSlug(ctx.db, name, profileId);
     }
 
     await ctx.db.patch(profileId, patch);
@@ -347,4 +398,28 @@ export const getReviews = query({
 export const getProfileById = internalQuery({
   args: { profileId: v.id("freelancerProfiles") },
   handler: async (ctx, args) => ctx.db.get(args.profileId),
+});
+
+/**
+ * One-time migration: generate slugs for all profiles missing one.
+ * Call via dashboard: `npx convex run marketplace/freelancers:backfillSlugs`
+ */
+export const backfillSlugs = mutation({
+  args: { serverSecret: v.optional(v.string()) },
+  handler: async (ctx, args) => {
+    if (args.serverSecret) requireServerSecret(args.serverSecret);
+    else await requireAuthUser(ctx);
+
+    const profiles = await ctx.db.query("freelancerProfiles").collect();
+    let updated = 0;
+
+    for (const profile of profiles) {
+      if (profile.slug) continue;
+      const slug = await generateSlug(ctx.db, profile.displayName, profile._id);
+      await ctx.db.patch(profile._id, { slug, updatedAt: Date.now() });
+      updated++;
+    }
+
+    return { updated, total: profiles.length };
+  },
 });

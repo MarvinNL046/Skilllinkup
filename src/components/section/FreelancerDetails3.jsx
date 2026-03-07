@@ -46,7 +46,7 @@ function ProfileSidebar({ convexData }) {
       <div className="price-widget pt25 bdrs8 mb30">
         {convexData?.hourlyRate && (
           <h3 className="widget-title mb20">
-            ${convexData.hourlyRate}
+            €{convexData.hourlyRate}
             <small className="fz15 fw500">/per hour</small>
           </h3>
         )}
@@ -715,7 +715,7 @@ export default function FreelancerDetails3() {
                       <div className="icon flex-shrink-0"><span className="flaticon-dollar" /></div>
                       <div className="details">
                         <h5 className="title">Hourly Rate</h5>
-                        <p className="mb-0 text">${convexData.hourlyRate}/hr</p>
+                        <p className="mb-0 text">€{convexData.hourlyRate}/hr</p>
                       </div>
                     </div>
                   </div>
