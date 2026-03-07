@@ -3,7 +3,7 @@ import PayoutInfo from "@/components/dashboard/section/PayoutInfo";
 
 import MobileNavigation2 from "@/components/header/MobileNavigation2";
 export const metadata = {
-  title: "SkillLinkup | Payout",
+  title: "Payouts",
 };
 
 export default function page() {

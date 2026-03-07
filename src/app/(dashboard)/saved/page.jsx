@@ -4,7 +4,7 @@ import SavedInfo from "@/components/dashboard/section/SavedInfo";
 import MobileNavigation2 from "@/components/header/MobileNavigation2";
 
 export const metadata = {
-  title: "SkillLinkup | Saved",
+  title: "Saved",
 };
 
 export default function page() {

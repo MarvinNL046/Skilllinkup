@@ -46,7 +46,7 @@ export default function FreelancerCard3({ data }) {
               <a className="meta fw500 text-start">
                 Rate
                 <br />
-                <span className="fz14 fw400">$90 / hr</span>
+                <span className="fz14 fw400">€90 / hr</span>
               </a>
               <a className="meta fw500 text-start">
                 Job Success

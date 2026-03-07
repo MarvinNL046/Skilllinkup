@@ -5,7 +5,7 @@ import MyProfileInfo from "@/components/dashboard/section/MyProfileInfo";
 import MobileNavigation2 from "@/components/header/MobileNavigation2";
 
 export const metadata = {
-  title: "SkillLinkup | My Profile",
+  title: "My Profile",
 };
 
 export default function page() {

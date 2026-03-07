@@ -6,7 +6,7 @@ import DashboardInfo from "@/components/dashboard/section/DashboardInfo";
 import MobileNavigation2 from "@/components/header/MobileNavigation2";
 
 export const metadata = {
-  title: "SkillLinkup | Dashboard",
+  title: "Dashboard",
 };
 
 export default function page() {

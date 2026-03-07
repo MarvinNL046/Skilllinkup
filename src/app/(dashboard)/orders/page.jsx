@@ -4,7 +4,7 @@ import DashboardNavigation from "@/components/dashboard/header/DashboardNavigati
 import OrderList from "@/components/section/OrderList";
 
 export const metadata = {
-  title: "SkillLinkup | My Orders",
+  title: "My Orders",
 };
 
 export default function page() {

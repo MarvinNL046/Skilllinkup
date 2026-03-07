@@ -4,7 +4,7 @@ import ProposalInfo from "@/components/dashboard/section/ProposalInfo";
 import MobileNavigation2 from "@/components/header/MobileNavigation2";
 
 export const metadata = {
-  title: "SkillLinkup | Proposal",
+  title: "My Proposals",
 };
 
 export default function page() {

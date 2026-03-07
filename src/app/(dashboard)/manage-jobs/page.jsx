@@ -4,7 +4,7 @@ import ManageJobInfo from "@/components/dashboard/section/ManageJobInfo";
 import MobileNavigation2 from "@/components/header/MobileNavigation2";
 
 export const metadata = {
-  title: "SkillLinkup | Manage Job",
+  title: "Manage Jobs",
 };
 
 export default function page() {

@@ -3,7 +3,7 @@ import MobileNavigation2 from "@/components/header/MobileNavigation2";
 import FeedbackInfo from "@/components/dashboard/section/FeedbackInfo";
 
 export const metadata = {
-  title: "SkillLinkup | My Feedback",
+  title: "Feedback",
 };
 
 export default function FeedbackPage() {

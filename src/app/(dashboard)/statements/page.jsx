@@ -4,7 +4,7 @@ import StatementInfo from "@/components/dashboard/section/StatementInfo";
 import MobileNavigation2 from "@/components/header/MobileNavigation2";
 
 export const metadata = {
-  title: "SkillLinkup | Statement",
+  title: "Statements",
 };
 
 export default function page() {

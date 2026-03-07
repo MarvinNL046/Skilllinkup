@@ -4,8 +4,7 @@ import ManageProjectInfo from "@/components/dashboard/section/ManageProjectInfo"
 import MobileNavigation2 from "@/components/header/MobileNavigation2";
 
 export const metadata = {
-  title:
-    "SkillLinkup | Manage Project",
+  title: "Manage Projects",
 };
 
 export default function page() {

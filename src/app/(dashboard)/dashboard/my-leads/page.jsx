@@ -4,7 +4,7 @@ import DashboardNavigation from "@/components/dashboard/header/DashboardNavigati
 import MyLeadsInfo from "@/components/dashboard/section/MyLeadsInfo";
 
 export const metadata = {
-  title: "SkillLinkup | My Leads",
+  title: "My Leads",
 };
 
 export default function MyLeadsPage() {

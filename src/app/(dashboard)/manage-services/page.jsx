@@ -4,8 +4,7 @@ import ManageServiceInfo from "@/components/dashboard/section/ManageServiceInfo"
 import MobileNavigation2 from "@/components/header/MobileNavigation2";
 
 export const metadata = {
-  title:
-    "SkillLinkup | Manage Services",
+  title: "Manage Services",
 };
 
 export default function page() {

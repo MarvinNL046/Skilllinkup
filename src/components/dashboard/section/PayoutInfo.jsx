@@ -40,10 +40,10 @@ export default function PayoutInfo() {
   );
 
   function formatCurrency(amount) {
-    if (!amount && amount !== 0) return "$0.00";
-    return new Intl.NumberFormat("en-US", {
+    if (!amount && amount !== 0) return "€0.00";
+    return new Intl.NumberFormat("nl-NL", {
       style: "currency",
-      currency: "USD",
+      currency: "EUR",
     }).format(amount);
   }
 

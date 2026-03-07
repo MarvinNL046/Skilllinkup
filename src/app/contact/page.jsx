@@ -11,6 +11,7 @@ export const metadata = {
     openGraph: {
         title: "Contact Us",
         description: "Get in touch with the SkillLinkup team. We're here to help with any questions about our freelance marketplace platform.",
+        url: "https://skilllinkup.com/contact",
     },
 };
 

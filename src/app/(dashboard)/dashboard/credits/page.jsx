@@ -4,7 +4,7 @@ import DashboardNavigation from "@/components/dashboard/header/DashboardNavigati
 import CreditsInfo from "@/components/dashboard/section/CreditsInfo";
 
 export const metadata = {
-  title: "SkillLinkup | Credits",
+  title: "Credits",
 };
 
 export default function CreditsPage() {
