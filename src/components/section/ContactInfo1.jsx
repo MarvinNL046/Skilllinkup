@@ -18,6 +18,12 @@ export default function ContactInfo1() {
       return;
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
     setSending(true);
     const loadingToast = toast.loading("Sending your message...");
 

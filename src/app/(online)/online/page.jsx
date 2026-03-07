@@ -2,7 +2,7 @@ import Hero20 from "@/components/hero/Hero20";
 import TrendingService14 from "@/components/section/TrendingService14";
 
 export const metadata = {
-  title: "Online Marketplace — SkillLinkup",
+  title: "Online Marketplace",
   description: "Find digital freelancers for remote projects. Browse services, hire talent, and get work done.",
 };
 

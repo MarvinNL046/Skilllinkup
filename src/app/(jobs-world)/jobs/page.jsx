@@ -1,7 +1,7 @@
 import JobsHero from "@/components/hero/JobsHero";
 
 export const metadata = {
-  title: "Jobs — SkillLinkup",
+  title: "Jobs",
   description: "Browse job openings or post vacancies. Find full-time, part-time, and freelance opportunities.",
 };
 

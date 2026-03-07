@@ -99,7 +99,7 @@ export const getMyClaims = query({
             createdAt: request.createdAt,
           },
           client: client
-            ? { name: client.name, email: client.email, phone: (client as any).phone ?? null }
+            ? { name: client.name, email: client.email }
             : null,
           categoryName: category?.name ?? null,
         };

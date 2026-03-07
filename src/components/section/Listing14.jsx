@@ -59,9 +59,17 @@ export default function Listing14() {
       ? getSpeak.includes(item.language.toLowerCase())
       : item;
 
-  // sort by filter
-  const sortByFilter = (item) =>
-    getBestSeller === "best-seller" ? true : item.sort === getBestSeller;
+  // sort comparator based on selected option
+  const sortComparator = (a, b) => {
+    if (getBestSeller === "recommended") {
+      return (b.ratingAverage ?? 0) - (a.ratingAverage ?? 0);
+    }
+    if (getBestSeller === "new-arrivals") {
+      return (b.createdAt ?? 0) - (a.createdAt ?? 0);
+    }
+    // "best-seller" — sort by total orders/earnings
+    return (b.totalOrders ?? 0) - (a.totalOrders ?? 0);
+  };
 
   const freelancer1 = useConvexFreelancers();
 
@@ -84,7 +92,7 @@ export default function Listing14() {
     .filter(searchFilter)
     .filter(levelFilter)
     .filter(languageFilter)
-    .filter(sortByFilter)
+    .sort(sortComparator)
     .map((item, i) => (
       <div key={i} className="col-sm-6 col-xl-4">
         <FreelancerCard2 data={item} />

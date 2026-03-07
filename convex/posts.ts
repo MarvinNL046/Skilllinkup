@@ -365,3 +365,108 @@ export const seedAll = mutation({
     return { inserted, skipped, total: args.posts.length };
   },
 });
+
+/**
+ * Upsert a post by slug + locale.
+ * Used by the automated blog pipeline to create or update posts.
+ * Resolves tenant by slug "skilllinkup" and categorySlug to categoryId.
+ */
+export const upsertBySlug = mutation({
+  args: {
+    slug: v.string(),
+    locale: v.string(),
+    title: v.string(),
+    content: v.string(),
+    excerpt: v.optional(v.string()),
+    categorySlug: v.optional(v.string()),
+    metaTitle: v.optional(v.string()),
+    metaDescription: v.optional(v.string()),
+    tags: v.optional(v.array(v.string())),
+    featureImg: v.optional(v.string()),
+    readTime: v.optional(v.number()),
+    authorName: v.optional(v.string()),
+    status: v.string(),
+    serverSecret: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    requireServerSecret(args.serverSecret);
+    if (!["published", "draft"].includes(args.status)) {
+      throw new Error("Invalid status value");
+    }
+
+    const now = Date.now();
+
+    // Resolve default tenant
+    let tenant = await ctx.db
+      .query("tenants")
+      .withIndex("by_slug", (q) => q.eq("slug", "skilllinkup"))
+      .first();
+
+    if (!tenant) {
+      const tenantId = await ctx.db.insert("tenants", {
+        name: "SkillLinkup",
+        slug: "skilllinkup",
+        plan: "pro",
+        createdAt: now,
+        updatedAt: now,
+      });
+      tenant = await ctx.db.get(tenantId);
+    }
+
+    const tenantId = tenant!._id;
+
+    // Resolve categorySlug to categoryId
+    let categoryId: any = undefined;
+    if (args.categorySlug) {
+      const category = await ctx.db
+        .query("categories")
+        .withIndex("by_slug_locale", (q) =>
+          q.eq("slug", args.categorySlug!).eq("locale", args.locale)
+        )
+        .first();
+      if (category) {
+        categoryId = category._id;
+      }
+    }
+
+    // Check for existing post by slug + locale
+    const existing = await ctx.db
+      .query("posts")
+      .withIndex("by_slug_locale", (q) =>
+        q.eq("slug", args.slug).eq("locale", args.locale)
+      )
+      .first();
+
+    const {
+      serverSecret: _,
+      categorySlug: __,
+      slug: ___,
+      locale: ____,
+      ...patchData
+    } = args;
+
+    if (existing) {
+      await ctx.db.patch(existing._id, {
+        ...patchData,
+        categoryId,
+        updatedAt: now,
+      });
+      return { id: existing._id, action: "updated" };
+    } else {
+      const id = await ctx.db.insert("posts", {
+        ...patchData,
+        slug: args.slug,
+        locale: args.locale,
+        tenantId,
+        categoryId,
+        postFormat: "standard",
+        views: 0,
+        featured: false,
+        publishedAt: now,
+        createdAt: now,
+        updatedAt: now,
+      });
+      return { id, action: "inserted" };
+    }
+  },
+});

@@ -1,0 +1,109 @@
+{
+  "queue": [
+    {
+      "topic": "Fiverr Review: Is It Worth It for Freelancers in 2026?",
+      "category": "platform-reviews",
+      "priority": 1,
+      "sources": [
+        "https://www.fiverr.com/resources/guides/freelancing",
+        "https://www.fiverr.com/about"
+      ],
+      "searchQueries": [
+        "Fiverr review freelancers 2026",
+        "Fiverr pros cons fees freelancer experience"
+      ]
+    },
+    {
+      "topic": "Upwork Review: Complete Guide for Freelancers",
+      "category": "platform-reviews",
+      "priority": 1,
+      "sources": [
+        "https://www.upwork.com/about",
+        "https://www.upwork.com/pricing"
+      ],
+      "searchQueries": [
+        "Upwork review freelancers 2026",
+        "Upwork fees service charge freelancer guide"
+      ]
+    },
+    {
+      "topic": "How to Get Your First Freelance Client",
+      "category": "freelancing-tips",
+      "priority": 2,
+      "sources": [
+        "https://www.upwork.com/resources/beginners-guide-to-freelancing",
+        "https://www.fiverr.com/resources/guides/freelancing/how-to-become-a-freelancer"
+      ],
+      "searchQueries": [
+        "how to get first freelance client 2026",
+        "landing first freelancing job tips"
+      ]
+    },
+    {
+      "topic": "Hourly vs Fixed-Price Projects: Which Is Better?",
+      "category": "pricing-guides",
+      "priority": 2,
+      "sources": [
+        "https://www.upwork.com/resources/hourly-vs-fixed-price",
+        "https://www.fiverr.com/resources/guides/freelancing/pricing"
+      ],
+      "searchQueries": [
+        "hourly vs fixed price freelancing 2026",
+        "freelance pricing strategy comparison"
+      ]
+    },
+    {
+      "topic": "AI Impact on Freelancing: What to Expect in 2026",
+      "category": "industry-trends",
+      "priority": 3,
+      "sources": [
+        "https://www.upwork.com/resources/future-of-work",
+        "https://www.mckinsey.com/featured-insights/future-of-work"
+      ],
+      "searchQueries": [
+        "AI impact freelancing 2026",
+        "artificial intelligence gig economy freelancers"
+      ]
+    },
+    {
+      "topic": "Best Project Management Tools for Freelancers",
+      "category": "tool-reviews",
+      "priority": 3,
+      "sources": [
+        "https://trello.com/tour",
+        "https://asana.com/uses/freelancers"
+      ],
+      "searchQueries": [
+        "best project management tools freelancers 2026",
+        "freelancer productivity tools comparison"
+      ]
+    },
+    {
+      "topic": "Building a Winning Freelance Portfolio",
+      "category": "freelancing-tips",
+      "priority": 4,
+      "sources": [
+        "https://www.upwork.com/resources/freelancer-profile",
+        "https://www.fiverr.com/resources/guides/freelancing/create-a-gig"
+      ],
+      "searchQueries": [
+        "freelance portfolio tips 2026",
+        "how to build freelance portfolio"
+      ]
+    },
+    {
+      "topic": "Remote Work Statistics and Trends 2026",
+      "category": "remote-work",
+      "priority": 4,
+      "sources": [
+        "https://www.flexjobs.com/blog/post/remote-work-statistics/",
+        "https://buffer.com/state-of-remote-work"
+      ],
+      "searchQueries": [
+        "remote work statistics 2026",
+        "work from home trends data"
+      ]
+    }
+  ],
+  "completed": []
+}

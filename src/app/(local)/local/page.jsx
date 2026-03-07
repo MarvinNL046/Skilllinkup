@@ -1,7 +1,7 @@
 import LocalHero from "@/components/hero/LocalHero";
 
 export const metadata = {
-  title: "Local Marketplace — SkillLinkup",
+  title: "Local Marketplace",
   description: "Find skilled craftsmen near you. Get quotes for home improvement, repairs, and local services.",
 };
 
