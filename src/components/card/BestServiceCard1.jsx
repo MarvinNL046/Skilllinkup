@@ -18,6 +18,7 @@ export default function BestServiceCard1({ data }) {
             className="w-100 h-auto object-fit-cover"
             src={data.img}
             alt="thumbnail"
+            sizes="(max-width: 576px) 100vw, (max-width: 992px) 50vw, 255px"
           />
           <a
             onClick={() => setFavActive(!isFavActive)}
@@ -30,7 +31,7 @@ export default function BestServiceCard1({ data }) {
           <p className="list-text body-color fz14 mb-1">{data.category}</p>
           <h5 className="list-title">
             <Link href={`/service/${data.id}`}>
-              {data.title.slice(0, 40) + "..."}
+              {data.title}
             </Link>
           </h5>
           <div className="review-meta d-flex align-items-center">

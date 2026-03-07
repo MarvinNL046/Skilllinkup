@@ -56,7 +56,7 @@ export default function NotificationBell() {
       </a>
       <div
         className="dropdown-menu dropdown-menu-end"
-        style={{ width: "340px", maxHeight: "400px", overflowY: "auto" }}
+        style={{ width: "min(340px, 90vw)", maxHeight: "400px", overflowY: "auto" }}
       >
         <div className="dboard_notific_dd px30 pt10 pb15">
           <div className="d-flex justify-content-between align-items-center mb10">

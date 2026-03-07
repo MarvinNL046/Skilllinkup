@@ -31,22 +31,28 @@ export default function Footer14() {
                             <div className="footer-widget mb-4 mb-lg-5">
                                 <div className="mailchimp-widget mb90">
                                     <h6 className="title mb20">Subscribe</h6>
-                                    <div className="mailchimp-style1 at-home20 bdrs12 overflow-hidden">
+                                    <form
+                                        onSubmit={(e) => {
+                                            e.preventDefault();
+                                            handleSubscribe();
+                                        }}
+                                        className="mailchimp-style1 at-home20 bdrs12 overflow-hidden"
+                                    >
                                         <input
                                             type="email"
                                             className="form-control"
                                             placeholder="Your email address"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
+                                            required
                                         />
                                         <button
                                             className="text-thm"
                                             type="submit"
-                                            onClick={handleSubscribe}
                                         >
                                             Send
                                         </button>
-                                    </div>
+                                    </form>
                                 </div>
                                 <div className="row justify-content-between">
                                     <div className="col-auto">

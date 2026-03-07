@@ -255,7 +255,7 @@ export default function ProfileDetails() {
                 src={
                   previewUrl
                     ? previewUrl
-                    : profile?.avatarUrl || "/images/team/fl-1.png"
+                    : profile?.avatarUrl || "/images/team/default-avatar.svg"
                 }
                 style={{
                   height: "71px",

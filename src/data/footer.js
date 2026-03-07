@@ -4,18 +4,18 @@ export const about = [
   { id: 3, name: "Pricing", path: "/pricing" },
   { id: 4, name: "Contact", path: "/contact" },
   { id: 5, name: "Terms of Service", path: "/terms" },
-  { id: 6, name: "Privacy Policy", path: "/terms" },
+  { id: 6, name: "Privacy Policy", path: "/privacy-policy" },
 ];
 
 export const category = [
-  { id: 1, name: "Graphics & Design", path: "/services" },
-  { id: 2, name: "Digital Marketing", path: "/services" },
-  { id: 3, name: "Writing & Translation", path: "/services" },
-  { id: 4, name: "Video & Animation", path: "/services" },
-  { id: 5, name: "Music & Audio", path: "/services" },
-  { id: 6, name: "Programming & Tech", path: "/services" },
-  { id: 7, name: "Data & Analytics", path: "/services" },
-  { id: 8, name: "Business Consulting", path: "/services" },
+  { id: 1, name: "Graphics & Design", path: "/online/services?q=graphics+design" },
+  { id: 2, name: "Digital Marketing", path: "/online/services?q=digital+marketing" },
+  { id: 3, name: "Writing & Translation", path: "/online/services?q=writing+translation" },
+  { id: 4, name: "Video & Animation", path: "/online/services?q=video+animation" },
+  { id: 5, name: "Music & Audio", path: "/online/services?q=music+audio" },
+  { id: 6, name: "Programming & Tech", path: "/online/services?q=programming+tech" },
+  { id: 7, name: "Data & Analytics", path: "/online/services?q=data+analytics" },
+  { id: 8, name: "Business Consulting", path: "/online/services?q=business+consulting" },
 ];
 
 export const support = [

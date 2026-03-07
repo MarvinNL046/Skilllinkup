@@ -15,7 +15,7 @@ export default function FaqPayment() {
                   aria-expanded="true"
                   aria-controls="collapseOne"
                 >
-                  What methods of payments are supported?
+                  What methods of payment are supported?
                 </button>
               </h2>
               <div
@@ -25,10 +25,11 @@ export default function FaqPayment() {
                 data-parent="#accordionExample"
               >
                 <div className="accordion-body">
-                  Cras vitae ac nunc orci. Purus amet tortor non at phasellus
-                  ultricies hendrerit. Eget a, sit morbi nunc sit id massa.
-                  Metus, scelerisque volutpat nec sit vel donec. Sagittis, id
-                  volutpat erat vel.
+                  SkillLinkup supports payments through Stripe, which accepts
+                  all major credit and debit cards (Visa, Mastercard, American
+                  Express), as well as Apple Pay, Google Pay, and iDEAL for
+                  Dutch users. All payments are processed securely through
+                  Stripe Connect.
                 </div>
               </div>
             </div>
@@ -42,7 +43,7 @@ export default function FaqPayment() {
                   aria-expanded="false"
                   aria-controls="collapseTwo"
                 >
-                  Can I cancel at anytime?
+                  How does SkillLinkup protect my payment?
                 </button>
               </h2>
               <div
@@ -52,10 +53,11 @@ export default function FaqPayment() {
                 data-parent="#accordionExample"
               >
                 <div className="accordion-body">
-                  Cras vitae ac nunc orci. Purus amet tortor non at phasellus
-                  ultricies hendrerit. Eget a, sit morbi nunc sit id massa.
-                  Metus, scelerisque volutpat nec sit vel donec. Sagittis, id
-                  volutpat erat vel.
+                  We use an escrow system — your payment is held securely until
+                  the work is delivered and approved. If a dispute arises, our
+                  resolution process ensures both parties are treated fairly.
+                  Funds are only released to the freelancer once you confirm
+                  satisfaction.
                 </div>
               </div>
             </div>
@@ -69,7 +71,7 @@ export default function FaqPayment() {
                   aria-expanded="false"
                   aria-controls="collapseThree"
                 >
-                  How do I get a receipt for my purchase?
+                  What are the fees for using SkillLinkup?
                 </button>
               </h2>
               <div
@@ -79,10 +81,10 @@ export default function FaqPayment() {
                 data-parent="#accordionExample"
               >
                 <div className="accordion-body">
-                  Cras vitae ac nunc orci. Purus amet tortor non at phasellus
-                  ultricies hendrerit. Eget a, sit morbi nunc sit id massa.
-                  Metus, scelerisque volutpat nec sit vel donec. Sagittis, id
-                  volutpat erat vel.
+                  SkillLinkup charges a transparent 3.5% fee from both the
+                  buyer and the seller per transaction — that&apos;s it. No hidden
+                  fees, no monthly subscriptions, no upsells. You can see the
+                  full breakdown on our pricing page.
                 </div>
               </div>
             </div>
@@ -96,7 +98,7 @@ export default function FaqPayment() {
                   aria-expanded="false"
                   aria-controls="collapseFour"
                 >
-                  Which license do I need?
+                  When do freelancers get paid?
                 </button>
               </h2>
               <div
@@ -106,10 +108,10 @@ export default function FaqPayment() {
                 data-parent="#accordionExample"
               >
                 <div className="accordion-body">
-                  Cras vitae ac nunc orci. Purus amet tortor non at phasellus
-                  ultricies hendrerit. Eget a, sit morbi nunc sit id massa.
-                  Metus, scelerisque volutpat nec sit vel donec. Sagittis, id
-                  volutpat erat vel.
+                  Once the client approves the delivered work, the funds are
+                  released to the freelancer&apos;s Stripe Connect account. From
+                  there, payouts to your bank account typically arrive within
+                  2-7 business days depending on your country and bank.
                 </div>
               </div>
             </div>
@@ -123,7 +125,7 @@ export default function FaqPayment() {
                   aria-expanded="false"
                   aria-controls="collapseFive"
                 >
-                  How do I get access to a theme I purchased?
+                  Can I get a refund?
                 </button>
               </h2>
               <div
@@ -133,10 +135,10 @@ export default function FaqPayment() {
                 data-parent="#accordionExample"
               >
                 <div className="accordion-body">
-                  Cras vitae ac nunc orci. Purus amet tortor non at phasellus
-                  ultricies hendrerit. Eget a, sit morbi nunc sit id massa.
-                  Metus, scelerisque volutpat nec sit vel donec. Sagittis, id
-                  volutpat erat vel.
+                  If the work hasn&apos;t started yet, you can cancel the order for
+                  a full refund. If work is in progress or delivered, you can
+                  open a dispute through our resolution center. Refunds are
+                  handled case-by-case based on our terms of service.
                 </div>
               </div>
             </div>

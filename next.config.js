@@ -25,6 +25,21 @@ const securityHeaders = [
     key: "Strict-Transport-Security",
     value: "max-age=31536000; includeSubDomains",
   },
+  {
+    key: "Content-Security-Policy",
+    value: [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://*.clerk.com https://*.posthog.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' https://fonts.gstatic.com data:",
+      "img-src 'self' https://img.clerk.com https://*.clerk.com data: blob:",
+      "connect-src 'self' https://*.clerk.accounts.dev https://*.clerk.com https://*.posthog.com https://*.convex.cloud https://*.convex.site wss://*.convex.cloud",
+      "frame-src 'self' https://*.clerk.accounts.dev https://*.clerk.com",
+      "worker-src 'self' blob:",
+      "object-src 'none'",
+      "base-uri 'self'",
+    ].join("; "),
+  },
 ];
 
 const nextConfig = {
@@ -46,6 +61,9 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      // Auth route aliases (template used /sign-in, we use /login)
+      { source: "/sign-in", destination: "/login", permanent: true },
+      { source: "/sign-up", destination: "/register", permanent: true },
       { source: "/services", destination: "/online/services", permanent: true },
       { source: "/services/:slug", destination: "/online/services/:slug", permanent: true },
       { source: "/service/:id", destination: "/online/service/:id", permanent: true },

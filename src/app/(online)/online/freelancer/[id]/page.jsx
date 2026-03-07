@@ -1,7 +1,13 @@
 import { fetchQuery } from "convex/nextjs";
+import { notFound } from "next/navigation";
 import { api } from "../../../../../../convex/_generated/api";
 import Breadcumb10 from "@/components/breadcumb/Breadcumb10";
 import FreelancerDetail3 from "@/components/section/FreelancerDetails3";
+
+// Validate Convex ID format (base-32, 10+ chars, not all digits)
+function isValidConvexId(id) {
+  return id && typeof id === "string" && id.length > 10 && !/^\d+$/.test(id);
+}
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
@@ -33,6 +39,11 @@ export async function generateMetadata({ params }) {
 
 export default async function page({ params }) {
   const { id } = await params;
+
+  // Reject obviously invalid IDs (numeric, too short, injection attempts)
+  if (!isValidConvexId(id)) {
+    notFound();
+  }
 
   return (
     <div className="bgc-thm3">

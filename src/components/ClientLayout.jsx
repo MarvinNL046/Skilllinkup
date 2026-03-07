@@ -7,6 +7,7 @@ import NavSidebar from "@/components/sidebar/NavSidebar";
 import Providers from "@/components/Providers";
 import ExitIntentPopup from "@/components/ui/ExitIntentPopup";
 import AnnouncementBar from "@/components/ui/AnnouncementBar";
+import CookieConsent from "@/components/ui/CookieConsent";
 import { Toaster } from "sonner";
 
 if (typeof window !== "undefined") {
@@ -28,9 +29,12 @@ export default function ClientLayout({ children }) {
 
   return (
     <Providers>
+      <a href="#main-content" className="skip-nav">
+        Skip to content
+      </a>
       <AnnouncementBar />
       <SearchModal1 />
-      {children}
+      <main id="main-content">{children}</main>
 
       {/* bottom to top */}
       <BottomToTop />
@@ -39,6 +43,7 @@ export default function ClientLayout({ children }) {
       <NavSidebar />
       <ExitIntentPopup />
       <Toaster position="bottom-right" richColors />
+      <CookieConsent />
     </Providers>
   );
 }

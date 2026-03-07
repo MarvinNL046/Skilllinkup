@@ -42,7 +42,7 @@ export default function DashboardHeader() {
                       />
                     </Link>
                   </div>
-                  <div className="fz20 ml90">
+                  <div className="fz20 ml90 ml10-xs">
                     <a
                       onClick={toggle}
                       className="dashboard_sidebar_toggle_icon vam"

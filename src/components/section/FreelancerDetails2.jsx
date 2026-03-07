@@ -53,7 +53,7 @@ export default function FreelancerDetail1() {
                             width={90}
                             height={90}
                             className="rounded-circle w-100 wa-sm mb15-sm"
-                            src={data?.img ? data.img : "/images/team/fl-1.png"}
+                            src={data?.img ? data.img : "/images/team/default-avatar.svg"}
                             alt="Freelancer Photo"
                           />
                         </a>

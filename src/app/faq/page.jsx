@@ -24,8 +24,8 @@ export default function page() {
                                     Frequently Asked Questions
                                 </h2>
                                 <p className="paragraph mt10">
-                                    Give your visitor a smooth online experience
-                                    with a solid UX design
+                                    Everything you need to know about using
+                                    SkillLinkup as a buyer or seller
                                 </p>
                             </div>
                         </div>

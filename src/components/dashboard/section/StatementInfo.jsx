@@ -48,10 +48,10 @@ export default function StatementInfo() {
     .reduce((sum, o) => sum + (o.freelancerEarnings ?? 0), 0);
 
   function formatCurrency(amount) {
-    if (!amount && amount !== 0) return "$0";
-    return new Intl.NumberFormat("en-US", {
+    if (!amount && amount !== 0) return "€0";
+    return new Intl.NumberFormat("nl-NL", {
       style: "currency",
-      currency: "USD",
+      currency: "EUR",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);

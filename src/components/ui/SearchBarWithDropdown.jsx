@@ -93,7 +93,7 @@ export default function SearchBarWithDropdown({
     <div
       ref={wrapperRef}
       className={`position-relative ${className}`}
-      style={{ minWidth: 300 }}
+      style={{ minWidth: "min(300px, 100%)" }}
     >
       <form
         onSubmit={handleSubmit}

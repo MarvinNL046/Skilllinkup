@@ -115,7 +115,7 @@ export default function Listing14() {
                 )}
               </div>
               <div className="row mt30">
-                <Pagination1 />
+                <Pagination1 itemCount={content.length} />
               </div>
             </div>
           </div>

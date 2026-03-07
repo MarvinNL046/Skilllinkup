@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function ServiceContactWidget1({ freelancer }) {
   const name = freelancer?.displayName || "Freelancer";
-  const avatar = freelancer?.avatarUrl || "/images/team/fl-1.png";
+  const avatar = freelancer?.avatarUrl || "/images/team/default-avatar.svg";
   const rating = freelancer?.ratingAverage ?? null;
   const reviewCount = freelancer?.ratingCount ?? null;
   const location =

@@ -133,7 +133,7 @@ export default function Listing19() {
                 <div className="row">{content}</div>
               )}
               <div className="mt30">
-                <Pagination1 />
+                <Pagination1 itemCount={content.length} />
               </div>
             </div>
           </div>

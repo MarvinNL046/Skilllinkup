@@ -6,7 +6,10 @@ import CtaBanner18 from "@/components/section/CtaBanner18";
 
 export const metadata = {
   title: "SkillLinkup — Find the Right Talent, Anywhere",
-  description: "Online freelancers, local craftsmen, and job vacancies — all in one platform.",
+  description: "Online freelancers, local craftsmen, and job vacancies — all in one platform. Low fees, secure payments, and a marketplace built for both buyers and sellers.",
+  alternates: {
+    canonical: "https://skilllinkup.com",
+  },
 };
 
 export default function page() {

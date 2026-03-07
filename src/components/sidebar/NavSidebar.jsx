@@ -22,10 +22,10 @@ export default function NavSidebar() {
         <div className="offcanvas-header border-bottom">
           <Link href="/">
             <Image
-              alt="Header Logo"
-              width="133"
-              height="40"
-              src="/images/header-logo2.svg"
+              alt="SkillLinkup"
+              width={172}
+              height={40}
+              src="/images/logo/skilllinkup-transparant-rozepunt.webp"
             />
           </Link>
           <button

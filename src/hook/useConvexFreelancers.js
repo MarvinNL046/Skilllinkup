@@ -6,7 +6,7 @@ function mapConvexFreelancer(fl, index) {
   return {
     id: index + 1,
     _id: fl._id,
-    img: fl.avatarUrl || "/images/team/fl-1.png",
+    img: fl.avatarUrl || "/images/team/default-avatar.svg",
     name: fl.displayName || "Freelancer",
     profession: fl.tagline || "Professional",
     rating: fl.ratingAverage || 0,

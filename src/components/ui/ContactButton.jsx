@@ -16,7 +16,7 @@ export default function ContactButton({ recipientId, className = "" }) {
   const handleContact = async () => {
     if (!isSignedIn) {
       const returnUrl = typeof window !== "undefined" ? window.location.pathname : "";
-      router.push(`/sign-in?redirect_url=${encodeURIComponent(returnUrl)}`);
+      router.push(`/login?redirect_url=${encodeURIComponent(returnUrl)}`);
       return;
     }
     if (!convexUser?._id || !recipientId || convexUser._id === recipientId) return;

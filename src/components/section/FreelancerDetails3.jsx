@@ -191,7 +191,7 @@ function GigPackageTable({ gig, recipientUserId }) {
     if (!isSignedIn) {
       e.preventDefault();
       const returnUrl = typeof window !== "undefined" ? window.location.pathname : "";
-      gigRouter.push(`/sign-in?redirect_url=${encodeURIComponent(returnUrl)}`);
+      gigRouter.push(`/login?redirect_url=${encodeURIComponent(returnUrl)}`);
     }
     // signed in: Link handles navigation normally
   }
@@ -624,7 +624,7 @@ export default function FreelancerDetails3() {
     );
   }
 
-  const profileImg = convexData.avatarUrl || "/images/team/fl-1.png";
+  const profileImg = convexData.avatarUrl || "/images/team/default-avatar.svg";
   const profileName = convexData.displayName || "Freelancer";
   const profession = convexData.tagline || "";
   const rating = convexData.ratingAverage || 0;

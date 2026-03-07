@@ -14,7 +14,7 @@ export function mapGigToProduct(gig, index) {
     rating: gig.ratingAverage || 0,
     review: gig.ratingCount || 0,
     author: {
-      img: gig.freelancerProfile?.avatarUrl || "/images/team/fl-1.png",
+      img: gig.freelancerProfile?.avatarUrl || "/images/team/default-avatar.svg",
       name: gig.freelancerProfile?.displayName || "Freelancer",
     },
     price: gig.minPrice || 0,

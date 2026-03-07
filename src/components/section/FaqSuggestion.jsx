@@ -2,9 +2,9 @@ export default function FaqSuggestion() {
   return (
     <>
       <div className="ui-content">
-        <h4 className="title">Suggestions</h4>
+        <h4 className="title">Getting Started</h4>
         <div className="accordion-style1 faq-page mb-4 mb-lg-5">
-          <div className="accordion" id="accordionExample">
+          <div className="accordion" id="accordionExample2">
             <div className="accordion-item active">
               <h2 className="accordion-header" id="headingSix">
                 <button
@@ -15,20 +15,20 @@ export default function FaqSuggestion() {
                   aria-expanded="true"
                   aria-controls="collapseSix"
                 >
-                  What methods of payments are supported?
+                  How do I create an account?
                 </button>
               </h2>
               <div
                 id="collapseSix"
                 className="accordion-collapse collapse show"
                 aria-labelledby="headingSix"
-                data-parent="#accordionExample"
+                data-parent="#accordionExample2"
               >
                 <div className="accordion-body">
-                  Cras vitae ac nunc orci. Purus amet tortor non at phasellus
-                  ultricies hendrerit. Eget a, sit morbi nunc sit id massa.
-                  Metus, scelerisque volutpat nec sit vel donec. Sagittis, id
-                  volutpat erat vel.
+                  Click &quot;Join&quot; in the top navigation and sign up with your
+                  email address or Google account. Once registered, you can
+                  browse services, hire freelancers, or set up your own seller
+                  profile to start offering your skills.
                 </div>
               </div>
             </div>
@@ -42,20 +42,20 @@ export default function FaqSuggestion() {
                   aria-expanded="false"
                   aria-controls="collapseSeven"
                 >
-                  Can I cancel at anytime?
+                  How do I hire a freelancer?
                 </button>
               </h2>
               <div
                 id="collapseSeven"
                 className="accordion-collapse collapse"
                 aria-labelledby="headingSeven"
-                data-parent="#accordionExample"
+                data-parent="#accordionExample2"
               >
                 <div className="accordion-body">
-                  Cras vitae ac nunc orci. Purus amet tortor non at phasellus
-                  ultricies hendrerit. Eget a, sit morbi nunc sit id massa.
-                  Metus, scelerisque volutpat nec sit vel donec. Sagittis, id
-                  volutpat erat vel.
+                  Browse or search for services in our marketplace. Once you
+                  find a service you like, click on it to see details, reviews,
+                  and pricing. You can then place an order directly or message
+                  the freelancer first to discuss your requirements.
                 </div>
               </div>
             </div>
@@ -69,20 +69,20 @@ export default function FaqSuggestion() {
                   aria-expanded="false"
                   aria-controls="collapseEight"
                 >
-                  How do I get a receipt for my purchase?
+                  How do I start selling on SkillLinkup?
                 </button>
               </h2>
               <div
                 id="collapseEight"
                 className="accordion-collapse collapse"
                 aria-labelledby="headingEight"
-                data-parent="#accordionExample"
+                data-parent="#accordionExample2"
               >
                 <div className="accordion-body">
-                  Cras vitae ac nunc orci. Purus amet tortor non at phasellus
-                  ultricies hendrerit. Eget a, sit morbi nunc sit id massa.
-                  Metus, scelerisque volutpat nec sit vel donec. Sagittis, id
-                  volutpat erat vel.
+                  After creating your account, go to your dashboard and click
+                  &quot;Become a Seller.&quot; Complete your profile, set up your Stripe
+                  account for payments, and create your first gig. Your service
+                  will be visible in our marketplace once published.
                 </div>
               </div>
             </div>
@@ -96,20 +96,20 @@ export default function FaqSuggestion() {
                   aria-expanded="false"
                   aria-controls="collapseNine"
                 >
-                  Which license do I need?
+                  What is the difference between online and local services?
                 </button>
               </h2>
               <div
                 id="collapseNine"
                 className="accordion-collapse collapse"
                 aria-labelledby="headingNine"
-                data-parent="#accordionExample"
+                data-parent="#accordionExample2"
               >
                 <div className="accordion-body">
-                  Cras vitae ac nunc orci. Purus amet tortor non at phasellus
-                  ultricies hendrerit. Eget a, sit morbi nunc sit id massa.
-                  Metus, scelerisque volutpat nec sit vel donec. Sagittis, id
-                  volutpat erat vel.
+                  Online services are delivered remotely — think web development,
+                  graphic design, or content writing. Local services are
+                  performed on-site in your area — like home repairs, cleaning,
+                  or photography. You can find both types on SkillLinkup.
                 </div>
               </div>
             </div>
@@ -123,20 +123,19 @@ export default function FaqSuggestion() {
                   aria-expanded="false"
                   aria-controls="collapseTen"
                 >
-                  How do I get access to a theme I purchased?
+                  How do I contact support?
                 </button>
               </h2>
               <div
                 id="collapseTen"
                 className="accordion-collapse collapse"
                 aria-labelledby="headingTen"
-                data-parent="#accordionExample"
+                data-parent="#accordionExample2"
               >
                 <div className="accordion-body">
-                  Cras vitae ac nunc orci. Purus amet tortor non at phasellus
-                  ultricies hendrerit. Eget a, sit morbi nunc sit id massa.
-                  Metus, scelerisque volutpat nec sit vel donec. Sagittis, id
-                  volutpat erat vel.
+                  You can reach us via the contact page or email us directly at
+                  info@skilllinkup.com. We typically respond within 24 hours on
+                  business days.
                 </div>
               </div>
             </div>
