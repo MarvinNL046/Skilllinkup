@@ -414,7 +414,7 @@ export const create = mutation({
       locationCountry: args.locationCountry,
       serviceRadiusKm: args.serviceRadiusKm,
       locale: args.locale,
-      status: "pending",
+      status: "active",
       views: 0,
       orderCount: 0,
       ratingAverage: 0,
