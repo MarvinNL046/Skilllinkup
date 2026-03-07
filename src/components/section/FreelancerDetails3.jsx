@@ -743,7 +743,7 @@ export default function FreelancerDetails3() {
             )}
 
             {/* Services */}
-            <GigsSection freelancerProfileId={id} recipientUserId={convexData.userId} />
+            <GigsSection freelancerProfileId={convexData._id} recipientUserId={convexData.userId} />
 
             {/* Portfolio */}
             <PortfolioSection userId={convexData.userId} />
@@ -752,7 +752,7 @@ export default function FreelancerDetails3() {
             <ExperienceSection userId={convexData.userId} />
 
             {/* Reviews */}
-            <FreelancerReviews freelancerId={id} />
+            <FreelancerReviews freelancerId={convexData._id} />
           </div>
 
           {/* Right sidebar */}
