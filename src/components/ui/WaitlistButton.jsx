@@ -57,7 +57,7 @@ export default function WaitlistButton({ className = "ud-btn btn-thm bdrs12 text
             {!done ? (
               <>
                 <div className="d-flex justify-content-between align-items-center mb20">
-                  <h5 className="mb-0">Join the waitlist</h5>
+                  <p className="mb-0 fw600 fz17">Join the waitlist</p>
                   <button type="button" className="btn-close" onClick={handleClose} />
                 </div>
                 <p className="fz14 text-muted mb25">
@@ -88,7 +88,7 @@ export default function WaitlistButton({ className = "ud-btn btn-thm bdrs12 text
             ) : (
               <div className="text-center py-3">
                 <div className="mb20" style={{ fontSize: 48 }}>🎉</div>
-                <h5 className="mb10">You're on the list!</h5>
+                <p className="mb10 fw600 fz17">You're on the list!</p>
                 <p className="fz14 text-muted mb25">
                   We'll notify you as soon as SkillLinkup goes live.
                 </p>

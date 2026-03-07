@@ -6,6 +6,10 @@ import Listing19 from "@/components/section/Listing19";
 export const metadata = {
   title: "Browse Projects",
   description: "Find freelance projects and opportunities on SkillLinkup. Browse open projects across all categories and submit your proposal.",
+  openGraph: {
+    title: "Browse Projects",
+    description: "Find freelance projects and opportunities on SkillLinkup. Browse open projects across all categories and submit your proposal.",
+  },
 };
 
 export default function page() {

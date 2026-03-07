@@ -8,7 +8,7 @@ export default function AllTimeSelling() {
               <span className="flaticon-cv" />
             </div>
             <div className="details">
-              <h4 className="title mt10 mb-3">Create your profile</h4>
+              <h3 className="title mt10 mb-3 fz17">Create your profile</h3>
               <p className="text">
                 Sign up for free and build your professional{" "}
                 <br className="d-none d-xxl-block" /> profile with your skills
@@ -23,7 +23,7 @@ export default function AllTimeSelling() {
               <span className="flaticon-web-design" />
             </div>
             <div className="details">
-              <h4 className="title mt10 mb-3">Browse opportunities</h4>
+              <h3 className="title mt10 mb-3 fz17">Browse opportunities</h3>
               <p className="text">
                 Explore projects and gigs that match{" "}
                 <br className="d-none d-xxl-block" /> your expertise and
@@ -38,7 +38,7 @@ export default function AllTimeSelling() {
               <span className="flaticon-secure" />
             </div>
             <div className="details">
-              <h4 className="title mt10 mb-3">Get paid securely</h4>
+              <h3 className="title mt10 mb-3 fz17">Get paid securely</h3>
               <p className="text">
                 Work with confidence using secure payments{" "}
                 <br className="d-none d-xxl-block" /> and milestone-based
@@ -53,7 +53,7 @@ export default function AllTimeSelling() {
               <span className="flaticon-customer-service" />
             </div>
             <div className="details">
-              <h4 className="title mt10 mb-3">We&apos;re here to help</h4>
+              <h3 className="title mt10 mb-3 fz17">We&apos;re here to help</h3>
               <p className="text">
                 Our support team is ready to assist{" "}
                 <br className="d-none d-xxl-block" /> you every step of the

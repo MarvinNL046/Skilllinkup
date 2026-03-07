@@ -5,6 +5,10 @@ import PrivacyPolicy from "@/components/section/PrivacyPolicy";
 export const metadata = {
     title: "Privacy Policy",
     description: "Learn how SkillLinkup collects, uses, and protects your personal data. Our privacy policy covers cookies, authentication, analytics, and your GDPR rights.",
+    openGraph: {
+        title: "Privacy Policy",
+        description: "Learn how SkillLinkup collects, uses, and protects your personal data. Our privacy policy covers cookies, authentication, analytics, and your GDPR rights.",
+    },
 };
 
 export default function page() {

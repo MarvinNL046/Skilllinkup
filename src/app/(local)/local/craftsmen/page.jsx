@@ -5,6 +5,10 @@ import Listing14 from "@/components/section/Listing14";
 export const metadata = {
   title: "Find Local Craftsmen",
   description: "Browse skilled local craftsmen near you. Filter by trade, location, and rating to find the right professional for your job.",
+  openGraph: {
+    title: "Find Local Craftsmen",
+    description: "Browse skilled local craftsmen near you. Filter by trade, location, and rating to find the right professional for your job.",
+  },
 };
 
 export default function CraftsmenPage() {

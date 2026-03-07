@@ -8,6 +8,10 @@ import OurFaq1 from "@/components/section/OurFaq1";
 export const metadata = {
     title: "Contact Us",
     description: "Get in touch with the SkillLinkup team. We're here to help with any questions about our freelance marketplace platform.",
+    openGraph: {
+        title: "Contact Us",
+        description: "Get in touch with the SkillLinkup team. We're here to help with any questions about our freelance marketplace platform.",
+    },
 };
 
 export default function page() {

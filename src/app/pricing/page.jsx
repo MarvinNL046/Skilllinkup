@@ -5,6 +5,11 @@ export const metadata = {
   title: "Pricing",
   description:
     "SkillLinkup charges just 3.5% for buyers and 3.5% for sellers per transaction. No subscriptions, no hidden fees. Free to join.",
+  openGraph: {
+    title: "Pricing",
+    description:
+      "SkillLinkup charges just 3.5% for buyers and 3.5% for sellers per transaction. No subscriptions, no hidden fees. Free to join.",
+  },
 };
 
 export default function PricingPage() {

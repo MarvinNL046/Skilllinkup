@@ -5,6 +5,10 @@ import OurFaqSection1 from "@/components/section/OurFaqSection1";
 export const metadata = {
     title: "Help & Support",
     description: "Get help with SkillLinkup. Browse our support articles, guides, and resources for freelancers and clients.",
+    openGraph: {
+        title: "Help & Support",
+        description: "Get help with SkillLinkup. Browse our support articles, guides, and resources for freelancers and clients.",
+    },
 };
 
 export default function page() {

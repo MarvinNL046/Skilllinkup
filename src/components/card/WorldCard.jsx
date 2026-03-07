@@ -19,7 +19,7 @@ export default function WorldCard({ icon, title, description, href, count, color
             >
               <i className={icon} style={{ color: "#fff" }} />
             </div>
-            <h4 className="list-title mb-2">{title}</h4>
+            <h3 className="list-title mb-2 fz17">{title}</h3>
             <p className="body-color fz14 mb10">{description}</p>
             {count !== undefined && (
               <span className="fz13 fw500" style={{ color: color || "#ef2b70" }}>

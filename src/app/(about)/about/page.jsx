@@ -10,6 +10,10 @@ import OurFaq1 from "@/components/section/OurFaq1";
 export const metadata = {
     title: "About Us",
     description: "Learn about SkillLinkup, our mission to connect freelancers with clients worldwide, and the team behind the platform.",
+    openGraph: {
+        title: "About Us",
+        description: "Learn about SkillLinkup, our mission to connect freelancers with clients worldwide, and the team behind the platform.",
+    },
 };
 
 export default function page() {

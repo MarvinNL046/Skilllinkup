@@ -6,6 +6,10 @@ import FaqSuggestion from "@/components/section/FaqSuggestion";
 export const metadata = {
     title: "FAQ",
     description: "Find answers to frequently asked questions about SkillLinkup. Learn how our freelance marketplace works for both clients and freelancers.",
+    openGraph: {
+        title: "FAQ",
+        description: "Find answers to frequently asked questions about SkillLinkup. Learn how our freelance marketplace works for both clients and freelancers.",
+    },
 };
 
 export default function page() {

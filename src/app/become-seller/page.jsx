@@ -6,6 +6,11 @@ export const metadata = {
   title: "Become a Seller",
   description:
     "Start selling your freelance services on SkillLinkup. Offer digital services online, get local leads, or find employment opportunities.",
+  openGraph: {
+    title: "Become a Seller",
+    description:
+      "Start selling your freelance services on SkillLinkup. Offer digital services online, get local leads, or find employment opportunities.",
+  },
 };
 
 export default function page() {

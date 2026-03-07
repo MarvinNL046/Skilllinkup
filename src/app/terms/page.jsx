@@ -5,6 +5,10 @@ import TermsCondition1 from "@/components/section/TermsCondition1";
 export const metadata = {
     title: "Terms of Service",
     description: "Read the SkillLinkup terms of service. Understand the rules and guidelines that govern use of our freelance marketplace platform.",
+    openGraph: {
+        title: "Terms of Service",
+        description: "Read the SkillLinkup terms of service. Understand the rules and guidelines that govern use of our freelance marketplace platform.",
+    },
 };
 
 export default function page() {

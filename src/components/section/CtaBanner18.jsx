@@ -15,7 +15,7 @@ export default function CtaBanner18() {
               <div className="main-title">
                 <h2 className="title">
                   A whole world of freelance{" "}
-                  <br className="d-none d-xl-block" /> talent at your fingertips
+                  <br className="d-none d-xl-block" />talent at your fingertips
                 </h2>
               </div>
             </div>
@@ -26,7 +26,7 @@ export default function CtaBanner18() {
                     className={`list-icon flex-shrink-0 ${elm.iconClass}`}
                   ></span>
                   <div className="list-content flex-grow-1 ml20">
-                    <h4 className="mb-1">{elm.title}</h4>
+                    <h3 className="mb-1 fz17">{elm.title}</h3>
                     <p className="text mb-0 fz15">{elm.content}</p>
                   </div>
                 </div>

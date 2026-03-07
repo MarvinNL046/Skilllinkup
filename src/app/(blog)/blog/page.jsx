@@ -7,6 +7,10 @@ import BlogArea3 from "@/components/section/BlogArea3";
 export const metadata = {
     title: "Blog",
     description: "Read the latest tips, guides, and insights for freelancers and clients on the SkillLinkup blog.",
+    openGraph: {
+        title: "Blog",
+        description: "Read the latest tips, guides, and insights for freelancers and clients on the SkillLinkup blog.",
+    },
 };
 
 export default function page() {
