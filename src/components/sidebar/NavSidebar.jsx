@@ -113,9 +113,10 @@ export default function NavSidebar() {
               <Link
                 href="/dashboard"
                 className="ud-btn btn-thm w-100 bdrs8 text-white mb-2"
-                data-bs-dismiss="offcanvas"
               >
-                Dashboard <i className="fal fa-arrow-right-long" />
+                <span data-bs-dismiss="offcanvas">
+                  Dashboard <i className="fal fa-arrow-right-long" />
+                </span>
               </Link>
             </div>
           ) : (
@@ -123,16 +124,18 @@ export default function NavSidebar() {
               <Link
                 href="/login"
                 className="ud-btn btn-white bdrs8 w-100 text-center"
-                data-bs-dismiss="offcanvas"
               >
-                Sign in <i className="fal fa-arrow-right-long" />
+                <span data-bs-dismiss="offcanvas">
+                  Sign in <i className="fal fa-arrow-right-long" />
+                </span>
               </Link>
               <Link
                 href="/become-seller"
                 className="ud-btn btn-thm bdrs8 w-100 text-white text-center"
-                data-bs-dismiss="offcanvas"
               >
-                Become a Seller <i className="fal fa-arrow-right-long" />
+                <span data-bs-dismiss="offcanvas">
+                  Become a Seller <i className="fal fa-arrow-right-long" />
+                </span>
               </Link>
             </div>
           )}
