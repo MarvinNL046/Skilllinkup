@@ -30,7 +30,7 @@ const _feedback     = { id: 21, name: "Feedback",          icon: "flaticon-chat-
 export const dashboardNavigation = {
   freelancer: {
     online: {
-      start:    [_dashboard, _manageServ, _addServ, _proposals, _orders],
+      start:    [_dashboard, _manageServ, _addServ, _myProjects, _createProj, _proposals, _orders],
       organize: [_message, _reviews, _payouts, _statements, _invoice],
       account:  [_profile, _feedback],
     },
@@ -47,7 +47,7 @@ export const dashboardNavigation = {
   },
   client: {
     online: {
-      start:    [_dashboard, _myProjects, _createProj, _orders, _saved],
+      start:    [_dashboard, _myProjects, _createProj, _manageServ, _addServ, _orders, _saved],
       organize: [_message, _reviews, _rewards],
       account:  [_profile, _feedback],
     },
