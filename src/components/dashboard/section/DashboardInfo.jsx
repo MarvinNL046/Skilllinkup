@@ -175,6 +175,7 @@ export default function DashboardInfo() {
             <div className="d-flex align-items-center justify-content-between statistics_funfact" style={{ borderLeft: "4px solid #2A8703" }}>
               <div className="details">
                 <div className="fz15">Active Gigs</div>
+                <div className="fz11 text-muted" style={{ marginTop: -2 }}>Your fixed-price service listings</div>
                 <div className="title">
                   {isLoading ? (
                     <span className="text-muted fz20">...</span>
@@ -195,6 +196,7 @@ export default function DashboardInfo() {
             <div className="d-flex align-items-center justify-content-between statistics_funfact" style={{ borderLeft: "4px solid #6366f1" }}>
               <div className="details">
                 <div className="fz15">Total Orders</div>
+                <div className="fz11 text-muted" style={{ marginTop: -2 }}>Purchases from your services</div>
                 <div className="title">
                   {isLoading ? (
                     <span className="text-muted fz20">...</span>
@@ -215,6 +217,7 @@ export default function DashboardInfo() {
             <div className="d-flex align-items-center justify-content-between statistics_funfact" style={{ borderLeft: "4px solid #f59e0b" }}>
               <div className="details">
                 <div className="fz15">Pending Orders</div>
+                <div className="fz11 text-muted" style={{ marginTop: -2 }}>Orders awaiting delivery</div>
                 <div className="title">
                   {isLoading ? (
                     <span className="text-muted fz20">...</span>
@@ -235,6 +238,7 @@ export default function DashboardInfo() {
             <div className="d-flex align-items-center justify-content-between statistics_funfact" style={{ borderLeft: "4px solid #10b981" }}>
               <div className="details">
                 <div className="fz15">Total Earnings</div>
+                <div className="fz11 text-muted" style={{ marginTop: -2 }}>Revenue from completed orders</div>
                 <div className="title">
                   {isLoading ? (
                     <span className="text-muted fz20">...</span>

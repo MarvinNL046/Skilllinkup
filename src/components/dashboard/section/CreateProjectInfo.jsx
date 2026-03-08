@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
+import Link from "next/link";
 import DashboardNavigation from "../header/DashboardNavigation";
 import useConvexUser from "@/hook/useConvexUser";
 import { flattenLeafMarketplaceCategories } from "@/lib/marketplaceCategories";
@@ -18,13 +19,21 @@ function generateSlug(title) {
     .slice(0, 80);
 }
 
+function worldToServiceType(world) {
+  if (world === "local") return "local";
+  return "digital"; // online, jobs, default
+}
+
 export default function CreateProjectInfo() {
   const router = useRouter();
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const createProject = useMutation(api.marketplace.projects.create);
 
-  // Fetch marketplace categories for the dropdown
-  const categories = useQuery(api.marketplace.categories.list, { locale: "en" });
+  // Fetch marketplace categories filtered by user's preferred world
+  const serviceType = worldToServiceType(convexUser?.preferredWorld);
+  const categoryArgs = { locale: "en" };
+  if (serviceType) categoryArgs.serviceType = serviceType;
+  const categories = useQuery(api.marketplace.categories.list, categoryArgs);
   const leafCategories = categories
     ? flattenLeafMarketplaceCategories(categories)
     : [];
@@ -228,7 +237,7 @@ export default function CreateProjectInfo() {
           <div className="col-lg-9">
             <div className="dashboard_title_area">
               <h2>Create Project</h2>
-              <p className="text">Post a project and receive bids from freelancers.</p>
+              <p className="text">Describe what you need and set your budget. Freelancers will send proposals — like posting on Upwork.</p>
             </div>
           </div>
           <div className="col-lg-3">
@@ -236,12 +245,27 @@ export default function CreateProjectInfo() {
               <button
                 type="submit"
                 form="create-project-form"
-                className="ud-btn btn-dark"
+                className="ud-btn btn-thm default-box-shadow2"
                 disabled={status.loading || !isLoaded}
               >
                 {status.loading ? "Saving..." : "Save & Publish"}
                 <i className="fal fa-arrow-right-long" />
               </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="row mb20">
+          <div className="col-xl-12">
+            <div className="d-flex align-items-center gap-2 px-3 py-2 bdrs4" style={{ background: "#f0f9ff", border: "1px solid #bae6fd" }}>
+              <i className="flaticon-document fz16" style={{ color: "#0284c7" }} />
+              <span className="fz14" style={{ color: "#0369a1" }}>
+                Want to offer your own services instead?{" "}
+                <Link href="/add-services" className="fw500" style={{ color: "#0284c7", textDecoration: "underline" }}>
+                  Add a Service
+                </Link>{" "}
+                to create a fixed-price listing.
+              </span>
             </div>
           </div>
         </div>

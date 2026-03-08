@@ -67,7 +67,14 @@ export default function DashboardSidebar() {
               }`}
             >
               <i className={`${item.icon} mr15`} />
-              {item.name}
+              <span>
+                {item.name}
+                {item.subtitle && (
+                  <span className="d-block fz12 fw400" style={{ color: "#9ca3af", lineHeight: 1.3, marginTop: 2 }}>
+                    {item.subtitle}
+                  </span>
+                )}
+              </span>
             </Link>
           </div>
         ))}

@@ -2,8 +2,8 @@
 // Shared nav items (reused across worlds)
 // ============================================================
 const _dashboard    = { id: 1,  name: "Dashboard",        icon: "flaticon-home",         path: "/dashboard" };
-const _manageServ   = { id: 2,  name: "Manage Services",  icon: "flaticon-presentation", path: "/manage-services" };
-const _addServ      = { id: 3,  name: "Add Services",     icon: "flaticon-document",     path: "/add-services" };
+const _manageServ   = { id: 2,  name: "Manage Services",  icon: "flaticon-presentation", path: "/manage-services", subtitle: "View & edit your service listings" };
+const _addServ      = { id: 3,  name: "Add Services",     icon: "flaticon-document",     path: "/add-services",     subtitle: "Offer your skills with fixed packages" };
 const _proposals    = { id: 4,  name: "My Proposals",     icon: "flaticon-document",     path: "/proposal" };
 const _orders       = { id: 5,  name: "My Orders",        icon: "flaticon-receipt",      path: "/orders" };
 const _message      = { id: 6,  name: "Message",          icon: "flaticon-chat",         path: "/message" };
@@ -16,8 +16,8 @@ const _logout       = { id: 12, name: "Logout",           icon: "flaticon-logout
 const _credits      = { id: 13, name: "Credits",          icon: "flaticon-dollar",       path: "/dashboard/credits" };
 const _leads        = { id: 14, name: "My Leads",         icon: "flaticon-place",        path: "/dashboard/my-leads" };
 const _manageJobs   = { id: 15, name: "Manage Jobs",      icon: "flaticon-briefcase",    path: "/manage-jobs" };
-const _myProjects   = { id: 16, name: "My Projects",      icon: "flaticon-content",      path: "/manage-projects" };
-const _createProj   = { id: 17, name: "Create Project",   icon: "flaticon-content",      path: "/create-projects" };
+const _myProjects   = { id: 16, name: "My Projects",      icon: "flaticon-content",      path: "/manage-projects",  subtitle: "Track your posted projects" };
+const _createProj   = { id: 17, name: "Create Project",   icon: "flaticon-content",      path: "/create-projects",  subtitle: "Post a job and receive bids" };
 const _saved        = { id: 18, name: "Saved",            icon: "flaticon-like",         path: "/saved" };
 const _quoteReqs    = { id: 19, name: "My Quote Requests", icon: "flaticon-document",    path: "/dashboard/quote-requests" };
 const _rewards      = { id: 20, name: "Rewards",           icon: "flaticon-star",         path: "/dashboard/rewards" };

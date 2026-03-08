@@ -8,7 +8,10 @@ import { buildMarketplaceCategoryTree } from "../lib/marketplaceCategories";
  * including gig counts.
  */
 export const list = query({
-  args: { locale: v.optional(v.string()) },
+  args: {
+    locale: v.optional(v.string()),
+    serviceType: v.optional(v.string()),
+  },
   handler: async (ctx, args) => {
     const locale = args.locale ?? "en";
 
@@ -30,7 +33,21 @@ export const list = query({
       gigCounts.set(gig.categoryId, (gigCounts.get(gig.categoryId) ?? 0) + 1);
     }
 
-    return buildMarketplaceCategoryTree(allCategories as any, gigCounts);
+    const tree = buildMarketplaceCategoryTree(allCategories as any, gigCounts);
+
+    // Filter root categories by serviceType if provided
+    if (args.serviceType) {
+      const st = args.serviceType;
+      return tree.filter((root) => {
+        const rootType = root.serviceType;
+        if (rootType === "hybrid") return true;
+        if (st === "digital") return rootType === "digital" || !rootType;
+        if (st === "local") return rootType === "local";
+        return true;
+      });
+    }
+
+    return tree;
   },
 });
 
@@ -66,7 +83,11 @@ export const getFirstTenant = query({
  * Search categories by name prefix (for autocomplete).
  */
 export const search = query({
-  args: { query: v.string(), locale: v.optional(v.string()) },
+  args: {
+    query: v.string(),
+    locale: v.optional(v.string()),
+    serviceType: v.optional(v.string()),
+  },
   handler: async (ctx, args) => {
     const locale = args.locale ?? "en";
     const q = args.query.toLowerCase().trim();
@@ -77,8 +98,33 @@ export const search = query({
       .filter((q2) => q2.eq(q2.field("locale"), locale))
       .collect();
 
-    return all
-      .filter((cat) => cat.name.toLowerCase().includes(q))
+    let filtered = all.filter((cat) => cat.name.toLowerCase().includes(q));
+
+    // Filter by serviceType if provided
+    if (args.serviceType) {
+      const st = args.serviceType;
+      // Build a set of root category IDs that match the serviceType
+      const roots = all.filter((c) => !c.parentId);
+      const allowedRootIds = new Set<string>();
+      for (const root of roots) {
+        const rootType = root.serviceType;
+        if (rootType === "hybrid") {
+          allowedRootIds.add(root._id);
+        } else if (st === "digital" && (rootType === "digital" || !rootType)) {
+          allowedRootIds.add(root._id);
+        } else if (st === "local" && rootType === "local") {
+          allowedRootIds.add(root._id);
+        }
+      }
+      filtered = filtered.filter((cat) => {
+        // Root categories: check directly
+        if (!cat.parentId) return allowedRootIds.has(cat._id);
+        // Children: check if parent root is allowed
+        return allowedRootIds.has(cat.parentId);
+      });
+    }
+
+    return filtered
       .sort((a, b) => {
         const aStarts = a.name.toLowerCase().startsWith(q) ? 0 : 1;
         const bStarts = b.name.toLowerCase().startsWith(q) ? 0 : 1;

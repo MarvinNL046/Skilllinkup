@@ -1,8 +1,13 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+
+function pathToServiceType(pathname) {
+  if (pathname.startsWith("/local")) return "local";
+  return "digital"; // /online/, /jobs/, default
+}
 
 const POPULAR = [
   "logo design",
@@ -33,6 +38,8 @@ export default function SearchBarWithDropdown({
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+  const serviceType = pathToServiceType(pathname);
   const wrapperRef = useRef(null);
 
   // 250ms debounce
@@ -61,7 +68,7 @@ export default function SearchBarWithDropdown({
 
   const categoryResults = useQuery(
     api.marketplace.categories.search,
-    active ? { query: debouncedQuery.trim(), locale: "en" } : "skip"
+    active ? { query: debouncedQuery.trim(), locale: "en", serviceType } : "skip"
   );
 
   // Combine: categories first, then unique gig titles, max 8 total

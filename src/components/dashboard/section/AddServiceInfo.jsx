@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
+import Link from "next/link";
 import DashboardNavigation from "../header/DashboardNavigation";
 import ServiceGallery from "./ServiceGallery";
 import useConvexProfile from "@/hook/useConvexProfile";
@@ -24,10 +25,16 @@ const EMPTY_PACKAGE = {
   revisionCount: "",
 };
 
+function worldToServiceType(world) {
+  if (world === "local") return "local";
+  return "digital"; // online, jobs, default
+}
+
 export default function AddServiceInfo() {
   const router = useRouter();
   const { convexUser, profile } = useConvexProfile();
-  const categories = useConvexCategories("en");
+  const serviceType = worldToServiceType(convexUser?.preferredWorld);
+  const categories = useConvexCategories("en", serviceType);
 
   const createGig = useMutation(api.marketplace.gigs.create);
   const createPackage = useMutation(api.marketplace.gigs.createPackage);
@@ -147,19 +154,34 @@ export default function AddServiceInfo() {
           <div className="col-lg-9">
             <div className="dashboard_title_area">
               <h2>Add Services</h2>
-              <p className="text">Fill in the details below to publish your new service.</p>
+              <p className="text">Create a service listing with fixed pricing packages. Clients can browse and order directly — like a Fiverr gig.</p>
             </div>
           </div>
           <div className="col-lg-3">
             <div className="text-lg-end">
               <button
-                className="ud-btn btn-dark"
+                className="ud-btn btn-thm default-box-shadow2"
                 onClick={handleSaveAndPublish}
                 disabled={saving || !profile}
               >
                 {saving ? "Saving..." : "Save & Publish"}
                 <i className="fal fa-arrow-right-long" />
               </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="row mb20">
+          <div className="col-xl-12">
+            <div className="d-flex align-items-center gap-2 px-3 py-2 bdrs4" style={{ background: "#f0f9ff", border: "1px solid #bae6fd" }}>
+              <i className="flaticon-content fz16" style={{ color: "#0284c7" }} />
+              <span className="fz14" style={{ color: "#0369a1" }}>
+                Looking to hire instead?{" "}
+                <Link href="/create-projects" className="fw500" style={{ color: "#0284c7", textDecoration: "underline" }}>
+                  Create a Project
+                </Link>{" "}
+                to post a brief and receive proposals from freelancers.
+              </span>
             </div>
           </div>
         </div>
@@ -415,7 +437,7 @@ export default function AddServiceInfo() {
             {/* Bottom submit button */}
             <div className="col-xl-12 text-end mb30">
               <button
-                className="ud-btn btn-dark"
+                className="ud-btn btn-thm default-box-shadow2"
                 onClick={handleSaveAndPublish}
                 disabled={saving || !profile}
               >

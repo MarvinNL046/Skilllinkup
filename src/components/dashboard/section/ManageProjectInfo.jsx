@@ -142,7 +142,7 @@ export default function ManageProjectInfo() {
             <div className="text-lg-end">
               <Link
                 href="/create-projects"
-                className="ud-btn btn-dark default-box-shadow2"
+                className="ud-btn btn-thm default-box-shadow2"
               >
                 Create Project
                 <i className="fal fa-arrow-right-long" />

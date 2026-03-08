@@ -139,7 +139,7 @@ export default function ManageJobInfo() {
           <div className="col-lg-3">
             <div className="text-lg-end">
               <span
-                className="ud-btn btn-dark default-box-shadow2"
+                className="ud-btn btn-thm default-box-shadow2"
                 style={{ opacity: 0.5, cursor: "not-allowed" }}
                 title="Coming soon"
               >

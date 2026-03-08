@@ -71,7 +71,7 @@ export default function DeleteModal({ projectId, projectTitle, onDelete }) {
                 )}
               </button>
               <button
-                className="ud-btn btn-dark mb25"
+                className="ud-btn btn-white mb25"
                 data-bs-dismiss="modal"
                 aria-label="Close"
                 disabled={isDeleting}

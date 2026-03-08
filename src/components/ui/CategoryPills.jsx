@@ -4,11 +4,18 @@ import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 
+function pathToServiceType(pathname) {
+  if (pathname.startsWith("/local")) return "local";
+  return "digital"; // /online/, /jobs/, default
+}
+
 export default function CategoryPills() {
+  const pathname = usePathname();
+  const serviceType = pathToServiceType(pathname);
   const categories = useQuery(api.marketplace.categories.list, {
     locale: "en",
+    serviceType,
   });
-  const pathname = usePathname();
   const searchParams = useSearchParams();
   const q = searchParams.get("q") || "";
 
