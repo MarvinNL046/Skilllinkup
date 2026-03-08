@@ -42,15 +42,36 @@ export default function MessageBox({
   const [isSending, setIsSending] = useState(false);
   const [sendError, setSendError] = useState(null);
   const chatBoxRef = useRef(null);
-  const messagesEndRef = useRef(null);
+  const prevCountRef = useRef(0);
   const blockError = inputValue.trim() && containsContactInfo(inputValue) ? BLOCK_ERROR : null;
 
-  // Auto-scroll to bottom when messages change
+  // Scroll helper
+  const scrollToBottom = () => {
+    const el = chatBoxRef.current;
+    if (!el) return;
+    // Double rAF ensures DOM has painted before scrolling
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        el.scrollTop = el.scrollHeight;
+      });
+    });
+  };
+
+  // Auto-scroll when new messages arrive
   useEffect(() => {
-    if (chatBoxRef.current) {
-      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    const count = messages?.length ?? 0;
+    if (count > prevCountRef.current) {
+      scrollToBottom();
     }
+    prevCountRef.current = count;
   }, [messages?.length]);
+
+  // Scroll to bottom on first load of conversation
+  useEffect(() => {
+    if (hasConversation && messages?.length > 0) {
+      scrollToBottom();
+    }
+  }, [hasConversation]);
 
   async function handleSend(e) {
     e.preventDefault();
@@ -61,6 +82,7 @@ export default function MessageBox({
     try {
       await onSend(inputValue);
       setInputValue("");
+      scrollToBottom();
     } catch (err) {
       const msg = err?.data ?? err?.message ?? "Bericht kon niet worden verstuurd.";
       setSendError(msg);
@@ -183,7 +205,7 @@ export default function MessageBox({
                 }
               })
             )}
-            <div ref={messagesEndRef} />
+            <div style={{ height: 1 }} />
           </ul>
         </div>
         <div className="mi_text">
