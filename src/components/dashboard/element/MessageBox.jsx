@@ -7,16 +7,22 @@ const CONTACT_PATTERNS = [
   /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/,
   // @ symbol (catches partial email attempts)
   /@/,
-  // Phone numbers
+  // Phone numbers: 06-12345678, +31 6 1234, (020) 123-4567, etc.
   /(\+?\d[\d\s\-().]{6,}\d)/,
+  // Digit sequences (6+ digits, even with spaces/dots between them)
+  /(\d[\s.\-]?){6,}/,
   // URLs
   /(https?:\/\/|www\.)/i,
   // Social/messaging platforms
-  /(wa\.me|t\.me|telegram|whatsapp|instagram\.com|linkedin\.com|facebook\.com|messenger)/i,
-  // Email provider names (case-insensitive)
-  /\b(gmail|hotmail|outlook|yahoo|protonmail|icloud|live\.com|msn)\b/i,
-  // Common evasion patterns: "at" + "dot" combos, spaced-out emails
-  /\b\w+\s*(at|@|apenstaartje)\s*\w+\s*(dot|punt)\s*\w+/i,
+  /\b(wa\.me|t\.me|telegram|whatsapp|instagram|linkedin|facebook|messenger|snapchat|tiktok|signal|discord)\b/i,
+  // Video/meeting platforms
+  /\b(teams|zoom|loom|skype|google\s*meet|facetime|webex|jitsi|whereby)\b/i,
+  // Email provider names
+  /\b(gmail|hotmail|outlook|yahoo|protonmail|icloud|live\.com|msn|ziggo|kpn|xs4all)\b/i,
+  // Common evasion patterns: "naam at gmail dot com", "apenstaartje"
+  /\b\w+\s*(at|apenstaartje)\s*\w+\s*(dot|punt)\s*\w+/i,
+  // "Bel me", "stuur sms", "app me" etc.
+  /\b(bel\s*me|stuur.*sms|app\s*me|call\s*me|text\s*me|dm\s*me)\b/i,
 ];
 
 function containsContactInfo(text) {
