@@ -235,7 +235,8 @@ export const seed = mutation({
 });
 
 /**
- * Seed StayCool Airconditioning freelancer profile with gigs, projects, and portfolio.
+ * Seed StayCool Airconditioning content (gigs, projects, portfolio).
+ * Works with existing profile or creates new one.
  */
 export const seedStaycool = mutation({
   args: {},
@@ -246,57 +247,81 @@ export const seedStaycool = mutation({
     if (!tenant) throw new Error("No tenant found");
     const tenantId = tenant._id;
 
-    // Check if profile already exists
+    // Find existing profile or create new
     const existing = await ctx.db
       .query("freelancerProfiles")
       .withIndex("by_slug", (q) => q.eq("slug", "staycool-airconditioning"))
       .first();
-    if (existing) throw new Error("StayCool profile already exists: " + existing._id);
 
-    // 1. Create user
-    const userId = await ctx.db.insert("users", {
-      name: "StayCool Airconditioning",
-      email: "info@staycool-airco.nl",
-      role: "freelancer",
-      tenantId,
-      createdAt: now,
-      updatedAt: now,
-    });
+    let userId: any;
+    let profileId: any;
 
-    // 2. Create freelancer profile
-    const profileId = await ctx.db.insert("freelancerProfiles", {
-      userId,
-      tenantId,
-      displayName: "StayCool Airconditioning",
-      slug: "staycool-airconditioning",
-      tagline: "Professionele airconditioning installatie & onderhoud",
-      bio: "StayCool Airconditioning is uw specialist voor airconditioning in de Randstad. Met meer dan 10 jaar ervaring leveren wij hoogwaardige aircosystemen voor woningen en bedrijfspanden. Van advies tot installatie en jaarlijks onderhoud — wij zorgen voor een aangenaam binnenklimaat het hele jaar door. Wij werken uitsluitend met A-merken zoals Daikin, Mitsubishi en Samsung, en bieden garantie op al onze installaties.",
-      hourlyRate: 75,
-      workType: "local",
-      locationCity: "Rotterdam",
-      locationCountry: "Netherlands",
-      serviceRadiusKm: 50,
-      skills: ["Airconditioning", "HVAC", "Klimaatbeheersing", "Split-unit installatie", "Warmtepomp", "Onderhoud", "Daikin", "Mitsubishi", "Samsung"],
-      languages: ["Nederlands", "English"],
-      status: "active",
-      profileVisibility: "public",
-      isAvailable: true,
-      isVerified: true,
-      verificationDate: now,
-      level: "pro",
-      ratingAverage: 4.8,
-      ratingCount: 23,
-      totalOrders: 47,
-      totalEarnings: 89500,
-      completionRate: 98,
-      responseTimeHours: 2,
-      contactPermission: "everyone",
-      featured: false,
-      locale: "en",
-      portfolioUrls: [],
-      createdAt: now - 365 * 24 * 60 * 60 * 1000,
-      updatedAt: now,
-    });
+    if (existing) {
+      profileId = existing._id;
+      userId = existing.userId;
+
+      // Update profile with richer data
+      await ctx.db.patch(existing._id, {
+        tagline: "Professionele airconditioning installatie & onderhoud",
+        bio: "StayCool Airconditioning is uw specialist voor airconditioning in de Randstad. Met meer dan 10 jaar ervaring leveren wij hoogwaardige aircosystemen voor woningen en bedrijfspanden. Van advies tot installatie en jaarlijks onderhoud — wij zorgen voor een aangenaam binnenklimaat het hele jaar door. Wij werken uitsluitend met A-merken zoals Daikin, Mitsubishi en Samsung, en bieden garantie op al onze installaties.",
+        workType: "local",
+        serviceRadiusKm: 50,
+        skills: ["Airconditioning", "HVAC", "Klimaatbeheersing", "Split-unit installatie", "Warmtepomp", "Onderhoud", "Daikin", "Mitsubishi", "Samsung"],
+        isVerified: true,
+        verificationDate: now,
+        level: "pro",
+        ratingAverage: 4.8,
+        ratingCount: 23,
+        totalOrders: 47,
+        completionRate: 98,
+        responseTimeHours: 2,
+        updatedAt: now,
+      });
+    } else {
+      // Create user + profile
+      userId = await ctx.db.insert("users", {
+        name: "StayCool Airconditioning",
+        email: "info@staycool-airco.nl",
+        role: "freelancer",
+        tenantId,
+        createdAt: now,
+        updatedAt: now,
+      });
+
+      profileId = await ctx.db.insert("freelancerProfiles", {
+        userId,
+        tenantId,
+        displayName: "StayCool Airconditioning",
+        slug: "staycool-airconditioning",
+        tagline: "Professionele airconditioning installatie & onderhoud",
+        bio: "StayCool Airconditioning is uw specialist voor airconditioning in de Randstad. Met meer dan 10 jaar ervaring leveren wij hoogwaardige aircosystemen voor woningen en bedrijfspanden. Van advies tot installatie en jaarlijks onderhoud — wij zorgen voor een aangenaam binnenklimaat het hele jaar door. Wij werken uitsluitend met A-merken zoals Daikin, Mitsubishi en Samsung, en bieden garantie op al onze installaties.",
+        hourlyRate: 75,
+        workType: "local",
+        locationCity: "Rotterdam",
+        locationCountry: "Netherlands",
+        serviceRadiusKm: 50,
+        skills: ["Airconditioning", "HVAC", "Klimaatbeheersing", "Split-unit installatie", "Warmtepomp", "Onderhoud", "Daikin", "Mitsubishi", "Samsung"],
+        languages: ["Nederlands", "English"],
+        status: "active",
+        profileVisibility: "public",
+        isAvailable: true,
+        isVerified: true,
+        verificationDate: now,
+        level: "pro",
+        ratingAverage: 4.8,
+        ratingCount: 23,
+        totalOrders: 47,
+        totalEarnings: 89500,
+        completionRate: 98,
+        responseTimeHours: 2,
+        contactPermission: "everyone",
+        featured: false,
+        locale: "en",
+        portfolioUrls: [],
+        createdAt: now - 365 * 24 * 60 * 60 * 1000,
+        updatedAt: now,
+      });
+    }
 
     // Find HVAC category
     const hvacCategory = await ctx.db
