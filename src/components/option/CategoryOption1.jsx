@@ -1,12 +1,20 @@
 "use client";
+import { usePathname } from "next/navigation";
 import useConvexCategories from "@/hook/useConvexCategories";
 import listingStore from "@/store/listingStore";
 import { flattenLeafMarketplaceCategories } from "@/lib/marketplaceCategories";
 
+function pathToServiceType(pathname) {
+  if (pathname.startsWith("/local")) return "local";
+  return "digital";
+}
+
 export default function CategoryOption1() {
   const getCategory = listingStore((state) => state.getCategory);
   const setCategory = listingStore((state) => state.setCategory);
-  const categories = useConvexCategories("en");
+  const pathname = usePathname();
+  const serviceType = pathToServiceType(pathname);
+  const categories = useConvexCategories("en", serviceType);
 
   // handler
   const categoryHandler = (data) => {
