@@ -27,7 +27,7 @@ export default function ContactButton({ recipientId, className = "" }) {
         participant1: convexUser._id,
         participant2: recipientId,
       });
-      router.push("/dashboard/message");
+      router.push("/message");
     } catch (err) {
       console.error("Failed to create conversation:", err);
     } finally {
