@@ -3,25 +3,14 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
 const CONTACT_PATTERNS = [
-  // Email addresses
-  /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/,
-  // @ symbol (catches partial email attempts)
   /@/,
-  // Phone numbers: 06-12345678, +31 6 1234, (020) 123-4567, etc.
   /(\+?\d[\d\s\-().]{6,}\d)/,
-  // Digit sequences (6+ digits, even with spaces/dots between them)
   /(\d[\s.\-]?){6,}/,
-  // URLs
   /(https?:\/\/|www\.)/i,
-  // Social/messaging platforms
   /\b(wa\.me|t\.me|telegram|whatsapp|instagram|linkedin|facebook|messenger|snapchat|tiktok|signal|discord)\b/i,
-  // Video/meeting platforms
   /\b(teams|zoom|loom|skype|google\s*meet|facetime|webex|jitsi|whereby)\b/i,
-  // Email provider names
   /\b(gmail|hotmail|outlook|yahoo|protonmail|icloud|live\.com|msn|ziggo|kpn|xs4all)\b/i,
-  // Common evasion patterns: "naam at gmail dot com", "apenstaartje"
   /\b\w+\s*(at|apenstaartje)\s*\w+\s*(dot|punt)\s*\w+/i,
-  // "Bel me", "stuur sms", "app me" etc.
   /\b(bel\s*me|stuur.*sms|app\s*me|call\s*me|text\s*me|dm\s*me)\b/i,
 ];
 
@@ -29,7 +18,8 @@ function containsContactInfo(text) {
   return CONTACT_PATTERNS.some((p) => p.test(text));
 }
 
-const BLOCK_ERROR = "Contactgegevens delen is niet toegestaan. E-mailadressen, telefoonnummers, links en e-mailproviders (Gmail, Outlook, etc.) worden geblokkeerd.";
+const BLOCK_ERROR =
+  "Contactgegevens delen is niet toegestaan. E-mailadressen, telefoonnummers, links en e-mailproviders (Gmail, Outlook, etc.) worden geblokkeerd.";
 
 export default function MessageBox({
   messages = [],
@@ -43,13 +33,12 @@ export default function MessageBox({
   const [sendError, setSendError] = useState(null);
   const chatBoxRef = useRef(null);
   const prevCountRef = useRef(0);
-  const blockError = inputValue.trim() && containsContactInfo(inputValue) ? BLOCK_ERROR : null;
+  const blockError =
+    inputValue.trim() && containsContactInfo(inputValue) ? BLOCK_ERROR : null;
 
-  // Scroll helper
   const scrollToBottom = () => {
     const el = chatBoxRef.current;
     if (!el) return;
-    // Double rAF ensures DOM has painted before scrolling
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         el.scrollTop = el.scrollHeight;
@@ -57,26 +46,19 @@ export default function MessageBox({
     });
   };
 
-  // Auto-scroll when new messages arrive
   useEffect(() => {
     const count = messages?.length ?? 0;
-    if (count > prevCountRef.current) {
-      scrollToBottom();
-    }
+    if (count > prevCountRef.current) scrollToBottom();
     prevCountRef.current = count;
   }, [messages?.length]);
 
-  // Scroll to bottom on first load of conversation
   useEffect(() => {
-    if (hasConversation && messages?.length > 0) {
-      scrollToBottom();
-    }
+    if (hasConversation && messages?.length > 0) scrollToBottom();
   }, [hasConversation]);
 
   async function handleSend(e) {
     e.preventDefault();
     if (!inputValue.trim() || isSending || blockError) return;
-
     setSendError(null);
     setIsSending(true);
     try {
@@ -84,8 +66,9 @@ export default function MessageBox({
       setInputValue("");
       scrollToBottom();
     } catch (err) {
-      const msg = err?.data ?? err?.message ?? "Bericht kon niet worden verstuurd.";
-      setSendError(msg);
+      setSendError(
+        err?.data ?? err?.message ?? "Bericht kon niet worden verstuurd."
+      );
     } finally {
       setIsSending(false);
     }
@@ -107,137 +90,242 @@ export default function MessageBox({
   }
 
   const otherName = otherParticipant?.name || "User";
-  const otherAvatar = otherParticipant?.image || "/images/resource/user.png";
+  const otherAvatar =
+    otherParticipant?.image || "/images/resource/user.png";
 
   if (!hasConversation) {
     return (
-      <div className="message_container mt30-md">
-        <div className="d-flex align-items-center justify-content-center h-100" style={{ minHeight: "400px" }}>
-          <div className="text-center">
-            <i className="flaticon-chat fz50 text-thm mb20 d-block" />
-            <h5 className="title">Select a conversation</h5>
-            <p className="text">Choose a conversation from the left to start messaging.</p>
-          </div>
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: 12,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: 400,
+          border: "1px solid #eee",
+        }}
+      >
+        <div style={{ textAlign: "center" }}>
+          <i
+            className="flaticon-chat"
+            style={{ fontSize: 50, color: "#2A8703", display: "block", marginBottom: 16 }}
+          />
+          <h5>Select a conversation</h5>
+          <p style={{ color: "#6b7280" }}>
+            Choose a conversation from the left to start messaging.
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <>
-      <div className="message_container mt30-md">
-        <div className="user_heading px-0 mx30">
-          <div className="wrap">
-            <Image
-              height={50}
-              width={50}
-              className="img-fluid mr10 rounded-circle"
-              src={otherAvatar}
-              alt={otherName}
-              onError={(e) => {
-                e.target.src = "/images/resource/user.png";
-              }}
-            />
-            <div className="meta d-sm-flex justify-content-sm-between align-items-center">
-              <div className="authors">
-                <h6 className="name mb-0">{otherName}</h6>
-                <p className="preview">Active</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="inbox_chatting_box" ref={chatBoxRef}>
-          <ul className="chatting_content">
-            {messages.length === 0 ? (
-              <li className="text-center py-4" style={{ alignSelf: "center" }}>
-                <p className="text mb-0">No messages yet. Say hello!</p>
-              </li>
-            ) : (
-              messages.map((message) => {
-                const isOwnMessage = message.senderId === currentUserId;
-                const senderName = message.sender?.name || "User";
-                const senderAvatar =
-                  message.sender?.image || "/images/resource/user.png";
-
-                if (!isOwnMessage) {
-                  return (
-                    <li key={message._id} className="sent">
-                      <div className="d-flex align-items-center mb15">
-                        <Image
-                          height={40}
-                          width={40}
-                          className="img-fluid rounded-circle align-self-start mr10"
-                          src={senderAvatar}
-                          alt={senderName}
-                          onError={(e) => {
-                            e.target.src = "/images/resource/user.png";
-                          }}
-                        />
-                        <div className="title fz15">
-                          {senderName}{" "}
-                          <small className="ml10">{formatTime(message.createdAt)}</small>
-                        </div>
-                      </div>
-                      <p>{message.content || (message.fileName ? `[File] ${message.fileName}` : "")}</p>
-                    </li>
-                  );
-                } else {
-                  return (
-                    <li key={message._id} className="reply">
-                      <div className="d-flex align-items-center justify-content-end mb15">
-                        <div className="title fz15">
-                          <small className="mr10">{formatTime(message.createdAt)}</small> You
-                        </div>
-                        <Image
-                          height={40}
-                          width={40}
-                          className="img-fluid rounded-circle align-self-end ml10"
-                          src={senderAvatar}
-                          alt="You"
-                          onError={(e) => {
-                            e.target.src = "/images/resource/user.png";
-                          }}
-                        />
-                      </div>
-                      <p>{message.content || (message.fileName ? `[File] ${message.fileName}` : "")}</p>
-                    </li>
-                  );
-                }
-              })
-            )}
-            <div style={{ height: 1 }} />
-          </ul>
-        </div>
-        <div className="mi_text">
-          <div className="message_input">
-            <form className="d-flex align-items-center" onSubmit={handleSend}>
-              <input
-                className="form-control"
-                type="text"
-                placeholder="Type a Message"
-                value={inputValue}
-                onChange={(e) => { setInputValue(e.target.value); setSendError(null); }}
-                onKeyDown={handleKeyDown}
-                disabled={isSending}
-              />
-              <button
-                type="submit"
-                className="btn ud-btn btn-thm"
-                disabled={isSending || !inputValue.trim() || !!blockError}
-              >
-                {isSending ? "Sending..." : "Send Message"}
-                <i className="fal fa-arrow-right-long" />
-              </button>
-            </form>
-            {blockError && (
-              <p className="text-danger fz12 mt5 mb0 px10">{blockError}</p>
-            )}
-            {sendError && !blockError && (
-              <p className="text-danger fz12 mt5 mb0 px10">{sendError}</p>
-            )}
-          </div>
+    <div
+      style={{
+        background: "#fff",
+        borderRadius: 12,
+        border: "1px solid #eee",
+        display: "flex",
+        flexDirection: "column",
+        height: "calc(100vh - 240px)",
+        minHeight: 400,
+        overflow: "hidden",
+      }}
+    >
+      {/* Header */}
+      <div
+        style={{
+          padding: "16px 20px",
+          borderBottom: "1px solid #eee",
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          flexShrink: 0,
+        }}
+      >
+        <Image
+          height={44}
+          width={44}
+          style={{ borderRadius: "50%", objectFit: "cover" }}
+          src={otherAvatar}
+          alt={otherName}
+          onError={(e) => {
+            e.target.src = "/images/resource/user.png";
+          }}
+        />
+        <div>
+          <h6 style={{ margin: 0, fontSize: 15, fontWeight: 600 }}>
+            {otherName}
+          </h6>
+          <p style={{ margin: 0, fontSize: 12, color: "#10b981" }}>Active</p>
         </div>
       </div>
-    </>
+
+      {/* Messages */}
+      <div
+        ref={chatBoxRef}
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          padding: 20,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 16,
+            minHeight: "100%",
+            justifyContent: messages.length === 0 ? "center" : "flex-end",
+          }}
+        >
+          {messages.length === 0 ? (
+            <p style={{ textAlign: "center", color: "#6b7280" }}>
+              No messages yet. Say hello!
+            </p>
+          ) : (
+            messages.map((message) => {
+              const isOwn = message.senderId === currentUserId;
+              const name = message.sender?.name || "User";
+              const avatar =
+                message.sender?.image || "/images/resource/user.png";
+              const content =
+                message.content ||
+                (message.fileName ? `[File] ${message.fileName}` : "");
+
+              return (
+                <div
+                  key={message._id}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: isOwn ? "flex-end" : "flex-start",
+                    maxWidth: "75%",
+                    alignSelf: isOwn ? "flex-end" : "flex-start",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      marginBottom: 4,
+                      flexDirection: isOwn ? "row-reverse" : "row",
+                    }}
+                  >
+                    <Image
+                      height={32}
+                      width={32}
+                      style={{ borderRadius: "50%", objectFit: "cover" }}
+                      src={avatar}
+                      alt={name}
+                      onError={(e) => {
+                        e.target.src = "/images/resource/user.png";
+                      }}
+                    />
+                    <span style={{ fontSize: 12, color: "#6b7280" }}>
+                      {isOwn ? "You" : name}{" "}
+                      <span style={{ marginLeft: 4 }}>
+                        {formatTime(message.createdAt)}
+                      </span>
+                    </span>
+                  </div>
+                  <p
+                    style={{
+                      margin: 0,
+                      padding: "10px 14px",
+                      fontSize: 14,
+                      lineHeight: 1.5,
+                      borderRadius: isOwn
+                        ? "12px 0 12px 12px"
+                        : "0 12px 12px 12px",
+                      background: isOwn ? "#2A8703" : "#f3f4f6",
+                      color: isOwn ? "#fff" : "#111827",
+                      wordBreak: "break-word",
+                    }}
+                  >
+                    {content}
+                  </p>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+
+      {/* Input */}
+      <div
+        style={{
+          padding: "12px 16px",
+          borderTop: "1px solid #eee",
+          flexShrink: 0,
+        }}
+      >
+        <form
+          onSubmit={handleSend}
+          style={{ display: "flex", alignItems: "center", gap: 10 }}
+        >
+          <input
+            type="text"
+            placeholder="Type a Message"
+            value={inputValue}
+            onChange={(e) => {
+              setInputValue(e.target.value);
+              setSendError(null);
+            }}
+            onKeyDown={handleKeyDown}
+            disabled={isSending}
+            style={{
+              flex: 1,
+              padding: "10px 16px",
+              fontSize: 14,
+              border: "none",
+              borderRadius: 10,
+              background: "#f4f4f5",
+              outline: "none",
+              color: "#111827",
+            }}
+          />
+          <button
+            type="submit"
+            disabled={isSending || !inputValue.trim() || !!blockError}
+            style={{
+              padding: "10px 20px",
+              fontSize: 14,
+              fontWeight: 600,
+              color: "#fff",
+              background:
+                isSending || !inputValue.trim() || blockError
+                  ? "#a3d48f"
+                  : "#2A8703",
+              border: "none",
+              borderRadius: 10,
+              cursor:
+                isSending || !inputValue.trim() || blockError
+                  ? "not-allowed"
+                  : "pointer",
+              whiteSpace: "nowrap",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            {isSending ? "Sending..." : "Send"}
+            <i className="fal fa-arrow-right-long" />
+          </button>
+        </form>
+        {blockError && (
+          <p style={{ color: "#dc2626", fontSize: 12, margin: "6px 0 0", padding: "0 4px" }}>
+            {blockError}
+          </p>
+        )}
+        {sendError && !blockError && (
+          <p style={{ color: "#dc2626", fontSize: 12, margin: "6px 0 0", padding: "0 4px" }}>
+            {sendError}
+          </p>
+        )}
+      </div>
+    </div>
   );
 }
