@@ -171,6 +171,49 @@ export const getBids = query({
 });
 
 /**
+ * Get open projects for a specific client (public, no auth required).
+ * Used on freelancer profile pages to show what projects they've posted.
+ */
+export const getPublicByClient = query({
+  args: {
+    clientId: v.id("users"),
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const limit = args.limit ?? 20;
+
+    const projects = await ctx.db
+      .query("projects")
+      .withIndex("by_client", (q) => q.eq("clientId", args.clientId))
+      .order("desc")
+      .take(limit);
+
+    const openProjects = projects.filter((p) => p.status === "open");
+
+    const enriched = await Promise.all(
+      openProjects.map(async (project) => {
+        const category = project.categoryId
+          ? await ctx.db.get(project.categoryId)
+          : null;
+
+        const bids = await ctx.db
+          .query("bids")
+          .withIndex("by_project", (q) => q.eq("projectId", project._id))
+          .collect();
+
+        return {
+          ...project,
+          categoryName: category?.name ?? null,
+          bidCount: bids.length,
+        };
+      })
+    );
+
+    return enriched;
+  },
+});
+
+/**
  * Get all projects for a specific client (all statuses).
  */
 export const getByClient = query({

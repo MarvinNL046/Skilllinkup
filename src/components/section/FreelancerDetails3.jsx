@@ -308,7 +308,23 @@ function GigsSection({ freelancerProfileId, recipientUserId }) {
     freelancerProfileId ? { freelancerId: freelancerProfileId } : "skip"
   );
 
-  if (!gigs || gigs.length === 0) return null;
+  if (gigs === undefined) {
+    return (
+      <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
+        <h4 className="mb25">Services</h4>
+        <p className="text fz14">Loading services...</p>
+      </div>
+    );
+  }
+
+  if (gigs.length === 0) {
+    return (
+      <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
+        <h4 className="mb25">Services</h4>
+        <p className="text fz14">No services listed yet.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
@@ -323,22 +339,105 @@ function GigsSection({ freelancerProfileId, recipientUserId }) {
   );
 }
 
+// ---- Projects ----
+
+function ProjectsSection({ userId }) {
+  const projects = useQuery(
+    api.marketplace.projects.getPublicByClient,
+    userId ? { clientId: userId } : "skip"
+  );
+
+  if (projects === undefined) {
+    return (
+      <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
+        <h4 className="mb25">Projects</h4>
+        <p className="text fz14">Loading projects...</p>
+      </div>
+    );
+  }
+
+  if (projects.length === 0) {
+    return (
+      <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
+        <h4 className="mb25">Projects</h4>
+        <p className="text fz14">No open projects yet.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
+      <h4 className="mb25">Projects</h4>
+      <div className="row">
+        {projects.map((project) => (
+          <div key={project._id} className="col-sm-6 mb20">
+            <div className="bdrs8 p20 bdr1">
+              <h6 className="mb10">{project.title}</h6>
+              <div className="d-flex flex-wrap gap-2 mb10">
+                {project.categoryName && (
+                  <span className="badge bg-light text-dark fz12">{project.categoryName}</span>
+                )}
+                {(project.budgetMin || project.budgetMax) && (
+                  <span className="fz13 text">
+                    <i className="flaticon-dollar me-1" />
+                    {project.budgetMin && project.budgetMax
+                      ? `€${project.budgetMin} – €${project.budgetMax}`
+                      : project.budgetMax
+                        ? `Up to €${project.budgetMax}`
+                        : `From €${project.budgetMin}`}
+                  </span>
+                )}
+              </div>
+              {project.deadline && (
+                <p className="fz13 text mb5">
+                  <i className="flaticon-clock me-1" />
+                  Deadline: {new Date(project.deadline).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
+                </p>
+              )}
+              <p className="fz13 text mb-0">
+                <i className="flaticon-contract me-1" />
+                {project.bidCount} {project.bidCount === 1 ? "bid" : "bids"}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ---- Portfolio ----
 
 function PortfolioSection({ userId }) {
-  const projects = useQuery(
+  const portfolioItems = useQuery(
     api.marketplace.portfolio.getByUser,
     userId ? { userId } : "skip"
   );
 
-  if (!projects || projects.length === 0) return null;
+  if (portfolioItems === undefined) {
+    return (
+      <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
+        <h4 className="mb25">Portfolio</h4>
+        <p className="text fz14">Loading portfolio...</p>
+      </div>
+    );
+  }
+
+  if (portfolioItems.length === 0) {
+    return (
+      <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
+        <h4 className="mb25">Portfolio</h4>
+        <p className="text fz14">No portfolio items yet.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
       <h4 className="mb25">Portfolio</h4>
       <div className="row">
-        {projects.map((project) => (
-          <div key={project._id} className="col-sm-6 col-lg-4 mb20">
+        {portfolioItems.map((item) => (
+          <div key={item._id} className="col-sm-6 col-lg-4 mb20">
             <div className="bdrs8 overflow-hidden bdr1">
               <div
                 style={{
@@ -352,8 +451,8 @@ function PortfolioSection({ userId }) {
                 <span className="flaticon-photo fz30 text-muted" />
               </div>
               <div className="p15">
-                <h6 className="mb5">{project.title}</h6>
-                {project.description && (
+                <h6 className="mb5">{item.title}</h6>
+                {item.description && (
                   <p
                     className="fz13 text mb10"
                     style={{
@@ -363,19 +462,19 @@ function PortfolioSection({ userId }) {
                       WebkitBoxOrient: "vertical",
                     }}
                   >
-                    {project.description}
+                    {item.description}
                   </p>
                 )}
-                {(project.tags || []).length > 0 && (
+                {(item.tags || []).length > 0 && (
                   <div className="d-flex flex-wrap gap-1 mb10">
-                    {project.tags.map((tag, i) => (
+                    {item.tags.map((tag, i) => (
                       <span key={i} className="badge bg-light text-dark fz11">{tag}</span>
                     ))}
                   </div>
                 )}
-                {project.externalUrl && (
+                {item.externalUrl && (
                   <a
-                    href={project.externalUrl}
+                    href={item.externalUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="fz13 text-thm"
@@ -744,6 +843,9 @@ export default function FreelancerDetails3() {
 
             {/* Services */}
             <GigsSection freelancerProfileId={convexData._id} recipientUserId={convexData.userId} />
+
+            {/* Projects */}
+            <ProjectsSection userId={convexData.userId} />
 
             {/* Portfolio */}
             <PortfolioSection userId={convexData.userId} />
