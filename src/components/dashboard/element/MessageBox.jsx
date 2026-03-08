@@ -3,17 +3,27 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
 const CONTACT_PATTERNS = [
+  // Email addresses
   /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/,
+  // @ symbol (catches partial email attempts)
+  /@/,
+  // Phone numbers
   /(\+?\d[\d\s\-().]{6,}\d)/,
+  // URLs
   /(https?:\/\/|www\.)/i,
-  /(wa\.me|t\.me|telegram|whatsapp|instagram\.com|linkedin\.com)/i,
+  // Social/messaging platforms
+  /(wa\.me|t\.me|telegram|whatsapp|instagram\.com|linkedin\.com|facebook\.com|messenger)/i,
+  // Email provider names (case-insensitive)
+  /\b(gmail|hotmail|outlook|yahoo|protonmail|icloud|live\.com|msn)\b/i,
+  // Common evasion patterns: "at" + "dot" combos, spaced-out emails
+  /\b\w+\s*(at|@|apenstaartje)\s*\w+\s*(dot|punt)\s*\w+/i,
 ];
 
 function containsContactInfo(text) {
   return CONTACT_PATTERNS.some((p) => p.test(text));
 }
 
-const BLOCK_ERROR = "Contactgegevens mogen niet gedeeld worden via de chat. Gebruik het platform voor verdere afspraken.";
+const BLOCK_ERROR = "Contactgegevens delen is niet toegestaan. E-mailadressen, telefoonnummers, links en e-mailproviders (Gmail, Outlook, etc.) worden geblokkeerd.";
 
 export default function MessageBox({
   messages = [],
@@ -25,15 +35,16 @@ export default function MessageBox({
   const [inputValue, setInputValue] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [sendError, setSendError] = useState(null);
+  const chatBoxRef = useRef(null);
   const messagesEndRef = useRef(null);
   const blockError = inputValue.trim() && containsContactInfo(inputValue) ? BLOCK_ERROR : null;
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages?.length]);
 
   async function handleSend(e) {
     e.preventDefault();
@@ -107,26 +118,26 @@ export default function MessageBox({
             </div>
           </div>
         </div>
-        <div className="inbox_chatting_box">
+        <div className="inbox_chatting_box" ref={chatBoxRef}>
           <ul className="chatting_content">
             {messages.length === 0 ? (
-              <li className="text-center py-4">
+              <li className="text-center py-4" style={{ alignSelf: "center" }}>
                 <p className="text mb-0">No messages yet. Say hello!</p>
               </li>
             ) : (
               messages.map((message) => {
-                const isSent = message.senderId !== currentUserId;
+                const isOwnMessage = message.senderId === currentUserId;
                 const senderName = message.sender?.name || "User";
                 const senderAvatar =
                   message.sender?.image || "/images/resource/user.png";
 
-                if (isSent) {
+                if (!isOwnMessage) {
                   return (
-                    <li key={message._id} className="sent float-start">
+                    <li key={message._id} className="sent">
                       <div className="d-flex align-items-center mb15">
                         <Image
-                          height={50}
-                          width={50}
+                          height={40}
+                          width={40}
                           className="img-fluid rounded-circle align-self-start mr10"
                           src={senderAvatar}
                           alt={senderName}
@@ -144,14 +155,14 @@ export default function MessageBox({
                   );
                 } else {
                   return (
-                    <li key={message._id} className="reply float-end">
+                    <li key={message._id} className="reply">
                       <div className="d-flex align-items-center justify-content-end mb15">
                         <div className="title fz15">
                           <small className="mr10">{formatTime(message.createdAt)}</small> You
                         </div>
                         <Image
-                          height={50}
-                          width={50}
+                          height={40}
+                          width={40}
                           className="img-fluid rounded-circle align-self-end ml10"
                           src={senderAvatar}
                           alt="You"
