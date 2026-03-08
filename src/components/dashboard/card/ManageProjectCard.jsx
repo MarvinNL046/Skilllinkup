@@ -80,9 +80,9 @@ export default function ManageProjectCard({ project, onEdit, onDelete }) {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          {slug && (
+          {project?._id && (
             <Link
-              href={`/project/${slug}`}
+              href={`/projects/${project._id}`}
               className="icon me-2"
               id={tooltipViewId}
             >

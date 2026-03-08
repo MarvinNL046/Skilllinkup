@@ -77,7 +77,7 @@ export const NewBidEmail = ({
  <Section style={ctaSection}>
  <Button
  style={ctaButton}
- href={`${baseUrl}/dashboard/projects/${projectId}`}
+ href={`${baseUrl}/projects/${projectId}`}
  >
  View Bids
  </Button>
