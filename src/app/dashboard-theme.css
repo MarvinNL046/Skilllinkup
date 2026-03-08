@@ -285,31 +285,51 @@
   margin: 0 !important;
 }
 
-/* Chat messages area */
+/* Chat messages area — neutralize template CSS from public/css/style.css */
 .inbox_chatting_box {
   padding: 20px !important;
   overflow-y: auto !important;
-  min-height: 300px !important;
-  max-height: calc(100vh - 380px) !important;
-  flex: 1 !important;
+  min-height: 200px !important;
+  max-height: none !important;
+  flex: 1 1 0 !important;
 }
 
 .inbox_chatting_box .chatting_content {
   list-style: none !important;
-  padding: 0 !important;
+  padding: 0 0 20px 0 !important;
   margin: 0 !important;
   display: flex !important;
   flex-direction: column !important;
   gap: 16px !important;
 }
 
+/* CRITICAL: Kill negative margins from template on reply messages */
+.chatting_content li.reply,
+.inbox_chatting_box .chatting_content li.reply {
+  float: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  align-self: flex-end !important;
+  max-width: 70% !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
 /* Received messages (from other user) */
-.chatting_content li.sent {
+.chatting_content li.sent,
+.inbox_chatting_box .chatting_content li.sent {
   float: none !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;
   max-width: 70% !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
 .chatting_content li.sent .title {
@@ -330,16 +350,6 @@
   margin: 0 !important;
   max-width: 100% !important;
   line-height: 1.5 !important;
-}
-
-/* Sent messages (from current user) */
-.chatting_content li.reply {
-  float: none !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-end !important;
-  align-self: flex-end !important;
-  max-width: 70% !important;
 }
 
 .chatting_content li.reply .title {
@@ -363,10 +373,29 @@
   line-height: 1.5 !important;
 }
 
-/* Message input */
+/* Container: flex layout with viewport height */
+.message_container {
+  height: calc(100vh - 250px) !important;
+  min-height: 400px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+/* Input area: no overlap with chatbox */
+.mi_text {
+  flex-shrink: 0 !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* Message input — no overlap with chatbox */
 .mi_text {
   padding: 16px 20px !important;
   border-top: 1px solid rgba(0,0,0,0.07) !important;
+  flex-shrink: 0 !important;
+  margin-top: 0 !important;
+  position: relative !important;
 }
 
 .message_input .form-control {
@@ -421,8 +450,13 @@
     max-height: 250px !important;
   }
   .inbox_chatting_box {
-    max-height: 350px !important;
+    max-height: none !important;
+    flex: 1 1 0 !important;
     min-height: 200px !important;
+  }
+  .message_container {
+    height: calc(100vh - 200px) !important;
+    min-height: 350px !important;
   }
 }
 
@@ -443,9 +477,15 @@
   }
   .inbox_chatting_box {
     padding: 12px !important;
+    max-height: none !important;
+    flex: 1 1 0 !important;
   }
   .mi_text {
     padding: 12px !important;
+  }
+  .message_container {
+    height: calc(100vh - 180px) !important;
+    min-height: 300px !important;
   }
 }
 

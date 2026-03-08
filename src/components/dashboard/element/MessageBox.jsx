@@ -27,6 +27,8 @@ export default function MessageBox({
   otherParticipant,
   onSend,
   hasConversation = false,
+  isMobile = false,
+  onMobileBack,
 }) {
   const [inputValue, setInputValue] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -124,19 +126,19 @@ export default function MessageBox({
     <div
       style={{
         background: "#fff",
-        borderRadius: 12,
-        border: "1px solid #eee",
+        borderRadius: isMobile ? 0 : 12,
+        border: isMobile ? "none" : "1px solid #eee",
         display: "flex",
         flexDirection: "column",
-        height: "calc(100vh - 240px)",
-        minHeight: 400,
+        height: isMobile ? "calc(100vh - 160px)" : "calc(100vh - 240px)",
+        minHeight: isMobile ? 300 : 400,
         overflow: "hidden",
       }}
     >
       {/* Header */}
       <div
         style={{
-          padding: "16px 20px",
+          padding: isMobile ? "12px 16px" : "16px 20px",
           borderBottom: "1px solid #eee",
           display: "flex",
           alignItems: "center",
@@ -144,9 +146,27 @@ export default function MessageBox({
           flexShrink: 0,
         }}
       >
+        {isMobile && onMobileBack && (
+          <button
+            onClick={onMobileBack}
+            style={{
+              background: "none",
+              border: "none",
+              padding: "4px 8px",
+              cursor: "pointer",
+              fontSize: 18,
+              color: "#6b7280",
+              display: "flex",
+              alignItems: "center",
+            }}
+            aria-label="Back to conversations"
+          >
+            <i className="fal fa-arrow-left" />
+          </button>
+        )}
         <Image
-          height={44}
-          width={44}
+          height={isMobile ? 36 : 44}
+          width={isMobile ? 36 : 44}
           style={{ borderRadius: "50%", objectFit: "cover" }}
           src={otherAvatar}
           alt={otherName}
@@ -155,7 +175,7 @@ export default function MessageBox({
           }}
         />
         <div>
-          <h6 style={{ margin: 0, fontSize: 15, fontWeight: 600 }}>
+          <h6 style={{ margin: 0, fontSize: isMobile ? 14 : 15, fontWeight: 600 }}>
             {otherName}
           </h6>
           <p style={{ margin: 0, fontSize: 12, color: "#10b981" }}>Active</p>
@@ -168,7 +188,7 @@ export default function MessageBox({
         style={{
           flex: 1,
           overflowY: "auto",
-          padding: 20,
+          padding: isMobile ? 12 : 20,
         }}
       >
         <div
@@ -201,7 +221,7 @@ export default function MessageBox({
                     display: "flex",
                     flexDirection: "column",
                     alignItems: isOwn ? "flex-end" : "flex-start",
-                    maxWidth: "75%",
+                    maxWidth: isMobile ? "88%" : "75%",
                     alignSelf: isOwn ? "flex-end" : "flex-start",
                   }}
                 >
@@ -257,7 +277,7 @@ export default function MessageBox({
       {/* Input */}
       <div
         style={{
-          padding: "12px 16px",
+          padding: isMobile ? "10px 12px" : "12px 16px",
           borderTop: "1px solid #eee",
           flexShrink: 0,
         }}
@@ -291,7 +311,7 @@ export default function MessageBox({
             type="submit"
             disabled={isSending || !inputValue.trim() || !!blockError}
             style={{
-              padding: "10px 20px",
+              padding: isMobile ? "10px 14px" : "10px 20px",
               fontSize: 14,
               fontWeight: 600,
               color: "#fff",
@@ -311,8 +331,8 @@ export default function MessageBox({
               gap: 6,
             }}
           >
-            {isSending ? "Sending..." : "Send"}
-            <i className="fal fa-arrow-right-long" />
+            {isSending ? (isMobile ? "..." : "Sending...") : (isMobile ? <i className="fal fa-paper-plane" /> : "Send")}
+            {!isMobile && <i className="fal fa-arrow-right-long" />}
           </button>
         </form>
         {blockError && (
