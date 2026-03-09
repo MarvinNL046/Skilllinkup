@@ -971,6 +971,25 @@
   "emptyState": {
     "nothingHereYet": "Nothing here yet"
   },
+  "filterModals": {
+    "allFilters": "All filters",
+    "skills": "Skills",
+    "price": "Price",
+    "budget": "Budget",
+    "location": "Location",
+    "language": "Language",
+    "level": "Level",
+    "speaks": "Speaks",
+    "deliveryTime": "Delivery Time",
+    "designTool": "Design Tool",
+    "englishLevel": "English Level",
+    "category": "Category",
+    "salary": "Salary",
+    "jobType": "Job Type",
+    "noOfEmployees": "No of Employees",
+    "searchPlaceholder": "What service are you looking for today?",
+    "search": "Search"
+  },
   "jobsHub": {
     "title": "Jobs",
     "metaDescription": "Browse job openings or post vacancies. Find full-time, part-time, and freelance opportunities.",

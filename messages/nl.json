@@ -971,6 +971,25 @@
   "emptyState": {
     "nothingHereYet": "Hier is nog niks"
   },
+  "filterModals": {
+    "allFilters": "Alle filters",
+    "skills": "Skills",
+    "price": "Prijs",
+    "budget": "Budget",
+    "location": "Locatie",
+    "language": "Taal",
+    "level": "Niveau",
+    "speaks": "Spreekt",
+    "deliveryTime": "Levertijd",
+    "designTool": "Design tool",
+    "englishLevel": "Engels niveau",
+    "category": "Categorie",
+    "salary": "Salaris",
+    "jobType": "Type baan",
+    "noOfEmployees": "Aantal werknemers",
+    "searchPlaceholder": "Welke dienst zoek je vandaag?",
+    "search": "Zoeken"
+  },
   "jobsHub": {
     "title": "Vacatures",
     "metaDescription": "Bekijk vacatures of plaats een vacature. Vind fulltime, parttime en freelance mogelijkheden.",

@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export default function SearchModal1() {
+  const t = useTranslations("filterModals");
   const [value, setValue] = useState("");
   const router = useRouter();
 
@@ -40,7 +42,7 @@ export default function SearchModal1() {
                 <input
                   type="text"
                   className="form-control border-0"
-                  placeholder="What service are you looking for today?"
+                  placeholder={t("searchPlaceholder")}
                   value={value}
                   onChange={(e) => setValue(e.target.value)}
                 />
@@ -48,7 +50,7 @@ export default function SearchModal1() {
                   <span className="far fa-magnifying-glass" />
                 </label>
                 <button className="ud-btn btn-thm" type="submit">
-                  Search
+                  {t("search")}
                 </button>
               </form>
             </div>

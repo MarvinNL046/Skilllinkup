@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import toggleStore from "@/store/toggleStore";
 import BudgetOption1 from "../option/BudgetOption1";
 import DesignToolOption1 from "../option/DesignToolOption1";
@@ -10,13 +11,14 @@ import EnglishLevelOption1 from "../option/EnglishLevelOption1";
 import ClearButton from "../button/ClearButton";
 
 export default function ListingSidebarModal2() {
+  const t = useTranslations("filterModals");
   const listingToggle = toggleStore((state) => state.listingToggleHandler);
 
   return (
     <>
       <div className="lefttside-hidden-bar">
         <div className="hsidebar-header bdrb1">
-          <h4 className="list-title">All filters</h4>
+          <h4 className="list-title">{t("allFilters")}</h4>
           <div className="sidebar-close-icon" onClick={listingToggle}>
             <span className="far fa-times" />
           </div>
@@ -36,7 +38,7 @@ export default function ListingSidebarModal2() {
                         aria-expanded="false"
                         aria-controls="collapseZero"
                       >
-                        Category
+                        {t("category")}
                       </button>
                     </h4>
                   </div>
@@ -63,7 +65,7 @@ export default function ListingSidebarModal2() {
                         aria-expanded="false"
                         aria-controls="collapse011"
                       >
-                        Project type
+                        {t("jobType")}
                       </button>
                     </h4>
                   </div>
@@ -89,7 +91,7 @@ export default function ListingSidebarModal2() {
                         aria-expanded="false"
                         aria-controls="collapseOnes"
                       >
-                        Price
+                        {t("price")}
                       </button>
                     </h4>
                   </div>
@@ -117,7 +119,7 @@ export default function ListingSidebarModal2() {
                         aria-expanded="true"
                         aria-controls="collapseZero2"
                       >
-                        Skills
+                        {t("skills")}
                       </button>
                     </h4>
                   </div>
@@ -143,7 +145,7 @@ export default function ListingSidebarModal2() {
                         aria-expanded="true"
                         aria-controls="collapseTwos"
                       >
-                        Location
+                        {t("location")}
                       </button>
                     </h4>
                   </div>
@@ -169,7 +171,7 @@ export default function ListingSidebarModal2() {
                         aria-expanded="true"
                         aria-controls="collapseThrees"
                       >
-                        Languange
+                        {t("language")}
                       </button>
                     </h4>
                   </div>
@@ -195,7 +197,7 @@ export default function ListingSidebarModal2() {
                         aria-expanded="true"
                         aria-controls="collapseFours"
                       >
-                        English Level
+                        {t("englishLevel")}
                       </button>
                     </h4>
                   </div>

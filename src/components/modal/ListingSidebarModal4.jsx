@@ -1,18 +1,20 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import toggleStore from "@/store/toggleStore";
 import CategoryOption1 from "../option/CategoryOption1";
 import ClearButton from "../button/ClearButton";
 import NoOfEmployeeOption1 from "../option/NoOfEmployeeOption1";
 
 export default function ListingSidebarModal4() {
+  const t = useTranslations("filterModals");
   const listingToggle = toggleStore((state) => state.listingToggleHandler);
 
   return (
     <>
       <div className="lefttside-hidden-bar">
         <div className="hsidebar-header bdrb1">
-          <h4 className="list-title">All filters</h4>
+          <h4 className="list-title">{t("allFilters")}</h4>
           <div className="sidebar-close-icon" onClick={listingToggle}>
             <span className="far fa-times" />
           </div>
@@ -32,7 +34,7 @@ export default function ListingSidebarModal4() {
                         aria-expanded="false"
                         aria-controls="collapseZero"
                       >
-                        Category
+                        {t("category")}
                       </button>
                     </h4>
                   </div>
@@ -58,7 +60,7 @@ export default function ListingSidebarModal4() {
                         aria-expanded="true"
                         aria-controls="collapseThrees"
                       >
-                        No of Employees
+                        {t("noOfEmployees")}
                       </button>
                     </h4>
                   </div>
