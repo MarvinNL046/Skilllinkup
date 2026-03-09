@@ -625,6 +625,7 @@
     "price": "Price",
     "location": "Location",
     "language": "Language",
-    "level": "Level"
+    "level": "Level",
+    "availableNow": "Available Now"
   }
 }

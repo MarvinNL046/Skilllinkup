@@ -625,6 +625,7 @@
     "price": "Prijs",
     "location": "Locatie",
     "language": "Taal",
-    "level": "Niveau"
+    "level": "Niveau",
+    "availableNow": "Nu Beschikbaar"
   }
 }

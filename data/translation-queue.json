@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 28
+    "completed": 30
   },
   "queue": [
     {
@@ -300,7 +300,7 @@
       "file": "src/components/option/SortOption1.jsx",
       "description": "Sort options: Best Seller, Recommended, New Arrivals",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 3,
       "phase": 3
     },
@@ -310,7 +310,7 @@
       "file": "src/components/option/AvailableNowOption.jsx",
       "description": "Available Now toggle label",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 3,
       "phase": 3
     },

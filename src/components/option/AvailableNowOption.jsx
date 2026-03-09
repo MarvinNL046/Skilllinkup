@@ -1,7 +1,9 @@
 "use client";
 import listingStore from "@/store/listingStore";
+import { useTranslations } from "next-intl";
 
 export default function AvailableNowOption() {
+  const t = useTranslations("filters");
   const getAvailableOnly = listingStore((state) => state.getAvailableOnly);
   const setAvailableOnly = listingStore((state) => state.setAvailableOnly);
 
@@ -17,7 +19,7 @@ export default function AvailableNowOption() {
             onChange={(e) => setAvailableOnly(e.target.checked)}
           />
           <label className="form-check-label ms-2 fw500" htmlFor="availableNow">
-            Available Now
+            {t("availableNow")}
           </label>
         </div>
       </div>
