@@ -1,7 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function ServiceContactWidget1({ freelancer }) {
+  const t = useTranslations("gigDetail");
   const name = freelancer?.displayName || "Freelancer";
   const avatar = freelancer?.avatarUrl || "/images/team/default-avatar.svg";
   const rating = freelancer?.ratingAverage ?? null;
@@ -9,7 +13,7 @@ export default function ServiceContactWidget1({ freelancer }) {
   const location =
     freelancer?.locationCity
       ? `${freelancer.locationCity}${freelancer.locationCountry ? `, ${freelancer.locationCountry}` : ""}`
-      : freelancer?.locationCountry || "Remote";
+      : freelancer?.locationCountry || t("remote");
   const hourlyRate = freelancer?.hourlyRate ?? null;
   const jobSuccess = freelancer?.jobSuccessRate ?? null;
   const freelancerId = freelancer?._id || null;
@@ -37,7 +41,7 @@ export default function ServiceContactWidget1({ freelancer }) {
               <p>
                 <i className="fas fa-star fz10 review-color pr10" />
                 <span className="dark-color">{rating.toFixed(1)}</span>
-                {reviewCount !== null && ` (${reviewCount} reviews)`}
+                {reviewCount !== null && ` (${reviewCount} ${t("reviews")})`}
               </p>
             </div>
           )}
@@ -47,20 +51,20 @@ export default function ServiceContactWidget1({ freelancer }) {
       <div className="details">
         <div className="fl-meta d-flex align-items-center justify-content-between">
           <a className="meta fw500 text-start">
-            Location
+            {t("location")}
             <br />
             <span className="fz14 fw400">{location}</span>
           </a>
           {hourlyRate !== null && (
             <a className="meta fw500 text-start">
-              Rate
+              {t("rate")}
               <br />
               <span className="fz14 fw400">€{hourlyRate} / hr</span>
             </a>
           )}
           {jobSuccess !== null && (
             <a className="meta fw500 text-start">
-              Job Success
+              {t("jobSuccess")}
               <br />
               <span className="fz14 fw400">{jobSuccess}%</span>
             </a>
@@ -72,7 +76,7 @@ export default function ServiceContactWidget1({ freelancer }) {
           href={freelancerId ? `/freelancers/${freelancerId}` : "/freelancers"}
           className="ud-btn btn-thm-border"
         >
-          Contact Me
+          {t("contactMe")}
           <i className="fal fa-arrow-right-long" />
         </Link>
       </div>

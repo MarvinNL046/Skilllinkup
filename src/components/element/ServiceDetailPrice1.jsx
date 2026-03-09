@@ -2,8 +2,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import { useTranslations } from "next-intl";
 
 export default function ServiceDetailPrice1({ packages = [], gigId }) {
+  const t = useTranslations("gigDetail");
   const [selectedTab, setSelectedTab] = useState(0);
   const router = useRouter();
   const { isSignedIn } = useUser();
@@ -43,7 +45,7 @@ export default function ServiceDetailPrice1({ packages = [], gigId }) {
   if (!hasPackages) {
     return (
       <div className="price-widget bdrs12 p30 bdr1">
-        <p className="text-muted fz14 mb0">No packages available for this service.</p>
+        <p className="text-muted fz14 mb0">{t("noPackages")}</p>
       </div>
     );
   }
@@ -79,16 +81,16 @@ export default function ServiceDetailPrice1({ packages = [], gigId }) {
             <ul className="p-0 mb15 d-sm-flex align-items-center">
               <li className="fz14 fw500 dark-color">
                 <i className="flaticon-sandclock fz20 text-thm2 me-2 vam" />
-                {activePackage?.deliveryDays} Days Delivery
+                {activePackage?.deliveryDays} {t("daysDelivery")}
               </li>
               <li className="fz14 fw500 dark-color ml20 ml0-xs">
                 <i className="flaticon-recycle fz20 text-thm2 me-2 vam" />
                 {activePackage?.revisionCount != null
                   ? activePackage.revisionCount === 0
-                    ? "Unlimited"
+                    ? t("unlimited")
                     : activePackage.revisionCount
-                  : "Unlimited"}{" "}
-                Revisions
+                  : t("unlimited")}{" "}
+                {t("revisions")}
               </li>
             </ul>
 
@@ -110,9 +112,9 @@ export default function ServiceDetailPrice1({ packages = [], gigId }) {
                 className="ud-btn btn-thm"
                 onClick={handleOrder}
                 disabled={!hasPackages}
-                title={!hasPackages ? "No packages configured yet" : undefined}
+                title={!hasPackages ? t("noPackagesTitle") : undefined}
               >
-                Continue ({currencySymbol}
+                {t("continue")} ({currencySymbol}
                 {activePackage?.price})
                 <i className="fal fa-arrow-right-long" />
               </button>

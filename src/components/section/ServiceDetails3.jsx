@@ -9,10 +9,12 @@ import ServiceDetailPrice1 from "../element/ServiceDetailPrice1";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import { useTranslations } from "next-intl";
 import useConvexGigDetail from "@/hook/useConvexGigDetail";
 import ContactButton from "@/components/ui/ContactButton";
 
 export default function ServiceDetail3() {
+  const t = useTranslations("gigDetail");
   const isMatchedScreen = useScreen(1216);
   const { id } = useParams();
   const router = useRouter();
@@ -49,7 +51,7 @@ export default function ServiceDetail3() {
             workType: gigData.workType,
             location: gigData.locationCity
               ? `${gigData.locationCity}, ${gigData.locationCountry || ""}`
-              : "Remote",
+              : t("remote"),
           }
         : null
       : null; // null = still loading
@@ -61,7 +63,7 @@ export default function ServiceDetail3() {
         <div className="container">
           <div className="row">
             <div className="col-12 text-center py-5">
-              <p className="text">Loading service details...</p>
+              <p className="text">{t("loadingDetails")}</p>
             </div>
           </div>
         </div>
@@ -108,19 +110,19 @@ export default function ServiceDetail3() {
                         {rating > 0 && (
                           <p className="mb-0 dark-color fz14 list-inline-item ml25 ml15-sm mb5-sm ml0-xs">
                             <i className="fas fa-star vam fz10 review-color me-2"></i>{" "}
-                            {rating.toFixed(1)} ({reviewCount} reviews)
+                            {rating.toFixed(1)} ({reviewCount} {t("reviews")})
                           </p>
                         )}
                         {orderCount > 0 && (
                           <p className="mb-0 dark-color fz14 list-inline-item ml25 ml15-sm mb5-sm ml0-xs">
                             <i className="flaticon-file-1 vam fz20 me-2"></i>{" "}
-                            {orderCount} Order in Queue
+                            {orderCount} {t("orderInQueue")}
                           </p>
                         )}
                         {views > 0 && (
                           <p className="mb-0 dark-color fz14 list-inline-item ml25 ml15-sm mb5-sm ml0-xs">
                             <i className="flaticon-website vam fz20 me-2"></i>{" "}
-                            {views} Views
+                            {views} {t("views")}
                           </p>
                         )}
                       </div>
@@ -134,9 +136,9 @@ export default function ServiceDetail3() {
                             <span className="flaticon-calendar" />
                           </div>
                           <div className="details">
-                            <h5 className="title">Delivery Time</h5>
+                            <h5 className="title">{t("deliveryTime")}</h5>
                             <p className="mb-0 text">
-                              {packages[0].deliveryDays} Days
+                              {packages[0].deliveryDays} {t("days")}
                             </p>
                           </div>
                         </div>
@@ -148,7 +150,7 @@ export default function ServiceDetail3() {
                           <span className="flaticon-tracking" />
                         </div>
                         <div className="details">
-                          <h5 className="title">Location</h5>
+                          <h5 className="title">{t("location")}</h5>
                           <p className="mb-0 text">{location}</p>
                         </div>
                       </div>
@@ -160,14 +162,14 @@ export default function ServiceDetail3() {
                 <div className="service-about">
                   {description && (
                     <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
-                      <h4>About</h4>
+                      <h4>{t("about")}</h4>
                       <p className="text mb30">{description}</p>
                     </div>
                   )}
                   {/* Compare Packages */}
                   {packages.length > 0 && (
                     <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
-                      <h4>Compare Packages</h4>
+                      <h4>{t("comparePackages")}</h4>
                       <div className="table-style2 table-responsive bdr1 mt30 mb60">
                         <table className="table table-borderless mb-0">
                           <thead className="t-head">
@@ -190,19 +192,19 @@ export default function ServiceDetail3() {
                           </thead>
                           <tbody className="t-body">
                             <tr>
-                              <th scope="row">Delivery Time</th>
+                              <th scope="row">{t("deliveryTime")}</th>
                               {packages.map((pkg, i) => (
-                                <td key={i}>{pkg.deliveryDays} Days</td>
+                                <td key={i}>{pkg.deliveryDays} {t("days")}</td>
                               ))}
                             </tr>
                             <tr className="bgc-thm3">
-                              <th scope="row">Revisions</th>
+                              <th scope="row">{t("revisions")}</th>
                               {packages.map((pkg, i) => (
                                 <td key={i}>{pkg.revisionCount || 0}</td>
                               ))}
                             </tr>
                             <tr>
-                              <th scope="row">Total</th>
+                              <th scope="row">{t("total")}</th>
                               {packages.map((pkg, i) => (
                                 <td key={i}>&euro;{pkg.price}</td>
                               ))}
@@ -215,7 +217,7 @@ export default function ServiceDetail3() {
                                     className="ud-btn btn-thm"
                                     onClick={handleSelectPackage}
                                   >
-                                    Select{" "}
+                                    {t("select")}{" "}
                                     <i className="fal fa-arrow-right-long" />
                                   </button>
                                 </td>

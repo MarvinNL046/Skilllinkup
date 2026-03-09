@@ -4,20 +4,24 @@ import Header20 from "@/components/header/Header20";
 import PopulerService from "@/components/section/PopulerService";
 import ServiceDetail3 from "@/components/section/ServiceDetails3";
 import TabSection1 from "@/components/section/TabSection1";
-import React from "react";
+import { getTranslations } from "next-intl/server";
 
-export const metadata = {
-    title: "Service Details",
-    description: "View service details, pricing, and seller information on SkillLinkup. Order freelance services with confidence.",
-};
+export async function generateMetadata() {
+    const t = await getTranslations("gigDetail");
+    return {
+        title: t("title"),
+        description: t("metaDescription"),
+    };
+}
 
-export default function page() {
+export default async function page() {
+    const t = await getTranslations("gigDetail");
     return (
         <>
             <Header20 />
             <TabSection1 />
             <div className=" bgc-thm3">
-                <Breadcumb3 path={["Home", "Services", "Design & Creative"]} />
+                <Breadcumb3 path={[t("breadcrumbHome"), t("breadcrumbServices"), t("breadcrumbCategory")]} />
                 <ServiceDetail3 />
                 <PopulerService />
             </div>

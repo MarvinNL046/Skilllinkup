@@ -1,24 +1,24 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
-const categories = [
-  "All Categories",
-  "Graphics Design",
-  "Digital Marketing",
-  "Writing Translation",
-  "Video Animation",
-  "Music Audio",
-  "Programming Tech",
-  "Business",
-  "Lifestyle",
-  "Trending",
+const categoryKeys = [
+  "allCategories",
+  "graphicsDesign",
+  "digitalMarketing",
+  "writingTranslation",
+  "videoAnimation",
+  "musicAudio",
+  "programmingTech",
+  "business",
+  "lifestyle",
+  "trendingTab",
 ];
 
-// categories_list_section overflow-hidden
-
 export default function TabSection1() {
-  const [getCurrentTab, setCurrentTab] = useState("All Categories");
+  const t = useTranslations("gigDetail");
+  const [currentTab, setCurrentTab] = useState("allCategories");
 
   const path = usePathname();
 
@@ -34,13 +34,13 @@ export default function TabSection1() {
             <div className="col-lg-12">
               <div className="listings_category_nav_list_menu">
                 <ul className="mb0 d-flex ps-0">
-                  {categories.map((item, index) => (
+                  {categoryKeys.map((key, index) => (
                     <li key={index}>
                       <a
-                        onClick={() => setCurrentTab(item)}
-                        className={getCurrentTab === item ? "active" : ""}
+                        onClick={() => setCurrentTab(key)}
+                        className={currentTab === key ? "active" : ""}
                       >
-                        {item}
+                        {t(key)}
                       </a>
                     </li>
                   ))}
