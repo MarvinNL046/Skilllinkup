@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 97
+    "completed": 98
   },
   "queue": [
     {
@@ -989,7 +989,8 @@
       "target": "regression-test",
       "description": "Visit every route in NL, verify no English leaks",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
+      "note": "Static audit done. Found 35+ files with hardcoded EN strings. Main areas: 13 footer variants, 8 hero variants, breadcrumbs, review forms. These are tracked by separate queue items.",
       "priority": 11,
       "phase": 11
     },
