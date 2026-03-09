@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import Breadcumb10 from "@/components/breadcumb/Breadcumb10";
 import Breadcumb13 from "@/components/breadcumb/Breadcumb13";
 import Header20 from "@/components/header/Header20";
@@ -5,9 +6,13 @@ import Header20 from "@/components/header/Header20";
 import JobDetail1 from "@/components/section/JobDetail1";
 import TabSection1 from "@/components/section/TabSection1";
 
-export const metadata = {
-    title: "SkillLinkup | Job Single",
-};
+export async function generateMetadata() {
+    const t = await getTranslations("pageMeta.jobSingle");
+    return {
+        title: t("title"),
+        description: t("description"),
+    };
+}
 
 export default function page() {
     return (

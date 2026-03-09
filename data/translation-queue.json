@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 91
+    "completed": 92
   },
   "queue": [
     {
@@ -935,7 +935,8 @@
       "target": "page-metadata",
       "description": "All page generateMetadata() functions for NL locale",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
+      "note": "Converted 14 pages from static metadata to generateMetadata() with pageMeta namespace.",
       "priority": 10,
       "phase": 10
     },

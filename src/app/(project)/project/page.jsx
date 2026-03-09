@@ -1,12 +1,17 @@
+import { getTranslations } from "next-intl/server";
 import Breadcumb10 from "@/components/breadcumb/Breadcumb10";
 import Header20 from "@/components/header/Header20";
 
 import ProjectDetail3 from "@/components/section/ProjectDetails3";
 import TabSection1 from "@/components/section/TabSection1";
 
-export const metadata = {
-    title: "SkillLinkup | Project Signle",
-};
+export async function generateMetadata() {
+    const t = await getTranslations("pageMeta.projectSingle");
+    return {
+        title: t("title"),
+        description: t("description"),
+    };
+}
 
 export default function page() {
     return (

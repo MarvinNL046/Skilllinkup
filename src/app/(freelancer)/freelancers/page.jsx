@@ -1,17 +1,21 @@
 import { Suspense } from "react";
+import { getTranslations } from "next-intl/server";
 import Breadcumb1 from "@/components/breadcumb/Breadcumb1";
 import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 import Listing14 from "@/components/section/Listing14";
 
-export const metadata = {
-    title: "Find Freelancers",
-    description: "Browse top-rated freelancers on SkillLinkup. Filter by skill, location, and rating to find the perfect professional for your project.",
-    openGraph: {
-        title: "Find Freelancers",
-        description: "Browse top-rated freelancers on SkillLinkup. Filter by skill, location, and rating to find the perfect professional for your project.",
-    },
-};
+export async function generateMetadata() {
+    const t = await getTranslations("pageMeta.freelancers");
+    return {
+        title: t("title"),
+        description: t("description"),
+        openGraph: {
+            title: t("title"),
+            description: t("description"),
+        },
+    };
+}
 
 export default function page() {
     return (

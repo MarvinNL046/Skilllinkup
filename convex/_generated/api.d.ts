@@ -44,6 +44,7 @@ import type * as platformReviews from "../platformReviews.js";
 import type * as platforms from "../platforms.js";
 import type * as posts from "../posts.js";
 import type * as resources from "../resources.js";
+import type * as seoPages from "../seoPages.js";
 import type * as skills from "../skills.js";
 import type * as tools from "../tools.js";
 import type * as users from "../users.js";
@@ -92,6 +93,7 @@ declare const fullApi: ApiFromModules<{
   platforms: typeof platforms;
   posts: typeof posts;
   resources: typeof resources;
+  seoPages: typeof seoPages;
   skills: typeof skills;
   tools: typeof tools;
   users: typeof users;

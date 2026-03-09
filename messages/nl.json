@@ -1734,5 +1734,55 @@
     "description": "Online freelancers, lokale vakmensen en vacatures — alles op één platform. Lage kosten, veilige betalingen en een marktplaats voor kopers én verkopers.",
     "ogAlt": "SkillLinkup — Vind het juiste talent, overal",
     "twitterDescription": "Online freelancers, lokale vakmensen en vacatures — alles op één platform."
+  },
+  "pageMeta": {
+    "freelancers": {
+      "title": "Vind freelancers",
+      "description": "Blader door top-beoordeelde freelancers op SkillLinkup. Filter op skill, locatie en beoordeling om de perfecte professional voor je project te vinden."
+    },
+    "freelancerProfile": {
+      "title": "Freelancer profiel",
+      "description": "Bekijk freelancer profielen op SkillLinkup."
+    },
+    "projects": {
+      "title": "Bekijk projecten",
+      "description": "Vind freelance projecten en kansen op SkillLinkup. Blader door open projecten in alle categorieën en dien je voorstel in."
+    },
+    "projectSingle": {
+      "title": "SkillLinkup | Project",
+      "description": "Bekijk projectdetails en dien je voorstel in op SkillLinkup."
+    },
+    "jobSingle": {
+      "title": "SkillLinkup | Vacature",
+      "description": "Bekijk vacaturedetails en solliciteer op SkillLinkup."
+    },
+    "blogPost": {
+      "title": "Blog artikel",
+      "description": "Lees artikelen en gidsen op het SkillLinkup blog."
+    },
+    "services": {
+      "title": "Bekijk diensten",
+      "description": "Ontdek freelance diensten op SkillLinkup. Vind de juiste dienst voor je project — van design en development tot copywriting en marketing."
+    },
+    "onlineFreelancers": {
+      "title": "Vind freelancers",
+      "description": "Blader door top-beoordeelde freelancers op SkillLinkup. Filter op skill, locatie en beoordeling om de perfecte professional voor je project te vinden."
+    },
+    "employees": {
+      "title": "SkillLinkup | Medewerkers",
+      "description": "Blader door beschikbare medewerkers en kandidaten op SkillLinkup."
+    },
+    "employeeSingle": {
+      "title": "SkillLinkup | Medewerkersprofiel",
+      "description": "Bekijk profiel details van een medewerker op SkillLinkup."
+    },
+    "invoices": {
+      "title": "SkillLinkup | Facturen",
+      "description": "Beheer je facturen op SkillLinkup."
+    },
+    "uiElements": {
+      "title": "SkillLinkup | UI Elementen",
+      "description": "UI elementen en designcomponenten voor SkillLinkup."
+    }
   }
 }

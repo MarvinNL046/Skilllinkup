@@ -1734,5 +1734,55 @@
     "description": "Online freelancers, local craftsmen, and job vacancies — all in one platform. Low fees, secure payments, and a marketplace built for both buyers and sellers.",
     "ogAlt": "SkillLinkup — Find the Right Talent, Anywhere",
     "twitterDescription": "Online freelancers, local craftsmen, and job vacancies — all in one platform."
+  },
+  "pageMeta": {
+    "freelancers": {
+      "title": "Find Freelancers",
+      "description": "Browse top-rated freelancers on SkillLinkup. Filter by skill, location, and rating to find the perfect professional for your project."
+    },
+    "freelancerProfile": {
+      "title": "Freelancer Profile",
+      "description": "View freelancer profiles on SkillLinkup."
+    },
+    "projects": {
+      "title": "Browse Projects",
+      "description": "Find freelance projects and opportunities on SkillLinkup. Browse open projects across all categories and submit your proposal."
+    },
+    "projectSingle": {
+      "title": "SkillLinkup | Project Single",
+      "description": "View project details and submit your proposal on SkillLinkup."
+    },
+    "jobSingle": {
+      "title": "SkillLinkup | Job Single",
+      "description": "View job details and apply on SkillLinkup."
+    },
+    "blogPost": {
+      "title": "Blog Post",
+      "description": "Read articles and guides on the SkillLinkup blog."
+    },
+    "services": {
+      "title": "Browse Services",
+      "description": "Explore freelance services on SkillLinkup. Find the right service for your project across design, development, writing, marketing, and more."
+    },
+    "onlineFreelancers": {
+      "title": "Find Freelancers",
+      "description": "Browse top-rated freelancers on SkillLinkup. Filter by skill, location, and rating to find the perfect professional for your project."
+    },
+    "employees": {
+      "title": "SkillLinkup | Employees",
+      "description": "Browse available employees and candidates on SkillLinkup."
+    },
+    "employeeSingle": {
+      "title": "SkillLinkup | Employee Profile",
+      "description": "View employee profile details on SkillLinkup."
+    },
+    "invoices": {
+      "title": "SkillLinkup | Invoices",
+      "description": "Manage your invoices on SkillLinkup."
+    },
+    "uiElements": {
+      "title": "SkillLinkup | UI Elements",
+      "description": "UI elements and design components for SkillLinkup."
+    }
   }
 }
