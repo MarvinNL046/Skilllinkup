@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 9
+    "completed": 10
   },
   "queue": [
     {
@@ -110,7 +110,7 @@
       "file": "src/components/dashboard/header/DashboardNavigation.jsx",
       "description": "Dashboard nav: Online, Local, Jobs, menu items",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 2,
       "phase": 1
     },

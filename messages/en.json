@@ -179,6 +179,13 @@
     "addSkills": "Add skills",
     "setHourlyRate": "Set hourly rate",
     "addTagline": "Add a tagline",
+    "navigation": "Dashboard Navigation",
+    "sectionStart": "Start",
+    "sectionOrganize": "Organize and Manage",
+    "sectionAccount": "Account",
+    "worldOnline": "Online",
+    "worldLocal": "Local",
+    "worldJobs": "Jobs",
     "status": {
       "open": "Open",
       "cancelled": "Cancelled",

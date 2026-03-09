@@ -7,11 +7,12 @@ import { api } from "../../../../convex/_generated/api";
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 const WORLDS = [
-  { key: "online", label: "Online", icon: "flaticon-wifi" },
-  { key: "local",  label: "Local",  icon: "flaticon-place" },
-  { key: "jobs",   label: "Jobs",   icon: "flaticon-briefcase" },
+  { key: "online", labelKey: "worldOnline", icon: "flaticon-wifi" },
+  { key: "local",  labelKey: "worldLocal",  icon: "flaticon-place" },
+  { key: "jobs",   labelKey: "worldJobs",   icon: "flaticon-briefcase" },
 ];
 
 export default function DashboardNavigation() {
@@ -19,6 +20,8 @@ export default function DashboardNavigation() {
   const path = usePathname();
   const { convexUser } = useConvexUser();
   const { signOut } = useClerk();
+  const t = useTranslations("dashboard");
+  const tn = useTranslations("nav");
   const setPreferredWorld = useMutation(api.users.setPreferredWorld);
 
   const role = convexUser?.userType === "freelancer" ? "freelancer" : "client";
@@ -36,7 +39,7 @@ export default function DashboardNavigation() {
     <div className="dashboard_navigationbar d-block d-lg-none">
       <div className="dropdown">
         <button onClick={() => setActive(!isActive)} className="dropbtn">
-          <i className="fa fa-bars pr10" /> Dashboard Navigation
+          <i className="fa fa-bars pr10" /> {t("navigation")}
         </button>
         <ul className={`dropdown-content ${isActive ? "show" : ""}`}>
           {/* World Switcher */}
@@ -59,14 +62,14 @@ export default function DashboardNavigation() {
                   }}
                 >
                   <i className={`${w.icon} mr5`} style={{ fontSize: "12px" }} />
-                  {w.label}
+                  {t(w.labelKey)}
                 </button>
               ))}
             </div>
           </li>
 
           <li>
-            <p className="fz15 fw400 ff-heading mt30 pl30">Start</p>
+            <p className="fz15 fw400 ff-heading mt30 pl30">{t("sectionStart")}</p>
           </li>
           {sections.start.map((item, i) => (
             <li
@@ -83,7 +86,7 @@ export default function DashboardNavigation() {
 
           <li>
             <p className="fz15 fw400 ff-heading mt30 pl30">
-              Organize and Manage
+              {t("sectionOrganize")}
             </p>
           </li>
           {sections.organize.map((item, i) => (
@@ -100,7 +103,7 @@ export default function DashboardNavigation() {
           ))}
 
           <li>
-            <p className="fz15 fw400 ff-heading mt30 pl30">Account</p>
+            <p className="fz15 fw400 ff-heading mt30 pl30">{t("sectionAccount")}</p>
           </li>
           {sections.account.map((item, i) => (
             <li
@@ -119,7 +122,7 @@ export default function DashboardNavigation() {
           <li onClick={() => { setActive(false); signOut({ redirectUrl: "/" }); }}>
             <a style={{ cursor: "pointer" }}>
               <i className="flaticon-logout mr10" />
-              Logout
+              {tn("logout")}
             </a>
           </li>
         </ul>

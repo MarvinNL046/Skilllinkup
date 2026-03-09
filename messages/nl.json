@@ -179,6 +179,13 @@
     "addSkills": "Voeg skills toe",
     "setHourlyRate": "Stel uurtarief in",
     "addTagline": "Voeg een tagline toe",
+    "navigation": "Dashboard navigatie",
+    "sectionStart": "Start",
+    "sectionOrganize": "Organiseren en beheren",
+    "sectionAccount": "Account",
+    "worldOnline": "Online",
+    "worldLocal": "Lokaal",
+    "worldJobs": "Vacatures",
     "status": {
       "open": "Open",
       "cancelled": "Geannuleerd",
