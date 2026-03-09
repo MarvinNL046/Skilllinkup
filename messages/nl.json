@@ -968,6 +968,9 @@
     "contact": "Contact",
     "openingChat": "Chat openen..."
   },
+  "emptyState": {
+    "nothingHereYet": "Hier is nog niks"
+  },
   "jobsHub": {
     "title": "Vacatures",
     "metaDescription": "Bekijk vacatures of plaats een vacature. Vind fulltime, parttime en freelance mogelijkheden.",

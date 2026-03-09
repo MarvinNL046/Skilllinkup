@@ -968,6 +968,9 @@
     "contact": "Contact",
     "openingChat": "Opening chat..."
   },
+  "emptyState": {
+    "nothingHereYet": "Nothing here yet"
+  },
   "jobsHub": {
     "title": "Jobs",
     "metaDescription": "Browse job openings or post vacancies. Find full-time, part-time, and freelance opportunities.",

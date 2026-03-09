@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 70
+    "completed": 71
   },
   "queue": [
     {
@@ -720,7 +720,7 @@
       "file": "src/components/ui/EmptyState.jsx",
       "description": "Empty state messages across the app",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 7,
       "phase": 7
     },
