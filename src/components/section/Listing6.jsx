@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import useConvexSearch from "@/hook/useConvexSearch";
 import ListingOption2 from "../element/ListingOption2";
 import ListingSidebarModal1 from "../modal/ListingSidebarModal1";
@@ -12,9 +13,9 @@ import PopularServiceSlideCard1 from "../card/PopularServiceSlideCard1";
 import TrendingServiceCard1 from "../card/TrendingServiceCard1";
 import EmptyState from "@/components/ui/EmptyState";
 import CategoryPills from "@/components/ui/CategoryPills";
-import Link from "next/link";
 
 export default function Listing6() {
+  const t = useTranslations("services");
   const searchParams = useSearchParams();
   const q = searchParams.get("q") || "";
 
@@ -40,9 +41,9 @@ export default function Listing6() {
         <div className="container">
           <div className="text-center py-5">
             <div className="spinner-border text-thm" role="status">
-              <span className="visually-hidden">Loading...</span>
+              <span className="visually-hidden">{t("loading")}</span>
             </div>
-            <p className="body-color mt-3">Loading services...</p>
+            <p className="body-color mt-3">{t("loadingServices")}</p>
           </div>
         </div>
       </section>
@@ -100,16 +101,16 @@ export default function Listing6() {
               {product1.length === 0 ? (
                 <EmptyState
                   icon="🎨"
-                  title="No services yet"
-                  description="Be the first to offer your services on SkillLinkup"
-                  actionLabel="Become a Seller"
+                  title={t("noServicesTitle")}
+                  description={t("noServicesDescription")}
+                  actionLabel={t("noServicesAction")}
                   actionHref="/become-seller"
                 />
               ) : content.length === 0 ? (
                 <EmptyState
                   icon="🔍"
-                  title="No matching services"
-                  description="Try adjusting your filters"
+                  title={t("noMatchTitle")}
+                  description={t("noMatchDescription")}
                 />
               ) : (
                 <div className="row">{content}</div>

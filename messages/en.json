@@ -627,5 +627,17 @@
     "language": "Language",
     "level": "Level",
     "availableNow": "Available Now"
+  },
+  "services": {
+    "title": "Browse Services",
+    "metaDescription": "Explore freelance services on SkillLinkup. Find the right service for your project across design, development, writing, marketing, and more.",
+    "breadcrumbBrief": "Explore freelance services for your next project — design, development, marketing and more.",
+    "loading": "Loading...",
+    "loadingServices": "Loading services...",
+    "noServicesTitle": "No services yet",
+    "noServicesDescription": "Be the first to offer your services on SkillLinkup",
+    "noServicesAction": "Become a Seller",
+    "noMatchTitle": "No matching services",
+    "noMatchDescription": "Try adjusting your filters"
   }
 }

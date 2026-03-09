@@ -627,5 +627,17 @@
     "language": "Taal",
     "level": "Niveau",
     "availableNow": "Nu Beschikbaar"
+  },
+  "services": {
+    "title": "Bekijk Diensten",
+    "metaDescription": "Ontdek freelance diensten op SkillLinkup. Vind de juiste dienst voor je project in design, development, schrijven, marketing en meer.",
+    "breadcrumbBrief": "Ontdek freelance diensten voor je volgende project — design, development, marketing en meer.",
+    "loading": "Laden...",
+    "loadingServices": "Diensten laden...",
+    "noServicesTitle": "Nog geen diensten",
+    "noServicesDescription": "Wees de eerste die diensten aanbiedt op SkillLinkup",
+    "noServicesAction": "Word Verkoper",
+    "noMatchTitle": "Geen overeenkomende diensten",
+    "noMatchDescription": "Probeer je filters aan te passen"
   }
 }
