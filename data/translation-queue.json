@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 14
+    "completed": 15
   },
   "queue": [
     {
@@ -160,7 +160,7 @@
       "file": "src/app/become-seller",
       "description": "Full page: hero, 3 earning methods, steps, benefits, CTA",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 2,
       "phase": 2
     },

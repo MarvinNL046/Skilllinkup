@@ -1,17 +1,19 @@
 import Header20 from "@/components/header/Header20";
 import Footer14 from "@/components/footer/Footer14";
 import BecomeSeller from "@/components/section/BecomeSeller";
+import { getTranslations } from "next-intl/server";
 
-export const metadata = {
-  title: "Become a Seller",
-  description:
-    "Start selling your freelance services on SkillLinkup. Offer digital services online, get local leads, or find employment opportunities.",
-  openGraph: {
-    title: "Become a Seller",
-    description:
-      "Start selling your freelance services on SkillLinkup. Offer digital services online, get local leads, or find employment opportunities.",
-  },
-};
+export async function generateMetadata() {
+  const t = await getTranslations("becomeSeller");
+  return {
+    title: t("title"),
+    description: t("metaDescription"),
+    openGraph: {
+      title: t("title"),
+      description: t("metaDescription"),
+    },
+  };
+}
 
 export default function page() {
   return (

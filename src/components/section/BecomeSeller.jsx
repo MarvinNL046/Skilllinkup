@@ -1,149 +1,79 @@
 "use client";
 
 import Link from "next/link";
-
-const waysToEarn = [
-  {
-    id: "online",
-    color: "#ef2b70",
-    bgLight: "rgba(239, 43, 112, 0.08)",
-    icon: "flaticon-web",
-    world: "Online Marketplace",
-    title: "Sell Digital Services",
-    description:
-      "Create gig packages for design, development, marketing and more. Set your own prices and deliver remotely to clients worldwide.",
-    features: [
-      "Set your own prices",
-      "Secure escrow payments",
-      "Global client base",
-    ],
-    cta: "Start Selling Online",
-    href: "/register?role=freelancer",
-  },
-  {
-    id: "local",
-    color: "#1e1541",
-    bgLight: "rgba(30, 21, 65, 0.07)",
-    icon: "flaticon-place",
-    world: "Local Marketplace",
-    title: "Get Local Leads",
-    description:
-      "Receive quote requests from homeowners in your area. Buy credits to claim leads and connect directly with clients.",
-    features: [
-      "Pay only for leads you want",
-      "Exclusive or shared claims",
-      "Direct client contact",
-    ],
-    cta: "Start Getting Leads",
-    href: "/register?role=freelancer",
-  },
-  {
-    id: "jobs",
-    color: "#22c55e",
-    bgLight: "rgba(34, 197, 94, 0.08)",
-    icon: "flaticon-briefcase",
-    world: "Jobs",
-    title: "Find Employment",
-    description:
-      "Browse job openings from companies looking for your skills. Apply directly and find your next career opportunity.",
-    features: [
-      "Browse vacancies for free",
-      "Direct applications",
-      "Company profiles",
-    ],
-    cta: "Browse Jobs",
-    href: "/jobs/browse",
-  },
-];
-
-const steps = [
-  {
-    number: "01",
-    title: "Create Your Profile",
-    description:
-      "Sign up for free and showcase your skills, experience, and portfolio. Add your location for local work.",
-  },
-  {
-    number: "02",
-    title: "Get Discovered",
-    description:
-      "Clients find you through search, or browse open projects and quote requests to find work that fits.",
-  },
-  {
-    number: "03",
-    title: "Earn Securely",
-    description:
-      "Get paid through our secure payment system. Online orders use escrow, local leads use our credit system.",
-  },
-];
-
-const benefits = [
-  {
-    icon: "flaticon-security",
-    title: "Secure Payments",
-    text: "Escrow protection for online orders. Your money is safe until work is approved.",
-  },
-  {
-    icon: "flaticon-dollar",
-    title: "Low Fees",
-    text: "Competitive platform fees from 10-15%. Keep more of what you earn.",
-  },
-  {
-    icon: "flaticon-badge",
-    title: "Build Your Reputation",
-    text: "Collect reviews, earn verification badges, and stand out from the crowd.",
-  },
-  {
-    icon: "flaticon-place",
-    title: "Local & Remote",
-    text: "Work from anywhere or serve clients in your area. You choose.",
-  },
-  {
-    icon: "flaticon-chat",
-    title: "Direct Messaging",
-    text: "Communicate directly with clients through our built-in messaging system.",
-  },
-  {
-    icon: "flaticon-presentation",
-    title: "Analytics Dashboard",
-    text: "Track your orders, earnings, and performance from one dashboard.",
-  },
-];
-
-const faqs = [
-  {
-    id: "BsOne",
-    question: "Is it free to join?",
-    answer:
-      "Yes, creating a freelancer profile is completely free. For online services, we charge a small platform fee (10-15%) only when you make a sale. For local leads, you buy credits to claim the leads you want.",
-  },
-  {
-    id: "BsTwo",
-    question: "How do I get paid for online services?",
-    answer:
-      "Payments are held in escrow until the client approves your delivery. Once approved, funds are released to your Stripe account. We support bank transfers in most countries.",
-  },
-  {
-    id: "BsThree",
-    question: "How does the local lead system work?",
-    answer:
-      "Homeowners post quote requests for local services. You buy credits and use them to claim leads that match your skills and area. Once claimed, you get the client's contact details to reach out directly.",
-  },
-  {
-    id: "BsFour",
-    question: "Can I offer both online and local services?",
-    answer:
-      "Absolutely! Your profile can be set to remote, local, or hybrid. You'll appear in the relevant marketplace based on your settings.",
-  },
-  {
-    id: "BsFive",
-    question: "How long does it take to set up?",
-    answer:
-      "You can create your profile and start browsing opportunities in under 5 minutes. Add your skills, set your rates, and you're ready to go.",
-  },
-];
+import { useTranslations } from "next-intl";
 
 export default function BecomeSeller() {
+  const t = useTranslations("becomeSeller");
+
+  const waysToEarn = [
+    {
+      id: "online",
+      color: "#ef2b70",
+      bgLight: "rgba(239, 43, 112, 0.08)",
+      icon: "flaticon-web",
+      world: t("onlineWorld"),
+      title: t("onlineTitle"),
+      description: t("onlineDesc"),
+      features: [t("onlineF1"), t("onlineF2"), t("onlineF3")],
+      cta: t("onlineCta"),
+      href: "/register?role=freelancer",
+    },
+    {
+      id: "local",
+      color: "#1e1541",
+      bgLight: "rgba(30, 21, 65, 0.07)",
+      icon: "flaticon-place",
+      world: t("localWorld"),
+      title: t("localTitle"),
+      description: t("localDesc"),
+      features: [t("localF1"), t("localF2"), t("localF3")],
+      cta: t("localCta"),
+      href: "/register?role=freelancer",
+    },
+    {
+      id: "jobs",
+      color: "#22c55e",
+      bgLight: "rgba(34, 197, 94, 0.08)",
+      icon: "flaticon-briefcase",
+      world: t("jobsWorld"),
+      title: t("jobsTitle"),
+      description: t("jobsDesc"),
+      features: [t("jobsF1"), t("jobsF2"), t("jobsF3")],
+      cta: t("jobsCta"),
+      href: "/jobs/browse",
+    },
+  ];
+
+  const steps = [
+    { number: "01", title: t("step1Title"), description: t("step1Desc") },
+    { number: "02", title: t("step2Title"), description: t("step2Desc") },
+    { number: "03", title: t("step3Title"), description: t("step3Desc") },
+  ];
+
+  const benefits = [
+    { icon: "flaticon-security", title: t("benefitSecureTitle"), text: t("benefitSecureText") },
+    { icon: "flaticon-dollar", title: t("benefitFeesTitle"), text: t("benefitFeesText") },
+    { icon: "flaticon-badge", title: t("benefitReputationTitle"), text: t("benefitReputationText") },
+    { icon: "flaticon-place", title: t("benefitLocalTitle"), text: t("benefitLocalText") },
+    { icon: "flaticon-chat", title: t("benefitMessageTitle"), text: t("benefitMessageText") },
+    { icon: "flaticon-presentation", title: t("benefitAnalyticsTitle"), text: t("benefitAnalyticsText") },
+  ];
+
+  const faqs = [
+    { id: "BsOne", question: t("faq1Q"), answer: t("faq1A") },
+    { id: "BsTwo", question: t("faq2Q"), answer: t("faq2A") },
+    { id: "BsThree", question: t("faq3Q"), answer: t("faq3A") },
+    { id: "BsFour", question: t("faq4Q"), answer: t("faq4A") },
+    { id: "BsFive", question: t("faq5Q"), answer: t("faq5A") },
+  ];
+
+  const heroStats = [
+    { stat: t("stat1"), sub: t("stat1Sub") },
+    { stat: t("stat2"), sub: t("stat2Sub") },
+    { stat: t("stat3"), sub: t("stat3Sub") },
+  ];
+
   return (
     <>
       {/* Section 1: Hero */}
@@ -155,7 +85,6 @@ export default function BecomeSeller() {
           paddingBottom: "100px",
         }}
       >
-        {/* Decorative background shape */}
         <div
           aria-hidden="true"
           style={{
@@ -191,15 +120,13 @@ export default function BecomeSeller() {
                   className="text-white mb20"
                   style={{ fontSize: "clamp(2rem, 5vw, 3.25rem)", fontWeight: 700, lineHeight: 1.2 }}
                 >
-                  Earn on Your Own Terms
+                  {t("heroTitle")}
                 </h1>
                 <p
                   className="mb40"
                   style={{ color: "rgba(255,255,255,0.8)", fontSize: "1.125rem", lineHeight: 1.7 }}
                 >
-                  Join thousands of freelancers and craftsmen on SkillLinkup.
-                  Offer your services online, get local leads, or find your next
-                  opportunity.
+                  {t("heroSubtitle")}
                 </p>
                 <div className="d-flex flex-wrap justify-content-center gap-3 mb50">
                   <Link
@@ -207,7 +134,7 @@ export default function BecomeSeller() {
                     className="ud-btn btn-thm bdrs8"
                     style={{ minWidth: "180px" }}
                   >
-                    Get Started Free
+                    {t("getStartedFree")}
                     <i className="fal fa-arrow-right-long" />
                   </Link>
                   <a
@@ -215,17 +142,12 @@ export default function BecomeSeller() {
                     className="ud-btn btn-white bdrs8"
                     style={{ minWidth: "160px" }}
                   >
-                    How It Works
+                    {t("howItWorks")}
                   </a>
                 </div>
 
-                {/* Stats row */}
                 <div className="row justify-content-center g-4">
-                  {[
-                    { stat: "0% to start", sub: "No upfront cost" },
-                    { stat: "Secure payments", sub: "Escrow protected" },
-                    { stat: "3 marketplaces", sub: "One profile" },
-                  ].map((item, i) => (
+                  {heroStats.map((item, i) => (
                     <div key={i} className="col-auto">
                       <div
                         style={{
@@ -262,10 +184,8 @@ export default function BecomeSeller() {
           <div className="row wow fadeInUp">
             <div className="col-lg-8 mx-auto text-center">
               <div className="main-title mb50">
-                <h2 className="title">Three Ways to Earn</h2>
-                <p className="paragraph mt10">
-                  Choose one or combine all three. Your profile, your rules.
-                </p>
+                <h2 className="title">{t("threeWaysTitle")}</h2>
+                <p className="paragraph mt10">{t("threeWaysSubtitle")}</p>
               </div>
             </div>
           </div>
@@ -293,7 +213,6 @@ export default function BecomeSeller() {
                     e.currentTarget.style.boxShadow = "0 4px 30px rgba(0,0,0,0.07)";
                   }}
                 >
-                  {/* Icon */}
                   <div
                     style={{
                       width: "60px",
@@ -307,13 +226,9 @@ export default function BecomeSeller() {
                       flexShrink: 0,
                     }}
                   >
-                    <span
-                      className={card.icon}
-                      style={{ color: card.color, fontSize: "26px" }}
-                    />
+                    <span className={card.icon} style={{ color: card.color, fontSize: "26px" }} />
                   </div>
 
-                  {/* World label */}
                   <span
                     className="fz13 fw600 mb10"
                     style={{
@@ -326,25 +241,15 @@ export default function BecomeSeller() {
                     {card.world}
                   </span>
 
-                  <h4 className="mb15" style={{ fontWeight: 700 }}>
-                    {card.title}
-                  </h4>
+                  <h4 className="mb15" style={{ fontWeight: 700 }}>{card.title}</h4>
                   <p className="body-color fz15 mb25" style={{ lineHeight: 1.7, flexGrow: 1 }}>
                     {card.description}
                   </p>
 
-                  {/* Feature list */}
                   <ul className="mb30 p-0" style={{ listStyle: "none" }}>
                     {card.features.map((feature, fi) => (
-                      <li
-                        key={fi}
-                        className="d-flex align-items-center fz14 mb10"
-                        style={{ color: "#555" }}
-                      >
-                        <i
-                          className="far fa-check-circle me-2"
-                          style={{ color: card.color, flexShrink: 0 }}
-                        />
+                      <li key={fi} className="d-flex align-items-center fz14 mb10" style={{ color: "#555" }}>
+                        <i className="far fa-check-circle me-2" style={{ color: card.color, flexShrink: 0 }} />
                         {feature}
                       </li>
                     ))}
@@ -382,19 +287,13 @@ export default function BecomeSeller() {
       </section>
 
       {/* Section 3: How It Works */}
-      <section
-        id="how-it-works"
-        className="pt80 pb80"
-        style={{ background: "#f8f9fb" }}
-      >
+      <section id="how-it-works" className="pt80 pb80" style={{ background: "#f8f9fb" }}>
         <div className="container">
           <div className="row wow fadeInUp">
             <div className="col-lg-7 mx-auto text-center">
               <div className="main-title mb50">
-                <h2 className="title">Get Started in Minutes</h2>
-                <p className="paragraph mt10">
-                  Three simple steps to start earning on SkillLinkup.
-                </p>
+                <h2 className="title">{t("stepsTitle")}</h2>
+                <p className="paragraph mt10">{t("stepsSubtitle")}</p>
               </div>
             </div>
           </div>
@@ -412,7 +311,6 @@ export default function BecomeSeller() {
                     overflow: "hidden",
                   }}
                 >
-                  {/* Step number watermark */}
                   <span
                     aria-hidden="true"
                     style={{
@@ -446,12 +344,8 @@ export default function BecomeSeller() {
                   >
                     {i + 1}
                   </div>
-                  <h4 className="mb15" style={{ fontWeight: 700 }}>
-                    {step.title}
-                  </h4>
-                  <p className="body-color fz15 mb-0" style={{ lineHeight: 1.7 }}>
-                    {step.description}
-                  </p>
+                  <h4 className="mb15" style={{ fontWeight: 700 }}>{step.title}</h4>
+                  <p className="body-color fz15 mb-0" style={{ lineHeight: 1.7 }}>{step.description}</p>
                 </div>
               </div>
             ))}
@@ -465,10 +359,8 @@ export default function BecomeSeller() {
           <div className="row wow fadeInUp">
             <div className="col-lg-7 mx-auto text-center">
               <div className="main-title mb50">
-                <h2 className="title">Why Freelancers Choose SkillLinkup</h2>
-                <p className="paragraph mt10">
-                  Everything you need to grow your freelance business, in one place.
-                </p>
+                <h2 className="title">{t("whyTitle")}</h2>
+                <p className="paragraph mt10">{t("whySubtitle")}</p>
               </div>
             </div>
           </div>
@@ -505,18 +397,11 @@ export default function BecomeSeller() {
                       marginRight: "16px",
                     }}
                   >
-                    <span
-                      className={benefit.icon}
-                      style={{ color: "#ef2b70", fontSize: "22px" }}
-                    />
+                    <span className={benefit.icon} style={{ color: "#ef2b70", fontSize: "22px" }} />
                   </div>
                   <div>
-                    <h5 className="mb10" style={{ fontWeight: 700, fontSize: "1rem" }}>
-                      {benefit.title}
-                    </h5>
-                    <p className="body-color fz14 mb-0" style={{ lineHeight: 1.6 }}>
-                      {benefit.text}
-                    </p>
+                    <h5 className="mb10" style={{ fontWeight: 700, fontSize: "1rem" }}>{benefit.title}</h5>
+                    <p className="body-color fz14 mb-0" style={{ lineHeight: 1.6 }}>{benefit.text}</p>
                   </div>
                 </div>
               </div>
@@ -526,31 +411,20 @@ export default function BecomeSeller() {
       </section>
 
       {/* Section 5: CTA Banner */}
-      <section
-        className="pt80 pb80"
-        style={{ background: "#1e1541" }}
-      >
+      <section className="pt80 pb80" style={{ background: "#1e1541" }}>
         <div className="container">
           <div className="row justify-content-center text-center wow fadeInUp">
             <div className="col-lg-6">
-              <h2
-                className="text-white mb20"
-                style={{ fontWeight: 700 }}
-              >
-                Ready to Start Earning?
-              </h2>
-              <p
-                className="mb40"
-                style={{ color: "rgba(255,255,255,0.75)", fontSize: "1.05rem" }}
-              >
-                Join SkillLinkup today — it's free to create your profile.
+              <h2 className="text-white mb20" style={{ fontWeight: 700 }}>{t("ctaTitle")}</h2>
+              <p className="mb40" style={{ color: "rgba(255,255,255,0.75)", fontSize: "1.05rem" }}>
+                {t("ctaSubtitle")}
               </p>
               <Link
                 href="/register?role=freelancer"
                 className="ud-btn btn-thm bdrs8"
                 style={{ minWidth: "220px" }}
               >
-                Create Your Free Profile
+                {t("ctaButton")}
                 <i className="fal fa-arrow-right-long" />
               </Link>
             </div>
@@ -564,10 +438,8 @@ export default function BecomeSeller() {
           <div className="row wow fadeInUp">
             <div className="col-lg-6 mx-auto text-center">
               <div className="main-title mb40">
-                <h2 className="title">Frequently Asked Questions</h2>
-                <p className="paragraph mt10">
-                  Everything you need to know before getting started.
-                </p>
+                <h2 className="title">{t("faqTitle")}</h2>
+                <p className="paragraph mt10">{t("faqSubtitle")}</p>
               </div>
             </div>
           </div>
@@ -578,14 +450,8 @@ export default function BecomeSeller() {
                 <div className="accordion-style1 faq-page mb-4 mb-lg-5">
                   <div className="accordion" id="accordionBecomeSeller">
                     {faqs.map((faq, index) => (
-                      <div
-                        key={faq.id}
-                        className={`accordion-item${index === 0 ? " active" : ""}`}
-                      >
-                        <h2
-                          className="accordion-header"
-                          id={`heading${faq.id}`}
-                        >
+                      <div key={faq.id} className={`accordion-item${index === 0 ? " active" : ""}`}>
+                        <h2 className="accordion-header" id={`heading${faq.id}`}>
                           <button
                             className={`accordion-button${index !== 0 ? " collapsed" : ""}`}
                             type="button"
