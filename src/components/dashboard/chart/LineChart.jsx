@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -29,6 +30,7 @@ ChartJS.register(
 const dropdownData = ["Last 3 Months", "Last 6 Months", "Last 12 Months"];
 
 export default function LineChart({ userId }) {
+  const t = useTranslations("common");
   const [getSelected, setSelected] = useState(2); // default: 12 months
 
   const chartData = useQuery(
@@ -124,7 +126,7 @@ export default function LineChart({ userId }) {
           {isLoading ? (
             <div className="text-center py-5">
               <div className="spinner-border spinner-border-sm text-thm" role="status">
-                <span className="visually-hidden">Loading...</span>
+                <span className="visually-hidden">{t("loading")}</span>
               </div>
             </div>
           ) : !hasData ? (

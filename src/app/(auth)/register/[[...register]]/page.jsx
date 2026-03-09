@@ -4,6 +4,7 @@ import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 import { SignUp } from "@clerk/nextjs";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 function RegisterContent() {
   const searchParams = useSearchParams();
@@ -21,6 +22,7 @@ function RegisterContent() {
 }
 
 export default function RegisterPage() {
+  const t = useTranslations("common");
   return (
     <>
       <div style={{ backgroundColor: "#fff" }}>
@@ -36,7 +38,7 @@ export default function RegisterPage() {
             </div>
             <div className="row wow fadeInRight" data-wow-delay="300ms">
               <div className="col-xl-6 mx-auto d-flex justify-content-center">
-                <Suspense fallback={<div className="text-center py-5">Loading...</div>}>
+                <Suspense fallback={<div className="text-center py-5">{t("loading")}</div>}>
                   <RegisterContent />
                 </Suspense>
               </div>

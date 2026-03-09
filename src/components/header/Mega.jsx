@@ -2,8 +2,10 @@
 import Link from "next/link";
 import useConvexCategories from "@/hook/useConvexCategories";
 import { sortMarketplaceCategories } from "@/lib/marketplaceCategories";
+import { useTranslations } from "next-intl";
 
 export default function Mega({ staticMenuClass }) {
+  const t = useTranslations("common");
   const categories = useConvexCategories("en");
 
   // Split children into columns of roughly equal size (max 3 columns)
@@ -38,7 +40,7 @@ export default function Mega({ staticMenuClass }) {
           {sortedCategories.length === 0 ? (
             <li>
               <a>
-                <span className="menu-title">Loading...</span>
+                <span className="menu-title">{t("loading")}</span>
               </a>
             </li>
           ) : (

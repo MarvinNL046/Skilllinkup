@@ -5,6 +5,7 @@ import Image from "next/image";
 import Header20 from "@/components/header/Header20";
 import Footer14 from "@/components/footer/Footer14";
 import useConvexPlatform from "@/hook/useConvexPlatform";
+import { useTranslations } from "next-intl";
 
 function StarRating({ rating }) {
   const clamped = Math.min(5, Math.max(0, rating ?? 0));
@@ -50,6 +51,7 @@ function DifficultyBadge({ difficulty }) {
 }
 
 function PlatformDetailContent({ slug }) {
+  const t = useTranslations("common");
   const platform = useConvexPlatform(slug);
 
   // Loading
@@ -59,9 +61,9 @@ function PlatformDetailContent({ slug }) {
         <div className="container">
           <div className="text-center py-5">
             <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">Loading...</span>
+              <span className="visually-hidden">{t("loading")}</span>
             </div>
-            <p className="body-color mt-3">Loading platform...</p>
+            <p className="body-color mt-3">{t("loading")}</p>
           </div>
         </div>
       </section>

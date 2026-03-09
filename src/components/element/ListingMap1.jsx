@@ -7,6 +7,7 @@ import {
   InfoWindow,
 } from "@react-google-maps/api";
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 const product1 = []; // stripped mock data
 import TrendingServiceCard1 from "../card/TrendingServiceCard1";
 
@@ -187,6 +188,7 @@ const option = {
 };
 
 export default function ListingMap1() {
+  const t = useTranslations("common");
   const [getLocation, setLocation] = useState(null);
 
   const { isLoaded } = useLoadScript({
@@ -207,7 +209,7 @@ export default function ListingMap1() {
   return (
     <>
       {!isLoaded ? (
-        <p>Loading...</p>
+        <p>{t("loading")}</p>
       ) : (
         <GoogleMap
           mapContainerClassName="map-container"

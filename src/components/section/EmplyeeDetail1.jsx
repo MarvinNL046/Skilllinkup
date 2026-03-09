@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import useConvexClients from "@/hook/useConvexClients";
 import useConvexJobs from "@/hook/useConvexJobs";
 import JobCard4 from "../card/JobCard4";
+import { useTranslations } from "next-intl";
 
 function formatMonthYear(timestamp) {
   if (!timestamp) return null;
@@ -15,6 +16,7 @@ function formatMonthYear(timestamp) {
 }
 
 export default function EmplyeeDetail1() {
+  const t = useTranslations("common");
   const { id } = useParams();
   const clients = useConvexClients();
   const jobs = useConvexJobs();
@@ -25,7 +27,7 @@ export default function EmplyeeDetail1() {
         <div className="container">
           <div className="text-center py-5">
             <div className="spinner-border text-thm" role="status">
-              <span className="visually-hidden">Loading...</span>
+              <span className="visually-hidden">{t("loading")}</span>
             </div>
           </div>
         </div>

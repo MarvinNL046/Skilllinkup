@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 75
+    "completed": 76
   },
   "queue": [
     {
@@ -770,7 +770,7 @@
       "file": "loading-states",
       "description": "Loading..., spinner labels",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 7,
       "phase": 7
     },

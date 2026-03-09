@@ -3,10 +3,12 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
+import { useTranslations } from "next-intl";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function DoughnutChart({ userId }) {
+  const t = useTranslations("common");
   const chartData = useQuery(
     api.marketplace.dashboard.getChartData,
     userId ? { userId } : "skip"
@@ -64,7 +66,7 @@ export default function DoughnutChart({ userId }) {
         {isLoading ? (
           <div className="text-center py-5">
             <div className="spinner-border spinner-border-sm text-thm" role="status">
-              <span className="visually-hidden">Loading...</span>
+              <span className="visually-hidden">{t("loading")}</span>
             </div>
           </div>
         ) : !hasData ? (

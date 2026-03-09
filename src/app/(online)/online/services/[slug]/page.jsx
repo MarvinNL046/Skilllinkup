@@ -6,6 +6,7 @@ import PopularServiceSlideCard1 from "@/components/card/PopularServiceSlideCard1
 import TrendingServiceCard1 from "@/components/card/TrendingServiceCard1";
 import EmptyState from "@/components/ui/EmptyState";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 function mapGigToProduct(gig, index) {
   return {
@@ -27,6 +28,7 @@ function mapGigToProduct(gig, index) {
 }
 
 function CategoryContent({ slug }) {
+  const t = useTranslations("common");
   const result = useQuery(api.marketplace.gigs.listByCategory, {
     categorySlug: slug,
     locale: "en",
@@ -39,7 +41,7 @@ function CategoryContent({ slug }) {
         <div className="container">
           <div className="text-center py-5">
             <div className="spinner-border text-thm" role="status">
-              <span className="visually-hidden">Loading...</span>
+              <span className="visually-hidden">{t("loading")}</span>
             </div>
           </div>
         </div>

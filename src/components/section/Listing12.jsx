@@ -7,8 +7,10 @@ import ListingOption2 from "../element/ListingOption2";
 import ListingSidebarModal4 from "../modal/ListingSidebarModal4";
 import useConvexClients from "@/hook/useConvexClients";
 import EmptyState from "@/components/ui/EmptyState";
+import { useTranslations } from "next-intl";
 
 export default function Listing12() {
+  const t = useTranslations("common");
   const getCategory = listingStore((state) => state.getCategory);
   const getNoOfEmployee = listingStore((state) => state.getNoOfEmployee);
   const getBestSeller = listingStore((state) => state.getBestSeller);
@@ -32,7 +34,7 @@ export default function Listing12() {
     return (
       <div className="text-center py-5">
         <div className="spinner-border text-thm" role="status">
-          <span className="visually-hidden">Loading...</span>
+          <span className="visually-hidden">{t("loading")}</span>
         </div>
       </div>
     );

@@ -3,8 +3,10 @@ import useConvexBlog from "@/hook/useConvexBlog";
 import BlogCard4 from "../card/BlogCard4";
 import EmptyState from "@/components/ui/EmptyState";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function BlogArea3() {
+  const t = useTranslations("common");
   const blog1 = useConvexBlog();
 
   // Loading state
@@ -14,9 +16,9 @@ export default function BlogArea3() {
         <div className="container">
           <div className="text-center py-5">
             <div className="spinner-border text-thm" role="status">
-              <span className="visually-hidden">Loading...</span>
+              <span className="visually-hidden">{t("loading")}</span>
             </div>
-            <p className="body-color mt-3">Loading blog posts...</p>
+            <p className="body-color mt-3">{t("loading")}</p>
           </div>
         </div>
       </section>

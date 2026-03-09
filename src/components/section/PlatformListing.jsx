@@ -2,8 +2,10 @@
 import useConvexPlatforms from "@/hook/useConvexPlatforms";
 import PlatformCard from "@/components/card/PlatformCard";
 import EmptyState from "@/components/ui/EmptyState";
+import { useTranslations } from "next-intl";
 
 export default function PlatformListing() {
+  const t = useTranslations("common");
   const platforms = useConvexPlatforms("en");
 
   return (
@@ -23,9 +25,9 @@ export default function PlatformListing() {
         {platforms === undefined && (
           <div className="text-center py-5">
             <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">Loading...</span>
+              <span className="visually-hidden">{t("loading")}</span>
             </div>
-            <p className="body-color mt-3">Loading platforms...</p>
+            <p className="body-color mt-3">{t("loading")}</p>
           </div>
         )}
 

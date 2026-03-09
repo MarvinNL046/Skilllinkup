@@ -7,11 +7,13 @@ import Header20 from "@/components/header/Header20";
 import Footer14 from "@/components/footer/Footer14";
 import useConvexPost from "@/hook/useConvexPost";
 import EmptyState from "@/components/ui/EmptyState";
+import { useTranslations } from "next-intl";
 
 const FALLBACK_IMG = "/images/blog/default-blog-feature.jpg";
 const FALLBACK_AVATAR = "/images/blog/default-avatar.png";
 
 function PostContent({ slug }) {
+  const t = useTranslations("common");
   const post = useConvexPost(slug);
   const [featSrc, setFeatSrc] = useState(FALLBACK_IMG);
   const [avatarSrc, setAvatarSrc] = useState(FALLBACK_AVATAR);
@@ -34,9 +36,9 @@ function PostContent({ slug }) {
         <div className="container">
           <div className="text-center py-5">
             <div className="spinner-border text-thm" role="status">
-              <span className="visually-hidden">Loading...</span>
+              <span className="visually-hidden">{t("loading")}</span>
             </div>
-            <p className="body-color mt-3">Loading post...</p>
+            <p className="body-color mt-3">{t("loading")}</p>
           </div>
         </div>
       </section>
