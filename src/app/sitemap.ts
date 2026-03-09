@@ -12,19 +12,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/online`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
     { url: `${BASE_URL}/local`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
     { url: `${BASE_URL}/jobs`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
+    { url: `${BASE_URL}/platforms`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
+    { url: `${BASE_URL}/blog`, lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
+    { url: `${BASE_URL}/resources`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
     { url: `${BASE_URL}/become-seller`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE_URL}/pricing`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE_URL}/faq`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE_URL}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE_URL}/contact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
+    { url: `${BASE_URL}/help`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.4 },
+    { url: `${BASE_URL}/terms`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
+    { url: `${BASE_URL}/privacy-policy`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
   ];
 
   try {
-    const [freelancers, gigs, jobs, projects, resources] = await Promise.all([
+    const [freelancers, gigs, jobs, projects, resources, platforms, posts] = await Promise.all([
       fetchQuery(api.marketplace.freelancers.list, { limit: 1000 }).catch(() => []),
       fetchQuery(api.marketplace.gigs.list, { locale: "en", limit: 1000 }).catch(() => []),
       fetchQuery(api.marketplace.jobs.list, { locale: "en", limit: 1000 }).catch(() => []),
       fetchQuery(api.marketplace.projects.list, { locale: "en", limit: 1000 }).catch(() => []),
       fetchQuery(api.resources.list, { locale: "en", status: "published", limit: 500 }).catch(() => []),
+      fetchQuery(api.platforms.list, { locale: "en", limit: 200 }).catch(() => []),
+      fetchQuery(api.posts.list, { locale: "en", limit: 500 }).catch(() => []),
     ]);
 
     const freelancerRoutes: MetadataRoute.Sitemap = (freelancers ?? []).map((f: any) => ({
@@ -62,7 +71,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.85,
     }));
 
-    return [...staticRoutes, ...freelancerRoutes, ...gigRoutes, ...jobRoutes, ...projectRoutes, ...resourceRoutes];
+    const platformRoutes: MetadataRoute.Sitemap = (platforms ?? []).map((p: any) => ({
+      url: `${BASE_URL}/platforms/${p.slug}`,
+      lastModified: new Date(p.updatedAt || p.createdAt),
+      changeFrequency: "weekly" as const,
+      priority: 0.85,
+    }));
+
+    const postRoutes: MetadataRoute.Sitemap = (posts ?? []).map((p: any) => ({
+      url: `${BASE_URL}/post/${p.slug}`,
+      lastModified: new Date(p.updatedAt || p.publishedAt || p.createdAt),
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    }));
+
+    return [
+      ...staticRoutes,
+      ...freelancerRoutes,
+      ...gigRoutes,
+      ...jobRoutes,
+      ...projectRoutes,
+      ...resourceRoutes,
+      ...platformRoutes,
+      ...postRoutes,
+    ];
   } catch {
     return staticRoutes;
   }

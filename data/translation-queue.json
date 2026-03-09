@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 92
+    "completed": 93
   },
   "queue": [
     {
@@ -946,7 +946,8 @@
       "file": "src/app/sitemap.ts",
       "description": "Include NL pages with hreflang",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
+      "note": "No locale-prefix routing so hreflang N/A. Expanded sitemap with platforms, posts, and more static routes.",
       "priority": 10,
       "phase": 10
     },
