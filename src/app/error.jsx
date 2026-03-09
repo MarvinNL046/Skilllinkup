@@ -2,8 +2,11 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 export default function Error({ error, reset }) {
+  const t = useTranslations("errorPages");
+
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -24,23 +27,22 @@ export default function Error({ error, reset }) {
                 className="erro_code"
                 style={{ color: "#1e1541" }}
               >
-                Oops<span className="text-thm">!</span>
+                {t("oops").replace("!", "")}<span className="text-thm">!</span>
               </div>
-              <div className="h2 error_title">Something went wrong</div>
+              <div className="h2 error_title">{t("somethingWentWrong")}</div>
               <p className="text fz15 mb30">
-                An unexpected error occurred. Please try again or go back to the
-                homepage.
+                {t("errorDescription")}
               </p>
               <div className="d-flex gap-3 justify-content-center">
                 <button
                   onClick={reset}
                   className="ud-btn btn-thm"
                 >
-                  Try again
+                  {t("tryAgain")}
                   <i className="fal fa-rotate-right ms-2" />
                 </button>
                 <Link href="/" className="ud-btn btn-white2">
-                  Go Home
+                  {t("goHome")}
                   <i className="fal fa-house ms-2" />
                 </Link>
               </div>

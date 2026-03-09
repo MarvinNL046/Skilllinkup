@@ -1640,5 +1640,18 @@
     "statusCompleted": "Completed",
     "statusCancelled": "Cancelled",
     "statusClosed": "Closed"
+  },
+  "errorPages": {
+    "oops": "Oops!",
+    "somethingWentWrong": "Something went wrong",
+    "errorDescription": "An unexpected error occurred. Please try again or go back to the homepage.",
+    "tryAgain": "Try again",
+    "goHome": "Go Home",
+    "notFoundTitle": "Oops! It looks like you're lost.",
+    "notFoundDescription": "The page you're looking for isn't available. Try to search again or use the link below.",
+    "goBackHome": "Go back to home",
+    "freelancerNotFound": "Freelancer not found",
+    "freelancerNotFoundDescription": "The freelancer profile you're looking for doesn't exist or may have been removed.",
+    "browseFreelancers": "Browse Freelancers"
   }
 }

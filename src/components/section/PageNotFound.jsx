@@ -1,7 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function PageNotFound() {
+  const t = useTranslations("errorPages");
+
   return (
     <>
       <section className="our-error">
@@ -29,14 +34,13 @@ export default function PageNotFound() {
                   40<span className="text-thm">4</span>
                 </div>
                 <div className="h2 error_title">
-                  Oops! It looks like you're lost.
+                  {t("notFoundTitle")}
                 </div>
                 <p className="text fz15 mb20">
-                  The page you're looking for isn't available. Try to search
-                  again or use the go <br className="d-none d-lg-block" /> to.
+                  {t("notFoundDescription")}
                 </p>
                 <Link href="/" className="ud-btn btn-thm">
-                  Go back to home
+                  {t("goBackHome")}
                   <i className="fal fa-arrow-right-long" />
                 </Link>
               </div>

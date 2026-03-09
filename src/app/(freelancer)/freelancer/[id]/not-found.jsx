@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function FreelancerNotFound() {
+  const t = useTranslations("errorPages");
+
   return (
     <section className="our-error bgc-thm3">
       <div className="container">
@@ -10,13 +15,12 @@ export default function FreelancerNotFound() {
               <div className="mb30" style={{ fontSize: 64 }}>
                 👤
               </div>
-              <h2 className="title">Freelancer not found</h2>
+              <h2 className="title">{t("freelancerNotFound")}</h2>
               <p className="text mb25">
-                The freelancer profile you&apos;re looking for doesn&apos;t exist
-                or may have been removed.
+                {t("freelancerNotFoundDescription")}
               </p>
               <Link href="/online/freelancers" className="ud-btn btn-thm">
-                Browse Freelancers
+                {t("browseFreelancers")}
                 <i className="fal fa-arrow-right-long" />
               </Link>
             </div>

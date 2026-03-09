@@ -1640,5 +1640,18 @@
     "statusCompleted": "Afgerond",
     "statusCancelled": "Geannuleerd",
     "statusClosed": "Gesloten"
+  },
+  "errorPages": {
+    "oops": "Oeps!",
+    "somethingWentWrong": "Er ging iets mis",
+    "errorDescription": "Er is een onverwachte fout opgetreden. Probeer het opnieuw of ga terug naar de homepage.",
+    "tryAgain": "Probeer opnieuw",
+    "goHome": "Naar Home",
+    "notFoundTitle": "Oeps! Het lijkt erop dat je verdwaald bent.",
+    "notFoundDescription": "De pagina die je zoekt is niet beschikbaar. Probeer opnieuw te zoeken of gebruik de link hieronder.",
+    "goBackHome": "Terug naar home",
+    "freelancerNotFound": "Freelancer niet gevonden",
+    "freelancerNotFoundDescription": "Het freelancer profiel dat je zoekt bestaat niet of is verwijderd.",
+    "browseFreelancers": "Bekijk Freelancers"
   }
 }

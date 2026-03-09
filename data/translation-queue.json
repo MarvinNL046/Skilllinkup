@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 76
+    "completed": 77
   },
   "queue": [
     {
@@ -780,7 +780,7 @@
       "file": "src/app/error.tsx",
       "description": "Error pages, not-found, [...not_found]",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 7,
       "phase": 7
     },
