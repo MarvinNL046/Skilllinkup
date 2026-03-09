@@ -937,6 +937,21 @@
     "hoursAgo": "{count}u geleden",
     "daysAgo": "{count}d geleden"
   },
+  "adminDisputes": {
+    "title": "Admin — Geschillen",
+    "heading": "Geschillenbeheer",
+    "pageDescription": "Bekijk openstaande geschillen en keer geld uit aan de freelancer of restitueer de klant.",
+    "noOpenDisputes": "Geen openstaande geschillen.",
+    "columnDisputeId": "Geschil-ID",
+    "columnOrderId": "Order-ID",
+    "columnReason": "Reden",
+    "columnOpened": "Geopend",
+    "columnActions": "Acties",
+    "releaseToFreelancer": "Uitbetalen aan freelancer",
+    "refundClient": "Klant terugbetalen",
+    "resolvedNote": "Opgelost via admin dashboard: {resolution}",
+    "errorPrefix": "Fout: "
+  },
   "jobsHub": {
     "title": "Vacatures",
     "metaDescription": "Bekijk vacatures of plaats een vacature. Vind fulltime, parttime en freelance mogelijkheden.",

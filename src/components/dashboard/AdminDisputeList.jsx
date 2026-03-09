@@ -1,10 +1,12 @@
 "use client";
 
 import { useQuery, useMutation } from "convex/react";
+import { useTranslations } from "next-intl";
 import { api } from "../../../convex/_generated/api";
 import { useState } from "react";
 
 export default function AdminDisputeList() {
+  const t = useTranslations("adminDisputes");
   const disputes = useQuery(api.marketplace.disputes.list, { status: "open" }) ?? [];
   const resolve = useMutation(api.marketplace.disputes.resolve);
   const [loading, setLoading] = useState(null);
@@ -15,17 +17,17 @@ export default function AdminDisputeList() {
       await resolve({
         disputeId,
         resolution,
-        resolutionNote: `Resolved via admin dashboard: ${resolution}`,
+        resolutionNote: t("resolvedNote", { resolution }),
       });
     } catch (err) {
-      alert("Error: " + err.message);
+      alert(t("errorPrefix") + err.message);
     } finally {
       setLoading(null);
     }
   }
 
   if (disputes.length === 0) {
-    return <p className="text-muted">No open disputes.</p>;
+    return <p className="text-muted">{t("noOpenDisputes")}</p>;
   }
 
   return (
@@ -33,11 +35,11 @@ export default function AdminDisputeList() {
       <table className="table">
         <thead>
           <tr>
-            <th>Dispute ID</th>
-            <th>Order ID</th>
-            <th>Reason</th>
-            <th>Opened</th>
-            <th>Actions</th>
+            <th>{t("columnDisputeId")}</th>
+            <th>{t("columnOrderId")}</th>
+            <th>{t("columnReason")}</th>
+            <th>{t("columnOpened")}</th>
+            <th>{t("columnActions")}</th>
           </tr>
         </thead>
         <tbody>
@@ -53,14 +55,14 @@ export default function AdminDisputeList() {
                   disabled={!!loading}
                   onClick={() => handleResolve(d._id, "freelancer_wins")}
                 >
-                  {loading === d._id + "freelancer_wins" ? "..." : "Release to Freelancer"}
+                  {loading === d._id + "freelancer_wins" ? "..." : t("releaseToFreelancer")}
                 </button>
                 <button
                   className="btn btn-danger btn-sm"
                   disabled={!!loading}
                   onClick={() => handleResolve(d._id, "client_wins")}
                 >
-                  {loading === d._id + "client_wins" ? "..." : "Refund Client"}
+                  {loading === d._id + "client_wins" ? "..." : t("refundClient")}
                 </button>
               </td>
             </tr>

@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import MobileNavigation2 from "@/components/header/MobileNavigation2";
 import DashboardNavigation from "@/components/dashboard/header/DashboardNavigation";
@@ -9,11 +10,15 @@ import { api } from "../../../../../convex/_generated/api";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL);
 
-export const metadata = {
-  title: "Admin — Disputes",
-};
+export async function generateMetadata() {
+  const t = await getTranslations("adminDisputes");
+  return {
+    title: t("title"),
+  };
+}
 
 export default async function AdminDisputesPage() {
+  const t = await getTranslations("adminDisputes");
   const clerkUser = await currentUser();
   const email = clerkUser?.primaryEmailAddress?.emailAddress;
   const serverSecret = process.env.INTERNAL_EMAIL_SECRET;
@@ -42,9 +47,9 @@ export default async function AdminDisputesPage() {
             </div>
             <div className="col-lg-12">
               <div className="dashboard_title_area">
-                <h2>Dispute Management</h2>
+                <h2>{t("heading")}</h2>
                 <p className="text">
-                  Review open disputes and release funds or refund the client.
+                  {t("pageDescription")}
                 </p>
               </div>
             </div>

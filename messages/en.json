@@ -937,6 +937,21 @@
     "hoursAgo": "{count}h ago",
     "daysAgo": "{count}d ago"
   },
+  "adminDisputes": {
+    "title": "Admin — Disputes",
+    "heading": "Dispute Management",
+    "pageDescription": "Review open disputes and release funds or refund the client.",
+    "noOpenDisputes": "No open disputes.",
+    "columnDisputeId": "Dispute ID",
+    "columnOrderId": "Order ID",
+    "columnReason": "Reason",
+    "columnOpened": "Opened",
+    "columnActions": "Actions",
+    "releaseToFreelancer": "Release to Freelancer",
+    "refundClient": "Refund Client",
+    "resolvedNote": "Resolved via admin dashboard: {resolution}",
+    "errorPrefix": "Error: "
+  },
   "jobsHub": {
     "title": "Jobs",
     "metaDescription": "Browse job openings or post vacancies. Find full-time, part-time, and freelance opportunities.",
