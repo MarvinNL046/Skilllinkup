@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 72
+    "completed": 73
   },
   "queue": [
     {
@@ -740,7 +740,7 @@
       "file": "status-badges",
       "description": "Open, In Progress, Completed, Cancelled, Pending, Active, Paused, Delivered",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 7,
       "phase": 7
     },

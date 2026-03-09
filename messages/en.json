@@ -990,6 +990,18 @@
     "searchPlaceholder": "What service are you looking for today?",
     "search": "Search"
   },
+  "statusBadges": {
+    "open": "Open",
+    "inProgress": "In Progress",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "pending": "Pending",
+    "active": "Active",
+    "paused": "Paused",
+    "delivered": "Delivered",
+    "closed": "Closed",
+    "revisionRequested": "Revision Requested"
+  },
   "jobsHub": {
     "title": "Jobs",
     "metaDescription": "Browse job openings or post vacancies. Find full-time, part-time, and freelance opportunities.",

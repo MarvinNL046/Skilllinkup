@@ -990,6 +990,18 @@
     "searchPlaceholder": "Welke dienst zoek je vandaag?",
     "search": "Zoeken"
   },
+  "statusBadges": {
+    "open": "Open",
+    "inProgress": "Bezig",
+    "completed": "Afgerond",
+    "cancelled": "Geannuleerd",
+    "pending": "In afwachting",
+    "active": "Actief",
+    "paused": "Gepauzeerd",
+    "delivered": "Opgeleverd",
+    "closed": "Gesloten",
+    "revisionRequested": "Revisie aangevraagd"
+  },
   "jobsHub": {
     "title": "Vacatures",
     "metaDescription": "Bekijk vacatures of plaats een vacature. Vind fulltime, parttime en freelance mogelijkheden.",
