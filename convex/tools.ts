@@ -1,4 +1,4 @@
-import { query } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
 /**
@@ -94,5 +94,50 @@ export const getFeatured = query({
       .collect();
 
     return tools;
+  },
+});
+
+/**
+ * Insert a tool (used by translation scripts).
+ * Upserts by slug + locale to avoid duplicates.
+ */
+export const insert = mutation({
+  args: {
+    ownerId: v.string(),
+    name: v.string(),
+    slug: v.string(),
+    description: v.optional(v.string()),
+    category: v.string(),
+    icon: v.optional(v.string()),
+    color: v.optional(v.string()),
+    toolUrl: v.optional(v.string()),
+    isAvailable: v.optional(v.boolean()),
+    featured: v.optional(v.boolean()),
+    sortOrder: v.optional(v.number()),
+    status: v.optional(v.string()),
+    locale: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const existing = await ctx.db
+      .query("tools")
+      .withIndex("by_slug_locale", (q) =>
+        q.eq("slug", args.slug).eq("locale", args.locale)
+      )
+      .first();
+
+    if (existing) {
+      await ctx.db.patch(existing._id, {
+        name: args.name,
+        description: args.description,
+        updatedAt: Date.now(),
+      });
+      return existing._id;
+    }
+
+    return await ctx.db.insert("tools", {
+      ...args,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    });
   },
 });

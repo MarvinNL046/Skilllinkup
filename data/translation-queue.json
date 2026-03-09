@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 87
+    "completed": 88
   },
   "queue": [
     {
@@ -892,7 +892,8 @@
       "target": "tools",
       "description": "Translate name, description",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
+      "note": "Tools table empty (0 EN records). Script + insert mutation ready for when tools are seeded.",
       "priority": 9,
       "phase": 9
     },
