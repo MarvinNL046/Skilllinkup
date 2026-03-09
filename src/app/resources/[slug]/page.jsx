@@ -4,14 +4,16 @@ import ResourcePricingTemplate from "@/components/resources/ResourcePricingTempl
 import ResourceComparisonTemplate from "@/components/resources/ResourceComparisonTemplate";
 import ResourceGuideTemplate from "@/components/resources/ResourceGuideTemplate";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://skilllinkup.com";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
+  const t = await getTranslations("resources");
   try {
     const resource = await fetchQuery(api.resources.getBySlug, { slug, locale: "en" });
-    if (!resource || resource.status !== "published") return { title: "Resource" };
+    if (!resource || resource.status !== "published") return { title: t("resource") };
     return {
       title: resource.metaTitle,
       description: resource.metaDescription,
@@ -25,7 +27,7 @@ export async function generateMetadata({ params }) {
       },
     };
   } catch {
-    return { title: "Resource" };
+    return { title: t("resource") };
   }
 }
 

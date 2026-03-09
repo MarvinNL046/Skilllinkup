@@ -1714,5 +1714,19 @@
     "availableIn": "Beschikbaar in",
     "worldwide": "Wereldwijd",
     "rating": "Beoordeling"
+  },
+  "resources": {
+    "metaTitle": "Freelance Platform Resources 2026: Gidsen, Prijzen & Vergelijkingen",
+    "metaDescription": "Uitgebreide gidsen over freelance platform prijzen, vergelijkingen en strategieën. Upwork, Toptal, 99designs, Guru en meer — alles wat je nodig hebt om het juiste platform te kiezen.",
+    "heroTitle": "Freelance Platform Resources",
+    "heroDescription": "Eerlijke gidsen, prijsoverzichten en platform vergelijkingen — alles wat je nodig hebt om het juiste freelance platform te kiezen en gebruiken.",
+    "platformComparisons": "Platform Vergelijkingen",
+    "pricingGuides": "Prijsgidsen",
+    "guidesAndHowTos": "Gidsen & How-Tos",
+    "pricingGuide": "Prijsgids",
+    "comparison": "Vergelijking",
+    "guide": "Gids",
+    "noResources": "Nog geen resources beschikbaar.",
+    "resource": "Resource"
   }
 }

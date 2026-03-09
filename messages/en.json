@@ -1714,5 +1714,19 @@
     "availableIn": "Available In",
     "worldwide": "Worldwide",
     "rating": "Rating"
+  },
+  "resources": {
+    "metaTitle": "Freelance Platform Resources 2026: Guides, Pricing & Comparisons",
+    "metaDescription": "In-depth guides on freelance platform pricing, comparisons, and strategies. Upwork, Toptal, 99designs, Guru and more — all the info you need to pick the right platform.",
+    "heroTitle": "Freelance Platform Resources",
+    "heroDescription": "Honest guides, pricing breakdowns, and platform comparisons — everything you need to choose and use the right freelance platform.",
+    "platformComparisons": "Platform Comparisons",
+    "pricingGuides": "Pricing Guides",
+    "guidesAndHowTos": "Guides & How-Tos",
+    "pricingGuide": "Pricing Guide",
+    "comparison": "Comparison",
+    "guide": "Guide",
+    "noResources": "No resources available yet.",
+    "resource": "Resource"
   }
 }
