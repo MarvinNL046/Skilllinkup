@@ -365,6 +365,12 @@
     "faq5Q": "Hoe lang duurt het om het op te zetten?",
     "faq5A": "Je kunt je profiel aanmaken en beginnen met kansen bekijken in minder dan 5 minuten. Voeg je skills toe, stel je tarieven in en je bent klaar."
   },
+  "about": {
+    "title": "Over ons",
+    "metaDescription": "Leer meer over SkillLinkup, onze missie om freelancers wereldwijd met klanten te verbinden, en het team achter het platform.",
+    "breadcrumbTitle": "Over SkillLinkup",
+    "breadcrumbBrief": "Jouw gids om met vertrouwen de freelance wereld te navigeren."
+  },
   "errors": {
     "oops": "Oeps!",
     "somethingWentWrong": "Er ging iets mis",

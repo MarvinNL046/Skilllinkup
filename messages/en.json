@@ -365,6 +365,12 @@
     "faq5Q": "How long does it take to set up?",
     "faq5A": "You can create your profile and start browsing opportunities in under 5 minutes. Add your skills, set your rates, and you're ready to go."
   },
+  "about": {
+    "title": "About Us",
+    "metaDescription": "Learn about SkillLinkup, our mission to connect freelancers with clients worldwide, and the team behind the platform.",
+    "breadcrumbTitle": "About SkillLinkup",
+    "breadcrumbBrief": "Your guide to navigating the freelance world with confidence."
+  },
   "errors": {
     "oops": "Oops!",
     "somethingWentWrong": "Something went wrong",

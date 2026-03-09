@@ -6,24 +6,29 @@ import About5 from "@/components/section/About5";
 import CtaBanner3 from "@/components/section/CtaBanner3";
 import CtaBanner4 from "@/components/section/CtaBanner4";
 import OurFaq1 from "@/components/section/OurFaq1";
+import { getTranslations } from "next-intl/server";
 
-export const metadata = {
-    title: "About Us",
-    description: "Learn about SkillLinkup, our mission to connect freelancers with clients worldwide, and the team behind the platform.",
-    openGraph: {
-        title: "About Us",
-        description: "Learn about SkillLinkup, our mission to connect freelancers with clients worldwide, and the team behind the platform.",
-        url: "https://skilllinkup.com/about",
-    },
-};
+export async function generateMetadata() {
+    const t = await getTranslations("about");
+    return {
+        title: t("title"),
+        description: t("metaDescription"),
+        openGraph: {
+            title: t("title"),
+            description: t("metaDescription"),
+            url: "https://skilllinkup.com/about",
+        },
+    };
+}
 
-export default function page() {
+export default async function page() {
+    const t = await getTranslations("about");
     return (
         <>
             <Header20 />
             <Breadcumb1
-                title="About SkillLinkup"
-                brief="Your guide to navigating the freelance world with confidence."
+                title={t("breadcrumbTitle")}
+                brief={t("breadcrumbBrief")}
                 isBtnActive={false}
             />
             <About5 />

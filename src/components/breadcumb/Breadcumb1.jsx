@@ -1,8 +1,10 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function Breadcumb1({ title, brief, isBtnActive }) {
+  const t = useTranslations("nav");
   return (
     <>
       <section className="breadcumb-section wow fadeInUp mt40">
@@ -32,7 +34,7 @@ export default function Breadcumb1({ title, brief, isBtnActive }) {
                   <p className="text mb30 text-white">{brief}</p>
                   {isBtnActive && (
                     <Link className="ud-btn btn-thm" href="/register?role=freelancer">
-                      Become Seller
+                      {t("becomeSeller")}
                       <i className="fal fa-arrow-right-long" />
                     </Link>
                   )}
