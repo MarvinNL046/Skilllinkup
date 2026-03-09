@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 6
+    "completed": 7
   },
   "queue": [
     {
@@ -80,7 +80,7 @@
       "file": "src/components/header/Header19.jsx",
       "description": "Nav items, search placeholder, login/register, world labels (Online, Local, Jobs)",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 2,
       "phase": 1
     },

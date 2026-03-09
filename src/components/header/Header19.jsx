@@ -7,10 +7,13 @@ import MobileNavigation2 from "./MobileNavigation2";
 import NotificationBell from "./NotificationBell";
 import { useUser, useClerk } from "@clerk/nextjs";
 import WaitlistButton from "@/components/ui/WaitlistButton";
+import SearchBarWithDropdown from "@/components/ui/SearchBarWithDropdown";
+import { useTranslations } from "next-intl";
 
 export default function Header19() {
   const { user, isSignedIn } = useUser();
   const { signOut } = useClerk();
+  const t = useTranslations("nav");
 
   return (
     <>
@@ -36,12 +39,17 @@ export default function Header19() {
               <div className="col-auto px-0 px-xl-3">
                 <Navigation />
               </div>
+              <div className="col-auto d-none d-lg-block">
+                <div style={{ maxWidth: 320 }}>
+                  <SearchBarWithDropdown placeholder={t("searchPlaceholder")} />
+                </div>
+              </div>
               <div className="col-auto pe-0 ">
                 <div className="d-flex align-items-center">
                   {isSignedIn ? (
                     <>
                       <Link className="login-info" href="/dashboard">
-                        Dashboard
+                        {t("dashboard")}
                       </Link>
                       <span className="ml15 mr5 position-relative d-inline-flex align-items-center">
                         <NotificationBell />
@@ -66,20 +74,19 @@ export default function Header19() {
                         className="ud-btn add-joining home20-join-btn bdrs12 text-white"
                         onClick={() => signOut({ redirectUrl: "/" })}
                       >
-                        Logout
+                        {t("logout")}
                       </button>
                     </>
                   ) : (
                     <>
                       <Link className="login-info" href="/become-seller">
-                        <span className="d-none d-xl-inline-block">Become a</span>{" "}
-                        Seller
+                        {t("becomeSeller")}
                       </Link>
                       <Link
                         className="login-info mr10 home18-sign-btn px30 py-1 bdrs12 ml30 bdr1-dark"
                         href="/login"
                       >
-                        Sign in
+                        {t("signIn")}
                       </Link>
                       <WaitlistButton className="ud-btn add-joining home20-join-btn bdrs12 text-white" />
                     </>
