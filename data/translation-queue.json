@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 13
+    "completed": 14
   },
   "queue": [
     {
@@ -150,7 +150,7 @@
       "file": "src/components/section/SocialProofStats.jsx",
       "description": "Stats section text",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 2,
       "phase": 2
     },
