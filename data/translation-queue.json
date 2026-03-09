@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 44
+    "completed": 45
   },
   "queue": [
     {
@@ -460,7 +460,7 @@
       "file": "src/app/(jobs-world)/jobs/companies",
       "description": "Companies listing",
       "locale": "nl",
-      "status": "pending",
+      "status": "in_progress",
       "priority": 5,
       "phase": 5
     },

@@ -1,12 +1,17 @@
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 import EmptyState from "@/components/ui/EmptyState";
 
-export const metadata = {
-  title: "Companies — SkillLinkup",
-  description: "Browse companies hiring on SkillLinkup. Find employers looking for talent.",
-};
+export async function generateMetadata() {
+  const t = await getTranslations("jobsHub");
+  return {
+    title: t("companiesTitle"),
+    description: t("companiesDescription"),
+  };
+}
 
-export default function CompaniesPage() {
+export default async function CompaniesPage() {
+  const t = await getTranslations("jobsHub");
   return (
     <>
       <section className="breadcumb-section pt-0">
@@ -29,9 +34,9 @@ export default function CompaniesPage() {
             <div className="row wow fadeInUp">
               <div className="col-xl-7">
                 <div className="position-relative">
-                  <h2>Companies</h2>
+                  <h2>{t("companiesHeading")}</h2>
                   <p className="text">
-                    Discover companies hiring on SkillLinkup and find your next opportunity.
+                    {t("companiesText")}
                   </p>
                 </div>
               </div>
@@ -45,9 +50,9 @@ export default function CompaniesPage() {
             <div className="col-lg-9 mx-auto">
               <EmptyState
                 icon="🏢"
-                title="Company directory coming soon"
-                description="We're building a company directory so you can discover employers on SkillLinkup. Soon you'll be able to browse company profiles, see open positions, and learn about company culture."
-                actionLabel="Browse Jobs"
+                title={t("companiesComingSoon")}
+                description={t("companiesComingSoonText")}
+                actionLabel={t("browseJobs")}
                 actionHref="/jobs/browse"
               />
             </div>

@@ -917,6 +917,13 @@
     "description": "Beschrijving",
     "keyResponsibilities": "Belangrijkste taken",
     "requirements": "Vereisten",
-    "applyForJob": "Solliciteren"
+    "applyForJob": "Solliciteren",
+    "companiesTitle": "Bedrijven — SkillLinkup",
+    "companiesDescription": "Bekijk bedrijven die vacatures plaatsen op SkillLinkup. Vind werkgevers die op zoek zijn naar talent.",
+    "companiesHeading": "Bedrijven",
+    "companiesText": "Ontdek bedrijven die inhuren via SkillLinkup en vind je volgende kans.",
+    "companiesComingSoon": "Bedrijvengids binnenkort beschikbaar",
+    "companiesComingSoonText": "We bouwen een bedrijvengids zodat je werkgevers op SkillLinkup kunt ontdekken. Binnenkort kun je bedrijfsprofielen bekijken, openstaande functies zien en meer leren over de bedrijfscultuur.",
+    "browseJobs": "Vacatures bekijken"
   }
 }

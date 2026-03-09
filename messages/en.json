@@ -917,6 +917,13 @@
     "description": "Description",
     "keyResponsibilities": "Key Responsibilities",
     "requirements": "Requirements",
-    "applyForJob": "Apply For Job"
+    "applyForJob": "Apply For Job",
+    "companiesTitle": "Companies — SkillLinkup",
+    "companiesDescription": "Browse companies hiring on SkillLinkup. Find employers looking for talent.",
+    "companiesHeading": "Companies",
+    "companiesText": "Discover companies hiring on SkillLinkup and find your next opportunity.",
+    "companiesComingSoon": "Company directory coming soon",
+    "companiesComingSoonText": "We're building a company directory so you can discover employers on SkillLinkup. Soon you'll be able to browse company profiles, see open positions, and learn about company culture.",
+    "browseJobs": "Browse Jobs"
   }
 }
