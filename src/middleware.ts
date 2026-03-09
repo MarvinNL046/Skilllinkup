@@ -1,8 +1,4 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import createMiddleware from "next-intl/middleware";
-import { routing } from "./i18n/routing";
-
-const handleI18nRouting = createMiddleware(routing);
 
 const isProtectedRoute = createRouteMatcher([
   "/add-services(.*)",
@@ -30,9 +26,6 @@ export default clerkMiddleware(
     if (isProtectedRoute(request)) {
       await auth.protect();
     }
-
-    // Apply next-intl locale routing
-    return handleI18nRouting(request);
   },
   {
     signInUrl: "/login",
