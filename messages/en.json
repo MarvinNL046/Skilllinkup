@@ -585,5 +585,12 @@
     "emptyTitle": "Services coming soon",
     "emptyDescription": "Be the first to offer your services on SkillLinkup",
     "emptyAction": "Become a Seller"
+  },
+  "listing": {
+    "loading": "Loading...",
+    "freelancers": "freelancers",
+    "noFreelancersTitle": "No freelancers yet",
+    "noFreelancersDescription": "Join as a freelancer to get started",
+    "noFreelancersAction": "Become a Freelancer"
   }
 }

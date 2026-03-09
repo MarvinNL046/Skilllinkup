@@ -585,5 +585,12 @@
     "emptyTitle": "Diensten komen eraan",
     "emptyDescription": "Wees de eerste die diensten aanbiedt op SkillLinkup",
     "emptyAction": "Word Verkoper"
+  },
+  "listing": {
+    "loading": "Laden...",
+    "freelancers": "freelancers",
+    "noFreelancersTitle": "Nog geen freelancers",
+    "noFreelancersDescription": "Word freelancer om te beginnen",
+    "noFreelancersAction": "Word Freelancer"
   }
 }

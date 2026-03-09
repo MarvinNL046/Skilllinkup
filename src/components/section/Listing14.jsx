@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import listingStore from "@/store/listingStore";
 import ListingOption2 from "../element/ListingOption2";
 import ListingSidebar5 from "../sidebar/ListingSidebar5";
@@ -13,6 +14,7 @@ import ListingSidebarModal5 from "../modal/ListingSidebarModal5";
 import EmptyState from "@/components/ui/EmptyState";
 
 export default function Listing14() {
+  const t = useTranslations("listing");
   const searchParams = useSearchParams();
   const setSearch = listingStore((state) => state.setSearch);
   const getCategory = listingStore((state) => state.getCategory);
@@ -85,7 +87,7 @@ export default function Listing14() {
     return (
       <div className="text-center py-5">
         <div className="spinner-border text-thm" role="status">
-          <span className="visually-hidden">Loading...</span>
+          <span className="visually-hidden">{t("loading")}</span>
         </div>
       </div>
     );
@@ -122,14 +124,14 @@ export default function Listing14() {
               <ListingSidebar5 />
             </div>
             <div className="col-lg-9">
-              <ListingOption2 itemLength={content?.length} itemLabel="freelancers" />
+              <ListingOption2 itemLength={content?.length} itemLabel={t("freelancers")} />
               <div className="row">
                 {content.length === 0 ? (
                   <EmptyState
                     icon="👤"
-                    title="No freelancers yet"
-                    description="Join as a freelancer to get started"
-                    actionLabel="Become a Freelancer"
+                    title={t("noFreelancersTitle")}
+                    description={t("noFreelancersDescription")}
+                    actionLabel={t("noFreelancersAction")}
                     actionHref="/register"
                   />
                 ) : (
