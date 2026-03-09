@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
+import { useTranslations } from "next-intl";
 import { api } from "../../../convex/_generated/api";
 import Image from "next/image";
 
 export default function BidList({ projectId, isOwner }) {
+  const t = useTranslations("projectDetail");
   const bids = useQuery(
     api.marketplace.projects.getBids,
     isOwner && projectId ? { projectId } : "skip"
@@ -19,7 +21,7 @@ export default function BidList({ projectId, isOwner }) {
     try {
       await acceptBid({ bidId });
     } catch (err) {
-      setAcceptError(err.message || "Failed to accept bid");
+      setAcceptError(err.message || t("failedToSubmit"));
     } finally {
       setAcceptingId(null);
     }
@@ -27,19 +29,19 @@ export default function BidList({ projectId, isOwner }) {
 
   if (!isOwner) {
     return (
-      <p className="text mb20">Proposals are visible only to the project owner.</p>
+      <p className="text mb20">{t("proposalsOwnerOnly")}</p>
     );
   }
 
   if (bids === undefined) {
     return (
-      <p className="text mb20">Loading proposals...</p>
+      <p className="text mb20">{t("loadingProposals")}</p>
     );
   }
 
   if (!bids || bids.length === 0) {
     return (
-      <p className="text mb20">No proposals yet. Be the first to submit!</p>
+      <p className="text mb20">{t("noProposals")}</p>
     );
   }
 
@@ -54,7 +56,7 @@ export default function BidList({ projectId, isOwner }) {
       {isOwner && avgAmount && (
         <p className="text fz14 mb20">
           <i className="flaticon-dollar vam me-1 text-thm2"></i>
-          Average bid: <strong>${avgAmount}</strong>
+          {t("averageBid")} <strong>€{avgAmount}</strong>
         </p>
       )}
       {acceptError && (
@@ -102,7 +104,7 @@ export default function BidList({ projectId, isOwner }) {
                     {bid.freelancerVerified && (
                       <i
                         className="fas fa-check-circle text-thm fz12 ms-1"
-                        title="Verified freelancer"
+                        title={t("verifiedFreelancer")}
                       ></i>
                     )}
                   </h6>
@@ -115,9 +117,9 @@ export default function BidList({ projectId, isOwner }) {
                 </div>
                 <div className="text-end">
                   <p className="mb-0 fw600 dark-color">
-                    ${bid.amount}
+                    €{bid.amount}
                   </p>
-                  <p className="mb-0 fz12 text">{bid.deliveryDays} days</p>
+                  <p className="mb-0 fz12 text">{bid.deliveryDays} {t("days")}</p>
                 </div>
               </div>
 
@@ -127,7 +129,7 @@ export default function BidList({ projectId, isOwner }) {
               {/* Status badge */}
               {bid.status === "accepted" && (
                 <span className="badge badge-thm fz12 px-2 py-1 bdrs4">
-                  Accepted
+                  {t("accepted")}
                 </span>
               )}
 
@@ -139,7 +141,7 @@ export default function BidList({ projectId, isOwner }) {
                   disabled={acceptingId === bid._id}
                   style={{ fontSize: "13px", padding: "6px 16px" }}
                 >
-                  {acceptingId === bid._id ? "Accepting..." : "Accept Bid"}
+                  {acceptingId === bid._id ? t("accepting") : t("acceptBid")}
                   <i className="fal fa-check ms-1"></i>
                 </button>
               )}

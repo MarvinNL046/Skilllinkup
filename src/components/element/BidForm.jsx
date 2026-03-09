@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
 import { useMutation } from "convex/react";
+import { useTranslations } from "next-intl";
 import { api } from "../../../convex/_generated/api";
 import { toast } from "sonner";
 
 export default function BidForm({ projectId, onSuccess }) {
+  const t = useTranslations("projectDetail");
   const [amount, setAmount] = useState("");
   const [deliveryDays, setDeliveryDays] = useState("");
   const [pitch, setPitch] = useState("");
@@ -17,8 +19,8 @@ export default function BidForm({ projectId, onSuccess }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!amount || !deliveryDays || !pitch) {
-      setError("Please fill in all fields");
-      toast.error("Please fill in all fields");
+      setError(t("fillAllFields"));
+      toast.error(t("fillAllFields"));
       return;
     }
     setIsSubmitting(true);
@@ -30,12 +32,12 @@ export default function BidForm({ projectId, onSuccess }) {
         deliveryDays: Number.isFinite(parseInt(deliveryDays, 10)) ? parseInt(deliveryDays, 10) : 1,
         pitch,
       });
-      toast.success("Your bid has been submitted!");
+      toast.success(t("bidSubmitted"));
       setSuccess(true);
       onSuccess?.();
     } catch (err) {
-      setError(err.message || "Failed to submit bid");
-      toast.error(err.message || "Failed to submit bid");
+      setError(err.message || t("failedToSubmit"));
+      toast.error(err.message || t("failedToSubmit"));
     } finally {
       setIsSubmitting(false);
     }
@@ -45,14 +47,14 @@ export default function BidForm({ projectId, onSuccess }) {
     return (
       <div className="alert alert-success mt20 mb20 bdrs8 p20">
         <i className="fas fa-check-circle me-2"></i>
-        Your bid has been submitted successfully!
+        {t("bidSubmittedSuccess")}
       </div>
     );
   }
 
   return (
     <form onSubmit={handleSubmit} className="mt10">
-      <h4 className="mb20">Submit a Bid</h4>
+      <h4 className="mb20">{t("submitBid")}</h4>
       {error && (
         <div className="alert alert-danger mb20 bdrs8 p15">
           <i className="fas fa-exclamation-circle me-2"></i>
@@ -63,7 +65,7 @@ export default function BidForm({ projectId, onSuccess }) {
         <div className="col-md-6">
           <div className="mb20">
             <label className="fw500 ff-heading dark-color mb-2">
-              Your Price ($)
+              {t("yourPrice")}
             </label>
             <input
               type="number"
@@ -80,7 +82,7 @@ export default function BidForm({ projectId, onSuccess }) {
         <div className="col-md-6">
           <div className="mb20">
             <label className="fw500 ff-heading dark-color mb-2">
-              Delivery (days)
+              {t("deliveryDays")}
             </label>
             <input
               type="number"
@@ -96,14 +98,14 @@ export default function BidForm({ projectId, onSuccess }) {
         <div className="col-md-12">
           <div className="mb20">
             <label className="fw500 fz16 ff-heading dark-color mb-2">
-              Your Proposal
+              {t("yourProposal")}
             </label>
             <textarea
               className="pt15 form-control"
               rows={6}
               value={pitch}
               onChange={(e) => setPitch(e.target.value)}
-              placeholder="Describe your approach and why you're the right fit..."
+              placeholder={t("proposalPlaceholder")}
               required
             />
           </div>
@@ -115,7 +117,7 @@ export default function BidForm({ projectId, onSuccess }) {
               className="ud-btn btn-thm"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Submitting..." : "Submit Bid"}
+              {isSubmitting ? t("submitting") : t("submitBidBtn")}
               <i className="fal fa-arrow-right-long" />
             </button>
           </div>

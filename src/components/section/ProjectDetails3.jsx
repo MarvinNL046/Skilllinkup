@@ -7,12 +7,14 @@ import BidForm from "../element/BidForm";
 import BidList from "../element/BidList";
 import useScreen from "@/hook/useScreen";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import useConvexProjectDetail from "@/hook/useConvexProjectDetail";
 import useConvexUser from "@/hook/useConvexUser";
 import Link from "next/link";
 import { useRef, useCallback } from "react";
 
 export default function ProjectDetail3() {
+  const t = useTranslations("projectDetail");
   const isMatchedScreen = useScreen(1216);
   const { id } = useParams();
   const bidSectionRef = useRef(null);
@@ -35,7 +37,7 @@ export default function ProjectDetail3() {
           location: convexData.locationCity
             ? `${convexData.locationCity}, ${convexData.locationCountry || ""}`
             : convexData.workType === "remote"
-            ? "Remote"
+            ? t("remote")
             : null,
           postedAt: convexData.createdAt
             ? new Date(convexData.createdAt).toLocaleDateString("en-US", {
@@ -62,7 +64,7 @@ export default function ProjectDetail3() {
         <div className="container">
           <div className="row">
             <div className="col-12 text-center py-5">
-              <p className="text">Loading project details...</p>
+              <p className="text">{t("loadingProject")}</p>
             </div>
           </div>
         </div>
@@ -73,7 +75,7 @@ export default function ProjectDetail3() {
   const title = data?.title || "";
   const location = data?.location || null;
   const postedAt = data?.postedAt || null;
-  const views = data?.views != null ? `${data.views} Views` : null;
+  const views = data?.views != null ? `${data.views} ${t("views")}` : null;
   const description = data?.description || null;
   const skills = data?.requiredSkills && data.requiredSkills.length > 0
     ? data.requiredSkills
@@ -126,7 +128,7 @@ export default function ProjectDetail3() {
                               <span className="flaticon-dollar" />
                             </div>
                             <div className="details">
-                              <h5 className="title">Project type</h5>
+                              <h5 className="title">{t("projectType")}</h5>
                               <p className="mb-0 text">{data.projectType}</p>
                             </div>
                           </div>
@@ -139,7 +141,7 @@ export default function ProjectDetail3() {
                               <span className="flaticon-fifteen" />
                             </div>
                             <div className="details">
-                              <h5 className="title">Project Duration</h5>
+                              <h5 className="title">{t("projectDuration")}</h5>
                               <p className="mb-0 text">{data.duration}</p>
                             </div>
                           </div>
@@ -150,13 +152,13 @@ export default function ProjectDetail3() {
                   <div className="service-about">
                     {description && (
                       <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
-                        <h4>Description</h4>
+                        <h4>{t("description")}</h4>
                         <p className="text mb30">{description}</p>
                       </div>
                     )}
                     {skills.length > 0 && (
                       <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
-                        <h4 className="mb30">Skills Required</h4>
+                        <h4 className="mb30">{t("skillsRequired")}</h4>
                         <div className="mb60">
                           {skills.map((item, i) => (
                             <a
@@ -173,7 +175,7 @@ export default function ProjectDetail3() {
                     )}
                     <div className="px30 bdr1 pt30 pb30 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
                       <h4 className="mb30">
-                        Project Proposals ({bidCount})
+                        {t("projectProposals")} ({bidCount})
                       </h4>
 
                       {/* Bid list — always shown when there is a project ID */}
@@ -196,10 +198,10 @@ export default function ProjectDetail3() {
                           /* Not logged in */
                           <div className="text-center py20">
                             <p className="text mb15">
-                              You must be signed in to submit a bid.
+                              {t("signInToBid")}
                             </p>
                             <Link href="/login" className="ud-btn btn-thm">
-                              Log in to Bid
+                              {t("logInToBid")}
                               <i className="fal fa-arrow-right-long" />
                             </Link>
                           </div>
