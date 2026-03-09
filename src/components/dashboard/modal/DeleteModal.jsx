@@ -1,7 +1,9 @@
 "use client";
 import { useState, useRef } from "react";
+import { useTranslations } from "next-intl";
 
 export default function DeleteModal({ projectId, projectTitle, onDelete }) {
+  const t = useTranslations("proposals");
   const [isDeleting, setIsDeleting] = useState(false);
   const closeRef = useRef(null);
 
@@ -40,12 +42,10 @@ export default function DeleteModal({ projectId, projectTitle, onDelete }) {
           <div className="modal-body px-4 pt-5">
             <div className="pb20">
               <h4 className="pb10 text-center text-black">
-                Are you sure you want to delete?
+                {t("deleteConfirmTitle")}
               </h4>
               <p className="text-center">
-                Do you really want to delete{" "}
-                <strong>{projectTitle || "this project"}</strong>? This will
-                cancel the project and it cannot be undone.
+                {t("deleteConfirmMessage", { title: projectTitle || t("thisProject") })}
               </p>
             </div>
             <div className="d-flex justify-content-center gap-3">
@@ -61,11 +61,11 @@ export default function DeleteModal({ projectId, projectTitle, onDelete }) {
                       className="spinner-border spinner-border-sm me-2"
                       role="status"
                     />
-                    Deleting...
+                    {t("deleting")}
                   </>
                 ) : (
                   <>
-                    Delete
+                    {t("delete")}
                     <i className="fal fa-arrow-right-long" />
                   </>
                 )}
@@ -76,7 +76,7 @@ export default function DeleteModal({ projectId, projectTitle, onDelete }) {
                 aria-label="Close"
                 disabled={isDeleting}
               >
-                Cancel
+                {t("cancel")}
                 <i className="fal fa-arrow-right-long" />
               </button>
             </div>

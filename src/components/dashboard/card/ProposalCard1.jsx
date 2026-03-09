@@ -1,18 +1,21 @@
 "use client";
 import Link from "next/link";
 import { Tooltip } from "react-tooltip";
-
-const BID_STATUS_CONFIG = {
-  pending: { label: "Pending", badgeClass: "bg-warning text-dark" },
-  accepted: { label: "Accepted", badgeClass: "bg-success text-white" },
-  rejected: { label: "Rejected", badgeClass: "bg-danger text-white" },
-};
+import { useTranslations } from "next-intl";
 
 export default function ProposalCard1({ data, bid }) {
+  const t = useTranslations("proposals");
+
+  const BID_STATUS_CONFIG = {
+    pending: { label: t("statusPending"), badgeClass: "bg-warning text-dark" },
+    accepted: { label: t("statusAccepted"), badgeClass: "bg-success text-white" },
+    rejected: { label: t("statusRejected"), badgeClass: "bg-danger text-white" },
+  };
+
   // Support both legacy static `data` prop and new Convex `bid` prop
   const isConvexBid = !!bid;
 
-  const title = isConvexBid ? bid.projectTitle : (data?.title ?? "Untitled Project");
+  const title = isConvexBid ? bid.projectTitle : (data?.title ?? t("untitledProject"));
   const projectSlug = isConvexBid ? bid.projectSlug : null;
   const amount = isConvexBid ? bid.amount : null;
   const currency = isConvexBid ? (bid.projectCurrency ?? "EUR") : null;
@@ -23,7 +26,6 @@ export default function ProposalCard1({ data, bid }) {
   // Legacy static data fields
   const legacyPriceMin = data?.price?.min;
   const legacyPriceMax = data?.price?.max;
-  const legacyImg = data?.img ?? "/images/team/client-1.png";
 
   const statusConfig = bidStatus ? (BID_STATUS_CONFIG[bidStatus] ?? BID_STATUS_CONFIG.pending) : null;
 
@@ -58,12 +60,14 @@ export default function ProposalCard1({ data, bid }) {
                   <>
                     <p className="mb-0 fz14 list-inline-item mb5-sm pe-1">
                       <i className="flaticon-30-days fz16 vam text-thm2 me-1" />{" "}
-                      Submitted {submittedDate}
+                      {t("submitted", { date: submittedDate })}
                     </p>
                     {deliveryDays && (
                       <p className="mb-0 fz14 list-inline-item mb5-sm pe-1">
                         <i className="flaticon-contract fz16 vam text-thm2 me-1 bdrl1 pl15 pl0-xs bdrn-xs" />{" "}
-                        {deliveryDays} day{deliveryDays !== 1 ? "s" : ""} delivery
+                        {deliveryDays !== 1
+                          ? t("daysDelivery", { count: deliveryDays })
+                          : t("dayDelivery")}
                       </p>
                     )}
                     {statusConfig && (
@@ -96,7 +100,7 @@ export default function ProposalCard1({ data, bid }) {
           {isConvexBid ? (
             <h5 className="mb-0">
               {currency} {amount?.toFixed(2)}{" "}
-              <span className="fz14 fw400">/ {deliveryDays} days</span>
+              <span className="fz14 fw400">/ {t("days", { count: deliveryDays })}</span>
             </h5>
           ) : (
             <h5 className="mb-0">
@@ -114,7 +118,7 @@ export default function ProposalCard1({ data, bid }) {
               data-bs-target="#proposalModal"
             >
               <Tooltip anchorSelect={`#${tooltipEditId}`} className="ui-tooltip">
-                Edit
+                {t("edit")}
               </Tooltip>
               <span className="flaticon-pencil" />
             </a>
@@ -125,7 +129,7 @@ export default function ProposalCard1({ data, bid }) {
               data-bs-target="#deleteModal"
             >
               <Tooltip anchorSelect={`#${tooltipDeleteId}`} className="ui-tooltip">
-                Delete
+                {t("delete")}
               </Tooltip>
               <span className="flaticon-delete" />
             </a>

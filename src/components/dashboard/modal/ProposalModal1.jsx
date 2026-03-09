@@ -1,7 +1,9 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 
 export default function ProposalModal1({ project, onUpdate }) {
+  const t = useTranslations("proposals");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [budgetMin, setBudgetMin] = useState("");
@@ -65,10 +67,10 @@ export default function ProposalModal1({ project, onUpdate }) {
             style={{ top: "10px", right: "10px", zIndex: "9" }}
           />
           <div className="modal-body p-4">
-            <h4 className="mb20">Edit Project</h4>
+            <h4 className="mb20">{t("editProject")}</h4>
             <form onSubmit={handleUpdate}>
               <div className="mb-3">
-                <label className="form-label fw500">Title</label>
+                <label className="form-label fw500">{t("labelTitle")}</label>
                 <input
                   type="text"
                   className="form-control"
@@ -79,7 +81,7 @@ export default function ProposalModal1({ project, onUpdate }) {
                 />
               </div>
               <div className="mb-3">
-                <label className="form-label fw500">Description</label>
+                <label className="form-label fw500">{t("labelDescription")}</label>
                 <textarea
                   className="form-control"
                   rows={4}
@@ -92,7 +94,7 @@ export default function ProposalModal1({ project, onUpdate }) {
               <div className="row">
                 <div className="col">
                   <div className="mb-3">
-                    <label className="form-label fw500">Budget Min (EUR)</label>
+                    <label className="form-label fw500">{t("labelBudgetMin")}</label>
                     <input
                       type="number"
                       className="form-control"
@@ -105,7 +107,7 @@ export default function ProposalModal1({ project, onUpdate }) {
                 </div>
                 <div className="col">
                   <div className="mb-3">
-                    <label className="form-label fw500">Budget Max (EUR)</label>
+                    <label className="form-label fw500">{t("labelBudgetMax")}</label>
                     <input
                       type="number"
                       className="form-control"
@@ -118,16 +120,16 @@ export default function ProposalModal1({ project, onUpdate }) {
                 </div>
               </div>
               <div className="mb-3">
-                <label className="form-label fw500">Work Type</label>
+                <label className="form-label fw500">{t("labelWorkType")}</label>
                 <select
                   className="form-select"
                   value={workType}
                   onChange={(e) => setWorkType(e.target.value)}
                   data-testid="manage-project-edit-work-type"
                 >
-                  <option value="remote">Remote</option>
-                  <option value="local">On-site</option>
-                  <option value="hybrid">Hybrid</option>
+                  <option value="remote">{t("remote")}</option>
+                  <option value="local">{t("onSite")}</option>
+                  <option value="hybrid">{t("hybrid")}</option>
                 </select>
               </div>
               <button
@@ -142,11 +144,11 @@ export default function ProposalModal1({ project, onUpdate }) {
                       className="spinner-border spinner-border-sm me-2"
                       role="status"
                     />
-                    Updating...
+                    {t("updating")}
                   </>
                 ) : (
                   <>
-                    Update
+                    {t("update")}
                     <i className="fal fa-arrow-right-long" />
                   </>
                 )}

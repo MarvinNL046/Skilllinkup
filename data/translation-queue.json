@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 58
+    "completed": 59
   },
   "queue": [
     {
@@ -600,7 +600,7 @@
       "file": "src/app/(dashboard)/proposal/page.jsx",
       "description": "Bid/proposal form",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 6,
       "phase": 6
     },
