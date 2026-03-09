@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 55
+    "completed": 56
   },
   "queue": [
     {
@@ -570,7 +570,7 @@
       "file": "src/app/(dashboard)/message/page.jsx",
       "description": "Chat UI: messages placeholder, Back to conversations, Send",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 6,
       "phase": 6
     },

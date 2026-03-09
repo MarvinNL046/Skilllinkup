@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 const CONTACT_PATTERNS = [
@@ -18,9 +19,6 @@ function containsContactInfo(text) {
   return CONTACT_PATTERNS.some((p) => p.test(text));
 }
 
-const BLOCK_ERROR =
-  "Contactgegevens delen is niet toegestaan. E-mailadressen, telefoonnummers, links en e-mailproviders (Gmail, Outlook, etc.) worden geblokkeerd.";
-
 export default function MessageBox({
   messages = [],
   currentUserId,
@@ -30,13 +28,14 @@ export default function MessageBox({
   isMobile = false,
   onMobileBack,
 }) {
+  const t = useTranslations("messages");
   const [inputValue, setInputValue] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [sendError, setSendError] = useState(null);
   const chatBoxRef = useRef(null);
   const prevCountRef = useRef(0);
   const blockError =
-    inputValue.trim() && containsContactInfo(inputValue) ? BLOCK_ERROR : null;
+    inputValue.trim() && containsContactInfo(inputValue) ? t("contactBlocked") : null;
 
   const scrollToBottom = () => {
     const el = chatBoxRef.current;
@@ -69,7 +68,7 @@ export default function MessageBox({
       scrollToBottom();
     } catch (err) {
       setSendError(
-        err?.data ?? err?.message ?? "Bericht kon niet worden verstuurd."
+        err?.data ?? err?.message ?? t("sendFailed")
       );
     } finally {
       setIsSending(false);
@@ -113,9 +112,9 @@ export default function MessageBox({
             className="flaticon-chat"
             style={{ fontSize: 50, color: "#2A8703", display: "block", marginBottom: 16 }}
           />
-          <h5>Select a conversation</h5>
+          <h5>{t("selectConversation")}</h5>
           <p style={{ color: "#6b7280" }}>
-            Choose a conversation from the left to start messaging.
+            {t("selectConversationHint")}
           </p>
         </div>
       </div>
@@ -159,7 +158,7 @@ export default function MessageBox({
               display: "flex",
               alignItems: "center",
             }}
-            aria-label="Back to conversations"
+            aria-label={t("backToConversations")}
           >
             <i className="fal fa-arrow-left" />
           </button>
@@ -178,7 +177,7 @@ export default function MessageBox({
           <h6 style={{ margin: 0, fontSize: isMobile ? 14 : 15, fontWeight: 600 }}>
             {otherName}
           </h6>
-          <p style={{ margin: 0, fontSize: 12, color: "#10b981" }}>Active</p>
+          <p style={{ margin: 0, fontSize: 12, color: "#10b981" }}>{t("active")}</p>
         </div>
       </div>
 
@@ -202,7 +201,7 @@ export default function MessageBox({
         >
           {messages.length === 0 ? (
             <p style={{ textAlign: "center", color: "#6b7280" }}>
-              No messages yet. Say hello!
+              {t("noMessagesYet")}
             </p>
           ) : (
             messages.map((message) => {
@@ -245,7 +244,7 @@ export default function MessageBox({
                       }}
                     />
                     <span style={{ fontSize: 12, color: "#6b7280" }}>
-                      {isOwn ? "You" : name}{" "}
+                      {isOwn ? t("you") : name}{" "}
                       <span style={{ marginLeft: 4 }}>
                         {formatTime(message.createdAt)}
                       </span>
@@ -288,7 +287,7 @@ export default function MessageBox({
         >
           <input
             type="text"
-            placeholder="Type a Message"
+            placeholder={t("typeMessage")}
             value={inputValue}
             onChange={(e) => {
               setInputValue(e.target.value);
@@ -331,7 +330,7 @@ export default function MessageBox({
               gap: 6,
             }}
           >
-            {isSending ? (isMobile ? "..." : "Sending...") : (isMobile ? <i className="fal fa-paper-plane" /> : "Send")}
+            {isSending ? (isMobile ? "..." : t("sending")) : (isMobile ? <i className="fal fa-paper-plane" /> : t("send"))}
             {!isMobile && <i className="fal fa-arrow-right-long" />}
           </button>
         </form>

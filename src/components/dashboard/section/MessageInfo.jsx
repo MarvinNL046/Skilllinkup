@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import useConvexUser from "@/hook/useConvexUser";
 import useConvexMessages from "@/hook/useConvexMessages";
 import DashboardNavigation from "../header/DashboardNavigation";
@@ -18,6 +19,7 @@ function useIsMobile(breakpoint = 992) {
 }
 
 export default function MessageInfo() {
+  const t = useTranslations("messages");
   const { convexUser } = useConvexUser();
   const userId = convexUser?._id;
   const isMobile = useIsMobile();
@@ -89,8 +91,8 @@ export default function MessageInfo() {
           </div>
           <div className="col-lg-12">
             <div className="dashboard_title_area">
-              <h2>Messages</h2>
-              <p className="text">Communicate with your clients and freelancers.</p>
+              <h2>{t("title")}</h2>
+              <p className="text">{t("pageDescription")}</p>
             </div>
           </div>
         </div>
@@ -108,8 +110,8 @@ export default function MessageInfo() {
                         <input
                           className="form-control"
                           type="search"
-                          placeholder="Search conversations"
-                          aria-label="Search"
+                          placeholder={t("searchConversations")}
+                          aria-label={t("searchConversations")}
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -123,15 +125,15 @@ export default function MessageInfo() {
                       </div>
                     ) : !userId ? (
                       <div className="text-center py-4">
-                        <p className="text mb-0">Setting up your account...</p>
+                        <p className="text mb-0">{t("settingUpAccount")}</p>
                       </div>
                     ) : conversations === null || conversations.length === 0 ? (
                       <div className="text-center py-4">
-                        <p className="text mb-0">No conversations yet.</p>
+                        <p className="text mb-0">{t("noConversationsYet")}</p>
                       </div>
                     ) : filteredConversations.length === 0 ? (
                       <div className="text-center py-4">
-                        <p className="text mb-0">No conversations match your search.</p>
+                        <p className="text mb-0">{t("noConversationsMatch")}</p>
                       </div>
                     ) : (
                       filteredConversations.map((conv) => (

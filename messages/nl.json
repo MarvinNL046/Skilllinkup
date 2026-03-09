@@ -1264,5 +1264,25 @@
     "leaveReview": "Laat een review achter",
     "hideReviewForm": "Reviewformulier verbergen",
     "reviewSubmitted": "Review verstuurd"
+  },
+  "messages": {
+    "title": "Berichten",
+    "pageDescription": "Communiceer met je klanten en freelancers.",
+    "searchConversations": "Gesprekken zoeken",
+    "settingUpAccount": "Je account wordt ingesteld...",
+    "noConversationsYet": "Nog geen gesprekken.",
+    "noConversationsMatch": "Geen gesprekken gevonden voor je zoekopdracht.",
+    "selectConversation": "Selecteer een gesprek",
+    "selectConversationHint": "Kies een gesprek uit de lijst om te beginnen met chatten.",
+    "active": "Actief",
+    "noMessagesYet": "Nog geen berichten. Zeg gerust hoi!",
+    "you": "Jij",
+    "typeMessage": "Typ een bericht",
+    "send": "Verstuur",
+    "sending": "Versturen...",
+    "sendFailed": "Bericht kon niet worden verstuurd.",
+    "backToConversations": "Terug naar gesprekken",
+    "contactBlocked": "Contactgegevens delen is niet toegestaan. E-mailadressen, telefoonnummers, links en e-mailproviders (Gmail, Outlook, etc.) worden geblokkeerd.",
+    "file": "[Bestand] {name}"
   }
 }

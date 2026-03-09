@@ -1264,5 +1264,25 @@
     "leaveReview": "Leave a Review",
     "hideReviewForm": "Hide Review Form",
     "reviewSubmitted": "Review Submitted"
+  },
+  "messages": {
+    "title": "Messages",
+    "pageDescription": "Communicate with your clients and freelancers.",
+    "searchConversations": "Search conversations",
+    "settingUpAccount": "Setting up your account...",
+    "noConversationsYet": "No conversations yet.",
+    "noConversationsMatch": "No conversations match your search.",
+    "selectConversation": "Select a conversation",
+    "selectConversationHint": "Choose a conversation from the left to start messaging.",
+    "active": "Active",
+    "noMessagesYet": "No messages yet. Say hello!",
+    "you": "You",
+    "typeMessage": "Type a Message",
+    "send": "Send",
+    "sending": "Sending...",
+    "sendFailed": "Message could not be sent.",
+    "backToConversations": "Back to conversations",
+    "contactBlocked": "Sharing contact info is not allowed. Email addresses, phone numbers, links, and email providers (Gmail, Outlook, etc.) are blocked.",
+    "file": "[File] {name}"
   }
 }
