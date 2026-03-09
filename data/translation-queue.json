@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 86
+    "completed": 87
   },
   "queue": [
     {
@@ -881,7 +881,8 @@
       "target": "posts",
       "description": "Translate title, excerpt, content, metaTitle, metaDescription",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
+      "note": "Translated 10 posts EN→NL. 2 posts had content too long for Google Translate (fell back to EN content).",
       "priority": 9,
       "phase": 9
     },
