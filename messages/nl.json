@@ -814,6 +814,11 @@
     "search": "Zoeken",
     "craftsmenTitle": "Vind lokale vakmensen",
     "craftsmenDescription": "Bekijk vakkundige vakmensen bij jou in de buurt. Filter op vak, locatie en beoordeling om de juiste professional te vinden.",
-    "craftsmenBrief": "Bekijk vakkundige professionals in jouw omgeving die klaarstaan voor je project."
+    "craftsmenBrief": "Bekijk vakkundige professionals in jouw omgeving die klaarstaan voor je project.",
+    "craftsmanProfileTitle": "Vakman profiel",
+    "craftsmanProfileDescription": "Bekijk het profiel, portfolio, reviews en diensten van deze vakman op SkillLinkup. Huur met vertrouwen in.",
+    "breadcrumbHome": "Home",
+    "breadcrumbLocal": "Lokaal",
+    "breadcrumbCraftsmen": "Vakmensen"
   }
 }

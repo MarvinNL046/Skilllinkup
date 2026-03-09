@@ -814,6 +814,11 @@
     "search": "Search",
     "craftsmenTitle": "Find Local Craftsmen",
     "craftsmenDescription": "Browse skilled local craftsmen near you. Filter by trade, location, and rating to find the right professional for your job.",
-    "craftsmenBrief": "Browse skilled professionals in your area ready to help with your project."
+    "craftsmenBrief": "Browse skilled professionals in your area ready to help with your project.",
+    "craftsmanProfileTitle": "Craftsman Profile",
+    "craftsmanProfileDescription": "View craftsman profile, portfolio, reviews, and services on SkillLinkup. Hire with confidence.",
+    "breadcrumbHome": "Home",
+    "breadcrumbLocal": "Local",
+    "breadcrumbCraftsmen": "Craftsmen"
   }
 }
