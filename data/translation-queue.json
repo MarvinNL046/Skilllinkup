@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 88
+    "completed": 89
   },
   "queue": [
     {
@@ -903,7 +903,8 @@
       "target": "seoPages",
       "description": "Translate metaTitle, metaDescription, intro, sections, faqItems",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
+      "note": "seoPages table empty (0 EN records). Created convex/seoPages.ts module + translation script.",
       "priority": 9,
       "phase": 9
     },
