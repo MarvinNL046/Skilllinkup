@@ -7,8 +7,10 @@ import LineChart from "../chart/LineChart";
 import DashboardNavigation from "../header/DashboardNavigation";
 import Link from "next/link";
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 export default function DashboardInfo() {
+  const t = useTranslations("dashboard");
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const userId = convexUser?._id;
 
@@ -29,10 +31,10 @@ export default function DashboardInfo() {
 
   // Completeness for freelancers
   const completenessItems = convexUser?.userType === "freelancer" ? [
-    { done: !!freelancerProfile?.bio,              label: "Add a bio",       href: "/my-profile" },
-    { done: !!(freelancerProfile?.skills?.length), label: "Add skills",      href: "/my-profile" },
-    { done: !!freelancerProfile?.hourlyRate,        label: "Set hourly rate", href: "/my-profile" },
-    { done: !!freelancerProfile?.tagline,           label: "Add a tagline",   href: "/my-profile" },
+    { done: !!freelancerProfile?.bio,              label: t("addBio"),       href: "/my-profile" },
+    { done: !!(freelancerProfile?.skills?.length), label: t("addSkills"),      href: "/my-profile" },
+    { done: !!freelancerProfile?.hourlyRate,        label: t("setHourlyRate"), href: "/my-profile" },
+    { done: !!freelancerProfile?.tagline,           label: t("addTagline"),   href: "/my-profile" },
   ] : [];
   const completedCount = completenessItems.filter(i => i.done).length;
   const completenessPct = completenessItems.length > 0
@@ -92,9 +94,9 @@ export default function DashboardInfo() {
           </div>
           <div className="col-lg-12">
             <div className="dashboard_title_area">
-              <h2>Hi, {convexUser?.name?.split(" ")[0] || "there"}!</h2>
+              <h2>{t("greeting", { name: convexUser?.name?.split(" ")[0] || "there" })}</h2>
               <p className="text">
-                {freelancerProfile?.tagline || "Welcome back! Here is what is happening with your account."}
+                {freelancerProfile?.tagline || t("welcomeBack")}
               </p>
             </div>
           </div>
@@ -112,7 +114,7 @@ export default function DashboardInfo() {
           <div className="row"><div className="col-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30">
               <div className="text-center py-4">
-                <p className="text mb-0">Setting up your account...</p>
+                <p className="text mb-0">{t("settingUpAccount")}</p>
               </div>
             </div>
           </div></div>
@@ -120,7 +122,7 @@ export default function DashboardInfo() {
         {notAuthenticated && (
           <div className="row"><div className="col-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30">
-              <p className="text text-center mb-0">Please sign in to view your dashboard.</p>
+              <p className="text text-center mb-0">{t("signInPrompt")}</p>
             </div>
           </div></div>
         )}
@@ -134,7 +136,7 @@ export default function DashboardInfo() {
               >
                 <div className="d-flex align-items-center gap-3">
                   <div style={{ minWidth: 140 }}>
-                    <div className="fz13 text-muted mb-1">Profile completeness</div>
+                    <div className="fz13 text-muted mb-1">{t("profileCompleteness")}</div>
                     <div style={{ height: 6, background: "#fbd5e2", borderRadius: 3 }}>
                       <div
                         style={{
@@ -146,7 +148,7 @@ export default function DashboardInfo() {
                         }}
                       />
                     </div>
-                    <div className="fz12 text-muted mt-1">{completenessPct}% complete</div>
+                    <div className="fz12 text-muted mt-1">{t("percentComplete", { pct: completenessPct })}</div>
                   </div>
                   <div>
                     {completenessItems
@@ -164,7 +166,7 @@ export default function DashboardInfo() {
                   className="btn btn-sm bdrs8 text-white fz13"
                   style={{ background: "#ef2b70" }}
                 >
-                  Complete profile →
+                  {t("completeProfile")} →
                 </Link>
               </div>
             </div>
@@ -174,8 +176,8 @@ export default function DashboardInfo() {
           <div className="col-sm-6 col-xxl-3">
             <div className="d-flex align-items-center justify-content-between statistics_funfact" style={{ borderLeft: "4px solid #2A8703" }}>
               <div className="details">
-                <div className="fz15">Active Gigs</div>
-                <div className="fz11 text-muted" style={{ marginTop: -2 }}>Your fixed-price service listings</div>
+                <div className="fz15">{t("activeGigs")}</div>
+                <div className="fz11 text-muted" style={{ marginTop: -2 }}>{t("activeGigsSubtitle")}</div>
                 <div className="title">
                   {isLoading ? (
                     <span className="text-muted fz20">...</span>
@@ -184,7 +186,7 @@ export default function DashboardInfo() {
                   )}
                 </div>
                 <div className="text fz14">
-                  <span className="text-thm">Live</span> on marketplace
+                  {t("liveOnMarketplace")}
                 </div>
               </div>
               <div className="icon text-center">
@@ -195,8 +197,8 @@ export default function DashboardInfo() {
           <div className="col-sm-6 col-xxl-3">
             <div className="d-flex align-items-center justify-content-between statistics_funfact" style={{ borderLeft: "4px solid #6366f1" }}>
               <div className="details">
-                <div className="fz15">Total Orders</div>
-                <div className="fz11 text-muted" style={{ marginTop: -2 }}>Purchases from your services</div>
+                <div className="fz15">{t("totalOrders")}</div>
+                <div className="fz11 text-muted" style={{ marginTop: -2 }}>{t("totalOrdersSubtitle")}</div>
                 <div className="title">
                   {isLoading ? (
                     <span className="text-muted fz20">...</span>
@@ -205,7 +207,7 @@ export default function DashboardInfo() {
                   )}
                 </div>
                 <div className="text fz14">
-                  <span className="text-thm">{isLoading ? "..." : stats?.pendingOrders ?? 0}</span> In Progress
+                  <span className="text-thm">{isLoading ? "..." : stats?.pendingOrders ?? 0}</span> {t("inProgress")}
                 </div>
               </div>
               <div className="icon text-center">
@@ -216,8 +218,8 @@ export default function DashboardInfo() {
           <div className="col-sm-6 col-xxl-3">
             <div className="d-flex align-items-center justify-content-between statistics_funfact" style={{ borderLeft: "4px solid #f59e0b" }}>
               <div className="details">
-                <div className="fz15">Pending Orders</div>
-                <div className="fz11 text-muted" style={{ marginTop: -2 }}>Orders awaiting delivery</div>
+                <div className="fz15">{t("pendingOrders")}</div>
+                <div className="fz11 text-muted" style={{ marginTop: -2 }}>{t("pendingOrdersSubtitle")}</div>
                 <div className="title">
                   {isLoading ? (
                     <span className="text-muted fz20">...</span>
@@ -226,7 +228,7 @@ export default function DashboardInfo() {
                   )}
                 </div>
                 <div className="text fz14">
-                  <span className="text-thm">Active</span> queue
+                  {t("activeQueue")}
                 </div>
               </div>
               <div className="icon text-center">
@@ -237,8 +239,8 @@ export default function DashboardInfo() {
           <div className="col-sm-6 col-xxl-3">
             <div className="d-flex align-items-center justify-content-between statistics_funfact" style={{ borderLeft: "4px solid #10b981" }}>
               <div className="details">
-                <div className="fz15">Total Earnings</div>
-                <div className="fz11 text-muted" style={{ marginTop: -2 }}>Revenue from completed orders</div>
+                <div className="fz15">{t("totalEarnings")}</div>
+                <div className="fz11 text-muted" style={{ marginTop: -2 }}>{t("totalEarningsSubtitle")}</div>
                 <div className="title">
                   {isLoading ? (
                     <span className="text-muted fz20">...</span>
@@ -247,7 +249,7 @@ export default function DashboardInfo() {
                   )}
                 </div>
                 <div className="text fz14">
-                  <span className="text-thm">Lifetime</span> earnings
+                  {t("lifetimeEarnings")}
                 </div>
               </div>
               <div className="icon text-center">
@@ -268,29 +270,29 @@ export default function DashboardInfo() {
           <div className="col-md-6 col-xxl-8">
             <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
               <div className="d-flex justify-content-between bdrb1 pb15 mb20">
-                <h5 className="title">Recent Orders</h5>
-                <Link href="/orders" className="text-decoration-underline text-thm6">View All</Link>
+                <h5 className="title">{t("recentOrders")}</h5>
+                <Link href="/orders" className="text-decoration-underline text-thm6">{t("viewAll")}</Link>
               </div>
               {isLoading ? (
                 <div className="text-center py-4">
                   <div className="spinner-border spinner-border-sm text-thm" role="status">
-                    <span className="visually-hidden">Loading...</span>
+                    <span className="visually-hidden">{t("loadingOrders")}</span>
                   </div>
-                  <p className="text mt-2 mb-0">Loading orders...</p>
+                  <p className="text mt-2 mb-0">{t("loadingOrders")}</p>
                 </div>
               ) : !recentOrders || recentOrders.length === 0 ? (
                 <div className="text-center py-4">
-                  <p className="text mb-0">No orders yet. Start by browsing services!</p>
+                  <p className="text mb-0">{t("noOrdersYet")}</p>
                 </div>
               ) : (
                 <div className="packages_table table-responsive">
                   <table className="table-style3 table at-savesearch">
                     <thead className="t-head">
                       <tr>
-                        <th scope="col">Order</th>
-                        <th scope="col">Amount</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Status</th>
+                        <th scope="col">{t("orderColumn")}</th>
+                        <th scope="col">{t("amountColumn")}</th>
+                        <th scope="col">{t("dateColumn")}</th>
+                        <th scope="col">{t("statusColumn")}</th>
                       </tr>
                     </thead>
                     <tbody className="t-body">
@@ -322,65 +324,65 @@ export default function DashboardInfo() {
           <div className="col-md-6 col-xxl-4">
             <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
               <div className="bdrb1 pb15 mb30">
-                <h5 className="title">Account Summary</h5>
+                <h5 className="title">{t("accountSummary")}</h5>
               </div>
               <div className="dashboard-timeline-label">
                 <div className="timeline-item pb15">
-                  <div className="child-timeline-label">Gigs</div>
+                  <div className="child-timeline-label">{t("gigsLabel")}</div>
                   <div className="timeline-badge d-flex align-items-center">
                     <i className="fas fa-genderless" />
                   </div>
                   <div className="ra_pcontent pl10">
                     <span className="title">
-                      {isLoading ? "..." : stats?.activeGigs ?? 0} Active Gigs
+                      {t("activeGigsCount", { count: isLoading ? "..." : stats?.activeGigs ?? 0 })}
                     </span>
                     <br />
-                    <span className="subtitle">Available for clients to order</span>
+                    <span className="subtitle">{t("availableForClients")}</span>
                   </div>
                 </div>
               </div>
               <div className="dashboard-timeline-label">
                 <div className="timeline-item pb15">
-                  <div className="child-timeline-label color3">Orders</div>
+                  <div className="child-timeline-label color3">{t("ordersLabel")}</div>
                   <div className="timeline-badge d-flex align-items-center color3">
                     <i className="fas fa-genderless" />
                   </div>
                   <div className="ra_pcontent pl10">
                     <span className="title">
-                      {isLoading ? "..." : stats?.totalOrders ?? 0} Total Orders
+                      {t("totalOrdersCount", { count: isLoading ? "..." : stats?.totalOrders ?? 0 })}
                     </span>
                     <br />
                     <span className="subtitle">
-                      {isLoading ? "..." : stats?.pendingOrders ?? 0} currently in progress
+                      {t("currentlyInProgress", { count: isLoading ? "..." : stats?.pendingOrders ?? 0 })}
                     </span>
                   </div>
                 </div>
               </div>
               <div className="dashboard-timeline-label">
                 <div className="timeline-item pb15">
-                  <div className="child-timeline-label color4">Earnings</div>
+                  <div className="child-timeline-label color4">{t("earningsLabel")}</div>
                   <div className="timeline-badge d-flex align-items-center color4">
                     <i className="fas fa-genderless" />
                   </div>
                   <div className="ra_pcontent pl10">
                     <span className="title">
-                      {isLoading ? "..." : formatCurrency(stats?.totalEarnings ?? 0)} Total
+                      {t("totalAmount", { amount: isLoading ? "..." : formatCurrency(stats?.totalEarnings ?? 0) })}
                     </span>
                     <br />
-                    <span className="subtitle">Lifetime freelancer earnings</span>
+                    <span className="subtitle">{t("lifetimeFreelancerEarnings")}</span>
                   </div>
                 </div>
               </div>
               <div className="dashboard-timeline-label before-none mb30">
                 <div className="timeline-item pb0">
-                  <div className="child-timeline-label color5">Status</div>
+                  <div className="child-timeline-label color5">{t("statusLabel")}</div>
                   <div className="timeline-badge d-flex align-items-center color5">
                     <i className="fas fa-genderless" />
                   </div>
                   <div className="ra_pcontent pl10">
-                    <span className="title">Account Active</span>
+                    <span className="title">{t("accountActive")}</span>
                     <br />
-                    <span className="subtitle">Your account is in good standing</span>
+                    <span className="subtitle">{t("accountGoodStanding")}</span>
                   </div>
                 </div>
               </div>

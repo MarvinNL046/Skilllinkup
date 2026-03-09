@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 46
+    "completed": 47
   },
   "queue": [
     {
@@ -480,7 +480,7 @@
       "file": "src/app/(dashboard)/dashboard/page.jsx",
       "description": "Dashboard home: stats labels, recent orders, chart labels",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 6,
       "phase": 6
     },
