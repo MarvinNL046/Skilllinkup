@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import DashboardNavigation from "../header/DashboardNavigation";
 import ServiceGallery from "./ServiceGallery";
 import useConvexProfile from "@/hook/useConvexProfile";
@@ -31,6 +32,7 @@ function worldToServiceType(world) {
 }
 
 export default function AddServiceInfo() {
+  const t = useTranslations("addService");
   const router = useRouter();
   const { convexUser, profile } = useConvexProfile();
   const serviceType = worldToServiceType(convexUser?.preferredWorld);
@@ -69,19 +71,19 @@ export default function AddServiceInfo() {
 
   const handleSaveAndPublish = async () => {
     if (!profile?._id || !convexUser) {
-      setSaveError("You must be signed in with a freelancer profile to add a service.");
+      setSaveError(t("mustBeSignedIn"));
       return;
     }
     if (!title.trim()) {
-      setSaveError("Please enter a service title.");
+      setSaveError(t("enterTitle"));
       return;
     }
     if (!description.trim()) {
-      setSaveError("Please enter a service description.");
+      setSaveError(t("enterDescription"));
       return;
     }
     if (!isPkgFilled(basicPkg)) {
-      setSaveError("Please complete at least the Basic package (title, price, and delivery days).");
+      setSaveError(t("completeBasicPackage"));
       return;
     }
 
@@ -134,7 +136,7 @@ export default function AddServiceInfo() {
       }, 1500);
     } catch (error) {
       console.error("Failed to create gig:", error);
-      setSaveError(error.message || "Failed to save service. Please try again.");
+      setSaveError(error.message || t("failedToSave"));
     } finally {
       setSaving(false);
     }
@@ -153,8 +155,8 @@ export default function AddServiceInfo() {
           </div>
           <div className="col-lg-9">
             <div className="dashboard_title_area">
-              <h2>Add Services</h2>
-              <p className="text">Create a service listing with fixed pricing packages. Clients can browse and order directly — like a Fiverr gig.</p>
+              <h2>{t("pageTitle")}</h2>
+              <p className="text">{t("pageDescription")}</p>
             </div>
           </div>
           <div className="col-lg-3">
@@ -164,7 +166,7 @@ export default function AddServiceInfo() {
                 onClick={handleSaveAndPublish}
                 disabled={saving || !profile}
               >
-                {saving ? "Saving..." : "Save & Publish"}
+                {saving ? t("saving") : t("saveAndPublish")}
                 <i className="fal fa-arrow-right-long" />
               </button>
             </div>
@@ -176,11 +178,11 @@ export default function AddServiceInfo() {
             <div className="d-flex align-items-center gap-2 px-3 py-2 bdrs4" style={{ background: "#f0f9ff", border: "1px solid #bae6fd" }}>
               <i className="flaticon-content fz16" style={{ color: "#0284c7" }} />
               <span className="fz14" style={{ color: "#0369a1" }}>
-                Looking to hire instead?{" "}
+                {t("lookingToHire")}{" "}
                 <Link href="/create-projects" className="fw500" style={{ color: "#0284c7", textDecoration: "underline" }}>
-                  Create a Project
+                  {t("createProject")}
                 </Link>{" "}
-                to post a brief and receive proposals from freelancers.
+                {t("createProjectHint")}
               </span>
             </div>
           </div>
@@ -200,7 +202,7 @@ export default function AddServiceInfo() {
           <div className="row mb20">
             <div className="col-xl-12">
               <div className="alert alert-success" role="alert">
-                Service created successfully! Redirecting...
+                {t("successMessage")}
               </div>
             </div>
           </div>
@@ -210,7 +212,7 @@ export default function AddServiceInfo() {
           <div className="row mb20">
             <div className="col-xl-12">
               <div className="alert alert-info" role="alert">
-                No freelancer profile found. Please set your account type to freelancer first.
+                {t("noProfileError")}
               </div>
             </div>
           </div>
@@ -221,7 +223,7 @@ export default function AddServiceInfo() {
             {/* Basic Information */}
             <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
               <div className="bdrb1 pb15 mb25">
-                <h5 className="list-title">Basic Information</h5>
+                <h5 className="list-title">{t("basicInfo")}</h5>
               </div>
               <div className="col-xl-8">
                 <div className="form-style1">
@@ -229,12 +231,12 @@ export default function AddServiceInfo() {
                     <div className="col-sm-6">
                       <div className="mb20">
                         <label className="heading-color ff-heading fw500 mb10">
-                          Service Title
+                          {t("serviceTitle")}
                         </label>
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="e.g. I will design your website"
+                          placeholder={t("serviceTitlePlaceholder")}
                           value={title}
                           onChange={(e) => setTitle(e.target.value)}
                         />
@@ -243,21 +245,21 @@ export default function AddServiceInfo() {
                     <div className="col-sm-6">
                       <div className="mb20">
                         <label className="heading-color ff-heading fw500 mb10">
-                          Category
+                          {t("category")}
                         </label>
                         <select
                           className="form-control"
                           value={categoryId}
                           onChange={(e) => setCategoryId(e.target.value)}
                         >
-                          <option value="">Select a category</option>
+                          <option value="">{t("selectCategory")}</option>
                           {flatCategories.map((cat) => (
                             <option key={cat._id} value={cat._id}>
                               {cat.label}
                             </option>
                           ))}
                           {categories === undefined && (
-                            <option disabled>Loading categories...</option>
+                            <option disabled>{t("loadingCategories")}</option>
                           )}
                         </select>
                       </div>
@@ -265,12 +267,12 @@ export default function AddServiceInfo() {
                     <div className="col-sm-6">
                       <div className="mb20">
                         <label className="heading-color ff-heading fw500 mb10">
-                          Tags (comma separated)
+                          {t("tags")}
                         </label>
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="e.g. web, design, react"
+                          placeholder={t("tagsPlaceholder")}
                           value={tags}
                           onChange={(e) => setTags(e.target.value)}
                         />
@@ -279,16 +281,16 @@ export default function AddServiceInfo() {
                     <div className="col-sm-6">
                       <div className="mb20">
                         <label className="heading-color ff-heading fw500 mb10">
-                          Work Type
+                          {t("workType")}
                         </label>
                         <select
                           className="form-control"
                           value={workType}
                           onChange={(e) => setWorkType(e.target.value)}
                         >
-                          <option value="remote">Remote</option>
-                          <option value="local">Local / On-site</option>
-                          <option value="hybrid">Hybrid</option>
+                          <option value="remote">{t("remote")}</option>
+                          <option value="local">{t("localOnsite")}</option>
+                          <option value="hybrid">{t("hybrid")}</option>
                         </select>
                       </div>
                     </div>
@@ -297,12 +299,12 @@ export default function AddServiceInfo() {
                         <div className="col-sm-6">
                           <div className="mb20">
                             <label className="heading-color ff-heading fw500 mb10">
-                              Country
+                              {t("country")}
                             </label>
                             <input
                               type="text"
                               className="form-control"
-                              placeholder="e.g. Netherlands"
+                              placeholder={t("countryPlaceholder")}
                               value={locationCountry}
                               onChange={(e) => setLocationCountry(e.target.value)}
                             />
@@ -311,12 +313,12 @@ export default function AddServiceInfo() {
                         <div className="col-sm-6">
                           <div className="mb20">
                             <label className="heading-color ff-heading fw500 mb10">
-                              City
+                              {t("city")}
                             </label>
                             <input
                               type="text"
                               className="form-control"
-                              placeholder="e.g. Amsterdam"
+                              placeholder={t("cityPlaceholder")}
                               value={locationCity}
                               onChange={(e) => setLocationCity(e.target.value)}
                             />
@@ -327,12 +329,12 @@ export default function AddServiceInfo() {
                     <div className="col-md-12">
                       <div className="mb10">
                         <label className="heading-color ff-heading fw500 mb10">
-                          Service Description
+                          {t("serviceDescription")}
                         </label>
                         <textarea
                           cols={30}
                           rows={6}
-                          placeholder="Describe your service in detail"
+                          placeholder={t("serviceDescriptionPlaceholder")}
                           value={description}
                           onChange={(e) => setDescription(e.target.value)}
                         />
@@ -346,16 +348,16 @@ export default function AddServiceInfo() {
             {/* Packages */}
             <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
               <div className="bdrb1 pb15 mb25">
-                <h5 className="list-title">Packages</h5>
+                <h5 className="list-title">{t("packages")}</h5>
                 <p className="text fz14 mt5">
-                  Define your pricing tiers. Basic is required; Standard and Premium are optional.
+                  {t("packagesDescription")}
                 </p>
               </div>
               <div className="row">
                 {[
-                  { label: "Basic", pkg: basicPkg, setter: setBasicPkg, required: true },
-                  { label: "Standard", pkg: standardPkg, setter: setStandardPkg, required: false },
-                  { label: "Premium", pkg: premiumPkg, setter: setPremiumPkg, required: false },
+                  { label: t("basic"), pkg: basicPkg, setter: setBasicPkg, required: true },
+                  { label: t("standard"), pkg: standardPkg, setter: setStandardPkg, required: false },
+                  { label: t("premium"), pkg: premiumPkg, setter: setPremiumPkg, required: false },
                 ].map(({ label, pkg, setter, required }) => (
                   <div className="col-md-4" key={label}>
                     <div className="package-tier-card bdr1 bdrs4 p20 mb20">
@@ -365,36 +367,36 @@ export default function AddServiceInfo() {
                       </h6>
                       <div className="mb15">
                         <label className="heading-color ff-heading fw500 mb8 fz14">
-                          Package Name
+                          {t("packageName")}
                         </label>
                         <input
                           type="text"
                           className="form-control"
-                          placeholder={`e.g. ${label} Package`}
+                          placeholder={t("packageNamePlaceholder", { tier: label })}
                           value={pkg.title}
                           onChange={(e) => updatePkg(setter, "title", e.target.value)}
                         />
                       </div>
                       <div className="mb15">
                         <label className="heading-color ff-heading fw500 mb8 fz14">
-                          Description
+                          {t("description")}
                         </label>
                         <textarea
                           rows={3}
                           className="form-control"
-                          placeholder="What is included?"
+                          placeholder={t("whatIsIncluded")}
                           value={pkg.description}
                           onChange={(e) => updatePkg(setter, "description", e.target.value)}
                         />
                       </div>
                       <div className="mb15">
                         <label className="heading-color ff-heading fw500 mb8 fz14">
-                          Price (EUR)
+                          {t("priceEur")}
                         </label>
                         <input
                           type="number"
                           className="form-control"
-                          placeholder="e.g. 50"
+                          placeholder={t("pricePlaceholder")}
                           min="0"
                           value={pkg.price}
                           onChange={(e) => updatePkg(setter, "price", e.target.value)}
@@ -402,12 +404,12 @@ export default function AddServiceInfo() {
                       </div>
                       <div className="mb15">
                         <label className="heading-color ff-heading fw500 mb8 fz14">
-                          Delivery Days
+                          {t("deliveryDays")}
                         </label>
                         <input
                           type="number"
                           className="form-control"
-                          placeholder="e.g. 3"
+                          placeholder={t("deliveryDaysPlaceholder")}
                           min="1"
                           value={pkg.deliveryDays}
                           onChange={(e) => updatePkg(setter, "deliveryDays", e.target.value)}
@@ -415,12 +417,12 @@ export default function AddServiceInfo() {
                       </div>
                       <div className="mb10">
                         <label className="heading-color ff-heading fw500 mb8 fz14">
-                          Revisions
+                          {t("revisions")}
                         </label>
                         <input
                           type="number"
                           className="form-control"
-                          placeholder="e.g. 2"
+                          placeholder={t("revisionsPlaceholder")}
                           min="0"
                           value={pkg.revisionCount}
                           onChange={(e) => updatePkg(setter, "revisionCount", e.target.value)}
@@ -441,7 +443,7 @@ export default function AddServiceInfo() {
                 onClick={handleSaveAndPublish}
                 disabled={saving || !profile}
               >
-                {saving ? "Saving..." : "Save & Publish"}
+                {saving ? t("saving") : t("saveAndPublish")}
                 <i className="fal fa-arrow-right-long" />
               </button>
             </div>

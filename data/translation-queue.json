@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 49
+    "completed": 50
   },
   "queue": [
     {
@@ -510,7 +510,7 @@
       "file": "src/app/(dashboard)/add-services/page.jsx",
       "description": "Gig creation: title, description, packages, pricing",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 6,
       "phase": 6
     },
