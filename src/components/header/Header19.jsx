@@ -9,6 +9,7 @@ import { useUser, useClerk } from "@clerk/nextjs";
 import WaitlistButton from "@/components/ui/WaitlistButton";
 import SearchBarWithDropdown from "@/components/ui/SearchBarWithDropdown";
 import { useTranslations } from "next-intl";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function Header19() {
   const { user, isSignedIn } = useUser();
@@ -46,6 +47,9 @@ export default function Header19() {
               </div>
               <div className="col-auto pe-0 ">
                 <div className="d-flex align-items-center">
+                  <span className="d-none d-lg-inline-flex mr15">
+                    <LanguageSwitcher />
+                  </span>
                   {isSignedIn ? (
                     <>
                       <Link className="login-info" href="/dashboard">
