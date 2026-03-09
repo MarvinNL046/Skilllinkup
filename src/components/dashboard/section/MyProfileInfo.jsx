@@ -1,6 +1,7 @@
 "use client";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import DashboardNavigation from "../header/DashboardNavigation";
 import ProfileDetails from "./ProfileDetails";
 import PortfolioTab from "./PortfolioTab";
@@ -8,14 +9,15 @@ import ExperienceTab from "./ExperienceTab";
 import SettingsTab from "./SettingsTab";
 import useConvexProfile from "@/hook/useConvexProfile";
 
-const TABS = [
-  { key: "profile", label: "Profile" },
-  { key: "portfolio", label: "Portfolio" },
-  { key: "experience", label: "Experience" },
-  { key: "settings", label: "Settings" },
-];
-
 export default function MyProfileInfo() {
+  const t = useTranslations("myProfile");
+
+  const TABS = [
+    { key: "profile", label: t("tabProfile") },
+    { key: "portfolio", label: t("tabPortfolio") },
+    { key: "experience", label: t("tabExperience") },
+    { key: "settings", label: t("tabSettings") },
+  ];
   const searchParams = useSearchParams();
   const router = useRouter();
   const activeTab = searchParams.get("tab") || "profile";
@@ -36,8 +38,8 @@ export default function MyProfileInfo() {
         <div className="col-lg-9">
           <div className="dashboard_title_area d-flex align-items-center justify-content-between">
             <div>
-              <h2>My Profile</h2>
-              <p className="text">Manage your profile, portfolio, and settings.</p>
+              <h2>{t("title")}</h2>
+              <p className="text">{t("manageProfile")}</p>
             </div>
             {profile?._id && (
               <Link
@@ -45,7 +47,7 @@ export default function MyProfileInfo() {
                 className="ud-btn btn-white bdrs8"
                 target="_blank"
               >
-                View Live Profile <i className="fal fa-external-link ms-1" />
+                {t("viewLiveProfile")} <i className="fal fa-external-link ms-1" />
               </Link>
             )}
           </div>

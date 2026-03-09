@@ -6,8 +6,10 @@ import { toast } from "sonner";
 import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import useConvexProfile from "@/hook/useConvexProfile";
+import { useTranslations } from "next-intl";
 
 export default function ProfileDetails() {
+  const t = useTranslations("myProfile");
   const { convexUser, isLoaded, profile, updateProfile } = useConvexProfile();
   const generateUploadUrl = useMutation(api.marketplace.freelancers.generateAvatarUploadUrl);
   const saveAvatarStorageId = useMutation(api.marketplace.freelancers.saveAvatarStorageId);
@@ -128,10 +130,10 @@ export default function ProfileDetails() {
         githubUrl: githubUrl || undefined,
       });
 
-      toast.success("Profile saved successfully!");
+      toast.success(t("profileSaved"));
     } catch (error) {
       console.error("Failed to save profile:", error);
-      toast.error("Something went wrong while saving. Please try again.");
+      toast.error(t("saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -141,10 +143,10 @@ export default function ProfileDetails() {
   if (!isLoaded || convexUser === undefined) {
     return (
       <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
-        <div className="bdrb1 pb15 mb25"><h5 className="list-title">Profile Details</h5></div>
+        <div className="bdrb1 pb15 mb25"><h5 className="list-title">{t("profileDetails")}</h5></div>
         <div className="d-flex align-items-center gap-2">
           <div className="spinner-border spinner-border-sm text-success" role="status" />
-          <p className="text mb-0">Loading profile...</p>
+          <p className="text mb-0">{t("loadingProfile")}</p>
         </div>
       </div>
     );
@@ -154,8 +156,8 @@ export default function ProfileDetails() {
   if (isLoaded && !convexUser && convexUser !== undefined) {
     return (
       <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
-        <div className="bdrb1 pb15 mb25"><h5 className="list-title">Profile Details</h5></div>
-        <p className="text">Setting up your account... Please refresh in a moment.</p>
+        <div className="bdrb1 pb15 mb25"><h5 className="list-title">{t("profileDetails")}</h5></div>
+        <p className="text">{t("settingUpAccount")}</p>
       </div>
     );
   }
@@ -166,28 +168,28 @@ export default function ProfileDetails() {
     return (
       <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
         <div className="bdrb1 pb15 mb25">
-          <h5 className="list-title">Profile Details</h5>
+          <h5 className="list-title">{t("profileDetails")}</h5>
         </div>
         <div className="row">
           <div className="col-sm-6 mb20">
-            <label className="heading-color ff-heading fw500 mb10">Name</label>
+            <label className="heading-color ff-heading fw500 mb10">{t("name")}</label>
             <input type="text" className="form-control" value={convexUser?.name || ""} disabled />
           </div>
           <div className="col-sm-6 mb20">
-            <label className="heading-color ff-heading fw500 mb10">Email</label>
+            <label className="heading-color ff-heading fw500 mb10">{t("email")}</label>
             <input type="text" className="form-control" value={convexUser?.email || ""} disabled />
           </div>
           <div className="col-sm-6 mb20">
-            <label className="heading-color ff-heading fw500 mb10">Account Type</label>
-            <input type="text" className="form-control" value={convexUser?.userType || "Not set"} disabled />
+            <label className="heading-color ff-heading fw500 mb10">{t("accountType")}</label>
+            <input type="text" className="form-control" value={convexUser?.userType || t("notSet")} disabled />
           </div>
           <div className="col-sm-6 mb20">
-            <label className="heading-color ff-heading fw500 mb10">World</label>
+            <label className="heading-color ff-heading fw500 mb10">{t("world")}</label>
             <input type="text" className="form-control" value={convexUser?.preferredWorld || "online"} disabled />
           </div>
         </div>
         <div className="alert alert-light mt10" role="alert">
-          Want to offer your services? <Link href="/onboarding?role=freelancer" className="fw500 text-thm">Switch to freelancer mode</Link> to set up your full profile with skills, hourly rate, and more.
+          {t("switchToFreelancer")} <Link href="/onboarding?role=freelancer" className="fw500 text-thm">{t("switchToFreelancerLink")}</Link> {t("switchToFreelancerDesc")}
         </div>
       </div>
     );
@@ -197,10 +199,10 @@ export default function ProfileDetails() {
   if (profile === undefined) {
     return (
       <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
-        <div className="bdrb1 pb15 mb25"><h5 className="list-title">Profile Details</h5></div>
+        <div className="bdrb1 pb15 mb25"><h5 className="list-title">{t("profileDetails")}</h5></div>
         <div className="d-flex align-items-center gap-2">
           <div className="spinner-border spinner-border-sm text-success" role="status" />
-          <p className="text mb-0">Loading profile...</p>
+          <p className="text mb-0">{t("loadingProfile")}</p>
         </div>
       </div>
     );
@@ -210,7 +212,7 @@ export default function ProfileDetails() {
     <>
       <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
         <div className="bdrb1 pb15 mb25">
-          <h5 className="list-title">Profile Details</h5>
+          <h5 className="list-title">{t("profileDetails")}</h5>
         </div>
 
         {/* Cover image */}
@@ -239,7 +241,7 @@ export default function ProfileDetails() {
                   if (f) { setSelectedCoverFile(f); setCoverPreviewUrl(URL.createObjectURL(f)); }
                 }}
               />
-              <i className="flaticon-pencil me-1" /> Edit Cover
+              <i className="flaticon-pencil me-1" /> {t("editCover")}
             </label>
           </div>
         </div>
@@ -281,12 +283,11 @@ export default function ProfileDetails() {
                     className="d-none"
                     onChange={handleImageChange}
                   />
-                  <a className="upload-btn ml10">Upload Images</a>
+                  <a className="upload-btn ml10">{t("uploadImages")}</a>
                 </label>
               </div>
               <p className="text mb-0">
-                Max file size is 1MB, Minimum dimension: 330x300 And Suitable
-                files are .jpg &amp; .png
+                {t("imageRequirements")}
               </p>
             </div>
           </div>
@@ -301,12 +302,12 @@ export default function ProfileDetails() {
               <div className="col-sm-6">
                 <div className="mb20">
                   <label className="heading-color ff-heading fw500 mb10">
-                    Display Name
+                    {t("displayName")}
                   </label>
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="Your display name"
+                    placeholder={t("displayNamePlaceholder")}
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
                   />
@@ -317,12 +318,12 @@ export default function ProfileDetails() {
               <div className="col-sm-6">
                 <div className="mb20">
                   <label className="heading-color ff-heading fw500 mb10">
-                    Tagline
+                    {t("tagline")}
                   </label>
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="Your professional tagline"
+                    placeholder={t("taglinePlaceholder")}
                     value={tagline}
                     onChange={(e) => setTagline(e.target.value)}
                   />
@@ -333,12 +334,12 @@ export default function ProfileDetails() {
               <div className="col-sm-6">
                 <div className="mb20">
                   <label className="heading-color ff-heading fw500 mb10">
-                    Hourly Rate ($)
+                    {t("hourlyRateLabel")}
                   </label>
                   <input
                     type="number"
                     className="form-control"
-                    placeholder="e.g. 75"
+                    placeholder={t("hourlyRatePlaceholder")}
                     min="0"
                     step="1"
                     value={hourlyRate}
@@ -351,7 +352,7 @@ export default function ProfileDetails() {
               <div className="col-sm-6">
                 <div className="mb20">
                   <label className="heading-color ff-heading fw500 mb10">
-                    Website URL
+                    {t("websiteUrl")}
                   </label>
                   <input
                     type="url"
@@ -367,12 +368,12 @@ export default function ProfileDetails() {
               <div className="col-sm-6">
                 <div className="mb20">
                   <label className="heading-color ff-heading fw500 mb10">
-                    City
+                    {t("city")}
                   </label>
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="e.g. Amsterdam"
+                    placeholder={t("cityPlaceholder")}
                     value={locationCity}
                     onChange={(e) => setLocationCity(e.target.value)}
                   />
@@ -383,12 +384,12 @@ export default function ProfileDetails() {
               <div className="col-sm-6">
                 <div className="mb20">
                   <label className="heading-color ff-heading fw500 mb10">
-                    Country
+                    {t("country")}
                   </label>
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="e.g. Netherlands"
+                    placeholder={t("countryPlaceholder")}
                     value={locationCountry}
                     onChange={(e) => setLocationCountry(e.target.value)}
                   />
@@ -399,7 +400,7 @@ export default function ProfileDetails() {
               <div className="col-sm-6">
                 <div className="mb20">
                   <label className="heading-color ff-heading fw500 mb10">
-                    LinkedIn URL
+                    {t("linkedinUrl")}
                   </label>
                   <input
                     type="url"
@@ -415,7 +416,7 @@ export default function ProfileDetails() {
               <div className="col-sm-6">
                 <div className="mb20">
                   <label className="heading-color ff-heading fw500 mb10">
-                    Twitter / X URL
+                    {t("twitterUrl")}
                   </label>
                   <input
                     type="url"
@@ -431,7 +432,7 @@ export default function ProfileDetails() {
               <div className="col-sm-6">
                 <div className="mb20">
                   <label className="heading-color ff-heading fw500 mb10">
-                    GitHub URL
+                    {t("githubUrl")}
                   </label>
                   <input
                     type="url"
@@ -447,16 +448,16 @@ export default function ProfileDetails() {
               <div className="col-sm-6">
                 <div className="mb20">
                   <label className="heading-color ff-heading fw500 mb10">
-                    Languages
+                    {t("languages")}
                   </label>
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="e.g. English, Dutch, German"
+                    placeholder={t("languagesPlaceholder")}
                     value={languagesInput}
                     onChange={(e) => setLanguagesInput(e.target.value)}
                   />
-                  <small className="text-muted">Separate multiple languages with a comma</small>
+                  <small className="text-muted">{t("separateLanguages")}</small>
                 </div>
               </div>
 
@@ -464,16 +465,16 @@ export default function ProfileDetails() {
               <div className="col-md-12">
                 <div className="mb20">
                   <label className="heading-color ff-heading fw500 mb10">
-                    Skills
+                    {t("skills")}
                   </label>
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="e.g. React, Node.js, UI Design, SEO"
+                    placeholder={t("skillsPlaceholder")}
                     value={skillsInput}
                     onChange={(e) => setSkillsInput(e.target.value)}
                   />
-                  <small className="text-muted">Separate multiple skills with a comma</small>
+                  <small className="text-muted">{t("separateSkills")}</small>
                 </div>
               </div>
 
@@ -481,12 +482,12 @@ export default function ProfileDetails() {
               <div className="col-md-12">
                 <div className="mb20">
                   <label className="heading-color ff-heading fw500 mb10">
-                    Introduce Yourself
+                    {t("introduceYourself")}
                   </label>
                   <textarea
                     cols={30}
                     rows={6}
-                    placeholder="Tell clients about yourself, your experience, and what makes you stand out..."
+                    placeholder={t("bioPlaceholder")}
                     value={bio}
                     onChange={(e) => setBio(e.target.value)}
                   />
@@ -501,7 +502,7 @@ export default function ProfileDetails() {
                     className="ud-btn btn-thm"
                     disabled={saving || !profile}
                   >
-                    {saving ? "Saving..." : "Save Profile"}
+                    {saving ? t("saving") : t("saveProfile")}
                     <i className="fal fa-arrow-right-long" />
                   </button>
                 </div>
