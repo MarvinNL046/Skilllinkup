@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 61
+    "completed": 62
   },
   "queue": [
     {
@@ -630,7 +630,7 @@
       "file": "src/app/(dashboard)/invoice/page.jsx",
       "description": "Invoice page",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 6,
       "phase": 6
     },

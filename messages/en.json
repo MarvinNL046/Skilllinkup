@@ -1443,5 +1443,20 @@
     "servicePurchased": "Service Purchased",
     "transaction": "Transaction",
     "walletTopup": "Wallet Topup"
+  },
+  "invoice": {
+    "title": "Invoice",
+    "pageDescription": "View and manage your invoices.",
+    "signInPrompt": "Please sign in to view invoices.",
+    "settingUpAccount": "Setting up your account...",
+    "loadingInvoices": "Loading invoices...",
+    "noInvoicesYet": "No invoices yet. Invoices are generated when you complete orders.",
+    "columnInvoiceId": "Invoice ID",
+    "columnPurchaseDate": "Purchase Date",
+    "columnAmount": "Amount",
+    "columnPaymentStatus": "Payment Status",
+    "completed": "Completed",
+    "inProgress": "In Progress",
+    "view": "View"
   }
 }

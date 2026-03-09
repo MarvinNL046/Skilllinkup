@@ -1,7 +1,10 @@
 "use client";
 import { Tooltip } from "react-tooltip";
+import { useTranslations } from "next-intl";
 
 export default function InvoiceCard1({ data }) {
+  const t = useTranslations("invoice");
+
   return (
     <>
       <tr>
@@ -18,15 +21,15 @@ export default function InvoiceCard1({ data }) {
               data.status === 2 ? "style2" : ""
             } ${data.status === 3 ? "style3" : ""}`}
           >
-            In Progress
+            {t("inProgress")}
           </span>
         </td>
         <td className="vam">
           <a className="table-action fz15 fw500 text-thm2" id="view">
             <Tooltip anchorSelect="#view" clickable className="ui-tooltip">
-              View
+              {t("view")}
             </Tooltip>
-            <span className="flaticon-website me-2 vam" /> View
+            <span className="flaticon-website me-2 vam" /> {t("view")}
           </a>
         </td>
       </tr>

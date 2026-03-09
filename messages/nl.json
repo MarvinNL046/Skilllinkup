@@ -1443,5 +1443,20 @@
     "servicePurchased": "Service gekocht",
     "transaction": "Transactie",
     "walletTopup": "Wallet opwaardering"
+  },
+  "invoice": {
+    "title": "Facturen",
+    "pageDescription": "Bekijk en beheer je facturen.",
+    "signInPrompt": "Log in om je facturen te bekijken.",
+    "settingUpAccount": "Je account wordt ingesteld...",
+    "loadingInvoices": "Facturen laden...",
+    "noInvoicesYet": "Nog geen facturen. Facturen worden aangemaakt wanneer je bestellingen afrondt.",
+    "columnInvoiceId": "Factuurnummer",
+    "columnPurchaseDate": "Aankoopdatum",
+    "columnAmount": "Bedrag",
+    "columnPaymentStatus": "Betaalstatus",
+    "completed": "Afgerond",
+    "inProgress": "In uitvoering",
+    "view": "Bekijken"
   }
 }
