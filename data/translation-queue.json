@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 82
+    "completed": 83
   },
   "queue": [
     {
@@ -840,7 +840,7 @@
       "target": "script-setup",
       "description": "Create scripts/translate-content-nl.mjs using @iamtraction/google-translate",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 9,
       "phase": 9
     },
