@@ -6,7 +6,8 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 export default function BlogArea3() {
-  const t = useTranslations("common");
+  const t = useTranslations("blogListing");
+  const tc = useTranslations("common");
   const blog1 = useConvexBlog();
 
   // Loading state
@@ -16,9 +17,9 @@ export default function BlogArea3() {
         <div className="container">
           <div className="text-center py-5">
             <div className="spinner-border text-thm" role="status">
-              <span className="visually-hidden">{t("loading")}</span>
+              <span className="visually-hidden">{tc("loading")}</span>
             </div>
-            <p className="body-color mt-3">{t("loading")}</p>
+            <p className="body-color mt-3">{tc("loading")}</p>
           </div>
         </div>
       </section>
@@ -32,9 +33,9 @@ export default function BlogArea3() {
         <div className="container">
           <EmptyState
             icon="📝"
-            title="No blog posts yet"
-            description="We're working on helpful articles for freelancers and clients. Check back soon!"
-            actionLabel="Browse Platforms"
+            title={t("noPosts")}
+            description={t("noPostsDescription")}
+            actionLabel={t("browsePlatforms")}
             actionHref="/platforms"
           />
         </div>
@@ -58,37 +59,36 @@ export default function BlogArea3() {
             <div className="col-lg-4">
               <div className="blog-sidebar ms-lg-auto">
                 <div className="sidebar-widget mb30">
-                  <h4 className="title">About the Blog</h4>
+                  <h4 className="title">{t("aboutBlog")}</h4>
                   <p className="body-color fz14 mt10">
-                    Tips, guides, and insights to help you succeed as a
-                    freelancer or find the right talent for your projects.
+                    {t("aboutBlogDescription")}
                   </p>
                 </div>
                 <div className="sidebar-widget mb30">
-                  <h4 className="title">Quick Links</h4>
+                  <h4 className="title">{t("quickLinks")}</h4>
                   <ul className="list-unstyled mt15">
                     <li className="mb10">
                       <Link href="/platforms" className="body-color fz14">
                         <i className="far fa-angle-right me-2" />
-                        Compare Platforms
+                        {t("comparePlatforms")}
                       </Link>
                     </li>
                     <li className="mb10">
                       <Link href="/services" className="body-color fz14">
                         <i className="far fa-angle-right me-2" />
-                        Browse Services
+                        {t("browseServices")}
                       </Link>
                     </li>
                     <li className="mb10">
                       <Link href="/become-seller" className="body-color fz14">
                         <i className="far fa-angle-right me-2" />
-                        Become a Seller
+                        {t("becomeSeller")}
                       </Link>
                     </li>
                     <li className="mb10">
                       <Link href="/contact" className="body-color fz14">
                         <i className="far fa-angle-right me-2" />
-                        Contact Us
+                        {t("contactUs")}
                       </Link>
                     </li>
                   </ul>

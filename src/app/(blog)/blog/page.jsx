@@ -1,25 +1,29 @@
 import Breadcumb1 from "@/components/breadcumb/Breadcumb1";
 import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
-
 import BlogArea3 from "@/components/section/BlogArea3";
+import { getTranslations } from "next-intl/server";
 
-export const metadata = {
-    title: "Blog",
-    description: "Read the latest tips, guides, and insights for freelancers and clients on the SkillLinkup blog.",
-    openGraph: {
-        title: "Blog",
-        description: "Read the latest tips, guides, and insights for freelancers and clients on the SkillLinkup blog.",
-    },
-};
+export async function generateMetadata() {
+    const t = await getTranslations("blogListing");
+    return {
+        title: t("metaTitle"),
+        description: t("metaDescription"),
+        openGraph: {
+            title: t("metaTitle"),
+            description: t("metaDescription"),
+        },
+    };
+}
 
-export default function page() {
+export default async function page() {
+    const t = await getTranslations("blogListing");
     return (
         <>
             <Header20 />
             <Breadcumb1
-                title="SkillLinkup Blog"
-                brief="Tips, guides, and insights for freelancers and clients."
+                title={t("breadcrumbTitle")}
+                brief={t("breadcrumbBrief")}
                 isBtnActive={false}
             />
             <BlogArea3 />

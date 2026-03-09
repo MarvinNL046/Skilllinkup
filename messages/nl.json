@@ -1653,5 +1653,21 @@
     "freelancerNotFound": "Freelancer niet gevonden",
     "freelancerNotFoundDescription": "Het freelancer profiel dat je zoekt bestaat niet of is verwijderd.",
     "browseFreelancers": "Bekijk Freelancers"
+  },
+  "blogListing": {
+    "metaTitle": "Blog",
+    "metaDescription": "Lees de nieuwste tips, gidsen en inzichten voor freelancers en opdrachtgevers op de SkillLinkup blog.",
+    "breadcrumbTitle": "SkillLinkup Blog",
+    "breadcrumbBrief": "Tips, gidsen en inzichten voor freelancers en opdrachtgevers.",
+    "noPosts": "Nog geen blogposts",
+    "noPostsDescription": "We werken aan handige artikelen voor freelancers en opdrachtgevers. Kom snel terug!",
+    "browsePlatforms": "Bekijk Platforms",
+    "aboutBlog": "Over de Blog",
+    "aboutBlogDescription": "Tips, gidsen en inzichten om je te helpen slagen als freelancer of het juiste talent te vinden voor je projecten.",
+    "quickLinks": "Snelle Links",
+    "comparePlatforms": "Vergelijk Platforms",
+    "browseServices": "Bekijk Services",
+    "becomeSeller": "Word Verkoper",
+    "contactUs": "Neem Contact Op"
   }
 }

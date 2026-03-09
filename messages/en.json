@@ -1653,5 +1653,21 @@
     "freelancerNotFound": "Freelancer not found",
     "freelancerNotFoundDescription": "The freelancer profile you're looking for doesn't exist or may have been removed.",
     "browseFreelancers": "Browse Freelancers"
+  },
+  "blogListing": {
+    "metaTitle": "Blog",
+    "metaDescription": "Read the latest tips, guides, and insights for freelancers and clients on the SkillLinkup blog.",
+    "breadcrumbTitle": "SkillLinkup Blog",
+    "breadcrumbBrief": "Tips, guides, and insights for freelancers and clients.",
+    "noPosts": "No blog posts yet",
+    "noPostsDescription": "We're working on helpful articles for freelancers and clients. Check back soon!",
+    "browsePlatforms": "Browse Platforms",
+    "aboutBlog": "About the Blog",
+    "aboutBlogDescription": "Tips, guides, and insights to help you succeed as a freelancer or find the right talent for your projects.",
+    "quickLinks": "Quick Links",
+    "comparePlatforms": "Compare Platforms",
+    "browseServices": "Browse Services",
+    "becomeSeller": "Become a Seller",
+    "contactUs": "Contact Us"
   }
 }
