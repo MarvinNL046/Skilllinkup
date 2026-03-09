@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 10
+    "completed": 11
   },
   "queue": [
     {
@@ -118,9 +118,9 @@
       "id": 14,
       "type": "component",
       "file": "src/components/breadcrumb",
-      "description": "Breadcrumb labels: Home, Browse, Contact us, etc.",
+      "description": "Breadcrumb labels: Home, Browse, Contact us, etc. [SKIPPED: no breadcrumb component exists]",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 2,
       "phase": 1
     },
