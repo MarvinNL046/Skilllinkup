@@ -5,7 +5,8 @@ import EmptyState from "@/components/ui/EmptyState";
 import { useTranslations } from "next-intl";
 
 export default function PlatformListing() {
-  const t = useTranslations("common");
+  const t = useTranslations("platformsListing");
+  const tc = useTranslations("common");
   const platforms = useConvexPlatforms("en");
 
   return (
@@ -14,9 +15,9 @@ export default function PlatformListing() {
         {/* Section header */}
         <div className="row mb40">
           <div className="col-12">
-            <h2 className="title mb5">Freelance Platforms</h2>
+            <h2 className="title mb5">{t("heading")}</h2>
             <p className="body-color">
-              Compare the best freelance platforms to find the right fit for your career.
+              {t("subheading")}
             </p>
           </div>
         </div>
@@ -25,17 +26,17 @@ export default function PlatformListing() {
         {platforms === undefined && (
           <div className="text-center py-5">
             <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">{t("loading")}</span>
+              <span className="visually-hidden">{tc("loading")}</span>
             </div>
-            <p className="body-color mt-3">{t("loading")}</p>
+            <p className="body-color mt-3">{tc("loading")}</p>
           </div>
         )}
 
         {/* Empty state */}
         {platforms !== undefined && platforms.length === 0 && (
           <EmptyState
-            title="No platforms yet"
-            description="Check back soon for freelance platform reviews"
+            title={t("noPlatforms")}
+            description={t("noPlatformsDescription")}
           />
         )}
 

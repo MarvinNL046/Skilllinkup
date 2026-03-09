@@ -1680,5 +1680,13 @@
     "general": "Algemeen",
     "home": "Home",
     "blog": "Blog"
+  },
+  "platformsListing": {
+    "metaTitle": "SkillLinkup | Freelance Platform Reviews & Vergelijkingen",
+    "metaDescription": "Vergelijk de beste freelance platforms. Lees reviews, vergelijk tarieven en vind het juiste platform voor je freelance carrière.",
+    "heading": "Freelance Platforms",
+    "subheading": "Vergelijk de beste freelance platforms en vind de juiste match voor je carrière.",
+    "noPlatforms": "Nog geen platforms",
+    "noPlatformsDescription": "Kom binnenkort terug voor freelance platform reviews"
   }
 }

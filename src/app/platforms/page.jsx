@@ -1,12 +1,15 @@
 import Header20 from "@/components/header/Header20";
 import Footer14 from "@/components/footer/Footer14";
 import PlatformListing from "@/components/section/PlatformListing";
+import { getTranslations } from "next-intl/server";
 
-export const metadata = {
-  title: "SkillLinkup | Freelance Platform Reviews & Comparisons",
-  description:
-    "Compare the best freelance platforms. Read reviews, compare fees, and find the right platform for your freelance career.",
-};
+export async function generateMetadata() {
+  const t = await getTranslations("platformsListing");
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+  };
+}
 
 export default function PlatformsPage() {
   return (
