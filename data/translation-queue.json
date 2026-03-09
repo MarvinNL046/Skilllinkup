@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 85
+    "completed": 86
   },
   "queue": [
     {
@@ -870,7 +870,8 @@
       "target": "platforms",
       "description": "Translate name, description, pros, cons, features",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
+      "note": "All 19 platforms already translated to NL. Script created at scripts/translate-platforms-nl.mjs for future use.",
       "priority": 9,
       "phase": 9
     },
