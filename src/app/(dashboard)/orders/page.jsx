@@ -1,11 +1,15 @@
+import { getTranslations } from "next-intl/server";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import MobileNavigation2 from "@/components/header/MobileNavigation2";
 import DashboardNavigation from "@/components/dashboard/header/DashboardNavigation";
 import OrderList from "@/components/section/OrderList";
 
-export const metadata = {
-  title: "My Orders",
-};
+export async function generateMetadata() {
+  const t = await getTranslations("orders");
+  return {
+    title: t("title"),
+  };
+}
 
 export default function page() {
   return (
@@ -18,14 +22,9 @@ export default function page() {
               <DashboardNavigation />
             </div>
             <div className="col-lg-12">
-              <div className="dashboard_title_area">
-                <h2>My Orders</h2>
-                <p className="text">Manage your orders as buyer or seller.</p>
-              </div>
+              <OrderList />
             </div>
           </div>
-
-          <OrderList />
         </div>
       </DashboardLayout>
     </>

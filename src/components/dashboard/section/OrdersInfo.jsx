@@ -1,6 +1,7 @@
 "use client";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
+import { useTranslations } from "next-intl";
 import useConvexUser from "@/hook/useConvexUser";
 import DashboardNavigation from "../header/DashboardNavigation";
 import Link from "next/link";
@@ -17,6 +18,7 @@ const STATUS_COLORS = {
 };
 
 export default function OrdersInfo() {
+  const t = useTranslations("orders");
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const [role, setRole] = useState("client");
   const [actionLoading, setActionLoading] = useState(null);
@@ -32,23 +34,32 @@ export default function OrdersInfo() {
   const approveOrder = useMutation(api.marketplace.orders.approve);
   const requestRevision = useMutation(api.marketplace.orders.requestRevision);
 
+  const STATUS_LABELS = {
+    pending: t("statusPending"),
+    in_progress: t("statusInProgress"),
+    delivered: t("statusDelivered"),
+    completed: t("statusCompleted"),
+    revision_requested: t("statusRevisionRequested"),
+    cancelled: t("statusCancelled"),
+  };
+
   const handleAction = async (action, orderId, extra) => {
     setActionLoading(orderId);
     try {
       if (action === "deliver") {
         await deliverOrder({ orderId });
-        toast.success("Order marked as delivered!");
+        toast.success(t("orderDelivered"));
       } else if (action === "approve") {
         await approveOrder({ orderId });
-        toast.success("Order approved!");
+        toast.success(t("orderApproved"));
       } else if (action === "revision") {
         await requestRevision({ orderId, message: extra });
-        toast.success("Revision requested.");
+        toast.success(t("revisionRequested"));
         setRevisionOrderId(null);
         setRevisionMessage("");
       }
     } catch (err) {
-      toast.error(err.message || "Something went wrong.");
+      toast.error(err.message || t("somethingWentWrong"));
     }
     setActionLoading(null);
   };
@@ -65,10 +76,10 @@ export default function OrdersInfo() {
   };
 
   const getCurrencySymbol = (currency) => {
-    if (currency === "EUR") return "€";
+    if (currency === "EUR") return "\u20AC";
     if (currency === "USD") return "$";
-    if (currency === "GBP") return "£";
-    return currency ?? "€";
+    if (currency === "GBP") return "\u00A3";
+    return currency ?? "\u20AC";
   };
 
   return (
@@ -80,8 +91,8 @@ export default function OrdersInfo() {
         </div>
         <div className="col-lg-12">
           <div className="dashboard_title_area">
-            <h2>My Orders</h2>
-            <p className="text">Manage your orders as buyer or seller.</p>
+            <h2>{t("title")}</h2>
+            <p className="text">{t("pageDescription")}</p>
           </div>
         </div>
       </div>
@@ -94,13 +105,13 @@ export default function OrdersInfo() {
               className={`ud-btn ${role === "client" ? "btn-thm" : "btn-white"}`}
               onClick={() => setRole("client")}
             >
-              As Buyer
+              {t("asBuyer")}
             </button>
             <button
               className={`ud-btn ${role === "freelancer" ? "btn-thm" : "btn-white"}`}
               onClick={() => setRole("freelancer")}
             >
-              As Seller
+              {t("asSeller")}
             </button>
           </div>
         </div>
@@ -112,13 +123,13 @@ export default function OrdersInfo() {
             {/* Revision message inline form */}
             {revisionOrderId && (
               <div className="bgc-thm4 bdrs4 p20 mb20">
-                <p className="fz14 fw500 mb10">Describe what needs to be revised:</p>
+                <p className="fz14 fw500 mb10">{t("revisionPrompt")}</p>
                 <textarea
                   className="form-control mb10"
                   rows={3}
                   value={revisionMessage}
                   onChange={(e) => setRevisionMessage(e.target.value)}
-                  placeholder="e.g. Please adjust the logo colors..."
+                  placeholder={t("revisionPlaceholder")}
                 />
                 <div className="d-flex gap-2">
                   <button
@@ -128,13 +139,13 @@ export default function OrdersInfo() {
                   >
                     {actionLoading === revisionOrderId ? (
                       <span className="spinner-border spinner-border-sm" role="status" />
-                    ) : "Submit Revision"}
+                    ) : t("submitRevision")}
                   </button>
                   <button
                     className="ud-btn btn-white btn-sm fz14"
                     onClick={() => { setRevisionOrderId(null); setRevisionMessage(""); }}
                   >
-                    Cancel
+                    {t("cancel")}
                   </button>
                 </div>
               </div>
@@ -143,7 +154,7 @@ export default function OrdersInfo() {
             {/* Not authenticated */}
             {isLoaded && !isAuthenticated && (
               <div className="text-center py-5">
-                <p className="text mb-0">Please sign in to view your orders.</p>
+                <p className="text mb-0">{t("signInPrompt")}</p>
               </div>
             )}
 
@@ -157,7 +168,16 @@ export default function OrdersInfo() {
             {/* Authenticated but no Convex profile found */}
             {isAuthenticated && convexUser === null && (
               <div className="text-center py-5">
-                <p className="text mb-0">No account profile found. Please complete your <Link href="/onboarding" className="text-thm">onboarding</Link> first.</p>
+                <p className="text mb-0">
+                  {t.rich("noProfileFound", {
+                    link: (chunks) => <Link href="/onboarding" className="text-thm">{chunks}</Link>,
+                  }) ?? (
+                    <>
+                      {t("noProfileFound", { link: "" })}
+                      <Link href="/onboarding" className="text-thm">{t("onboarding")}</Link>
+                    </>
+                  )}
+                </p>
               </div>
             )}
 
@@ -165,7 +185,9 @@ export default function OrdersInfo() {
             {orders !== undefined && orders.length === 0 && (
               <div className="text-center py-5">
                 <i className="flaticon-receipt fz40 text mb20" />
-                <p className="text mb-0">No orders yet as {role === "client" ? "buyer" : "seller"}.</p>
+                <p className="text mb-0">
+                  {t("noOrdersYetRole", { role: role === "client" ? t("asBuyer").toLowerCase() : t("asSeller").toLowerCase() })}
+                </p>
               </div>
             )}
 
@@ -175,14 +197,14 @@ export default function OrdersInfo() {
                 <table className="table-style2 table">
                   <thead className="t-head">
                     <tr>
-                      <th scope="col">Order #</th>
-                      <th scope="col">Title</th>
+                      <th scope="col">{t("columnOrderNumber")}</th>
+                      <th scope="col">{t("columnTitle")}</th>
                       <th scope="col">
-                        {role === "client" ? "Freelancer" : "Client"}
+                        {role === "client" ? t("columnFreelancer") : t("columnClient")}
                       </th>
-                      <th scope="col">Amount</th>
-                      <th scope="col">Status</th>
-                      <th scope="col">Actions</th>
+                      <th scope="col">{t("columnAmount")}</th>
+                      <th scope="col">{t("columnStatus")}</th>
+                      <th scope="col">{t("columnActions")}</th>
                     </tr>
                   </thead>
                   <tbody className="t-body">
@@ -197,8 +219,8 @@ export default function OrdersInfo() {
                         <td>
                           <span className="fz15">
                             {role === "client"
-                              ? order.freelancerName ?? "—"
-                              : order.clientName ?? "—"}
+                              ? order.freelancerName ?? "\u2014"
+                              : order.clientName ?? "\u2014"}
                           </span>
                         </td>
                         <td>
@@ -209,18 +231,17 @@ export default function OrdersInfo() {
                               : (order.amount ?? 0).toFixed(2)}
                           </span>
                           {role === "freelancer" && order.freelancerEarnings !== null && order.freelancerEarnings !== undefined && (
-                            <span className="fz12 text d-block">after fee</span>
+                            <span className="fz12 text d-block">{t("afterFee")}</span>
                           )}
                         </td>
                         <td>
                           <span
                             className={`pending-style ${STATUS_COLORS[order.status] ?? ""}`}
                           >
-                            {order.status.replace(/_/g, " ")}
+                            {STATUS_LABELS[order.status] ?? order.status.replace(/_/g, " ")}
                           </span>
                         </td>
                         <td>
-                          {/* Freelancer can deliver in_progress orders */}
                           {role === "freelancer" && order.status === "in_progress" && (
                             <button
                               className="ud-btn btn-thm btn-sm fz14"
@@ -233,12 +254,11 @@ export default function OrdersInfo() {
                                   role="status"
                                 />
                               ) : (
-                                "Deliver"
+                                t("deliver")
                               )}
                             </button>
                           )}
 
-                          {/* Client can approve or request revision on delivered orders */}
                           {role === "client" && order.status === "delivered" && (
                             <div className="d-flex gap-2">
                               <button
@@ -252,7 +272,7 @@ export default function OrdersInfo() {
                                     role="status"
                                   />
                                 ) : (
-                                  "Approve"
+                                  t("approve")
                                 )}
                               </button>
                               <button
@@ -260,17 +280,16 @@ export default function OrdersInfo() {
                                 disabled={actionLoading === order._id}
                                 onClick={() => handleRevision(order._id)}
                               >
-                                Revision
+                                {t("revision")}
                               </button>
                             </div>
                           )}
 
-                          {/* Show dash for orders with no available action */}
                           {!(
                             (role === "freelancer" && order.status === "in_progress") ||
                             (role === "client" && order.status === "delivered")
                           ) && (
-                            <span className="fz14 text">—</span>
+                            <span className="fz14 text">{"\u2014"}</span>
                           )}
                         </td>
                       </tr>

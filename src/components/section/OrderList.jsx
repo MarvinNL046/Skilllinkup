@@ -1,14 +1,8 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import useConvexOrders from "@/hook/useConvexOrders";
 import OrderCard from "@/components/card/OrderCard";
-
-const TABS = [
-  { key: "all", label: "All" },
-  { key: "active", label: "Active" },
-  { key: "delivered", label: "Delivered" },
-  { key: "completed", label: "Completed" },
-];
 
 const ACTIVE_STATUSES = ["pending", "in_progress", "revision_requested"];
 
@@ -22,16 +16,28 @@ function filterOrders(orders, tab) {
 }
 
 export default function OrderList() {
+  const t = useTranslations("orders");
   const [roleView, setRoleView] = useState("client");
   const [activeTab, setActiveTab] = useState("all");
 
   const { orders, isLoading, user } = useConvexOrders(roleView);
 
-  // Auto-switch role based on user type (but allow manual override via buttons)
+  const tabs = [
+    { key: "all", label: t("all") },
+    { key: "active", label: t("active") },
+    { key: "delivered", label: t("delivered") },
+    { key: "completed", label: t("completed") },
+  ];
+
   const filteredOrders = filterOrders(orders, activeTab);
 
   return (
     <>
+      <div className="dashboard_title_area">
+        <h2>{t("title")}</h2>
+        <p className="text">{t("pageDescription")}</p>
+      </div>
+
       {/* Role switcher */}
       <div className="row">
         <div className="col-12 mb20">
@@ -40,13 +46,13 @@ export default function OrderList() {
               className={`ud-btn ${roleView === "client" ? "btn-thm" : "btn-white"}`}
               onClick={() => setRoleView("client")}
             >
-              As Buyer
+              {t("asBuyer")}
             </button>
             <button
               className={`ud-btn ${roleView === "freelancer" ? "btn-thm" : "btn-white"}`}
               onClick={() => setRoleView("freelancer")}
             >
-              As Seller
+              {t("asSeller")}
             </button>
           </div>
         </div>
@@ -58,7 +64,7 @@ export default function OrderList() {
           <div className="navtab-style1">
             <nav>
               <div className="nav nav-tabs mb30" role="tablist">
-                {TABS.map((tab) => (
+                {tabs.map((tab) => (
                   <button
                     key={tab.key}
                     className={`nav-link ${activeTab === tab.key ? "active" : ""}`}
@@ -88,7 +94,7 @@ export default function OrderList() {
             {isLoading && (
               <div className="text-center py-5">
                 <div className="spinner-border text-thm" role="status">
-                  <span className="visually-hidden">Loading orders...</span>
+                  <span className="visually-hidden">{t("loadingOrders")}</span>
                 </div>
               </div>
             )}
@@ -97,11 +103,11 @@ export default function OrderList() {
             {!isLoading && filteredOrders.length === 0 && (
               <div className="text-center py-5">
                 <i className="flaticon-receipt fz40 text mb20 d-block" />
-                <h5 className="mb10">No orders found</h5>
+                <h5 className="mb10">{t("noOrdersFound")}</h5>
                 <p className="text mb-0">
                   {activeTab === "all"
-                    ? `You have no orders as ${roleView === "client" ? "buyer" : "seller"} yet.`
-                    : `No ${activeTab} orders found.`}
+                    ? t("noOrdersRole", { role: roleView === "client" ? t("asBuyer").toLowerCase() : t("asSeller").toLowerCase() })
+                    : t("noOrdersStatus", { status: activeTab })}
                 </p>
               </div>
             )}

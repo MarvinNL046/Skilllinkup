@@ -1,19 +1,11 @@
 "use client";
 import { useState } from "react";
 import { useMutation, useQuery } from "convex/react";
+import { useTranslations } from "next-intl";
 import { api } from "../../../convex/_generated/api";
 import ReviewForm from "@/components/element/ReviewForm";
 import useConvexUser from "@/hook/useConvexUser";
 import { toast } from "sonner";
-
-const STATUS_CONFIG = {
-  pending: { label: "Pending", className: "pending-style" },
-  in_progress: { label: "In Progress", className: "pending-style style1" },
-  delivered: { label: "Delivered", className: "pending-style style2" },
-  completed: { label: "Completed", className: "pending-style style3" },
-  revision_requested: { label: "Revision Requested", className: "pending-style" },
-  cancelled: { label: "Cancelled", className: "pending-style style4" },
-};
 
 function getCurrencySymbol(currency) {
   if (currency === "EUR") return "\u20AC";
@@ -23,7 +15,7 @@ function getCurrencySymbol(currency) {
 }
 
 function formatDate(timestamp) {
-  if (!timestamp) return "—";
+  if (!timestamp) return "\u2014";
   return new Date(timestamp).toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "short",
@@ -32,6 +24,7 @@ function formatDate(timestamp) {
 }
 
 export default function OrderCard({ order, role }) {
+  const t = useTranslations("orders");
   const [actionLoading, setActionLoading] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [showRevisionForm, setShowRevisionForm] = useState(false);
@@ -43,11 +36,19 @@ export default function OrderCard({ order, role }) {
   const approveOrder = useMutation(api.marketplace.orders.approve);
   const requestRevision = useMutation(api.marketplace.orders.requestRevision);
 
-  // Fetch reviews for this order to check if user already reviewed
   const orderReviews = useQuery(
     api.marketplace.reviews.getByOrder,
     order.status === "completed" && order._id ? { orderId: order._id } : "skip"
   );
+
+  const STATUS_CONFIG = {
+    pending: { label: t("statusPending"), className: "pending-style" },
+    in_progress: { label: t("statusInProgress"), className: "pending-style style1" },
+    delivered: { label: t("statusDelivered"), className: "pending-style style2" },
+    completed: { label: t("statusCompleted"), className: "pending-style style3" },
+    revision_requested: { label: t("statusRevisionRequested"), className: "pending-style" },
+    cancelled: { label: t("statusCancelled"), className: "pending-style style4" },
+  };
 
   const statusConfig = STATUS_CONFIG[order.status] ?? {
     label: order.status.replace(/_/g, " "),
@@ -64,9 +65,9 @@ export default function OrderCard({ order, role }) {
     setActionLoading(true);
     try {
       await deliverOrder({ orderId: order._id });
-      toast.success("Order marked as delivered!");
+      toast.success(t("orderDelivered"));
     } catch (err) {
-      toast.error(err.message || "Failed to deliver order.");
+      toast.error(err.message || t("orderDeliverFailed"));
     }
     setActionLoading(false);
   };
@@ -75,9 +76,9 @@ export default function OrderCard({ order, role }) {
     setActionLoading(true);
     try {
       await approveOrder({ orderId: order._id });
-      toast.success("Order approved! Payment released.");
+      toast.success(t("orderApproved"));
     } catch (err) {
-      toast.error(err.message || "Failed to approve order.");
+      toast.error(err.message || t("orderApproveFailed"));
     }
     setActionLoading(false);
   };
@@ -87,30 +88,24 @@ export default function OrderCard({ order, role }) {
     setActionLoading(true);
     try {
       await requestRevision({ orderId: order._id, message: revisionMessage.trim() });
-      toast.success("Revision requested.");
+      toast.success(t("revisionRequested"));
       setShowRevisionForm(false);
       setRevisionMessage("");
     } catch (err) {
-      toast.error(err.message || "Failed to request revision.");
+      toast.error(err.message || t("revisionFailed"));
     }
     setActionLoading(false);
   };
 
   const showDeliverButton = role === "freelancer" && order.status === "in_progress";
   const showClientButtons = role === "client" && order.status === "delivered";
-
-  // Show "Leave Review" button only for completed orders
   const isCompleted = order.status === "completed";
 
-  // Check if the current user already reviewed this order
   const alreadyReviewed =
     orderReviews !== undefined &&
     convexUser?._id &&
     orderReviews.some((r) => r.reviewerId === convexUser._id);
 
-  // Determine the reviewee ID for the ReviewForm
-  // Client reviews the freelancer (need freelancer's user ID)
-  // Freelancer reviews the client (need client's user ID)
   const revieweeId =
     role === "client"
       ? order.freelancerUserId ?? null
@@ -122,12 +117,10 @@ export default function OrderCard({ order, role }) {
         {/* Left section: order info */}
         <div className="col-lg-8 ps-0">
           <div className="d-lg-flex bdrr1 bdrn-xl pr15 pr0-lg align-items-start">
-            {/* Icon */}
             <div className="thumb w60 position-relative mb15-md d-flex align-items-center justify-content-center bgc-thm-light bdrs4">
               <i className="flaticon-receipt fz30 text-thm" />
             </div>
 
-            {/* Details */}
             <div className="details ml15 ml0-md mb15-md">
               <h5 className="title mb5 fz16">{order.title}</h5>
               <p className="mb-0 fz13 text">
@@ -135,15 +128,13 @@ export default function OrderCard({ order, role }) {
               </p>
 
               <div className="d-flex flex-wrap align-items-center gap-3 mt10">
-                {/* Counterpart name */}
                 <p className="mb-0 fz14">
                   <i className="flaticon-user fz14 vam text-thm2 me-1" />
                   {role === "client"
-                    ? order.freelancerName ?? "—"
-                    : order.clientName ?? "—"}
+                    ? order.freelancerName ?? "\u2014"
+                    : order.clientName ?? "\u2014"}
                 </p>
 
-                {/* Date */}
                 <p className="mb-0 fz14">
                   <i className="flaticon-30-days fz14 vam text-thm2 me-1" />
                   {formatDate(order.createdAt)}
@@ -156,23 +147,20 @@ export default function OrderCard({ order, role }) {
         {/* Right section: amount, status, actions */}
         <div className="col-lg-4 ps-0 ps-xl-3 pe-0">
           <div className="details">
-            {/* Amount */}
             <div className="text-lg-end mb10">
               <h5 className="mb-0">
                 {currencySymbol}
                 {(displayAmount ?? 0).toFixed(2)}
               </h5>
               {role === "freelancer" && order.freelancerEarnings != null && (
-                <span className="fz12 text">after platform fee</span>
+                <span className="fz12 text">{t("afterPlatformFee")}</span>
               )}
             </div>
 
-            {/* Status badge */}
             <div className="text-lg-end mb10">
               <span className={statusConfig.className}>{statusConfig.label}</span>
             </div>
 
-            {/* Action buttons */}
             <div className="d-grid gap-2 mt10">
               {showDeliverButton && (
                 <button
@@ -184,7 +172,7 @@ export default function OrderCard({ order, role }) {
                     <span className="spinner-border spinner-border-sm" role="status" />
                   ) : (
                     <>
-                      Mark as Delivered
+                      {t("markAsDelivered")}
                       <i className="fal fa-arrow-right-long" />
                     </>
                   )}
@@ -202,7 +190,7 @@ export default function OrderCard({ order, role }) {
                       <span className="spinner-border spinner-border-sm" role="status" />
                     ) : (
                       <>
-                        Approve &amp; Release Payment
+                        {t("approveReleasePayment")}
                         <i className="fal fa-arrow-right-long" />
                       </>
                     )}
@@ -212,13 +200,12 @@ export default function OrderCard({ order, role }) {
                     disabled={actionLoading}
                     onClick={() => setShowRevisionForm((prev) => !prev)}
                   >
-                    {showRevisionForm ? "Cancel" : "Request Revision"}
+                    {showRevisionForm ? t("cancel") : t("requestRevision")}
                     <i className="fal fa-arrow-right-long" />
                   </button>
                 </>
               )}
 
-              {/* Leave Review button for completed orders */}
               {isCompleted && revieweeId && (
                 <button
                   className={`ud-btn fz14 ${alreadyReviewed ? "btn-white" : "btn-thm2"}`}
@@ -227,11 +214,11 @@ export default function OrderCard({ order, role }) {
                   {alreadyReviewed ? (
                     <>
                       <i className="fas fa-check me-1" />
-                      Review Submitted
+                      {t("reviewSubmitted")}
                     </>
                   ) : (
                     <>
-                      {showReviewForm ? "Hide Review Form" : "Leave a Review"}
+                      {showReviewForm ? t("hideReviewForm") : t("leaveReview")}
                       <i className="fal fa-arrow-right-long" />
                     </>
                   )}
@@ -248,13 +235,13 @@ export default function OrderCard({ order, role }) {
           <div className="col-12">
             <div className="bdrb1 mb15" />
             <div className="bgc-thm4 bdrs4 p20">
-              <p className="fz14 fw500 mb10">Describe what needs to be revised:</p>
+              <p className="fz14 fw500 mb10">{t("revisionPrompt")}</p>
               <textarea
                 className="form-control mb10"
                 rows={3}
                 value={revisionMessage}
                 onChange={(e) => setRevisionMessage(e.target.value)}
-                placeholder="e.g. Please adjust the logo colors..."
+                placeholder={t("revisionPlaceholder")}
               />
               <button
                 className="ud-btn btn-thm btn-sm fz14"
@@ -263,7 +250,7 @@ export default function OrderCard({ order, role }) {
               >
                 {actionLoading ? (
                   <span className="spinner-border spinner-border-sm" role="status" />
-                ) : "Submit Revision Request"}
+                ) : t("submitRevisionRequest")}
               </button>
             </div>
           </div>
