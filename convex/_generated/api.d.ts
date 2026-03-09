@@ -44,6 +44,7 @@ import type * as platformReviews from "../platformReviews.js";
 import type * as platforms from "../platforms.js";
 import type * as posts from "../posts.js";
 import type * as resources from "../resources.js";
+import type * as skills from "../skills.js";
 import type * as tools from "../tools.js";
 import type * as users from "../users.js";
 import type * as waitlist from "../waitlist.js";
@@ -91,6 +92,7 @@ declare const fullApi: ApiFromModules<{
   platforms: typeof platforms;
   posts: typeof posts;
   resources: typeof resources;
+  skills: typeof skills;
   tools: typeof tools;
   users: typeof users;
   waitlist: typeof waitlist;

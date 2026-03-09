@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 84
+    "completed": 85
   },
   "queue": [
     {
@@ -858,9 +858,9 @@
       "id": 132,
       "type": "db-content",
       "target": "skills",
-      "description": "Translate skill names",
+      "description": "Translate skill names (table empty — script ready for when skills are seeded)",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 9,
       "phase": 9
     },
