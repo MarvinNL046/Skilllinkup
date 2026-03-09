@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 36
+    "completed": 37
   },
   "queue": [
     {
@@ -380,7 +380,7 @@
       "file": "src/app/(local)/local/craftsmen",
       "description": "Craftsmen listing, filters",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 4,
       "phase": 4
     },

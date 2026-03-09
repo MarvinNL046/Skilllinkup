@@ -811,6 +811,9 @@
     "heroText": "From plumbers to painters — get quotes from skilled professionals near you.",
     "searchPlaceholder": "What do you need? (e.g. plumber, painter)",
     "postcodePlaceholder": "Postcode or city",
-    "search": "Search"
+    "search": "Search",
+    "craftsmenTitle": "Find Local Craftsmen",
+    "craftsmenDescription": "Browse skilled local craftsmen near you. Filter by trade, location, and rating to find the right professional for your job.",
+    "craftsmenBrief": "Browse skilled professionals in your area ready to help with your project."
   }
 }

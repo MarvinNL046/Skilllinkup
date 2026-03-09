@@ -1,22 +1,27 @@
 import { Suspense } from "react";
+import { getTranslations } from "next-intl/server";
 import Breadcumb1 from "@/components/breadcumb/Breadcumb1";
 import Listing14 from "@/components/section/Listing14";
 
-export const metadata = {
-  title: "Find Local Craftsmen",
-  description: "Browse skilled local craftsmen near you. Filter by trade, location, and rating to find the right professional for your job.",
-  openGraph: {
-    title: "Find Local Craftsmen",
-    description: "Browse skilled local craftsmen near you. Filter by trade, location, and rating to find the right professional for your job.",
-  },
-};
+export async function generateMetadata() {
+  const t = await getTranslations("localHub");
+  return {
+    title: t("craftsmenTitle"),
+    description: t("craftsmenDescription"),
+    openGraph: {
+      title: t("craftsmenTitle"),
+      description: t("craftsmenDescription"),
+    },
+  };
+}
 
-export default function CraftsmenPage() {
+export default async function CraftsmenPage() {
+  const t = await getTranslations("localHub");
   return (
     <>
       <Breadcumb1
-        title="Find Local Craftsmen"
-        brief="Browse skilled professionals in your area ready to help with your project."
+        title={t("craftsmenTitle")}
+        brief={t("craftsmenBrief")}
         isBtnActive={false}
       />
       <Suspense>

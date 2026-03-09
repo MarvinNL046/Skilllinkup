@@ -811,6 +811,9 @@
     "heroText": "Van loodgieters tot schilders — vraag offertes aan bij ervaren professionals bij jou in de buurt.",
     "searchPlaceholder": "Wat heb je nodig? (bijv. loodgieter, schilder)",
     "postcodePlaceholder": "Postcode of plaats",
-    "search": "Zoeken"
+    "search": "Zoeken",
+    "craftsmenTitle": "Vind lokale vakmensen",
+    "craftsmenDescription": "Bekijk vakkundige vakmensen bij jou in de buurt. Filter op vak, locatie en beoordeling om de juiste professional te vinden.",
+    "craftsmenBrief": "Bekijk vakkundige professionals in jouw omgeving die klaarstaan voor je project."
   }
 }
