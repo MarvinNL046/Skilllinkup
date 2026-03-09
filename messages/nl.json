@@ -877,5 +877,13 @@
     "mustBeLoggedIn": "Je moet ingelogd zijn met een freelancer profiel om credits te kopen.",
     "failedCheckout": "Afrekenen starten mislukt.",
     "somethingWrong": "Er ging iets mis. Probeer het opnieuw."
+  },
+  "jobsHub": {
+    "title": "Vacatures",
+    "metaDescription": "Bekijk vacatures of plaats een vacature. Vind fulltime, parttime en freelance mogelijkheden.",
+    "heroTitle": "Vind je volgende kans",
+    "heroText": "Bekijk vacatures van topbedrijven of plaats een vacature om het juiste talent te vinden.",
+    "searchPlaceholder": "Functietitel, skill of bedrijf",
+    "search": "Zoeken"
   }
 }

@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export default function JobsHero() {
+  const t = useTranslations("jobsHub");
   const router = useRouter();
   const [search, setSearch] = useState("");
 
@@ -19,10 +21,10 @@ export default function JobsHero() {
         <div className="row justify-content-center">
           <div className="col-lg-8 text-center mb30">
             <h1 className="hero-title text-white mb15">
-              Find Your Next Opportunity
+              {t("heroTitle")}
             </h1>
             <p className="hero-text text-white-50 fz17">
-              Browse job openings from top companies or post a vacancy to find the right talent.
+              {t("heroText")}
             </p>
           </div>
           <div className="col-lg-6">
@@ -30,13 +32,13 @@ export default function JobsHero() {
               <input
                 type="text"
                 className="form-control bdrs4"
-                placeholder="Job title, skill, or company"
+                placeholder={t("searchPlaceholder")}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 style={{ maxWidth: 400 }}
               />
               <button type="submit" className="ud-btn btn-white bdrs4" style={{ color: "#22c55e" }}>
-                Search <i className="fal fa-search ms-1" />
+                {t("search")} <i className="fal fa-search ms-1" />
               </button>
             </form>
           </div>

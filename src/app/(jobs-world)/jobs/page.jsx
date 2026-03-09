@@ -1,9 +1,13 @@
+import { getTranslations } from "next-intl/server";
 import JobsHero from "@/components/hero/JobsHero";
 
-export const metadata = {
-  title: "Jobs",
-  description: "Browse job openings or post vacancies. Find full-time, part-time, and freelance opportunities.",
-};
+export async function generateMetadata() {
+  const t = await getTranslations("jobsHub");
+  return {
+    title: t("title"),
+    description: t("metaDescription"),
+  };
+}
 
 export default function JobsPage() {
   return (

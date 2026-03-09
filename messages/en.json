@@ -877,5 +877,13 @@
     "mustBeLoggedIn": "You must be logged in with a freelancer profile to buy credits.",
     "failedCheckout": "Failed to start checkout.",
     "somethingWrong": "Something went wrong. Please try again."
+  },
+  "jobsHub": {
+    "title": "Jobs",
+    "metaDescription": "Browse job openings or post vacancies. Find full-time, part-time, and freelance opportunities.",
+    "heroTitle": "Find Your Next Opportunity",
+    "heroText": "Browse job openings from top companies or post a vacancy to find the right talent.",
+    "searchPlaceholder": "Job title, skill, or company",
+    "search": "Search"
   }
 }
