@@ -1,11 +1,16 @@
+import { getTranslations } from "next-intl/server";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import MobileNavigation2 from "@/components/header/MobileNavigation2";
 import DashboardNavigation from "@/components/dashboard/header/DashboardNavigation";
 import CreditsInfo from "@/components/dashboard/section/CreditsInfo";
+import CreditsPageHeader from "@/components/dashboard/section/CreditsPageHeader";
 
-export const metadata = {
-  title: "Credits",
-};
+export async function generateMetadata() {
+  const t = await getTranslations("creditsInfo");
+  return {
+    title: t("title"),
+  };
+}
 
 export default function CreditsPage() {
   return (
@@ -18,13 +23,7 @@ export default function CreditsPage() {
               <DashboardNavigation />
             </div>
             <div className="col-lg-12">
-              <div className="dashboard_title_area">
-                <h2>Lead Credits</h2>
-                <p className="text">
-                  Buy credits to claim leads from the Local Marketplace. Each lead reveals
-                  client contact details so you can reach out directly.
-                </p>
-              </div>
+              <CreditsPageHeader />
             </div>
           </div>
           <CreditsInfo />

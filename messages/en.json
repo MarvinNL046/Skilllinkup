@@ -859,6 +859,8 @@
     "failedToClaim": "Failed to claim lead."
   },
   "creditsInfo": {
+    "title": "Lead Credits",
+    "pageDescription": "Buy credits to claim leads from the Local Marketplace. Each lead reveals client contact details so you can reach out directly.",
     "creditsAvailable": "Credits Available",
     "buyCredits": "Buy Credits",
     "mostPopular": "Most Popular",
@@ -1458,5 +1460,21 @@
     "completed": "Completed",
     "inProgress": "In Progress",
     "view": "View"
+  },
+  "projectBids": {
+    "title": "Project Bids",
+    "pageDescription": "Review and manage bids for your project.",
+    "projectNotFound": "Project not found.",
+    "backToMyProjects": "Back to My Projects",
+    "loadingProject": "Loading project...",
+    "budgetTBD": "Budget TBD",
+    "bidsReceived": "{count} Bid received",
+    "bidsReceivedPlural": "{count} Bids received",
+    "viewPublicPage": "View Public Page",
+    "statusOpen": "Open",
+    "statusInProgress": "In Progress",
+    "statusCompleted": "Completed",
+    "statusCancelled": "Cancelled",
+    "statusClosed": "Closed"
   }
 }

@@ -859,6 +859,8 @@
     "failedToClaim": "Lead claimen mislukt."
   },
   "creditsInfo": {
+    "title": "Lead Credits",
+    "pageDescription": "Koop credits om leads te claimen van de Lokale Marktplaats. Elke lead onthult de contactgegevens van de klant zodat je direct contact kunt opnemen.",
     "creditsAvailable": "Credits beschikbaar",
     "buyCredits": "Credits kopen",
     "mostPopular": "Meest populair",
@@ -1458,5 +1460,21 @@
     "completed": "Afgerond",
     "inProgress": "In uitvoering",
     "view": "Bekijken"
+  },
+  "projectBids": {
+    "title": "Projectbiedingen",
+    "pageDescription": "Bekijk en beheer biedingen op je project.",
+    "projectNotFound": "Project niet gevonden.",
+    "backToMyProjects": "Terug naar mijn projecten",
+    "loadingProject": "Project laden...",
+    "budgetTBD": "Budget n.t.b.",
+    "bidsReceived": "{count} bieding ontvangen",
+    "bidsReceivedPlural": "{count} biedingen ontvangen",
+    "viewPublicPage": "Bekijk openbare pagina",
+    "statusOpen": "Open",
+    "statusInProgress": "In uitvoering",
+    "statusCompleted": "Afgerond",
+    "statusCancelled": "Geannuleerd",
+    "statusClosed": "Gesloten"
   }
 }

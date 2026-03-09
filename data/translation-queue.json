@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 63
+    "completed": 64
   },
   "queue": [
     {
@@ -650,7 +650,7 @@
       "file": "src/app/(dashboard)/dashboard/credits/page.jsx",
       "description": "Credits: buy, balance",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 6,
       "phase": 6
     },
