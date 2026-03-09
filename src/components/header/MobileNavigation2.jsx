@@ -2,9 +2,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
+import { useTranslations } from "next-intl";
 
 export default function MobileNavigation2() {
   const { isSignedIn, user } = useUser();
+  const t = useTranslations("nav");
 
   return (
     <>
@@ -44,7 +46,7 @@ export default function MobileNavigation2() {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      Sign in
+                      {t("signIn")}
                     </Link>
                   )}
                   <a
