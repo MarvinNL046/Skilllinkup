@@ -1,12 +1,11 @@
 "use client";
 import { useState } from "react";
 import { useQuery } from "convex/react";
+import { useTranslations } from "next-intl";
 import { api } from "../../../../convex/_generated/api";
 import DashboardNavigation from "../header/DashboardNavigation";
 import ReviewComment from "../element/ReviewComment";
 import useConvexUser from "@/hook/useConvexUser";
-
-const TABS = ["Services", "Project", "Jobs"];
 
 // Map review orderType to tab index
 const getTabForReview = (review) => {
@@ -17,6 +16,7 @@ const getTabForReview = (review) => {
 };
 
 export default function ReviewsInfo() {
+  const t = useTranslations("reviews");
   const [getCurrentTab, setCurrentTab] = useState(0);
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
 
@@ -24,6 +24,8 @@ export default function ReviewsInfo() {
     api.marketplace.reviews.getByUserId,
     convexUser?._id ? { userId: convexUser._id } : "skip"
   );
+
+  const tabs = [t("tabServices"), t("tabProject"), t("tabJobs")];
 
   // Group reviews by tab
   const groupedReviews = {
@@ -50,8 +52,8 @@ export default function ReviewsInfo() {
           </div>
           <div className="col-lg-12">
             <div className="dashboard_title_area">
-              <h2>Reviews</h2>
-              <p className="text">Reviews you have received from clients and freelancers.</p>
+              <h2>{t("title")}</h2>
+              <p className="text">{t("pageDescription")}</p>
             </div>
           </div>
         </div>
@@ -62,7 +64,7 @@ export default function ReviewsInfo() {
                 <div className="navtab-style1">
                   <nav>
                     <div className="nav nav-tabs mb30">
-                      {TABS.map((item, i) => (
+                      {tabs.map((item, i) => (
                         <button
                           onClick={() => setCurrentTab(i)}
                           key={i}
@@ -91,14 +93,14 @@ export default function ReviewsInfo() {
                   {/* Clerk authenticated but not yet in Convex */}
                   {isAuthenticated && convexUser === null && (
                     <div className="text-center py-5">
-                      <p className="text mb-0">Setting up your account...</p>
+                      <p className="text mb-0">{t("settingUpAccount")}</p>
                     </div>
                   )}
 
                   {/* Not authenticated */}
                   {isLoaded && !isAuthenticated && (
                     <div className="text-center py-5">
-                      <p className="text mb-0">Please sign in to view your reviews.</p>
+                      <p className="text mb-0">{t("signInPrompt")}</p>
                     </div>
                   )}
 
@@ -113,7 +115,7 @@ export default function ReviewsInfo() {
                   {reviews !== undefined && currentReviews.length === 0 && (
                     <div className="text-center py-5">
                       <i className="flaticon-review-1 fz40 text mb20" />
-                      <p className="text mb-0">No reviews yet for this category.</p>
+                      <p className="text mb-0">{t("noReviewsYet")}</p>
                     </div>
                   )}
 

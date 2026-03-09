@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useMutation, useQuery } from "convex/react";
+import { useTranslations } from "next-intl";
 import { api } from "../../../convex/_generated/api";
 import StarRating from "@/components/ui/StarRating";
 import useConvexUser from "@/hook/useConvexUser";
@@ -14,6 +15,7 @@ import useConvexUser from "@/hook/useConvexUser";
  *   reviewerRole {string}  "client" or "freelancer"
  */
 export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
+  const t = useTranslations("reviews");
   const { convexUser } = useConvexUser();
 
   // Fetch existing reviews for this order to check if user already reviewed
@@ -49,7 +51,7 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
     setError(null);
 
     if (overallRating === 0) {
-      setError("Please select an overall rating.");
+      setError(t("errorSelectRating"));
       return;
     }
 
@@ -68,7 +70,7 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
       });
       setSubmitted(true);
     } catch (err) {
-      setError(err.message || "Failed to submit review. Please try again.");
+      setError(err.message || t("errorSubmitFailed"));
     } finally {
       setIsSubmitting(false);
     }
@@ -77,7 +79,7 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
   if (isLoading) {
     return (
       <div className="bsp_reveiw_wrt mt20">
-        <p className="text fz14">Loading review form...</p>
+        <p className="text fz14">{t("loadingReviewForm")}</p>
       </div>
     );
   }
@@ -89,13 +91,13 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
           <i className="fas fa-check-circle text-success fz18" />
           <h6 className="fz16 mb-0">
             {alreadyReviewed && !submitted
-              ? "You have already submitted your review."
-              : "Thank you! Your review has been submitted."}
+              ? t("alreadyReviewed")
+              : t("thankYou")}
           </h6>
         </div>
         <p className="text fz13 mb-0">
           <i className="fas fa-eye-slash me-1" />
-          Your review will be visible once both parties have submitted their review.
+          {t("blindVisibilityNote")}
         </p>
       </div>
     );
@@ -103,10 +105,10 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
 
   return (
     <div className="bsp_reveiw_wrt mt20">
-      <h6 className="fz17 mb5">Leave a Review</h6>
+      <h6 className="fz17 mb5">{t("leaveReview")}</h6>
       <p className="text fz13 mb20">
         <i className="fas fa-eye-slash me-1" />
-        Your review will be visible after both parties have submitted their review.
+        {t("reviewBlindNote")}
       </p>
 
       <form className="comments_form" onSubmit={handleSubmit}>
@@ -114,7 +116,7 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
           {/* Overall rating - required */}
           <div className="col-md-12 mb20">
             <label className="fw500 ff-heading dark-color mb-2 d-block">
-              Overall Rating <span className="text-danger">*</span>
+              {t("overallRating")} <span className="text-danger">*</span>
             </label>
             <StarRating value={overallRating} onChange={setOverallRating} />
           </div>
@@ -122,28 +124,28 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
           {/* Sub-ratings */}
           <div className="col-sm-6 col-xl-3 mb20">
             <label className="fw500 ff-heading dark-color mb-2 d-block fz14">
-              Communication
+              {t("communication")}
             </label>
             <StarRating value={communicationRating} onChange={setCommunicationRating} size="sm" />
           </div>
 
           <div className="col-sm-6 col-xl-3 mb20">
             <label className="fw500 ff-heading dark-color mb-2 d-block fz14">
-              Quality
+              {t("quality")}
             </label>
             <StarRating value={qualityRating} onChange={setQualityRating} size="sm" />
           </div>
 
           <div className="col-sm-6 col-xl-3 mb20">
             <label className="fw500 ff-heading dark-color mb-2 d-block fz14">
-              Timeliness
+              {t("timeliness")}
             </label>
             <StarRating value={timelinessRating} onChange={setTimelinessRating} size="sm" />
           </div>
 
           <div className="col-sm-6 col-xl-3 mb20">
             <label className="fw500 ff-heading dark-color mb-2 d-block fz14">
-              Value
+              {t("value")}
             </label>
             <StarRating value={valueRating} onChange={setValueRating} size="sm" />
           </div>
@@ -151,12 +153,12 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
           {/* Written review */}
           <div className="col-md-12 mb20">
             <label className="fw500 ff-heading dark-color mb-2 d-block">
-              Written Review <span className="text fz13">(optional)</span>
+              {t("writtenReview")} <span className="text fz13">{t("optional")}</span>
             </label>
             <textarea
               className="pt15"
               rows={4}
-              placeholder="Share your experience working with this person..."
+              placeholder={t("reviewPlaceholder")}
               value={content}
               onChange={(e) => setContent(e.target.value)}
             />
@@ -179,11 +181,11 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
               {isSubmitting ? (
                 <>
                   <span className="spinner-border spinner-border-sm me-2" role="status" />
-                  Submitting...
+                  {t("submitting")}
                 </>
               ) : (
                 <>
-                  Submit Review
+                  {t("submitReview")}
                   <i className="fal fa-arrow-right-long" />
                 </>
               )}

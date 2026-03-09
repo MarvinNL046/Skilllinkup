@@ -1,9 +1,12 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function ReviewComment({ review, i, lenght }) {
-  // Support both dynamic review data and legacy index-based usage
-  const reviewerName = review?.reviewerName ?? "Anonymous";
+  const t = useTranslations("reviews");
+
+  const reviewerName = review?.reviewerName ?? t("anonymous");
   const reviewerAvatar = review?.reviewerAvatar ?? "/images/blog/comments-2.png";
   const rating = review?.overallRating ?? 5;
   const content = review?.content ?? "";
@@ -15,13 +18,13 @@ export default function ReviewComment({ review, i, lenght }) {
     if (!timestamp) return "";
     const diff = Date.now() - timestamp;
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    if (days === 0) return "Today";
-    if (days === 1) return "Yesterday";
-    if (days < 30) return `${days} days ago`;
+    if (days === 0) return t("today");
+    if (days === 1) return t("yesterday");
+    if (days < 30) return t("daysAgo", { count: days });
     const months = Math.floor(days / 30);
-    if (months === 1) return "1 month ago";
-    if (months < 12) return `${months} months ago`;
-    return `${Math.floor(months / 12)} year(s) ago`;
+    if (months === 1) return t("monthAgo");
+    if (months < 12) return t("monthsAgo", { count: months });
+    return t("yearsAgo", { count: Math.floor(months / 12) });
   };
 
   return (
