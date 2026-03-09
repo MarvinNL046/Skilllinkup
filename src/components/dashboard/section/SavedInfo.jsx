@@ -2,17 +2,26 @@
 import DashboardNavigation from "../header/DashboardNavigation";
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
+import { useTranslations } from "next-intl";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import Image from "next/image";
 import Link from "next/link";
 
-const TABS = ["Services", "Projects", "Jobs"];
 const TAB_TYPES = ["gig", "project", "job"];
 
 export default function SavedInfo() {
+  const t = useTranslations("saved");
   const [getCurrentTab, setCurrentTab] = useState(0);
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
+
+  const tabs = [t("tabServices"), t("tabProjects"), t("tabJobs")];
+
+  const emptyMessages = [
+    t("noSavedServices"),
+    t("noSavedProjects"),
+    t("noSavedJobs"),
+  ];
 
   const savedItems = useQuery(
     api.marketplace.savedItems.list,
@@ -56,8 +65,8 @@ export default function SavedInfo() {
           </div>
           <div className="col-lg-12">
             <div className="dashboard_title_area">
-              <h2>Saved</h2>
-              <p className="text">Your saved gigs, projects, and jobs.</p>
+              <h2>{t("title")}</h2>
+              <p className="text">{t("pageDescription")}</p>
             </div>
           </div>
         </div>
@@ -67,7 +76,7 @@ export default function SavedInfo() {
               <div className="navtab-style1">
                 <nav>
                   <div className="nav nav-tabs mb30">
-                    {TABS.map((item, i) => (
+                    {tabs.map((item, i) => (
                       <button
                         onClick={() => setCurrentTab(i)}
                         key={i}
@@ -89,7 +98,7 @@ export default function SavedInfo() {
                 {/* Not authenticated */}
                 {isLoaded && !isAuthenticated && (
                   <div className="text-center py-5">
-                    <p className="text mb-0">Please sign in to view your saved items.</p>
+                    <p className="text mb-0">{t("signInPrompt")}</p>
                   </div>
                 )}
 
@@ -103,7 +112,7 @@ export default function SavedInfo() {
                 {/* Clerk authenticated but not yet in Convex */}
                 {isAuthenticated && convexUser === null && (
                   <div className="text-center py-4">
-                    <p className="text mb-0">Setting up your account...</p>
+                    <p className="text mb-0">{t("settingUpAccount")}</p>
                   </div>
                 )}
 
@@ -119,7 +128,7 @@ export default function SavedInfo() {
                   <div className="text-center py-5">
                     <i className="flaticon-like fz40 text mb20" />
                     <p className="text mb-0">
-                      No saved {TABS[getCurrentTab].toLowerCase()} yet.
+                      {emptyMessages[getCurrentTab]}
                     </p>
                   </div>
                 )}
@@ -139,7 +148,7 @@ export default function SavedInfo() {
                               <Image
                                 fill
                                 src={item.itemImage}
-                                alt={item.itemTitle ?? "Saved item"}
+                                alt={item.itemTitle ?? t("savedItem")}
                                 style={{ objectFit: "cover" }}
                               />
                             </div>
@@ -157,10 +166,10 @@ export default function SavedInfo() {
                             <h6 className="list-title mb10">
                               {item.itemUrl ? (
                                 <Link href={item.itemUrl} className="text-dark">
-                                  {item.itemTitle ?? "Untitled"}
+                                  {item.itemTitle ?? t("untitled")}
                                 </Link>
                               ) : (
-                                item.itemTitle ?? "Untitled"
+                                item.itemTitle ?? t("untitled")
                               )}
                             </h6>
 
@@ -171,7 +180,7 @@ export default function SavedInfo() {
                                   href={item.itemUrl}
                                   className="ud-btn btn-thm-border bdrs4 fz14"
                                 >
-                                  View
+                                  {t("view")}
                                 </Link>
                               )}
                               <button
@@ -187,7 +196,7 @@ export default function SavedInfo() {
                                 ) : (
                                   <>
                                     <i className="far fa-heart me-1" />
-                                    Remove
+                                    {t("remove")}
                                   </>
                                 )}
                               </button>

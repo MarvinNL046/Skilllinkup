@@ -1319,5 +1319,21 @@
     "thankYou": "Bedankt! Je review is ingediend.",
     "blindVisibilityNote": "Je review wordt zichtbaar zodra beide partijen hun review hebben ingediend.",
     "loadingReviewForm": "Reviewformulier laden..."
+  },
+  "saved": {
+    "title": "Opgeslagen",
+    "pageDescription": "Je opgeslagen services, projecten en vacatures.",
+    "tabServices": "Services",
+    "tabProjects": "Projecten",
+    "tabJobs": "Vacatures",
+    "signInPrompt": "Log in om je opgeslagen items te bekijken.",
+    "settingUpAccount": "Je account wordt ingesteld...",
+    "noSavedServices": "Nog geen opgeslagen services.",
+    "noSavedProjects": "Nog geen opgeslagen projecten.",
+    "noSavedJobs": "Nog geen opgeslagen vacatures.",
+    "untitled": "Naamloos",
+    "savedItem": "Opgeslagen item",
+    "view": "Bekijken",
+    "remove": "Verwijderen"
   }
 }

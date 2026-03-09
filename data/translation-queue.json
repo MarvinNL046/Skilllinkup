@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 57
+    "completed": 58
   },
   "queue": [
     {
@@ -590,7 +590,7 @@
       "file": "src/app/(dashboard)/saved/page.jsx",
       "description": "Saved items page",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 6,
       "phase": 6
     },
