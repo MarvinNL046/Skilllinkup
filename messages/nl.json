@@ -884,6 +884,21 @@
     "heroTitle": "Vind je volgende kans",
     "heroText": "Bekijk vacatures van topbedrijven of plaats een vacature om het juiste talent te vinden.",
     "searchPlaceholder": "Functietitel, skill of bedrijf",
-    "search": "Zoeken"
+    "search": "Zoeken",
+    "browseTitle": "Vacatures bekijken — SkillLinkup",
+    "browseDescription": "Bekijk freelance vacatures op SkillLinkup. Vind remote en lokale mogelijkheden die bij jouw skills passen.",
+    "breadcrumbHome": "Home",
+    "breadcrumbJobs": "Vacatures",
+    "breadcrumbBrowse": "Bekijken",
+    "jobList": "Vacaturelijst",
+    "jobListText": "Bekijk openstaande functies van bedrijven die jouw skills zoeken.",
+    "allCategories": "Alle categorieën",
+    "noJobsTitle": "Nog geen vacatures geplaatst",
+    "noJobsDescription": "Plaats een vacature om de perfecte freelancer te vinden",
+    "postAJob": "Vacature plaatsen",
+    "category": "Categorie",
+    "salary": "Salaris",
+    "jobType": "Type baan",
+    "level": "Niveau"
   }
 }

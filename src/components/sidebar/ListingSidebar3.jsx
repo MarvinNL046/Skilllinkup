@@ -1,3 +1,5 @@
+"use client";
+import { useTranslations } from "next-intl";
 import ClearButton from "../button/ClearButton";
 import BudgetOption2 from "../option/BudgetOption2";
 import CategoryOption1 from "../option/CategoryOption1";
@@ -5,6 +7,7 @@ import JobTypeOption1 from "../option/JobTypeOption1";
 import LevelOption1 from "../option/LevelOption1";
 
 export default function ListingSidebar3() {
+  const t = useTranslations("jobsHub");
   return (
     <>
       <div className="list-sidebar-style1 d-none d-lg-block">
@@ -20,7 +23,7 @@ export default function ListingSidebar3() {
                   aria-expanded="false"
                   aria-controls="collapse0"
                 >
-                  Category
+                  {t("category")}
                 </button>
               </h4>
             </div>
@@ -46,7 +49,7 @@ export default function ListingSidebar3() {
                   aria-expanded="false"
                   aria-controls="collapse1"
                 >
-                  Salary
+                  {t("salary")}
                 </button>
               </h4>
             </div>
@@ -74,7 +77,7 @@ export default function ListingSidebar3() {
                   aria-expanded="false"
                   aria-controls="collapse2"
                 >
-                  Job Type
+                  {t("jobType")}
                 </button>
               </h4>
             </div>
@@ -100,7 +103,7 @@ export default function ListingSidebar3() {
                   aria-expanded="false"
                   aria-controls="collapse3"
                 >
-                  Level
+                  {t("level")}
                 </button>
               </h4>
             </div>

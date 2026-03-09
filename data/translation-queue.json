@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 42
+    "completed": 43
   },
   "queue": [
     {
@@ -440,7 +440,7 @@
       "file": "src/app/(jobs-world)/jobs/browse",
       "description": "Job listings, filters",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 5,
       "phase": 5
     },

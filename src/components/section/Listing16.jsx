@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import useConvexJobs from "@/hook/useConvexJobs";
 import ListingOption2 from "../element/ListingOption2";
 import ListingSidebar3 from "../sidebar/ListingSidebar3";
@@ -12,6 +13,7 @@ import JobCard4 from "../card/JobCard4";
 import EmptyState from "@/components/ui/EmptyState";
 
 export default function Listing16() {
+  const t = useTranslations("jobsHub");
   const searchParams = useSearchParams();
   const setSearch = listingStore((state) => state.setSearch);
   const getSearch = listingStore((state) => state.getSearch);
@@ -95,9 +97,9 @@ export default function Listing16() {
               {content.length === 0 ? (
                 <EmptyState
                   icon="💼"
-                  title="No jobs posted yet"
-                  description="Post a job to find the perfect freelancer"
-                  actionLabel="Post a Job"
+                  title={t("noJobsTitle")}
+                  description={t("noJobsDescription")}
+                  actionLabel={t("postAJob")}
                   actionHref="/manage-jobs"
                 />
               ) : (

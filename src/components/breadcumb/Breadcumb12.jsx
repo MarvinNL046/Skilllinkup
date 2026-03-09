@@ -1,8 +1,10 @@
 "use client";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import listingStore from "@/store/listingStore";
 
 export default function Breadcumb12() {
+  const t = useTranslations("jobsHub");
   const getSearch = listingStore((state) => state.getSearch);
   const setSearch = listingStore((state) => state.setSearch);
   const setCategory = listingStore((state) => state.setCategory);
@@ -39,9 +41,9 @@ export default function Breadcumb12() {
             <div className="row wow fadeInUp">
               <div className="col-xl-7">
                 <div className="position-relative">
-                  <h2>Job List</h2>
+                  <h2>{t("jobList")}</h2>
                   <p className="text">
-                    Browse open positions from companies looking for your skills.
+                    {t("jobListText")}
                   </p>
                 </div>
                 <div className="advance-search-tab bgc-white p10 bdrs4 mt30">
@@ -58,7 +60,7 @@ export default function Breadcumb12() {
                               className="form-control"
                               type="text"
                               name="search"
-                              placeholder="Job title, skill, or company"
+                              placeholder={t("searchPlaceholder")}
                               value={getSearch}
                               onChange={(e) => setSearch(e.target.value)}
                             />
@@ -72,12 +74,11 @@ export default function Breadcumb12() {
                           className="form-select"
                           value={getCategory[0] || ""}
                           onChange={(e) => {
-                            // Clear existing categories first, then set new one
                             listingStore.getState().getCategory.forEach(() => setCategory(""));
                             if (e.target.value) setCategory(e.target.value);
                           }}
                         >
-                          <option value="">All Categories</option>
+                          <option value="">{t("allCategories")}</option>
                           {categories.map((cat) => (
                             <option key={cat} value={cat}>
                               {cat}
@@ -96,7 +97,7 @@ export default function Breadcumb12() {
                             if (el) el.scrollIntoView({ behavior: "smooth" });
                           }}
                         >
-                          Search
+                          {t("search")}
                         </button>
                       </div>
                     </div>

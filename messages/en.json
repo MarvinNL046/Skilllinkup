@@ -884,6 +884,21 @@
     "heroTitle": "Find Your Next Opportunity",
     "heroText": "Browse job openings from top companies or post a vacancy to find the right talent.",
     "searchPlaceholder": "Job title, skill, or company",
-    "search": "Search"
+    "search": "Search",
+    "browseTitle": "Browse Jobs — SkillLinkup",
+    "browseDescription": "Browse freelance job listings on SkillLinkup. Find remote and local opportunities that match your skills and experience.",
+    "breadcrumbHome": "Home",
+    "breadcrumbJobs": "Jobs",
+    "breadcrumbBrowse": "Browse",
+    "jobList": "Job List",
+    "jobListText": "Browse open positions from companies looking for your skills.",
+    "allCategories": "All Categories",
+    "noJobsTitle": "No jobs posted yet",
+    "noJobsDescription": "Post a job to find the perfect freelancer",
+    "postAJob": "Post a Job",
+    "category": "Category",
+    "salary": "Salary",
+    "jobType": "Job Type",
+    "level": "Level"
   }
 }
