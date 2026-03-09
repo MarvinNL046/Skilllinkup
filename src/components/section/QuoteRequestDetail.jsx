@@ -1,11 +1,13 @@
 "use client";
 import { useQuery, useMutation } from "convex/react";
+import { useTranslations } from "next-intl";
 import { api } from "../../../convex/_generated/api";
 import { useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
 
 export default function QuoteRequestDetail({ requestId }) {
+  const t = useTranslations("localHub");
   const request = useQuery(api.marketplace.quotes.getRequestById, { requestId });
   const leadStatus = useQuery(api.marketplace.leads.getLeadStatus, { quoteRequestId: requestId });
   const credits = useQuery(api.marketplace.leads.getMyCredits);
@@ -26,9 +28,9 @@ export default function QuoteRequestDetail({ requestId }) {
     return (
       <section className="pt30 pb90">
         <div className="container text-center py-5">
-          <h4>Quote Request Not Found</h4>
+          <h4>{t("notFound")}</h4>
           <Link href="/local/quote-requests" className="ud-btn btn-thm bdrs4 mt15">
-            Back to Quote Requests
+            {t("backToQuoteRequests")}
           </Link>
         </div>
       </section>
@@ -48,7 +50,7 @@ export default function QuoteRequestDetail({ requestId }) {
         `Lead claimed! ${result.creditsSpent} credits deducted. New balance: ${result.newBalance}`
       );
     } catch (err) {
-      toast.error(err.message || "Failed to claim lead.");
+      toast.error(err.message || t("failedToClaim"));
     } finally {
       setClaiming(false);
     }
@@ -64,12 +66,12 @@ export default function QuoteRequestDetail({ requestId }) {
               <h3 className="mb15">{request.title}</h3>
 
               <div className="d-flex gap-3 mb20 fz14 body-color">
-                <span><i className="flaticon-place me-1" />{request.locationCity || "No location"}</span>
-                <span><i className="flaticon-briefcase me-1" />{request.categoryName || "General"}</span>
-                <span><i className="flaticon-dollar me-1" />{request.budgetIndication || "Flexible"}</span>
+                <span><i className="flaticon-place me-1" />{request.locationCity || t("noLocation")}</span>
+                <span><i className="flaticon-briefcase me-1" />{request.categoryName || t("general")}</span>
+                <span><i className="flaticon-dollar me-1" />{request.budgetIndication || t("flexible")}</span>
               </div>
 
-              <h5 className="mb10">Description</h5>
+              <h5 className="mb10">{t("description")}</h5>
               {canViewFullDetails ? (
                 <p className="fz15">{request.description || request.descriptionPreview}</p>
               ) : (
@@ -78,7 +80,7 @@ export default function QuoteRequestDetail({ requestId }) {
                   {request.descriptionPreview !== request.description && (
                     <p className="fz13 body-color">
                       <i className="flaticon-lock me-1" />
-                      Claim this lead to see the full description and client details.
+                      {t("claimToSee")}
                     </p>
                   )}
                 </div>
@@ -87,24 +89,26 @@ export default function QuoteRequestDetail({ requestId }) {
               {request.preferredDate && (
                 <p className="fz14 body-color mt15">
                   <i className="flaticon-calendar me-1" />
-                  Preferred date: {new Date(request.preferredDate).toLocaleDateString()}
+                  {t("preferredDate")} {new Date(request.preferredDate).toLocaleDateString()}
                 </p>
               )}
 
               {/* Client details (only if claimed) */}
               {canViewFullDetails && !request.isOwner && (
                 <div className="bgc-thm3 bdrs8 p20 mt20">
-                  <h5 className="mb10">Client Contact</h5>
+                  <h5 className="mb10">{t("clientContact")}</h5>
                   <p className="fz14 mb5">
                     <i className="flaticon-user me-1" />
                     {request.clientName || "—"}
                   </p>
                   <p className="body-color fz13">
-                    You have claimed this lead. Check your{" "}
-                    <Link href="/dashboard/my-leads" className="text-thm">
-                      My Leads
-                    </Link>{" "}
-                    page for full contact details.
+                    {t.rich("claimedLeadInfo", {
+                      link: (chunks) => (
+                        <Link href="/dashboard/my-leads" className="text-thm">
+                          {t("myLeads")}
+                        </Link>
+                      ),
+                    })}
                   </p>
                 </div>
               )}
@@ -114,23 +118,23 @@ export default function QuoteRequestDetail({ requestId }) {
           {/* Sidebar */}
           <div className="col-lg-4">
             <div className="bdr1 bdrs8 p30">
-              <h5 className="mb15">Lead Status</h5>
+              <h5 className="mb15">{t("leadStatus")}</h5>
 
               <div className="d-flex justify-content-between fz14 mb10">
-                <span>Slots taken</span>
+                <span>{t("slotsTaken")}</span>
                 <span className="fw500">
                   {leadStatus?.claimedSlots ?? 0} / {leadStatus?.maxSlots ?? 3}
                 </span>
               </div>
 
               <div className="d-flex justify-content-between fz14 mb10">
-                <span>Slots remaining</span>
+                <span>{t("slotsRemaining")}</span>
                 <span className="fw500">{leadStatus?.slotsRemaining ?? 3}</span>
               </div>
 
               <div className="d-flex justify-content-between fz14 mb20">
-                <span>Your balance</span>
-                <span className="fw500">{balance} credits</span>
+                <span>{t("yourBalance")}</span>
+                <span className="fw500">{balance} {t("credits")}</span>
               </div>
 
               <hr className="mb20" />
@@ -138,19 +142,19 @@ export default function QuoteRequestDetail({ requestId }) {
               {leadStatus?.alreadyClaimed ? (
                 <div className="text-center">
                   <i className="flaticon-review-1 fz30 text-success d-block mb10" />
-                  <p className="fw500">You claimed this lead</p>
+                  <p className="fw500">{t("youClaimedLead")}</p>
                 </div>
               ) : request.isOwner ? (
-                <p className="text-center body-color">This is your request.</p>
+                <p className="text-center body-color">{t("yourRequest")}</p>
               ) : request.status !== "open" ? (
-                <p className="text-center body-color">This request is closed.</p>
+                <p className="text-center body-color">{t("requestClosed")}</p>
               ) : !isLoggedIn ? (
                 <Link href="/login" className="ud-btn btn-thm bdrs4 w-100">
-                  Log In to Claim
+                  {t("logInToClaim")}
                 </Link>
               ) : !isFreelancer ? (
                 <p className="fz13 body-color text-center">
-                  You need a freelancer profile to claim leads.
+                  {t("needFreelancerProfile")}
                 </p>
               ) : (
                 <div>
@@ -162,8 +166,8 @@ export default function QuoteRequestDetail({ requestId }) {
                       disabled={claiming || balance < leadStatus.creditCost}
                     >
                       {claiming
-                        ? "Claiming..."
-                        : `Claim Lead (${leadStatus.creditCost} credits)`}
+                        ? t("claiming")
+                        : t("claimLead", { cost: leadStatus.creditCost })}
                     </button>
                   )}
 
@@ -175,17 +179,17 @@ export default function QuoteRequestDetail({ requestId }) {
                       disabled={claiming || balance < leadStatus.exclusiveCost}
                     >
                       {claiming
-                        ? "Claiming..."
-                        : `Claim Exclusive (${leadStatus.exclusiveCost} credits)`}
+                        ? t("claiming")
+                        : t("claimExclusive", { cost: leadStatus.exclusiveCost })}
                     </button>
                   )}
 
                   {/* Insufficient credits warning */}
                   {balance < leadStatus?.creditCost && (
                     <div className="mt10 text-center">
-                      <p className="fz13 text-danger mb10">Insufficient credits</p>
+                      <p className="fz13 text-danger mb10">{t("insufficientCredits")}</p>
                       <Link href="/dashboard/credits" className="ud-btn btn-white bdrs4 w-100">
-                        Buy Credits
+                        {t("buyCredits")}
                       </Link>
                     </div>
                   )}
