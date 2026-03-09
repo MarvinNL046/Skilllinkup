@@ -1,27 +1,30 @@
 "use client";
 import { Tooltip } from "react-tooltip";
 import Link from "next/link";
-
-const STATUS_LABELS = {
-  open: { label: "Open", className: "text-success" },
-  closed: { label: "Closed", className: "text-secondary" },
-  filled: { label: "Filled", className: "text-primary" },
-};
+import { useTranslations } from "next-intl";
 
 export default function ManageJobCard({ job, onEdit, onDelete }) {
-  const title = job?.title ?? "Untitled Job";
+  const t = useTranslations("manageJobs");
+
+  const title = job?.title ?? t("untitledJob");
   const company = job?.company ?? "";
   const status = job?.status ?? "open";
   const applicationCount = job?.applicationCount ?? 0;
-  const categoryName = job?.categoryName ?? "Uncategorized";
+  const categoryName = job?.categoryName ?? t("uncategorized");
   const slug = job?.slug ?? "";
   const createdAt = job?.createdAt;
   const expiresAt = job?.expiresAt;
 
+  const STATUS_LABELS = {
+    open: { label: t("statusOpen"), className: "text-success" },
+    closed: { label: t("statusClosed"), className: "text-secondary" },
+    filled: { label: t("statusFilled"), className: "text-primary" },
+  };
+
   const statusInfo = STATUS_LABELS[status] ?? { label: status, className: "text-secondary" };
 
   const formatDate = (ts) => {
-    if (!ts) return "—";
+    if (!ts) return "\u2014";
     return new Date(ts).toLocaleDateString("en-GB", {
       day: "2-digit",
       month: "short",
@@ -56,7 +59,9 @@ export default function ManageJobCard({ job, onEdit, onDelete }) {
       <td className="vam">
         <span className="fz14">{formatDate(createdAt)}</span>
         <br />
-        <span className="fz13 text-muted">{expiresAt ? `Exp: ${formatDate(expiresAt)}` : "No expiry"}</span>
+        <span className="fz13 text-muted">
+          {expiresAt ? `${t("expiresPrefix")}${formatDate(expiresAt)}` : t("noExpiry")}
+        </span>
       </td>
       <td className="vam">
         <span className={`fz13 fw500 ${statusInfo.className}`}>{statusInfo.label}</span>
@@ -70,7 +75,7 @@ export default function ManageJobCard({ job, onEdit, onDelete }) {
               id={tooltipViewId}
             >
               <Tooltip anchorSelect={`#${tooltipViewId}`} className="ui-tooltip" place="top">
-                View Job
+                {t("viewJob")}
               </Tooltip>
               <span className="flaticon-document" />
             </Link>
@@ -84,7 +89,7 @@ export default function ManageJobCard({ job, onEdit, onDelete }) {
             style={{ cursor: "pointer" }}
           >
             <Tooltip anchorSelect={`#${tooltipEditId}`} className="ui-tooltip" place="top">
-              Edit
+              {t("edit")}
             </Tooltip>
             <span className="flaticon-pencil" />
           </a>
@@ -97,7 +102,7 @@ export default function ManageJobCard({ job, onEdit, onDelete }) {
             style={{ cursor: "pointer" }}
           >
             <Tooltip anchorSelect={`#${tooltipDeleteId}`} className="ui-tooltip" place="top">
-              Delete
+              {t("delete")}
             </Tooltip>
             <span className="flaticon-delete" />
           </a>

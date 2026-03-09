@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import DashboardNavigation from "../header/DashboardNavigation";
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
@@ -10,14 +11,8 @@ import DeleteModal from "../modal/DeleteModal";
 import useConvexUser from "@/hook/useConvexUser";
 import { toast } from "sonner";
 
-const tabs = [
-  { label: "All Jobs", status: null },
-  { label: "Open", status: "open" },
-  { label: "Closed", status: "closed" },
-  { label: "Expired", status: "expired" },
-];
-
 export default function ManageJobInfo() {
+  const t = useTranslations("manageJobs");
   const [selectedTab, setSelectedTab] = useState(0);
   const [selectedJob, setSelectedJob] = useState(null);
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
@@ -29,6 +24,13 @@ export default function ManageJobInfo() {
     api.marketplace.jobs.getByClient,
     convexUser?._id ? { clientId: convexUser._id, limit: 50 } : "skip"
   );
+
+  const tabs = [
+    { label: t("allJobs"), status: null },
+    { label: t("open"), status: "open" },
+    { label: t("closed"), status: "closed" },
+    { label: t("expired"), status: "expired" },
+  ];
 
   const activeStatus = tabs[selectedTab].status;
 
@@ -43,9 +45,9 @@ export default function ManageJobInfo() {
   const handleDelete = async (jobId) => {
     try {
       await removeJob({ jobId });
-      toast.success("Job deleted successfully");
+      toast.success(t("jobDeleted"));
     } catch (err) {
-      toast.error(err.message || "Failed to delete job");
+      toast.error(err.message || t("jobDeleteFailed"));
       throw err;
     }
   };
@@ -53,9 +55,9 @@ export default function ManageJobInfo() {
   const handleUpdate = async (fields) => {
     try {
       await updateJob(fields);
-      toast.success("Job updated successfully");
+      toast.success(t("jobUpdated"));
     } catch (err) {
-      toast.error(err.message || "Failed to update job");
+      toast.error(err.message || t("jobUpdateFailed"));
       throw err;
     }
   };
@@ -93,7 +95,7 @@ export default function ManageJobInfo() {
           <div className="col-xl-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
               <div className="text-center py-4">
-                <p className="text mb-0">Setting up your account...</p>
+                <p className="text mb-0">{t("settingUpAccount")}</p>
               </div>
             </div>
           </div>
@@ -114,7 +116,7 @@ export default function ManageJobInfo() {
           <div className="col-xl-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
               <div className="text-center py30">
-                <p className="fz15 text-muted">Please sign in to manage your jobs.</p>
+                <p className="fz15 text-muted">{t("signInPrompt")}</p>
               </div>
             </div>
           </div>
@@ -132,8 +134,8 @@ export default function ManageJobInfo() {
           </div>
           <div className="col-lg-9">
             <div className="dashboard_title_area">
-              <h2>Manage Jobs</h2>
-              <p className="text">View and manage your posted jobs.</p>
+              <h2>{t("title")}</h2>
+              <p className="text">{t("pageDescription")}</p>
             </div>
           </div>
           <div className="col-lg-3">
@@ -141,9 +143,9 @@ export default function ManageJobInfo() {
               <span
                 className="ud-btn btn-thm default-box-shadow2"
                 style={{ opacity: 0.5, cursor: "not-allowed" }}
-                title="Coming soon"
+                title={t("comingSoon")}
               >
-                Post a Job
+                {t("postAJob")}
                 <i className="fal fa-arrow-right-long" />
               </span>
             </div>
@@ -181,24 +183,24 @@ export default function ManageJobInfo() {
                   {isLoading ? (
                     <div className="text-center py30">
                       <div className="spinner-border text-primary" role="status">
-                        <span className="visually-hidden">Loading...</span>
+                        <span className="visually-hidden">{t("loading")}</span>
                       </div>
-                      <p className="mt10 fz14 text-muted">Loading your jobs...</p>
+                      <p className="mt10 fz14 text-muted">{t("loadingJobs")}</p>
                     </div>
                   ) : filteredJobs.length === 0 ? (
                     <div className="text-center py30">
                       <p className="fz15 text-muted">
                         {activeStatus
-                          ? `No ${activeStatus} jobs found.`
-                          : "You haven't posted any jobs yet."}
+                          ? t("noJobsStatus", { status: activeStatus })
+                          : t("noJobsYet")}
                       </p>
                       {!activeStatus && (
                         <span
                           className="ud-btn btn-thm mt10"
                           style={{ opacity: 0.5, cursor: "not-allowed" }}
-                          title="Coming soon"
+                          title={t("comingSoon")}
                         >
-                          Post Your First Job
+                          {t("postFirstJob")}
                           <i className="fal fa-arrow-right-long" />
                         </span>
                       )}
@@ -207,11 +209,11 @@ export default function ManageJobInfo() {
                     <table className="table-style3 table at-savesearch">
                       <thead className="t-head">
                         <tr>
-                          <th scope="col">Title</th>
-                          <th scope="col">Applications</th>
-                          <th scope="col">Created &amp; Expired</th>
-                          <th scope="col">Status</th>
-                          <th scope="col">Action</th>
+                          <th scope="col">{t("columnTitle")}</th>
+                          <th scope="col">{t("columnApplications")}</th>
+                          <th scope="col">{t("columnCreatedExpired")}</th>
+                          <th scope="col">{t("columnStatus")}</th>
+                          <th scope="col">{t("columnAction")}</th>
                         </tr>
                       </thead>
                       <tbody className="t-body">
