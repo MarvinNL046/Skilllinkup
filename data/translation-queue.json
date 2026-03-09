@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 20
+    "completed": 21
   },
   "queue": [
     {
@@ -220,7 +220,7 @@
       "file": "src/app/terms/page.jsx",
       "description": "Terms of service content",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 2,
       "phase": 2
     },

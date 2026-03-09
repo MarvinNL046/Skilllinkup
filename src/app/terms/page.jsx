@@ -1,15 +1,20 @@
 import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 import TermsCondition1 from "@/components/section/TermsCondition1";
+import { getTranslations } from "next-intl/server";
 
-export const metadata = {
-    title: "Terms of Service",
-    description: "Read the SkillLinkup terms of service. Understand the rules and guidelines that govern use of our freelance marketplace platform.",
-    openGraph: {
-        title: "Terms of Service",
-        description: "Read the SkillLinkup terms of service. Understand the rules and guidelines that govern use of our freelance marketplace platform.",
-    },
-};
+export async function generateMetadata() {
+    const t = await getTranslations("terms");
+    return {
+        title: t("title"),
+        description: t("metaDescription"),
+        openGraph: {
+            title: t("title"),
+            description: t("metaDescription"),
+            url: "https://skilllinkup.com/terms",
+        },
+    };
+}
 
 export default function page() {
     return (
