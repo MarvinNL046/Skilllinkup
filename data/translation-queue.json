@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 27
+    "completed": 28
   },
   "queue": [
     {
@@ -290,7 +290,7 @@
       "file": "src/components/element/ListingOption2.jsx",
       "description": "{count} freelancers available, sort labels",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 3,
       "phase": 3
     },

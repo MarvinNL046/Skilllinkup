@@ -2,13 +2,14 @@
 import toggleStore from "@/store/toggleStore";
 import listingStore from "@/store/listingStore";
 import SortOption1 from "../option/SortOption1";
-import ClearButton from "../button/ClearButton";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 export default function ListingOption2({
   itemLength,
   itemLabel = "services",
 }) {
+  const t = useTranslations("listing");
   const listingToggle = toggleStore((state) => state.listingToggleHandler);
   const viewMode = listingStore((state) => state.getViewMode);
   const setViewMode = listingStore((state) => state.setViewMode);
@@ -19,7 +20,7 @@ export default function ListingOption2({
         <div className="col-md-6">
           <div className="text-center text-md-start">
             <p className="text mb-0 mb10-sm">
-              <span className="fw500">{itemLength}</span> {itemLabel} available
+              <span className="fw500">{itemLength}</span> {itemLabel} {t("available")}
             </p>
           </div>
         </div>
@@ -40,7 +41,7 @@ export default function ListingOption2({
                       src="/images/icon/all-filter-icon.svg"
                       alt="icon"
                     />
-                    All Filter
+                    {t("allFilter")}
                   </button>
                 </li>
               </ul>
@@ -58,7 +59,7 @@ export default function ListingOption2({
                   color: viewMode === "grid" ? "#ef2b70" : "#999",
                   fontSize: 16,
                 }}
-                title="Grid view"
+                title={t("gridView")}
               >
                 <i className="fa fa-th-large" />
               </button>
@@ -73,7 +74,7 @@ export default function ListingOption2({
                   color: viewMode === "list" ? "#ef2b70" : "#999",
                   fontSize: 16,
                 }}
-                title="List view"
+                title={t("listView")}
               >
                 <i className="fa fa-list-ul" />
               </button>

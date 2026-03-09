@@ -591,7 +591,15 @@
     "freelancers": "freelancers",
     "noFreelancersTitle": "No freelancers yet",
     "noFreelancersDescription": "Join as a freelancer to get started",
-    "noFreelancersAction": "Become a Freelancer"
+    "noFreelancersAction": "Become a Freelancer",
+    "available": "available",
+    "allFilter": "All Filter",
+    "gridView": "Grid view",
+    "listView": "List view",
+    "sortBy": "Sort by",
+    "bestSeller": "Best Seller",
+    "recommended": "Recommended",
+    "newArrivals": "New Arrivals"
   },
   "freelancerCard": {
     "availableNow": "Available Now",

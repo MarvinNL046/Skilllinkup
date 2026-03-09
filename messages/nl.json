@@ -591,7 +591,15 @@
     "freelancers": "freelancers",
     "noFreelancersTitle": "Nog geen freelancers",
     "noFreelancersDescription": "Word freelancer om te beginnen",
-    "noFreelancersAction": "Word Freelancer"
+    "noFreelancersAction": "Word Freelancer",
+    "available": "beschikbaar",
+    "allFilter": "Alle Filters",
+    "gridView": "Rasterweergave",
+    "listView": "Lijstweergave",
+    "sortBy": "Sorteer op",
+    "bestSeller": "Meest verkocht",
+    "recommended": "Aanbevolen",
+    "newArrivals": "Nieuw"
   },
   "freelancerCard": {
     "availableNow": "Nu Beschikbaar",
