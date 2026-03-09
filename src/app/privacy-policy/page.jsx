@@ -1,15 +1,20 @@
 import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 import PrivacyPolicy from "@/components/section/PrivacyPolicy";
+import { getTranslations } from "next-intl/server";
 
-export const metadata = {
-    title: "Privacy Policy",
-    description: "Learn how SkillLinkup collects, uses, and protects your personal data. Our privacy policy covers cookies, authentication, analytics, and your GDPR rights.",
-    openGraph: {
-        title: "Privacy Policy",
-        description: "Learn how SkillLinkup collects, uses, and protects your personal data. Our privacy policy covers cookies, authentication, analytics, and your GDPR rights.",
-    },
-};
+export async function generateMetadata() {
+    const t = await getTranslations("privacy");
+    return {
+        title: t("title"),
+        description: t("metaDescription"),
+        openGraph: {
+            title: t("title"),
+            description: t("metaDescription"),
+            url: "https://skilllinkup.com/privacy-policy",
+        },
+    };
+}
 
 export default function page() {
     return (

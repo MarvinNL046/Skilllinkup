@@ -8,7 +8,7 @@ const LEVEL_CONFIG = {
   new:       { label: "New",       color: "#9ca3af", textColor: "#fff" },
 };
 
-function LevelBadge({ level }) {
+export function LevelBadge({ level }) {
   const config = LEVEL_CONFIG[level] || LEVEL_CONFIG.new;
   return (
     <span
@@ -21,10 +21,24 @@ function LevelBadge({ level }) {
 }
 
 export default function FreelancerCard2({ data }) {
+  const tags = data.tags || [];
+  const visibleTags = tags.slice(0, 3);
+  const overflow = tags.length - 3;
+
   return (
     <>
-      <div className="freelancer-style1 text-center bdr1 hover-box-shadow">
-        <div className="thumb w90 mb25 mx-auto position-relative rounded-circle">
+      <div className="freelancer-style1 bdr1 hover-box-shadow" style={{ textAlign: "center", overflow: "hidden" }}>
+        {data.portfolioImg && (
+          <div style={{ width: "100%", height: 120, position: "relative", borderRadius: "8px 8px 0 0", overflow: "hidden" }}>
+            <Image
+              src={data.portfolioImg}
+              alt={`${data.name} portfolio`}
+              fill
+              style={{ objectFit: "cover" }}
+            />
+          </div>
+        )}
+        <div className="thumb w90 mb15 mx-auto position-relative rounded-circle" style={{ marginTop: data.portfolioImg ? 16 : 0 }}>
           <Image
             height={90}
             width={90}
@@ -37,6 +51,38 @@ export default function FreelancerCard2({ data }) {
         <div className="details">
           <h5 className="title mb-1">{data.name}</h5>
           <p className="mb-0">{data.profession}</p>
+          {data.isAvailable && (
+            <span
+              style={{
+                display: "inline-block",
+                background: "#f0fdf4",
+                color: "#166534",
+                fontSize: 12,
+                padding: "2px 10px",
+                borderRadius: 999,
+                marginTop: 4,
+                marginBottom: 4,
+                fontWeight: 500,
+              }}
+            >
+              Available Now
+            </span>
+          )}
+          {data.title && (
+            <p
+              className="fz13 text-muted mb-0"
+              style={{
+                lineHeight: 1.4,
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                marginTop: 4,
+              }}
+            >
+              {data.title}
+            </p>
+          )}
           <div className="review">
             <p>
               <i className="fas fa-star fz10 review-color pr10" />
@@ -44,14 +90,29 @@ export default function FreelancerCard2({ data }) {
               {data.reviews > 0 && ` (${data.reviews} reviews)`}
             </p>
           </div>
-          {data.tags && data.tags.length > 0 && (
+          {visibleTags.length > 0 && (
             <div className="skill-tags d-flex align-items-center justify-content-center mb5 flex-wrap gap-1">
-              {data.tags.slice(0, 3).map((tag, i) => (
+              {visibleTags.map((tag, i) => (
                 <span key={i} className="tag">{tag}</span>
               ))}
+              {overflow > 0 && (
+                <span
+                  className="tag"
+                  style={{ background: "#f3f4f6", color: "#6b7280" }}
+                >
+                  +{overflow}
+                </span>
+              )}
             </div>
           )}
-          <hr className="opacity-100 mt20 mb15" />
+          {(data.totalOrders > 0 || data.completionRate) && (
+            <p className="fz13 text-muted mb-0 mt5">
+              {data.totalOrders > 0 && <>{data.totalOrders} jobs</>}
+              {data.totalOrders > 0 && data.completionRate && " · "}
+              {data.completionRate && <>{data.completionRate}% success</>}
+            </p>
+          )}
+          <hr className="opacity-100 mt15 mb15" />
           <div className="fl-meta d-flex align-items-center justify-content-between">
             <a className="meta fw500 text-start">
               Location

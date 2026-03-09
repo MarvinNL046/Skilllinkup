@@ -50,38 +50,42 @@ export const getByConversation = query({
     await requireConversationParticipant(ctx, args.conversationId);
     const limit = args.limit ?? 50;
 
-    // Use the by_conversation index which covers [conversationId, createdAt]
-    const allMessages = await ctx.db
+    // Query in descending order and take only the last N messages.
+    // This avoids loading the entire conversation history into memory.
+    const messages = await ctx.db
       .query("messages")
       .withIndex("by_conversation", (q) =>
         q.eq("conversationId", args.conversationId)
       )
-      .order("asc") // newest last = ascending createdAt
-      .collect();
+      .order("desc")
+      .take(limit);
 
-    // Cap to the most recent `limit` messages
-    const messages =
-      allMessages.length > limit
-        ? allMessages.slice(allMessages.length - limit)
-        : allMessages;
+    // Restore chronological order (oldest → newest) for the frontend.
+    messages.reverse();
 
-    // Enrich with sender user doc
-    const enriched = await Promise.all(
-      messages.map(async (message) => {
-        const sender = message.senderId ? await ctx.db.get(message.senderId) : null;
-
-        return {
-          ...message,
-          sender: sender
-            ? {
-                _id: sender._id,
-                name: sender.name,
-                image: sender.image ?? sender.avatar,
-              }
-            : null,
-        };
-      })
+    // Batch-load all unique senders in a single round of Promise.all
+    // instead of one ctx.db.get per message (N+1 → 1 batch).
+    const senderIds = [...new Set(
+      messages.map((m) => m.senderId).filter(Boolean) as Id<"users">[]
+    )];
+    const senderDocs = await Promise.all(senderIds.map((id) => ctx.db.get(id)));
+    const senderMap = new Map(
+      senderDocs
+        .filter((s): s is NonNullable<typeof s> => s !== null)
+        .map((s) => [s._id, s])
     );
+
+    const enriched = messages.map((msg) => ({
+      ...msg,
+      sender: msg.senderId
+        ? (() => {
+            const s = senderMap.get(msg.senderId as Id<"users">);
+            return s
+              ? { _id: s._id, name: s.name, image: s.image ?? s.avatar }
+              : null;
+          })()
+        : null,
+    }));
 
     return enriched;
   },
@@ -196,15 +200,19 @@ export const markRead = mutation({
         ? conversation.participant2
         : conversation.participant1;
 
-    // Fetch all unread messages from the other participant
-    const unreadMessages = await ctx.db
+    // Fetch unread messages from the other participant.
+    // .take(500) caps the scan so a very long conversation never loads
+    // unbounded rows into memory. 500 unread messages is a safe upper bound
+    // for any realistic use case.
+    const recentMessages = await ctx.db
       .query("messages")
       .withIndex("by_conversation", (q) =>
         q.eq("conversationId", args.conversationId)
       )
-      .collect();
+      .order("desc")
+      .take(500);
 
-    const toMark = unreadMessages.filter(
+    const toMark = recentMessages.filter(
       (m) => m.senderId === otherParticipantId && m.isRead === false
     );
 

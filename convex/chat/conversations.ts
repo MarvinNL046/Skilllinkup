@@ -15,17 +15,19 @@ export const list = query({
   handler: async (ctx, args) => {
     await requireOwner(ctx, args.userId);
 
-    // Fetch conversations where user is participant1
+    // Fetch conversations where user is participant1.
+    // .take(100) prevents unbounded reads for power users.
     const asParticipant1 = await ctx.db
       .query("conversations")
       .withIndex("by_participant1", (q) => q.eq("participant1", args.userId))
-      .collect();
+      .take(100);
 
-    // Fetch conversations where user is participant2
+    // Fetch conversations where user is participant2.
+    // .take(100) prevents unbounded reads for power users.
     const asParticipant2 = await ctx.db
       .query("conversations")
       .withIndex("by_participant2", (q) => q.eq("participant2", args.userId))
-      .collect();
+      .take(100);
 
     // Merge and deduplicate
     const all = [...asParticipant1, ...asParticipant2];
@@ -35,35 +37,51 @@ export const list = query({
       .slice()
       .sort((a, b) => (b.lastMessageAt ?? 0) - (a.lastMessageAt ?? 0));
 
-    // Enrich each conversation with the other participant's user doc
-    const enriched = await Promise.all(
-      sorted.map(async (conversation) => {
-        const otherParticipantId =
-          conversation.participant1 === args.userId
-            ? conversation.participant2
-            : conversation.participant1;
-
-        const otherUser = await ctx.db.get(otherParticipantId);
-
-        // Determine which unreadCount belongs to the current user
-        const unreadCount =
-          conversation.participant1 === args.userId
-            ? (conversation.unreadCount1 ?? 0)
-            : (conversation.unreadCount2 ?? 0);
-
-        return {
-          ...conversation,
-          otherParticipant: otherUser
-            ? {
-                _id: otherUser._id,
-                name: otherUser.name,
-                image: otherUser.image ?? otherUser.avatar,
-              }
-            : null,
-          unreadCount,
-        };
-      })
+    // Collect all unique other-participant IDs, then batch-fetch them in one
+    // round of Promise.all instead of one ctx.db.get per conversation (N+1 → 1 batch).
+    const otherParticipantIds = [
+      ...new Set(
+        sorted.map((c) =>
+          c.participant1 === args.userId ? c.participant2 : c.participant1
+        )
+      ),
+    ];
+    const otherUserDocs = await Promise.all(
+      otherParticipantIds.map((id) => ctx.db.get(id))
     );
+    const otherUserMap = new Map(
+      otherUserDocs
+        .filter((u): u is NonNullable<typeof u> => u !== null)
+        .map((u) => [u._id, u])
+    );
+
+    // Enrich each conversation with the other participant's user doc
+    const enriched = sorted.map((conversation) => {
+      const otherParticipantId =
+        conversation.participant1 === args.userId
+          ? conversation.participant2
+          : conversation.participant1;
+
+      const otherUser = otherUserMap.get(otherParticipantId) ?? null;
+
+      // Determine which unreadCount belongs to the current user
+      const unreadCount =
+        conversation.participant1 === args.userId
+          ? (conversation.unreadCount1 ?? 0)
+          : (conversation.unreadCount2 ?? 0);
+
+      return {
+        ...conversation,
+        otherParticipant: otherUser
+          ? {
+              _id: otherUser._id,
+              name: otherUser.name,
+              image: otherUser.image ?? otherUser.avatar,
+            }
+          : null,
+        unreadCount,
+      };
+    });
 
     return enriched;
   },

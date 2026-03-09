@@ -4,12 +4,14 @@ import CategoryOption1 from "../option/CategoryOption1";
 import LevelOption1 from "../option/LevelOption1";
 import LocationOption1 from "../option/LocationOption1";
 import SpeakOption1 from "../option/SpeakOption1";
+import AvailableNowOption from "../option/AvailableNowOption";
 
 export default function ListingSidebar5() {
   return (
     <>
       <div className="list-sidebar-style1 d-none d-lg-block">
         <div className="accordion" id="accordionExample">
+          <AvailableNowOption />
           <div className="card mb20 pb10 mt-0">
             <div className="card-header" id="heading0">
               <h4>

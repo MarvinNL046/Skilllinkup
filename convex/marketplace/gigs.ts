@@ -19,6 +19,174 @@ function asFreelancerProfile(
 }
 
 /**
+ * Batch-enrich a list of gigs with freelancer profile, category, cheapest package
+ * price/delivery, and first image. Returns only gigs whose freelancer profile passes
+ * the public visibility check (isPublicFreelancerProfile). Gigs that fail the check
+ * are excluded from the result.
+ *
+ * This helper eliminates N+1 query patterns by:
+ * - De-duplicating freelancer IDs and category IDs before fetching
+ * - Loading all packages and images for the gig set concurrently via Promise.all
+ */
+async function enrichGigsPublic(
+  ctx: any,
+  gigs: Doc<"gigs">[]
+): Promise<Array<Doc<"gigs"> & {
+  freelancerProfile: ReturnType<typeof toPublicFreelancerProfile>;
+  category: Doc<"marketplaceCategories"> | null;
+  minPrice: number | null;
+  minDeliveryDays: number | null;
+  firstImage: Doc<"gigImages"> | null;
+}>> {
+  if (gigs.length === 0) return [];
+
+  // 1. Batch load freelancer profiles (deduplicated)
+  const freelancerIds = [
+    ...new Set(gigs.map((g) => g.freelancerId).filter(Boolean)),
+  ] as Id<"freelancerProfiles">[];
+  const freelancerDocs = await Promise.all(
+    freelancerIds.map((id) => ctx.db.get(id))
+  );
+  const freelancerMap = new Map(
+    freelancerDocs
+      .filter(Boolean)
+      .map((f: Doc<"freelancerProfiles">) => [f._id, f])
+  );
+
+  // 2. Batch load categories (deduplicated)
+  const categoryIds = [
+    ...new Set(gigs.map((g) => g.categoryId).filter(Boolean)),
+  ] as Id<"marketplaceCategories">[];
+  const categoryDocs = await Promise.all(
+    categoryIds.map((id) => ctx.db.get(id))
+  );
+  const categoryMap = new Map(
+    categoryDocs
+      .filter(Boolean)
+      .map((c: Doc<"marketplaceCategories">) => [c._id, c])
+  );
+
+  // 3. Batch load cheapest packages for all gigs concurrently
+  const allCheapestPackages = await Promise.all(
+    gigs.map((gig) =>
+      ctx.db
+        .query("gigPackages")
+        .withIndex("by_gig_price", (q: any) => q.eq("gigId", gig._id))
+        .order("asc")
+        .first()
+    )
+  );
+
+  // 4. Batch load first images for all gigs concurrently
+  const allFirstImages = await Promise.all(
+    gigs.map((gig) =>
+      ctx.db
+        .query("gigImages")
+        .withIndex("by_gig_sortOrder", (q: any) => q.eq("gigId", gig._id))
+        .order("asc")
+        .first()
+    )
+  );
+
+  // 5. Enrich in-memory, filtering out gigs with non-public freelancer profiles
+  const result = [];
+  for (let i = 0; i < gigs.length; i++) {
+    const gig = gigs[i];
+    const freelancerProfile = asFreelancerProfile(
+      freelancerMap.get(gig.freelancerId) ?? null
+    );
+    if (!isPublicFreelancerProfile(freelancerProfile)) continue;
+
+    const category = gig.categoryId
+      ? (categoryMap.get(gig.categoryId) ?? null)
+      : null;
+    const cheapestPackage = allCheapestPackages[i];
+    const firstImage = allFirstImages[i];
+
+    result.push({
+      ...gig,
+      freelancerProfile: toPublicFreelancerProfile(freelancerProfile),
+      category: category as Doc<"marketplaceCategories"> | null,
+      minPrice: cheapestPackage?.price ?? null,
+      minDeliveryDays: cheapestPackage?.deliveryDays ?? null,
+      firstImage: firstImage ?? null,
+    });
+  }
+  return result;
+}
+
+/**
+ * Batch-enrich a list of gigs (owned by a known freelancer) with category,
+ * cheapest package price/delivery, and first image. Does NOT include the
+ * freelancer profile in the output because the caller already has it.
+ *
+ * Used by getByFreelancer and getAllByFreelancer.
+ */
+async function enrichGigsOwner(
+  ctx: any,
+  gigs: Doc<"gigs">[]
+): Promise<Array<Doc<"gigs"> & {
+  category: Doc<"marketplaceCategories"> | null;
+  minPrice: number | null;
+  minDeliveryDays: number | null;
+  firstImage: Doc<"gigImages"> | null;
+}>> {
+  if (gigs.length === 0) return [];
+
+  // 1. Batch load categories (deduplicated)
+  const categoryIds = [
+    ...new Set(gigs.map((g) => g.categoryId).filter(Boolean)),
+  ] as Id<"marketplaceCategories">[];
+  const categoryDocs = await Promise.all(
+    categoryIds.map((id) => ctx.db.get(id))
+  );
+  const categoryMap = new Map(
+    categoryDocs
+      .filter(Boolean)
+      .map((c: Doc<"marketplaceCategories">) => [c._id, c])
+  );
+
+  // 2. Batch load cheapest packages for all gigs concurrently
+  const allCheapestPackages = await Promise.all(
+    gigs.map((gig) =>
+      ctx.db
+        .query("gigPackages")
+        .withIndex("by_gig_price", (q: any) => q.eq("gigId", gig._id))
+        .order("asc")
+        .first()
+    )
+  );
+
+  // 3. Batch load first images for all gigs concurrently
+  const allFirstImages = await Promise.all(
+    gigs.map((gig) =>
+      ctx.db
+        .query("gigImages")
+        .withIndex("by_gig_sortOrder", (q: any) => q.eq("gigId", gig._id))
+        .order("asc")
+        .first()
+    )
+  );
+
+  // 4. Enrich in-memory
+  return gigs.map((gig, i) => {
+    const category = gig.categoryId
+      ? (categoryMap.get(gig.categoryId) ?? null)
+      : null;
+    const cheapestPackage = allCheapestPackages[i];
+    const firstImage = allFirstImages[i];
+
+    return {
+      ...gig,
+      category: category as Doc<"marketplaceCategories"> | null,
+      minPrice: cheapestPackage?.price ?? null,
+      minDeliveryDays: cheapestPackage?.deliveryDays ?? null,
+      firstImage: firstImage ?? null,
+    };
+  });
+}
+
+/**
  * List active gigs with enriched freelancer, category, min price and first image.
  * Sorted by isFeatured DESC, ratingAverage DESC.
  */
@@ -48,42 +216,7 @@ export const list = query({
       })
       .slice(0, limit);
 
-    // Enrich each gig with related data
-    const enriched = await Promise.all(
-      sorted.map(async (gig) => {
-        const freelancerProfile = asFreelancerProfile(
-          await ctx.db.get(gig.freelancerId)
-        );
-        if (!isPublicFreelancerProfile(freelancerProfile)) {
-          return null;
-        }
-        const category = gig.categoryId ? await ctx.db.get(gig.categoryId) : null;
-
-        // Get cheapest package via price-sorted index
-        const cheapestPackage = await ctx.db
-          .query("gigPackages")
-          .withIndex("by_gig_price", (q) => q.eq("gigId", gig._id))
-          .order("asc")
-          .first();
-
-        // Get first image via sortOrder index
-        const firstImage = await ctx.db
-          .query("gigImages")
-          .withIndex("by_gig_sortOrder", (q) => q.eq("gigId", gig._id))
-          .order("asc")
-          .first();
-
-        return {
-          ...gig,
-          freelancerProfile: toPublicFreelancerProfile(freelancerProfile),
-          category,
-          minPrice: cheapestPackage?.price ?? null,
-          firstImage,
-        };
-      })
-    );
-
-    return enriched.filter(Boolean);
+    return enrichGigsPublic(ctx, sorted);
   },
 });
 
@@ -135,42 +268,11 @@ export const listByCategory = query({
       })
       .slice(0, limit);
 
-    // Enrich
-    const enriched = await Promise.all(
-      sorted.map(async (gig) => {
-        const freelancerProfile = asFreelancerProfile(
-          await ctx.db.get(gig.freelancerId)
-        );
-        if (!isPublicFreelancerProfile(freelancerProfile)) {
-          return null;
-        }
-        const gigCategory = gig.categoryId
-          ? await ctx.db.get(gig.categoryId)
-          : null;
-        const cheapestPackage = await ctx.db
-          .query("gigPackages")
-          .withIndex("by_gig_price", (q) => q.eq("gigId", gig._id))
-          .order("asc")
-          .first();
-        const firstImage = await ctx.db
-          .query("gigImages")
-          .withIndex("by_gig_sortOrder", (q) => q.eq("gigId", gig._id))
-          .order("asc")
-          .first();
-
-        return {
-          ...gig,
-          freelancerProfile: toPublicFreelancerProfile(freelancerProfile),
-          category: gigCategory,
-          minPrice: cheapestPackage?.price ?? null,
-          firstImage,
-        };
-      })
-    );
+    const enriched = await enrichGigsPublic(ctx, sorted);
 
     return {
       category,
-      gigs: enriched.filter(Boolean),
+      gigs: enriched,
     };
   },
 });
@@ -250,33 +352,7 @@ export const getByFreelancer = query({
       )
       .collect();
 
-    // Enrich with category, cheapest package price and first image
-    const enriched = await Promise.all(
-      gigs.map(async (gig) => {
-        const category = gig.categoryId ? await ctx.db.get(gig.categoryId) : null;
-
-        const cheapestPackage = await ctx.db
-          .query("gigPackages")
-          .withIndex("by_gig_price", (q) => q.eq("gigId", gig._id))
-          .order("asc")
-          .first();
-
-        const firstImage = await ctx.db
-          .query("gigImages")
-          .withIndex("by_gig_sortOrder", (q) => q.eq("gigId", gig._id))
-          .order("asc")
-          .first();
-
-        return {
-          ...gig,
-          category,
-          minPrice: cheapestPackage?.price ?? null,
-          firstImage,
-        };
-      })
-    );
-
-    return enriched;
+    return enrichGigsOwner(ctx, gigs);
   },
 });
 
@@ -300,40 +376,7 @@ export const search = query({
       )
       .collect();
 
-    // Enrich each result with freelancer, category, min price and first image
-    const enriched = await Promise.all(
-      results.map(async (gig) => {
-        const freelancerProfile = asFreelancerProfile(
-          await ctx.db.get(gig.freelancerId)
-        );
-        if (!isPublicFreelancerProfile(freelancerProfile)) {
-          return null;
-        }
-        const category = gig.categoryId ? await ctx.db.get(gig.categoryId) : null;
-
-        const cheapestPackage = await ctx.db
-          .query("gigPackages")
-          .withIndex("by_gig_price", (q) => q.eq("gigId", gig._id))
-          .order("asc")
-          .first();
-
-        const firstImage = await ctx.db
-          .query("gigImages")
-          .withIndex("by_gig_sortOrder", (q) => q.eq("gigId", gig._id))
-          .order("asc")
-          .first();
-
-        return {
-          ...gig,
-          freelancerProfile: toPublicFreelancerProfile(freelancerProfile),
-          category,
-          minPrice: cheapestPackage?.price ?? null,
-          firstImage,
-        };
-      })
-    );
-
-    return enriched.filter(Boolean);
+    return enrichGigsPublic(ctx, results);
   },
 });
 
@@ -450,28 +493,7 @@ export const getAllByFreelancer = query({
       .order("desc")
       .collect();
 
-    // Enrich with cheapest package price and first image
-    const enriched = await Promise.all(
-      gigs.map(async (gig) => {
-        const category = gig.categoryId ? await ctx.db.get(gig.categoryId) : null;
-
-        const cheapestPackage = await ctx.db
-          .query("gigPackages")
-          .withIndex("by_gig_price", (q) => q.eq("gigId", gig._id))
-          .order("asc")
-          .first();
-
-        const firstImage = await ctx.db
-          .query("gigImages")
-          .withIndex("by_gig_sortOrder", (q) => q.eq("gigId", gig._id))
-          .order("asc")
-          .first();
-
-        return { ...gig, category, minPrice: cheapestPackage?.price ?? null, firstImage };
-      })
-    );
-
-    return enriched;
+    return enrichGigsOwner(ctx, gigs);
   },
 });
 
@@ -590,6 +612,9 @@ export const update = mutation({
 /**
  * Get all active gigs for a freelancer, each enriched with all their packages.
  * Used on the public freelancer profile page.
+ *
+ * Note: This function loads ALL packages per gig (not just the cheapest), so it
+ * uses a dedicated batch approach rather than the enrichGigsOwner helper.
  */
 export const getByFreelancerWithPackages = query({
   args: {
@@ -606,22 +631,30 @@ export const getByFreelancerWithPackages = query({
       )
       .collect();
 
-    const enriched = await Promise.all(
-      gigs.map(async (gig) => {
-        const packages = await ctx.db
+    if (gigs.length === 0) return [];
+
+    // Batch load all packages for all gigs concurrently
+    const allPackageArrays = await Promise.all(
+      gigs.map((gig) =>
+        ctx.db
           .query("gigPackages")
           .withIndex("by_gig", (q) => q.eq("gigId", gig._id))
-          .take(3);
-
-        // Sort packages: basic → standard → premium
-        const tierOrder: Record<string, number> = { basic: 0, standard: 1, premium: 2 };
-        const sortedPackages = [...packages].sort((a, b) => (tierOrder[a.tier] ?? 99) - (tierOrder[b.tier] ?? 99));
-
-        return { ...gig, packages: sortedPackages };
-      })
+          .take(3)
+      )
     );
 
-    // Only return gigs that have at least one package
-    return enriched.filter((g) => g.packages.length > 0);
+    // Sort packages: basic → standard → premium, then filter out gigs with no packages
+    const tierOrder: Record<string, number> = { basic: 0, standard: 1, premium: 2 };
+    const enriched = gigs
+      .map((gig, i) => {
+        const packages = allPackageArrays[i];
+        const sortedPackages = [...packages].sort(
+          (a, b) => (tierOrder[a.tier] ?? 99) - (tierOrder[b.tier] ?? 99)
+        );
+        return { ...gig, packages: sortedPackages };
+      })
+      .filter((g) => g.packages.length > 0);
+
+    return enriched;
   },
 });

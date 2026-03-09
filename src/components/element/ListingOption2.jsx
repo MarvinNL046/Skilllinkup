@@ -1,5 +1,6 @@
 "use client";
 import toggleStore from "@/store/toggleStore";
+import listingStore from "@/store/listingStore";
 import SortOption1 from "../option/SortOption1";
 import ClearButton from "../button/ClearButton";
 import Image from "next/image";
@@ -9,6 +10,9 @@ export default function ListingOption2({
   itemLabel = "services",
 }) {
   const listingToggle = toggleStore((state) => state.listingToggleHandler);
+  const viewMode = listingStore((state) => state.getViewMode);
+  const setViewMode = listingStore((state) => state.setViewMode);
+
   return (
     <>
       <div className="row align-items-center mb20">
@@ -40,6 +44,39 @@ export default function ListingOption2({
                   </button>
                 </li>
               </ul>
+            </div>
+            {/* Grid / List toggle */}
+            <div className="d-none d-md-flex align-items-center gap-2 me-3">
+              <button
+                type="button"
+                onClick={() => setViewMode("grid")}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: 4,
+                  color: viewMode === "grid" ? "#ef2b70" : "#999",
+                  fontSize: 16,
+                }}
+                title="Grid view"
+              >
+                <i className="fa fa-th-large" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode("list")}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: 4,
+                  color: viewMode === "list" ? "#ef2b70" : "#999",
+                  fontSize: 16,
+                }}
+                title="List view"
+              >
+                <i className="fa fa-list-ul" />
+              </button>
             </div>
             <SortOption1 />
           </div>

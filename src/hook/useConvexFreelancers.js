@@ -20,6 +20,11 @@ function mapConvexFreelancer(fl, index) {
     sort: "best-seller",
     title: fl.bio ? fl.bio.substring(0, 80) : "",
     slug: fl.slug || fl._id,
+    isAvailable: fl.isAvailable ?? false,
+    completionRate: fl.completionRate ?? null,
+    totalOrders: fl.totalOrders ?? 0,
+    portfolioImg: fl.portfolioUrls?.[0] || null,
+    totalEarnings: fl.totalEarnings ?? null,
   };
 }
 

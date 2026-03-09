@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { query, mutation, internalQuery, internalMutation } from "../_generated/server";
 import { internal } from "../_generated/api";
-import { Doc } from "../_generated/dataModel";
+import { Doc, Id } from "../_generated/dataModel";
 import { requireOwner, requireServerSecret } from "../lib/authHelpers";
 
 /**
@@ -316,25 +316,42 @@ export const getByUser = query({
         .take(limit);
     }
 
-    // Enrich with names
-    const enriched = await Promise.all(
-      orders.map(async (order) => {
-        const client = await ctx.db.get(order.clientId);
-        const freelancerProfile = order.freelancerId
-          ? await ctx.db.get(order.freelancerId)
-          : null;
-        const freelancerUser = freelancerProfile
-          ? await ctx.db.get(freelancerProfile.userId)
-          : null;
+    // Batch load unique clients
+    const clientIds = [...new Set(orders.map((o) => o.clientId).filter(Boolean))] as Id<"users">[];
 
-        return {
-          ...order,
-          clientName: client?.name ?? null,
-          freelancerName: freelancerProfile?.displayName ?? freelancerUser?.name ?? null,
-          freelancerUserId: freelancerProfile?.userId ?? null,
-        };
-      })
-    );
+    // Batch load unique freelancer profiles
+    const freelancerProfileIds = [...new Set(
+      orders.map((o) => o.freelancerId).filter(Boolean)
+    )] as Id<"freelancerProfiles">[];
+
+    const [clients, freelancerProfiles] = await Promise.all([
+      Promise.all(clientIds.map((id) => ctx.db.get(id))),
+      Promise.all(freelancerProfileIds.map((id) => ctx.db.get(id))),
+    ]);
+
+    const clientMap = new Map(clients.filter(Boolean).map((c) => [c!._id, c!]));
+    const profileMap = new Map(freelancerProfiles.filter(Boolean).map((p) => [p!._id, p!]));
+
+    // Batch load unique user records for freelancer profiles
+    const freelancerUserIds = [...new Set(
+      freelancerProfiles.filter(Boolean).map((p) => p!.userId).filter(Boolean)
+    )] as Id<"users">[];
+
+    const freelancerUsers = await Promise.all(freelancerUserIds.map((id) => ctx.db.get(id)));
+    const freelancerUserMap = new Map(freelancerUsers.filter(Boolean).map((u) => [u!._id, u!]));
+
+    const enriched = orders.map((order) => {
+      const client = clientMap.get(order.clientId);
+      const freelancerProfile = order.freelancerId ? profileMap.get(order.freelancerId) : null;
+      const freelancerUser = freelancerProfile ? freelancerUserMap.get(freelancerProfile.userId) : null;
+
+      return {
+        ...order,
+        clientName: client?.name ?? null,
+        freelancerName: freelancerProfile?.displayName ?? freelancerUser?.name ?? null,
+        freelancerUserId: freelancerProfile?.userId ?? null,
+      };
+    });
 
     return enriched;
   },
@@ -374,10 +391,10 @@ export const getById = query({
       throw new Error("Access denied: you are not a party to this order");
     }
 
-    const client = await ctx.db.get(order.clientId);
-    const freelancerUser = freelancerProfile
-      ? await ctx.db.get(freelancerProfile.userId)
-      : null;
+    const [client, freelancerUser] = await Promise.all([
+      ctx.db.get(order.clientId),
+      freelancerProfile ? ctx.db.get(freelancerProfile.userId) : Promise.resolve(null),
+    ]);
 
     return {
       ...order,

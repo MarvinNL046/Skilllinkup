@@ -6,6 +6,7 @@ import BudgetOption1 from "../option/BudgetOption1";
 import LocationOption1 from "../option/LocationOption1";
 import SpeakOption1 from "../option/SpeakOption1";
 import LevelOption1 from "../option/LevelOption1";
+import AvailableNowOption from "../option/AvailableNowOption";
 
 export default function ListingSidebarModal5() {
   const listingToggle = toggleStore((state) => state.listingToggleHandler);
@@ -23,6 +24,7 @@ export default function ListingSidebarModal5() {
           <div className="widget-wrapper">
             <div className="sidebar-accordion">
               <div className="accordion" id="accordionExample2">
+                <AvailableNowOption />
                 <div className="card mb20 pb10">
                   <div className="card-header" id="headingZero">
                     <h4>

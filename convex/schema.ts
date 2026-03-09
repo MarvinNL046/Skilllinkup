@@ -498,6 +498,7 @@ export default defineSchema({
   })
     .index("by_client", ["clientId"])
     .index("by_status", ["status"])
+    .index("by_status_locale", ["status", "locale"])
     .index("by_slug_locale", ["slug", "locale"]),
 
   bids: defineTable({
@@ -513,7 +514,8 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_project", ["projectId"])
-    .index("by_freelancer", ["freelancerId"]),
+    .index("by_freelancer", ["freelancerId"])
+    .index("by_freelancer_status", ["freelancerId", "status"]),
 
   // ============================================================
   // MARKETPLACE: JOBS
@@ -550,7 +552,8 @@ export default defineSchema({
     .index("by_status", ["status"])
     .index("by_status_locale", ["status", "locale"])
     .index("by_slug_locale", ["slug", "locale"])
-    .index("by_client", ["clientId"]),
+    .index("by_client", ["clientId"])
+    .index("by_client_status", ["clientId", "status"]),
 
   // ============================================================
   // MARKETPLACE: ORDERS & TRANSACTIONS
@@ -762,7 +765,8 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_client", ["clientId"])
-    .index("by_status", ["status"]),
+    .index("by_status", ["status"])
+    .index("by_status_createdAt", ["status", "createdAt"]),
 
   quotes: defineTable({
     quoteRequestId: v.id("quoteRequests"),
@@ -817,7 +821,8 @@ export default defineSchema({
     createdAt: v.number(),
   })
     .index("by_user", ["userId"])
-    .index("by_user_item", ["userId", "itemId"]),
+    .index("by_user_item", ["userId", "itemId"])
+    .index("by_user_createdAt", ["userId", "createdAt"]),
 
   // ============================================================
   // PROFILE: PORTFOLIO PROJECTS

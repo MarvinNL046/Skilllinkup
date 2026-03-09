@@ -8,6 +8,7 @@ import Pagination1 from "./Pagination1";
 import priceStore from "@/store/priceStore";
 import useConvexFreelancers from "@/hook/useConvexFreelancers";
 import FreelancerCard2 from "../card/FreelancerCard2";
+import FreelancerCardList from "../card/FreelancerCardList";
 import ListingSidebarModal5 from "../modal/ListingSidebarModal5";
 import EmptyState from "@/components/ui/EmptyState";
 
@@ -21,6 +22,8 @@ export default function Listing14() {
   const getLevel = listingStore((state) => state.getLevel);
   const getSpeak = listingStore((state) => state.getSpeak);
   const getBestSeller = listingStore((state) => state.getBestSeller);
+  const getAvailableOnly = listingStore((state) => state.getAvailableOnly);
+  const getViewMode = listingStore((state) => state.getViewMode);
 
   // Sync URL search params to Zustand store on mount
   useEffect(() => {
@@ -59,6 +62,10 @@ export default function Listing14() {
       ? getSpeak.includes(item.language.toLowerCase())
       : item;
 
+  // availability filter
+  const availabilityFilter = (item) =>
+    getAvailableOnly ? item.isAvailable : true;
+
   // sort comparator based on selected option
   const sortComparator = (a, b) => {
     if (getBestSeller === "recommended") {
@@ -92,12 +99,19 @@ export default function Listing14() {
     .filter(searchFilter)
     .filter(levelFilter)
     .filter(languageFilter)
+    .filter(availabilityFilter)
     .sort(sortComparator)
-    .map((item, i) => (
-      <div key={i} className="col-sm-6 col-xl-4">
-        <FreelancerCard2 data={item} />
-      </div>
-    ));
+    .map((item, i) =>
+      getViewMode === "list" ? (
+        <div key={i} className="col-12 mb15">
+          <FreelancerCardList data={item} />
+        </div>
+      ) : (
+        <div key={i} className="col-sm-6 col-xl-4">
+          <FreelancerCard2 data={item} />
+        </div>
+      )
+    );
 
   return (
     <>

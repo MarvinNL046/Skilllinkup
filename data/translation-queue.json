@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 19
+    "completed": 20
   },
   "queue": [
     {
@@ -210,7 +210,7 @@
       "file": "src/app/privacy-policy/page.jsx",
       "description": "Privacy policy content",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 2,
       "phase": 2
     },

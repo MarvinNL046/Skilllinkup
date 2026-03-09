@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
 import { getLeadCreditCost, MAX_SHARED_SLOTS } from "./leadPricing";
 import { requireServerSecret } from "../lib/authHelpers";
+import { Id } from "../_generated/dataModel";
 
 // Get credit balance for the current authenticated freelancer.
 export const getMyCredits = query({
@@ -71,40 +72,64 @@ export const getMyClaims = query({
       .first();
     if (!profile) return [];
 
+    // Safety limit: avoid unbounded .collect() on large datasets
     const claims = await ctx.db
       .query("leadClaims")
       .withIndex("by_freelancer", (q) => q.eq("freelancerId", profile._id))
       .order("desc")
-      .collect();
+      .take(200);
 
-    const enriched = await Promise.all(
-      claims.map(async (claim) => {
-        const request = await ctx.db.get(claim.quoteRequestId);
-        if (!request) return { ...claim, request: null, client: null, categoryName: null };
+    // Batch load unique quote requests
+    const requestIds = [...new Set(
+      claims.map((c) => c.quoteRequestId).filter(Boolean)
+    )] as Id<"quoteRequests">[];
 
-        const client = await ctx.db.get(request.clientId);
-        const category = await ctx.db.get(request.categoryId);
+    const requests = await Promise.all(requestIds.map((id) => ctx.db.get(id)));
+    const requestMap = new Map(requests.filter(Boolean).map((r) => [r!._id, r!]));
 
-        return {
-          ...claim,
-          request: {
-            _id: request._id,
-            title: request.title,
-            description: request.description,
-            locationCity: request.locationCity,
-            locationPostcode: request.locationPostcode,
-            budgetIndication: request.budgetIndication,
-            preferredDate: request.preferredDate,
-            status: request.status,
-            createdAt: request.createdAt,
-          },
-          client: client
-            ? { name: client.name, email: client.email }
-            : null,
-          categoryName: category?.name ?? null,
-        };
-      })
-    );
+    // Batch load unique clients and categories from the requests
+    const clientIds = [...new Set(
+      requests.filter(Boolean).map((r) => r!.clientId).filter(Boolean)
+    )] as Id<"users">[];
+
+    const categoryIds = [...new Set(
+      requests.filter(Boolean).map((r) => r!.categoryId).filter(Boolean)
+    )] as Id<"marketplaceCategories">[];
+
+    const [clients, categories] = await Promise.all([
+      Promise.all(clientIds.map((id) => ctx.db.get(id))),
+      Promise.all(categoryIds.map((id) => ctx.db.get(id))),
+    ]);
+
+    const clientMap = new Map(clients.filter(Boolean).map((c) => [c!._id, c!]));
+    const categoryMap = new Map(categories.filter(Boolean).map((c) => [c!._id, c!]));
+
+    const enriched = claims.map((claim) => {
+      const request = requestMap.get(claim.quoteRequestId);
+      if (!request) return { ...claim, request: null, client: null, categoryName: null };
+
+      const client = clientMap.get(request.clientId);
+      const category = categoryMap.get(request.categoryId);
+
+      return {
+        ...claim,
+        request: {
+          _id: request._id,
+          title: request.title,
+          description: request.description,
+          locationCity: request.locationCity,
+          locationPostcode: request.locationPostcode,
+          budgetIndication: request.budgetIndication,
+          preferredDate: request.preferredDate,
+          status: request.status,
+          createdAt: request.createdAt,
+        },
+        client: client
+          ? { name: client.name, email: client.email }
+          : null,
+        categoryName: category?.name ?? null,
+      };
+    });
 
     return enriched;
   },

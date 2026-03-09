@@ -23,29 +23,31 @@ export const list = query({
     // Filter by locale in memory (no composite index for status+locale)
     const filtered = projects.filter((p) => p.locale === args.locale);
 
-    const enriched = await Promise.all(
-      filtered.map(async (project) => {
-        const client = await ctx.db.get(project.clientId);
+    // Batch load unique clients and categories
+    const clientIds = [...new Set(filtered.map((p) => p.clientId).filter(Boolean))];
+    const categoryIds = [...new Set(filtered.map((p) => p.categoryId).filter(Boolean))] as typeof filtered[number]["categoryId"][];
 
-        const category = project.categoryId
-          ? await ctx.db.get(project.categoryId)
-          : null;
+    const [clients, categories] = await Promise.all([
+      Promise.all(clientIds.map((id) => ctx.db.get(id))),
+      Promise.all(categoryIds.map((id) => ctx.db.get(id!))),
+    ]);
 
-        // Count bids for this project
-        const bids = await ctx.db
-          .query("bids")
-          .withIndex("by_project", (q) => q.eq("projectId", project._id))
-          .collect();
+    const clientMap = new Map(clients.filter(Boolean).map((c) => [c!._id, c!]));
+    const categoryMap = new Map(categories.filter(Boolean).map((c) => [c!._id, c!]));
 
-        return {
-          ...project,
-          clientName: client?.name ?? null,
-          clientAvatar: client?.avatar ?? client?.image ?? null,
-          categoryName: category?.name ?? null,
-          bidCount: bids.length,
-        };
-      })
-    );
+    const enriched = filtered.map((project) => {
+      const client = clientMap.get(project.clientId);
+      const category = project.categoryId ? categoryMap.get(project.categoryId) : null;
+
+      return {
+        ...project,
+        clientName: client?.name ?? null,
+        clientAvatar: client?.avatar ?? (client as any)?.image ?? null,
+        categoryName: category?.name ?? null,
+        // Use the stored bidCount field — kept in sync by submitBid mutation
+        bidCount: project.bidCount ?? 0,
+      };
+    });
 
     return enriched;
   },
@@ -69,22 +71,18 @@ export const getBySlug = query({
 
     if (!project) return null;
 
-    const client = await ctx.db.get(project.clientId);
-    const category = project.categoryId
-      ? await ctx.db.get(project.categoryId)
-      : null;
-
-    const bids = await ctx.db
-      .query("bids")
-      .withIndex("by_project", (q) => q.eq("projectId", project._id))
-      .collect();
+    const [client, category] = await Promise.all([
+      ctx.db.get(project.clientId),
+      project.categoryId ? ctx.db.get(project.categoryId) : Promise.resolve(null),
+    ]);
 
     return {
       ...project,
       clientName: client?.name ?? null,
-      clientAvatar: client?.avatar ?? client?.image ?? null,
+      clientAvatar: client?.avatar ?? (client as any)?.image ?? null,
       categoryName: category?.name ?? null,
-      bidCount: bids.length,
+      // Use the stored bidCount field — kept in sync by submitBid mutation
+      bidCount: project.bidCount ?? 0,
     };
   },
 });
@@ -101,22 +99,18 @@ export const getById = query({
     const project = await ctx.db.get(args.projectId);
     if (!project) return null;
 
-    const client = await ctx.db.get(project.clientId);
-    const category = project.categoryId
-      ? await ctx.db.get(project.categoryId)
-      : null;
-
-    const bids = await ctx.db
-      .query("bids")
-      .withIndex("by_project", (q) => q.eq("projectId", project._id))
-      .collect();
+    const [client, category] = await Promise.all([
+      ctx.db.get(project.clientId),
+      project.categoryId ? ctx.db.get(project.categoryId) : Promise.resolve(null),
+    ]);
 
     return {
       ...project,
       clientName: client?.name ?? null,
-      clientAvatar: client?.avatar ?? client?.image ?? null,
+      clientAvatar: client?.avatar ?? (client as any)?.image ?? null,
       categoryName: category?.name ?? null,
-      bidCount: bids.length,
+      // Use the stored bidCount field — kept in sync by submitBid mutation
+      bidCount: project.bidCount ?? 0,
     };
   },
 });
@@ -142,22 +136,30 @@ export const getBids = query({
       .withIndex("by_project", (q) => q.eq("projectId", args.projectId))
       .collect();
 
-    const enriched = await Promise.all(
-      bids.map(async (bid) => {
-        const profile = await ctx.db.get(bid.freelancerId);
-        const freelancerUser = profile
-          ? await ctx.db.get(profile.userId)
-          : null;
+    // Batch load unique freelancer profiles
+    const profileIds = [...new Set(bids.map((b) => b.freelancerId).filter(Boolean))];
+    const profiles = await Promise.all(profileIds.map((id) => ctx.db.get(id)));
+    const profileMap = new Map(profiles.filter(Boolean).map((p) => [p!._id, p!]));
 
-        return {
-          ...bid,
-          freelancerName: profile?.displayName ?? freelancerUser?.name ?? "Unknown",
-          freelancerAvatar: profile?.avatarUrl ?? freelancerUser?.image ?? null,
-          freelancerRating: profile?.ratingAverage ?? 0,
-          freelancerVerified: profile?.isVerified ?? false,
-        };
-      })
-    );
+    // Batch load unique user records for those profiles
+    const userIds = [...new Set(
+      profiles.filter(Boolean).map((p) => p!.userId).filter(Boolean)
+    )];
+    const users = await Promise.all(userIds.map((id) => ctx.db.get(id)));
+    const userMap = new Map(users.filter(Boolean).map((u) => [u!._id, u!]));
+
+    const enriched = bids.map((bid) => {
+      const profile = profileMap.get(bid.freelancerId);
+      const freelancerUser = profile ? userMap.get(profile.userId) : null;
+
+      return {
+        ...bid,
+        freelancerName: profile?.displayName ?? freelancerUser?.name ?? "Unknown",
+        freelancerAvatar: profile?.avatarUrl ?? (freelancerUser as any)?.image ?? null,
+        freelancerRating: profile?.ratingAverage ?? 0,
+        freelancerVerified: profile?.isVerified ?? false,
+      };
+    });
 
     // Sort: accepted bids first, then by createdAt ascending
     enriched.sort((a, b) => {
@@ -190,24 +192,24 @@ export const getPublicByClient = query({
 
     const openProjects = projects.filter((p) => p.status === "open");
 
-    const enriched = await Promise.all(
-      openProjects.map(async (project) => {
-        const category = project.categoryId
-          ? await ctx.db.get(project.categoryId)
-          : null;
+    // Batch load unique categories
+    const categoryIds = [...new Set(
+      openProjects.map((p) => p.categoryId).filter(Boolean)
+    )] as NonNullable<typeof openProjects[number]["categoryId"]>[];
 
-        const bids = await ctx.db
-          .query("bids")
-          .withIndex("by_project", (q) => q.eq("projectId", project._id))
-          .collect();
+    const categories = await Promise.all(categoryIds.map((id) => ctx.db.get(id)));
+    const categoryMap = new Map(categories.filter(Boolean).map((c) => [c!._id, c!]));
 
-        return {
-          ...project,
-          categoryName: category?.name ?? null,
-          bidCount: bids.length,
-        };
-      })
-    );
+    const enriched = openProjects.map((project) => {
+      const category = project.categoryId ? categoryMap.get(project.categoryId) : null;
+
+      return {
+        ...project,
+        categoryName: category?.name ?? null,
+        // Use the stored bidCount field — kept in sync by submitBid mutation
+        bidCount: project.bidCount ?? 0,
+      };
+    });
 
     return enriched;
   },
@@ -232,18 +234,22 @@ export const getByClient = query({
       .order("desc")
       .take(limit);
 
-    const enriched = await Promise.all(
-      projects.map(async (project) => {
-        const category = project.categoryId
-          ? await ctx.db.get(project.categoryId)
-          : null;
+    // Batch load unique categories
+    const categoryIds = [...new Set(
+      projects.map((p) => p.categoryId).filter(Boolean)
+    )] as NonNullable<typeof projects[number]["categoryId"]>[];
 
-        return {
-          ...project,
-          categoryName: category?.name ?? null,
-        };
-      })
-    );
+    const categories = await Promise.all(categoryIds.map((id) => ctx.db.get(id)));
+    const categoryMap = new Map(categories.filter(Boolean).map((c) => [c!._id, c!]));
+
+    const enriched = projects.map((project) => {
+      const category = project.categoryId ? categoryMap.get(project.categoryId) : null;
+
+      return {
+        ...project,
+        categoryName: category?.name ?? null,
+      };
+    });
 
     return enriched;
   },
@@ -423,18 +429,21 @@ export const getMyBids = query({
       .order("desc")
       .take(50);
 
-    const enriched = await Promise.all(
-      bids.map(async (bid) => {
-        const project = await ctx.db.get(bid.projectId);
-        return {
-          ...bid,
-          projectTitle: project?.title ?? "Unknown",
-          projectSlug: project?.slug ?? "",
-          projectStatus: project?.status ?? "unknown",
-          projectCurrency: project?.currency ?? bid.currency ?? "EUR",
-        };
-      })
-    );
+    // Batch load unique projects
+    const projectIds = [...new Set(bids.map((b) => b.projectId).filter(Boolean))];
+    const projects = await Promise.all(projectIds.map((id) => ctx.db.get(id)));
+    const projectMap = new Map(projects.filter(Boolean).map((p) => [p!._id, p!]));
+
+    const enriched = bids.map((bid) => {
+      const project = projectMap.get(bid.projectId);
+      return {
+        ...bid,
+        projectTitle: project?.title ?? "Unknown",
+        projectSlug: project?.slug ?? "",
+        projectStatus: project?.status ?? "unknown",
+        projectCurrency: project?.currency ?? bid.currency ?? "EUR",
+      };
+    });
 
     return enriched;
   },

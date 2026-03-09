@@ -19,7 +19,7 @@ export function mapGigToProduct(gig, index) {
     },
     price: gig.minPrice || 0,
     tag: gig.category?.name || "General",
-    deliveryTime: "3d",
+    deliveryTime: gig.minDeliveryDays || null,
     level: gig.isFeatured ? "top-rated" : "lavel-1",
     location: gig.locationCountry?.toLowerCase() || "remote",
     sort: gig.isFeatured ? "best-seller" : "new-arrivals",

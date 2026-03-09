@@ -121,9 +121,15 @@ export default function PopularServiceSlideCard1({
               <p className="mb-0 body-color">
                 Starting at
                 <span className="fz17 fw500 dark-color ms-1">
-                  ${data.price}
+                  €{data.price}
                 </span>
               </p>
+              {data.deliveryTime && (
+                <p className="mb-0 fz13 text-muted">
+                  <i className="fas fa-clock fz10 me-1" />
+                  {data.deliveryTime}d delivery
+                </p>
+              )}
             </div>
           </div>
         </div>

@@ -13,6 +13,8 @@ const listingStore = create((set) => ({
   getEnglishLevel: [],
   getJobType: [],
   getNoOfEmployee: [],
+  getAvailableOnly: false,
+  getViewMode: "grid",
   setDeliveryTime: (payload) => set(() => ({ getDeliveryTime: payload })),
   setLevel: (payload) =>
     set((state) => {
@@ -158,6 +160,8 @@ const listingStore = create((set) => ({
         return { getNoOfEmployee: [] };
       }
     }),
+  setAvailableOnly: (val) => set({ getAvailableOnly: val }),
+  setViewMode: (val) => set({ getViewMode: val }),
 }));
 
 export default listingStore;

@@ -60,24 +60,29 @@ export const getByFreelancer = query({
       .sort((a, b) => b.createdAt - a.createdAt)
       .slice(0, limit);
 
-    // Enrich with reviewer name and order title
-    const enriched = await Promise.all(
-      sorted.map(async (review) => {
-        const reviewer = review.reviewerId
-          ? await ctx.db.get(review.reviewerId)
-          : null;
-        const order = review.orderId
-          ? await ctx.db.get(review.orderId)
-          : null;
+    // Batch load unique reviewers and orders
+    const reviewerIds = [...new Set(sorted.map((r) => r.reviewerId).filter(Boolean))] as Id<"users">[];
+    const orderIds = [...new Set(sorted.map((r) => r.orderId).filter(Boolean))] as Id<"orders">[];
 
-        return {
-          ...review,
-          reviewerName: reviewer?.name ?? "Anonymous",
-          reviewerAvatar: reviewer?.image ?? null,
-          orderTitle: order?.title ?? null,
-        };
-      })
-    );
+    const [reviewers, orders] = await Promise.all([
+      Promise.all(reviewerIds.map((id) => ctx.db.get(id))),
+      Promise.all(orderIds.map((id) => ctx.db.get(id))),
+    ]);
+
+    const reviewerMap = new Map(reviewers.filter(Boolean).map((r) => [r!._id, r!]));
+    const orderMap = new Map(orders.filter(Boolean).map((o) => [o!._id, o!]));
+
+    const enriched = sorted.map((review) => {
+      const reviewer = review.reviewerId ? reviewerMap.get(review.reviewerId) : null;
+      const order = review.orderId ? orderMap.get(review.orderId) : null;
+
+      return {
+        ...review,
+        reviewerName: reviewer?.name ?? "Anonymous",
+        reviewerAvatar: (reviewer as any)?.image ?? null,
+        orderTitle: order?.title ?? null,
+      };
+    });
 
     return enriched;
   },
@@ -109,23 +114,29 @@ export const getByUserId = query({
       .sort((a, b) => b.createdAt - a.createdAt)
       .slice(0, limit);
 
-    const enriched = await Promise.all(
-      sorted.map(async (review) => {
-        const reviewer = review.reviewerId
-          ? await ctx.db.get(review.reviewerId)
-          : null;
-        const order = review.orderId
-          ? await ctx.db.get(review.orderId)
-          : null;
+    // Batch load unique reviewers and orders
+    const reviewerIds = [...new Set(sorted.map((r) => r.reviewerId).filter(Boolean))] as Id<"users">[];
+    const orderIds = [...new Set(sorted.map((r) => r.orderId).filter(Boolean))] as Id<"orders">[];
 
-        return {
-          ...review,
-          reviewerName: reviewer?.name ?? "Anonymous",
-          reviewerAvatar: reviewer?.image ?? null,
-          orderTitle: order?.title ?? null,
-        };
-      })
-    );
+    const [reviewers, orders] = await Promise.all([
+      Promise.all(reviewerIds.map((id) => ctx.db.get(id))),
+      Promise.all(orderIds.map((id) => ctx.db.get(id))),
+    ]);
+
+    const reviewerMap = new Map(reviewers.filter(Boolean).map((r) => [r!._id, r!]));
+    const orderMap = new Map(orders.filter(Boolean).map((o) => [o!._id, o!]));
+
+    const enriched = sorted.map((review) => {
+      const reviewer = review.reviewerId ? reviewerMap.get(review.reviewerId) : null;
+      const order = review.orderId ? orderMap.get(review.orderId) : null;
+
+      return {
+        ...review,
+        reviewerName: reviewer?.name ?? "Anonymous",
+        reviewerAvatar: (reviewer as any)?.image ?? null,
+        orderTitle: order?.title ?? null,
+      };
+    });
 
     return enriched;
   },
