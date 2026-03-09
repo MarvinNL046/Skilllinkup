@@ -878,6 +878,19 @@
     "failedCheckout": "Failed to start checkout.",
     "somethingWrong": "Something went wrong. Please try again."
   },
+  "myLeads": {
+    "title": "My Leads",
+    "pageDescription": "Leads you have claimed. Client contact details are shown below.",
+    "noClaimsTitle": "No Claimed Leads Yet",
+    "noClaimsDescription": "Browse quote requests in the Local Marketplace and claim leads to get client details.",
+    "browseQuoteRequests": "Browse Quote Requests",
+    "quoteRequest": "Quote Request",
+    "general": "General",
+    "exclusive": "Exclusive",
+    "shared": "Shared",
+    "clientContact": "Client Contact",
+    "credits": "credits"
+  },
   "jobsHub": {
     "title": "Jobs",
     "metaDescription": "Browse job openings or post vacancies. Find full-time, part-time, and freelance opportunities.",

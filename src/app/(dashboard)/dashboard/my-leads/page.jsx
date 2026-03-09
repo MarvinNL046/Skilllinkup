@@ -1,11 +1,16 @@
+import { getTranslations } from "next-intl/server";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import MobileNavigation2 from "@/components/header/MobileNavigation2";
 import DashboardNavigation from "@/components/dashboard/header/DashboardNavigation";
 import MyLeadsInfo from "@/components/dashboard/section/MyLeadsInfo";
+import MyLeadsPageHeader from "@/components/dashboard/section/MyLeadsPageHeader";
 
-export const metadata = {
-  title: "My Leads",
-};
+export async function generateMetadata() {
+  const t = await getTranslations("myLeads");
+  return {
+    title: t("title"),
+  };
+}
 
 export default function MyLeadsPage() {
   return (
@@ -18,12 +23,7 @@ export default function MyLeadsPage() {
               <DashboardNavigation />
             </div>
             <div className="col-lg-12">
-              <div className="dashboard_title_area">
-                <h2>My Leads</h2>
-                <p className="text">
-                  Leads you have claimed. Client contact details are shown below.
-                </p>
-              </div>
+              <MyLeadsPageHeader />
             </div>
           </div>
           <MyLeadsInfo />

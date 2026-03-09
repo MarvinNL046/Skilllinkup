@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 64
+    "completed": 65
   },
   "queue": [
     {
@@ -660,7 +660,7 @@
       "file": "src/app/(dashboard)/dashboard/my-leads/page.jsx",
       "description": "Leads: claim buttons, details",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 6,
       "phase": 6
     },

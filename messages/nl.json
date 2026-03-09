@@ -878,6 +878,19 @@
     "failedCheckout": "Afrekenen starten mislukt.",
     "somethingWrong": "Er ging iets mis. Probeer het opnieuw."
   },
+  "myLeads": {
+    "title": "Mijn Leads",
+    "pageDescription": "Leads die je hebt geclaimd. Contactgegevens van de klant staan hieronder.",
+    "noClaimsTitle": "Nog geen geclaimde leads",
+    "noClaimsDescription": "Bekijk offerteaanvragen op de Lokale Marktplaats en claim leads om klantgegevens te ontvangen.",
+    "browseQuoteRequests": "Bekijk offerteaanvragen",
+    "quoteRequest": "Offerteaanvraag",
+    "general": "Algemeen",
+    "exclusive": "Exclusief",
+    "shared": "Gedeeld",
+    "clientContact": "Klantcontact",
+    "credits": "credits"
+  },
   "jobsHub": {
     "title": "Vacatures",
     "metaDescription": "Bekijk vacatures of plaats een vacature. Vind fulltime, parttime en freelance mogelijkheden.",
