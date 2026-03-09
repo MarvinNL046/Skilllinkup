@@ -9,16 +9,19 @@ import FooterSocial4 from "./ui/FooterSocial4";
 import FooterSocial from "./ui/FooterSocial";
 import FooterSocial2 from "./ui/FooterSocial2";
 import FooterSocial3 from "./ui/FooterSocial3";
+import { useTranslations } from "next-intl";
 
 export default function Footer14() {
     const [email, setEmail] = useState("");
+    const t = useTranslations("footer");
+    const tw = useTranslations("waitlist");
 
     const handleSubscribe = () => {
         if (!email || !email.includes("@")) {
-            toast.error("Please enter a valid email address.");
+            toast.error(tw("invalidEmail"));
             return;
         }
-        toast.success("Thanks for subscribing! We'll keep you updated.");
+        toast.success(tw("subscribed"));
         setEmail("");
     };
 
@@ -30,7 +33,7 @@ export default function Footer14() {
                         <div className="col-lg-6">
                             <div className="footer-widget mb-4 mb-lg-5">
                                 <div className="mailchimp-widget mb90">
-                                    <h6 className="title mb20">Subscribe</h6>
+                                    <h6 className="title mb20">{t("subscribe")}</h6>
                                     <form
                                         onSubmit={(e) => {
                                             e.preventDefault();
@@ -41,7 +44,7 @@ export default function Footer14() {
                                         <input
                                             type="email"
                                             className="form-control"
-                                            placeholder="Your email address"
+                                            placeholder={t("emailPlaceholder")}
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                             required
@@ -50,14 +53,14 @@ export default function Footer14() {
                                             className="text-thm"
                                             type="submit"
                                         >
-                                            Send
+                                            {t("send")}
                                         </button>
                                     </form>
                                 </div>
                                 <div className="row justify-content-between">
                                     <div className="col-auto">
                                         <div className="link-style1 at-home8 mb-3">
-                                            <h6 className="mb25">About</h6>
+                                            <h6 className="mb25">{t("about")}</h6>
                                             <div className="link-list">
                                                 {about.map((item, i) => (
                                                     <Link
@@ -72,7 +75,7 @@ export default function Footer14() {
                                     </div>
                                     <div className="col-auto">
                                         <div className="link-style1 at-home8 mb-3">
-                                            <h6 className="mb25">Categories</h6>
+                                            <h6 className="mb25">{t("categories")}</h6>
                                             <ul className="ps-0">
                                                 {category.map((item, i) => (
                                                     <li key={i}>
@@ -86,7 +89,7 @@ export default function Footer14() {
                                     </div>
                                     <div className="col-auto">
                                         <div className="link-style1 at-home8 mb-3">
-                                            <h6 className=" mb25">Support</h6>
+                                            <h6 className=" mb25">{t("support")}</h6>
                                             <ul className="ps-0">
                                                 {support.map((item, i) => (
                                                     <li key={i}>
@@ -116,7 +119,7 @@ export default function Footer14() {
                                     <div className="col-auto">
                                         <div className="contact-info">
                                             <p className="info-title mb-2">
-                                                Contact
+                                                {t("contact")}
                                             </p>
                                             <h5 className="info-mail">
                                                 <Link href="mailto:info@skilllinkup.com">
@@ -136,7 +139,7 @@ export default function Footer14() {
                         <div className="col-sm-6">
                             <div className="text-center text-lg-start">
                                 <p className="copyright-text mb-0 at-home8 ff-heading">
-                                    © {new Date().getFullYear()} SkillLinkup. All rights reserved.
+                                    © {new Date().getFullYear()} {t("copyright")}
                                 </p>
                             </div>
                         </div>
