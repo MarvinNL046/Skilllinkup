@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export default function LocalHero() {
+  const t = useTranslations("localHub");
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [postcode, setPostcode] = useState("");
@@ -21,10 +23,10 @@ export default function LocalHero() {
         <div className="row justify-content-center">
           <div className="col-lg-8 text-center mb30">
             <h1 className="hero-title text-white mb15">
-              Find Trusted Local Craftsmen
+              {t("heroTitle")}
             </h1>
             <p className="hero-text text-white-50 fz17">
-              From plumbers to painters — get quotes from skilled professionals near you.
+              {t("heroText")}
             </p>
           </div>
           <div className="col-lg-8">
@@ -32,7 +34,7 @@ export default function LocalHero() {
               <input
                 type="text"
                 className="form-control bdrs4"
-                placeholder="What do you need? (e.g. plumber, painter)"
+                placeholder={t("searchPlaceholder")}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 style={{ maxWidth: 300 }}
@@ -40,13 +42,13 @@ export default function LocalHero() {
               <input
                 type="text"
                 className="form-control bdrs4"
-                placeholder="Postcode or city"
+                placeholder={t("postcodePlaceholder")}
                 value={postcode}
                 onChange={(e) => setPostcode(e.target.value)}
                 style={{ maxWidth: 200 }}
               />
               <button type="submit" className="ud-btn btn-thm bdrs4">
-                Search <i className="fal fa-search ms-1" />
+                {t("search")} <i className="fal fa-search ms-1" />
               </button>
             </form>
           </div>

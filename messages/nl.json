@@ -803,5 +803,14 @@
     "accepted": "Geaccepteerd",
     "accepting": "Accepteren...",
     "acceptBid": "Bod accepteren"
+  },
+  "localHub": {
+    "title": "Lokale Marktplaats",
+    "metaDescription": "Vind vakkundige vakmensen bij jou in de buurt. Vraag offertes aan voor klussen, reparaties en lokale diensten.",
+    "heroTitle": "Vind betrouwbare vakmensen bij jou in de buurt",
+    "heroText": "Van loodgieters tot schilders — vraag offertes aan bij ervaren professionals bij jou in de buurt.",
+    "searchPlaceholder": "Wat heb je nodig? (bijv. loodgieter, schilder)",
+    "postcodePlaceholder": "Postcode of plaats",
+    "search": "Zoeken"
   }
 }

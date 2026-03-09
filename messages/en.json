@@ -803,5 +803,14 @@
     "accepted": "Accepted",
     "accepting": "Accepting...",
     "acceptBid": "Accept Bid"
+  },
+  "localHub": {
+    "title": "Local Marketplace",
+    "metaDescription": "Find skilled craftsmen near you. Get quotes for home improvement, repairs, and local services.",
+    "heroTitle": "Find Trusted Local Craftsmen",
+    "heroText": "From plumbers to painters — get quotes from skilled professionals near you.",
+    "searchPlaceholder": "What do you need? (e.g. plumber, painter)",
+    "postcodePlaceholder": "Postcode or city",
+    "search": "Search"
   }
 }
