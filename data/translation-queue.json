@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 25
+    "completed": 26
   },
   "queue": [
     {
@@ -270,7 +270,7 @@
       "file": "src/components/card/FreelancerCardList.jsx",
       "description": "Same strings as FreelancerCard2 in list layout",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 3,
       "phase": 3
     },

@@ -608,6 +608,8 @@
     "topRated": "Top Rated",
     "pro": "Pro",
     "rising": "Rising",
-    "levelNew": "New"
+    "levelNew": "New",
+    "jobSuccess": "Job Success",
+    "jobsCompleted": "jobs completed"
   }
 }

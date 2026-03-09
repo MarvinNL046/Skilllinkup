@@ -608,6 +608,8 @@
     "topRated": "Top Rated",
     "pro": "Pro",
     "rising": "Opkomend",
-    "levelNew": "Nieuw"
+    "levelNew": "Nieuw",
+    "jobSuccess": "Slagingspercentage",
+    "jobsCompleted": "opdrachten afgerond"
   }
 }

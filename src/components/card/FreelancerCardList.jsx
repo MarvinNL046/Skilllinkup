@@ -1,8 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { LevelBadge } from "./FreelancerCard2";
 
 export default function FreelancerCardList({ data }) {
+  const t = useTranslations("freelancerCard");
   const tags = data.tags || [];
   const visibleTags = tags.slice(0, 3);
   const overflow = tags.length - 3;
@@ -77,10 +81,10 @@ export default function FreelancerCardList({ data }) {
               <span className="fw500">€{data.price}/hr</span>
             )}
             {data.completionRate && (
-              <span className="text-muted">{data.completionRate}% Job Success</span>
+              <span className="text-muted">{data.completionRate}% {t("jobSuccess")}</span>
             )}
             {data.totalOrders > 0 && (
-              <span className="text-muted">{data.totalOrders} jobs completed</span>
+              <span className="text-muted">{data.totalOrders} {t("jobsCompleted")}</span>
             )}
             {data.rating > 0 && (
               <span className="text-muted">
@@ -104,7 +108,7 @@ export default function FreelancerCardList({ data }) {
                   fontWeight: 500,
                 }}
               >
-                Available Now
+                {t("availableNow")}
               </span>
             )}
             <LevelBadge level={data.level} />
@@ -152,7 +156,7 @@ export default function FreelancerCardList({ data }) {
               whiteSpace: "nowrap",
             }}
           >
-            View Profile
+            {t("viewProfile")}
             <i className="fal fa-arrow-right-long" />
           </Link>
         </div>
@@ -165,7 +169,7 @@ export default function FreelancerCardList({ data }) {
           className="ud-btn btn-light-thm w-100 text-center"
           style={{ border: "2px solid #22c55e", borderRadius: 8 }}
         >
-          View Profile
+          {t("viewProfile")}
           <i className="fal fa-arrow-right-long" />
         </Link>
       </div>
