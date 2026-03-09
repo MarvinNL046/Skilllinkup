@@ -3,6 +3,8 @@ import "./globals.css";
 import "react-tooltip/dist/react-tooltip.css";
 import "rc-slider/assets/index.css";
 import ClientLayout from "@/components/ClientLayout";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -44,11 +46,16 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body className={`${dmSans.className}`}>
-        <ClientLayout>{children}</ClientLayout>
+        <NextIntlClientProvider messages={messages}>
+          <ClientLayout>{children}</ClientLayout>
+        </NextIntlClientProvider>
       </body>
     </html>
   );
