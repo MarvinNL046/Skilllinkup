@@ -449,100 +449,92 @@ Pre-deployment validation via `bash scripts/sanity-check.sh`:
 ## Internationalization (i18n)
 
 ### Overview
-The platform supports multi-language content using **next-intl v4.4.0** with locale-based routing:
-- **Supported locales**: English (en - default), Dutch (nl)
-- **Routing**: `/[locale]/` pattern (e.g., `/en/platforms`, `/nl/platforms`)
-- **Database**: All content tables have `locale` column with composite unique constraints `(slug, locale)`
+The platform supports multi-language content using **next-intl v4.8.3** with cookie-based locale detection (NO URL prefix routing):
+- **Supported locales**: en (default), nl, de, fr, es, pt, it, pl
+- **Locale detection**: Cookie `NEXT_LOCALE` > `Accept-Language` header > default `en`
+- **No URL prefix**: All content served at same URLs regardless of locale
+- **Database**: Convex tables have `locale` field with `by_slug_locale` index
 
 ### Architecture
 
-**Middleware** (`middleware.ts`):
-- Intercepts all requests and adds locale prefix
-- Redirects root `/` to `/en` (default locale)
-- Configured with `localePrefix: 'always'`
+**Locale Detection** (`src/i18n/request.ts`):
+- Reads `NEXT_LOCALE` cookie first (set by LanguageSwitcher)
+- Falls back to browser `Accept-Language` header
+- Default: `en`
+
+**Routing** (`src/i18n/routing.ts`):
+- `localePrefix: "as-needed"` — no locale prefix in URLs
+- All 8 locales defined: en, nl, de, fr, es, pt, it, pl
 
 **Translation Files**:
-- `messages/en.json` - English UI strings (header, footer, common)
-- `messages/nl.json` - Dutch UI strings
+- `messages/en.json` — English UI strings (~70+ namespaces)
+- `messages/nl.json` — Dutch translations (same structure)
 
 **Key Components**:
-- `i18n/request.ts` - Server-side i18n configuration
-- `components/LanguageSwitcher.tsx` - Client-side locale toggle with flags
-- `app/[locale]/layout.tsx` - Wraps app with `NextIntlClientProvider`
+- `src/i18n/request.ts` — Server-side locale resolution
+- `src/i18n/routing.ts` — Locale configuration
+- `src/components/LanguageSwitcher.jsx` — Dropdown with flags, sets cookie
+- `src/app/layout.js` — `NextIntlClientProvider` + `generateMetadata()`
 
-### Translation Workflows
+### Translation Patterns
 
-**Option 1: Basic Translation** (Free, instant)
+**Client Components**:
+```jsx
+"use client";
+import { useTranslations } from "next-intl";
+
+export default function MyComponent() {
+  const t = useTranslations("myNamespace");
+  return <h1>{t("title")}</h1>;
+}
+```
+
+**Server Components / Metadata**:
+```jsx
+import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata() {
+  const t = await getTranslations("myNamespace");
+  return { title: t("metaTitle"), description: t("metaDescription") };
+}
+```
+
+**Variable naming**: `t` for primary, `tc` for common, `tt` for toasts, `tv` for validation
+
+### DB Content Translation Scripts
+All use `@iamtraction/google-translate` (FREE, no API key):
 ```bash
-node scripts/translate-platforms.mjs
-```
-- Uses simple word replacement dictionary
-- Good for: Quick testing, basic translations
-- Limitations: Low quality, misses context
-
-**Option 2: Google Translate** (FREE, no API key! ⭐ RECOMMENDED)
-```bash
-node scripts/translate-platforms-google.mjs
-```
-- **Cost**: 100% FREE - No API key, no creditcard!
-- **Quality**: Good quality translations
-- **Package**: Uses `@iamtraction/google-translate`
-- **Translates**: Descriptions, meta tags, pros, cons, features
-- **Speed**: Slower than paid APIs (rate limiting)
-- **Perfect for**: Getting started without any setup
-
-**Verification Scripts**:
-```bash
-node scripts/check-locales.mjs           # Check locale distribution
-node scripts/verify-translation-direction.mjs  # Verify EN→NL direction
+node scripts/translate-platforms-nl.mjs   # Platforms (19 records)
+node scripts/translate-posts-nl.mjs       # Blog posts (10 records)
+node scripts/translate-categories-nl.mjs  # Categories (974 records)
+node scripts/translate-skills-nl.mjs      # Skills (ready, table empty)
+node scripts/translate-tools-nl.mjs       # Tools (ready, table empty)
+node scripts/translate-resources-nl.mjs   # Resources (13 records)
+node scripts/translate-seopages-nl.mjs    # SEO pages (ready, table empty)
 ```
 
-### Environment Variables
+### Translation Queue
+- `data/translation-queue.json` — Tracks 633 translation items across 7 locales
+- `.claude/loop-translate-nl.md` — Pipeline rules for automated translation loop
+- Queue processes one item per iteration: lock → translate → tsc check → commit
 
-Add to `.env.local`:
-```bash
-DEEPL_API_KEY=your-key-here  # Get from https://www.deepl.com/pro#developer
-```
-
-### Database Schema
-
-All content tables support localization:
-```sql
--- Platforms table
-locale VARCHAR(5) DEFAULT 'en'
-CREATE INDEX idx_platforms_locale ON platforms(locale);
-ALTER TABLE platforms ADD CONSTRAINT platforms_slug_locale_unique UNIQUE (slug, locale);
-
--- Same pattern for posts, categories, tools
-```
-
-### Smart Sitemap
-
-Sitemap automatically generates correct URLs based on existing content:
-- Only generates URLs for content that exists
-- Adds hreflang alternates only when both EN and NL versions exist
-- Per-locale queries prevent 404 errors
-- Auto-revalidates every 15 minutes
+### Translation Style Guide
+- **Tone**: Informal, modern, direct (like a trendy tech platform)
+- **Dutch**: "je/jij" (NOT "u"), keep English tech terms (freelancer, dashboard, etc.)
+- **Platform name**: Always "SkillLinkup" (never translate)
 
 ### Adding New Translations
 
 **UI Strings**:
-1. Add key to `messages/en.json`
-2. Add Dutch translation to `messages/nl.json`
-3. Use in components: `const t = useTranslations(); t('key.path')`
+1. Add key to `messages/en.json` under appropriate namespace
+2. Add translation to `messages/nl.json` (same key path)
+3. Client component: `useTranslations("namespace")`
+4. Server component: `getTranslations("namespace")`
 
-**Content**:
-1. Create English version first (locale='en')
-2. Run DeepL script for professional Dutch translation
-3. Manual review in admin dashboard (port 3002)
-4. Publish both versions
-
-### SEO Considerations
-
-- Each locale has its own sitemap entries
-- Hreflang tags automatically added when both versions exist
-- Meta titles and descriptions translated separately
-- URL structure: `/{locale}/{slug}` for consistent indexing
+**DB Content**:
+1. Create English records first (locale='en')
+2. Run the appropriate translation script
+3. Scripts use `by_slug_locale` index to avoid duplicates
 
 ## Ads Management System
 

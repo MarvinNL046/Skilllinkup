@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 99
+    "completed": 100
   },
   "queue": [
     {
@@ -1011,7 +1011,7 @@
       "target": "docs-update",
       "description": "Update CLAUDE.md with i18n docs",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 11,
       "phase": 11
     },
