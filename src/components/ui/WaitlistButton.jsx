@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { useMutation } from "convex/react";
+import { useTranslations } from "next-intl";
 import { api } from "../../../convex/_generated/api";
 
 export default function WaitlistButton({ className = "ud-btn btn-thm bdrs12 text-white" }) {
+  const t = useTranslations("waitlist");
   const joinWaitlist = useMutation(api.waitlist.join);
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
@@ -22,7 +24,7 @@ export default function WaitlistButton({ className = "ud-btn btn-thm bdrs12 text
       setDone(true);
       setEmail("");
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      setError(t("errorGeneric"));
     } finally {
       setLoading(false);
     }
@@ -40,7 +42,7 @@ export default function WaitlistButton({ className = "ud-btn btn-thm bdrs12 text
   return (
     <>
       <button type="button" className={className} onClick={() => setOpen(true)}>
-        Join Waitlist
+        {t("joinWaitlist")}
       </button>
 
       {open && (
@@ -57,18 +59,17 @@ export default function WaitlistButton({ className = "ud-btn btn-thm bdrs12 text
             {!done ? (
               <>
                 <div className="d-flex justify-content-between align-items-center mb20">
-                  <p className="mb-0 fw600 fz17">Join the waitlist</p>
+                  <p className="mb-0 fw600 fz17">{t("joinTheWaitlist")}</p>
                   <button type="button" className="btn-close" onClick={handleClose} />
                 </div>
                 <p className="fz14 text-muted mb25">
-                  We're working hard to build the best platform for freelancers and clients.
-                  Leave your email and we'll let you know as soon as we go live.
+                  {t("description")}
                 </p>
                 <form onSubmit={handleSubmit}>
                   <input
                     type="email"
                     className="form-control mb15"
-                    placeholder="your@email.com"
+                    placeholder={t("placeholder")}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -80,7 +81,7 @@ export default function WaitlistButton({ className = "ud-btn btn-thm bdrs12 text
                     className="ud-btn btn-thm w-100"
                     disabled={loading}
                   >
-                    {loading ? "Submitting..." : "Join now"}
+                    {loading ? t("submitting") : t("joinNow")}
                     <i className="fal fa-arrow-right-long" />
                   </button>
                 </form>
@@ -88,12 +89,12 @@ export default function WaitlistButton({ className = "ud-btn btn-thm bdrs12 text
             ) : (
               <div className="text-center py-3">
                 <div className="mb20" style={{ fontSize: 48 }}>🎉</div>
-                <p className="mb10 fw600 fz17">You're on the list!</p>
+                <p className="mb10 fw600 fz17">{t("successTitle")}</p>
                 <p className="fz14 text-muted mb25">
-                  We'll notify you as soon as SkillLinkup goes live.
+                  {t("successDescription")}
                 </p>
                 <button className="ud-btn btn-thm" onClick={handleClose}>
-                  Close
+                  {t("close")}
                 </button>
               </div>
             )}

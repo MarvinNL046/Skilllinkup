@@ -952,6 +952,18 @@
     "resolvedNote": "Resolved via admin dashboard: {resolution}",
     "errorPrefix": "Error: "
   },
+  "waitlist": {
+    "joinWaitlist": "Join Waitlist",
+    "joinTheWaitlist": "Join the waitlist",
+    "description": "We're working hard to build the best platform for freelancers and clients. Leave your email and we'll let you know as soon as we go live.",
+    "placeholder": "your@email.com",
+    "submitting": "Submitting...",
+    "joinNow": "Join now",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "successTitle": "You're on the list!",
+    "successDescription": "We'll notify you as soon as SkillLinkup goes live.",
+    "close": "Close"
+  },
   "jobsHub": {
     "title": "Jobs",
     "metaDescription": "Browse job openings or post vacancies. Find full-time, part-time, and freelance opportunities.",

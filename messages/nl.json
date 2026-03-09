@@ -952,6 +952,18 @@
     "resolvedNote": "Opgelost via admin dashboard: {resolution}",
     "errorPrefix": "Fout: "
   },
+  "waitlist": {
+    "joinWaitlist": "Schrijf je in",
+    "joinTheWaitlist": "Schrijf je in voor de wachtlijst",
+    "description": "We werken hard aan het beste platform voor freelancers en opdrachtgevers. Laat je e-mail achter en we laten je weten zodra we live gaan.",
+    "placeholder": "jouw@email.com",
+    "submitting": "Verzenden...",
+    "joinNow": "Schrijf je in",
+    "errorGeneric": "Er ging iets mis. Probeer het opnieuw.",
+    "successTitle": "Je staat op de lijst!",
+    "successDescription": "We sturen je een bericht zodra SkillLinkup live gaat.",
+    "close": "Sluiten"
+  },
   "jobsHub": {
     "title": "Vacatures",
     "metaDescription": "Bekijk vacatures of plaats een vacature. Vind fulltime, parttime en freelance mogelijkheden.",
