@@ -1,0 +1,6348 @@
+{
+  "locales": [
+    "nl",
+    "de",
+    "fr",
+    "es",
+    "pt",
+    "it",
+    "pl"
+  ],
+  "defaultLocale": "en",
+  "stats": {
+    "total": 633,
+    "completed": 1
+  },
+  "queue": [
+    {
+      "id": 1,
+      "type": "infra",
+      "target": "install-next-intl",
+      "description": "npm install next-intl, create i18n/request.ts, i18n/routing.ts",
+      "locale": "nl",
+      "status": "completed",
+      "priority": 1,
+      "phase": 0
+    },
+    {
+      "id": 2,
+      "type": "infra",
+      "target": "middleware-integration",
+      "description": "Integrate next-intl with Clerk middleware in src/middleware.ts",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 1,
+      "phase": 0
+    },
+    {
+      "id": 3,
+      "type": "infra",
+      "target": "messages-en",
+      "description": "Create messages/en.json with all namespaces: common, nav, home, footer, auth, dashboard, marketplace, local, jobs, contact, faq, pricing, becomeSeller, errors",
+      "locale": "en",
+      "status": "pending",
+      "priority": 1,
+      "phase": 0
+    },
+    {
+      "id": 4,
+      "type": "infra",
+      "target": "messages-nl",
+      "description": "Create messages/nl.json — full Dutch translation of en.json",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 1,
+      "phase": 0
+    },
+    {
+      "id": 5,
+      "type": "infra",
+      "target": "layout-provider",
+      "description": "Update src/app/layout.js — wrap with NextIntlClientProvider, dynamic lang attribute",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 1,
+      "phase": 0
+    },
+    {
+      "id": 6,
+      "type": "infra",
+      "target": "verify-setup",
+      "description": "Verify dev server starts, translations load, no errors",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 1,
+      "phase": 0
+    },
+    {
+      "id": 10,
+      "type": "component",
+      "file": "src/components/header/Header19.jsx",
+      "description": "Nav items, search placeholder, login/register, world labels (Online, Local, Jobs)",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 2,
+      "phase": 1
+    },
+    {
+      "id": 11,
+      "type": "component",
+      "file": "src/components/header/MobileNavigation.jsx",
+      "description": "Mobile nav items",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 2,
+      "phase": 1
+    },
+    {
+      "id": 12,
+      "type": "component",
+      "file": "src/components/footer",
+      "description": "Footer links, copyright, tagline",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 2,
+      "phase": 1
+    },
+    {
+      "id": 13,
+      "type": "component",
+      "file": "src/components/dashboard/header/DashboardNavigation.jsx",
+      "description": "Dashboard nav: Online, Local, Jobs, menu items",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 2,
+      "phase": 1
+    },
+    {
+      "id": 14,
+      "type": "component",
+      "file": "src/components/breadcrumb",
+      "description": "Breadcrumb labels: Home, Browse, Contact us, etc.",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 2,
+      "phase": 1
+    },
+    {
+      "id": 20,
+      "type": "page",
+      "file": "src/app/(home)/page.jsx",
+      "description": "Homepage metadata (title, description, OG tags)",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 2,
+      "phase": 2
+    },
+    {
+      "id": 21,
+      "type": "component",
+      "file": "src/components/hero/HomepageHero.jsx",
+      "description": "Find the Right Talent, world descriptions, CTA buttons",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 2,
+      "phase": 2
+    },
+    {
+      "id": 22,
+      "type": "component",
+      "file": "src/components/section/SocialProofStats.jsx",
+      "description": "Stats section text",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 2,
+      "phase": 2
+    },
+    {
+      "id": 23,
+      "type": "page",
+      "file": "src/app/become-seller",
+      "description": "Full page: hero, 3 earning methods, steps, benefits, CTA",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 2,
+      "phase": 2
+    },
+    {
+      "id": 24,
+      "type": "page",
+      "file": "src/app/pricing/page.jsx",
+      "description": "Pricing tiers, feature lists, CTA buttons",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 2,
+      "phase": 2
+    },
+    {
+      "id": 25,
+      "type": "page",
+      "file": "src/app/(about)/about/page.jsx",
+      "description": "About page content, team section",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 2,
+      "phase": 2
+    },
+    {
+      "id": 26,
+      "type": "page",
+      "file": "src/app/faq/page.jsx",
+      "description": "All Q&A pairs, section titles",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 2,
+      "phase": 2
+    },
+    {
+      "id": 27,
+      "type": "page",
+      "file": "src/app/contact/page.jsx",
+      "description": "Form labels, placeholders, success/error messages",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 2,
+      "phase": 2
+    },
+    {
+      "id": 28,
+      "type": "page",
+      "file": "src/app/privacy-policy/page.jsx",
+      "description": "Privacy policy content",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 2,
+      "phase": 2
+    },
+    {
+      "id": 29,
+      "type": "page",
+      "file": "src/app/terms/page.jsx",
+      "description": "Terms of service content",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 2,
+      "phase": 2
+    },
+    {
+      "id": 30,
+      "type": "page",
+      "file": "src/app/help/page.jsx",
+      "description": "Help page content",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 2,
+      "phase": 2
+    },
+    {
+      "id": 40,
+      "type": "page",
+      "file": "src/app/(online)/online/page.jsx",
+      "description": "Online hub landing page",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 3,
+      "phase": 3
+    },
+    {
+      "id": 41,
+      "type": "component",
+      "file": "src/components/section/Listing14.jsx",
+      "description": "No freelancers yet, Join as freelancer, filter labels",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 3,
+      "phase": 3
+    },
+    {
+      "id": 42,
+      "type": "component",
+      "file": "src/components/card/FreelancerCard2.jsx",
+      "description": "Available Now, View Profile, Location, Rate, Level, On request",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 3,
+      "phase": 3
+    },
+    {
+      "id": 43,
+      "type": "component",
+      "file": "src/components/card/FreelancerCardList.jsx",
+      "description": "Same strings as FreelancerCard2 in list layout",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 3,
+      "phase": 3
+    },
+    {
+      "id": 44,
+      "type": "component",
+      "file": "src/components/sidebar/ListingSidebar5.jsx",
+      "description": "Filter labels: Category, Level, Location, Language, Budget",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 3,
+      "phase": 3
+    },
+    {
+      "id": 45,
+      "type": "component",
+      "file": "src/components/element/ListingOption2.jsx",
+      "description": "{count} freelancers available, sort labels",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 3,
+      "phase": 3
+    },
+    {
+      "id": 46,
+      "type": "component",
+      "file": "src/components/option/SortOption1.jsx",
+      "description": "Sort options: Best Seller, Recommended, New Arrivals",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 3,
+      "phase": 3
+    },
+    {
+      "id": 47,
+      "type": "component",
+      "file": "src/components/option/AvailableNowOption.jsx",
+      "description": "Available Now toggle label",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 3,
+      "phase": 3
+    },
+    {
+      "id": 48,
+      "type": "page",
+      "file": "src/app/(online)/online/services",
+      "description": "Services listing page",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 3,
+      "phase": 3
+    },
+    {
+      "id": 49,
+      "type": "page",
+      "file": "src/app/(online)/online/projects",
+      "description": "Projects listing page",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 3,
+      "phase": 3
+    },
+    {
+      "id": 50,
+      "type": "page",
+      "file": "src/app/(service)/service/[id]",
+      "description": "Gig detail: tabs, package labels, order buttons",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 3,
+      "phase": 3
+    },
+    {
+      "id": 51,
+      "type": "page",
+      "file": "src/app/(freelancer)/freelancer/[id]",
+      "description": "Freelancer profile: sections, labels",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 3,
+      "phase": 3
+    },
+    {
+      "id": 52,
+      "type": "page",
+      "file": "src/app/(project)/project/[id]",
+      "description": "Project detail: bid section, labels",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 3,
+      "phase": 3
+    },
+    {
+      "id": 60,
+      "type": "page",
+      "file": "src/app/(local)/local/page.jsx",
+      "description": "Local hub landing",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 4,
+      "phase": 4
+    },
+    {
+      "id": 61,
+      "type": "page",
+      "file": "src/app/(local)/local/craftsmen",
+      "description": "Craftsmen listing, filters",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 4,
+      "phase": 4
+    },
+    {
+      "id": 62,
+      "type": "page",
+      "file": "src/app/(local)/local/craftsman",
+      "description": "Craftsman profile detail",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 4,
+      "phase": 4
+    },
+    {
+      "id": 63,
+      "type": "page",
+      "file": "src/app/(local)/local/quote-requests",
+      "description": "Quote requests listing",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 4,
+      "phase": 4
+    },
+    {
+      "id": 64,
+      "type": "page",
+      "file": "src/app/(local)/local/quote-request",
+      "description": "Single quote request detail",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 4,
+      "phase": 4
+    },
+    {
+      "id": 65,
+      "type": "component",
+      "file": "src/components/local",
+      "description": "Quote form labels, lead claim UI, credit system text",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 4,
+      "phase": 4
+    },
+    {
+      "id": 70,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs-hub/page.jsx",
+      "description": "Jobs landing page",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 5,
+      "phase": 5
+    },
+    {
+      "id": 71,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/browse",
+      "description": "Job listings, filters",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 5,
+      "phase": 5
+    },
+    {
+      "id": 72,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/job",
+      "description": "Job detail page",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 5,
+      "phase": 5
+    },
+    {
+      "id": 73,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/companies",
+      "description": "Companies listing",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 5,
+      "phase": 5
+    },
+    {
+      "id": 74,
+      "type": "component",
+      "file": "src/components/jobs",
+      "description": "Salary labels, job type badges, application buttons",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 5,
+      "phase": 5
+    },
+    {
+      "id": 80,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/page.jsx",
+      "description": "Dashboard home: stats labels, recent orders, chart labels",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 81,
+      "type": "page",
+      "file": "src/app/(dashboard)/onboarding/page.jsx",
+      "description": "Onboarding steps, form labels, world selection",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 82,
+      "type": "page",
+      "file": "src/app/(dashboard)/my-profile/page.jsx",
+      "description": "Profile edit: all labels, placeholders, sections",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 83,
+      "type": "page",
+      "file": "src/app/(dashboard)/add-services/page.jsx",
+      "description": "Gig creation: title, description, packages, pricing",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 84,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-services/page.jsx",
+      "description": "Gig management: status labels, actions",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 85,
+      "type": "page",
+      "file": "src/app/(dashboard)/create-projects/page.jsx",
+      "description": "Project creation form",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 86,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-projects/page.jsx",
+      "description": "Project management",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 87,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-jobs/page.jsx",
+      "description": "Job management",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 88,
+      "type": "page",
+      "file": "src/app/(dashboard)/orders/page.jsx",
+      "description": "Orders: status badges, Mark as Delivered, Approve, Request Revision",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 89,
+      "type": "page",
+      "file": "src/app/(dashboard)/message/page.jsx",
+      "description": "Chat UI: messages placeholder, Back to conversations, Send",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 90,
+      "type": "page",
+      "file": "src/app/(dashboard)/reviews/page.jsx",
+      "description": "Reviews section, rating labels",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 91,
+      "type": "page",
+      "file": "src/app/(dashboard)/saved/page.jsx",
+      "description": "Saved items page",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 92,
+      "type": "page",
+      "file": "src/app/(dashboard)/proposal/page.jsx",
+      "description": "Bid/proposal form",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 93,
+      "type": "page",
+      "file": "src/app/(dashboard)/payouts/page.jsx",
+      "description": "Payouts/earnings page",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 94,
+      "type": "page",
+      "file": "src/app/(dashboard)/statements/page.jsx",
+      "description": "Financial statements",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 95,
+      "type": "page",
+      "file": "src/app/(dashboard)/invoice/page.jsx",
+      "description": "Invoice page",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 96,
+      "type": "page",
+      "file": "src/app/(dashboard)/projects/[id]/page.jsx",
+      "description": "Project board: milestones, deliverables",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 97,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/credits/page.jsx",
+      "description": "Credits: buy, balance",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 98,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/my-leads/page.jsx",
+      "description": "Leads: claim buttons, details",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 99,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/rewards/page.jsx",
+      "description": "Rewards: tiers, cashback",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 100,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/feedback/page.jsx",
+      "description": "Feedback form",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 101,
+      "type": "page",
+      "file": "src/app/(dashboard)/admin/disputes/page.jsx",
+      "description": "Admin disputes",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 6,
+      "phase": 6
+    },
+    {
+      "id": 110,
+      "type": "component",
+      "file": "src/components/ui/WaitlistButton.jsx",
+      "description": "Join Waitlist, modal text, success message",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 7,
+      "phase": 7
+    },
+    {
+      "id": 111,
+      "type": "component",
+      "file": "src/components/ui/ContactButton.jsx",
+      "description": "Contact, Opening chat...",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 7,
+      "phase": 7
+    },
+    {
+      "id": 112,
+      "type": "component",
+      "file": "src/components/ui/EmptyState.jsx",
+      "description": "Empty state messages across the app",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 7,
+      "phase": 7
+    },
+    {
+      "id": 113,
+      "type": "component",
+      "file": "src/components/modal",
+      "description": "All modals: confirm dialogs, forms",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 7,
+      "phase": 7
+    },
+    {
+      "id": 114,
+      "type": "component",
+      "file": "status-badges",
+      "description": "Open, In Progress, Completed, Cancelled, Pending, Active, Paused, Delivered",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 7,
+      "phase": 7
+    },
+    {
+      "id": 115,
+      "type": "component",
+      "file": "toast-messages",
+      "description": "Account type updated, Order approved, Something went wrong, etc.",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 7,
+      "phase": 7
+    },
+    {
+      "id": 116,
+      "type": "component",
+      "file": "form-validation",
+      "description": "Required, invalid email, too short, etc.",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 7,
+      "phase": 7
+    },
+    {
+      "id": 117,
+      "type": "component",
+      "file": "loading-states",
+      "description": "Loading..., spinner labels",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 7,
+      "phase": 7
+    },
+    {
+      "id": 118,
+      "type": "page",
+      "file": "src/app/error.tsx",
+      "description": "Error pages, not-found, [...not_found]",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 7,
+      "phase": 7
+    },
+    {
+      "id": 120,
+      "type": "page",
+      "file": "src/app/(blog)/blog/page.jsx",
+      "description": "Blog listing, filter labels",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 8,
+      "phase": 8
+    },
+    {
+      "id": 121,
+      "type": "page",
+      "file": "src/app/(blog)/post/[id]/page.jsx",
+      "description": "Blog post: share buttons, author bio, related posts",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 8,
+      "phase": 8
+    },
+    {
+      "id": 122,
+      "type": "page",
+      "file": "src/app/platforms/page.jsx",
+      "description": "Platforms listing",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 8,
+      "phase": 8
+    },
+    {
+      "id": 123,
+      "type": "page",
+      "file": "src/app/platforms/[slug]/page.jsx",
+      "description": "Platform detail: reviews, comparison labels",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 8,
+      "phase": 8
+    },
+    {
+      "id": 124,
+      "type": "page",
+      "file": "src/app/resources",
+      "description": "Resources listing + detail",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 8,
+      "phase": 8
+    },
+    {
+      "id": 130,
+      "type": "db-content",
+      "target": "script-setup",
+      "description": "Create scripts/translate-content-nl.mjs using @iamtraction/google-translate",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 9,
+      "phase": 9
+    },
+    {
+      "id": 131,
+      "type": "db-content",
+      "target": "marketplaceCategories",
+      "description": "Translate name, description for all categories",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 9,
+      "phase": 9
+    },
+    {
+      "id": 132,
+      "type": "db-content",
+      "target": "skills",
+      "description": "Translate skill names",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 9,
+      "phase": 9
+    },
+    {
+      "id": 133,
+      "type": "db-content",
+      "target": "platforms",
+      "description": "Translate name, description, pros, cons, features",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 9,
+      "phase": 9
+    },
+    {
+      "id": 134,
+      "type": "db-content",
+      "target": "posts",
+      "description": "Translate title, excerpt, content, metaTitle, metaDescription",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 9,
+      "phase": 9
+    },
+    {
+      "id": 135,
+      "type": "db-content",
+      "target": "tools",
+      "description": "Translate name, description",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 9,
+      "phase": 9
+    },
+    {
+      "id": 136,
+      "type": "db-content",
+      "target": "seoPages",
+      "description": "Translate metaTitle, metaDescription, intro, sections, faqItems",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 9,
+      "phase": 9
+    },
+    {
+      "id": 137,
+      "type": "db-content",
+      "target": "resources",
+      "description": "Translate metaTitle, metaDescription, intro, sections, faqItems",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 9,
+      "phase": 9
+    },
+    {
+      "id": 140,
+      "type": "meta",
+      "file": "src/app/layout.js",
+      "description": "Root metadata: locale-aware title/description",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 10,
+      "phase": 10
+    },
+    {
+      "id": 141,
+      "type": "meta",
+      "target": "page-metadata",
+      "description": "All page generateMetadata() functions for NL locale",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 10,
+      "phase": 10
+    },
+    {
+      "id": 142,
+      "type": "meta",
+      "file": "src/app/sitemap.ts",
+      "description": "Include NL pages with hreflang",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 10,
+      "phase": 10
+    },
+    {
+      "id": 143,
+      "type": "meta",
+      "file": "src/app/robots.ts",
+      "description": "Verify robots.txt for both locales",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 10,
+      "phase": 10
+    },
+    {
+      "id": 150,
+      "type": "component",
+      "file": "src/components/LanguageSwitcher.jsx",
+      "description": "Create EN/NL toggle with flags",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 11,
+      "phase": 11
+    },
+    {
+      "id": 151,
+      "type": "component",
+      "file": "src/components/header/Header19.jsx",
+      "description": "Add LanguageSwitcher to header + mobile nav",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 11,
+      "phase": 11
+    },
+    {
+      "id": 152,
+      "type": "infra",
+      "target": "regression-test",
+      "description": "Visit every route in NL, verify no English leaks",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 11,
+      "phase": 11
+    },
+    {
+      "id": 153,
+      "type": "infra",
+      "target": "build-test",
+      "description": "npx next build passes clean",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 11,
+      "phase": 11
+    },
+    {
+      "id": 154,
+      "type": "infra",
+      "target": "docs-update",
+      "description": "Update CLAUDE.md with i18n docs",
+      "locale": "nl",
+      "status": "pending",
+      "priority": 11,
+      "phase": 11
+    },
+    {
+      "id": 1000,
+      "type": "infra",
+      "target": "messages-de",
+      "description": "Create messages/de.json — full German translation of en.json",
+      "locale": "de",
+      "status": "pending",
+      "priority": 20,
+      "phase": 0
+    },
+    {
+      "id": 1001,
+      "type": "component",
+      "file": "src/components/header/Header19.jsx",
+      "description": "Nav items, search placeholder, login/register, world labels (Online, Local, Jobs)",
+      "locale": "de",
+      "status": "pending",
+      "priority": 21,
+      "phase": 1
+    },
+    {
+      "id": 1002,
+      "type": "component",
+      "file": "src/components/header/MobileNavigation.jsx",
+      "description": "Mobile nav items",
+      "locale": "de",
+      "status": "pending",
+      "priority": 21,
+      "phase": 1
+    },
+    {
+      "id": 1003,
+      "type": "component",
+      "file": "src/components/footer",
+      "description": "Footer links, copyright, tagline",
+      "locale": "de",
+      "status": "pending",
+      "priority": 21,
+      "phase": 1
+    },
+    {
+      "id": 1004,
+      "type": "component",
+      "file": "src/components/dashboard/header/DashboardNavigation.jsx",
+      "description": "Dashboard nav: Online, Local, Jobs, menu items",
+      "locale": "de",
+      "status": "pending",
+      "priority": 21,
+      "phase": 1
+    },
+    {
+      "id": 1005,
+      "type": "component",
+      "file": "src/components/breadcrumb",
+      "description": "Breadcrumb labels: Home, Browse, Contact us, etc.",
+      "locale": "de",
+      "status": "pending",
+      "priority": 21,
+      "phase": 1
+    },
+    {
+      "id": 1006,
+      "type": "page",
+      "file": "src/app/(home)/page.jsx",
+      "description": "Homepage metadata (title, description, OG tags)",
+      "locale": "de",
+      "status": "pending",
+      "priority": 22,
+      "phase": 2
+    },
+    {
+      "id": 1007,
+      "type": "component",
+      "file": "src/components/hero/HomepageHero.jsx",
+      "description": "Find the Right Talent, world descriptions, CTA buttons",
+      "locale": "de",
+      "status": "pending",
+      "priority": 22,
+      "phase": 2
+    },
+    {
+      "id": 1008,
+      "type": "component",
+      "file": "src/components/section/SocialProofStats.jsx",
+      "description": "Stats section text",
+      "locale": "de",
+      "status": "pending",
+      "priority": 22,
+      "phase": 2
+    },
+    {
+      "id": 1009,
+      "type": "page",
+      "file": "src/app/become-seller",
+      "description": "Full page: hero, 3 earning methods, steps, benefits, CTA",
+      "locale": "de",
+      "status": "pending",
+      "priority": 22,
+      "phase": 2
+    },
+    {
+      "id": 1010,
+      "type": "page",
+      "file": "src/app/pricing/page.jsx",
+      "description": "Pricing tiers, feature lists, CTA buttons",
+      "locale": "de",
+      "status": "pending",
+      "priority": 22,
+      "phase": 2
+    },
+    {
+      "id": 1011,
+      "type": "page",
+      "file": "src/app/(about)/about/page.jsx",
+      "description": "About page content, team section",
+      "locale": "de",
+      "status": "pending",
+      "priority": 22,
+      "phase": 2
+    },
+    {
+      "id": 1012,
+      "type": "page",
+      "file": "src/app/faq/page.jsx",
+      "description": "All Q&A pairs, section titles",
+      "locale": "de",
+      "status": "pending",
+      "priority": 22,
+      "phase": 2
+    },
+    {
+      "id": 1013,
+      "type": "page",
+      "file": "src/app/contact/page.jsx",
+      "description": "Form labels, placeholders, success/error messages",
+      "locale": "de",
+      "status": "pending",
+      "priority": 22,
+      "phase": 2
+    },
+    {
+      "id": 1014,
+      "type": "page",
+      "file": "src/app/privacy-policy/page.jsx",
+      "description": "Privacy policy content",
+      "locale": "de",
+      "status": "pending",
+      "priority": 22,
+      "phase": 2
+    },
+    {
+      "id": 1015,
+      "type": "page",
+      "file": "src/app/terms/page.jsx",
+      "description": "Terms of service content",
+      "locale": "de",
+      "status": "pending",
+      "priority": 22,
+      "phase": 2
+    },
+    {
+      "id": 1016,
+      "type": "page",
+      "file": "src/app/help/page.jsx",
+      "description": "Help page content",
+      "locale": "de",
+      "status": "pending",
+      "priority": 22,
+      "phase": 2
+    },
+    {
+      "id": 1017,
+      "type": "page",
+      "file": "src/app/(online)/online/page.jsx",
+      "description": "Online hub landing page",
+      "locale": "de",
+      "status": "pending",
+      "priority": 23,
+      "phase": 3
+    },
+    {
+      "id": 1018,
+      "type": "component",
+      "file": "src/components/section/Listing14.jsx",
+      "description": "No freelancers yet, Join as freelancer, filter labels",
+      "locale": "de",
+      "status": "pending",
+      "priority": 23,
+      "phase": 3
+    },
+    {
+      "id": 1019,
+      "type": "component",
+      "file": "src/components/card/FreelancerCard2.jsx",
+      "description": "Available Now, View Profile, Location, Rate, Level, On request",
+      "locale": "de",
+      "status": "pending",
+      "priority": 23,
+      "phase": 3
+    },
+    {
+      "id": 1020,
+      "type": "component",
+      "file": "src/components/card/FreelancerCardList.jsx",
+      "description": "Same strings as FreelancerCard2 in list layout",
+      "locale": "de",
+      "status": "pending",
+      "priority": 23,
+      "phase": 3
+    },
+    {
+      "id": 1021,
+      "type": "component",
+      "file": "src/components/sidebar/ListingSidebar5.jsx",
+      "description": "Filter labels: Category, Level, Location, Language, Budget",
+      "locale": "de",
+      "status": "pending",
+      "priority": 23,
+      "phase": 3
+    },
+    {
+      "id": 1022,
+      "type": "component",
+      "file": "src/components/element/ListingOption2.jsx",
+      "description": "{count} freelancers available, sort labels",
+      "locale": "de",
+      "status": "pending",
+      "priority": 23,
+      "phase": 3
+    },
+    {
+      "id": 1023,
+      "type": "component",
+      "file": "src/components/option/SortOption1.jsx",
+      "description": "Sort options: Best Seller, Recommended, New Arrivals",
+      "locale": "de",
+      "status": "pending",
+      "priority": 23,
+      "phase": 3
+    },
+    {
+      "id": 1024,
+      "type": "component",
+      "file": "src/components/option/AvailableNowOption.jsx",
+      "description": "Available Now toggle label",
+      "locale": "de",
+      "status": "pending",
+      "priority": 23,
+      "phase": 3
+    },
+    {
+      "id": 1025,
+      "type": "page",
+      "file": "src/app/(online)/online/services",
+      "description": "Services listing page",
+      "locale": "de",
+      "status": "pending",
+      "priority": 23,
+      "phase": 3
+    },
+    {
+      "id": 1026,
+      "type": "page",
+      "file": "src/app/(online)/online/projects",
+      "description": "Projects listing page",
+      "locale": "de",
+      "status": "pending",
+      "priority": 23,
+      "phase": 3
+    },
+    {
+      "id": 1027,
+      "type": "page",
+      "file": "src/app/(service)/service/[id]",
+      "description": "Gig detail: tabs, package labels, order buttons",
+      "locale": "de",
+      "status": "pending",
+      "priority": 23,
+      "phase": 3
+    },
+    {
+      "id": 1028,
+      "type": "page",
+      "file": "src/app/(freelancer)/freelancer/[id]",
+      "description": "Freelancer profile: sections, labels",
+      "locale": "de",
+      "status": "pending",
+      "priority": 23,
+      "phase": 3
+    },
+    {
+      "id": 1029,
+      "type": "page",
+      "file": "src/app/(project)/project/[id]",
+      "description": "Project detail: bid section, labels",
+      "locale": "de",
+      "status": "pending",
+      "priority": 23,
+      "phase": 3
+    },
+    {
+      "id": 1030,
+      "type": "page",
+      "file": "src/app/(local)/local/page.jsx",
+      "description": "Local hub landing",
+      "locale": "de",
+      "status": "pending",
+      "priority": 24,
+      "phase": 4
+    },
+    {
+      "id": 1031,
+      "type": "page",
+      "file": "src/app/(local)/local/craftsmen",
+      "description": "Craftsmen listing, filters",
+      "locale": "de",
+      "status": "pending",
+      "priority": 24,
+      "phase": 4
+    },
+    {
+      "id": 1032,
+      "type": "page",
+      "file": "src/app/(local)/local/craftsman",
+      "description": "Craftsman profile detail",
+      "locale": "de",
+      "status": "pending",
+      "priority": 24,
+      "phase": 4
+    },
+    {
+      "id": 1033,
+      "type": "page",
+      "file": "src/app/(local)/local/quote-requests",
+      "description": "Quote requests listing",
+      "locale": "de",
+      "status": "pending",
+      "priority": 24,
+      "phase": 4
+    },
+    {
+      "id": 1034,
+      "type": "page",
+      "file": "src/app/(local)/local/quote-request",
+      "description": "Single quote request detail",
+      "locale": "de",
+      "status": "pending",
+      "priority": 24,
+      "phase": 4
+    },
+    {
+      "id": 1035,
+      "type": "component",
+      "file": "src/components/local",
+      "description": "Quote form labels, lead claim UI, credit system text",
+      "locale": "de",
+      "status": "pending",
+      "priority": 24,
+      "phase": 4
+    },
+    {
+      "id": 1036,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs-hub/page.jsx",
+      "description": "Jobs landing page",
+      "locale": "de",
+      "status": "pending",
+      "priority": 25,
+      "phase": 5
+    },
+    {
+      "id": 1037,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/browse",
+      "description": "Job listings, filters",
+      "locale": "de",
+      "status": "pending",
+      "priority": 25,
+      "phase": 5
+    },
+    {
+      "id": 1038,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/job",
+      "description": "Job detail page",
+      "locale": "de",
+      "status": "pending",
+      "priority": 25,
+      "phase": 5
+    },
+    {
+      "id": 1039,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/companies",
+      "description": "Companies listing",
+      "locale": "de",
+      "status": "pending",
+      "priority": 25,
+      "phase": 5
+    },
+    {
+      "id": 1040,
+      "type": "component",
+      "file": "src/components/jobs",
+      "description": "Salary labels, job type badges, application buttons",
+      "locale": "de",
+      "status": "pending",
+      "priority": 25,
+      "phase": 5
+    },
+    {
+      "id": 1041,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/page.jsx",
+      "description": "Dashboard home: stats labels, recent orders, chart labels",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1042,
+      "type": "page",
+      "file": "src/app/(dashboard)/onboarding/page.jsx",
+      "description": "Onboarding steps, form labels, world selection",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1043,
+      "type": "page",
+      "file": "src/app/(dashboard)/my-profile/page.jsx",
+      "description": "Profile edit: all labels, placeholders, sections",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1044,
+      "type": "page",
+      "file": "src/app/(dashboard)/add-services/page.jsx",
+      "description": "Gig creation: title, description, packages, pricing",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1045,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-services/page.jsx",
+      "description": "Gig management: status labels, actions",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1046,
+      "type": "page",
+      "file": "src/app/(dashboard)/create-projects/page.jsx",
+      "description": "Project creation form",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1047,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-projects/page.jsx",
+      "description": "Project management",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1048,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-jobs/page.jsx",
+      "description": "Job management",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1049,
+      "type": "page",
+      "file": "src/app/(dashboard)/orders/page.jsx",
+      "description": "Orders: status badges, Mark as Delivered, Approve, Request Revision",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1050,
+      "type": "page",
+      "file": "src/app/(dashboard)/message/page.jsx",
+      "description": "Chat UI: messages placeholder, Back to conversations, Send",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1051,
+      "type": "page",
+      "file": "src/app/(dashboard)/reviews/page.jsx",
+      "description": "Reviews section, rating labels",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1052,
+      "type": "page",
+      "file": "src/app/(dashboard)/saved/page.jsx",
+      "description": "Saved items page",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1053,
+      "type": "page",
+      "file": "src/app/(dashboard)/proposal/page.jsx",
+      "description": "Bid/proposal form",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1054,
+      "type": "page",
+      "file": "src/app/(dashboard)/payouts/page.jsx",
+      "description": "Payouts/earnings page",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1055,
+      "type": "page",
+      "file": "src/app/(dashboard)/statements/page.jsx",
+      "description": "Financial statements",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1056,
+      "type": "page",
+      "file": "src/app/(dashboard)/invoice/page.jsx",
+      "description": "Invoice page",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1057,
+      "type": "page",
+      "file": "src/app/(dashboard)/projects/[id]/page.jsx",
+      "description": "Project board: milestones, deliverables",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1058,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/credits/page.jsx",
+      "description": "Credits: buy, balance",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1059,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/my-leads/page.jsx",
+      "description": "Leads: claim buttons, details",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1060,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/rewards/page.jsx",
+      "description": "Rewards: tiers, cashback",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1061,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/feedback/page.jsx",
+      "description": "Feedback form",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1062,
+      "type": "page",
+      "file": "src/app/(dashboard)/admin/disputes/page.jsx",
+      "description": "Admin disputes",
+      "locale": "de",
+      "status": "pending",
+      "priority": 26,
+      "phase": 6
+    },
+    {
+      "id": 1063,
+      "type": "component",
+      "file": "src/components/ui/WaitlistButton.jsx",
+      "description": "Join Waitlist, modal text, success message",
+      "locale": "de",
+      "status": "pending",
+      "priority": 27,
+      "phase": 7
+    },
+    {
+      "id": 1064,
+      "type": "component",
+      "file": "src/components/ui/ContactButton.jsx",
+      "description": "Contact, Opening chat...",
+      "locale": "de",
+      "status": "pending",
+      "priority": 27,
+      "phase": 7
+    },
+    {
+      "id": 1065,
+      "type": "component",
+      "file": "src/components/ui/EmptyState.jsx",
+      "description": "Empty state messages across the app",
+      "locale": "de",
+      "status": "pending",
+      "priority": 27,
+      "phase": 7
+    },
+    {
+      "id": 1066,
+      "type": "component",
+      "file": "src/components/modal",
+      "description": "All modals: confirm dialogs, forms",
+      "locale": "de",
+      "status": "pending",
+      "priority": 27,
+      "phase": 7
+    },
+    {
+      "id": 1067,
+      "type": "component",
+      "file": "status-badges",
+      "description": "Open, In Progress, Completed, Cancelled, Pending, Active, Paused, Delivered",
+      "locale": "de",
+      "status": "pending",
+      "priority": 27,
+      "phase": 7
+    },
+    {
+      "id": 1068,
+      "type": "component",
+      "file": "toast-messages",
+      "description": "Account type updated, Order approved, Something went wrong, etc.",
+      "locale": "de",
+      "status": "pending",
+      "priority": 27,
+      "phase": 7
+    },
+    {
+      "id": 1069,
+      "type": "component",
+      "file": "form-validation",
+      "description": "Required, invalid email, too short, etc.",
+      "locale": "de",
+      "status": "pending",
+      "priority": 27,
+      "phase": 7
+    },
+    {
+      "id": 1070,
+      "type": "component",
+      "file": "loading-states",
+      "description": "Loading..., spinner labels",
+      "locale": "de",
+      "status": "pending",
+      "priority": 27,
+      "phase": 7
+    },
+    {
+      "id": 1071,
+      "type": "page",
+      "file": "src/app/error.tsx",
+      "description": "Error pages, not-found, [...not_found]",
+      "locale": "de",
+      "status": "pending",
+      "priority": 27,
+      "phase": 7
+    },
+    {
+      "id": 1072,
+      "type": "page",
+      "file": "src/app/(blog)/blog/page.jsx",
+      "description": "Blog listing, filter labels",
+      "locale": "de",
+      "status": "pending",
+      "priority": 28,
+      "phase": 8
+    },
+    {
+      "id": 1073,
+      "type": "page",
+      "file": "src/app/(blog)/post/[id]/page.jsx",
+      "description": "Blog post: share buttons, author bio, related posts",
+      "locale": "de",
+      "status": "pending",
+      "priority": 28,
+      "phase": 8
+    },
+    {
+      "id": 1074,
+      "type": "page",
+      "file": "src/app/platforms/page.jsx",
+      "description": "Platforms listing",
+      "locale": "de",
+      "status": "pending",
+      "priority": 28,
+      "phase": 8
+    },
+    {
+      "id": 1075,
+      "type": "page",
+      "file": "src/app/platforms/[slug]/page.jsx",
+      "description": "Platform detail: reviews, comparison labels",
+      "locale": "de",
+      "status": "pending",
+      "priority": 28,
+      "phase": 8
+    },
+    {
+      "id": 1076,
+      "type": "page",
+      "file": "src/app/resources",
+      "description": "Resources listing + detail",
+      "locale": "de",
+      "status": "pending",
+      "priority": 28,
+      "phase": 8
+    },
+    {
+      "id": 1077,
+      "type": "db-content",
+      "target": "script-setup",
+      "description": "Create scripts/translate-content-nl.mjs using @iamtraction/google-translate",
+      "locale": "de",
+      "status": "pending",
+      "priority": 29,
+      "phase": 9
+    },
+    {
+      "id": 1078,
+      "type": "db-content",
+      "target": "marketplaceCategories",
+      "description": "Translate name, description for all categories",
+      "locale": "de",
+      "status": "pending",
+      "priority": 29,
+      "phase": 9
+    },
+    {
+      "id": 1079,
+      "type": "db-content",
+      "target": "skills",
+      "description": "Translate skill names",
+      "locale": "de",
+      "status": "pending",
+      "priority": 29,
+      "phase": 9
+    },
+    {
+      "id": 1080,
+      "type": "db-content",
+      "target": "platforms",
+      "description": "Translate name, description, pros, cons, features",
+      "locale": "de",
+      "status": "pending",
+      "priority": 29,
+      "phase": 9
+    },
+    {
+      "id": 1081,
+      "type": "db-content",
+      "target": "posts",
+      "description": "Translate title, excerpt, content, metaTitle, metaDescription",
+      "locale": "de",
+      "status": "pending",
+      "priority": 29,
+      "phase": 9
+    },
+    {
+      "id": 1082,
+      "type": "db-content",
+      "target": "tools",
+      "description": "Translate name, description",
+      "locale": "de",
+      "status": "pending",
+      "priority": 29,
+      "phase": 9
+    },
+    {
+      "id": 1083,
+      "type": "db-content",
+      "target": "seoPages",
+      "description": "Translate metaTitle, metaDescription, intro, sections, faqItems",
+      "locale": "de",
+      "status": "pending",
+      "priority": 29,
+      "phase": 9
+    },
+    {
+      "id": 1084,
+      "type": "db-content",
+      "target": "resources",
+      "description": "Translate metaTitle, metaDescription, intro, sections, faqItems",
+      "locale": "de",
+      "status": "pending",
+      "priority": 29,
+      "phase": 9
+    },
+    {
+      "id": 1085,
+      "type": "meta",
+      "file": "src/app/layout.js",
+      "description": "Root metadata: locale-aware title/description",
+      "locale": "de",
+      "status": "pending",
+      "priority": 30,
+      "phase": 10
+    },
+    {
+      "id": 1086,
+      "type": "meta",
+      "target": "page-metadata",
+      "description": "All page generateMetadata() functions for NL locale",
+      "locale": "de",
+      "status": "pending",
+      "priority": 30,
+      "phase": 10
+    },
+    {
+      "id": 1087,
+      "type": "meta",
+      "file": "src/app/sitemap.ts",
+      "description": "Include NL pages with hreflang",
+      "locale": "de",
+      "status": "pending",
+      "priority": 30,
+      "phase": 10
+    },
+    {
+      "id": 1088,
+      "type": "meta",
+      "file": "src/app/robots.ts",
+      "description": "Verify robots.txt for both locales",
+      "locale": "de",
+      "status": "pending",
+      "priority": 30,
+      "phase": 10
+    },
+    {
+      "id": 1089,
+      "type": "infra",
+      "target": "messages-fr",
+      "description": "Create messages/fr.json — full French translation of en.json",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 30,
+      "phase": 0
+    },
+    {
+      "id": 1090,
+      "type": "component",
+      "file": "src/components/header/Header19.jsx",
+      "description": "Nav items, search placeholder, login/register, world labels (Online, Local, Jobs)",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 31,
+      "phase": 1
+    },
+    {
+      "id": 1091,
+      "type": "component",
+      "file": "src/components/header/MobileNavigation.jsx",
+      "description": "Mobile nav items",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 31,
+      "phase": 1
+    },
+    {
+      "id": 1092,
+      "type": "component",
+      "file": "src/components/footer",
+      "description": "Footer links, copyright, tagline",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 31,
+      "phase": 1
+    },
+    {
+      "id": 1093,
+      "type": "component",
+      "file": "src/components/dashboard/header/DashboardNavigation.jsx",
+      "description": "Dashboard nav: Online, Local, Jobs, menu items",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 31,
+      "phase": 1
+    },
+    {
+      "id": 1094,
+      "type": "component",
+      "file": "src/components/breadcrumb",
+      "description": "Breadcrumb labels: Home, Browse, Contact us, etc.",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 31,
+      "phase": 1
+    },
+    {
+      "id": 1095,
+      "type": "page",
+      "file": "src/app/(home)/page.jsx",
+      "description": "Homepage metadata (title, description, OG tags)",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 32,
+      "phase": 2
+    },
+    {
+      "id": 1096,
+      "type": "component",
+      "file": "src/components/hero/HomepageHero.jsx",
+      "description": "Find the Right Talent, world descriptions, CTA buttons",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 32,
+      "phase": 2
+    },
+    {
+      "id": 1097,
+      "type": "component",
+      "file": "src/components/section/SocialProofStats.jsx",
+      "description": "Stats section text",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 32,
+      "phase": 2
+    },
+    {
+      "id": 1098,
+      "type": "page",
+      "file": "src/app/become-seller",
+      "description": "Full page: hero, 3 earning methods, steps, benefits, CTA",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 32,
+      "phase": 2
+    },
+    {
+      "id": 1099,
+      "type": "page",
+      "file": "src/app/pricing/page.jsx",
+      "description": "Pricing tiers, feature lists, CTA buttons",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 32,
+      "phase": 2
+    },
+    {
+      "id": 1100,
+      "type": "page",
+      "file": "src/app/(about)/about/page.jsx",
+      "description": "About page content, team section",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 32,
+      "phase": 2
+    },
+    {
+      "id": 1101,
+      "type": "page",
+      "file": "src/app/faq/page.jsx",
+      "description": "All Q&A pairs, section titles",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 32,
+      "phase": 2
+    },
+    {
+      "id": 1102,
+      "type": "page",
+      "file": "src/app/contact/page.jsx",
+      "description": "Form labels, placeholders, success/error messages",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 32,
+      "phase": 2
+    },
+    {
+      "id": 1103,
+      "type": "page",
+      "file": "src/app/privacy-policy/page.jsx",
+      "description": "Privacy policy content",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 32,
+      "phase": 2
+    },
+    {
+      "id": 1104,
+      "type": "page",
+      "file": "src/app/terms/page.jsx",
+      "description": "Terms of service content",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 32,
+      "phase": 2
+    },
+    {
+      "id": 1105,
+      "type": "page",
+      "file": "src/app/help/page.jsx",
+      "description": "Help page content",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 32,
+      "phase": 2
+    },
+    {
+      "id": 1106,
+      "type": "page",
+      "file": "src/app/(online)/online/page.jsx",
+      "description": "Online hub landing page",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 33,
+      "phase": 3
+    },
+    {
+      "id": 1107,
+      "type": "component",
+      "file": "src/components/section/Listing14.jsx",
+      "description": "No freelancers yet, Join as freelancer, filter labels",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 33,
+      "phase": 3
+    },
+    {
+      "id": 1108,
+      "type": "component",
+      "file": "src/components/card/FreelancerCard2.jsx",
+      "description": "Available Now, View Profile, Location, Rate, Level, On request",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 33,
+      "phase": 3
+    },
+    {
+      "id": 1109,
+      "type": "component",
+      "file": "src/components/card/FreelancerCardList.jsx",
+      "description": "Same strings as FreelancerCard2 in list layout",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 33,
+      "phase": 3
+    },
+    {
+      "id": 1110,
+      "type": "component",
+      "file": "src/components/sidebar/ListingSidebar5.jsx",
+      "description": "Filter labels: Category, Level, Location, Language, Budget",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 33,
+      "phase": 3
+    },
+    {
+      "id": 1111,
+      "type": "component",
+      "file": "src/components/element/ListingOption2.jsx",
+      "description": "{count} freelancers available, sort labels",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 33,
+      "phase": 3
+    },
+    {
+      "id": 1112,
+      "type": "component",
+      "file": "src/components/option/SortOption1.jsx",
+      "description": "Sort options: Best Seller, Recommended, New Arrivals",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 33,
+      "phase": 3
+    },
+    {
+      "id": 1113,
+      "type": "component",
+      "file": "src/components/option/AvailableNowOption.jsx",
+      "description": "Available Now toggle label",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 33,
+      "phase": 3
+    },
+    {
+      "id": 1114,
+      "type": "page",
+      "file": "src/app/(online)/online/services",
+      "description": "Services listing page",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 33,
+      "phase": 3
+    },
+    {
+      "id": 1115,
+      "type": "page",
+      "file": "src/app/(online)/online/projects",
+      "description": "Projects listing page",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 33,
+      "phase": 3
+    },
+    {
+      "id": 1116,
+      "type": "page",
+      "file": "src/app/(service)/service/[id]",
+      "description": "Gig detail: tabs, package labels, order buttons",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 33,
+      "phase": 3
+    },
+    {
+      "id": 1117,
+      "type": "page",
+      "file": "src/app/(freelancer)/freelancer/[id]",
+      "description": "Freelancer profile: sections, labels",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 33,
+      "phase": 3
+    },
+    {
+      "id": 1118,
+      "type": "page",
+      "file": "src/app/(project)/project/[id]",
+      "description": "Project detail: bid section, labels",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 33,
+      "phase": 3
+    },
+    {
+      "id": 1119,
+      "type": "page",
+      "file": "src/app/(local)/local/page.jsx",
+      "description": "Local hub landing",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 34,
+      "phase": 4
+    },
+    {
+      "id": 1120,
+      "type": "page",
+      "file": "src/app/(local)/local/craftsmen",
+      "description": "Craftsmen listing, filters",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 34,
+      "phase": 4
+    },
+    {
+      "id": 1121,
+      "type": "page",
+      "file": "src/app/(local)/local/craftsman",
+      "description": "Craftsman profile detail",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 34,
+      "phase": 4
+    },
+    {
+      "id": 1122,
+      "type": "page",
+      "file": "src/app/(local)/local/quote-requests",
+      "description": "Quote requests listing",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 34,
+      "phase": 4
+    },
+    {
+      "id": 1123,
+      "type": "page",
+      "file": "src/app/(local)/local/quote-request",
+      "description": "Single quote request detail",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 34,
+      "phase": 4
+    },
+    {
+      "id": 1124,
+      "type": "component",
+      "file": "src/components/local",
+      "description": "Quote form labels, lead claim UI, credit system text",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 34,
+      "phase": 4
+    },
+    {
+      "id": 1125,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs-hub/page.jsx",
+      "description": "Jobs landing page",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 35,
+      "phase": 5
+    },
+    {
+      "id": 1126,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/browse",
+      "description": "Job listings, filters",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 35,
+      "phase": 5
+    },
+    {
+      "id": 1127,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/job",
+      "description": "Job detail page",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 35,
+      "phase": 5
+    },
+    {
+      "id": 1128,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/companies",
+      "description": "Companies listing",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 35,
+      "phase": 5
+    },
+    {
+      "id": 1129,
+      "type": "component",
+      "file": "src/components/jobs",
+      "description": "Salary labels, job type badges, application buttons",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 35,
+      "phase": 5
+    },
+    {
+      "id": 1130,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/page.jsx",
+      "description": "Dashboard home: stats labels, recent orders, chart labels",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1131,
+      "type": "page",
+      "file": "src/app/(dashboard)/onboarding/page.jsx",
+      "description": "Onboarding steps, form labels, world selection",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1132,
+      "type": "page",
+      "file": "src/app/(dashboard)/my-profile/page.jsx",
+      "description": "Profile edit: all labels, placeholders, sections",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1133,
+      "type": "page",
+      "file": "src/app/(dashboard)/add-services/page.jsx",
+      "description": "Gig creation: title, description, packages, pricing",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1134,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-services/page.jsx",
+      "description": "Gig management: status labels, actions",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1135,
+      "type": "page",
+      "file": "src/app/(dashboard)/create-projects/page.jsx",
+      "description": "Project creation form",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1136,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-projects/page.jsx",
+      "description": "Project management",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1137,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-jobs/page.jsx",
+      "description": "Job management",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1138,
+      "type": "page",
+      "file": "src/app/(dashboard)/orders/page.jsx",
+      "description": "Orders: status badges, Mark as Delivered, Approve, Request Revision",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1139,
+      "type": "page",
+      "file": "src/app/(dashboard)/message/page.jsx",
+      "description": "Chat UI: messages placeholder, Back to conversations, Send",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1140,
+      "type": "page",
+      "file": "src/app/(dashboard)/reviews/page.jsx",
+      "description": "Reviews section, rating labels",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1141,
+      "type": "page",
+      "file": "src/app/(dashboard)/saved/page.jsx",
+      "description": "Saved items page",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1142,
+      "type": "page",
+      "file": "src/app/(dashboard)/proposal/page.jsx",
+      "description": "Bid/proposal form",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1143,
+      "type": "page",
+      "file": "src/app/(dashboard)/payouts/page.jsx",
+      "description": "Payouts/earnings page",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1144,
+      "type": "page",
+      "file": "src/app/(dashboard)/statements/page.jsx",
+      "description": "Financial statements",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1145,
+      "type": "page",
+      "file": "src/app/(dashboard)/invoice/page.jsx",
+      "description": "Invoice page",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1146,
+      "type": "page",
+      "file": "src/app/(dashboard)/projects/[id]/page.jsx",
+      "description": "Project board: milestones, deliverables",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1147,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/credits/page.jsx",
+      "description": "Credits: buy, balance",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1148,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/my-leads/page.jsx",
+      "description": "Leads: claim buttons, details",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1149,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/rewards/page.jsx",
+      "description": "Rewards: tiers, cashback",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1150,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/feedback/page.jsx",
+      "description": "Feedback form",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1151,
+      "type": "page",
+      "file": "src/app/(dashboard)/admin/disputes/page.jsx",
+      "description": "Admin disputes",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 36,
+      "phase": 6
+    },
+    {
+      "id": 1152,
+      "type": "component",
+      "file": "src/components/ui/WaitlistButton.jsx",
+      "description": "Join Waitlist, modal text, success message",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 37,
+      "phase": 7
+    },
+    {
+      "id": 1153,
+      "type": "component",
+      "file": "src/components/ui/ContactButton.jsx",
+      "description": "Contact, Opening chat...",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 37,
+      "phase": 7
+    },
+    {
+      "id": 1154,
+      "type": "component",
+      "file": "src/components/ui/EmptyState.jsx",
+      "description": "Empty state messages across the app",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 37,
+      "phase": 7
+    },
+    {
+      "id": 1155,
+      "type": "component",
+      "file": "src/components/modal",
+      "description": "All modals: confirm dialogs, forms",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 37,
+      "phase": 7
+    },
+    {
+      "id": 1156,
+      "type": "component",
+      "file": "status-badges",
+      "description": "Open, In Progress, Completed, Cancelled, Pending, Active, Paused, Delivered",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 37,
+      "phase": 7
+    },
+    {
+      "id": 1157,
+      "type": "component",
+      "file": "toast-messages",
+      "description": "Account type updated, Order approved, Something went wrong, etc.",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 37,
+      "phase": 7
+    },
+    {
+      "id": 1158,
+      "type": "component",
+      "file": "form-validation",
+      "description": "Required, invalid email, too short, etc.",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 37,
+      "phase": 7
+    },
+    {
+      "id": 1159,
+      "type": "component",
+      "file": "loading-states",
+      "description": "Loading..., spinner labels",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 37,
+      "phase": 7
+    },
+    {
+      "id": 1160,
+      "type": "page",
+      "file": "src/app/error.tsx",
+      "description": "Error pages, not-found, [...not_found]",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 37,
+      "phase": 7
+    },
+    {
+      "id": 1161,
+      "type": "page",
+      "file": "src/app/(blog)/blog/page.jsx",
+      "description": "Blog listing, filter labels",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 38,
+      "phase": 8
+    },
+    {
+      "id": 1162,
+      "type": "page",
+      "file": "src/app/(blog)/post/[id]/page.jsx",
+      "description": "Blog post: share buttons, author bio, related posts",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 38,
+      "phase": 8
+    },
+    {
+      "id": 1163,
+      "type": "page",
+      "file": "src/app/platforms/page.jsx",
+      "description": "Platforms listing",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 38,
+      "phase": 8
+    },
+    {
+      "id": 1164,
+      "type": "page",
+      "file": "src/app/platforms/[slug]/page.jsx",
+      "description": "Platform detail: reviews, comparison labels",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 38,
+      "phase": 8
+    },
+    {
+      "id": 1165,
+      "type": "page",
+      "file": "src/app/resources",
+      "description": "Resources listing + detail",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 38,
+      "phase": 8
+    },
+    {
+      "id": 1166,
+      "type": "db-content",
+      "target": "script-setup",
+      "description": "Create scripts/translate-content-nl.mjs using @iamtraction/google-translate",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 39,
+      "phase": 9
+    },
+    {
+      "id": 1167,
+      "type": "db-content",
+      "target": "marketplaceCategories",
+      "description": "Translate name, description for all categories",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 39,
+      "phase": 9
+    },
+    {
+      "id": 1168,
+      "type": "db-content",
+      "target": "skills",
+      "description": "Translate skill names",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 39,
+      "phase": 9
+    },
+    {
+      "id": 1169,
+      "type": "db-content",
+      "target": "platforms",
+      "description": "Translate name, description, pros, cons, features",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 39,
+      "phase": 9
+    },
+    {
+      "id": 1170,
+      "type": "db-content",
+      "target": "posts",
+      "description": "Translate title, excerpt, content, metaTitle, metaDescription",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 39,
+      "phase": 9
+    },
+    {
+      "id": 1171,
+      "type": "db-content",
+      "target": "tools",
+      "description": "Translate name, description",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 39,
+      "phase": 9
+    },
+    {
+      "id": 1172,
+      "type": "db-content",
+      "target": "seoPages",
+      "description": "Translate metaTitle, metaDescription, intro, sections, faqItems",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 39,
+      "phase": 9
+    },
+    {
+      "id": 1173,
+      "type": "db-content",
+      "target": "resources",
+      "description": "Translate metaTitle, metaDescription, intro, sections, faqItems",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 39,
+      "phase": 9
+    },
+    {
+      "id": 1174,
+      "type": "meta",
+      "file": "src/app/layout.js",
+      "description": "Root metadata: locale-aware title/description",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 40,
+      "phase": 10
+    },
+    {
+      "id": 1175,
+      "type": "meta",
+      "target": "page-metadata",
+      "description": "All page generateMetadata() functions for NL locale",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 40,
+      "phase": 10
+    },
+    {
+      "id": 1176,
+      "type": "meta",
+      "file": "src/app/sitemap.ts",
+      "description": "Include NL pages with hreflang",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 40,
+      "phase": 10
+    },
+    {
+      "id": 1177,
+      "type": "meta",
+      "file": "src/app/robots.ts",
+      "description": "Verify robots.txt for both locales",
+      "locale": "fr",
+      "status": "pending",
+      "priority": 40,
+      "phase": 10
+    },
+    {
+      "id": 1178,
+      "type": "infra",
+      "target": "messages-es",
+      "description": "Create messages/es.json — full Spanish translation of en.json",
+      "locale": "es",
+      "status": "pending",
+      "priority": 40,
+      "phase": 0
+    },
+    {
+      "id": 1179,
+      "type": "component",
+      "file": "src/components/header/Header19.jsx",
+      "description": "Nav items, search placeholder, login/register, world labels (Online, Local, Jobs)",
+      "locale": "es",
+      "status": "pending",
+      "priority": 41,
+      "phase": 1
+    },
+    {
+      "id": 1180,
+      "type": "component",
+      "file": "src/components/header/MobileNavigation.jsx",
+      "description": "Mobile nav items",
+      "locale": "es",
+      "status": "pending",
+      "priority": 41,
+      "phase": 1
+    },
+    {
+      "id": 1181,
+      "type": "component",
+      "file": "src/components/footer",
+      "description": "Footer links, copyright, tagline",
+      "locale": "es",
+      "status": "pending",
+      "priority": 41,
+      "phase": 1
+    },
+    {
+      "id": 1182,
+      "type": "component",
+      "file": "src/components/dashboard/header/DashboardNavigation.jsx",
+      "description": "Dashboard nav: Online, Local, Jobs, menu items",
+      "locale": "es",
+      "status": "pending",
+      "priority": 41,
+      "phase": 1
+    },
+    {
+      "id": 1183,
+      "type": "component",
+      "file": "src/components/breadcrumb",
+      "description": "Breadcrumb labels: Home, Browse, Contact us, etc.",
+      "locale": "es",
+      "status": "pending",
+      "priority": 41,
+      "phase": 1
+    },
+    {
+      "id": 1184,
+      "type": "page",
+      "file": "src/app/(home)/page.jsx",
+      "description": "Homepage metadata (title, description, OG tags)",
+      "locale": "es",
+      "status": "pending",
+      "priority": 42,
+      "phase": 2
+    },
+    {
+      "id": 1185,
+      "type": "component",
+      "file": "src/components/hero/HomepageHero.jsx",
+      "description": "Find the Right Talent, world descriptions, CTA buttons",
+      "locale": "es",
+      "status": "pending",
+      "priority": 42,
+      "phase": 2
+    },
+    {
+      "id": 1186,
+      "type": "component",
+      "file": "src/components/section/SocialProofStats.jsx",
+      "description": "Stats section text",
+      "locale": "es",
+      "status": "pending",
+      "priority": 42,
+      "phase": 2
+    },
+    {
+      "id": 1187,
+      "type": "page",
+      "file": "src/app/become-seller",
+      "description": "Full page: hero, 3 earning methods, steps, benefits, CTA",
+      "locale": "es",
+      "status": "pending",
+      "priority": 42,
+      "phase": 2
+    },
+    {
+      "id": 1188,
+      "type": "page",
+      "file": "src/app/pricing/page.jsx",
+      "description": "Pricing tiers, feature lists, CTA buttons",
+      "locale": "es",
+      "status": "pending",
+      "priority": 42,
+      "phase": 2
+    },
+    {
+      "id": 1189,
+      "type": "page",
+      "file": "src/app/(about)/about/page.jsx",
+      "description": "About page content, team section",
+      "locale": "es",
+      "status": "pending",
+      "priority": 42,
+      "phase": 2
+    },
+    {
+      "id": 1190,
+      "type": "page",
+      "file": "src/app/faq/page.jsx",
+      "description": "All Q&A pairs, section titles",
+      "locale": "es",
+      "status": "pending",
+      "priority": 42,
+      "phase": 2
+    },
+    {
+      "id": 1191,
+      "type": "page",
+      "file": "src/app/contact/page.jsx",
+      "description": "Form labels, placeholders, success/error messages",
+      "locale": "es",
+      "status": "pending",
+      "priority": 42,
+      "phase": 2
+    },
+    {
+      "id": 1192,
+      "type": "page",
+      "file": "src/app/privacy-policy/page.jsx",
+      "description": "Privacy policy content",
+      "locale": "es",
+      "status": "pending",
+      "priority": 42,
+      "phase": 2
+    },
+    {
+      "id": 1193,
+      "type": "page",
+      "file": "src/app/terms/page.jsx",
+      "description": "Terms of service content",
+      "locale": "es",
+      "status": "pending",
+      "priority": 42,
+      "phase": 2
+    },
+    {
+      "id": 1194,
+      "type": "page",
+      "file": "src/app/help/page.jsx",
+      "description": "Help page content",
+      "locale": "es",
+      "status": "pending",
+      "priority": 42,
+      "phase": 2
+    },
+    {
+      "id": 1195,
+      "type": "page",
+      "file": "src/app/(online)/online/page.jsx",
+      "description": "Online hub landing page",
+      "locale": "es",
+      "status": "pending",
+      "priority": 43,
+      "phase": 3
+    },
+    {
+      "id": 1196,
+      "type": "component",
+      "file": "src/components/section/Listing14.jsx",
+      "description": "No freelancers yet, Join as freelancer, filter labels",
+      "locale": "es",
+      "status": "pending",
+      "priority": 43,
+      "phase": 3
+    },
+    {
+      "id": 1197,
+      "type": "component",
+      "file": "src/components/card/FreelancerCard2.jsx",
+      "description": "Available Now, View Profile, Location, Rate, Level, On request",
+      "locale": "es",
+      "status": "pending",
+      "priority": 43,
+      "phase": 3
+    },
+    {
+      "id": 1198,
+      "type": "component",
+      "file": "src/components/card/FreelancerCardList.jsx",
+      "description": "Same strings as FreelancerCard2 in list layout",
+      "locale": "es",
+      "status": "pending",
+      "priority": 43,
+      "phase": 3
+    },
+    {
+      "id": 1199,
+      "type": "component",
+      "file": "src/components/sidebar/ListingSidebar5.jsx",
+      "description": "Filter labels: Category, Level, Location, Language, Budget",
+      "locale": "es",
+      "status": "pending",
+      "priority": 43,
+      "phase": 3
+    },
+    {
+      "id": 1200,
+      "type": "component",
+      "file": "src/components/element/ListingOption2.jsx",
+      "description": "{count} freelancers available, sort labels",
+      "locale": "es",
+      "status": "pending",
+      "priority": 43,
+      "phase": 3
+    },
+    {
+      "id": 1201,
+      "type": "component",
+      "file": "src/components/option/SortOption1.jsx",
+      "description": "Sort options: Best Seller, Recommended, New Arrivals",
+      "locale": "es",
+      "status": "pending",
+      "priority": 43,
+      "phase": 3
+    },
+    {
+      "id": 1202,
+      "type": "component",
+      "file": "src/components/option/AvailableNowOption.jsx",
+      "description": "Available Now toggle label",
+      "locale": "es",
+      "status": "pending",
+      "priority": 43,
+      "phase": 3
+    },
+    {
+      "id": 1203,
+      "type": "page",
+      "file": "src/app/(online)/online/services",
+      "description": "Services listing page",
+      "locale": "es",
+      "status": "pending",
+      "priority": 43,
+      "phase": 3
+    },
+    {
+      "id": 1204,
+      "type": "page",
+      "file": "src/app/(online)/online/projects",
+      "description": "Projects listing page",
+      "locale": "es",
+      "status": "pending",
+      "priority": 43,
+      "phase": 3
+    },
+    {
+      "id": 1205,
+      "type": "page",
+      "file": "src/app/(service)/service/[id]",
+      "description": "Gig detail: tabs, package labels, order buttons",
+      "locale": "es",
+      "status": "pending",
+      "priority": 43,
+      "phase": 3
+    },
+    {
+      "id": 1206,
+      "type": "page",
+      "file": "src/app/(freelancer)/freelancer/[id]",
+      "description": "Freelancer profile: sections, labels",
+      "locale": "es",
+      "status": "pending",
+      "priority": 43,
+      "phase": 3
+    },
+    {
+      "id": 1207,
+      "type": "page",
+      "file": "src/app/(project)/project/[id]",
+      "description": "Project detail: bid section, labels",
+      "locale": "es",
+      "status": "pending",
+      "priority": 43,
+      "phase": 3
+    },
+    {
+      "id": 1208,
+      "type": "page",
+      "file": "src/app/(local)/local/page.jsx",
+      "description": "Local hub landing",
+      "locale": "es",
+      "status": "pending",
+      "priority": 44,
+      "phase": 4
+    },
+    {
+      "id": 1209,
+      "type": "page",
+      "file": "src/app/(local)/local/craftsmen",
+      "description": "Craftsmen listing, filters",
+      "locale": "es",
+      "status": "pending",
+      "priority": 44,
+      "phase": 4
+    },
+    {
+      "id": 1210,
+      "type": "page",
+      "file": "src/app/(local)/local/craftsman",
+      "description": "Craftsman profile detail",
+      "locale": "es",
+      "status": "pending",
+      "priority": 44,
+      "phase": 4
+    },
+    {
+      "id": 1211,
+      "type": "page",
+      "file": "src/app/(local)/local/quote-requests",
+      "description": "Quote requests listing",
+      "locale": "es",
+      "status": "pending",
+      "priority": 44,
+      "phase": 4
+    },
+    {
+      "id": 1212,
+      "type": "page",
+      "file": "src/app/(local)/local/quote-request",
+      "description": "Single quote request detail",
+      "locale": "es",
+      "status": "pending",
+      "priority": 44,
+      "phase": 4
+    },
+    {
+      "id": 1213,
+      "type": "component",
+      "file": "src/components/local",
+      "description": "Quote form labels, lead claim UI, credit system text",
+      "locale": "es",
+      "status": "pending",
+      "priority": 44,
+      "phase": 4
+    },
+    {
+      "id": 1214,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs-hub/page.jsx",
+      "description": "Jobs landing page",
+      "locale": "es",
+      "status": "pending",
+      "priority": 45,
+      "phase": 5
+    },
+    {
+      "id": 1215,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/browse",
+      "description": "Job listings, filters",
+      "locale": "es",
+      "status": "pending",
+      "priority": 45,
+      "phase": 5
+    },
+    {
+      "id": 1216,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/job",
+      "description": "Job detail page",
+      "locale": "es",
+      "status": "pending",
+      "priority": 45,
+      "phase": 5
+    },
+    {
+      "id": 1217,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/companies",
+      "description": "Companies listing",
+      "locale": "es",
+      "status": "pending",
+      "priority": 45,
+      "phase": 5
+    },
+    {
+      "id": 1218,
+      "type": "component",
+      "file": "src/components/jobs",
+      "description": "Salary labels, job type badges, application buttons",
+      "locale": "es",
+      "status": "pending",
+      "priority": 45,
+      "phase": 5
+    },
+    {
+      "id": 1219,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/page.jsx",
+      "description": "Dashboard home: stats labels, recent orders, chart labels",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1220,
+      "type": "page",
+      "file": "src/app/(dashboard)/onboarding/page.jsx",
+      "description": "Onboarding steps, form labels, world selection",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1221,
+      "type": "page",
+      "file": "src/app/(dashboard)/my-profile/page.jsx",
+      "description": "Profile edit: all labels, placeholders, sections",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1222,
+      "type": "page",
+      "file": "src/app/(dashboard)/add-services/page.jsx",
+      "description": "Gig creation: title, description, packages, pricing",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1223,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-services/page.jsx",
+      "description": "Gig management: status labels, actions",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1224,
+      "type": "page",
+      "file": "src/app/(dashboard)/create-projects/page.jsx",
+      "description": "Project creation form",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1225,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-projects/page.jsx",
+      "description": "Project management",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1226,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-jobs/page.jsx",
+      "description": "Job management",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1227,
+      "type": "page",
+      "file": "src/app/(dashboard)/orders/page.jsx",
+      "description": "Orders: status badges, Mark as Delivered, Approve, Request Revision",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1228,
+      "type": "page",
+      "file": "src/app/(dashboard)/message/page.jsx",
+      "description": "Chat UI: messages placeholder, Back to conversations, Send",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1229,
+      "type": "page",
+      "file": "src/app/(dashboard)/reviews/page.jsx",
+      "description": "Reviews section, rating labels",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1230,
+      "type": "page",
+      "file": "src/app/(dashboard)/saved/page.jsx",
+      "description": "Saved items page",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1231,
+      "type": "page",
+      "file": "src/app/(dashboard)/proposal/page.jsx",
+      "description": "Bid/proposal form",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1232,
+      "type": "page",
+      "file": "src/app/(dashboard)/payouts/page.jsx",
+      "description": "Payouts/earnings page",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1233,
+      "type": "page",
+      "file": "src/app/(dashboard)/statements/page.jsx",
+      "description": "Financial statements",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1234,
+      "type": "page",
+      "file": "src/app/(dashboard)/invoice/page.jsx",
+      "description": "Invoice page",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1235,
+      "type": "page",
+      "file": "src/app/(dashboard)/projects/[id]/page.jsx",
+      "description": "Project board: milestones, deliverables",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1236,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/credits/page.jsx",
+      "description": "Credits: buy, balance",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1237,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/my-leads/page.jsx",
+      "description": "Leads: claim buttons, details",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1238,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/rewards/page.jsx",
+      "description": "Rewards: tiers, cashback",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1239,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/feedback/page.jsx",
+      "description": "Feedback form",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1240,
+      "type": "page",
+      "file": "src/app/(dashboard)/admin/disputes/page.jsx",
+      "description": "Admin disputes",
+      "locale": "es",
+      "status": "pending",
+      "priority": 46,
+      "phase": 6
+    },
+    {
+      "id": 1241,
+      "type": "component",
+      "file": "src/components/ui/WaitlistButton.jsx",
+      "description": "Join Waitlist, modal text, success message",
+      "locale": "es",
+      "status": "pending",
+      "priority": 47,
+      "phase": 7
+    },
+    {
+      "id": 1242,
+      "type": "component",
+      "file": "src/components/ui/ContactButton.jsx",
+      "description": "Contact, Opening chat...",
+      "locale": "es",
+      "status": "pending",
+      "priority": 47,
+      "phase": 7
+    },
+    {
+      "id": 1243,
+      "type": "component",
+      "file": "src/components/ui/EmptyState.jsx",
+      "description": "Empty state messages across the app",
+      "locale": "es",
+      "status": "pending",
+      "priority": 47,
+      "phase": 7
+    },
+    {
+      "id": 1244,
+      "type": "component",
+      "file": "src/components/modal",
+      "description": "All modals: confirm dialogs, forms",
+      "locale": "es",
+      "status": "pending",
+      "priority": 47,
+      "phase": 7
+    },
+    {
+      "id": 1245,
+      "type": "component",
+      "file": "status-badges",
+      "description": "Open, In Progress, Completed, Cancelled, Pending, Active, Paused, Delivered",
+      "locale": "es",
+      "status": "pending",
+      "priority": 47,
+      "phase": 7
+    },
+    {
+      "id": 1246,
+      "type": "component",
+      "file": "toast-messages",
+      "description": "Account type updated, Order approved, Something went wrong, etc.",
+      "locale": "es",
+      "status": "pending",
+      "priority": 47,
+      "phase": 7
+    },
+    {
+      "id": 1247,
+      "type": "component",
+      "file": "form-validation",
+      "description": "Required, invalid email, too short, etc.",
+      "locale": "es",
+      "status": "pending",
+      "priority": 47,
+      "phase": 7
+    },
+    {
+      "id": 1248,
+      "type": "component",
+      "file": "loading-states",
+      "description": "Loading..., spinner labels",
+      "locale": "es",
+      "status": "pending",
+      "priority": 47,
+      "phase": 7
+    },
+    {
+      "id": 1249,
+      "type": "page",
+      "file": "src/app/error.tsx",
+      "description": "Error pages, not-found, [...not_found]",
+      "locale": "es",
+      "status": "pending",
+      "priority": 47,
+      "phase": 7
+    },
+    {
+      "id": 1250,
+      "type": "page",
+      "file": "src/app/(blog)/blog/page.jsx",
+      "description": "Blog listing, filter labels",
+      "locale": "es",
+      "status": "pending",
+      "priority": 48,
+      "phase": 8
+    },
+    {
+      "id": 1251,
+      "type": "page",
+      "file": "src/app/(blog)/post/[id]/page.jsx",
+      "description": "Blog post: share buttons, author bio, related posts",
+      "locale": "es",
+      "status": "pending",
+      "priority": 48,
+      "phase": 8
+    },
+    {
+      "id": 1252,
+      "type": "page",
+      "file": "src/app/platforms/page.jsx",
+      "description": "Platforms listing",
+      "locale": "es",
+      "status": "pending",
+      "priority": 48,
+      "phase": 8
+    },
+    {
+      "id": 1253,
+      "type": "page",
+      "file": "src/app/platforms/[slug]/page.jsx",
+      "description": "Platform detail: reviews, comparison labels",
+      "locale": "es",
+      "status": "pending",
+      "priority": 48,
+      "phase": 8
+    },
+    {
+      "id": 1254,
+      "type": "page",
+      "file": "src/app/resources",
+      "description": "Resources listing + detail",
+      "locale": "es",
+      "status": "pending",
+      "priority": 48,
+      "phase": 8
+    },
+    {
+      "id": 1255,
+      "type": "db-content",
+      "target": "script-setup",
+      "description": "Create scripts/translate-content-nl.mjs using @iamtraction/google-translate",
+      "locale": "es",
+      "status": "pending",
+      "priority": 49,
+      "phase": 9
+    },
+    {
+      "id": 1256,
+      "type": "db-content",
+      "target": "marketplaceCategories",
+      "description": "Translate name, description for all categories",
+      "locale": "es",
+      "status": "pending",
+      "priority": 49,
+      "phase": 9
+    },
+    {
+      "id": 1257,
+      "type": "db-content",
+      "target": "skills",
+      "description": "Translate skill names",
+      "locale": "es",
+      "status": "pending",
+      "priority": 49,
+      "phase": 9
+    },
+    {
+      "id": 1258,
+      "type": "db-content",
+      "target": "platforms",
+      "description": "Translate name, description, pros, cons, features",
+      "locale": "es",
+      "status": "pending",
+      "priority": 49,
+      "phase": 9
+    },
+    {
+      "id": 1259,
+      "type": "db-content",
+      "target": "posts",
+      "description": "Translate title, excerpt, content, metaTitle, metaDescription",
+      "locale": "es",
+      "status": "pending",
+      "priority": 49,
+      "phase": 9
+    },
+    {
+      "id": 1260,
+      "type": "db-content",
+      "target": "tools",
+      "description": "Translate name, description",
+      "locale": "es",
+      "status": "pending",
+      "priority": 49,
+      "phase": 9
+    },
+    {
+      "id": 1261,
+      "type": "db-content",
+      "target": "seoPages",
+      "description": "Translate metaTitle, metaDescription, intro, sections, faqItems",
+      "locale": "es",
+      "status": "pending",
+      "priority": 49,
+      "phase": 9
+    },
+    {
+      "id": 1262,
+      "type": "db-content",
+      "target": "resources",
+      "description": "Translate metaTitle, metaDescription, intro, sections, faqItems",
+      "locale": "es",
+      "status": "pending",
+      "priority": 49,
+      "phase": 9
+    },
+    {
+      "id": 1263,
+      "type": "meta",
+      "file": "src/app/layout.js",
+      "description": "Root metadata: locale-aware title/description",
+      "locale": "es",
+      "status": "pending",
+      "priority": 50,
+      "phase": 10
+    },
+    {
+      "id": 1264,
+      "type": "meta",
+      "target": "page-metadata",
+      "description": "All page generateMetadata() functions for NL locale",
+      "locale": "es",
+      "status": "pending",
+      "priority": 50,
+      "phase": 10
+    },
+    {
+      "id": 1265,
+      "type": "meta",
+      "file": "src/app/sitemap.ts",
+      "description": "Include NL pages with hreflang",
+      "locale": "es",
+      "status": "pending",
+      "priority": 50,
+      "phase": 10
+    },
+    {
+      "id": 1266,
+      "type": "meta",
+      "file": "src/app/robots.ts",
+      "description": "Verify robots.txt for both locales",
+      "locale": "es",
+      "status": "pending",
+      "priority": 50,
+      "phase": 10
+    },
+    {
+      "id": 1267,
+      "type": "infra",
+      "target": "messages-pt",
+      "description": "Create messages/pt.json — full Portuguese translation of en.json",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 50,
+      "phase": 0
+    },
+    {
+      "id": 1268,
+      "type": "component",
+      "file": "src/components/header/Header19.jsx",
+      "description": "Nav items, search placeholder, login/register, world labels (Online, Local, Jobs)",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 51,
+      "phase": 1
+    },
+    {
+      "id": 1269,
+      "type": "component",
+      "file": "src/components/header/MobileNavigation.jsx",
+      "description": "Mobile nav items",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 51,
+      "phase": 1
+    },
+    {
+      "id": 1270,
+      "type": "component",
+      "file": "src/components/footer",
+      "description": "Footer links, copyright, tagline",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 51,
+      "phase": 1
+    },
+    {
+      "id": 1271,
+      "type": "component",
+      "file": "src/components/dashboard/header/DashboardNavigation.jsx",
+      "description": "Dashboard nav: Online, Local, Jobs, menu items",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 51,
+      "phase": 1
+    },
+    {
+      "id": 1272,
+      "type": "component",
+      "file": "src/components/breadcrumb",
+      "description": "Breadcrumb labels: Home, Browse, Contact us, etc.",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 51,
+      "phase": 1
+    },
+    {
+      "id": 1273,
+      "type": "page",
+      "file": "src/app/(home)/page.jsx",
+      "description": "Homepage metadata (title, description, OG tags)",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 52,
+      "phase": 2
+    },
+    {
+      "id": 1274,
+      "type": "component",
+      "file": "src/components/hero/HomepageHero.jsx",
+      "description": "Find the Right Talent, world descriptions, CTA buttons",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 52,
+      "phase": 2
+    },
+    {
+      "id": 1275,
+      "type": "component",
+      "file": "src/components/section/SocialProofStats.jsx",
+      "description": "Stats section text",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 52,
+      "phase": 2
+    },
+    {
+      "id": 1276,
+      "type": "page",
+      "file": "src/app/become-seller",
+      "description": "Full page: hero, 3 earning methods, steps, benefits, CTA",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 52,
+      "phase": 2
+    },
+    {
+      "id": 1277,
+      "type": "page",
+      "file": "src/app/pricing/page.jsx",
+      "description": "Pricing tiers, feature lists, CTA buttons",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 52,
+      "phase": 2
+    },
+    {
+      "id": 1278,
+      "type": "page",
+      "file": "src/app/(about)/about/page.jsx",
+      "description": "About page content, team section",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 52,
+      "phase": 2
+    },
+    {
+      "id": 1279,
+      "type": "page",
+      "file": "src/app/faq/page.jsx",
+      "description": "All Q&A pairs, section titles",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 52,
+      "phase": 2
+    },
+    {
+      "id": 1280,
+      "type": "page",
+      "file": "src/app/contact/page.jsx",
+      "description": "Form labels, placeholders, success/error messages",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 52,
+      "phase": 2
+    },
+    {
+      "id": 1281,
+      "type": "page",
+      "file": "src/app/privacy-policy/page.jsx",
+      "description": "Privacy policy content",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 52,
+      "phase": 2
+    },
+    {
+      "id": 1282,
+      "type": "page",
+      "file": "src/app/terms/page.jsx",
+      "description": "Terms of service content",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 52,
+      "phase": 2
+    },
+    {
+      "id": 1283,
+      "type": "page",
+      "file": "src/app/help/page.jsx",
+      "description": "Help page content",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 52,
+      "phase": 2
+    },
+    {
+      "id": 1284,
+      "type": "page",
+      "file": "src/app/(online)/online/page.jsx",
+      "description": "Online hub landing page",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 53,
+      "phase": 3
+    },
+    {
+      "id": 1285,
+      "type": "component",
+      "file": "src/components/section/Listing14.jsx",
+      "description": "No freelancers yet, Join as freelancer, filter labels",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 53,
+      "phase": 3
+    },
+    {
+      "id": 1286,
+      "type": "component",
+      "file": "src/components/card/FreelancerCard2.jsx",
+      "description": "Available Now, View Profile, Location, Rate, Level, On request",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 53,
+      "phase": 3
+    },
+    {
+      "id": 1287,
+      "type": "component",
+      "file": "src/components/card/FreelancerCardList.jsx",
+      "description": "Same strings as FreelancerCard2 in list layout",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 53,
+      "phase": 3
+    },
+    {
+      "id": 1288,
+      "type": "component",
+      "file": "src/components/sidebar/ListingSidebar5.jsx",
+      "description": "Filter labels: Category, Level, Location, Language, Budget",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 53,
+      "phase": 3
+    },
+    {
+      "id": 1289,
+      "type": "component",
+      "file": "src/components/element/ListingOption2.jsx",
+      "description": "{count} freelancers available, sort labels",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 53,
+      "phase": 3
+    },
+    {
+      "id": 1290,
+      "type": "component",
+      "file": "src/components/option/SortOption1.jsx",
+      "description": "Sort options: Best Seller, Recommended, New Arrivals",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 53,
+      "phase": 3
+    },
+    {
+      "id": 1291,
+      "type": "component",
+      "file": "src/components/option/AvailableNowOption.jsx",
+      "description": "Available Now toggle label",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 53,
+      "phase": 3
+    },
+    {
+      "id": 1292,
+      "type": "page",
+      "file": "src/app/(online)/online/services",
+      "description": "Services listing page",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 53,
+      "phase": 3
+    },
+    {
+      "id": 1293,
+      "type": "page",
+      "file": "src/app/(online)/online/projects",
+      "description": "Projects listing page",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 53,
+      "phase": 3
+    },
+    {
+      "id": 1294,
+      "type": "page",
+      "file": "src/app/(service)/service/[id]",
+      "description": "Gig detail: tabs, package labels, order buttons",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 53,
+      "phase": 3
+    },
+    {
+      "id": 1295,
+      "type": "page",
+      "file": "src/app/(freelancer)/freelancer/[id]",
+      "description": "Freelancer profile: sections, labels",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 53,
+      "phase": 3
+    },
+    {
+      "id": 1296,
+      "type": "page",
+      "file": "src/app/(project)/project/[id]",
+      "description": "Project detail: bid section, labels",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 53,
+      "phase": 3
+    },
+    {
+      "id": 1297,
+      "type": "page",
+      "file": "src/app/(local)/local/page.jsx",
+      "description": "Local hub landing",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 54,
+      "phase": 4
+    },
+    {
+      "id": 1298,
+      "type": "page",
+      "file": "src/app/(local)/local/craftsmen",
+      "description": "Craftsmen listing, filters",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 54,
+      "phase": 4
+    },
+    {
+      "id": 1299,
+      "type": "page",
+      "file": "src/app/(local)/local/craftsman",
+      "description": "Craftsman profile detail",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 54,
+      "phase": 4
+    },
+    {
+      "id": 1300,
+      "type": "page",
+      "file": "src/app/(local)/local/quote-requests",
+      "description": "Quote requests listing",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 54,
+      "phase": 4
+    },
+    {
+      "id": 1301,
+      "type": "page",
+      "file": "src/app/(local)/local/quote-request",
+      "description": "Single quote request detail",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 54,
+      "phase": 4
+    },
+    {
+      "id": 1302,
+      "type": "component",
+      "file": "src/components/local",
+      "description": "Quote form labels, lead claim UI, credit system text",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 54,
+      "phase": 4
+    },
+    {
+      "id": 1303,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs-hub/page.jsx",
+      "description": "Jobs landing page",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 55,
+      "phase": 5
+    },
+    {
+      "id": 1304,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/browse",
+      "description": "Job listings, filters",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 55,
+      "phase": 5
+    },
+    {
+      "id": 1305,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/job",
+      "description": "Job detail page",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 55,
+      "phase": 5
+    },
+    {
+      "id": 1306,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/companies",
+      "description": "Companies listing",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 55,
+      "phase": 5
+    },
+    {
+      "id": 1307,
+      "type": "component",
+      "file": "src/components/jobs",
+      "description": "Salary labels, job type badges, application buttons",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 55,
+      "phase": 5
+    },
+    {
+      "id": 1308,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/page.jsx",
+      "description": "Dashboard home: stats labels, recent orders, chart labels",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1309,
+      "type": "page",
+      "file": "src/app/(dashboard)/onboarding/page.jsx",
+      "description": "Onboarding steps, form labels, world selection",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1310,
+      "type": "page",
+      "file": "src/app/(dashboard)/my-profile/page.jsx",
+      "description": "Profile edit: all labels, placeholders, sections",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1311,
+      "type": "page",
+      "file": "src/app/(dashboard)/add-services/page.jsx",
+      "description": "Gig creation: title, description, packages, pricing",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1312,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-services/page.jsx",
+      "description": "Gig management: status labels, actions",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1313,
+      "type": "page",
+      "file": "src/app/(dashboard)/create-projects/page.jsx",
+      "description": "Project creation form",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1314,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-projects/page.jsx",
+      "description": "Project management",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1315,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-jobs/page.jsx",
+      "description": "Job management",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1316,
+      "type": "page",
+      "file": "src/app/(dashboard)/orders/page.jsx",
+      "description": "Orders: status badges, Mark as Delivered, Approve, Request Revision",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1317,
+      "type": "page",
+      "file": "src/app/(dashboard)/message/page.jsx",
+      "description": "Chat UI: messages placeholder, Back to conversations, Send",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1318,
+      "type": "page",
+      "file": "src/app/(dashboard)/reviews/page.jsx",
+      "description": "Reviews section, rating labels",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1319,
+      "type": "page",
+      "file": "src/app/(dashboard)/saved/page.jsx",
+      "description": "Saved items page",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1320,
+      "type": "page",
+      "file": "src/app/(dashboard)/proposal/page.jsx",
+      "description": "Bid/proposal form",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1321,
+      "type": "page",
+      "file": "src/app/(dashboard)/payouts/page.jsx",
+      "description": "Payouts/earnings page",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1322,
+      "type": "page",
+      "file": "src/app/(dashboard)/statements/page.jsx",
+      "description": "Financial statements",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1323,
+      "type": "page",
+      "file": "src/app/(dashboard)/invoice/page.jsx",
+      "description": "Invoice page",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1324,
+      "type": "page",
+      "file": "src/app/(dashboard)/projects/[id]/page.jsx",
+      "description": "Project board: milestones, deliverables",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1325,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/credits/page.jsx",
+      "description": "Credits: buy, balance",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1326,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/my-leads/page.jsx",
+      "description": "Leads: claim buttons, details",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1327,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/rewards/page.jsx",
+      "description": "Rewards: tiers, cashback",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1328,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/feedback/page.jsx",
+      "description": "Feedback form",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1329,
+      "type": "page",
+      "file": "src/app/(dashboard)/admin/disputes/page.jsx",
+      "description": "Admin disputes",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 56,
+      "phase": 6
+    },
+    {
+      "id": 1330,
+      "type": "component",
+      "file": "src/components/ui/WaitlistButton.jsx",
+      "description": "Join Waitlist, modal text, success message",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 57,
+      "phase": 7
+    },
+    {
+      "id": 1331,
+      "type": "component",
+      "file": "src/components/ui/ContactButton.jsx",
+      "description": "Contact, Opening chat...",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 57,
+      "phase": 7
+    },
+    {
+      "id": 1332,
+      "type": "component",
+      "file": "src/components/ui/EmptyState.jsx",
+      "description": "Empty state messages across the app",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 57,
+      "phase": 7
+    },
+    {
+      "id": 1333,
+      "type": "component",
+      "file": "src/components/modal",
+      "description": "All modals: confirm dialogs, forms",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 57,
+      "phase": 7
+    },
+    {
+      "id": 1334,
+      "type": "component",
+      "file": "status-badges",
+      "description": "Open, In Progress, Completed, Cancelled, Pending, Active, Paused, Delivered",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 57,
+      "phase": 7
+    },
+    {
+      "id": 1335,
+      "type": "component",
+      "file": "toast-messages",
+      "description": "Account type updated, Order approved, Something went wrong, etc.",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 57,
+      "phase": 7
+    },
+    {
+      "id": 1336,
+      "type": "component",
+      "file": "form-validation",
+      "description": "Required, invalid email, too short, etc.",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 57,
+      "phase": 7
+    },
+    {
+      "id": 1337,
+      "type": "component",
+      "file": "loading-states",
+      "description": "Loading..., spinner labels",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 57,
+      "phase": 7
+    },
+    {
+      "id": 1338,
+      "type": "page",
+      "file": "src/app/error.tsx",
+      "description": "Error pages, not-found, [...not_found]",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 57,
+      "phase": 7
+    },
+    {
+      "id": 1339,
+      "type": "page",
+      "file": "src/app/(blog)/blog/page.jsx",
+      "description": "Blog listing, filter labels",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 58,
+      "phase": 8
+    },
+    {
+      "id": 1340,
+      "type": "page",
+      "file": "src/app/(blog)/post/[id]/page.jsx",
+      "description": "Blog post: share buttons, author bio, related posts",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 58,
+      "phase": 8
+    },
+    {
+      "id": 1341,
+      "type": "page",
+      "file": "src/app/platforms/page.jsx",
+      "description": "Platforms listing",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 58,
+      "phase": 8
+    },
+    {
+      "id": 1342,
+      "type": "page",
+      "file": "src/app/platforms/[slug]/page.jsx",
+      "description": "Platform detail: reviews, comparison labels",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 58,
+      "phase": 8
+    },
+    {
+      "id": 1343,
+      "type": "page",
+      "file": "src/app/resources",
+      "description": "Resources listing + detail",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 58,
+      "phase": 8
+    },
+    {
+      "id": 1344,
+      "type": "db-content",
+      "target": "script-setup",
+      "description": "Create scripts/translate-content-nl.mjs using @iamtraction/google-translate",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 59,
+      "phase": 9
+    },
+    {
+      "id": 1345,
+      "type": "db-content",
+      "target": "marketplaceCategories",
+      "description": "Translate name, description for all categories",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 59,
+      "phase": 9
+    },
+    {
+      "id": 1346,
+      "type": "db-content",
+      "target": "skills",
+      "description": "Translate skill names",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 59,
+      "phase": 9
+    },
+    {
+      "id": 1347,
+      "type": "db-content",
+      "target": "platforms",
+      "description": "Translate name, description, pros, cons, features",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 59,
+      "phase": 9
+    },
+    {
+      "id": 1348,
+      "type": "db-content",
+      "target": "posts",
+      "description": "Translate title, excerpt, content, metaTitle, metaDescription",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 59,
+      "phase": 9
+    },
+    {
+      "id": 1349,
+      "type": "db-content",
+      "target": "tools",
+      "description": "Translate name, description",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 59,
+      "phase": 9
+    },
+    {
+      "id": 1350,
+      "type": "db-content",
+      "target": "seoPages",
+      "description": "Translate metaTitle, metaDescription, intro, sections, faqItems",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 59,
+      "phase": 9
+    },
+    {
+      "id": 1351,
+      "type": "db-content",
+      "target": "resources",
+      "description": "Translate metaTitle, metaDescription, intro, sections, faqItems",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 59,
+      "phase": 9
+    },
+    {
+      "id": 1352,
+      "type": "meta",
+      "file": "src/app/layout.js",
+      "description": "Root metadata: locale-aware title/description",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 60,
+      "phase": 10
+    },
+    {
+      "id": 1353,
+      "type": "meta",
+      "target": "page-metadata",
+      "description": "All page generateMetadata() functions for NL locale",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 60,
+      "phase": 10
+    },
+    {
+      "id": 1354,
+      "type": "meta",
+      "file": "src/app/sitemap.ts",
+      "description": "Include NL pages with hreflang",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 60,
+      "phase": 10
+    },
+    {
+      "id": 1355,
+      "type": "meta",
+      "file": "src/app/robots.ts",
+      "description": "Verify robots.txt for both locales",
+      "locale": "pt",
+      "status": "pending",
+      "priority": 60,
+      "phase": 10
+    },
+    {
+      "id": 1356,
+      "type": "infra",
+      "target": "messages-it",
+      "description": "Create messages/it.json — full Italian translation of en.json",
+      "locale": "it",
+      "status": "pending",
+      "priority": 60,
+      "phase": 0
+    },
+    {
+      "id": 1357,
+      "type": "component",
+      "file": "src/components/header/Header19.jsx",
+      "description": "Nav items, search placeholder, login/register, world labels (Online, Local, Jobs)",
+      "locale": "it",
+      "status": "pending",
+      "priority": 61,
+      "phase": 1
+    },
+    {
+      "id": 1358,
+      "type": "component",
+      "file": "src/components/header/MobileNavigation.jsx",
+      "description": "Mobile nav items",
+      "locale": "it",
+      "status": "pending",
+      "priority": 61,
+      "phase": 1
+    },
+    {
+      "id": 1359,
+      "type": "component",
+      "file": "src/components/footer",
+      "description": "Footer links, copyright, tagline",
+      "locale": "it",
+      "status": "pending",
+      "priority": 61,
+      "phase": 1
+    },
+    {
+      "id": 1360,
+      "type": "component",
+      "file": "src/components/dashboard/header/DashboardNavigation.jsx",
+      "description": "Dashboard nav: Online, Local, Jobs, menu items",
+      "locale": "it",
+      "status": "pending",
+      "priority": 61,
+      "phase": 1
+    },
+    {
+      "id": 1361,
+      "type": "component",
+      "file": "src/components/breadcrumb",
+      "description": "Breadcrumb labels: Home, Browse, Contact us, etc.",
+      "locale": "it",
+      "status": "pending",
+      "priority": 61,
+      "phase": 1
+    },
+    {
+      "id": 1362,
+      "type": "page",
+      "file": "src/app/(home)/page.jsx",
+      "description": "Homepage metadata (title, description, OG tags)",
+      "locale": "it",
+      "status": "pending",
+      "priority": 62,
+      "phase": 2
+    },
+    {
+      "id": 1363,
+      "type": "component",
+      "file": "src/components/hero/HomepageHero.jsx",
+      "description": "Find the Right Talent, world descriptions, CTA buttons",
+      "locale": "it",
+      "status": "pending",
+      "priority": 62,
+      "phase": 2
+    },
+    {
+      "id": 1364,
+      "type": "component",
+      "file": "src/components/section/SocialProofStats.jsx",
+      "description": "Stats section text",
+      "locale": "it",
+      "status": "pending",
+      "priority": 62,
+      "phase": 2
+    },
+    {
+      "id": 1365,
+      "type": "page",
+      "file": "src/app/become-seller",
+      "description": "Full page: hero, 3 earning methods, steps, benefits, CTA",
+      "locale": "it",
+      "status": "pending",
+      "priority": 62,
+      "phase": 2
+    },
+    {
+      "id": 1366,
+      "type": "page",
+      "file": "src/app/pricing/page.jsx",
+      "description": "Pricing tiers, feature lists, CTA buttons",
+      "locale": "it",
+      "status": "pending",
+      "priority": 62,
+      "phase": 2
+    },
+    {
+      "id": 1367,
+      "type": "page",
+      "file": "src/app/(about)/about/page.jsx",
+      "description": "About page content, team section",
+      "locale": "it",
+      "status": "pending",
+      "priority": 62,
+      "phase": 2
+    },
+    {
+      "id": 1368,
+      "type": "page",
+      "file": "src/app/faq/page.jsx",
+      "description": "All Q&A pairs, section titles",
+      "locale": "it",
+      "status": "pending",
+      "priority": 62,
+      "phase": 2
+    },
+    {
+      "id": 1369,
+      "type": "page",
+      "file": "src/app/contact/page.jsx",
+      "description": "Form labels, placeholders, success/error messages",
+      "locale": "it",
+      "status": "pending",
+      "priority": 62,
+      "phase": 2
+    },
+    {
+      "id": 1370,
+      "type": "page",
+      "file": "src/app/privacy-policy/page.jsx",
+      "description": "Privacy policy content",
+      "locale": "it",
+      "status": "pending",
+      "priority": 62,
+      "phase": 2
+    },
+    {
+      "id": 1371,
+      "type": "page",
+      "file": "src/app/terms/page.jsx",
+      "description": "Terms of service content",
+      "locale": "it",
+      "status": "pending",
+      "priority": 62,
+      "phase": 2
+    },
+    {
+      "id": 1372,
+      "type": "page",
+      "file": "src/app/help/page.jsx",
+      "description": "Help page content",
+      "locale": "it",
+      "status": "pending",
+      "priority": 62,
+      "phase": 2
+    },
+    {
+      "id": 1373,
+      "type": "page",
+      "file": "src/app/(online)/online/page.jsx",
+      "description": "Online hub landing page",
+      "locale": "it",
+      "status": "pending",
+      "priority": 63,
+      "phase": 3
+    },
+    {
+      "id": 1374,
+      "type": "component",
+      "file": "src/components/section/Listing14.jsx",
+      "description": "No freelancers yet, Join as freelancer, filter labels",
+      "locale": "it",
+      "status": "pending",
+      "priority": 63,
+      "phase": 3
+    },
+    {
+      "id": 1375,
+      "type": "component",
+      "file": "src/components/card/FreelancerCard2.jsx",
+      "description": "Available Now, View Profile, Location, Rate, Level, On request",
+      "locale": "it",
+      "status": "pending",
+      "priority": 63,
+      "phase": 3
+    },
+    {
+      "id": 1376,
+      "type": "component",
+      "file": "src/components/card/FreelancerCardList.jsx",
+      "description": "Same strings as FreelancerCard2 in list layout",
+      "locale": "it",
+      "status": "pending",
+      "priority": 63,
+      "phase": 3
+    },
+    {
+      "id": 1377,
+      "type": "component",
+      "file": "src/components/sidebar/ListingSidebar5.jsx",
+      "description": "Filter labels: Category, Level, Location, Language, Budget",
+      "locale": "it",
+      "status": "pending",
+      "priority": 63,
+      "phase": 3
+    },
+    {
+      "id": 1378,
+      "type": "component",
+      "file": "src/components/element/ListingOption2.jsx",
+      "description": "{count} freelancers available, sort labels",
+      "locale": "it",
+      "status": "pending",
+      "priority": 63,
+      "phase": 3
+    },
+    {
+      "id": 1379,
+      "type": "component",
+      "file": "src/components/option/SortOption1.jsx",
+      "description": "Sort options: Best Seller, Recommended, New Arrivals",
+      "locale": "it",
+      "status": "pending",
+      "priority": 63,
+      "phase": 3
+    },
+    {
+      "id": 1380,
+      "type": "component",
+      "file": "src/components/option/AvailableNowOption.jsx",
+      "description": "Available Now toggle label",
+      "locale": "it",
+      "status": "pending",
+      "priority": 63,
+      "phase": 3
+    },
+    {
+      "id": 1381,
+      "type": "page",
+      "file": "src/app/(online)/online/services",
+      "description": "Services listing page",
+      "locale": "it",
+      "status": "pending",
+      "priority": 63,
+      "phase": 3
+    },
+    {
+      "id": 1382,
+      "type": "page",
+      "file": "src/app/(online)/online/projects",
+      "description": "Projects listing page",
+      "locale": "it",
+      "status": "pending",
+      "priority": 63,
+      "phase": 3
+    },
+    {
+      "id": 1383,
+      "type": "page",
+      "file": "src/app/(service)/service/[id]",
+      "description": "Gig detail: tabs, package labels, order buttons",
+      "locale": "it",
+      "status": "pending",
+      "priority": 63,
+      "phase": 3
+    },
+    {
+      "id": 1384,
+      "type": "page",
+      "file": "src/app/(freelancer)/freelancer/[id]",
+      "description": "Freelancer profile: sections, labels",
+      "locale": "it",
+      "status": "pending",
+      "priority": 63,
+      "phase": 3
+    },
+    {
+      "id": 1385,
+      "type": "page",
+      "file": "src/app/(project)/project/[id]",
+      "description": "Project detail: bid section, labels",
+      "locale": "it",
+      "status": "pending",
+      "priority": 63,
+      "phase": 3
+    },
+    {
+      "id": 1386,
+      "type": "page",
+      "file": "src/app/(local)/local/page.jsx",
+      "description": "Local hub landing",
+      "locale": "it",
+      "status": "pending",
+      "priority": 64,
+      "phase": 4
+    },
+    {
+      "id": 1387,
+      "type": "page",
+      "file": "src/app/(local)/local/craftsmen",
+      "description": "Craftsmen listing, filters",
+      "locale": "it",
+      "status": "pending",
+      "priority": 64,
+      "phase": 4
+    },
+    {
+      "id": 1388,
+      "type": "page",
+      "file": "src/app/(local)/local/craftsman",
+      "description": "Craftsman profile detail",
+      "locale": "it",
+      "status": "pending",
+      "priority": 64,
+      "phase": 4
+    },
+    {
+      "id": 1389,
+      "type": "page",
+      "file": "src/app/(local)/local/quote-requests",
+      "description": "Quote requests listing",
+      "locale": "it",
+      "status": "pending",
+      "priority": 64,
+      "phase": 4
+    },
+    {
+      "id": 1390,
+      "type": "page",
+      "file": "src/app/(local)/local/quote-request",
+      "description": "Single quote request detail",
+      "locale": "it",
+      "status": "pending",
+      "priority": 64,
+      "phase": 4
+    },
+    {
+      "id": 1391,
+      "type": "component",
+      "file": "src/components/local",
+      "description": "Quote form labels, lead claim UI, credit system text",
+      "locale": "it",
+      "status": "pending",
+      "priority": 64,
+      "phase": 4
+    },
+    {
+      "id": 1392,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs-hub/page.jsx",
+      "description": "Jobs landing page",
+      "locale": "it",
+      "status": "pending",
+      "priority": 65,
+      "phase": 5
+    },
+    {
+      "id": 1393,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/browse",
+      "description": "Job listings, filters",
+      "locale": "it",
+      "status": "pending",
+      "priority": 65,
+      "phase": 5
+    },
+    {
+      "id": 1394,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/job",
+      "description": "Job detail page",
+      "locale": "it",
+      "status": "pending",
+      "priority": 65,
+      "phase": 5
+    },
+    {
+      "id": 1395,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/companies",
+      "description": "Companies listing",
+      "locale": "it",
+      "status": "pending",
+      "priority": 65,
+      "phase": 5
+    },
+    {
+      "id": 1396,
+      "type": "component",
+      "file": "src/components/jobs",
+      "description": "Salary labels, job type badges, application buttons",
+      "locale": "it",
+      "status": "pending",
+      "priority": 65,
+      "phase": 5
+    },
+    {
+      "id": 1397,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/page.jsx",
+      "description": "Dashboard home: stats labels, recent orders, chart labels",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1398,
+      "type": "page",
+      "file": "src/app/(dashboard)/onboarding/page.jsx",
+      "description": "Onboarding steps, form labels, world selection",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1399,
+      "type": "page",
+      "file": "src/app/(dashboard)/my-profile/page.jsx",
+      "description": "Profile edit: all labels, placeholders, sections",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1400,
+      "type": "page",
+      "file": "src/app/(dashboard)/add-services/page.jsx",
+      "description": "Gig creation: title, description, packages, pricing",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1401,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-services/page.jsx",
+      "description": "Gig management: status labels, actions",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1402,
+      "type": "page",
+      "file": "src/app/(dashboard)/create-projects/page.jsx",
+      "description": "Project creation form",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1403,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-projects/page.jsx",
+      "description": "Project management",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1404,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-jobs/page.jsx",
+      "description": "Job management",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1405,
+      "type": "page",
+      "file": "src/app/(dashboard)/orders/page.jsx",
+      "description": "Orders: status badges, Mark as Delivered, Approve, Request Revision",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1406,
+      "type": "page",
+      "file": "src/app/(dashboard)/message/page.jsx",
+      "description": "Chat UI: messages placeholder, Back to conversations, Send",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1407,
+      "type": "page",
+      "file": "src/app/(dashboard)/reviews/page.jsx",
+      "description": "Reviews section, rating labels",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1408,
+      "type": "page",
+      "file": "src/app/(dashboard)/saved/page.jsx",
+      "description": "Saved items page",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1409,
+      "type": "page",
+      "file": "src/app/(dashboard)/proposal/page.jsx",
+      "description": "Bid/proposal form",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1410,
+      "type": "page",
+      "file": "src/app/(dashboard)/payouts/page.jsx",
+      "description": "Payouts/earnings page",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1411,
+      "type": "page",
+      "file": "src/app/(dashboard)/statements/page.jsx",
+      "description": "Financial statements",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1412,
+      "type": "page",
+      "file": "src/app/(dashboard)/invoice/page.jsx",
+      "description": "Invoice page",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1413,
+      "type": "page",
+      "file": "src/app/(dashboard)/projects/[id]/page.jsx",
+      "description": "Project board: milestones, deliverables",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1414,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/credits/page.jsx",
+      "description": "Credits: buy, balance",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1415,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/my-leads/page.jsx",
+      "description": "Leads: claim buttons, details",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1416,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/rewards/page.jsx",
+      "description": "Rewards: tiers, cashback",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1417,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/feedback/page.jsx",
+      "description": "Feedback form",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1418,
+      "type": "page",
+      "file": "src/app/(dashboard)/admin/disputes/page.jsx",
+      "description": "Admin disputes",
+      "locale": "it",
+      "status": "pending",
+      "priority": 66,
+      "phase": 6
+    },
+    {
+      "id": 1419,
+      "type": "component",
+      "file": "src/components/ui/WaitlistButton.jsx",
+      "description": "Join Waitlist, modal text, success message",
+      "locale": "it",
+      "status": "pending",
+      "priority": 67,
+      "phase": 7
+    },
+    {
+      "id": 1420,
+      "type": "component",
+      "file": "src/components/ui/ContactButton.jsx",
+      "description": "Contact, Opening chat...",
+      "locale": "it",
+      "status": "pending",
+      "priority": 67,
+      "phase": 7
+    },
+    {
+      "id": 1421,
+      "type": "component",
+      "file": "src/components/ui/EmptyState.jsx",
+      "description": "Empty state messages across the app",
+      "locale": "it",
+      "status": "pending",
+      "priority": 67,
+      "phase": 7
+    },
+    {
+      "id": 1422,
+      "type": "component",
+      "file": "src/components/modal",
+      "description": "All modals: confirm dialogs, forms",
+      "locale": "it",
+      "status": "pending",
+      "priority": 67,
+      "phase": 7
+    },
+    {
+      "id": 1423,
+      "type": "component",
+      "file": "status-badges",
+      "description": "Open, In Progress, Completed, Cancelled, Pending, Active, Paused, Delivered",
+      "locale": "it",
+      "status": "pending",
+      "priority": 67,
+      "phase": 7
+    },
+    {
+      "id": 1424,
+      "type": "component",
+      "file": "toast-messages",
+      "description": "Account type updated, Order approved, Something went wrong, etc.",
+      "locale": "it",
+      "status": "pending",
+      "priority": 67,
+      "phase": 7
+    },
+    {
+      "id": 1425,
+      "type": "component",
+      "file": "form-validation",
+      "description": "Required, invalid email, too short, etc.",
+      "locale": "it",
+      "status": "pending",
+      "priority": 67,
+      "phase": 7
+    },
+    {
+      "id": 1426,
+      "type": "component",
+      "file": "loading-states",
+      "description": "Loading..., spinner labels",
+      "locale": "it",
+      "status": "pending",
+      "priority": 67,
+      "phase": 7
+    },
+    {
+      "id": 1427,
+      "type": "page",
+      "file": "src/app/error.tsx",
+      "description": "Error pages, not-found, [...not_found]",
+      "locale": "it",
+      "status": "pending",
+      "priority": 67,
+      "phase": 7
+    },
+    {
+      "id": 1428,
+      "type": "page",
+      "file": "src/app/(blog)/blog/page.jsx",
+      "description": "Blog listing, filter labels",
+      "locale": "it",
+      "status": "pending",
+      "priority": 68,
+      "phase": 8
+    },
+    {
+      "id": 1429,
+      "type": "page",
+      "file": "src/app/(blog)/post/[id]/page.jsx",
+      "description": "Blog post: share buttons, author bio, related posts",
+      "locale": "it",
+      "status": "pending",
+      "priority": 68,
+      "phase": 8
+    },
+    {
+      "id": 1430,
+      "type": "page",
+      "file": "src/app/platforms/page.jsx",
+      "description": "Platforms listing",
+      "locale": "it",
+      "status": "pending",
+      "priority": 68,
+      "phase": 8
+    },
+    {
+      "id": 1431,
+      "type": "page",
+      "file": "src/app/platforms/[slug]/page.jsx",
+      "description": "Platform detail: reviews, comparison labels",
+      "locale": "it",
+      "status": "pending",
+      "priority": 68,
+      "phase": 8
+    },
+    {
+      "id": 1432,
+      "type": "page",
+      "file": "src/app/resources",
+      "description": "Resources listing + detail",
+      "locale": "it",
+      "status": "pending",
+      "priority": 68,
+      "phase": 8
+    },
+    {
+      "id": 1433,
+      "type": "db-content",
+      "target": "script-setup",
+      "description": "Create scripts/translate-content-nl.mjs using @iamtraction/google-translate",
+      "locale": "it",
+      "status": "pending",
+      "priority": 69,
+      "phase": 9
+    },
+    {
+      "id": 1434,
+      "type": "db-content",
+      "target": "marketplaceCategories",
+      "description": "Translate name, description for all categories",
+      "locale": "it",
+      "status": "pending",
+      "priority": 69,
+      "phase": 9
+    },
+    {
+      "id": 1435,
+      "type": "db-content",
+      "target": "skills",
+      "description": "Translate skill names",
+      "locale": "it",
+      "status": "pending",
+      "priority": 69,
+      "phase": 9
+    },
+    {
+      "id": 1436,
+      "type": "db-content",
+      "target": "platforms",
+      "description": "Translate name, description, pros, cons, features",
+      "locale": "it",
+      "status": "pending",
+      "priority": 69,
+      "phase": 9
+    },
+    {
+      "id": 1437,
+      "type": "db-content",
+      "target": "posts",
+      "description": "Translate title, excerpt, content, metaTitle, metaDescription",
+      "locale": "it",
+      "status": "pending",
+      "priority": 69,
+      "phase": 9
+    },
+    {
+      "id": 1438,
+      "type": "db-content",
+      "target": "tools",
+      "description": "Translate name, description",
+      "locale": "it",
+      "status": "pending",
+      "priority": 69,
+      "phase": 9
+    },
+    {
+      "id": 1439,
+      "type": "db-content",
+      "target": "seoPages",
+      "description": "Translate metaTitle, metaDescription, intro, sections, faqItems",
+      "locale": "it",
+      "status": "pending",
+      "priority": 69,
+      "phase": 9
+    },
+    {
+      "id": 1440,
+      "type": "db-content",
+      "target": "resources",
+      "description": "Translate metaTitle, metaDescription, intro, sections, faqItems",
+      "locale": "it",
+      "status": "pending",
+      "priority": 69,
+      "phase": 9
+    },
+    {
+      "id": 1441,
+      "type": "meta",
+      "file": "src/app/layout.js",
+      "description": "Root metadata: locale-aware title/description",
+      "locale": "it",
+      "status": "pending",
+      "priority": 70,
+      "phase": 10
+    },
+    {
+      "id": 1442,
+      "type": "meta",
+      "target": "page-metadata",
+      "description": "All page generateMetadata() functions for NL locale",
+      "locale": "it",
+      "status": "pending",
+      "priority": 70,
+      "phase": 10
+    },
+    {
+      "id": 1443,
+      "type": "meta",
+      "file": "src/app/sitemap.ts",
+      "description": "Include NL pages with hreflang",
+      "locale": "it",
+      "status": "pending",
+      "priority": 70,
+      "phase": 10
+    },
+    {
+      "id": 1444,
+      "type": "meta",
+      "file": "src/app/robots.ts",
+      "description": "Verify robots.txt for both locales",
+      "locale": "it",
+      "status": "pending",
+      "priority": 70,
+      "phase": 10
+    },
+    {
+      "id": 1445,
+      "type": "infra",
+      "target": "messages-pl",
+      "description": "Create messages/pl.json — full Polish translation of en.json",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 70,
+      "phase": 0
+    },
+    {
+      "id": 1446,
+      "type": "component",
+      "file": "src/components/header/Header19.jsx",
+      "description": "Nav items, search placeholder, login/register, world labels (Online, Local, Jobs)",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 71,
+      "phase": 1
+    },
+    {
+      "id": 1447,
+      "type": "component",
+      "file": "src/components/header/MobileNavigation.jsx",
+      "description": "Mobile nav items",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 71,
+      "phase": 1
+    },
+    {
+      "id": 1448,
+      "type": "component",
+      "file": "src/components/footer",
+      "description": "Footer links, copyright, tagline",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 71,
+      "phase": 1
+    },
+    {
+      "id": 1449,
+      "type": "component",
+      "file": "src/components/dashboard/header/DashboardNavigation.jsx",
+      "description": "Dashboard nav: Online, Local, Jobs, menu items",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 71,
+      "phase": 1
+    },
+    {
+      "id": 1450,
+      "type": "component",
+      "file": "src/components/breadcrumb",
+      "description": "Breadcrumb labels: Home, Browse, Contact us, etc.",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 71,
+      "phase": 1
+    },
+    {
+      "id": 1451,
+      "type": "page",
+      "file": "src/app/(home)/page.jsx",
+      "description": "Homepage metadata (title, description, OG tags)",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 72,
+      "phase": 2
+    },
+    {
+      "id": 1452,
+      "type": "component",
+      "file": "src/components/hero/HomepageHero.jsx",
+      "description": "Find the Right Talent, world descriptions, CTA buttons",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 72,
+      "phase": 2
+    },
+    {
+      "id": 1453,
+      "type": "component",
+      "file": "src/components/section/SocialProofStats.jsx",
+      "description": "Stats section text",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 72,
+      "phase": 2
+    },
+    {
+      "id": 1454,
+      "type": "page",
+      "file": "src/app/become-seller",
+      "description": "Full page: hero, 3 earning methods, steps, benefits, CTA",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 72,
+      "phase": 2
+    },
+    {
+      "id": 1455,
+      "type": "page",
+      "file": "src/app/pricing/page.jsx",
+      "description": "Pricing tiers, feature lists, CTA buttons",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 72,
+      "phase": 2
+    },
+    {
+      "id": 1456,
+      "type": "page",
+      "file": "src/app/(about)/about/page.jsx",
+      "description": "About page content, team section",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 72,
+      "phase": 2
+    },
+    {
+      "id": 1457,
+      "type": "page",
+      "file": "src/app/faq/page.jsx",
+      "description": "All Q&A pairs, section titles",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 72,
+      "phase": 2
+    },
+    {
+      "id": 1458,
+      "type": "page",
+      "file": "src/app/contact/page.jsx",
+      "description": "Form labels, placeholders, success/error messages",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 72,
+      "phase": 2
+    },
+    {
+      "id": 1459,
+      "type": "page",
+      "file": "src/app/privacy-policy/page.jsx",
+      "description": "Privacy policy content",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 72,
+      "phase": 2
+    },
+    {
+      "id": 1460,
+      "type": "page",
+      "file": "src/app/terms/page.jsx",
+      "description": "Terms of service content",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 72,
+      "phase": 2
+    },
+    {
+      "id": 1461,
+      "type": "page",
+      "file": "src/app/help/page.jsx",
+      "description": "Help page content",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 72,
+      "phase": 2
+    },
+    {
+      "id": 1462,
+      "type": "page",
+      "file": "src/app/(online)/online/page.jsx",
+      "description": "Online hub landing page",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 73,
+      "phase": 3
+    },
+    {
+      "id": 1463,
+      "type": "component",
+      "file": "src/components/section/Listing14.jsx",
+      "description": "No freelancers yet, Join as freelancer, filter labels",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 73,
+      "phase": 3
+    },
+    {
+      "id": 1464,
+      "type": "component",
+      "file": "src/components/card/FreelancerCard2.jsx",
+      "description": "Available Now, View Profile, Location, Rate, Level, On request",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 73,
+      "phase": 3
+    },
+    {
+      "id": 1465,
+      "type": "component",
+      "file": "src/components/card/FreelancerCardList.jsx",
+      "description": "Same strings as FreelancerCard2 in list layout",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 73,
+      "phase": 3
+    },
+    {
+      "id": 1466,
+      "type": "component",
+      "file": "src/components/sidebar/ListingSidebar5.jsx",
+      "description": "Filter labels: Category, Level, Location, Language, Budget",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 73,
+      "phase": 3
+    },
+    {
+      "id": 1467,
+      "type": "component",
+      "file": "src/components/element/ListingOption2.jsx",
+      "description": "{count} freelancers available, sort labels",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 73,
+      "phase": 3
+    },
+    {
+      "id": 1468,
+      "type": "component",
+      "file": "src/components/option/SortOption1.jsx",
+      "description": "Sort options: Best Seller, Recommended, New Arrivals",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 73,
+      "phase": 3
+    },
+    {
+      "id": 1469,
+      "type": "component",
+      "file": "src/components/option/AvailableNowOption.jsx",
+      "description": "Available Now toggle label",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 73,
+      "phase": 3
+    },
+    {
+      "id": 1470,
+      "type": "page",
+      "file": "src/app/(online)/online/services",
+      "description": "Services listing page",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 73,
+      "phase": 3
+    },
+    {
+      "id": 1471,
+      "type": "page",
+      "file": "src/app/(online)/online/projects",
+      "description": "Projects listing page",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 73,
+      "phase": 3
+    },
+    {
+      "id": 1472,
+      "type": "page",
+      "file": "src/app/(service)/service/[id]",
+      "description": "Gig detail: tabs, package labels, order buttons",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 73,
+      "phase": 3
+    },
+    {
+      "id": 1473,
+      "type": "page",
+      "file": "src/app/(freelancer)/freelancer/[id]",
+      "description": "Freelancer profile: sections, labels",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 73,
+      "phase": 3
+    },
+    {
+      "id": 1474,
+      "type": "page",
+      "file": "src/app/(project)/project/[id]",
+      "description": "Project detail: bid section, labels",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 73,
+      "phase": 3
+    },
+    {
+      "id": 1475,
+      "type": "page",
+      "file": "src/app/(local)/local/page.jsx",
+      "description": "Local hub landing",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 74,
+      "phase": 4
+    },
+    {
+      "id": 1476,
+      "type": "page",
+      "file": "src/app/(local)/local/craftsmen",
+      "description": "Craftsmen listing, filters",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 74,
+      "phase": 4
+    },
+    {
+      "id": 1477,
+      "type": "page",
+      "file": "src/app/(local)/local/craftsman",
+      "description": "Craftsman profile detail",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 74,
+      "phase": 4
+    },
+    {
+      "id": 1478,
+      "type": "page",
+      "file": "src/app/(local)/local/quote-requests",
+      "description": "Quote requests listing",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 74,
+      "phase": 4
+    },
+    {
+      "id": 1479,
+      "type": "page",
+      "file": "src/app/(local)/local/quote-request",
+      "description": "Single quote request detail",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 74,
+      "phase": 4
+    },
+    {
+      "id": 1480,
+      "type": "component",
+      "file": "src/components/local",
+      "description": "Quote form labels, lead claim UI, credit system text",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 74,
+      "phase": 4
+    },
+    {
+      "id": 1481,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs-hub/page.jsx",
+      "description": "Jobs landing page",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 75,
+      "phase": 5
+    },
+    {
+      "id": 1482,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/browse",
+      "description": "Job listings, filters",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 75,
+      "phase": 5
+    },
+    {
+      "id": 1483,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/job",
+      "description": "Job detail page",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 75,
+      "phase": 5
+    },
+    {
+      "id": 1484,
+      "type": "page",
+      "file": "src/app/(jobs-world)/jobs/companies",
+      "description": "Companies listing",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 75,
+      "phase": 5
+    },
+    {
+      "id": 1485,
+      "type": "component",
+      "file": "src/components/jobs",
+      "description": "Salary labels, job type badges, application buttons",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 75,
+      "phase": 5
+    },
+    {
+      "id": 1486,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/page.jsx",
+      "description": "Dashboard home: stats labels, recent orders, chart labels",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1487,
+      "type": "page",
+      "file": "src/app/(dashboard)/onboarding/page.jsx",
+      "description": "Onboarding steps, form labels, world selection",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1488,
+      "type": "page",
+      "file": "src/app/(dashboard)/my-profile/page.jsx",
+      "description": "Profile edit: all labels, placeholders, sections",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1489,
+      "type": "page",
+      "file": "src/app/(dashboard)/add-services/page.jsx",
+      "description": "Gig creation: title, description, packages, pricing",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1490,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-services/page.jsx",
+      "description": "Gig management: status labels, actions",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1491,
+      "type": "page",
+      "file": "src/app/(dashboard)/create-projects/page.jsx",
+      "description": "Project creation form",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1492,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-projects/page.jsx",
+      "description": "Project management",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1493,
+      "type": "page",
+      "file": "src/app/(dashboard)/manage-jobs/page.jsx",
+      "description": "Job management",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1494,
+      "type": "page",
+      "file": "src/app/(dashboard)/orders/page.jsx",
+      "description": "Orders: status badges, Mark as Delivered, Approve, Request Revision",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1495,
+      "type": "page",
+      "file": "src/app/(dashboard)/message/page.jsx",
+      "description": "Chat UI: messages placeholder, Back to conversations, Send",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1496,
+      "type": "page",
+      "file": "src/app/(dashboard)/reviews/page.jsx",
+      "description": "Reviews section, rating labels",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1497,
+      "type": "page",
+      "file": "src/app/(dashboard)/saved/page.jsx",
+      "description": "Saved items page",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1498,
+      "type": "page",
+      "file": "src/app/(dashboard)/proposal/page.jsx",
+      "description": "Bid/proposal form",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1499,
+      "type": "page",
+      "file": "src/app/(dashboard)/payouts/page.jsx",
+      "description": "Payouts/earnings page",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1500,
+      "type": "page",
+      "file": "src/app/(dashboard)/statements/page.jsx",
+      "description": "Financial statements",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1501,
+      "type": "page",
+      "file": "src/app/(dashboard)/invoice/page.jsx",
+      "description": "Invoice page",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1502,
+      "type": "page",
+      "file": "src/app/(dashboard)/projects/[id]/page.jsx",
+      "description": "Project board: milestones, deliverables",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1503,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/credits/page.jsx",
+      "description": "Credits: buy, balance",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1504,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/my-leads/page.jsx",
+      "description": "Leads: claim buttons, details",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1505,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/rewards/page.jsx",
+      "description": "Rewards: tiers, cashback",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1506,
+      "type": "page",
+      "file": "src/app/(dashboard)/dashboard/feedback/page.jsx",
+      "description": "Feedback form",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1507,
+      "type": "page",
+      "file": "src/app/(dashboard)/admin/disputes/page.jsx",
+      "description": "Admin disputes",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 76,
+      "phase": 6
+    },
+    {
+      "id": 1508,
+      "type": "component",
+      "file": "src/components/ui/WaitlistButton.jsx",
+      "description": "Join Waitlist, modal text, success message",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 77,
+      "phase": 7
+    },
+    {
+      "id": 1509,
+      "type": "component",
+      "file": "src/components/ui/ContactButton.jsx",
+      "description": "Contact, Opening chat...",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 77,
+      "phase": 7
+    },
+    {
+      "id": 1510,
+      "type": "component",
+      "file": "src/components/ui/EmptyState.jsx",
+      "description": "Empty state messages across the app",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 77,
+      "phase": 7
+    },
+    {
+      "id": 1511,
+      "type": "component",
+      "file": "src/components/modal",
+      "description": "All modals: confirm dialogs, forms",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 77,
+      "phase": 7
+    },
+    {
+      "id": 1512,
+      "type": "component",
+      "file": "status-badges",
+      "description": "Open, In Progress, Completed, Cancelled, Pending, Active, Paused, Delivered",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 77,
+      "phase": 7
+    },
+    {
+      "id": 1513,
+      "type": "component",
+      "file": "toast-messages",
+      "description": "Account type updated, Order approved, Something went wrong, etc.",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 77,
+      "phase": 7
+    },
+    {
+      "id": 1514,
+      "type": "component",
+      "file": "form-validation",
+      "description": "Required, invalid email, too short, etc.",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 77,
+      "phase": 7
+    },
+    {
+      "id": 1515,
+      "type": "component",
+      "file": "loading-states",
+      "description": "Loading..., spinner labels",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 77,
+      "phase": 7
+    },
+    {
+      "id": 1516,
+      "type": "page",
+      "file": "src/app/error.tsx",
+      "description": "Error pages, not-found, [...not_found]",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 77,
+      "phase": 7
+    },
+    {
+      "id": 1517,
+      "type": "page",
+      "file": "src/app/(blog)/blog/page.jsx",
+      "description": "Blog listing, filter labels",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 78,
+      "phase": 8
+    },
+    {
+      "id": 1518,
+      "type": "page",
+      "file": "src/app/(blog)/post/[id]/page.jsx",
+      "description": "Blog post: share buttons, author bio, related posts",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 78,
+      "phase": 8
+    },
+    {
+      "id": 1519,
+      "type": "page",
+      "file": "src/app/platforms/page.jsx",
+      "description": "Platforms listing",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 78,
+      "phase": 8
+    },
+    {
+      "id": 1520,
+      "type": "page",
+      "file": "src/app/platforms/[slug]/page.jsx",
+      "description": "Platform detail: reviews, comparison labels",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 78,
+      "phase": 8
+    },
+    {
+      "id": 1521,
+      "type": "page",
+      "file": "src/app/resources",
+      "description": "Resources listing + detail",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 78,
+      "phase": 8
+    },
+    {
+      "id": 1522,
+      "type": "db-content",
+      "target": "script-setup",
+      "description": "Create scripts/translate-content-nl.mjs using @iamtraction/google-translate",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 79,
+      "phase": 9
+    },
+    {
+      "id": 1523,
+      "type": "db-content",
+      "target": "marketplaceCategories",
+      "description": "Translate name, description for all categories",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 79,
+      "phase": 9
+    },
+    {
+      "id": 1524,
+      "type": "db-content",
+      "target": "skills",
+      "description": "Translate skill names",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 79,
+      "phase": 9
+    },
+    {
+      "id": 1525,
+      "type": "db-content",
+      "target": "platforms",
+      "description": "Translate name, description, pros, cons, features",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 79,
+      "phase": 9
+    },
+    {
+      "id": 1526,
+      "type": "db-content",
+      "target": "posts",
+      "description": "Translate title, excerpt, content, metaTitle, metaDescription",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 79,
+      "phase": 9
+    },
+    {
+      "id": 1527,
+      "type": "db-content",
+      "target": "tools",
+      "description": "Translate name, description",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 79,
+      "phase": 9
+    },
+    {
+      "id": 1528,
+      "type": "db-content",
+      "target": "seoPages",
+      "description": "Translate metaTitle, metaDescription, intro, sections, faqItems",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 79,
+      "phase": 9
+    },
+    {
+      "id": 1529,
+      "type": "db-content",
+      "target": "resources",
+      "description": "Translate metaTitle, metaDescription, intro, sections, faqItems",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 79,
+      "phase": 9
+    },
+    {
+      "id": 1530,
+      "type": "meta",
+      "file": "src/app/layout.js",
+      "description": "Root metadata: locale-aware title/description",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 80,
+      "phase": 10
+    },
+    {
+      "id": 1531,
+      "type": "meta",
+      "target": "page-metadata",
+      "description": "All page generateMetadata() functions for NL locale",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 80,
+      "phase": 10
+    },
+    {
+      "id": 1532,
+      "type": "meta",
+      "file": "src/app/sitemap.ts",
+      "description": "Include NL pages with hreflang",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 80,
+      "phase": 10
+    },
+    {
+      "id": 1533,
+      "type": "meta",
+      "file": "src/app/robots.ts",
+      "description": "Verify robots.txt for both locales",
+      "locale": "pl",
+      "status": "pending",
+      "priority": 80,
+      "phase": 10
+    }
+  ]
+}
