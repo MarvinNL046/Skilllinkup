@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 3
+    "completed": 4
   },
   "queue": [
     {
@@ -50,7 +50,7 @@
       "target": "messages-nl",
       "description": "Create messages/nl.json — full Dutch translation of en.json",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 1,
       "phase": 0
     },
