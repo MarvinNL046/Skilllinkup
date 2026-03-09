@@ -899,6 +899,24 @@
     "category": "Categorie",
     "salary": "Salaris",
     "jobType": "Type baan",
-    "level": "Niveau"
+    "level": "Niveau",
+    "breadcrumbDetail": "Detail",
+    "jobOpeningFallback": "Vacature",
+    "jobOpeningDescription": "Bekijk vacaturedetails en solliciteer op SkillLinkup.",
+    "atCompany": "bij {company}",
+    "applyOnSkillLinkup": "Solliciteer op SkillLinkup.",
+    "loadingJob": "Vacaturedetails laden...",
+    "remote": "Op afstand",
+    "postedToday": "Vandaag geplaatst",
+    "posted1Day": "1 dag geleden geplaatst",
+    "postedDaysAgo": "{days} dagen geleden geplaatst",
+    "hoursPerWeek": "{hours} uur / week",
+    "datePosted": "Geplaatst op",
+    "location": "Locatie",
+    "hours": "Uren",
+    "description": "Beschrijving",
+    "keyResponsibilities": "Belangrijkste taken",
+    "requirements": "Vereisten",
+    "applyForJob": "Solliciteren"
   }
 }

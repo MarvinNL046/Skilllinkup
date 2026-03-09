@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import useConvexJobDetail from "@/hook/useConvexJobDetail";
 
 export default function JobDetail1() {
+  const t = useTranslations("jobsHub");
   const { id } = useParams();
   const convexData = useConvexJobDetail(id);
 
@@ -20,19 +22,19 @@ export default function JobDetail1() {
           location: convexData.locationCity
             ? `${convexData.locationCity}, ${convexData.locationCountry || ""}`
             : convexData.workType === "remote"
-            ? "Remote"
+            ? t("remote")
             : null,
           postedAt: convexData.createdAt
             ? (() => {
                 const diffMs = Date.now() - convexData.createdAt;
                 const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-                if (diffDays === 0) return "Posted today";
-                if (diffDays === 1) return "Posted 1 day ago";
-                return `Posted ${diffDays} days ago`;
+                if (diffDays === 0) return t("postedToday");
+                if (diffDays === 1) return t("posted1Day");
+                return t("postedDaysAgo", { days: diffDays });
               })()
             : null,
           hours: convexData.hoursPerWeek
-            ? `${convexData.hoursPerWeek}h / week`
+            ? t("hoursPerWeek", { hours: convexData.hoursPerWeek })
             : null,
           salary:
             convexData.salaryMin && convexData.salaryMax
@@ -55,7 +57,7 @@ export default function JobDetail1() {
         <div className="container">
           <div className="row">
             <div className="col-12 text-center py-5">
-              <p className="text">Loading job details...</p>
+              <p className="text">{t("loadingJob")}</p>
             </div>
           </div>
         </div>
@@ -89,7 +91,7 @@ export default function JobDetail1() {
                           <span className="flaticon-calendar" />
                         </div>
                         <div className="details">
-                          <h5 className="title">Date Posted</h5>
+                          <h5 className="title">{t("datePosted")}</h5>
                           <p className="mb-0 text">{postedAt}</p>
                         </div>
                       </div>
@@ -102,7 +104,7 @@ export default function JobDetail1() {
                           <span className="flaticon-place" />
                         </div>
                         <div className="details">
-                          <h5 className="title">Location</h5>
+                          <h5 className="title">{t("location")}</h5>
                           <p className="mb-0 text">{location}</p>
                         </div>
                       </div>
@@ -115,7 +117,7 @@ export default function JobDetail1() {
                           <span className="flaticon-fifteen" />
                         </div>
                         <div className="details">
-                          <h5 className="title">Hours</h5>
+                          <h5 className="title">{t("hours")}</h5>
                           <p className="mb-0 text">{hours}</p>
                         </div>
                       </div>
@@ -128,7 +130,7 @@ export default function JobDetail1() {
                           <span className="flaticon-pay-day" />
                         </div>
                         <div className="details">
-                          <h5 className="title">Salary</h5>
+                          <h5 className="title">{t("salary")}</h5>
                           <p className="mb-0 text">{salary}</p>
                         </div>
                       </div>
@@ -139,13 +141,13 @@ export default function JobDetail1() {
               <div className="service-about">
                 {description && (
                   <>
-                    <h4 className="mb-4">Description</h4>
+                    <h4 className="mb-4">{t("description")}</h4>
                     <p className="text mb30">{description}</p>
                   </>
                 )}
                 {responsibilities.length > 0 && (
                   <>
-                    <h4 className="mb30">Key Responsibilities</h4>
+                    <h4 className="mb30">{t("keyResponsibilities")}</h4>
                     <div className="list-style1 mb60 pr50 pr0-lg">
                       <ul>
                         {responsibilities.map((item, i) => (
@@ -160,7 +162,7 @@ export default function JobDetail1() {
                 )}
                 {requirements.length > 0 && (
                   <>
-                    <h4 className="mb30">Requirements</h4>
+                    <h4 className="mb30">{t("requirements")}</h4>
                     <ul className="list-style-type-bullet ps-3 mb60">
                       {requirements.map((item, i) => (
                         <li key={i}>{item}</li>
@@ -170,7 +172,7 @@ export default function JobDetail1() {
                 )}
                 <div className="d-grid mb60">
                   <Link href="/contact" className="ud-btn btn-thm2">
-                    Apply For Job
+                    {t("applyForJob")}
                     <i className="fal fa-arrow-right-long" />
                   </Link>
                 </div>

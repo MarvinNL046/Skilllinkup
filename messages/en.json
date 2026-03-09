@@ -899,6 +899,24 @@
     "category": "Category",
     "salary": "Salary",
     "jobType": "Job Type",
-    "level": "Level"
+    "level": "Level",
+    "breadcrumbDetail": "Detail",
+    "jobOpeningFallback": "Job Opening",
+    "jobOpeningDescription": "View job details and apply on SkillLinkup.",
+    "atCompany": "at {company}",
+    "applyOnSkillLinkup": "Apply on SkillLinkup.",
+    "loadingJob": "Loading job details...",
+    "remote": "Remote",
+    "postedToday": "Posted today",
+    "posted1Day": "Posted 1 day ago",
+    "postedDaysAgo": "Posted {days} days ago",
+    "hoursPerWeek": "{hours}h / week",
+    "datePosted": "Date Posted",
+    "location": "Location",
+    "hours": "Hours",
+    "description": "Description",
+    "keyResponsibilities": "Key Responsibilities",
+    "requirements": "Requirements",
+    "applyForJob": "Apply For Job"
   }
 }
