@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 18
+    "completed": 19
   },
   "queue": [
     {
@@ -200,7 +200,7 @@
       "file": "src/app/contact/page.jsx",
       "description": "Form labels, placeholders, success/error messages",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 2,
       "phase": 2
     },

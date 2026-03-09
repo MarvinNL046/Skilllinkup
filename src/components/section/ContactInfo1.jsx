@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export default function ContactInfo1() {
   const [name, setName] = useState("");
@@ -9,23 +10,24 @@ export default function ContactInfo1() {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const t = useTranslations("contact");
 
   async function handleSubmit(e) {
     e.preventDefault();
 
     if (!name.trim() || !email.trim() || !subject || !message.trim()) {
-      toast.error("Please fill in all fields before sending.");
+      toast.error(t("fillAllFields"));
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim())) {
-      toast.error("Please enter a valid email address.");
+      toast.error(t("invalidEmail"));
       return;
     }
 
     setSending(true);
-    const loadingToast = toast.loading("Sending your message...");
+    const loadingToast = toast.loading(t("sendingMessage"));
 
     try {
       const res = await fetch("/api/email/send", {
@@ -40,14 +42,14 @@ export default function ContactInfo1() {
         throw new Error("Server responded with an error");
       }
 
-      toast.success("Message sent! We'll get back to you within 24 hours.");
+      toast.success(t("messageSent"));
       setName("");
       setEmail("");
       setSubject("");
       setMessage("");
     } catch {
       toast.dismiss(loadingToast);
-      toast.error("Failed to send message. Please try again.");
+      toast.error(t("sendFailed"));
     } finally {
       setSending(false);
     }
@@ -61,18 +63,15 @@ export default function ContactInfo1() {
             <div className="col-lg-6">
               <div className="position-relative mt40">
                 <div className="main-title">
-                  <h4 className="form-title mb25">Get In Touch</h4>
-                  <p className="text">
-                    Have a question about SkillLinkup? We&apos;re here to help
-                    freelancers and clients get the most out of the platform.
-                  </p>
+                  <h4 className="form-title mb25">{t("getInTouch")}</h4>
+                  <p className="text">{t("getInTouchDesc")}</p>
                 </div>
                 <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
                   <div className="icon flex-shrink-0">
                     <span className="flaticon-mail" />
                   </div>
                   <div className="details">
-                    <h5 className="title">Email</h5>
+                    <h5 className="title">{t("emailLabel")}</h5>
                     <p className="mb-0 text">info@skilllinkup.com</p>
                   </div>
                 </div>
@@ -81,11 +80,8 @@ export default function ContactInfo1() {
                     <span className="flaticon-clock" />
                   </div>
                   <div className="details">
-                    <h5 className="title">Response Time</h5>
-                    <p className="mb-0 text">
-                      We typically respond within 24 hours <br /> on business
-                      days.
-                    </p>
+                    <h5 className="title">{t("responseTime")}</h5>
+                    <p className="mb-0 text">{t("responseTimeDesc")}</p>
                   </div>
                 </div>
                 <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
@@ -93,32 +89,27 @@ export default function ContactInfo1() {
                     <span className="flaticon-tracking" />
                   </div>
                   <div className="details">
-                    <h5 className="title">Location</h5>
-                    <p className="mb-0 text">
-                      The Netherlands <br /> Serving freelancers worldwide
-                    </p>
+                    <h5 className="title">{t("location")}</h5>
+                    <p className="mb-0 text">{t("locationDesc")}</p>
                   </div>
                 </div>
               </div>
             </div>
             <div className="col-lg-6">
               <div className="contact-page-form default-box-shadow1 bdrs8 bdr1 p50 mb30-md bgc-white">
-                <h4 className="form-title mb25">Send Us a Message</h4>
-                <p className="text mb30">
-                  Whether you have a question, feedback, or a partnership
-                  inquiry, we&apos;d love to hear from you.
-                </p>
+                <h4 className="form-title mb25">{t("sendUsMessage")}</h4>
+                <p className="text mb30">{t("sendUsMessageDesc")}</p>
                 <form className="form-style1" onSubmit={handleSubmit}>
                   <div className="row">
                     <div className="col-md-6">
                       <div className="mb20">
                         <label className="heading-color ff-heading fw500 mb10">
-                          Name
+                          {t("name")}
                         </label>
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="Your name"
+                          placeholder={t("namePlaceholder")}
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                         />
@@ -127,12 +118,12 @@ export default function ContactInfo1() {
                     <div className="col-md-6">
                       <div className="mb20">
                         <label className="heading-color ff-heading fw500 mb10">
-                          Email
+                          {t("email")}
                         </label>
                         <input
                           type="email"
                           className="form-control"
-                          placeholder="Your email"
+                          placeholder={t("emailPlaceholder")}
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                         />
@@ -141,33 +132,33 @@ export default function ContactInfo1() {
                     <div className="col-md-12">
                       <div className="mb20">
                         <label className="heading-color ff-heading fw500 mb10">
-                          Subject
+                          {t("subject")}
                         </label>
                         <select
                           className="form-control form-select"
                           value={subject}
                           onChange={(e) => setSubject(e.target.value)}
                         >
-                          <option value="">Select a topic</option>
-                          <option value="general">General Question</option>
-                          <option value="account">Account & Login</option>
-                          <option value="freelancer">Freelancer Support</option>
-                          <option value="client">Client Support</option>
-                          <option value="payment">Payments & Billing</option>
-                          <option value="partnership">Partnership Inquiry</option>
-                          <option value="bug">Report a Bug</option>
+                          <option value="">{t("selectTopic")}</option>
+                          <option value="general">{t("topicGeneral")}</option>
+                          <option value="account">{t("topicAccount")}</option>
+                          <option value="freelancer">{t("topicFreelancer")}</option>
+                          <option value="client">{t("topicClient")}</option>
+                          <option value="payment">{t("topicPayment")}</option>
+                          <option value="partnership">{t("topicPartnership")}</option>
+                          <option value="bug">{t("topicBug")}</option>
                         </select>
                       </div>
                     </div>
                     <div className="col-md-12">
                       <div className="mb20">
                         <label className="heading-color ff-heading fw500 mb10">
-                          Message
+                          {t("message")}
                         </label>
                         <textarea
                           cols={30}
                           rows={6}
-                          placeholder="How can we help you?"
+                          placeholder={t("messagePlaceholder")}
                           value={message}
                           onChange={(e) => setMessage(e.target.value)}
                         />
@@ -180,7 +171,7 @@ export default function ContactInfo1() {
                           className="ud-btn btn-thm"
                           disabled={sending}
                         >
-                          {sending ? "Sending..." : "Send Message"}
+                          {sending ? t("sending") : t("sendMessage")}
                           <i className="fal fa-arrow-right-long" />
                         </button>
                       </div>

@@ -4,24 +4,29 @@ import Header20 from "@/components/header/Header20";
 
 import ContactInfo1 from "@/components/section/ContactInfo1";
 import OurFaq1 from "@/components/section/OurFaq1";
+import { getTranslations } from "next-intl/server";
 
-export const metadata = {
-    title: "Contact Us",
-    description: "Get in touch with the SkillLinkup team. We're here to help with any questions about our freelance marketplace platform.",
-    openGraph: {
-        title: "Contact Us",
-        description: "Get in touch with the SkillLinkup team. We're here to help with any questions about our freelance marketplace platform.",
-        url: "https://skilllinkup.com/contact",
-    },
-};
+export async function generateMetadata() {
+    const t = await getTranslations("contact");
+    return {
+        title: t("title"),
+        description: t("metaDescription"),
+        openGraph: {
+            title: t("title"),
+            description: t("metaDescription"),
+            url: "https://skilllinkup.com/contact",
+        },
+    };
+}
 
-export default function page() {
+export default async function page() {
+    const t = await getTranslations("contact");
     return (
         <>
             <Header20 />
             <Breadcumb1
-                title={"Contact us"}
-                brief={`We'd love to talk about how we can help you.`}
+                title={t("breadcrumbTitle")}
+                brief={t("breadcrumbBrief")}
                 isBtnActive={false}
             />
             <ContactInfo1 />
