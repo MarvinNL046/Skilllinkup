@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 11
+    "completed": 12
   },
   "queue": [
     {
@@ -130,7 +130,7 @@
       "file": "src/app/(home)/page.jsx",
       "description": "Homepage metadata (title, description, OG tags)",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 2,
       "phase": 2
     },
