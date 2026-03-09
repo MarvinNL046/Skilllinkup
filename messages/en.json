@@ -467,7 +467,7 @@
     "breadcrumbBrief": "Learn how we handle your data",
     "lastUpdated": "Last updated: March 2026",
     "section1Title": "1. Introduction",
-    "section1p1": "SkillLinkup B.V. (\u201cSkillLinkup\u201d, \u201cwe\u201d, \u201cus\u201d) is a freelance marketplace based in The Netherlands. This Privacy Policy explains what personal data we collect when you use skilllinkup.com, why we collect it, and how we handle it in compliance with the General Data Protection Regulation (GDPR) and applicable Dutch law.",
+    "section1p1": "SkillLinkup B.V. (“SkillLinkup”, “we”, “us”) is a freelance marketplace based in The Netherlands. This Privacy Policy explains what personal data we collect when you use skilllinkup.com, why we collect it, and how we handle it in compliance with the General Data Protection Regulation (GDPR) and applicable Dutch law.",
     "section1p2": "By creating an account or using our platform, you acknowledge that you have read and understood this policy. If you have questions, contact us at",
     "section2Title": "2. Information We Collect",
     "section2AccountTitle": "Account data",
@@ -519,7 +519,7 @@
     "section10Title": "10. Children's Privacy",
     "section10Text": "SkillLinkup is intended for users aged 13 and older. We do not knowingly collect personal data from children under 13. If we become aware that a user is under 13, we will promptly close the account and delete the associated data. If you believe a child under 13 has registered on our platform, please contact us at",
     "section11Title": "11. Changes to This Policy",
-    "section11Text": "We may update this Privacy Policy when we introduce new features, change our service providers, or when laws require it. We will notify registered users of material changes by email or by displaying a prominent notice on the platform. The \u201cLast updated\u201d date at the top of this page always reflects the most recent version. Continued use of SkillLinkup after changes take effect constitutes acceptance of the updated policy.",
+    "section11Text": "We may update this Privacy Policy when we introduce new features, change our service providers, or when laws require it. We will notify registered users of material changes by email or by displaying a prominent notice on the platform. The “Last updated” date at the top of this page always reflects the most recent version. Continued use of SkillLinkup after changes take effect constitutes acceptance of the updated policy.",
     "section12Title": "12. Contact",
     "section12Text": "For privacy-related questions, data requests, or complaints, contact us at",
     "section12Suffix": "SkillLinkup is registered in The Netherlands. We aim to respond to all privacy enquiries within 5 business days."
@@ -553,7 +553,7 @@
     "section8Title": "8. Privacy",
     "section8Text": "Your privacy is important to us. Our collection and use of personal information is governed by our Privacy Policy. By using SkillLinkup, you consent to the collection and use of your information as described in our Privacy Policy.",
     "section9Title": "9. Limitation of Liability",
-    "section9Text": "SkillLinkup provides the platform \u201cas is\u201d without warranties of any kind. We are not liable for any indirect, incidental, or consequential damages arising from your use of the platform. Our total liability is limited to the fees paid to SkillLinkup in the twelve months preceding the claim.",
+    "section9Text": "SkillLinkup provides the platform “as is” without warranties of any kind. We are not liable for any indirect, incidental, or consequential damages arising from your use of the platform. Our total liability is limited to the fees paid to SkillLinkup in the twelve months preceding the claim.",
     "section10Title": "10. Contact",
     "section10Text": "If you have questions about these Terms of Service, please contact us at"
   },
@@ -924,6 +924,14 @@
     "companiesText": "Discover companies hiring on SkillLinkup and find your next opportunity.",
     "companiesComingSoon": "Company directory coming soon",
     "companiesComingSoonText": "We're building a company directory so you can discover employers on SkillLinkup. Soon you'll be able to browse company profiles, see open positions, and learn about company culture.",
-    "browseJobs": "Browse Jobs"
+    "browseJobs": "Browse Jobs",
+    "apply": "Apply",
+    "moreOptions": "+20 more",
+    "jobsAtCompany": "{count} jobs at {company}",
+    "browseLatestRoles": "Browse the latest open roles from this company.",
+    "deleteItem": "Delete Item",
+    "hourly": "Hourly",
+    "days": "Days",
+    "expensive": "Expensive"
   }
 }

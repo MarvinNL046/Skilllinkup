@@ -1,11 +1,13 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import useConvexClients from "@/hook/useConvexClients";
 import useConvexJobs from "@/hook/useConvexJobs";
 import JobCard4 from "../card/JobCard4";
 
 export default function JobInvision1() {
+  const t = useTranslations("jobsHub");
   const { id } = useParams();
   const clients = useConvexClients();
   const jobs = useConvexJobs();
@@ -30,9 +32,9 @@ export default function JobInvision1() {
           <div className="row">
             <div className="col-lg-12">
               <div className="mb30">
-                <h2>{companyJobs.length} jobs at {company.server}</h2>
+                <h2>{t("jobsAtCompany", { count: companyJobs.length, company: company.server })}</h2>
                 <p className="text">
-                  Browse the latest open roles from this company.
+                  {t("browseLatestRoles")}
                 </p>
               </div>
             </div>

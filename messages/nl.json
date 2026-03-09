@@ -467,7 +467,7 @@
     "breadcrumbBrief": "Lees hoe wij met je gegevens omgaan",
     "lastUpdated": "Laatst bijgewerkt: maart 2026",
     "section1Title": "1. Inleiding",
-    "section1p1": "SkillLinkup B.V. (\u201eSkillLinkup\u201d, \u201ewij\u201d, \u201eons\u201d) is een freelance marktplaats gevestigd in Nederland. Dit privacybeleid legt uit welke persoonsgegevens we verzamelen wanneer je skilllinkup.com gebruikt, waarom we ze verzamelen en hoe we ermee omgaan in overeenstemming met de Algemene Verordening Gegevensbescherming (AVG) en de Nederlandse wetgeving.",
+    "section1p1": "SkillLinkup B.V. („SkillLinkup”, „wij”, „ons”) is een freelance marktplaats gevestigd in Nederland. Dit privacybeleid legt uit welke persoonsgegevens we verzamelen wanneer je skilllinkup.com gebruikt, waarom we ze verzamelen en hoe we ermee omgaan in overeenstemming met de Algemene Verordening Gegevensbescherming (AVG) en de Nederlandse wetgeving.",
     "section1p2": "Door een account aan te maken of ons platform te gebruiken, erken je dat je dit beleid hebt gelezen en begrepen. Heb je vragen? Neem contact met ons op via",
     "section2Title": "2. Gegevens die we verzamelen",
     "section2AccountTitle": "Accountgegevens",
@@ -553,7 +553,7 @@
     "section8Title": "8. Privacy",
     "section8Text": "Je privacy is belangrijk voor ons. Het verzamelen en gebruiken van persoonlijke informatie wordt beheerst door ons Privacybeleid. Door SkillLinkup te gebruiken, stem je in met het verzamelen en gebruiken van je informatie zoals beschreven in ons Privacybeleid.",
     "section9Title": "9. Beperking van aansprakelijkheid",
-    "section9Text": "SkillLinkup biedt het platform aan \u201ezoals het is\u201d zonder enige garantie. Wij zijn niet aansprakelijk voor indirecte, incidentele of gevolgschade die voortvloeit uit je gebruik van het platform. Onze totale aansprakelijkheid is beperkt tot de kosten die aan SkillLinkup zijn betaald in de twaalf maanden voorafgaand aan de claim.",
+    "section9Text": "SkillLinkup biedt het platform aan „zoals het is” zonder enige garantie. Wij zijn niet aansprakelijk voor indirecte, incidentele of gevolgschade die voortvloeit uit je gebruik van het platform. Onze totale aansprakelijkheid is beperkt tot de kosten die aan SkillLinkup zijn betaald in de twaalf maanden voorafgaand aan de claim.",
     "section10Title": "10. Contact",
     "section10Text": "Heb je vragen over deze Algemene Voorwaarden? Neem dan contact met ons op via"
   },
@@ -924,6 +924,14 @@
     "companiesText": "Ontdek bedrijven die inhuren via SkillLinkup en vind je volgende kans.",
     "companiesComingSoon": "Bedrijvengids binnenkort beschikbaar",
     "companiesComingSoonText": "We bouwen een bedrijvengids zodat je werkgevers op SkillLinkup kunt ontdekken. Binnenkort kun je bedrijfsprofielen bekijken, openstaande functies zien en meer leren over de bedrijfscultuur.",
-    "browseJobs": "Vacatures bekijken"
+    "browseJobs": "Vacatures bekijken",
+    "apply": "Toepassen",
+    "moreOptions": "+20 meer",
+    "jobsAtCompany": "{count} vacatures bij {company}",
+    "browseLatestRoles": "Bekijk de nieuwste openstaande functies van dit bedrijf.",
+    "deleteItem": "Item verwijderen",
+    "hourly": "Per uur",
+    "days": "Dagen",
+    "expensive": "Duur"
   }
 }

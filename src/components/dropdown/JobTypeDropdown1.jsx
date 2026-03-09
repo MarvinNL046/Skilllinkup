@@ -2,8 +2,10 @@
 import { jobType } from "@/data/listing";
 import listingStore from "@/store/listingStore";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function JobTypeDropdown1() {
+  const t = useTranslations("jobsHub");
   const [getJobType, setJobType] = useState([]);
 
   const setJobTypeState = listingStore((state) => state.setJobType);
@@ -56,7 +58,7 @@ export default function JobTypeDropdown1() {
         onClick={jobTypeSumitHandler}
         className="done-btn ud-btn btn-thm drop_btn4"
       >
-        Apply
+        {t("apply")}
         <i className="fal fa-arrow-right-long" />
       </button>
     </>

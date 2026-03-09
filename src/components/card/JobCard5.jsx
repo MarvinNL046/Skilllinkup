@@ -1,6 +1,9 @@
+"use client";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 export default function JobCard5({ data }) {
+  const t = useTranslations("jobsHub");
   return (
     <>
       <div className="job-list-style1 bdr1 d-xl-flex align-items-start">
@@ -17,10 +20,10 @@ export default function JobCard5({ data }) {
         <div className="details ml20 ml0-xl">
           <h5>{data.title}</h5>
           <h6 className="mb-3 text-thm">{data.server}</h6>
-          <p className="list-inline-item mb-0">$125k-$135k Hourly</p>
-          <p className="list-inline-item mb-0 bdrl1 pl15">1-5 Days</p>
-          <p className="list-inline-item mb-0 bdrl1 pl15">Expensive</p>
-          <p className="list-inline-item mb-0 bdrl1 pl15">Remote</p>
+          <p className="list-inline-item mb-0">$125k-$135k {t("hourly")}</p>
+          <p className="list-inline-item mb-0 bdrl1 pl15">1-5 {t("days")}</p>
+          <p className="list-inline-item mb-0 bdrl1 pl15">{t("expensive")}</p>
+          <p className="list-inline-item mb-0 bdrl1 pl15">{t("remote")}</p>
         </div>
       </div>
     </>

@@ -1,8 +1,10 @@
 "use client";
 import { jobType } from "@/data/listing";
 import listingStore from "@/store/listingStore";
+import { useTranslations } from "next-intl";
 
 export default function JobTypeOption1() {
+  const t = useTranslations("jobsHub");
   const getJobType = listingStore((state) => state.getJobType);
   const setJobType = listingStore((state) => state.setJobType);
 
@@ -34,7 +36,7 @@ export default function JobTypeOption1() {
           </div>
         ))}
       </div>
-      <a className="text-thm">+20 more</a>
+      <a className="text-thm">{t("moreOptions")}</a>
     </>
   );
 }

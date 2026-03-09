@@ -1,8 +1,10 @@
 "use client";
 import Image from "next/image";
 import { Tooltip } from "react-tooltip";
+import { useTranslations } from "next-intl";
 
 export default function JobCard1({ data, i }) {
+  const t = useTranslations("jobsHub");
   return (
     <>
       <tr>
@@ -24,15 +26,15 @@ export default function JobCard1({ data, i }) {
           </div>
         </th>
         <td className="vam">
-          <p className="list-inline-item mb-0">$125k-$135k Hourly</p>
+          <p className="list-inline-item mb-0">$125k-$135k {t("hourly")}</p>
           <p className="list-inline-item mb-0 bdrl1 pl15 bdrn-lg pl5-lg">
-            1-5 Days
+            1-5 {t("days")}
           </p>
           <p className="list-inline-item mb-0 bdrl1 pl15 bdrn-lg pl5-lg">
-            Expensive
+            {t("expensive")}
           </p>
           <p className="list-inline-item mb-0 bdrl1 pl15 bdrn-lg pl5-lg">
-            Remote
+            {t("remote")}
           </p>
         </td>
         <td className="vam">
@@ -43,7 +45,7 @@ export default function JobCard1({ data, i }) {
               place={"left-start"}
               className="ui-tooltip"
             >
-              Delete Item
+              {t("deleteItem")}
             </Tooltip>
             <span className="flaticon-delete" />
           </a>
