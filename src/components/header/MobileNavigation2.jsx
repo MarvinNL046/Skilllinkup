@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function MobileNavigation2() {
   const { isSignedIn, user } = useUser();
@@ -24,6 +25,7 @@ export default function MobileNavigation2() {
                   />
                 </Link>
                 <div className="d-flex align-items-center gap-3">
+                  <LanguageSwitcher />
                   {isSignedIn ? (
                     <Link href="/dashboard" className="d-flex align-items-center">
                       <Image

@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 96
+    "completed": 97
   },
   "queue": [
     {
@@ -978,7 +978,8 @@
       "file": "src/components/header/Header19.jsx",
       "description": "Add LanguageSwitcher to header + mobile nav",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
+      "note": "Desktop header already done in item 150. Added to MobileNavigation2.",
       "priority": 11,
       "phase": 11
     },
