@@ -1,29 +1,14 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import useConvexProfile from "@/hook/useConvexProfile";
 
-// ---------------------------------------------------------------------------
-// StripeConnectButton
-//
-// Shown on the freelancer dashboard so they can connect their bank account
-// via Stripe Express and start receiving payouts.
-//
-// States:
-//   1. No stripeAccountId  → "Set up payments" button (initiates onboarding)
-//   2. stripeAccountId set but onboarding not complete → "Complete setup" button
-//   3. stripeOnboardingComplete = true → "Payments connected" (green, read-only)
-//
-// REQUIREMENTS:
-//   STRIPE_SECRET_KEY must be set in .env.local.
-//   The freelancer must be signed in (Clerk + Convex user synced).
-// ---------------------------------------------------------------------------
-
 export default function StripeConnectButton({ className = "" }) {
+  const t = useTranslations("stripeConnect");
   const { convexUser, profile } = useConvexProfile();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Derive Stripe connection state from the freelancer profile.
   const isConnected = profile?.stripeOnboardingComplete === true;
   const isPending = !!profile?.stripeAccountId && !isConnected;
 
@@ -46,44 +31,37 @@ export default function StripeConnectButton({ className = "" }) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to start Stripe onboarding");
+        throw new Error(data.error || t("failedOnboarding"));
       }
 
       if (data.url) {
-        // Redirect to Stripe Express onboarding.
         window.location.href = data.url;
       } else {
-        throw new Error("No onboarding URL returned from server");
+        throw new Error(t("noUrl"));
       }
     } catch (err) {
       console.error("[StripeConnectButton] Error:", err);
-      setError(err.message || "Something went wrong. Please try again.");
+      setError(err.message || t("somethingWentWrong"));
       setIsLoading(false);
     }
-    // Note: don't reset isLoading on success – the page will redirect away.
   };
 
-  // Profile not loaded yet.
   if (profile === undefined) {
     return (
       <div className={`stripe-connect-button ${className}`}>
         <div className="spinner-border spinner-border-sm text-muted" role="status">
-          <span className="visually-hidden">Loading...</span>
+          <span className="visually-hidden">{t("loading")}</span>
         </div>
       </div>
     );
   }
 
-  // User is not a freelancer (no profile).
   if (!profile) {
     return null;
   }
 
   return (
     <div className={`stripe-connect-button ${className}`}>
-      {/* ---------------------------------------------------------------- */}
-      {/* State 3: Fully connected                                          */}
-      {/* ---------------------------------------------------------------- */}
       {isConnected && (
         <div className="d-flex align-items-center gap-2">
           <span
@@ -91,17 +69,14 @@ export default function StripeConnectButton({ className = "" }) {
             style={{ backgroundColor: "#22c55e", color: "#fff", fontSize: "14px" }}
           >
             <i className="fal fa-check-circle me-2" />
-            Payments connected
+            {t("paymentsConnected")}
           </span>
           <span className="text fz13 text-muted">
-            You can receive payouts via Stripe
+            {t("payoutsViaStripe")}
           </span>
         </div>
       )}
 
-      {/* ---------------------------------------------------------------- */}
-      {/* State 2: Account created but onboarding not finished              */}
-      {/* ---------------------------------------------------------------- */}
       {isPending && (
         <div>
           <button
@@ -117,25 +92,21 @@ export default function StripeConnectButton({ className = "" }) {
                   role="status"
                   aria-hidden="true"
                 />
-                Redirecting to Stripe...
+                {t("redirecting")}
               </>
             ) : (
               <>
                 <i className="fal fa-exclamation-circle me-2" />
-                Complete Stripe setup
+                {t("completeSetup")}
               </>
             )}
           </button>
           <p className="text fz12 mt-2 mb-0">
-            Your Stripe account was created but onboarding is not complete.
-            Click above to finish setting up payouts.
+            {t("pendingNote")}
           </p>
         </div>
       )}
 
-      {/* ---------------------------------------------------------------- */}
-      {/* State 1: No Stripe account yet                                    */}
-      {/* ---------------------------------------------------------------- */}
       {!isConnected && !isPending && (
         <div>
           <button
@@ -151,22 +122,21 @@ export default function StripeConnectButton({ className = "" }) {
                   role="status"
                   aria-hidden="true"
                 />
-                Redirecting to Stripe...
+                {t("redirecting")}
               </>
             ) : (
               <>
                 <i className="fal fa-credit-card me-2" />
-                Set up payments
+                {t("setupPayments")}
               </>
             )}
           </button>
           <p className="text fz12 mt-2 mb-0">
-            Connect your bank account via Stripe to receive payouts for completed orders.
+            {t("setupNote")}
           </p>
         </div>
       )}
 
-      {/* Error message */}
       {error && (
         <div className="alert alert-danger mt-2 mb-0 py-2 px-3 fz13">
           <i className="fal fa-exclamation-triangle me-2" />

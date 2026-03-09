@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 74
+    "completed": 75
   },
   "queue": [
     {
@@ -760,7 +760,7 @@
       "file": "form-validation",
       "description": "Required, invalid email, too short, etc.",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 7,
       "phase": 7
     },

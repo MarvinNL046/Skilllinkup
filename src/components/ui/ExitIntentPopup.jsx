@@ -12,6 +12,7 @@ const DELAY_MS = 5000;
 
 export default function ExitIntentPopup() {
   const tt = useTranslations("toasts");
+  const tv = useTranslations("validation");
   const { isSignedIn } = useAuth();
   const joinWaitlist = useMutation(api.waitlist.join);
   const [visible, setVisible] = useState(false);
@@ -196,7 +197,7 @@ export default function ExitIntentPopup() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
-          placeholder="Enter your email"
+          placeholder={tv("enterEmail")}
           style={{
             width: "100%",
             boxSizing: "border-box",

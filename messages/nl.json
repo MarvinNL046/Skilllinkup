@@ -1021,6 +1021,27 @@
     "onTheList": "Je staat op de lijst! We laten je weten zodra we live gaan.",
     "somethingWentWrong": "Er ging iets mis. Probeer het opnieuw."
   },
+  "validation": {
+    "required": "Dit veld is verplicht",
+    "invalidEmail": "Vul een geldig e-mailadres in",
+    "tooShort": "Moet minimaal {min} tekens zijn",
+    "tooLong": "Mag maximaal {max} tekens zijn",
+    "enterEmail": "Vul je e-mail in",
+    "somethingWentWrong": "Er ging iets mis. Probeer het opnieuw."
+  },
+  "stripeConnect": {
+    "loading": "Laden...",
+    "paymentsConnected": "Betalingen gekoppeld",
+    "payoutsViaStripe": "Je kunt uitbetalingen ontvangen via Stripe",
+    "redirecting": "Doorsturen naar Stripe...",
+    "completeSetup": "Stripe-setup voltooien",
+    "pendingNote": "Je Stripe-account is aangemaakt maar de setup is nog niet afgerond. Klik hierboven om het instellen van uitbetalingen af te ronden.",
+    "setupPayments": "Betalingen instellen",
+    "setupNote": "Koppel je bankrekening via Stripe om uitbetalingen te ontvangen voor afgeronde opdrachten.",
+    "failedOnboarding": "Stripe-onboarding starten mislukt",
+    "noUrl": "Geen onboarding-URL ontvangen van server",
+    "somethingWentWrong": "Er ging iets mis. Probeer het opnieuw."
+  },
   "jobsHub": {
     "title": "Vacatures",
     "metaDescription": "Bekijk vacatures of plaats een vacature. Vind fulltime, parttime en freelance mogelijkheden.",
