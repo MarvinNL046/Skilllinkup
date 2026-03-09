@@ -1,13 +1,14 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 export default function PayoutForm() {
+  const t = useTranslations("payouts");
+
   function handleSave(e) {
     e.preventDefault();
-    toast.success(
-      "Payout details saved! Note: Bank payouts will be available soon. We currently support Stripe payouts."
-    );
+    toast.success(t("payoutSaved"));
   }
 
   return (
@@ -17,72 +18,72 @@ export default function PayoutForm() {
           <div className="col-sm-6">
             <div className="mb20">
               <label className="heading-color ff-heading fw500 mb-1">
-                Bank Name
+                {t("bankName")}
               </label>
               <input
                 type="text"
                 className="form-control"
-                placeholder="e.g. ING Bank"
+                placeholder={t("bankNamePlaceholder")}
               />
             </div>
           </div>
           <div className="col-sm-6">
             <div className="mb20">
               <label className="heading-color ff-heading fw500 mb-1">
-                Bank Account Number
+                {t("bankAccountNumber")}
               </label>
               <input
                 type="text"
                 className="form-control"
-                placeholder="e.g. NL91ABNA0417164300"
+                placeholder={t("bankAccountPlaceholder")}
               />
             </div>
           </div>
           <div className="col-sm-6">
             <div className="mb20">
               <label className="heading-color ff-heading fw500 mb-1">
-                Bank Account Holder Name
+                {t("accountHolderName")}
               </label>
               <input
                 type="text"
                 className="form-control"
-                placeholder="Your full name"
+                placeholder={t("accountHolderPlaceholder")}
               />
             </div>
           </div>
           <div className="col-sm-6">
             <div className="mb20">
               <label className="heading-color ff-heading fw500 mb-1">
-                Bank Routing Number
+                {t("routingNumber")}
               </label>
               <input
                 type="text"
                 className="form-control"
-                placeholder="e.g. INGBNL2A"
+                placeholder={t("routingPlaceholder")}
               />
             </div>
           </div>
           <div className="col-sm-6">
             <div className="mb20">
               <label className="heading-color ff-heading fw500 mb-1">
-                Bank IBAN
+                {t("bankIBAN")}
               </label>
               <input
                 type="text"
                 className="form-control"
-                placeholder="e.g. NL91ABNA0417164300"
+                placeholder={t("ibanPlaceholder")}
               />
             </div>
           </div>
           <div className="col-sm-6">
             <div className="mb20">
               <label className="heading-color ff-heading fw500 mb-1">
-                Swift Code
+                {t("swiftCode")}
               </label>
               <input
                 type="text"
                 className="form-control"
-                placeholder="e.g. INGBNL2A"
+                placeholder={t("swiftPlaceholder")}
               />
             </div>
           </div>
@@ -91,7 +92,7 @@ export default function PayoutForm() {
           <div className="col-md-12">
             <div className="text-start">
               <button type="submit" className="ud-btn btn-thm">
-                Save Detail
+                {t("saveDetail")}
                 <i className="fal fa-arrow-right-long" />
               </button>
             </div>

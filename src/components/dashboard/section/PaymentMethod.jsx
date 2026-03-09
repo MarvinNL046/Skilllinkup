@@ -1,23 +1,24 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import PayoutForm from "../element/PayoutForm";
 
 const method = ["Paypal", "Bank Transfer", "Payoneer"];
 
 export default function PaymentMethod() {
+  const t = useTranslations("payouts");
   const [methodSelect, setMethodSelect] = useState("Paypal");
 
-  // handler
   const methodHandler = (data) => {
     setMethodSelect(data);
   };
   return (
     <>
       <div className="bdrb1 pb15">
-        <h5 className="list-title">Payout Methods</h5>
+        <h5 className="list-title">{t("payoutMethods")}</h5>
       </div>
       <div className="widget-wrapper mt35">
-        <h6 className="list-title mb10">Select default payout method</h6>
+        <h6 className="list-title mb10">{t("selectDefaultMethod")}</h6>
         <div className="bootselect-multiselect">
           <div className="dropdown bootstrap-select">
             <button
@@ -54,7 +55,7 @@ export default function PaymentMethod() {
           </div>
         </div>
       </div>
-      <h5 className="mb15">Payout Details</h5>
+      <h5 className="mb15">{t("payoutDetails")}</h5>
       <div className="navpill-style1 payout-style">
         <ul className="nav nav-pills align-items-center justify-content-center mb30">
           {method.map((item, i) => (

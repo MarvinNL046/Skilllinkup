@@ -1,5 +1,6 @@
 "use client";
 import { useQuery } from "convex/react";
+import { useTranslations } from "next-intl";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import Link from "next/link";
@@ -8,6 +9,7 @@ import PaymentMethod from "./PaymentMethod";
 import StripeConnectButton from "@/components/ui/StripeConnectButton";
 
 export default function PayoutInfo() {
+  const t = useTranslations("payouts");
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const userId = convexUser?._id;
 
@@ -20,7 +22,6 @@ export default function PayoutInfo() {
   const notAuthenticated = isLoaded && !isAuthenticated;
   const noConvexProfile = isAuthenticated && convexUser === null;
 
-  // Calculate total earnings from completed orders
   const completedOrders = (freelancerOrders || []).filter(
     (o) => o.status === "completed"
   );
@@ -81,8 +82,8 @@ export default function PayoutInfo() {
         <div className="row align-items-center justify-content-between pb40">
           <div className="col-lg-6">
             <div className="dashboard_title_area">
-              <h2>Payouts</h2>
-              <p className="text">Manage your earnings and payout settings.</p>
+              <h2>{t("title")}</h2>
+              <p className="text">{t("pageDescription")}</p>
             </div>
           </div>
           <div className="col-lg-6">
@@ -91,7 +92,7 @@ export default function PayoutInfo() {
                 href="/my-profile"
                 className="ud-btn btn-thm default-box-shadow2"
               >
-                Manage Profile
+                {t("manageProfile")}
                 <i className="fal fa-arrow-right-long" />
               </Link>
             </div>
@@ -101,7 +102,7 @@ export default function PayoutInfo() {
         {notAuthenticated && (
           <div className="row"><div className="col-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30">
-              <p className="text text-center mb-0">Please sign in to view your payouts.</p>
+              <p className="text text-center mb-0">{t("signInPrompt")}</p>
             </div>
           </div></div>
         )}
@@ -119,17 +120,20 @@ export default function PayoutInfo() {
         {noConvexProfile && (
           <div className="row"><div className="col-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30">
-              <p className="text text-center mb-0">No account profile found. Please complete your <Link href="/onboarding" className="text-thm">onboarding</Link> first.</p>
+              <p className="text text-center mb-0">
+                {t("noProfileFound", { link: "" })}
+                <Link href="/onboarding" className="text-thm">{t("onboarding")}</Link>
+              </p>
             </div>
           </div></div>
         )}
 
-        {!notAuthenticated && !noConvexProfile && (<>{/* Earnings summary cards */}
+        {!notAuthenticated && !noConvexProfile && (<>
         <div className="row mb30">
           <div className="col-sm-6 col-lg-4">
             <div className="d-flex align-items-center justify-content-between statistics_funfact">
               <div className="details">
-                <div className="fz15">Total Earned</div>
+                <div className="fz15">{t("totalEarned")}</div>
                 <div className="title">
                   {isLoading ? (
                     <span className="text-muted fz20">...</span>
@@ -138,7 +142,7 @@ export default function PayoutInfo() {
                   )}
                 </div>
                 <div className="text fz14">
-                  <span className="text-thm">{isLoading ? "..." : completedOrders.length}</span> Completed orders
+                  <span className="text-thm">{isLoading ? "..." : completedOrders.length}</span> {t("completedOrders")}
                 </div>
               </div>
               <div className="icon text-center">
@@ -149,7 +153,7 @@ export default function PayoutInfo() {
           <div className="col-sm-6 col-lg-4">
             <div className="d-flex align-items-center justify-content-between statistics_funfact">
               <div className="details">
-                <div className="fz15">Pending Earnings</div>
+                <div className="fz15">{t("pendingEarnings")}</div>
                 <div className="title">
                   {isLoading ? (
                     <span className="text-muted fz20">...</span>
@@ -158,7 +162,7 @@ export default function PayoutInfo() {
                   )}
                 </div>
                 <div className="text fz14">
-                  <span className="text-thm">{isLoading ? "..." : pendingOrders.length}</span> Orders in progress
+                  <span className="text-thm">{isLoading ? "..." : pendingOrders.length}</span> {t("ordersInProgress")}
                 </div>
               </div>
               <div className="icon text-center">
@@ -169,7 +173,7 @@ export default function PayoutInfo() {
           <div className="col-sm-6 col-lg-4">
             <div className="d-flex align-items-center justify-content-between statistics_funfact">
               <div className="details">
-                <div className="fz15">Available for Withdrawal</div>
+                <div className="fz15">{t("availableForWithdrawal")}</div>
                 <div className="title">
                   {isLoading ? (
                     <span className="text-muted fz20">...</span>
@@ -178,7 +182,7 @@ export default function PayoutInfo() {
                   )}
                 </div>
                 <div className="text fz14">
-                  <span className="text-thm">Stripe</span> Connect required
+                  <span className="text-thm">Stripe</span> {t("stripeConnectRequired")}
                 </div>
               </div>
               <div className="icon text-center">
@@ -192,29 +196,29 @@ export default function PayoutInfo() {
           <div className="col-xl-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb60 overflow-hidden position-relative">
               <div className="d-flex justify-content-between bdrb1 pb15 mb20">
-                <h5 className="title">Order Earnings History</h5>
+                <h5 className="title">{t("earningsHistory")}</h5>
               </div>
 
               {isLoading ? (
                 <div className="text-center py-4">
                   <div className="spinner-border spinner-border-sm text-thm" role="status">
-                    <span className="visually-hidden">Loading...</span>
+                    <span className="visually-hidden">{t("loading")}</span>
                   </div>
-                  <p className="text mt-2 mb-0">Loading earnings...</p>
+                  <p className="text mt-2 mb-0">{t("loadingEarnings")}</p>
                 </div>
               ) : !freelancerOrders || freelancerOrders.length === 0 ? (
                 <div className="text-center py-4">
-                  <p className="text mb-0">No orders yet. Complete orders to see your earnings here.</p>
+                  <p className="text mb-0">{t("noOrdersYet")}</p>
                 </div>
               ) : (
                 <div className="packages_table table-responsive">
                   <table className="table-style3 table at-savesearch">
                     <thead className="t-head">
                       <tr>
-                        <th scope="col">Amount</th>
-                        <th scope="col">Order</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Payment Status</th>
+                        <th scope="col">{t("columnAmount")}</th>
+                        <th scope="col">{t("columnOrder")}</th>
+                        <th scope="col">{t("columnDate")}</th>
+                        <th scope="col">{t("columnPaymentStatus")}</th>
                       </tr>
                     </thead>
                     <tbody className="t-body">
@@ -240,10 +244,9 @@ export default function PayoutInfo() {
             </div>
             <div className="ps-widget bgc-white bdrs4 p30 mb30 position-relative">
               <div className="bdrb1 pb15 mb25">
-                <h5 className="list-title">Stripe Payout Setup</h5>
+                <h5 className="list-title">{t("stripePayoutSetup")}</h5>
                 <p className="text fz14 mb-0">
-                  Connect your bank account via Stripe Express to receive automatic payouts
-                  when orders are completed.
+                  {t("stripePayoutDescription")}
                 </p>
               </div>
               <StripeConnectButton />

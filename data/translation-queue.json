@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 59
+    "completed": 60
   },
   "queue": [
     {
@@ -610,7 +610,7 @@
       "file": "src/app/(dashboard)/payouts/page.jsx",
       "description": "Payouts/earnings page",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 6,
       "phase": 6
     },
