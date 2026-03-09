@@ -3,10 +3,12 @@ import { useState } from "react";
 import { useMutation } from "convex/react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { api } from "../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 
 export default function ContactButton({ recipientId, className = "" }) {
+  const t = useTranslations("contactButton");
   const { isSignedIn } = useUser();
   const { convexUser } = useConvexUser();
   const router = useRouter();
@@ -44,7 +46,7 @@ export default function ContactButton({ recipientId, className = "" }) {
       onClick={handleContact}
       disabled={isLoading}
     >
-      {isLoading ? "Opening chat..." : "Contact"}
+      {isLoading ? t("openingChat") : t("contact")}
       <i className="fal fa-envelope ms-2"></i>
     </button>
   );

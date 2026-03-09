@@ -964,6 +964,10 @@
     "successDescription": "We'll notify you as soon as SkillLinkup goes live.",
     "close": "Close"
   },
+  "contactButton": {
+    "contact": "Contact",
+    "openingChat": "Opening chat..."
+  },
   "jobsHub": {
     "title": "Jobs",
     "metaDescription": "Browse job openings or post vacancies. Find full-time, part-time, and freelance opportunities.",

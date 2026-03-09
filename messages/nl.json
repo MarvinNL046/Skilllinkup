@@ -964,6 +964,10 @@
     "successDescription": "We sturen je een bericht zodra SkillLinkup live gaat.",
     "close": "Sluiten"
   },
+  "contactButton": {
+    "contact": "Contact",
+    "openingChat": "Chat openen..."
+  },
   "jobsHub": {
     "title": "Vacatures",
     "metaDescription": "Bekijk vacatures of plaats een vacature. Vind fulltime, parttime en freelance mogelijkheden.",
