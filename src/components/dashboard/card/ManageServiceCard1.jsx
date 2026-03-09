@@ -2,8 +2,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Tooltip } from "react-tooltip";
+import { useTranslations } from "next-intl";
 
 export default function ManageServiceCard1({ data, removeGig }) {
+  const t = useTranslations("manageServices");
   const handleDelete = async () => {
     if (data._id && removeGig) {
       try {
@@ -44,7 +46,7 @@ export default function ManageServiceCard1({ data, removeGig }) {
           <span className="fz15 fw400">{data.category}</span>
         </td>
         <td className="align-top">
-          <span className="fz14 fw400">${(data.cost || 0).toFixed(2)}/Fixed</span>
+          <span className="fz14 fw400">${(data.cost || 0).toFixed(2)}/{t("fixed")}</span>
         </td>
         <td className="align-top">
           <div className="d-flex">
@@ -59,7 +61,7 @@ export default function ManageServiceCard1({ data, removeGig }) {
                 className="ui-tooltip"
                 place="top"
               >
-                Edit
+                {t("edit")}
               </Tooltip>
               <span className="flaticon-pencil" />
             </a>
@@ -76,7 +78,7 @@ export default function ManageServiceCard1({ data, removeGig }) {
                 place="top"
                 className="ui-tooltip"
               >
-                Delete
+                {t("delete")}
               </Tooltip>
               <span className="flaticon-delete" />
             </a>

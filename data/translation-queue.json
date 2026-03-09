@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 50
+    "completed": 51
   },
   "queue": [
     {
@@ -520,7 +520,7 @@
       "file": "src/app/(dashboard)/manage-services/page.jsx",
       "description": "Gig management: status labels, actions",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 6,
       "phase": 6
     },

@@ -1069,5 +1069,28 @@
     "deliveryDaysPlaceholder": "e.g. 3",
     "revisions": "Revisions",
     "revisionsPlaceholder": "e.g. 2"
+  },
+  "manageServices": {
+    "title": "Manage Services",
+    "pageDescription": "Offer services in multiple categories — create a separate gig for each skill.",
+    "newGig": "+ New Gig",
+    "activeServices": "Active Services",
+    "pendingServices": "Pending Services",
+    "ongoingServices": "Ongoing Services",
+    "completedServices": "Completed Services",
+    "canceledServices": "Canceled Services",
+    "noServicesYet": "No services here yet",
+    "noServicesHint": "Create a gig for each skill — one for web development, one for marketing, etc.",
+    "createFirstGig": "Create your first gig",
+    "columnTitle": "Title",
+    "columnCategory": "Category",
+    "columnTypeCost": "Type/Cost",
+    "columnActions": "Actions",
+    "addAnotherGig": "Add another gig in a different category",
+    "fixed": "Fixed",
+    "untitledService": "Untitled Service",
+    "uncategorized": "Uncategorized",
+    "edit": "Edit",
+    "delete": "Delete"
   }
 }

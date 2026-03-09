@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import DashboardNavigation from "../header/DashboardNavigation";
 import { useState } from "react";
 import Pagination1 from "@/components/section/Pagination1";
@@ -7,14 +8,6 @@ import ManageServiceCard1 from "../card/ManageServiceCard1";
 import ProposalModal1 from "../modal/ProposalModal1";
 import DeleteModal from "../modal/DeleteModal";
 import useConvexMyGigs from "@/hook/useConvexMyGigs";
-
-const tab = [
-  "Active Services",
-  "Pending Services",
-  "Ongoing Services",
-  "Completed Services",
-  "Canceled Services",
-];
 
 const STATUS_MAP = {
   0: "active",
@@ -24,30 +17,30 @@ const STATUS_MAP = {
   4: "cancelled",
 };
 
-function mapGigToCard(gig) {
+function mapGigToCard(gig, t) {
   return {
     _id: gig._id,
     id: gig._id,
     img: gig.firstImage?.url || "/images/listings/g-1.jpg",
-    title: gig.title || "Untitled Service",
-    category: gig.category?.name || "Uncategorized",
+    title: gig.title || t("untitledService"),
+    category: gig.category?.name || t("uncategorized"),
     cost: gig.minPrice || 0,
     status: gig.status,
     list: [],
   };
 }
 
-function GigTable({ gigs, removeGig }) {
+function GigTable({ gigs, removeGig, t }) {
   if (gigs.length === 0) {
     return (
       <div className="text-center py-5">
         <div style={{ fontSize: 40, marginBottom: 12 }}>🎯</div>
-        <p className="fw500 dark-color mb-1">No services here yet</p>
+        <p className="fw500 dark-color mb-1">{t("noServicesYet")}</p>
         <p className="text fz14 mb20">
-          Create a gig for each skill — one for web development, one for marketing, etc.
+          {t("noServicesHint")}
         </p>
         <Link href="/add-services" className="ud-btn btn-thm bdrs8">
-          Create your first gig <i className="fal fa-arrow-right-long" />
+          {t("createFirstGig")} <i className="fal fa-arrow-right-long" />
         </Link>
       </div>
     );
@@ -58,10 +51,10 @@ function GigTable({ gigs, removeGig }) {
       <table className="table-style3 table at-savesearch">
         <thead className="t-head">
           <tr>
-            <th scope="col">Title</th>
-            <th scope="col">Category</th>
-            <th scope="col">Type/Cost</th>
-            <th scope="col">Actions</th>
+            <th scope="col">{t("columnTitle")}</th>
+            <th scope="col">{t("columnCategory")}</th>
+            <th scope="col">{t("columnTypeCost")}</th>
+            <th scope="col">{t("columnActions")}</th>
           </tr>
         </thead>
         <tbody className="t-body">
@@ -77,7 +70,7 @@ function GigTable({ gigs, removeGig }) {
           style={{ color: "#ef2b70", textDecoration: "none" }}
         >
           <span style={{ fontSize: 18, lineHeight: 1 }}>+</span>
-          Add another gig in a different category
+          {t("addAnotherGig")}
         </Link>
       </div>
       <div className="mt20">
@@ -88,12 +81,21 @@ function GigTable({ gigs, removeGig }) {
 }
 
 export default function ManageServiceInfo() {
+  const t = useTranslations("manageServices");
   const [selectedTab, setSelectedTab] = useState(0);
   const { gigs, removeGig } = useConvexMyGigs();
 
+  const tabs = [
+    t("activeServices"),
+    t("pendingServices"),
+    t("ongoingServices"),
+    t("completedServices"),
+    t("canceledServices"),
+  ];
+
   const currentStatus = STATUS_MAP[selectedTab];
   const filteredGigs = Array.isArray(gigs)
-    ? gigs.filter((g) => g.status === currentStatus).map(mapGigToCard)
+    ? gigs.filter((g) => g.status === currentStatus).map((g) => mapGigToCard(g, t))
     : [];
 
   return (
@@ -105,9 +107,9 @@ export default function ManageServiceInfo() {
           </div>
           <div className="col-lg-9">
             <div className="dashboard_title_area">
-              <h2>Manage Services</h2>
+              <h2>{t("title")}</h2>
               <p className="text">
-                Offer services in multiple categories — create a separate gig for each skill.
+                {t("pageDescription")}
               </p>
             </div>
           </div>
@@ -117,7 +119,7 @@ export default function ManageServiceInfo() {
                 href="/add-services"
                 className="ud-btn btn-thm default-box-shadow2"
               >
-                + New Gig
+                {t("newGig")}
                 <i className="fal fa-arrow-right-long" />
               </Link>
             </div>
@@ -129,7 +131,7 @@ export default function ManageServiceInfo() {
               <div className="navtab-style1">
                 <nav>
                   <div className="nav nav-tabs mb30">
-                    {tab.map((item, i) => (
+                    {tabs.map((item, i) => (
                       <button
                         key={i}
                         className={`nav-link fw500 ps-0 ${
@@ -142,7 +144,7 @@ export default function ManageServiceInfo() {
                     ))}
                   </div>
                 </nav>
-                <GigTable gigs={filteredGigs} removeGig={removeGig} />
+                <GigTable gigs={filteredGigs} removeGig={removeGig} t={t} />
               </div>
             </div>
           </div>

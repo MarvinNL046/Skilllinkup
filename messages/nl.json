@@ -1069,5 +1069,28 @@
     "deliveryDaysPlaceholder": "bijv. 3",
     "revisions": "Revisies",
     "revisionsPlaceholder": "bijv. 2"
+  },
+  "manageServices": {
+    "title": "Diensten beheren",
+    "pageDescription": "Bied diensten aan in meerdere categorieën — maak een aparte gig voor elke skill.",
+    "newGig": "+ Nieuwe gig",
+    "activeServices": "Actieve diensten",
+    "pendingServices": "In afwachting",
+    "ongoingServices": "Lopende diensten",
+    "completedServices": "Afgeronde diensten",
+    "canceledServices": "Geannuleerde diensten",
+    "noServicesYet": "Nog geen diensten hier",
+    "noServicesHint": "Maak een gig voor elke skill — een voor webdevelopment, een voor marketing, enz.",
+    "createFirstGig": "Maak je eerste gig",
+    "columnTitle": "Titel",
+    "columnCategory": "Categorie",
+    "columnTypeCost": "Type/Prijs",
+    "columnActions": "Acties",
+    "addAnotherGig": "Nog een gig toevoegen in een andere categorie",
+    "fixed": "Vast",
+    "untitledService": "Dienst zonder titel",
+    "uncategorized": "Geen categorie",
+    "edit": "Bewerken",
+    "delete": "Verwijderen"
   }
 }
