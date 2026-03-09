@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 12
+    "completed": 13
   },
   "queue": [
     {
@@ -140,7 +140,7 @@
       "file": "src/components/hero/HomepageHero.jsx",
       "description": "Find the Right Talent, world descriptions, CTA buttons",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 2,
       "phase": 2
     },
