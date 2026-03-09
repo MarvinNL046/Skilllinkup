@@ -1002,6 +1002,25 @@
     "closed": "Gesloten",
     "revisionRequested": "Revisie aangevraagd"
   },
+  "toasts": {
+    "accountTypeUpdated": "Accounttype bijgewerkt",
+    "notificationsSaved": "Meldingsvoorkeuren opgeslagen",
+    "privacySaved": "Privacy-instellingen opgeslagen",
+    "projectDeleted": "Project verwijderd",
+    "projectUpdated": "Project bijgewerkt",
+    "projectAdded": "Project toegevoegd",
+    "deleted": "Verwijderd",
+    "updated": "Bijgewerkt",
+    "added": "Toegevoegd",
+    "failed": "Mislukt",
+    "failedToDelete": "Verwijderen mislukt",
+    "failedToSave": "Opslaan mislukt",
+    "imageUploadFailed": "Afbeelding uploaden mislukt",
+    "titleRequired": "Titel is verplicht",
+    "invalidEmail": "Vul een geldig e-mailadres in.",
+    "onTheList": "Je staat op de lijst! We laten je weten zodra we live gaan.",
+    "somethingWentWrong": "Er ging iets mis. Probeer het opnieuw."
+  },
   "jobsHub": {
     "title": "Vacatures",
     "metaDescription": "Bekijk vacatures of plaats een vacature. Vind fulltime, parttime en freelance mogelijkheden.",

@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 73
+    "completed": 74
   },
   "queue": [
     {
@@ -750,7 +750,7 @@
       "file": "toast-messages",
       "description": "Account type updated, Order approved, Something went wrong, etc.",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 7,
       "phase": 7
     },

@@ -5,11 +5,13 @@ import { useAuth } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 const SESSION_KEY = "exitIntentShown";
 const DELAY_MS = 5000;
 
 export default function ExitIntentPopup() {
+  const tt = useTranslations("toasts");
   const { isSignedIn } = useAuth();
   const joinWaitlist = useMutation(api.waitlist.join);
   const [visible, setVisible] = useState(false);
@@ -54,16 +56,16 @@ export default function ExitIntentPopup() {
   const handleSubscribe = async () => {
     const trimmed = email.trim();
     if (!trimmed || !trimmed.includes("@")) {
-      toast.error("Please enter a valid email address.");
+      toast.error(tt("invalidEmail"));
       return;
     }
     setLoading(true);
     try {
       await joinWaitlist({ email: trimmed });
-      toast.success("You're on the list! We'll notify you when we go live.");
+      toast.success(tt("onTheList"));
       setVisible(false);
     } catch (err) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error(tt("somethingWentWrong"));
     } finally {
       setLoading(false);
     }

@@ -5,6 +5,7 @@ import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 const ACCOUNT_TYPES = [
   { key: "client", label: "Client" },
@@ -24,6 +25,7 @@ const CONTACT_OPTIONS = [
 ];
 
 export default function SettingsTab() {
+  const tt = useTranslations("toasts");
   const { convexUser, isLoaded } = useConvexUser();
   const { user: clerkUser } = useUser();
 
@@ -80,9 +82,9 @@ export default function SettingsTab() {
     setSavingType(true);
     try {
       await setUserType({ userType: accountType });
-      toast.success("Account type updated");
+      toast.success(tt("accountTypeUpdated"));
     } catch (err) {
-      toast.error(err.message || "Failed");
+      toast.error(err.message || tt("failed"));
     } finally {
       setSavingType(false);
     }
@@ -92,9 +94,9 @@ export default function SettingsTab() {
     setSavingNotifs(true);
     try {
       await upsertNotifications(notifs);
-      toast.success("Notification preferences saved");
+      toast.success(tt("notificationsSaved"));
     } catch (err) {
-      toast.error(err.message || "Failed");
+      toast.error(err.message || tt("failed"));
     } finally {
       setSavingNotifs(false);
     }
@@ -109,9 +111,9 @@ export default function SettingsTab() {
         profileVisibility: visibility,
         contactPermission,
       });
-      toast.success("Privacy settings saved");
+      toast.success(tt("privacySaved"));
     } catch (err) {
-      toast.error(err.message || "Failed");
+      toast.error(err.message || tt("failed"));
     } finally {
       setSavingPrivacy(false);
     }

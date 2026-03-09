@@ -1002,6 +1002,25 @@
     "closed": "Closed",
     "revisionRequested": "Revision Requested"
   },
+  "toasts": {
+    "accountTypeUpdated": "Account type updated",
+    "notificationsSaved": "Notification preferences saved",
+    "privacySaved": "Privacy settings saved",
+    "projectDeleted": "Project deleted",
+    "projectUpdated": "Project updated",
+    "projectAdded": "Project added",
+    "deleted": "Deleted",
+    "updated": "Updated",
+    "added": "Added",
+    "failed": "Failed",
+    "failedToDelete": "Failed to delete",
+    "failedToSave": "Failed to save",
+    "imageUploadFailed": "Image upload failed",
+    "titleRequired": "Title is required",
+    "invalidEmail": "Please enter a valid email address.",
+    "onTheList": "You're on the list! We'll notify you when we go live.",
+    "somethingWentWrong": "Something went wrong. Please try again."
+  },
   "jobsHub": {
     "title": "Jobs",
     "metaDescription": "Browse job openings or post vacancies. Find full-time, part-time, and freelance opportunities.",

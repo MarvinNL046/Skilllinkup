@@ -3,8 +3,10 @@ import { useState, useEffect } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export default function PortfolioProjectModal({ project, onClose }) {
+  const tt = useTranslations("toasts");
   const createProject = useMutation(api.marketplace.portfolio.create);
   const updateProject = useMutation(api.marketplace.portfolio.update);
   const generateUploadUrl = useMutation(api.marketplace.portfolio.generateImageUploadUrl);
@@ -55,7 +57,7 @@ export default function PortfolioProjectModal({ project, onClose }) {
       );
       setImageUrls((prev) => [...prev, ...storageIds].slice(0, 5));
     } catch {
-      toast.error("Image upload failed");
+      toast.error(tt("imageUploadFailed"));
     } finally {
       setUploading(false);
     }
@@ -66,7 +68,7 @@ export default function PortfolioProjectModal({ project, onClose }) {
   const handleSave = async (e) => {
     e.preventDefault();
     if (!title.trim()) {
-      toast.error("Title is required");
+      toast.error(tt("titleRequired"));
       return;
     }
     setSaving(true);
@@ -84,7 +86,7 @@ export default function PortfolioProjectModal({ project, onClose }) {
           tags,
           externalUrl: externalUrl || undefined,
         });
-        toast.success("Project updated");
+        toast.success(tt("projectUpdated"));
       } else {
         await createProject({
           title,
@@ -93,11 +95,11 @@ export default function PortfolioProjectModal({ project, onClose }) {
           tags,
           externalUrl: externalUrl || undefined,
         });
-        toast.success("Project added");
+        toast.success(tt("projectAdded"));
       }
       onClose?.();
     } catch (err) {
-      toast.error(err.message || "Failed to save");
+      toast.error(err.message || tt("failedToSave"));
     } finally {
       setSaving(false);
     }

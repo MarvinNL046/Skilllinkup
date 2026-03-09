@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 function formatDateInput(ts) {
   if (!ts) return "";
@@ -15,6 +16,7 @@ function parseDateInput(str) {
 }
 
 export default function ExperienceModal({ type, item, onClose }) {
+  const tt = useTranslations("toasts");
   const isEdit = !!item;
 
   const addWork = useMutation(api.marketplace.experience.addWorkExperience);
@@ -98,10 +100,10 @@ export default function ExperienceModal({ type, item, onClose }) {
           url: certUrl || undefined,
         });
       }
-      toast.success(isEdit ? "Updated" : "Added");
+      toast.success(isEdit ? tt("updated") : tt("added"));
       onClose?.();
     } catch (err) {
-      toast.error(err.message || "Failed to save");
+      toast.error(err.message || tt("failedToSave"));
     } finally {
       setSaving(false);
     }

@@ -4,6 +4,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import ExperienceModal from "../modal/ExperienceModal";
 
 function SectionHeader({ title, modalType, onAdd, setModalType }) {
@@ -34,6 +35,7 @@ function formatMonthYear(ts) {
 }
 
 export default function ExperienceTab() {
+  const tt = useTranslations("toasts");
   const { convexUser, isLoaded } = useConvexUser();
   const [modalType, setModalType] = useState("work");
   const [selectedItem, setSelectedItem] = useState(null);
@@ -61,9 +63,9 @@ export default function ExperienceTab() {
       if (type === "work") await removeWork({ id });
       else if (type === "education") await removeEdu({ id });
       else await removeCert({ id });
-      toast.success("Deleted");
+      toast.success(tt("deleted"));
     } catch (err) {
-      toast.error(err.message || "Failed");
+      toast.error(err.message || tt("failed"));
     }
   };
 

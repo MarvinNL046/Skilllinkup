@@ -4,6 +4,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import PortfolioProjectModal from "../modal/PortfolioProjectModal";
 
 function ProjectCard({ project, onEdit, onDelete }) {
@@ -80,6 +81,7 @@ function ProjectCard({ project, onEdit, onDelete }) {
 }
 
 export default function PortfolioTab() {
+  const tt = useTranslations("toasts");
   const { convexUser, isLoaded } = useConvexUser();
   const [selectedProject, setSelectedProject] = useState(null);
 
@@ -93,9 +95,9 @@ export default function PortfolioTab() {
     if (!confirm("Delete this portfolio project?")) return;
     try {
       await removeProject({ projectId });
-      toast.success("Project deleted");
+      toast.success(tt("projectDeleted"));
     } catch (err) {
-      toast.error(err.message || "Failed to delete");
+      toast.error(err.message || tt("failedToDelete"));
     }
   };
 
