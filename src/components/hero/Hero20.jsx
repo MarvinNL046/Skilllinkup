@@ -1,8 +1,10 @@
 "use client";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import SearchBarWithDropdown from "@/components/ui/SearchBarWithDropdown";
 
 export default function Hero20() {
+  const t = useTranslations("online");
 
   return (
     <section className="hero-home13 at-home20 overflow-hidden">
@@ -71,17 +73,15 @@ export default function Hero20() {
           <div className="col-xl-7">
             <div className="home20-hero-content text-center">
               <h1 className="animate-up-1 mb25 title">
-                Find Freelance Services <br className="d-none d-xl-block" />
-                For Your Business
+                {t("heroTitle1")} <br className="d-none d-xl-block" />
+                {t("heroTitle2")}
               </h1>
               <p className="text mb30 animate-up-2">
-                Work with talented freelancers at competitive prices to get
-                the most <br className="d-none d-lg-block" />
-                out of your time and budget
+                {t("heroSubtitle")}
               </p>
               <div className="advance-search-tab animate-up-3">
                 <SearchBarWithDropdown
-                  placeholder="What service are you looking for?"
+                  placeholder={t("searchPlaceholder")}
                   className="w-100"
                 />
               </div>

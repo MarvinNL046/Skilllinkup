@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 22
+    "completed": 23
   },
   "queue": [
     {
@@ -240,7 +240,7 @@
       "file": "src/app/(online)/online/page.jsx",
       "description": "Online hub landing page",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 3,
       "phase": 3
     },

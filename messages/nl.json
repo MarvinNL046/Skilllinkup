@@ -563,5 +563,27 @@
     "heading": "Hoe kunnen we je helpen?",
     "subtitle": "Blader door onze helpcategorieën of zoek hieronder naar antwoorden",
     "searchPlaceholder": "Zoeken"
+  },
+  "online": {
+    "title": "Online Marktplaats",
+    "metaDescription": "Vind digitale freelancers voor remote projecten. Bekijk diensten, huur talent in en krijg werk gedaan.",
+    "heroTitle1": "Vind Freelance Diensten",
+    "heroTitle2": "Voor Jouw Bedrijf",
+    "heroSubtitle": "Werk samen met getalenteerde freelancers tegen scherpe prijzen en haal het meeste uit je tijd en budget",
+    "searchPlaceholder": "Welke dienst zoek je?"
+  },
+  "trending": {
+    "title": "Populaire Diensten",
+    "subtitle": "Meest bekeken en best verkochte diensten aller tijden",
+    "all": "Alle",
+    "developmentIt": "Development & IT",
+    "designCreative": "Design & Creative",
+    "digitalMarketing": "Digital Marketing",
+    "musicAudio": "Music & Audio",
+    "videoAnimation": "Video & Animatie",
+    "loading": "Laden...",
+    "emptyTitle": "Diensten komen eraan",
+    "emptyDescription": "Wees de eerste die diensten aanbiedt op SkillLinkup",
+    "emptyAction": "Word Verkoper"
   }
 }

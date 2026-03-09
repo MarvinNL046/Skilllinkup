@@ -563,5 +563,27 @@
     "heading": "How can we help you?",
     "subtitle": "Browse our help categories or search for answers below",
     "searchPlaceholder": "Search"
+  },
+  "online": {
+    "title": "Online Marketplace",
+    "metaDescription": "Find digital freelancers for remote projects. Browse services, hire talent, and get work done.",
+    "heroTitle1": "Find Freelance Services",
+    "heroTitle2": "For Your Business",
+    "heroSubtitle": "Work with talented freelancers at competitive prices to get the most out of your time and budget",
+    "searchPlaceholder": "What service are you looking for?"
+  },
+  "trending": {
+    "title": "Trending Services",
+    "subtitle": "Most viewed and all-time top-selling services",
+    "all": "All",
+    "developmentIt": "Development & IT",
+    "designCreative": "Design & Creative",
+    "digitalMarketing": "Digital Marketing",
+    "musicAudio": "Music & Audio",
+    "videoAnimation": "Video & Animation",
+    "loading": "Loading...",
+    "emptyTitle": "Services coming soon",
+    "emptyDescription": "Be the first to offer your services on SkillLinkup",
+    "emptyAction": "Become a Seller"
   }
 }

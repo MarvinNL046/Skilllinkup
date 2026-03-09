@@ -4,26 +4,22 @@ import PopularServiceCard1 from "../card/PopularServiceCard1";
 import PopularServiceSlideCard1 from "../card/PopularServiceSlideCard1";
 import EmptyState from "@/components/ui/EmptyState";
 import { useState } from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
-const categories = [
-  "All",
-  "Development & IT",
-  "Design & Creative",
-  "Digital Marketing",
-  "Music & Audio",
-  "Video & Animation",
+const categoryKeys = [
+  { key: "all", tag: "All" },
+  { key: "developmentIt", tag: "Development & IT" },
+  { key: "designCreative", tag: "Design & Creative" },
+  { key: "digitalMarketing", tag: "Digital Marketing" },
+  { key: "musicAudio", tag: "Music & Audio" },
+  { key: "videoAnimation", tag: "Video & Animation" },
 ];
 
 export default function TrendingService14() {
   const product1 = useConvexGigs();
-  const [getCurrentCategory, setCurrentCategory] = useState("All");
-
-  // tab handler
-  const tabHandler = (select) => {
-    setCurrentCategory(select);
-  };
+  const [currentTag, setCurrentTag] = useState("All");
+  const t = useTranslations("trending");
 
   const path = usePathname();
 
@@ -32,9 +28,9 @@ export default function TrendingService14() {
 
   const filteredGigs = gigs
     .filter((item) =>
-      getCurrentCategory === "All"
+      currentTag === "All"
         ? item
-        : item.tag === getCurrentCategory && item,
+        : item.tag === currentTag && item,
     )
     .slice(0, 4);
 
@@ -45,9 +41,9 @@ export default function TrendingService14() {
           <div className="row align-items-center wow fadeInUp">
             <div className="col-xl-3">
               <div className="main-title mb30-lg">
-                <h2 className="title">Trending Services</h2>
+                <h2 className="title">{t("title")}</h2>
                 <p className="paragraph">
-                  Most viewed and all-time top-selling services
+                  {t("subtitle")}
                 </p>
               </div>
             </div>
@@ -57,15 +53,15 @@ export default function TrendingService14() {
                   className="nav nav-pills mb20 justify-content-xl-end"
                   id="pills-tab"
                 >
-                  {categories.map((item, index) => (
+                  {categoryKeys.map((item, index) => (
                     <li key={index} className="nav-item">
                       <button
-                        onClick={() => tabHandler(item)}
+                        onClick={() => setCurrentTag(item.tag)}
                         className={`nav-link fw500 dark-color ${
-                          getCurrentCategory === item ? "active" : ""
+                          currentTag === item.tag ? "active" : ""
                         }`}
                       >
-                        {item}
+                        {t(item.key)}
                       </button>
                     </li>
                   ))}
@@ -78,15 +74,15 @@ export default function TrendingService14() {
               {isLoading ? (
                 <div className="text-center py-5">
                   <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
+                    <span className="visually-hidden">{t("loading")}</span>
                   </div>
                 </div>
               ) : filteredGigs.length === 0 ? (
                 <EmptyState
                   icon="🚀"
-                  title="Services coming soon"
-                  description="Be the first to offer your services on SkillLinkup"
-                  actionLabel="Become a Seller"
+                  title={t("emptyTitle")}
+                  description={t("emptyDescription")}
+                  actionLabel={t("emptyAction")}
                   actionHref="/become-seller"
                 />
               ) : (
