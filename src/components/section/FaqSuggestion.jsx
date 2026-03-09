@@ -1,144 +1,46 @@
-export default function FaqSuggestion() {
+import { getTranslations } from "next-intl/server";
+
+export default async function FaqSuggestion() {
+  const t = await getTranslations("faq");
+
+  const faqs = [
+    { id: "Six", q: t("start1Q"), a: t("start1A"), open: true },
+    { id: "Seven", q: t("start2Q"), a: t("start2A") },
+    { id: "Eight", q: t("start3Q"), a: t("start3A") },
+    { id: "Nine", q: t("start4Q"), a: t("start4A") },
+    { id: "Ten", q: t("start5Q"), a: t("start5A") },
+  ];
+
   return (
     <>
       <div className="ui-content">
-        <h4 className="title">Getting Started</h4>
+        <h4 className="title">{t("startTitle")}</h4>
         <div className="accordion-style1 faq-page mb-4 mb-lg-5">
           <div className="accordion" id="accordionExample2">
-            <div className="accordion-item active">
-              <h2 className="accordion-header" id="headingSix">
-                <button
-                  className="accordion-button"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#collapseSix"
-                  aria-expanded="true"
-                  aria-controls="collapseSix"
+            {faqs.map((faq) => (
+              <div key={faq.id} className={`accordion-item${faq.open ? " active" : ""}`}>
+                <h2 className="accordion-header" id={`heading${faq.id}`}>
+                  <button
+                    className={`accordion-button${!faq.open ? " collapsed" : ""}`}
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target={`#collapse${faq.id}`}
+                    aria-expanded={faq.open ? "true" : "false"}
+                    aria-controls={`collapse${faq.id}`}
+                  >
+                    {faq.q}
+                  </button>
+                </h2>
+                <div
+                  id={`collapse${faq.id}`}
+                  className={`accordion-collapse collapse${faq.open ? " show" : ""}`}
+                  aria-labelledby={`heading${faq.id}`}
+                  data-parent="#accordionExample2"
                 >
-                  How do I create an account?
-                </button>
-              </h2>
-              <div
-                id="collapseSix"
-                className="accordion-collapse collapse show"
-                aria-labelledby="headingSix"
-                data-parent="#accordionExample2"
-              >
-                <div className="accordion-body">
-                  Click &quot;Join&quot; in the top navigation and sign up with your
-                  email address or Google account. Once registered, you can
-                  browse services, hire freelancers, or set up your own seller
-                  profile to start offering your skills.
+                  <div className="accordion-body">{faq.a}</div>
                 </div>
               </div>
-            </div>
-            <div className="accordion-item">
-              <h2 className="accordion-header" id="headingSeven">
-                <button
-                  className="accordion-button collapsed"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#collapseSeven"
-                  aria-expanded="false"
-                  aria-controls="collapseSeven"
-                >
-                  How do I hire a freelancer?
-                </button>
-              </h2>
-              <div
-                id="collapseSeven"
-                className="accordion-collapse collapse"
-                aria-labelledby="headingSeven"
-                data-parent="#accordionExample2"
-              >
-                <div className="accordion-body">
-                  Browse or search for services in our marketplace. Once you
-                  find a service you like, click on it to see details, reviews,
-                  and pricing. You can then place an order directly or message
-                  the freelancer first to discuss your requirements.
-                </div>
-              </div>
-            </div>
-            <div className="accordion-item">
-              <h2 className="accordion-header" id="headingEight">
-                <button
-                  className="accordion-button collapsed"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#collapseEight"
-                  aria-expanded="false"
-                  aria-controls="collapseEight"
-                >
-                  How do I start selling on SkillLinkup?
-                </button>
-              </h2>
-              <div
-                id="collapseEight"
-                className="accordion-collapse collapse"
-                aria-labelledby="headingEight"
-                data-parent="#accordionExample2"
-              >
-                <div className="accordion-body">
-                  After creating your account, go to your dashboard and click
-                  &quot;Become a Seller.&quot; Complete your profile, set up your Stripe
-                  account for payments, and create your first gig. Your service
-                  will be visible in our marketplace once published.
-                </div>
-              </div>
-            </div>
-            <div className="accordion-item">
-              <h2 className="accordion-header" id="headingNine">
-                <button
-                  className="accordion-button collapsed"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#collapseNine"
-                  aria-expanded="false"
-                  aria-controls="collapseNine"
-                >
-                  What is the difference between online and local services?
-                </button>
-              </h2>
-              <div
-                id="collapseNine"
-                className="accordion-collapse collapse"
-                aria-labelledby="headingNine"
-                data-parent="#accordionExample2"
-              >
-                <div className="accordion-body">
-                  Online services are delivered remotely — think web development,
-                  graphic design, or content writing. Local services are
-                  performed on-site in your area — like home repairs, cleaning,
-                  or photography. You can find both types on SkillLinkup.
-                </div>
-              </div>
-            </div>
-            <div className="accordion-item">
-              <h2 className="accordion-header" id="headingTen">
-                <button
-                  className="accordion-button collapsed"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#collapseTen"
-                  aria-expanded="false"
-                  aria-controls="collapseTen"
-                >
-                  How do I contact support?
-                </button>
-              </h2>
-              <div
-                id="collapseTen"
-                className="accordion-collapse collapse"
-                aria-labelledby="headingTen"
-                data-parent="#accordionExample2"
-              >
-                <div className="accordion-body">
-                  You can reach us via the contact page or email us directly at
-                  info@skilllinkup.com. We typically respond within 24 hours on
-                  business days.
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

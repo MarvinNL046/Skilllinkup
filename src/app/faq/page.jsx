@@ -2,18 +2,23 @@ import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 import FaqPayment from "@/components/section/FaqPayment";
 import FaqSuggestion from "@/components/section/FaqSuggestion";
+import { getTranslations } from "next-intl/server";
 
-export const metadata = {
-    title: "FAQ",
-    description: "Find answers to frequently asked questions about SkillLinkup. Learn how our freelance marketplace works for both clients and freelancers.",
-    openGraph: {
-        title: "FAQ",
-        description: "Find answers to frequently asked questions about SkillLinkup. Learn how our freelance marketplace works for both clients and freelancers.",
-        url: "https://skilllinkup.com/faq",
-    },
-};
+export async function generateMetadata() {
+    const t = await getTranslations("faq");
+    return {
+        title: t("title"),
+        description: t("metaDescription"),
+        openGraph: {
+            title: t("title"),
+            description: t("metaDescription"),
+            url: "https://skilllinkup.com/faq",
+        },
+    };
+}
 
-export default function page() {
+export default async function page() {
+    const t = await getTranslations("faq");
     return (
         <>
             <Header20 />
@@ -26,11 +31,10 @@ export default function page() {
                         >
                             <div className="main-title text-center">
                                 <h2 className="title">
-                                    Frequently Asked Questions
+                                    {t("title")}
                                 </h2>
                                 <p className="paragraph mt10">
-                                    Everything you need to know about using
-                                    SkillLinkup as a buyer or seller
+                                    {t("subtitle")}
                                 </p>
                             </div>
                         </div>

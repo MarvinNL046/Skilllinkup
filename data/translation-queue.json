@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 17
+    "completed": 18
   },
   "queue": [
     {
@@ -190,7 +190,7 @@
       "file": "src/app/faq/page.jsx",
       "description": "All Q&A pairs, section titles",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 2,
       "phase": 2
     },
