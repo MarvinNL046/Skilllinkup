@@ -51,7 +51,8 @@ function DifficultyBadge({ difficulty }) {
 }
 
 function PlatformDetailContent({ slug }) {
-  const t = useTranslations("common");
+  const tc = useTranslations("common");
+  const t = useTranslations("platformDetail");
   const platform = useConvexPlatform(slug);
 
   // Loading
@@ -61,9 +62,9 @@ function PlatformDetailContent({ slug }) {
         <div className="container">
           <div className="text-center py-5">
             <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">{t("loading")}</span>
+              <span className="visually-hidden">{tc("loading")}</span>
             </div>
-            <p className="body-color mt-3">{t("loading")}</p>
+            <p className="body-color mt-3">{tc("loading")}</p>
           </div>
         </div>
       </section>
@@ -76,13 +77,12 @@ function PlatformDetailContent({ slug }) {
       <section className="pt60 pb90">
         <div className="container">
           <div className="text-center py-5">
-            <h2 className="mb10">Platform not found</h2>
+            <h2 className="mb10">{t("notFound")}</h2>
             <p className="body-color mb20">
-              The platform you&apos;re looking for doesn&apos;t exist or has
-              been removed.
+              {t("notFoundDescription")}
             </p>
             <Link href="/platforms" className="ud-btn btn-thm">
-              Browse Platforms
+              {t("browsePlatforms")}
               <i className="fal fa-arrow-right-long ms-2" />
             </Link>
           </div>
@@ -117,11 +117,11 @@ function PlatformDetailContent({ slug }) {
         {/* Breadcrumb */}
         <nav className="mb20">
           <Link href="/" className="body-color fz14">
-            Home
+            {t("home")}
           </Link>
           <span className="body-color fz14 mx-1">/</span>
           <Link href="/platforms" className="body-color fz14">
-            Platforms
+            {t("platforms")}
           </Link>
           <span className="body-color fz14 mx-1">/</span>
           <span className="dark-color fz14 fw500">{name}</span>
@@ -183,7 +183,7 @@ function PlatformDetailContent({ slug }) {
                           verticalAlign: "middle",
                         }}
                       >
-                        Featured
+                        {t("featured")}
                       </span>
                     )}
                   </h1>
@@ -216,13 +216,13 @@ function PlatformDetailContent({ slug }) {
             {/* Pros & Cons */}
             {((pros && pros.length > 0) || (cons && cons.length > 0)) && (
               <div className="bgc-white default-box-shadow1 bdrs12 p30 mb30">
-                <h4 className="mb20">Pros & Cons</h4>
+                <h4 className="mb20">{t("prosAndCons")}</h4>
                 <div className="row">
                   {pros && pros.length > 0 && (
                     <div className="col-md-6 mb20">
                       <h6 className="mb10" style={{ color: "#22c55e" }}>
                         <i className="fas fa-check-circle me-2" />
-                        Pros
+                        {t("pros")}
                       </h6>
                       <ul className="list-unstyled">
                         {pros.map((pro, i) => (
@@ -244,7 +244,7 @@ function PlatformDetailContent({ slug }) {
                     <div className="col-md-6 mb20">
                       <h6 className="mb10" style={{ color: "#ef4444" }}>
                         <i className="fas fa-times-circle me-2" />
-                        Cons
+                        {t("cons")}
                       </h6>
                       <ul className="list-unstyled">
                         {cons.map((con, i) => (
@@ -269,7 +269,7 @@ function PlatformDetailContent({ slug }) {
             {/* Features */}
             {features && features.length > 0 && (
               <div className="bgc-white default-box-shadow1 bdrs12 p30 mb30">
-                <h4 className="mb20">Features</h4>
+                <h4 className="mb20">{t("features")}</h4>
                 <div className="row">
                   {features.map((feature, i) => (
                     <div key={i} className="col-md-6 mb10">
@@ -298,7 +298,7 @@ function PlatformDetailContent({ slug }) {
                   rel="noopener noreferrer"
                   className="ud-btn btn-thm w-100 mb15"
                 >
-                  Visit {name}
+                  {t("visit", { name })}
                   <i className="fal fa-arrow-up-right-from-square ms-2" />
                 </a>
               )}
@@ -306,39 +306,39 @@ function PlatformDetailContent({ slug }) {
                 href="/platforms"
                 className="ud-btn btn-white2 w-100"
               >
-                Compare Platforms
+                {t("comparePlatforms")}
                 <i className="fal fa-arrow-right-long ms-2" />
               </Link>
             </div>
 
             {/* Quick Info Card */}
             <div className="bgc-white default-box-shadow1 bdrs12 p30 mb30">
-              <h5 className="mb20">Quick Info</h5>
+              <h5 className="mb20">{t("quickInfo")}</h5>
 
               {category && (
                 <div className="d-flex justify-content-between align-items-center mb15 pb15 bdrb1">
-                  <span className="body-color fz14">Category</span>
+                  <span className="body-color fz14">{t("category")}</span>
                   <span className="dark-color fz14 fw500">{category}</span>
                 </div>
               )}
 
               {fees && (
                 <div className="d-flex justify-content-between align-items-center mb15 pb15 bdrb1">
-                  <span className="body-color fz14">Fees</span>
+                  <span className="body-color fz14">{t("fees")}</span>
                   <span className="dark-color fz14 fw500">{fees}</span>
                 </div>
               )}
 
               {difficulty && (
                 <div className="d-flex justify-content-between align-items-center mb15 pb15 bdrb1">
-                  <span className="body-color fz14">Difficulty</span>
+                  <span className="body-color fz14">{t("difficulty")}</span>
                   <DifficultyBadge difficulty={difficulty} />
                 </div>
               )}
 
               {workType && (
                 <div className="d-flex justify-content-between align-items-center mb15 pb15 bdrb1">
-                  <span className="body-color fz14">Work Type</span>
+                  <span className="body-color fz14">{t("workType")}</span>
                   <span className="dark-color fz14 fw500 text-capitalize">
                     {workType}
                   </span>
@@ -347,10 +347,10 @@ function PlatformDetailContent({ slug }) {
 
               {countries && countries.length > 0 && (
                 <div className="d-flex justify-content-between align-items-center mb15">
-                  <span className="body-color fz14">Available In</span>
+                  <span className="body-color fz14">{t("availableIn")}</span>
                   <span className="dark-color fz14 fw500">
                     {countries.includes("Worldwide")
-                      ? "Worldwide"
+                      ? t("worldwide")
                       : countries.join(", ")}
                   </span>
                 </div>
@@ -358,7 +358,7 @@ function PlatformDetailContent({ slug }) {
 
               {rating != null && (
                 <div className="d-flex justify-content-between align-items-center">
-                  <span className="body-color fz14">Rating</span>
+                  <span className="body-color fz14">{t("rating")}</span>
                   <div className="d-flex align-items-center gap-2">
                     <StarRating rating={rating} />
                     <span className="dark-color fw500">

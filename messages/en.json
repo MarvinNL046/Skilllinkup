@@ -1688,5 +1688,31 @@
     "subheading": "Compare the best freelance platforms to find the right fit for your career.",
     "noPlatforms": "No platforms yet",
     "noPlatformsDescription": "Check back soon for freelance platform reviews"
+  },
+  "platformDetail": {
+    "platformReview": "Platform Review",
+    "reviewTitle": "{name} Review 2026: Pricing, Features & Alternatives",
+    "reviewOgTitle": "{name} Review 2026",
+    "reviewDescription": "In-depth {name} review: pricing, features, pros & cons. Find the best freelance platform for your needs.",
+    "notFound": "Platform not found",
+    "notFoundDescription": "The platform you're looking for doesn't exist or has been removed.",
+    "browsePlatforms": "Browse Platforms",
+    "home": "Home",
+    "platforms": "Platforms",
+    "featured": "Featured",
+    "prosAndCons": "Pros & Cons",
+    "pros": "Pros",
+    "cons": "Cons",
+    "features": "Features",
+    "visit": "Visit {name}",
+    "comparePlatforms": "Compare Platforms",
+    "quickInfo": "Quick Info",
+    "category": "Category",
+    "fees": "Fees",
+    "difficulty": "Difficulty",
+    "workType": "Work Type",
+    "availableIn": "Available In",
+    "worldwide": "Worldwide",
+    "rating": "Rating"
   }
 }

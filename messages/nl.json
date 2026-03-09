@@ -1688,5 +1688,31 @@
     "subheading": "Vergelijk de beste freelance platforms en vind de juiste match voor je carrière.",
     "noPlatforms": "Nog geen platforms",
     "noPlatformsDescription": "Kom binnenkort terug voor freelance platform reviews"
+  },
+  "platformDetail": {
+    "platformReview": "Platform Review",
+    "reviewTitle": "{name} Review 2026: Prijzen, Features & Alternatieven",
+    "reviewOgTitle": "{name} Review 2026",
+    "reviewDescription": "Uitgebreide {name} review: prijzen, features, voor- & nadelen. Vind het beste freelance platform voor jouw behoeften.",
+    "notFound": "Platform niet gevonden",
+    "notFoundDescription": "Het platform dat je zoekt bestaat niet of is verwijderd.",
+    "browsePlatforms": "Bekijk Platforms",
+    "home": "Home",
+    "platforms": "Platforms",
+    "featured": "Uitgelicht",
+    "prosAndCons": "Voor- & Nadelen",
+    "pros": "Voordelen",
+    "cons": "Nadelen",
+    "features": "Features",
+    "visit": "Bezoek {name}",
+    "comparePlatforms": "Vergelijk Platforms",
+    "quickInfo": "Snelle Info",
+    "category": "Categorie",
+    "fees": "Kosten",
+    "difficulty": "Moeilijkheid",
+    "workType": "Werktype",
+    "availableIn": "Beschikbaar in",
+    "worldwide": "Wereldwijd",
+    "rating": "Beoordeling"
   }
 }

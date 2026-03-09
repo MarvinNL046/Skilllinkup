@@ -1,24 +1,26 @@
 import { fetchQuery } from "convex/nextjs";
 import { api } from "../../../../convex/_generated/api";
 import PlatformPageClient from "@/components/platforms/PlatformPageClient";
+import { getTranslations } from "next-intl/server";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://skilllinkup.com";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
+  const t = await getTranslations("platformDetail");
   try {
     const platform = await fetchQuery(api.platforms.getBySlug, {
       slug,
       locale: "en",
     });
-    if (!platform) return { title: "Platform Review" };
+    if (!platform) return { title: t("platformReview") };
     return {
-      title: `${platform.name} Review 2026: Pricing, Features & Alternatives`,
+      title: t("reviewTitle", { name: platform.name }),
       description: platform.description
         ? platform.description.replace(/<[^>]+>/g, "").slice(0, 155)
-        : `In-depth ${platform.name} review: pricing, features, pros & cons. Find the best freelance platform for your needs.`,
+        : t("reviewDescription", { name: platform.name }),
       openGraph: {
-        title: `${platform.name} Review 2026`,
+        title: t("reviewOgTitle", { name: platform.name }),
         description: platform.description
           ? platform.description.replace(/<[^>]+>/g, "").slice(0, 155)
           : undefined,
@@ -27,7 +29,7 @@ export async function generateMetadata({ params }) {
       alternates: { canonical: `${BASE_URL}/platforms/${slug}` },
     };
   } catch {
-    return { title: "Platform Review" };
+    return { title: t("platformReview") };
   }
 }
 
