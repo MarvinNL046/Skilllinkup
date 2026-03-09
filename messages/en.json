@@ -819,6 +819,19 @@
     "craftsmanProfileDescription": "View craftsman profile, portfolio, reviews, and services on SkillLinkup. Hire with confidence.",
     "breadcrumbHome": "Home",
     "breadcrumbLocal": "Local",
-    "breadcrumbCraftsmen": "Craftsmen"
+    "breadcrumbCraftsmen": "Craftsmen",
+    "quoteRequestsTitle": "Quote Requests",
+    "quoteRequestsDescription": "Browse open quote requests from homeowners and businesses looking for skilled local craftsmen.",
+    "quoteRequestsHeading": "Open Quote Requests",
+    "quoteRequestsBrief": "Browse job requests from clients looking for skilled craftsmen near them.",
+    "noQuoteRequests": "No Quote Requests Yet",
+    "checkBackSoon": "Check back soon for local service requests.",
+    "quoteRequest": "Quote Request",
+    "exclusive": "Exclusive",
+    "general": "General",
+    "flexible": "Flexible",
+    "slots": "slots",
+    "full": "Full",
+    "view": "View"
   }
 }

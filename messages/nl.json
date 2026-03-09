@@ -819,6 +819,19 @@
     "craftsmanProfileDescription": "Bekijk het profiel, portfolio, reviews en diensten van deze vakman op SkillLinkup. Huur met vertrouwen in.",
     "breadcrumbHome": "Home",
     "breadcrumbLocal": "Lokaal",
-    "breadcrumbCraftsmen": "Vakmensen"
+    "breadcrumbCraftsmen": "Vakmensen",
+    "quoteRequestsTitle": "Offerteaanvragen",
+    "quoteRequestsDescription": "Bekijk openstaande offerteaanvragen van huiseigenaren en bedrijven die op zoek zijn naar vakkundige vakmensen.",
+    "quoteRequestsHeading": "Openstaande offerteaanvragen",
+    "quoteRequestsBrief": "Bekijk klusaanvragen van klanten die op zoek zijn naar vakmensen bij hen in de buurt.",
+    "noQuoteRequests": "Nog geen offerteaanvragen",
+    "checkBackSoon": "Kom binnenkort terug voor nieuwe aanvragen.",
+    "quoteRequest": "Offerteaanvraag",
+    "exclusive": "Exclusief",
+    "general": "Algemeen",
+    "flexible": "Flexibel",
+    "slots": "plekken",
+    "full": "Vol",
+    "view": "Bekijk"
   }
 }

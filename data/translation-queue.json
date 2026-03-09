@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 38
+    "completed": 39
   },
   "queue": [
     {
@@ -400,7 +400,7 @@
       "file": "src/app/(local)/local/quote-requests",
       "description": "Quote requests listing",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 4,
       "phase": 4
     },

@@ -1,9 +1,11 @@
 "use client";
 import { useQuery } from "convex/react";
+import { useTranslations } from "next-intl";
 import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
 
 export default function QuoteRequestListing() {
+  const t = useTranslations("localHub");
   const requests = useQuery(api.marketplace.quotes.listRequests, { limit: 20 });
 
   if (requests === undefined) {
@@ -21,8 +23,8 @@ export default function QuoteRequestListing() {
       <section className="pt30 pb90">
         <div className="container text-center py-5">
           <i className="flaticon-clipboard fz40 text mb20 d-block" />
-          <h4>No Quote Requests Yet</h4>
-          <p className="body-color">Check back soon for local service requests.</p>
+          <h4>{t("noQuoteRequests")}</h4>
+          <p className="body-color">{t("checkBackSoon")}</p>
         </div>
       </section>
     );
@@ -43,13 +45,13 @@ export default function QuoteRequestListing() {
                 <div className={`listing-style1 bdrs8 p20 ${isFull ? "opacity-50" : ""}`}>
                   <div className="d-flex justify-content-between align-items-start mb10">
                     <h5 className="list-title mb-1">
-                      {req.title || req.description?.slice(0, 50) || "Quote Request"}
+                      {req.title || req.description?.slice(0, 50) || t("quoteRequest")}
                     </h5>
                     {req.isExclusive && (
-                      <span className="badge bg-warning fz11">Exclusive</span>
+                      <span className="badge bg-warning fz11">{t("exclusive")}</span>
                     )}
                   </div>
-                  <p className="body-color fz13 mb10">{req.categoryName || "General"}</p>
+                  <p className="body-color fz13 mb10">{req.categoryName || t("general")}</p>
                   <p className="body-color fz14 mb15">
                     {req.description?.length > 120
                       ? req.description.slice(0, 120) + "..."
@@ -57,10 +59,10 @@ export default function QuoteRequestListing() {
                   </p>
                   <div className="d-flex justify-content-between align-items-center mb10">
                     <span className="fz13 body-color">
-                      {req.budgetIndication || "Flexible"}
+                      {req.budgetIndication || t("flexible")}
                     </span>
                     <span className="fz13 body-color">
-                      {slotsRemaining}/{maxSlots} slots
+                      {slotsRemaining}/{maxSlots} {t("slots")}
                     </span>
                   </div>
                   <div className="d-flex justify-content-between align-items-center">
@@ -74,7 +76,7 @@ export default function QuoteRequestListing() {
                       className={`ud-btn ${isFull ? "btn-white" : "btn-thm2"} bdrs4`}
                       style={{ fontSize: "0.8rem", padding: "6px 14px" }}
                     >
-                      {isFull ? "Full" : "View"} <i className="fal fa-arrow-right-long ms-1" />
+                      {isFull ? t("full") : t("view")} <i className="fal fa-arrow-right-long ms-1" />
                     </Link>
                   </div>
                 </div>
