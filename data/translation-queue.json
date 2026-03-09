@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 100
+    "completed": 101
   },
   "queue": [
     {
@@ -1021,7 +1021,8 @@
       "target": "messages-de",
       "description": "Create messages/de.json — full German translation of en.json",
       "locale": "de",
-      "status": "pending",
+      "status": "completed",
+      "note": "All 73 namespaces translated. Reusable script at scripts/translate-messages.mjs.",
       "priority": 20,
       "phase": 0
     },
