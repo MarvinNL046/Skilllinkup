@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 1
+    "completed": 2
   },
   "queue": [
     {
@@ -30,7 +30,7 @@
       "target": "middleware-integration",
       "description": "Integrate next-intl with Clerk middleware in src/middleware.ts",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 1,
       "phase": 0
     },
