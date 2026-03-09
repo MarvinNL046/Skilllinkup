@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 98
+    "completed": 99
   },
   "queue": [
     {
@@ -1000,7 +1000,8 @@
       "target": "build-test",
       "description": "npx next build passes clean",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
+      "note": "Build passes. Only 1 pre-existing React Hook warning (not i18n related).",
       "priority": 11,
       "phase": 11
     },
