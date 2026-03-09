@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 40
+    "completed": 41
   },
   "queue": [
     {
@@ -420,7 +420,7 @@
       "file": "src/components/local",
       "description": "Quote form labels, lead claim UI, credit system text",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 4,
       "phase": 4
     },

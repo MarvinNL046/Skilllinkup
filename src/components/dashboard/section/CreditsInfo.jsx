@@ -1,7 +1,9 @@
 "use client";
 import { useQuery } from "convex/react";
+import { useTranslations } from "next-intl";
 import { api } from "../../../../convex/_generated/api";
 import { useState } from "react";
+import { toast } from "sonner";
 
 // Credit packages — must match convex/marketplace/leadPricing.ts
 const CREDIT_PACKAGES = [
@@ -9,16 +11,16 @@ const CREDIT_PACKAGES = [
   { id: "popular", name: "Popular", credits: 10, priceEur: 45, priceCents: 4500 },
   { id: "pro", name: "Pro", credits: 25, priceEur: 99, priceCents: 9900 },
 ];
-import { toast } from "sonner";
 
 export default function CreditsInfo() {
+  const t = useTranslations("creditsInfo");
   const credits = useQuery(api.marketplace.leads.getMyCredits);
   const transactions = useQuery(api.marketplace.leads.getMyTransactions, { limit: 20 });
   const [purchasing, setPurchasing] = useState(null);
 
   async function handleBuy(packageId) {
     if (!credits?.userId) {
-      toast.error("You must be logged in with a freelancer profile to buy credits.");
+      toast.error(t("mustBeLoggedIn"));
       return;
     }
     setPurchasing(packageId);
@@ -32,11 +34,11 @@ export default function CreditsInfo() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        toast.error(data.error || "Failed to start checkout.");
+        toast.error(data.error || t("failedCheckout"));
         setPurchasing(null);
       }
     } catch (err) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error(t("somethingWrong"));
       setPurchasing(null);
     }
   }
@@ -58,13 +60,13 @@ export default function CreditsInfo() {
             <h2 className="title mb-1" style={{ fontSize: "3rem", color: "#22c55e" }}>
               {credits?.balance ?? 0}
             </h2>
-            <p className="body-color">Credits Available</p>
+            <p className="body-color">{t("creditsAvailable")}</p>
           </div>
         </div>
       </div>
 
       {/* Packages */}
-      <h4 className="mb20">Buy Credits</h4>
+      <h4 className="mb20">{t("buyCredits")}</h4>
       <div className="row mb40">
         {CREDIT_PACKAGES.map((pkg) => (
           <div key={pkg.id} className="col-sm-6 col-lg-4 mb20">
@@ -74,21 +76,21 @@ export default function CreditsInfo() {
                   className="position-absolute top-0 end-0 badge bg-thm m10"
                   style={{ fontSize: "0.7rem" }}
                 >
-                  Most Popular
+                  {t("mostPopular")}
                 </span>
               )}
               <h3 className="title mb-1">{pkg.credits}</h3>
-              <p className="body-color fz14 mb10">credits</p>
+              <p className="body-color fz14 mb10">{t("credits")}</p>
               <h4 className="mb5">&euro;{pkg.priceEur}</h4>
               <p className="body-color fz13 mb15">
-                &euro;{(pkg.priceEur / pkg.credits).toFixed(2)} per credit
+                &euro;{(pkg.priceEur / pkg.credits).toFixed(2)} {t("perCredit")}
               </p>
               <button
                 className="ud-btn btn-thm bdrs4 w-100"
                 onClick={() => handleBuy(pkg.id)}
                 disabled={purchasing !== null}
               >
-                {purchasing === pkg.id ? "Redirecting..." : `Buy ${pkg.credits} Credits`}
+                {purchasing === pkg.id ? t("redirecting") : t("buyNCredits", { count: pkg.credits })}
               </button>
             </div>
           </div>
@@ -96,20 +98,20 @@ export default function CreditsInfo() {
       </div>
 
       {/* Transaction History */}
-      <h4 className="mb20">Transaction History</h4>
+      <h4 className="mb20">{t("transactionHistory")}</h4>
       {transactions === undefined ? (
         <div className="spinner-border text-thm" role="status" />
       ) : transactions.length === 0 ? (
-        <p className="body-color">No transactions yet. Buy credits to get started.</p>
+        <p className="body-color">{t("noTransactions")}</p>
       ) : (
         <div className="table-responsive">
           <table className="table table-hover">
             <thead>
               <tr>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Description</th>
-                <th className="text-end">Credits</th>
+                <th>{t("date")}</th>
+                <th>{t("type")}</th>
+                <th>{t("description")}</th>
+                <th className="text-end">{t("creditsColumn")}</th>
               </tr>
             </thead>
             <tbody>

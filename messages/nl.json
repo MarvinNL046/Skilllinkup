@@ -859,5 +859,23 @@
     "insufficientCredits": "Onvoldoende credits",
     "buyCredits": "Credits kopen",
     "failedToClaim": "Lead claimen mislukt."
+  },
+  "creditsInfo": {
+    "creditsAvailable": "Credits beschikbaar",
+    "buyCredits": "Credits kopen",
+    "mostPopular": "Meest populair",
+    "credits": "credits",
+    "perCredit": "per credit",
+    "redirecting": "Doorsturen...",
+    "buyNCredits": "Koop {count} credits",
+    "transactionHistory": "Transactiegeschiedenis",
+    "noTransactions": "Nog geen transacties. Koop credits om te beginnen.",
+    "date": "Datum",
+    "type": "Type",
+    "description": "Omschrijving",
+    "creditsColumn": "Credits",
+    "mustBeLoggedIn": "Je moet ingelogd zijn met een freelancer profiel om credits te kopen.",
+    "failedCheckout": "Afrekenen starten mislukt.",
+    "somethingWrong": "Er ging iets mis. Probeer het opnieuw."
   }
 }

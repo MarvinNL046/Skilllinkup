@@ -859,5 +859,23 @@
     "insufficientCredits": "Insufficient credits",
     "buyCredits": "Buy Credits",
     "failedToClaim": "Failed to claim lead."
+  },
+  "creditsInfo": {
+    "creditsAvailable": "Credits Available",
+    "buyCredits": "Buy Credits",
+    "mostPopular": "Most Popular",
+    "credits": "credits",
+    "perCredit": "per credit",
+    "redirecting": "Redirecting...",
+    "buyNCredits": "Buy {count} Credits",
+    "transactionHistory": "Transaction History",
+    "noTransactions": "No transactions yet. Buy credits to get started.",
+    "date": "Date",
+    "type": "Type",
+    "description": "Description",
+    "creditsColumn": "Credits",
+    "mustBeLoggedIn": "You must be logged in with a freelancer profile to buy credits.",
+    "failedCheckout": "Failed to start checkout.",
+    "somethingWrong": "Something went wrong. Please try again."
   }
 }
