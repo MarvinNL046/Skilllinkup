@@ -1,21 +1,27 @@
 import { Suspense } from "react";
-import Breadcumb18 from "@/components/breadcumb/Breadcumb18";
 import Breadcumb3 from "@/components/breadcumb/Breadcumb3";
+import Breadcumb18 from "@/components/breadcumb/Breadcumb18";
 import Listing19 from "@/components/section/Listing19";
+import { getTranslations } from "next-intl/server";
 
-export const metadata = {
-  title: "Browse Projects",
-  description: "Find freelance projects and opportunities on SkillLinkup. Browse open projects across all categories and submit your proposal.",
-  openGraph: {
-    title: "Browse Projects",
-    description: "Find freelance projects and opportunities on SkillLinkup. Browse open projects across all categories and submit your proposal.",
-  },
-};
+export async function generateMetadata() {
+  const t = await getTranslations("projects");
+  return {
+    title: t("title"),
+    description: t("metaDescription"),
+    openGraph: {
+      title: t("title"),
+      description: t("metaDescription"),
+      url: "https://skilllinkup.com/online/projects",
+    },
+  };
+}
 
-export default function page() {
+export default async function page() {
+  const t = await getTranslations("projects");
   return (
     <>
-      <Breadcumb3 path={["Home", "Projects"]} />
+      <Breadcumb3 path={[t("breadcrumbHome"), t("breadcrumbProjects")]} />
       <Suspense>
         <Breadcumb18 />
         <Listing19 />

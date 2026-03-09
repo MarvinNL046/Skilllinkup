@@ -1,8 +1,10 @@
 "use client";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import listingStore from "@/store/listingStore";
 
 export default function Breadcumb18() {
+  const t = useTranslations("projects");
   const getSearch = listingStore((state) => state.getSearch);
   const setSearch = listingStore((state) => state.setSearch);
 
@@ -31,9 +33,9 @@ export default function Breadcumb18() {
           <div className="row wow fadeInUp" suppressHydrationWarning>
             <div className="col-xl-7">
               <div className="position-relative">
-                <h2 className="text-white">Projects List</h2>
+                <h2 className="text-white">{t("heroTitle")}</h2>
                 <p className="text text-white">
-                  Find projects that match your skills and start collaborating.
+                  {t("heroSubtitle")}
                 </p>
                 <div className="advance-search-tab at-home6 bgc-white bdrs12 p10 position-relative border-0">
                   <div className="row">
@@ -49,7 +51,7 @@ export default function Breadcumb18() {
                               className="form-control"
                               type="text"
                               name="search"
-                              placeholder="Search projects by keyword..."
+                              placeholder={t("searchPlaceholder")}
                               value={getSearch}
                               onChange={(e) => setSearch(e.target.value)}
                             />
@@ -63,12 +65,11 @@ export default function Breadcumb18() {
                           className="ud-btn btn-thm bdrs12 w-100 border-0"
                           type="button"
                           onClick={() => {
-                            /* Search is live via Zustand — button provides visual confirmation */
                             const el = document.querySelector(".listing_area, .pt30");
                             if (el) el.scrollIntoView({ behavior: "smooth" });
                           }}
                         >
-                          Search
+                          {t("search")}
                         </button>
                       </div>
                     </div>

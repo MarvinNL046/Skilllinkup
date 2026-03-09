@@ -639,5 +639,20 @@
     "noServicesAction": "Word Verkoper",
     "noMatchTitle": "Geen overeenkomende diensten",
     "noMatchDescription": "Probeer je filters aan te passen"
+  },
+  "projects": {
+    "title": "Bekijk Projecten",
+    "metaDescription": "Vind freelance projecten en opdrachten op SkillLinkup. Blader door openstaande projecten in alle categorieën en dien je voorstel in.",
+    "breadcrumbHome": "Home",
+    "breadcrumbProjects": "Projecten",
+    "heroTitle": "Projectenlijst",
+    "heroSubtitle": "Vind projecten die bij je skills passen en begin met samenwerken.",
+    "searchPlaceholder": "Zoek projecten op trefwoord...",
+    "search": "Zoeken",
+    "itemLabel": "projecten",
+    "loading": "Laden...",
+    "noProjectsTitle": "Nog geen projecten",
+    "noProjectsDescription": "Plaats een project en ontvang offertes van freelancers",
+    "noProjectsAction": "Plaats een Project"
   }
 }

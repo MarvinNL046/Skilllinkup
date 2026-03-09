@@ -639,5 +639,20 @@
     "noServicesAction": "Become a Seller",
     "noMatchTitle": "No matching services",
     "noMatchDescription": "Try adjusting your filters"
+  },
+  "projects": {
+    "title": "Browse Projects",
+    "metaDescription": "Find freelance projects and opportunities on SkillLinkup. Browse open projects across all categories and submit your proposal.",
+    "breadcrumbHome": "Home",
+    "breadcrumbProjects": "Projects",
+    "heroTitle": "Projects List",
+    "heroSubtitle": "Find projects that match your skills and start collaborating.",
+    "searchPlaceholder": "Search projects by keyword...",
+    "search": "Search",
+    "itemLabel": "projects",
+    "loading": "Loading...",
+    "noProjectsTitle": "No projects yet",
+    "noProjectsDescription": "Post a project and receive bids from freelancers",
+    "noProjectsAction": "Post a Project"
   }
 }

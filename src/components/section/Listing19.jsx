@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import useConvexProjects from "@/hook/useConvexProjects";
 import ListingOption2 from "../element/ListingOption2";
 import Pagination1 from "./Pagination1";
@@ -12,6 +13,7 @@ import ListingSidebar6 from "../sidebar/ListingSidebar6";
 import EmptyState from "@/components/ui/EmptyState";
 
 export default function Listing19() {
+  const t = useTranslations("projects");
   const searchParams = useSearchParams();
   const setSearch = listingStore((state) => state.setSearch);
   const getCategory = listingStore((state) => state.getCategory);
@@ -87,7 +89,7 @@ export default function Listing19() {
     return (
       <div className="text-center py-5">
         <div className="spinner-border text-thm" role="status">
-          <span className="visually-hidden">Loading...</span>
+          <span className="visually-hidden">{t("loading")}</span>
         </div>
       </div>
     );
@@ -120,13 +122,13 @@ export default function Listing19() {
               <ListingSidebar6 />
             </div>
             <div className="col-lg-9">
-              <ListingOption2 itemLength={content?.length} itemLabel="projects" />
+              <ListingOption2 itemLength={content?.length} itemLabel={t("itemLabel")} />
               {content.length === 0 ? (
                 <EmptyState
                   icon="📋"
-                  title="No projects yet"
-                  description="Post a project and receive bids from freelancers"
-                  actionLabel="Post a Project"
+                  title={t("noProjectsTitle")}
+                  description={t("noProjectsDescription")}
+                  actionLabel={t("noProjectsAction")}
                   actionHref="/create-projects"
                 />
               ) : (
