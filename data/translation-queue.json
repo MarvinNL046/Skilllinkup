@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 181
+    "completed": 189
   },
   "queue": [
     {
@@ -1868,9 +1868,10 @@
       "target": "script-setup",
       "description": "Create scripts/translate-content-nl.mjs using @iamtraction/google-translate",
       "locale": "de",
-      "status": "pending",
+      "status": "completed",
       "priority": 29,
-      "phase": 9
+      "phase": 9,
+      "note": "Translated via unified scripts/translate-db-content.mjs"
     },
     {
       "id": 1078,
@@ -1878,9 +1879,10 @@
       "target": "marketplaceCategories",
       "description": "Translate name, description for all categories",
       "locale": "de",
-      "status": "pending",
+      "status": "completed",
       "priority": 29,
-      "phase": 9
+      "phase": 9,
+      "note": "Translated via unified scripts/translate-db-content.mjs"
     },
     {
       "id": 1079,
@@ -1888,9 +1890,10 @@
       "target": "skills",
       "description": "Translate skill names",
       "locale": "de",
-      "status": "pending",
+      "status": "completed",
       "priority": 29,
-      "phase": 9
+      "phase": 9,
+      "note": "Translated via unified scripts/translate-db-content.mjs"
     },
     {
       "id": 1080,
@@ -1898,9 +1901,10 @@
       "target": "platforms",
       "description": "Translate name, description, pros, cons, features",
       "locale": "de",
-      "status": "pending",
+      "status": "completed",
       "priority": 29,
-      "phase": 9
+      "phase": 9,
+      "note": "Translated via unified scripts/translate-db-content.mjs"
     },
     {
       "id": 1081,
@@ -1908,9 +1912,10 @@
       "target": "posts",
       "description": "Translate title, excerpt, content, metaTitle, metaDescription",
       "locale": "de",
-      "status": "pending",
+      "status": "completed",
       "priority": 29,
-      "phase": 9
+      "phase": 9,
+      "note": "Translated via unified scripts/translate-db-content.mjs"
     },
     {
       "id": 1082,
@@ -1918,9 +1923,10 @@
       "target": "tools",
       "description": "Translate name, description",
       "locale": "de",
-      "status": "pending",
+      "status": "completed",
       "priority": 29,
-      "phase": 9
+      "phase": 9,
+      "note": "Translated via unified scripts/translate-db-content.mjs"
     },
     {
       "id": 1083,
@@ -1928,9 +1934,10 @@
       "target": "seoPages",
       "description": "Translate metaTitle, metaDescription, intro, sections, faqItems",
       "locale": "de",
-      "status": "pending",
+      "status": "completed",
       "priority": 29,
-      "phase": 9
+      "phase": 9,
+      "note": "Translated via unified scripts/translate-db-content.mjs"
     },
     {
       "id": 1084,
@@ -1938,9 +1945,10 @@
       "target": "resources",
       "description": "Translate metaTitle, metaDescription, intro, sections, faqItems",
       "locale": "de",
-      "status": "pending",
+      "status": "completed",
       "priority": 29,
-      "phase": 9
+      "phase": 9,
+      "note": "Translated via unified scripts/translate-db-content.mjs"
     },
     {
       "id": 1085,
