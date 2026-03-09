@@ -611,5 +611,12 @@
     "levelNew": "New",
     "jobSuccess": "Job Success",
     "jobsCompleted": "jobs completed"
+  },
+  "filters": {
+    "skills": "Skills",
+    "price": "Price",
+    "location": "Location",
+    "language": "Language",
+    "level": "Level"
   }
 }

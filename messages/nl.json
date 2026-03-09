@@ -611,5 +611,12 @@
     "levelNew": "Nieuw",
     "jobSuccess": "Slagingspercentage",
     "jobsCompleted": "opdrachten afgerond"
+  },
+  "filters": {
+    "skills": "Skills",
+    "price": "Prijs",
+    "location": "Locatie",
+    "language": "Taal",
+    "level": "Niveau"
   }
 }

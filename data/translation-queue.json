@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 26
+    "completed": 27
   },
   "queue": [
     {
@@ -280,7 +280,7 @@
       "file": "src/components/sidebar/ListingSidebar5.jsx",
       "description": "Filter labels: Category, Level, Location, Language, Budget",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 3,
       "phase": 3
     },

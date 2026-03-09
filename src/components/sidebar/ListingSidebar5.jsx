@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import ClearButton from "../button/ClearButton";
 import BudgetOption2 from "../option/BudgetOption2";
 import CategoryOption1 from "../option/CategoryOption1";
@@ -7,6 +10,8 @@ import SpeakOption1 from "../option/SpeakOption1";
 import AvailableNowOption from "../option/AvailableNowOption";
 
 export default function ListingSidebar5() {
+  const t = useTranslations("filters");
+
   return (
     <>
       <div className="list-sidebar-style1 d-none d-lg-block">
@@ -23,7 +28,7 @@ export default function ListingSidebar5() {
                   aria-expanded="false"
                   aria-controls="collapse0"
                 >
-                  Skills
+                  {t("skills")}
                 </button>
               </h4>
             </div>
@@ -47,7 +52,7 @@ export default function ListingSidebar5() {
                   aria-expanded="false"
                   aria-controls="collapse1"
                 >
-                  Price
+                  {t("price")}
                 </button>
               </h4>
             </div>
@@ -75,7 +80,7 @@ export default function ListingSidebar5() {
                   aria-expanded="false"
                   aria-controls="collapse2"
                 >
-                  Location
+                  {t("location")}
                 </button>
               </h4>
             </div>
@@ -99,7 +104,7 @@ export default function ListingSidebar5() {
                   aria-expanded="false"
                   aria-controls="collapse3"
                 >
-                  Languange
+                  {t("language")}
                 </button>
               </h4>
             </div>
@@ -123,7 +128,7 @@ export default function ListingSidebar5() {
                   aria-expanded="false"
                   aria-controls="collapse4"
                 >
-                  Level
+                  {t("level")}
                 </button>
               </h4>
             </div>
