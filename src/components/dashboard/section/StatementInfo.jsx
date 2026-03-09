@@ -1,14 +1,15 @@
 "use client";
 import { useQuery } from "convex/react";
+import { useTranslations } from "next-intl";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import DashboardNavigation from "../header/DashboardNavigation";
 
 export default function StatementInfo() {
+  const t = useTranslations("statements");
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const userId = convexUser?._id;
 
-  // Fetch orders as both client and freelancer
   const clientOrders = useQuery(
     api.marketplace.orders.getByUser,
     userId ? { userId, role: "client" } : "skip"
@@ -21,7 +22,6 @@ export default function StatementInfo() {
 
   const isLoading = isAuthenticated && (clientOrders === undefined || freelancerOrders === undefined);
 
-  // Merge orders, deduplicate by _id
   const allOrders = (() => {
     const seen = new Set();
     const merged = [...(clientOrders || []), ...(freelancerOrders || [])];
@@ -32,7 +32,6 @@ export default function StatementInfo() {
     }).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
   })();
 
-  // Calculate statement summary
   const netIncome = (freelancerOrders || [])
     .filter((o) => o.status === "completed")
     .reduce((sum, o) => sum + (o.freelancerEarnings ?? 0), 0);
@@ -66,7 +65,6 @@ export default function StatementInfo() {
     });
   }
 
-  // Determine if order is a sale (freelancer) or purchase (client)
   function getOrderType(order) {
     const isFreelancer = (freelancerOrders || []).some((o) => o._id === order._id);
     const isClient = (clientOrders || []).some((o) => o._id === order._id);
@@ -76,9 +74,9 @@ export default function StatementInfo() {
   }
 
   function getTypeLabel(type) {
-    if (type === "sale") return <span className="pending-style style4">Service Sale</span>;
-    if (type === "purchase") return <span className="pending-style style5">Service Purchased</span>;
-    return <span className="pending-style">Transaction</span>;
+    if (type === "sale") return <span className="pending-style style4">{t("serviceSale")}</span>;
+    if (type === "purchase") return <span className="pending-style style5">{t("servicePurchased")}</span>;
+    return <span className="pending-style">{t("transaction")}</span>;
   }
 
   return (
@@ -90,15 +88,15 @@ export default function StatementInfo() {
           </div>
           <div className="col-lg-12">
             <div className="dashboard_title_area">
-              <h2>Statements</h2>
-              <p className="text">Your complete transaction history.</p>
+              <h2>{t("title")}</h2>
+              <p className="text">{t("pageDescription")}</p>
             </div>
           </div>
         </div>
         {isLoaded && !isAuthenticated && (
           <div className="row"><div className="col-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30">
-              <p className="text text-center mb-0">Please sign in to view your statements.</p>
+              <p className="text text-center mb-0">{t("signInPrompt")}</p>
             </div>
           </div></div>
         )}
@@ -117,7 +115,7 @@ export default function StatementInfo() {
           <div className="row"><div className="col-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30">
               <div className="text-center py-4">
-                <p className="text mb-0">Setting up your account...</p>
+                <p className="text mb-0">{t("settingUpAccount")}</p>
               </div>
             </div>
           </div></div>
@@ -127,12 +125,12 @@ export default function StatementInfo() {
           <div className="col-sm-6 col-xxl-3">
             <div className="d-flex align-items-center justify-content-between statistics_funfact">
               <div className="details">
-                <div className="fz15">Net Income</div>
+                <div className="fz15">{t("netIncome")}</div>
                 <div className="title">
                   {isLoading ? <span className="text-muted fz20">...</span> : formatCurrency(netIncome)}
                 </div>
                 <div className="text fz14">
-                  <span className="text-thm">Freelancer</span> earnings
+                  {t("freelancerEarnings")}
                 </div>
               </div>
               <div className="icon text-center">
@@ -143,12 +141,12 @@ export default function StatementInfo() {
           <div className="col-sm-6 col-xxl-3">
             <div className="d-flex align-items-center justify-content-between statistics_funfact">
               <div className="details">
-                <div className="fz15">Total Spent</div>
+                <div className="fz15">{t("totalSpent")}</div>
                 <div className="title">
                   {isLoading ? <span className="text-muted fz20">...</span> : formatCurrency(totalSpent)}
                 </div>
                 <div className="text fz14">
-                  <span className="text-thm">As client</span> purchases
+                  {t("asClientPurchases")}
                 </div>
               </div>
               <div className="icon text-center">
@@ -159,12 +157,12 @@ export default function StatementInfo() {
           <div className="col-sm-6 col-xxl-3">
             <div className="d-flex align-items-center justify-content-between statistics_funfact">
               <div className="details">
-                <div className="fz15">Pending Clearance</div>
+                <div className="fz15">{t("pendingClearance")}</div>
                 <div className="title">
                   {isLoading ? <span className="text-muted fz20">...</span> : formatCurrency(pendingAmount)}
                 </div>
                 <div className="text fz14">
-                  <span className="text-thm">Active</span> orders
+                  {t("activeOrders")}
                 </div>
               </div>
               <div className="icon text-center">
@@ -175,12 +173,12 @@ export default function StatementInfo() {
           <div className="col-sm-6 col-xxl-3">
             <div className="d-flex align-items-center justify-content-between statistics_funfact">
               <div className="details">
-                <div className="fz15">Total Transactions</div>
+                <div className="fz15">{t("totalTransactions")}</div>
                 <div className="title">
                   {isLoading ? <span className="text-muted fz20">...</span> : allOrders.length}
                 </div>
                 <div className="text fz14">
-                  <span className="text-thm">All</span> orders combined
+                  {t("allOrdersCombined")}
                 </div>
               </div>
               <div className="icon text-center">
@@ -195,24 +193,24 @@ export default function StatementInfo() {
               {isLoading ? (
                 <div className="text-center py-4">
                   <div className="spinner-border spinner-border-sm text-thm" role="status">
-                    <span className="visually-hidden">Loading...</span>
+                    <span className="visually-hidden">{t("loading")}</span>
                   </div>
-                  <p className="text mt-2 mb-0">Loading statements...</p>
+                  <p className="text mt-2 mb-0">{t("loadingStatements")}</p>
                 </div>
               ) : allOrders.length === 0 ? (
                 <div className="text-center py-4">
-                  <p className="text mb-0">No transactions yet. Your order history will appear here.</p>
+                  <p className="text mb-0">{t("noTransactions")}</p>
                 </div>
               ) : (
                 <div className="packages_table table-responsive">
                   <table className="table-style3 table at-savesearch">
                     <thead className="t-head">
                       <tr>
-                        <th scope="col">Date</th>
-                        <th scope="col">Type</th>
-                        <th scope="col">Detail</th>
-                        <th scope="col">Amount</th>
-                        <th scope="col">Status</th>
+                        <th scope="col">{t("columnDate")}</th>
+                        <th scope="col">{t("columnType")}</th>
+                        <th scope="col">{t("columnDetail")}</th>
+                        <th scope="col">{t("columnAmount")}</th>
+                        <th scope="col">{t("columnStatus")}</th>
                       </tr>
                     </thead>
                     <tbody className="t-body">

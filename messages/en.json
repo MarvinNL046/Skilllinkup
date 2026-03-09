@@ -1417,5 +1417,31 @@
     "saveDetail": "Save Detail",
     "payoutSaved": "Payout details saved! Note: Bank payouts will be available soon. We currently support Stripe payouts.",
     "pending": "Pending"
+  },
+  "statements": {
+    "title": "Statements",
+    "pageDescription": "Your complete transaction history.",
+    "signInPrompt": "Please sign in to view your statements.",
+    "settingUpAccount": "Setting up your account...",
+    "netIncome": "Net Income",
+    "freelancerEarnings": "Freelancer earnings",
+    "totalSpent": "Total Spent",
+    "asClientPurchases": "As client purchases",
+    "pendingClearance": "Pending Clearance",
+    "activeOrders": "Active orders",
+    "totalTransactions": "Total Transactions",
+    "allOrdersCombined": "All orders combined",
+    "loading": "Loading...",
+    "loadingStatements": "Loading statements...",
+    "noTransactions": "No transactions yet. Your order history will appear here.",
+    "columnDate": "Date",
+    "columnType": "Type",
+    "columnDetail": "Detail",
+    "columnAmount": "Amount",
+    "columnStatus": "Status",
+    "serviceSale": "Service Sale",
+    "servicePurchased": "Service Purchased",
+    "transaction": "Transaction",
+    "walletTopup": "Wallet Topup"
   }
 }

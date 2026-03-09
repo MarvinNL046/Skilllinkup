@@ -1417,5 +1417,31 @@
     "saveDetail": "Opslaan",
     "payoutSaved": "Uitbetalingsgegevens opgeslagen! Let op: bankuitbetalingen zijn binnenkort beschikbaar. We ondersteunen momenteel Stripe-uitbetalingen.",
     "pending": "In afwachting"
+  },
+  "statements": {
+    "title": "Overzichten",
+    "pageDescription": "Je volledige transactiegeschiedenis.",
+    "signInPrompt": "Log in om je overzichten te bekijken.",
+    "settingUpAccount": "Je account wordt ingesteld...",
+    "netIncome": "Netto-inkomen",
+    "freelancerEarnings": "Freelancer inkomsten",
+    "totalSpent": "Totaal uitgegeven",
+    "asClientPurchases": "Als klant besteed",
+    "pendingClearance": "In afwachting van verrekening",
+    "activeOrders": "Actieve bestellingen",
+    "totalTransactions": "Totaal transacties",
+    "allOrdersCombined": "Alle bestellingen gecombineerd",
+    "loading": "Laden...",
+    "loadingStatements": "Overzichten laden...",
+    "noTransactions": "Nog geen transacties. Je bestelgeschiedenis verschijnt hier.",
+    "columnDate": "Datum",
+    "columnType": "Type",
+    "columnDetail": "Detail",
+    "columnAmount": "Bedrag",
+    "columnStatus": "Status",
+    "serviceSale": "Service verkocht",
+    "servicePurchased": "Service gekocht",
+    "transaction": "Transactie",
+    "walletTopup": "Wallet opwaardering"
   }
 }
