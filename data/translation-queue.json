@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 24
+    "completed": 25
   },
   "queue": [
     {
@@ -260,7 +260,7 @@
       "file": "src/components/card/FreelancerCard2.jsx",
       "description": "Available Now, View Profile, Location, Rate, Level, On request",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 3,
       "phase": 3
     },

@@ -592,5 +592,22 @@
     "noFreelancersTitle": "Nog geen freelancers",
     "noFreelancersDescription": "Word freelancer om te beginnen",
     "noFreelancersAction": "Word Freelancer"
+  },
+  "freelancerCard": {
+    "availableNow": "Nu Beschikbaar",
+    "new": "Nieuw",
+    "reviews": "reviews",
+    "jobs": "opdrachten",
+    "success": "succes",
+    "location": "Locatie",
+    "remote": "Remote",
+    "rate": "Tarief",
+    "onRequest": "Op aanvraag",
+    "level": "Niveau",
+    "viewProfile": "Bekijk Profiel",
+    "topRated": "Top Rated",
+    "pro": "Pro",
+    "rising": "Opkomend",
+    "levelNew": "Nieuw"
   }
 }

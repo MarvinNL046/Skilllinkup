@@ -592,5 +592,22 @@
     "noFreelancersTitle": "No freelancers yet",
     "noFreelancersDescription": "Join as a freelancer to get started",
     "noFreelancersAction": "Become a Freelancer"
+  },
+  "freelancerCard": {
+    "availableNow": "Available Now",
+    "new": "New",
+    "reviews": "reviews",
+    "jobs": "jobs",
+    "success": "success",
+    "location": "Location",
+    "remote": "Remote",
+    "rate": "Rate",
+    "onRequest": "On request",
+    "level": "Level",
+    "viewProfile": "View Profile",
+    "topRated": "Top Rated",
+    "pro": "Pro",
+    "rising": "Rising",
+    "levelNew": "New"
   }
 }

@@ -1,26 +1,31 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
-const LEVEL_CONFIG = {
-  top_rated: { label: "Top Rated", color: "#1a73e8", textColor: "#fff" },
-  pro:       { label: "Pro",       color: "#ef2b70", textColor: "#fff" },
-  rising:    { label: "Rising",    color: "#22c55e", textColor: "#fff" },
-  new:       { label: "New",       color: "#9ca3af", textColor: "#fff" },
+const LEVEL_KEYS = {
+  top_rated: { key: "topRated", color: "#1a73e8", textColor: "#fff" },
+  pro:       { key: "pro",      color: "#ef2b70", textColor: "#fff" },
+  rising:    { key: "rising",   color: "#22c55e", textColor: "#fff" },
+  new:       { key: "levelNew", color: "#9ca3af", textColor: "#fff" },
 };
 
 export function LevelBadge({ level }) {
-  const config = LEVEL_CONFIG[level] || LEVEL_CONFIG.new;
+  const lt = useTranslations("freelancerCard");
+  const config = LEVEL_KEYS[level] || LEVEL_KEYS.new;
   return (
     <span
       className="badge fz11 fw500 px-2 py-1"
       style={{ backgroundColor: config.color, color: config.textColor, borderRadius: 12 }}
     >
-      {config.label}
+      {lt(config.key)}
     </span>
   );
 }
 
 export default function FreelancerCard2({ data }) {
+  const t = useTranslations("freelancerCard");
   const tags = data.tags || [];
   const visibleTags = tags.slice(0, 3);
   const overflow = tags.length - 3;
@@ -65,7 +70,7 @@ export default function FreelancerCard2({ data }) {
                 fontWeight: 500,
               }}
             >
-              Available Now
+              {t("availableNow")}
             </span>
           )}
           {data.title && (
@@ -86,8 +91,8 @@ export default function FreelancerCard2({ data }) {
           <div className="review">
             <p>
               <i className="fas fa-star fz10 review-color pr10" />
-              <span className="dark-color fw500">{data.rating || "New"}</span>
-              {data.reviews > 0 && ` (${data.reviews} reviews)`}
+              <span className="dark-color fw500">{data.rating || t("new")}</span>
+              {data.reviews > 0 && ` (${data.reviews} ${t("reviews")})`}
             </p>
           </div>
           {visibleTags.length > 0 && (
@@ -107,25 +112,25 @@ export default function FreelancerCard2({ data }) {
           )}
           {(data.totalOrders > 0 || data.completionRate) && (
             <p className="fz13 text-muted mb-0 mt5">
-              {data.totalOrders > 0 && <>{data.totalOrders} jobs</>}
+              {data.totalOrders > 0 && <>{data.totalOrders} {t("jobs")}</>}
               {data.totalOrders > 0 && data.completionRate && " · "}
-              {data.completionRate && <>{data.completionRate}% success</>}
+              {data.completionRate && <>{data.completionRate}% {t("success")}</>}
             </p>
           )}
           <hr className="opacity-100 mt15 mb15" />
           <div className="fl-meta d-flex align-items-center justify-content-between">
             <a className="meta fw500 text-start">
-              Location
+              {t("location")}
               <br />
-              <span className="fz14 fw400">{data.location || "Remote"}</span>
+              <span className="fz14 fw400">{data.location || t("remote")}</span>
             </a>
             <a className="meta fw500 text-start">
-              Rate
+              {t("rate")}
               <br />
-              <span className="fz14 fw400">{data.price ? `€${data.price}/hr` : "On request"}</span>
+              <span className="fz14 fw400">{data.price ? `€${data.price}/hr` : t("onRequest")}</span>
             </a>
             <a className="meta fw500 text-start">
-              Level
+              {t("level")}
               <br />
               <LevelBadge level={data.level} />
             </a>
@@ -135,7 +140,7 @@ export default function FreelancerCard2({ data }) {
               href={`/online/freelancer/${data.slug || data._id || data.id}`}
               className="ud-btn btn-light-thm"
             >
-              View Profile
+              {t("viewProfile")}
               <i className="fal fa-arrow-right-long" />
             </Link>
           </div>
