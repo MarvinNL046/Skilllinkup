@@ -556,5 +556,12 @@
     "section9Text": "SkillLinkup provides the platform \u201cas is\u201d without warranties of any kind. We are not liable for any indirect, incidental, or consequential damages arising from your use of the platform. Our total liability is limited to the fees paid to SkillLinkup in the twelve months preceding the claim.",
     "section10Title": "10. Contact",
     "section10Text": "If you have questions about these Terms of Service, please contact us at"
+  },
+  "help": {
+    "title": "Help & Support",
+    "metaDescription": "Get help with SkillLinkup. Browse our support articles, guides, and resources for freelancers and clients.",
+    "heading": "How can we help you?",
+    "subtitle": "Browse our help categories or search for answers below",
+    "searchPlaceholder": "Search"
   }
 }

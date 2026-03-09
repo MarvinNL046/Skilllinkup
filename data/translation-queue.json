@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 21
+    "completed": 22
   },
   "queue": [
     {
@@ -230,7 +230,7 @@
       "file": "src/app/help/page.jsx",
       "description": "Help page content",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 2,
       "phase": 2
     },
