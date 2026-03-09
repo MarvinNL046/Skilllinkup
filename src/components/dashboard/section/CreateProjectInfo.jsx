@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import DashboardNavigation from "../header/DashboardNavigation";
 import useConvexUser from "@/hook/useConvexUser";
 import { flattenLeafMarketplaceCategories } from "@/lib/marketplaceCategories";
@@ -25,6 +26,7 @@ function worldToServiceType(world) {
 }
 
 export default function CreateProjectInfo() {
+  const t = useTranslations("createProject");
   const router = useRouter();
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const createProject = useMutation(api.marketplace.projects.create);
@@ -65,17 +67,17 @@ export default function CreateProjectInfo() {
     e.preventDefault();
 
     if (!isAuthenticated) {
-      setStatus({ loading: false, error: "You must be logged in to create a project.", success: false });
+      setStatus({ loading: false, error: t("errorMustBeLoggedIn"), success: false });
       return;
     }
 
     if (!form.title.trim()) {
-      setStatus({ loading: false, error: "Project title is required.", success: false });
+      setStatus({ loading: false, error: t("errorTitleRequired"), success: false });
       return;
     }
 
     if (!form.description.trim()) {
-      setStatus({ loading: false, error: "Project description is required.", success: false });
+      setStatus({ loading: false, error: t("errorDescriptionRequired"), success: false });
       return;
     }
 
@@ -84,17 +86,17 @@ export default function CreateProjectInfo() {
     const parsedMax = form.budgetMax ? parseFloat(form.budgetMax) : NaN;
 
     if (Number.isFinite(parsedMin) && parsedMin < 0) {
-      setStatus({ loading: false, error: "Budget minimum cannot be negative.", success: false });
+      setStatus({ loading: false, error: t("errorBudgetMinNegative"), success: false });
       return;
     }
 
     if (Number.isFinite(parsedMax) && parsedMax < 0) {
-      setStatus({ loading: false, error: "Budget maximum cannot be negative.", success: false });
+      setStatus({ loading: false, error: t("errorBudgetMaxNegative"), success: false });
       return;
     }
 
     if (Number.isFinite(parsedMin) && Number.isFinite(parsedMax) && parsedMin > parsedMax) {
-      setStatus({ loading: false, error: "Budget minimum cannot be higher than budget maximum.", success: false });
+      setStatus({ loading: false, error: t("errorBudgetMinMax"), success: false });
       return;
     }
 
@@ -104,7 +106,7 @@ export default function CreateProjectInfo() {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       if (deadlineDate < today) {
-        setStatus({ loading: false, error: "Deadline must be a future date.", success: false });
+        setStatus({ loading: false, error: t("errorDeadlineFuture"), success: false });
         return;
       }
     }
@@ -137,7 +139,7 @@ export default function CreateProjectInfo() {
       });
 
       setStatus({ loading: false, error: null, success: true });
-      toast.success("Project created successfully!");
+      toast.success(t("projectCreated"));
 
       // Reset form
       setForm({
@@ -156,7 +158,7 @@ export default function CreateProjectInfo() {
         router.push("/manage-projects");
       }, 1500);
     } catch (err) {
-      const message = err.message || "Failed to create project.";
+      const message = err.message || t("errorFailed");
       setStatus({ loading: false, error: message, success: false });
       toast.error(message);
     }
@@ -192,7 +194,7 @@ export default function CreateProjectInfo() {
         <div className="row">
           <div className="col-xl-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30 text-center">
-              <p className="text-muted mb0">Setting up your account...</p>
+              <p className="text-muted mb0">{t("settingUpAccount")}</p>
             </div>
           </div>
         </div>
@@ -211,13 +213,13 @@ export default function CreateProjectInfo() {
         <div className="row">
           <div className="col-xl-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30 text-center">
-              <h4 className="mb15">Sign in required</h4>
-              <p className="text-muted mb20">You need to be logged in to create a project.</p>
+              <h4 className="mb15">{t("signInRequired")}</h4>
+              <p className="text-muted mb20">{t("signInRequiredDesc")}</p>
               <button
                 onClick={() => router.push("/login")}
                 className="ud-btn btn-thm"
               >
-                Sign In
+                {t("signIn")}
                 <i className="fal fa-arrow-right-long" />
               </button>
             </div>
@@ -236,8 +238,8 @@ export default function CreateProjectInfo() {
           </div>
           <div className="col-lg-9">
             <div className="dashboard_title_area">
-              <h2>Create Project</h2>
-              <p className="text">Describe what you need and set your budget. Freelancers will send proposals — like posting on Upwork.</p>
+              <h2>{t("title")}</h2>
+              <p className="text">{t("pageDescription")}</p>
             </div>
           </div>
           <div className="col-lg-3">
@@ -248,7 +250,7 @@ export default function CreateProjectInfo() {
                 className="ud-btn btn-thm default-box-shadow2"
                 disabled={status.loading || !isLoaded}
               >
-                {status.loading ? "Saving..." : "Save & Publish"}
+                {status.loading ? t("saving") : t("saveAndPublish")}
                 <i className="fal fa-arrow-right-long" />
               </button>
             </div>
@@ -260,11 +262,11 @@ export default function CreateProjectInfo() {
             <div className="d-flex align-items-center gap-2 px-3 py-2 bdrs4" style={{ background: "#f0f9ff", border: "1px solid #bae6fd" }}>
               <i className="flaticon-document fz16" style={{ color: "#0284c7" }} />
               <span className="fz14" style={{ color: "#0369a1" }}>
-                Want to offer your own services instead?{" "}
+                {t("offerServicesInstead")}{" "}
                 <Link href="/add-services" className="fw500" style={{ color: "#0284c7", textDecoration: "underline" }}>
-                  Add a Service
+                  {t("addAService")}
                 </Link>{" "}
-                to create a fixed-price listing.
+                {t("addAServiceHint")}
               </span>
             </div>
           </div>
@@ -274,7 +276,7 @@ export default function CreateProjectInfo() {
           <div className="col-xl-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
               <div className="bdrb1 pb15 mb25">
-                <h5 className="list-title">Project Details</h5>
+                <h5 className="list-title">{t("projectDetails")}</h5>
               </div>
 
               {status.error && (
@@ -284,7 +286,7 @@ export default function CreateProjectInfo() {
               )}
               {status.success && (
                 <div className="alert alert-success mb20" role="alert">
-                  Project created successfully! Redirecting...
+                  {t("successMessage")}
                 </div>
               )}
 
@@ -299,13 +301,13 @@ export default function CreateProjectInfo() {
                     <div className="col-sm-12">
                       <div className="mb20">
                         <label className="heading-color ff-heading fw500 mb10">
-                          Project Title <span className="text-danger">*</span>
+                          {t("projectTitle")} <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
                           name="title"
                           className="form-control"
-                          placeholder="e.g. Build a React dashboard"
+                          placeholder={t("projectTitlePlaceholder")}
                           value={form.title}
                           onChange={handleChange}
                           required
@@ -317,7 +319,7 @@ export default function CreateProjectInfo() {
                     <div className="col-sm-12">
                       <div className="mb20">
                         <label className="heading-color ff-heading fw500 mb10">
-                          Category
+                          {t("category")}
                         </label>
                         <select
                           name="categoryId"
@@ -325,9 +327,9 @@ export default function CreateProjectInfo() {
                           value={form.categoryId}
                           onChange={handleChange}
                         >
-                          <option value="">-- Select a category --</option>
+                          <option value="">{t("selectCategory")}</option>
                           {categories === undefined && (
-                            <option disabled>Loading categories...</option>
+                            <option disabled>{t("loadingCategories")}</option>
                           )}
                           {leafCategories.map((category) => (
                             <option key={category._id} value={category._id}>
@@ -341,13 +343,13 @@ export default function CreateProjectInfo() {
                     <div className="col-sm-6">
                       <div className="mb20">
                         <label className="heading-color ff-heading fw500 mb10">
-                          Budget Min (EUR)
+                          {t("budgetMin")}
                         </label>
                         <input
                           type="number"
                           name="budgetMin"
                           className="form-control"
-                          placeholder="e.g. 500"
+                          placeholder={t("budgetMinPlaceholder")}
                           min="0"
                           value={form.budgetMin}
                           onChange={handleChange}
@@ -359,13 +361,13 @@ export default function CreateProjectInfo() {
                     <div className="col-sm-6">
                       <div className="mb20">
                         <label className="heading-color ff-heading fw500 mb10">
-                          Budget Max (EUR)
+                          {t("budgetMax")}
                         </label>
                         <input
                           type="number"
                           name="budgetMax"
                           className="form-control"
-                          placeholder="e.g. 2000"
+                          placeholder={t("budgetMaxPlaceholder")}
                           min="0"
                           value={form.budgetMax}
                           onChange={handleChange}
@@ -377,7 +379,7 @@ export default function CreateProjectInfo() {
                     <div className="col-sm-6">
                       <div className="mb20">
                         <label className="heading-color ff-heading fw500 mb10">
-                          Work Type
+                          {t("workType")}
                         </label>
                         <select
                           name="workType"
@@ -385,9 +387,9 @@ export default function CreateProjectInfo() {
                           value={form.workType}
                           onChange={handleChange}
                         >
-                          <option value="remote">Remote</option>
-                          <option value="local">On-site</option>
-                          <option value="hybrid">Hybrid</option>
+                          <option value="remote">{t("remote")}</option>
+                          <option value="local">{t("onSite")}</option>
+                          <option value="hybrid">{t("hybrid")}</option>
                         </select>
                       </div>
                     </div>
@@ -395,7 +397,7 @@ export default function CreateProjectInfo() {
                     <div className="col-sm-6">
                       <div className="mb20">
                         <label className="heading-color ff-heading fw500 mb10">
-                          Deadline
+                          {t("deadline")}
                         </label>
                         <input
                           type="date"
@@ -412,13 +414,13 @@ export default function CreateProjectInfo() {
                     <div className="col-sm-12">
                       <div className="mb20">
                         <label className="heading-color ff-heading fw500 mb10">
-                          Required Skills (comma separated)
+                          {t("requiredSkills")}
                         </label>
                         <input
                           type="text"
                           name="requiredSkills"
                           className="form-control"
-                          placeholder="e.g. React, TypeScript, Node.js"
+                          placeholder={t("requiredSkillsPlaceholder")}
                           value={form.requiredSkills}
                           onChange={handleChange}
                           data-testid="create-project-skills"
@@ -429,14 +431,14 @@ export default function CreateProjectInfo() {
                     <div className="col-md-12">
                       <div className="mb20">
                         <label className="heading-color ff-heading fw500 mb10">
-                          Project Description <span className="text-danger">*</span>
+                          {t("projectDescription")} <span className="text-danger">*</span>
                         </label>
                         <textarea
                           name="description"
                           cols={30}
                           rows={6}
                           className="form-control"
-                          placeholder="Describe your project in detail..."
+                          placeholder={t("projectDescriptionPlaceholder")}
                           value={form.description}
                           onChange={handleChange}
                           required
@@ -456,11 +458,11 @@ export default function CreateProjectInfo() {
                           {status.loading ? (
                             <>
                               <span className="spinner-border spinner-border-sm me-2" role="status" />
-                              Saving...
+                              {t("saving")}
                             </>
                           ) : (
                             <>
-                              Save & Publish
+                              {t("saveAndPublish")}
                               <i className="fal fa-arrow-right-long" />
                             </>
                           )}

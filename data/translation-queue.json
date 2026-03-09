@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 51
+    "completed": 52
   },
   "queue": [
     {
@@ -530,7 +530,7 @@
       "file": "src/app/(dashboard)/create-projects/page.jsx",
       "description": "Project creation form",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 6,
       "phase": 6
     },
