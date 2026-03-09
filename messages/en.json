@@ -891,6 +891,28 @@
     "clientContact": "Client Contact",
     "credits": "credits"
   },
+  "rewards": {
+    "title": "My Rewards",
+    "yourRewards": "Your Rewards",
+    "member": "Member",
+    "creditBalance": "Credit Balance",
+    "yearlySpend": "Yearly Spend",
+    "cashbackRate": "Cashback Rate",
+    "perCompletedOrder": "per completed order",
+    "progressTo": "Progress to {tier} (€{amount})",
+    "spent": "€{amount} spent",
+    "goldMaxCashback": "Gold member — maximum cashback!",
+    "tierOverview": "Tier Overview",
+    "creditHistory": "Credit History",
+    "noTransactions": "No transactions yet.",
+    "noTransactionsHint": "Complete your first order to earn credits!",
+    "columnDate": "Date",
+    "columnDescription": "Description",
+    "columnAmount": "Amount",
+    "tierBronze": "Bronze",
+    "tierSilver": "Silver",
+    "tierGold": "Gold"
+  },
   "jobsHub": {
     "title": "Jobs",
     "metaDescription": "Browse job openings or post vacancies. Find full-time, part-time, and freelance opportunities.",

@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 65
+    "completed": 66
   },
   "queue": [
     {
@@ -670,7 +670,7 @@
       "file": "src/app/(dashboard)/dashboard/rewards/page.jsx",
       "description": "Rewards: tiers, cashback",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 6,
       "phase": 6
     },

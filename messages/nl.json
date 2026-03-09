@@ -891,6 +891,28 @@
     "clientContact": "Klantcontact",
     "credits": "credits"
   },
+  "rewards": {
+    "title": "Mijn Beloningen",
+    "yourRewards": "Jouw beloningen",
+    "member": "Lid",
+    "creditBalance": "Creditsaldo",
+    "yearlySpend": "Jaarlijkse besteding",
+    "cashbackRate": "Cashbackpercentage",
+    "perCompletedOrder": "per afgeronde opdracht",
+    "progressTo": "Voortgang naar {tier} (€{amount})",
+    "spent": "€{amount} besteed",
+    "goldMaxCashback": "Gold lid — maximale cashback!",
+    "tierOverview": "Tier overzicht",
+    "creditHistory": "Creditgeschiedenis",
+    "noTransactions": "Nog geen transacties.",
+    "noTransactionsHint": "Rond je eerste opdracht af om credits te verdienen!",
+    "columnDate": "Datum",
+    "columnDescription": "Omschrijving",
+    "columnAmount": "Bedrag",
+    "tierBronze": "Bronze",
+    "tierSilver": "Silver",
+    "tierGold": "Gold"
+  },
   "jobsHub": {
     "title": "Vacatures",
     "metaDescription": "Bekijk vacatures of plaats een vacature. Vind fulltime, parttime en freelance mogelijkheden.",
