@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 78
+    "completed": 79
   },
   "queue": [
     {
@@ -800,7 +800,7 @@
       "file": "src/app/(blog)/post/[id]/page.jsx",
       "description": "Blog post: share buttons, author bio, related posts",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 8,
       "phase": 8
     },

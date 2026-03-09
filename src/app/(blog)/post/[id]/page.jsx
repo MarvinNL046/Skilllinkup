@@ -13,7 +13,8 @@ const FALLBACK_IMG = "/images/blog/default-blog-feature.jpg";
 const FALLBACK_AVATAR = "/images/blog/default-avatar.png";
 
 function PostContent({ slug }) {
-  const t = useTranslations("common");
+  const tc = useTranslations("common");
+  const t = useTranslations("blogPost");
   const post = useConvexPost(slug);
   const [featSrc, setFeatSrc] = useState(FALLBACK_IMG);
   const [avatarSrc, setAvatarSrc] = useState(FALLBACK_AVATAR);
@@ -36,9 +37,9 @@ function PostContent({ slug }) {
         <div className="container">
           <div className="text-center py-5">
             <div className="spinner-border text-thm" role="status">
-              <span className="visually-hidden">{t("loading")}</span>
+              <span className="visually-hidden">{tc("loading")}</span>
             </div>
-            <p className="body-color mt-3">{t("loading")}</p>
+            <p className="body-color mt-3">{tc("loading")}</p>
           </div>
         </div>
       </section>
@@ -52,9 +53,9 @@ function PostContent({ slug }) {
         <div className="container">
           <EmptyState
             icon="📝"
-            title="Post not found"
-            description="This blog post doesn't exist or has been removed."
-            actionLabel="Back to Blog"
+            title={t("postNotFound")}
+            description={t("postNotFoundDescription")}
+            actionLabel={t("backToBlog")}
             actionHref="/blog"
           />
         </div>
@@ -68,19 +69,19 @@ function PostContent({ slug }) {
         month: "long",
         day: "numeric",
       })
-    : "Recent";
+    : t("recent");
 
   const authorName = post.author?.name || "SkillLinkup";
-  const categoryName = post.category?.name || "General";
+  const categoryName = post.category?.name || t("general");
 
   return (
     <section className="our-blog pt40 pb90">
       <div className="container">
         {/* Breadcrumb */}
         <nav className="mb20">
-          <Link href="/" className="body-color fz14">Home</Link>
+          <Link href="/" className="body-color fz14">{t("home")}</Link>
           <span className="body-color fz14 mx-1">/</span>
-          <Link href="/blog" className="body-color fz14">Blog</Link>
+          <Link href="/blog" className="body-color fz14">{t("blog")}</Link>
           <span className="body-color fz14 mx-1">/</span>
           <span className="dark-color fz14 fw500">{post.title}</span>
         </nav>
@@ -106,7 +107,7 @@ function PostContent({ slug }) {
                 <span className="ml15 body-light-color">{date}</span>
                 {post.readTime && (
                   <span className="ml15 body-light-color">
-                    {post.readTime} min read
+                    {t("minRead", { minutes: post.readTime })}
                   </span>
                 )}
               </div>
@@ -144,7 +145,7 @@ function PostContent({ slug }) {
             {/* Tags */}
             {post.tags && post.tags.length > 0 && (
               <div className="bdrt1 mt40 pt30 d-flex align-items-center flex-wrap gap-2">
-                <span className="dark-color fw500 me-2">Tags:</span>
+                <span className="dark-color fw500 me-2">{t("tags")}</span>
                 {post.tags.map((tag, i) => (
                   <span
                     key={i}
@@ -167,7 +168,7 @@ function PostContent({ slug }) {
             <div className="mt40 pt20 bdrt1">
               <Link href="/blog" className="ud-btn btn-light-thm">
                 <i className="fal fa-arrow-left-long me-2" />
-                Back to Blog
+                {t("backToBlog")}
               </Link>
             </div>
           </div>

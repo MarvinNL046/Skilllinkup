@@ -1669,5 +1669,16 @@
     "browseServices": "Bekijk Services",
     "becomeSeller": "Word Verkoper",
     "contactUs": "Neem Contact Op"
+  },
+  "blogPost": {
+    "postNotFound": "Bericht niet gevonden",
+    "postNotFoundDescription": "Dit blogbericht bestaat niet of is verwijderd.",
+    "backToBlog": "Terug naar Blog",
+    "tags": "Tags:",
+    "minRead": "{minutes} min leestijd",
+    "recent": "Recent",
+    "general": "Algemeen",
+    "home": "Home",
+    "blog": "Blog"
   }
 }
