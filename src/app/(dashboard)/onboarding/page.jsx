@@ -6,11 +6,12 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 const WORLDS = [
-  { id: "online",  icon: "flaticon-web",       title: "Online",  desc: "Digital services — design, development, marketing" },
-  { id: "local",   icon: "flaticon-place",      title: "Local",   desc: "Local services — find or offer services in your area" },
-  { id: "jobs",    icon: "flaticon-briefcase",  title: "Jobs",    desc: "Job market — browse or post opportunities" },
+  { id: "online",  icon: "flaticon-web",       title: "Online",  descKey: "worldOnlineDesc" },
+  { id: "local",   icon: "flaticon-place",      title: "Local",   descKey: "worldLocalDesc" },
+  { id: "jobs",    icon: "flaticon-briefcase",  title: "Jobs",    descKey: "worldJobsDesc" },
 ];
 
 const SKILLS = [
@@ -29,12 +30,12 @@ const CLIENT_INTERESTS = [
   "SEO & Growth","E-commerce","AI & Automation",
 ];
 
-function ProgressBar({ step, totalSteps }) {
+function ProgressBar({ step, totalSteps, t }) {
   const pct = Math.round((step / totalSteps) * 100);
   return (
     <div className="mb-4">
       <div className="d-flex justify-content-between align-items-center mb-2">
-        <span className="fz13 text-muted">Step {step} of {totalSteps}</span>
+        <span className="fz13 text-muted">{t("stepOf", { step, total: totalSteps })}</span>
         <span className="fz13 text-muted">{pct}%</span>
       </div>
       <div style={{ height: 4, background: "#e5e7eb", borderRadius: 2 }}>
@@ -61,6 +62,7 @@ function StepWrapper({ children, direction }) {
 }
 
 function OnboardingContent() {
+  const t = useTranslations("onboarding");
   const router = useRouter();
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const setUserType = useMutation(api.users.setUserType);
@@ -145,7 +147,7 @@ function OnboardingContent() {
       goTo(3);
     } catch (err) {
       console.error(err);
-      setErrorMessage("Failed to save your selection. Please try again.");
+      setErrorMessage(t("failedToSave"));
     } finally {
       setSaving(false);
     }
@@ -159,7 +161,7 @@ function OnboardingContent() {
         await updateProfile({ profileId, skills: selectedSkills });
       } catch (err) {
         console.error("Skills save failed:", err);
-        setErrorMessage("Something went wrong. Please try again.");
+        setErrorMessage(t("somethingWentWrong"));
       }
     }
     if (role === "client") {
@@ -167,7 +169,7 @@ function OnboardingContent() {
         try { await updateBio({ bio: selectedSkills.join(", ") }); }
         catch (err) {
           console.error(err);
-          setErrorMessage("Something went wrong. Please try again.");
+          setErrorMessage(t("somethingWentWrong"));
         }
       }
       router.push(`/${selectedWorld ?? "online"}`);
@@ -220,7 +222,7 @@ function OnboardingContent() {
     return (
       <div className="d-flex justify-content-center align-items-center vh-100">
         <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
+          <span className="visually-hidden">{t("loading")}</span>
         </div>
       </div>
     );
@@ -231,7 +233,7 @@ function OnboardingContent() {
     return (
       <div className="d-flex justify-content-center align-items-center vh-100">
         <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
+          <span className="visually-hidden">{t("loading")}</span>
         </div>
       </div>
     );
@@ -255,19 +257,19 @@ function OnboardingContent() {
           <div className="row justify-content-center">
             <div className="col-lg-7 col-xl-6">
 
-              {step > 1 && <ProgressBar step={step} totalSteps={totalSteps} />}
+              {step > 1 && <ProgressBar step={step} totalSteps={totalSteps} t={t} />}
 
               {/* STEP 1: Role */}
               {step === 1 && (
                 <StepWrapper direction={direction}>
                   <div className="text-center mb-5">
-                    <h2 className="title mb-2">Welcome to SkillLinkup!</h2>
-                    <p className="fz17 text-muted">What would you like to do? You can always change this later.</p>
+                    <h2 className="title mb-2">{t("welcomeTitle")}</h2>
+                    <p className="fz17 text-muted">{t("welcomeSubtitle")}</p>
                   </div>
                   <div className="row g-4 justify-content-center">
                     {[
-                      { type: "client",     icon: "flaticon-search-1",     label: "I'm looking for talent",  desc: "Post projects, hire talent, and manage your team." },
-                      { type: "freelancer", icon: "flaticon-presentation",  label: "I offer services",        desc: "Create gigs, find clients, and grow your freelance business." },
+                      { type: "client",     icon: "flaticon-search-1",     label: t("lookingForTalent"),  desc: t("lookingForTalentDesc") },
+                      { type: "freelancer", icon: "flaticon-presentation",  label: t("offerServices"),        desc: t("offerServicesDesc") },
                     ].map(({ type, icon, label, desc }) => (
                       <div key={type} className="col-sm-6">
                         {/* Fix #8: type="button" */}
@@ -303,8 +305,8 @@ function OnboardingContent() {
               {step === 2 && (
                 <StepWrapper direction={direction}>
                   <div className="text-center mb-5">
-                    <h2 className="title mb-2">Choose your world</h2>
-                    <p className="fz17 text-muted">Where would you like to start? You can explore all worlds anytime.</p>
+                    <h2 className="title mb-2">{t("chooseWorld")}</h2>
+                    <p className="fz17 text-muted">{t("chooseWorldSubtitle")}</p>
                   </div>
                   <div className="row g-4 justify-content-center">
                     {WORLDS.map((w) => (
@@ -330,7 +332,7 @@ function OnboardingContent() {
                               <i className={`${w.icon} fz26`} style={{ color: "#ef2b70" }} />
                             </div>
                             <h5 className="title mb-1">{w.title}</h5>
-                            <p className="fz13 text-muted mb-0">{w.desc}</p>
+                            <p className="fz13 text-muted mb-0">{t(w.descKey)}</p>
                           </div>
                         </button>
                       </div>
@@ -345,14 +347,14 @@ function OnboardingContent() {
                         className="btn btn-link text-muted text-decoration-none fz14"
                         disabled={saving}
                       >
-                        ← Back
+                        ← {t("back")}
                       </button>
                     </div>
                   )}
                   {saving && (
                     <div className="text-center mt-3">
                       <div className="spinner-border spinner-border-sm me-2" style={{ color: "#ef2b70" }} role="status" />
-                      <span className="fz14 text-muted">Saving...</span>
+                      <span className="fz14 text-muted">{t("saving")}</span>
                     </div>
                   )}
                 </StepWrapper>
@@ -363,12 +365,12 @@ function OnboardingContent() {
                 <StepWrapper direction={direction}>
                   <div className="text-center mb-4">
                     <h2 className="title mb-2">
-                      {role === "freelancer" ? "What are your skills?" : "What are you looking for?"}
+                      {role === "freelancer" ? t("whatAreYourSkills") : t("whatLookingFor")}
                     </h2>
                     <p className="fz17 text-muted">
                       {role === "freelancer"
-                        ? "Pick up to 10 skills. This helps clients find you."
-                        : "Select the services you're interested in."}
+                        ? t("pickSkills")
+                        : t("selectServices")}
                     </p>
                   </div>
                   <div className="d-flex flex-wrap gap-2 justify-content-center mb-4">
@@ -396,7 +398,7 @@ function OnboardingContent() {
                   </div>
                   {role === "freelancer" && (
                     <p className="text-center fz13 text-muted mb-4">
-                      {selectedSkills.length}/10 selected
+                      {t("skillsSelected", { count: selectedSkills.length })}
                     </p>
                   )}
                   <div className="d-flex justify-content-between align-items-center mt-2">
@@ -415,7 +417,7 @@ function OnboardingContent() {
                         onClick={handleSkillsSkip}
                         className="btn btn-outline-secondary btn-sm bdrs8"
                       >
-                        Skip
+                        {t("skip")}
                       </button>
                       {/* Fix #8: type="button" */}
                       <button
@@ -425,7 +427,7 @@ function OnboardingContent() {
                         style={{ background: "#ef2b70", minWidth: 100 }}
                         disabled={selectedSkills.length === 0}
                       >
-                        Continue →
+                        {t("continue")} →
                       </button>
                     </div>
                   </div>
@@ -436,28 +438,28 @@ function OnboardingContent() {
               {step === 4 && role === "freelancer" && (
                 <StepWrapper direction={direction}>
                   <div className="text-center mb-4">
-                    <h2 className="title mb-2">Tell clients about yourself</h2>
-                    <p className="fz17 text-muted">A complete profile gets 3× more views. You can edit this anytime.</p>
+                    <h2 className="title mb-2">{t("tellAboutYourself")}</h2>
+                    <p className="fz17 text-muted">{t("profileViews")}</p>
                   </div>
                   <div className="mb-3">
                     <label className="fz14 fw600 mb-1 d-block">
-                      Tagline <span className="text-muted fw400">(1 sentence)</span>
+                      {t("tagline")} <span className="text-muted fw400">{t("taglineHint")}</span>
                     </label>
                     <input
                       type="text"
                       className="form-control bdrs8"
-                      placeholder="e.g. Full-stack developer with 5 years React experience"
+                      placeholder={t("taglinePlaceholder")}
                       value={tagline}
                       onChange={e => setTagline(e.target.value)}
                       maxLength={100}
                     />
                   </div>
                   <div className="mb-3">
-                    <label className="fz14 fw600 mb-1 d-block">Bio</label>
+                    <label className="fz14 fw600 mb-1 d-block">{t("bio")}</label>
                     <textarea
                       className="form-control bdrs8"
                       rows={4}
-                      placeholder="Describe your experience, what you love to work on, and what makes you great..."
+                      placeholder={t("bioPlaceholder")}
                       value={bio}
                       onChange={e => setBio(e.target.value)}
                       maxLength={800}
@@ -466,21 +468,21 @@ function OnboardingContent() {
                   </div>
                   <div className="mb-4">
                     <label className="fz14 fw600 mb-1 d-block">
-                      Hourly rate <span className="text-muted fw400">(USD)</span>
+                      {t("hourlyRate")} <span className="text-muted fw400">{t("hourlyRateCurrency")}</span>
                     </label>
                     <div className="input-group" style={{ maxWidth: 200 }}>
                       <span className="input-group-text" style={{ borderRight: 0 }}>$</span>
                       <input
                         type="number"
                         className="form-control"
-                        placeholder="e.g. 50"
+                        placeholder={t("hourlyRatePlaceholder")}
                         min={1}
                         max={9999}
                         value={hourlyRate}
                         onChange={e => setHourlyRate(e.target.value)}
                         style={{ borderLeft: 0 }}
                       />
-                      <span className="input-group-text">/hr</span>
+                      <span className="input-group-text">{t("perHour")}</span>
                     </div>
                   </div>
                   <div className="d-flex justify-content-between align-items-center">
@@ -501,7 +503,7 @@ function OnboardingContent() {
                         className="btn btn-outline-secondary btn-sm bdrs8"
                         disabled={saving}
                       >
-                        Skip for now
+                        {t("skipForNow")}
                       </button>
                       {/* Fix #8: type="button" */}
                       <button
@@ -512,8 +514,8 @@ function OnboardingContent() {
                         disabled={saving || (!bio && !tagline && !hourlyRate)}
                       >
                         {saving ? (
-                          <><span className="spinner-border spinner-border-sm me-1" role="status" /> Saving...</>
-                        ) : "Finish setup →"}
+                          <><span className="spinner-border spinner-border-sm me-1" role="status" /> {t("saving")}</>
+                        ) : <>{t("finishSetup")} →</>}
                       </button>
                     </div>
                   </div>
