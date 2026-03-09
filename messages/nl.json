@@ -1728,5 +1728,11 @@
     "guide": "Gids",
     "noResources": "Nog geen resources beschikbaar.",
     "resource": "Resource"
+  },
+  "rootMeta": {
+    "title": "SkillLinkup — Vind het juiste talent, overal",
+    "description": "Online freelancers, lokale vakmensen en vacatures — alles op één platform. Lage kosten, veilige betalingen en een marktplaats voor kopers én verkopers.",
+    "ogAlt": "SkillLinkup — Vind het juiste talent, overal",
+    "twitterDescription": "Online freelancers, lokale vakmensen en vacatures — alles op één platform."
   }
 }

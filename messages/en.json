@@ -1728,5 +1728,11 @@
     "guide": "Guide",
     "noResources": "No resources available yet.",
     "resource": "Resource"
+  },
+  "rootMeta": {
+    "title": "SkillLinkup — Find the Right Talent, Anywhere",
+    "description": "Online freelancers, local craftsmen, and job vacancies — all in one platform. Low fees, secure payments, and a marketplace built for both buyers and sellers.",
+    "ogAlt": "SkillLinkup — Find the Right Talent, Anywhere",
+    "twitterDescription": "Online freelancers, local craftsmen, and job vacancies — all in one platform."
   }
 }
