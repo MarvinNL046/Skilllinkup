@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 66
+    "completed": 67
   },
   "queue": [
     {
@@ -680,7 +680,7 @@
       "file": "src/app/(dashboard)/dashboard/feedback/page.jsx",
       "description": "Feedback form",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 6,
       "phase": 6
     },

@@ -2,29 +2,9 @@
 
 import { useState } from "react";
 import { useMutation, useQuery } from "convex/react";
+import { useTranslations } from "next-intl";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
-
-const STATUS_CONFIG = {
-  new:      { label: "Open",        className: "bg-warning text-dark" },
-  reviewed: { label: "In progress", className: "bg-info text-white" },
-  resolved: { label: "Resolved",    className: "bg-success text-white" },
-};
-
-const TYPE_CONFIG = {
-  feedback: { label: "Feedback", icon: "flaticon-star" },
-  bug:      { label: "Bug",      icon: "flaticon-warning" },
-  feature:  { label: "Feature",  icon: "flaticon-settings" },
-};
-
-function StatusBadge({ status }) {
-  const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.new;
-  return (
-    <span className={`badge px-2 py-1 fz11 fw500 ${cfg.className}`} style={{ borderRadius: 8 }}>
-      {cfg.label}
-    </span>
-  );
-}
 
 function StarRating({ value, onChange }) {
   return (
@@ -41,17 +21,8 @@ function StarRating({ value, onChange }) {
   );
 }
 
-function timeAgo(ts) {
-  const diff = Date.now() - ts;
-  const mins = Math.floor(diff / 60000);
-  if (mins < 60) return `${mins}m ago`;
-  const hrs = Math.floor(diff / 3600000);
-  if (hrs < 24) return `${hrs}h ago`;
-  const days = Math.floor(diff / 86400000);
-  return `${days}d ago`;
-}
-
 export default function FeedbackInfo() {
+  const t = useTranslations("feedback");
   const { convexUser } = useConvexUser();
   const submitFeedback = useMutation(api.feedback.submit);
   const feedbackList = useQuery(
@@ -59,12 +30,34 @@ export default function FeedbackInfo() {
     convexUser ? {} : "skip"
   );
 
+  const STATUS_CONFIG = {
+    new:      { label: t("statusOpen"),       className: "bg-warning text-dark" },
+    reviewed: { label: t("statusInProgress"), className: "bg-info text-white" },
+    resolved: { label: t("statusResolved"),   className: "bg-success text-white" },
+  };
+
+  const TYPE_CONFIG = {
+    feedback: { label: t("typeFeedback"), icon: "flaticon-star" },
+    bug:      { label: t("typeBug"),      icon: "flaticon-warning" },
+    feature:  { label: t("typeFeature"),  icon: "flaticon-settings" },
+  };
+
   const [type, setType] = useState("feedback");
   const [message, setMessage] = useState("");
   const [rating, setRating] = useState(0);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+
+  function timeAgo(ts) {
+    const diff = Date.now() - ts;
+    const mins = Math.floor(diff / 60000);
+    if (mins < 60) return t("minutesAgo", { count: mins });
+    const hrs = Math.floor(diff / 3600000);
+    if (hrs < 24) return t("hoursAgo", { count: hrs });
+    const days = Math.floor(diff / 86400000);
+    return t("daysAgo", { count: days });
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -84,7 +77,7 @@ export default function FeedbackInfo() {
       setSuccess(true);
       setTimeout(() => setSuccess(false), 4000);
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      setError(t("errorGeneric"));
     } finally {
       setLoading(false);
     }
@@ -93,24 +86,24 @@ export default function FeedbackInfo() {
   return (
     <div className="row">
       <div className="col-12 mb-4">
-        <h4 className="title fz17 mb-0">Feedback</h4>
+        <h4 className="title fz17 mb-0">{t("title")}</h4>
       </div>
 
       {/* Submit form */}
       <div className="col-lg-5 mb-4">
         <div className="ps-widget bdrs8 p30 bdr1">
-          <h6 className="mb20">Send feedback</h6>
+          <h6 className="mb20">{t("sendFeedback")}</h6>
           <form onSubmit={handleSubmit}>
             {/* Type tabs */}
             <div className="d-flex gap-2 mb20">
-              {["feedback", "bug", "feature"].map((t) => (
+              {["feedback", "bug", "feature"].map((item) => (
                 <button
-                  key={t}
+                  key={item}
                   type="button"
-                  className={`ud-btn btn-sm ${type === t ? "btn-thm" : "btn-white"}`}
-                  onClick={() => setType(t)}
+                  className={`ud-btn btn-sm ${type === item ? "btn-thm" : "btn-white"}`}
+                  onClick={() => setType(item)}
                 >
-                  {TYPE_CONFIG[t].label}
+                  {TYPE_CONFIG[item].label}
                 </button>
               ))}
             </div>
@@ -118,23 +111,23 @@ export default function FeedbackInfo() {
             {/* Star rating — only for feedback type */}
             {type === "feedback" && (
               <div className="mb-2">
-                <label className="form-label fz14 fw500">Rating</label>
+                <label className="form-label fz14 fw500">{t("ratingLabel")}</label>
                 <StarRating value={rating} onChange={setRating} />
               </div>
             )}
 
             <div className="mb20">
               <label className="form-label fz14 fw500">
-                {type === "feedback" && "What do you think of the platform?"}
-                {type === "bug" && "Describe the issue"}
-                {type === "feature" && "Which feature are you missing?"}
+                {type === "feedback" && t("promptFeedback")}
+                {type === "bug" && t("promptBug")}
+                {type === "feature" && t("promptFeature")}
               </label>
               <textarea
                 className="form-control"
                 rows={5}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Write your message here..."
+                placeholder={t("placeholder")}
                 required
               />
             </div>
@@ -142,7 +135,7 @@ export default function FeedbackInfo() {
             {error && <p className="text-danger fz13 mb10">{error}</p>}
             {success && (
               <p className="text-success fz13 mb10">
-                Thank you! Your feedback has been received.
+                {t("successMessage")}
               </p>
             )}
 
@@ -151,7 +144,7 @@ export default function FeedbackInfo() {
               className="ud-btn btn-thm w-100"
               disabled={loading || !message.trim()}
             >
-              {loading ? "Submitting..." : "Submit"}
+              {loading ? t("submitting") : t("submit")}
               <i className="fal fa-arrow-right-long" />
             </button>
           </form>
@@ -161,7 +154,7 @@ export default function FeedbackInfo() {
       {/* Feedback history */}
       <div className="col-lg-7 mb-4">
         <div className="ps-widget bdrs8 p30 bdr1">
-          <h6 className="mb20">Your submitted feedback</h6>
+          <h6 className="mb20">{t("yourFeedback")}</h6>
 
           {feedbackList === undefined && (
             <div className="text-center py-4">
@@ -170,7 +163,7 @@ export default function FeedbackInfo() {
           )}
 
           {feedbackList?.length === 0 && (
-            <p className="text-muted fz14">You haven't submitted any feedback yet.</p>
+            <p className="text-muted fz14">{t("noFeedbackYet")}</p>
           )}
 
           {feedbackList && feedbackList.length > 0 && (
@@ -189,7 +182,9 @@ export default function FeedbackInfo() {
                       )}
                     </div>
                     <div className="d-flex align-items-center gap-2">
-                      <StatusBadge status={item.status} />
+                      <span className={`badge px-2 py-1 fz11 fw500 ${(STATUS_CONFIG[item.status] || STATUS_CONFIG.new).className}`} style={{ borderRadius: 8 }}>
+                        {(STATUS_CONFIG[item.status] || STATUS_CONFIG.new).label}
+                      </span>
                       <span className="fz12 text-muted">{timeAgo(item.createdAt)}</span>
                     </div>
                   </div>
