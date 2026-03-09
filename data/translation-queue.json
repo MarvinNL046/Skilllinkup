@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 83
+    "completed": 84
   },
   "queue": [
     {
@@ -850,7 +850,7 @@
       "target": "marketplaceCategories",
       "description": "Translate name, description for all categories",
       "locale": "nl",
-      "status": "pending",
+      "status": "completed",
       "priority": 9,
       "phase": 9
     },
