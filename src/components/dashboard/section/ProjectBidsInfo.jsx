@@ -1,20 +1,14 @@
 "use client";
 import { useQuery } from "convex/react";
+import { useTranslations } from "next-intl";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import DashboardNavigation from "../header/DashboardNavigation";
 import BidList from "@/components/element/BidList";
 import Link from "next/link";
 
-const STATUS_LABELS = {
-  open: { label: "Open", className: "text-success" },
-  in_progress: { label: "In Progress", className: "text-warning" },
-  completed: { label: "Completed", className: "text-primary" },
-  cancelled: { label: "Cancelled", className: "text-danger" },
-  closed: { label: "Closed", className: "text-secondary" },
-};
-
 export default function ProjectBidsInfo({ projectId }) {
+  const t = useTranslations("projectBids");
   const { convexUser, isLoaded } = useConvexUser();
 
   const project = useQuery(
@@ -50,9 +44,9 @@ export default function ProjectBidsInfo({ projectId }) {
         <div className="row">
           <div className="col-lg-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30 text-center">
-              <p className="text mb10">Project not found.</p>
+              <p className="text mb10">{t("projectNotFound")}</p>
               <Link href="/manage-projects" className="ud-btn btn-thm-border btn-sm">
-                Back to My Projects <i className="fal fa-arrow-left ms-1" />
+                {t("backToMyProjects")} <i className="fal fa-arrow-left ms-1" />
               </Link>
             </div>
           </div>
@@ -60,6 +54,14 @@ export default function ProjectBidsInfo({ projectId }) {
       </div>
     );
   }
+
+  const STATUS_LABELS = {
+    open: { label: t("statusOpen"), className: "text-success" },
+    in_progress: { label: t("statusInProgress"), className: "text-warning" },
+    completed: { label: t("statusCompleted"), className: "text-primary" },
+    cancelled: { label: t("statusCancelled"), className: "text-danger" },
+    closed: { label: t("statusClosed"), className: "text-secondary" },
+  };
 
   const status = project?.status ?? "open";
   const statusInfo = STATUS_LABELS[status] ?? { label: status, className: "text-secondary" };
@@ -71,7 +73,7 @@ export default function ProjectBidsInfo({ projectId }) {
       ? `${currency} ${budgetMin} - ${budgetMax}`
       : budgetMin != null
       ? `${currency} ${budgetMin}+`
-      : "Budget TBD";
+      : t("budgetTBD");
 
   return (
     <div className="dashboard__content hover-bgc-color">
@@ -81,9 +83,9 @@ export default function ProjectBidsInfo({ projectId }) {
         </div>
         <div className="col-lg-12">
           <div className="dashboard_title_area">
-            <h2>Project Bids</h2>
+            <h2>{t("title")}</h2>
             <p className="text">
-              Review and manage bids for your project.
+              {t("pageDescription")}
             </p>
           </div>
         </div>
@@ -94,7 +96,7 @@ export default function ProjectBidsInfo({ projectId }) {
           <div className="col-lg-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30 text-center py-5">
               <div className="spinner-border spinner-border-sm text-thm" role="status" />
-              <p className="text mt-2 mb-0">Loading project...</p>
+              <p className="text mt-2 mb-0">{t("loadingProject")}</p>
             </div>
           </div>
         </div>
@@ -125,7 +127,7 @@ export default function ProjectBidsInfo({ projectId }) {
                 </div>
                 <div className="text-end">
                   <span className="fz20 fw600 dark-color">{project.bidCount ?? 0}</span>
-                  <p className="text fz13 mb-0">Bid{(project.bidCount ?? 0) !== 1 ? "s" : ""} received</p>
+                  <p className="text fz13 mb-0">{(project.bidCount ?? 0) !== 1 ? t("bidsReceivedPlural") : t("bidsReceived")}</p>
                 </div>
               </div>
 
@@ -137,7 +139,7 @@ export default function ProjectBidsInfo({ projectId }) {
             <div className="d-flex gap-3 flex-wrap">
               <Link href="/manage-projects" className="ud-btn btn-thm-border btn-sm">
                 <i className="fal fa-arrow-left me-1" />
-                Back to My Projects
+                {t("backToMyProjects")}
               </Link>
               {project.slug && (
                 <Link
@@ -145,7 +147,7 @@ export default function ProjectBidsInfo({ projectId }) {
                   className="ud-btn btn-light-thm btn-sm"
                   target="_blank"
                 >
-                  View Public Page
+                  {t("viewPublicPage")}
                   <i className="fal fa-external-link ms-1" />
                 </Link>
               )}
