@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import DashboardNavigation from "../header/DashboardNavigation";
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
@@ -10,16 +11,8 @@ import DeleteModal from "../modal/DeleteModal";
 import useConvexUser from "@/hook/useConvexUser";
 import { toast } from "sonner";
 
-const tabs = [
-  { label: "All Projects", status: null },
-  { label: "Open", status: "open" },
-  { label: "In Progress", status: "in_progress" },
-  { label: "Completed", status: "completed" },
-  { label: "Cancelled", status: "cancelled" },
-  { label: "Closed", status: "closed" },
-];
-
 export default function ManageProjectInfo() {
+  const t = useTranslations("manageProjects");
   const [selectedTab, setSelectedTab] = useState(0);
   const [selectedProject, setSelectedProject] = useState(null);
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
@@ -31,6 +24,15 @@ export default function ManageProjectInfo() {
     api.marketplace.projects.getByClient,
     convexUser?._id ? { clientId: convexUser._id, limit: 50 } : "skip"
   );
+
+  const tabs = [
+    { label: t("allProjects"), status: null },
+    { label: t("open"), status: "open" },
+    { label: t("inProgress"), status: "in_progress" },
+    { label: t("completed"), status: "completed" },
+    { label: t("cancelled"), status: "cancelled" },
+    { label: t("closed"), status: "closed" },
+  ];
 
   const activeStatus = tabs[selectedTab].status;
 
@@ -45,19 +47,19 @@ export default function ManageProjectInfo() {
   const handleDelete = async (projectId) => {
     try {
       await removeProject({ projectId });
-      toast.success("Project deleted successfully");
+      toast.success(t("projectDeleted"));
     } catch (err) {
-      toast.error(err.message || "Failed to delete project");
-      throw err; // re-throw so modal knows it failed
+      toast.error(err.message || t("projectDeleteFailed"));
+      throw err;
     }
   };
 
   const handleUpdate = async (fields) => {
     try {
       await updateProject(fields);
-      toast.success("Project updated successfully");
+      toast.success(t("projectUpdated"));
     } catch (err) {
-      toast.error(err.message || "Failed to update project");
+      toast.error(err.message || t("projectUpdateFailed"));
       throw err;
     }
   };
@@ -95,7 +97,7 @@ export default function ManageProjectInfo() {
           <div className="col-xl-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
               <div className="text-center py-4">
-                <p className="text mb-0">Setting up your account...</p>
+                <p className="text mb-0">{t("settingUpAccount")}</p>
               </div>
             </div>
           </div>
@@ -116,7 +118,7 @@ export default function ManageProjectInfo() {
           <div className="col-xl-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
               <div className="text-center py30">
-                <p className="fz15 text-muted">Please sign in to manage your projects.</p>
+                <p className="fz15 text-muted">{t("signInPrompt")}</p>
               </div>
             </div>
           </div>
@@ -134,8 +136,8 @@ export default function ManageProjectInfo() {
           </div>
           <div className="col-lg-9">
             <div className="dashboard_title_area">
-              <h2>Manage Projects</h2>
-              <p className="text">View and manage all your posted projects.</p>
+              <h2>{t("title")}</h2>
+              <p className="text">{t("pageDescription")}</p>
             </div>
           </div>
           <div className="col-lg-3">
@@ -144,7 +146,7 @@ export default function ManageProjectInfo() {
                 href="/create-projects"
                 className="ud-btn btn-thm default-box-shadow2"
               >
-                Create Project
+                {t("createProject")}
                 <i className="fal fa-arrow-right-long" />
               </Link>
             </div>
@@ -182,19 +184,19 @@ export default function ManageProjectInfo() {
                   {isLoading ? (
                     <div className="text-center py30">
                       <div className="spinner-border text-primary" role="status">
-                        <span className="visually-hidden">Loading...</span>
+                        <span className="visually-hidden">{t("loading")}</span>
                       </div>
-                      <p className="mt10 fz14 text-muted">Loading your projects...</p>
+                      <p className="mt10 fz14 text-muted">{t("loadingProjects")}</p>
                     </div>
                   ) : filteredProjects.length === 0 ? (
                     <div className="text-center py30">
                       <p className="fz15 text-muted">
                         {activeStatus
-                          ? `No ${activeStatus.replace("_", " ")} projects found.`
-                          : "You have not posted any projects yet."}
+                          ? t("noProjectsStatus", { status: activeStatus.replace("_", " ") })
+                          : t("noProjectsYet")}
                       </p>
                       <Link href="/create-projects" className="ud-btn btn-thm mt10">
-                        Post Your First Project
+                        {t("postFirstProject")}
                         <i className="fal fa-arrow-right-long" />
                       </Link>
                     </div>
@@ -202,10 +204,10 @@ export default function ManageProjectInfo() {
                     <table className="table-style3 table at-savesearch">
                       <thead className="t-head">
                         <tr>
-                          <th scope="col">Title</th>
-                          <th scope="col">Category</th>
-                          <th scope="col">Budget / Status</th>
-                          <th scope="col">Actions</th>
+                          <th scope="col">{t("columnTitle")}</th>
+                          <th scope="col">{t("columnCategory")}</th>
+                          <th scope="col">{t("columnBudgetStatus")}</th>
+                          <th scope="col">{t("columnActions")}</th>
                         </tr>
                       </thead>
                       <tbody className="t-body">
