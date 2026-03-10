@@ -11,6 +11,7 @@ const locales = [
   { code: "fr", label: "Français", flag: "🇫🇷" },
   { code: "es", label: "Español", flag: "🇪🇸" },
   { code: "pt", label: "Português", flag: "🇧🇷" },
+  { code: "it", label: "Italiano", flag: "🇮🇹" },
 ];
 
 export default function LanguageSwitcher() {
