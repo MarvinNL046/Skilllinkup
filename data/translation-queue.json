@@ -11,7 +11,7 @@
   "defaultLocale": "en",
   "stats": {
     "total": 633,
-    "completed": 368
+    "completed": 457
   },
   "queue": [
     {
@@ -3959,9 +3959,10 @@
       "target": "messages-pt",
       "description": "Create messages/pt.json \u2014 full Portuguese translation of en.json",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 50,
-      "phase": 0
+      "phase": 0,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1268,
@@ -3969,9 +3970,10 @@
       "file": "src/components/header/Header19.jsx",
       "description": "Nav items, search placeholder, login/register, world labels (Online, Local, Jobs)",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 51,
-      "phase": 1
+      "phase": 1,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1269,
@@ -3979,9 +3981,10 @@
       "file": "src/components/header/MobileNavigation.jsx",
       "description": "Mobile nav items",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 51,
-      "phase": 1
+      "phase": 1,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1270,
@@ -3989,9 +3992,10 @@
       "file": "src/components/footer",
       "description": "Footer links, copyright, tagline",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 51,
-      "phase": 1
+      "phase": 1,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1271,
@@ -3999,9 +4003,10 @@
       "file": "src/components/dashboard/header/DashboardNavigation.jsx",
       "description": "Dashboard nav: Online, Local, Jobs, menu items",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 51,
-      "phase": 1
+      "phase": 1,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1272,
@@ -4009,9 +4014,10 @@
       "file": "src/components/breadcrumb",
       "description": "Breadcrumb labels: Home, Browse, Contact us, etc.",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 51,
-      "phase": 1
+      "phase": 1,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1273,
@@ -4019,9 +4025,10 @@
       "file": "src/app/(home)/page.jsx",
       "description": "Homepage metadata (title, description, OG tags)",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 52,
-      "phase": 2
+      "phase": 2,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1274,
@@ -4029,9 +4036,10 @@
       "file": "src/components/hero/HomepageHero.jsx",
       "description": "Find the Right Talent, world descriptions, CTA buttons",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 52,
-      "phase": 2
+      "phase": 2,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1275,
@@ -4039,9 +4047,10 @@
       "file": "src/components/section/SocialProofStats.jsx",
       "description": "Stats section text",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 52,
-      "phase": 2
+      "phase": 2,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1276,
@@ -4049,9 +4058,10 @@
       "file": "src/app/become-seller",
       "description": "Full page: hero, 3 earning methods, steps, benefits, CTA",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 52,
-      "phase": 2
+      "phase": 2,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1277,
@@ -4059,9 +4069,10 @@
       "file": "src/app/pricing/page.jsx",
       "description": "Pricing tiers, feature lists, CTA buttons",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 52,
-      "phase": 2
+      "phase": 2,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1278,
@@ -4069,9 +4080,10 @@
       "file": "src/app/(about)/about/page.jsx",
       "description": "About page content, team section",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 52,
-      "phase": 2
+      "phase": 2,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1279,
@@ -4079,9 +4091,10 @@
       "file": "src/app/faq/page.jsx",
       "description": "All Q&A pairs, section titles",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 52,
-      "phase": 2
+      "phase": 2,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1280,
@@ -4089,9 +4102,10 @@
       "file": "src/app/contact/page.jsx",
       "description": "Form labels, placeholders, success/error messages",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 52,
-      "phase": 2
+      "phase": 2,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1281,
@@ -4099,9 +4113,10 @@
       "file": "src/app/privacy-policy/page.jsx",
       "description": "Privacy policy content",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 52,
-      "phase": 2
+      "phase": 2,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1282,
@@ -4109,9 +4124,10 @@
       "file": "src/app/terms/page.jsx",
       "description": "Terms of service content",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 52,
-      "phase": 2
+      "phase": 2,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1283,
@@ -4119,9 +4135,10 @@
       "file": "src/app/help/page.jsx",
       "description": "Help page content",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 52,
-      "phase": 2
+      "phase": 2,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1284,
@@ -4129,9 +4146,10 @@
       "file": "src/app/(online)/online/page.jsx",
       "description": "Online hub landing page",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 53,
-      "phase": 3
+      "phase": 3,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1285,
@@ -4139,9 +4157,10 @@
       "file": "src/components/section/Listing14.jsx",
       "description": "No freelancers yet, Join as freelancer, filter labels",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 53,
-      "phase": 3
+      "phase": 3,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1286,
@@ -4149,9 +4168,10 @@
       "file": "src/components/card/FreelancerCard2.jsx",
       "description": "Available Now, View Profile, Location, Rate, Level, On request",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 53,
-      "phase": 3
+      "phase": 3,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1287,
@@ -4159,9 +4179,10 @@
       "file": "src/components/card/FreelancerCardList.jsx",
       "description": "Same strings as FreelancerCard2 in list layout",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 53,
-      "phase": 3
+      "phase": 3,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1288,
@@ -4169,9 +4190,10 @@
       "file": "src/components/sidebar/ListingSidebar5.jsx",
       "description": "Filter labels: Category, Level, Location, Language, Budget",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 53,
-      "phase": 3
+      "phase": 3,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1289,
@@ -4179,9 +4201,10 @@
       "file": "src/components/element/ListingOption2.jsx",
       "description": "{count} freelancers available, sort labels",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 53,
-      "phase": 3
+      "phase": 3,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1290,
@@ -4189,9 +4212,10 @@
       "file": "src/components/option/SortOption1.jsx",
       "description": "Sort options: Best Seller, Recommended, New Arrivals",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 53,
-      "phase": 3
+      "phase": 3,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1291,
@@ -4199,9 +4223,10 @@
       "file": "src/components/option/AvailableNowOption.jsx",
       "description": "Available Now toggle label",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 53,
-      "phase": 3
+      "phase": 3,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1292,
@@ -4209,9 +4234,10 @@
       "file": "src/app/(online)/online/services",
       "description": "Services listing page",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 53,
-      "phase": 3
+      "phase": 3,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1293,
@@ -4219,9 +4245,10 @@
       "file": "src/app/(online)/online/projects",
       "description": "Projects listing page",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 53,
-      "phase": 3
+      "phase": 3,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1294,
@@ -4229,9 +4256,10 @@
       "file": "src/app/(service)/service/[id]",
       "description": "Gig detail: tabs, package labels, order buttons",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 53,
-      "phase": 3
+      "phase": 3,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1295,
@@ -4239,9 +4267,10 @@
       "file": "src/app/(freelancer)/freelancer/[id]",
       "description": "Freelancer profile: sections, labels",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 53,
-      "phase": 3
+      "phase": 3,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1296,
@@ -4249,9 +4278,10 @@
       "file": "src/app/(project)/project/[id]",
       "description": "Project detail: bid section, labels",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 53,
-      "phase": 3
+      "phase": 3,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1297,
@@ -4259,9 +4289,10 @@
       "file": "src/app/(local)/local/page.jsx",
       "description": "Local hub landing",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 54,
-      "phase": 4
+      "phase": 4,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1298,
@@ -4269,9 +4300,10 @@
       "file": "src/app/(local)/local/craftsmen",
       "description": "Craftsmen listing, filters",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 54,
-      "phase": 4
+      "phase": 4,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1299,
@@ -4279,9 +4311,10 @@
       "file": "src/app/(local)/local/craftsman",
       "description": "Craftsman profile detail",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 54,
-      "phase": 4
+      "phase": 4,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1300,
@@ -4289,9 +4322,10 @@
       "file": "src/app/(local)/local/quote-requests",
       "description": "Quote requests listing",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 54,
-      "phase": 4
+      "phase": 4,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1301,
@@ -4299,9 +4333,10 @@
       "file": "src/app/(local)/local/quote-request",
       "description": "Single quote request detail",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 54,
-      "phase": 4
+      "phase": 4,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1302,
@@ -4309,9 +4344,10 @@
       "file": "src/components/local",
       "description": "Quote form labels, lead claim UI, credit system text",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 54,
-      "phase": 4
+      "phase": 4,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1303,
@@ -4319,9 +4355,10 @@
       "file": "src/app/(jobs-world)/jobs-hub/page.jsx",
       "description": "Jobs landing page",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 55,
-      "phase": 5
+      "phase": 5,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1304,
@@ -4329,9 +4366,10 @@
       "file": "src/app/(jobs-world)/jobs/browse",
       "description": "Job listings, filters",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 55,
-      "phase": 5
+      "phase": 5,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1305,
@@ -4339,9 +4377,10 @@
       "file": "src/app/(jobs-world)/jobs/job",
       "description": "Job detail page",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 55,
-      "phase": 5
+      "phase": 5,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1306,
@@ -4349,9 +4388,10 @@
       "file": "src/app/(jobs-world)/jobs/companies",
       "description": "Companies listing",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 55,
-      "phase": 5
+      "phase": 5,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1307,
@@ -4359,9 +4399,10 @@
       "file": "src/components/jobs",
       "description": "Salary labels, job type badges, application buttons",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 55,
-      "phase": 5
+      "phase": 5,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1308,
@@ -4369,9 +4410,10 @@
       "file": "src/app/(dashboard)/dashboard/page.jsx",
       "description": "Dashboard home: stats labels, recent orders, chart labels",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1309,
@@ -4379,9 +4421,10 @@
       "file": "src/app/(dashboard)/onboarding/page.jsx",
       "description": "Onboarding steps, form labels, world selection",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1310,
@@ -4389,9 +4432,10 @@
       "file": "src/app/(dashboard)/my-profile/page.jsx",
       "description": "Profile edit: all labels, placeholders, sections",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1311,
@@ -4399,9 +4443,10 @@
       "file": "src/app/(dashboard)/add-services/page.jsx",
       "description": "Gig creation: title, description, packages, pricing",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1312,
@@ -4409,9 +4454,10 @@
       "file": "src/app/(dashboard)/manage-services/page.jsx",
       "description": "Gig management: status labels, actions",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1313,
@@ -4419,9 +4465,10 @@
       "file": "src/app/(dashboard)/create-projects/page.jsx",
       "description": "Project creation form",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1314,
@@ -4429,9 +4476,10 @@
       "file": "src/app/(dashboard)/manage-projects/page.jsx",
       "description": "Project management",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1315,
@@ -4439,9 +4487,10 @@
       "file": "src/app/(dashboard)/manage-jobs/page.jsx",
       "description": "Job management",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1316,
@@ -4449,9 +4498,10 @@
       "file": "src/app/(dashboard)/orders/page.jsx",
       "description": "Orders: status badges, Mark as Delivered, Approve, Request Revision",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1317,
@@ -4459,9 +4509,10 @@
       "file": "src/app/(dashboard)/message/page.jsx",
       "description": "Chat UI: messages placeholder, Back to conversations, Send",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1318,
@@ -4469,9 +4520,10 @@
       "file": "src/app/(dashboard)/reviews/page.jsx",
       "description": "Reviews section, rating labels",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1319,
@@ -4479,9 +4531,10 @@
       "file": "src/app/(dashboard)/saved/page.jsx",
       "description": "Saved items page",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1320,
@@ -4489,9 +4542,10 @@
       "file": "src/app/(dashboard)/proposal/page.jsx",
       "description": "Bid/proposal form",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1321,
@@ -4499,9 +4553,10 @@
       "file": "src/app/(dashboard)/payouts/page.jsx",
       "description": "Payouts/earnings page",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1322,
@@ -4509,9 +4564,10 @@
       "file": "src/app/(dashboard)/statements/page.jsx",
       "description": "Financial statements",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1323,
@@ -4519,9 +4575,10 @@
       "file": "src/app/(dashboard)/invoice/page.jsx",
       "description": "Invoice page",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1324,
@@ -4529,9 +4586,10 @@
       "file": "src/app/(dashboard)/projects/[id]/page.jsx",
       "description": "Project board: milestones, deliverables",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1325,
@@ -4539,9 +4597,10 @@
       "file": "src/app/(dashboard)/dashboard/credits/page.jsx",
       "description": "Credits: buy, balance",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1326,
@@ -4549,9 +4608,10 @@
       "file": "src/app/(dashboard)/dashboard/my-leads/page.jsx",
       "description": "Leads: claim buttons, details",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1327,
@@ -4559,9 +4619,10 @@
       "file": "src/app/(dashboard)/dashboard/rewards/page.jsx",
       "description": "Rewards: tiers, cashback",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1328,
@@ -4569,9 +4630,10 @@
       "file": "src/app/(dashboard)/dashboard/feedback/page.jsx",
       "description": "Feedback form",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1329,
@@ -4579,9 +4641,10 @@
       "file": "src/app/(dashboard)/admin/disputes/page.jsx",
       "description": "Admin disputes",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 56,
-      "phase": 6
+      "phase": 6,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1330,
@@ -4589,9 +4652,10 @@
       "file": "src/components/ui/WaitlistButton.jsx",
       "description": "Join Waitlist, modal text, success message",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 57,
-      "phase": 7
+      "phase": 7,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1331,
@@ -4599,9 +4663,10 @@
       "file": "src/components/ui/ContactButton.jsx",
       "description": "Contact, Opening chat...",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 57,
-      "phase": 7
+      "phase": 7,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1332,
@@ -4609,9 +4674,10 @@
       "file": "src/components/ui/EmptyState.jsx",
       "description": "Empty state messages across the app",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 57,
-      "phase": 7
+      "phase": 7,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1333,
@@ -4619,9 +4685,10 @@
       "file": "src/components/modal",
       "description": "All modals: confirm dialogs, forms",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 57,
-      "phase": 7
+      "phase": 7,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1334,
@@ -4629,9 +4696,10 @@
       "file": "status-badges",
       "description": "Open, In Progress, Completed, Cancelled, Pending, Active, Paused, Delivered",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 57,
-      "phase": 7
+      "phase": 7,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1335,
@@ -4639,9 +4707,10 @@
       "file": "toast-messages",
       "description": "Account type updated, Order approved, Something went wrong, etc.",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 57,
-      "phase": 7
+      "phase": 7,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1336,
@@ -4649,9 +4718,10 @@
       "file": "form-validation",
       "description": "Required, invalid email, too short, etc.",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 57,
-      "phase": 7
+      "phase": 7,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1337,
@@ -4659,9 +4729,10 @@
       "file": "loading-states",
       "description": "Loading..., spinner labels",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 57,
-      "phase": 7
+      "phase": 7,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1338,
@@ -4669,9 +4740,10 @@
       "file": "src/app/error.tsx",
       "description": "Error pages, not-found, [...not_found]",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 57,
-      "phase": 7
+      "phase": 7,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1339,
@@ -4679,9 +4751,10 @@
       "file": "src/app/(blog)/blog/page.jsx",
       "description": "Blog listing, filter labels",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 58,
-      "phase": 8
+      "phase": 8,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1340,
@@ -4689,9 +4762,10 @@
       "file": "src/app/(blog)/post/[id]/page.jsx",
       "description": "Blog post: share buttons, author bio, related posts",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 58,
-      "phase": 8
+      "phase": 8,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1341,
@@ -4699,9 +4773,10 @@
       "file": "src/app/platforms/page.jsx",
       "description": "Platforms listing",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 58,
-      "phase": 8
+      "phase": 8,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1342,
@@ -4709,9 +4784,10 @@
       "file": "src/app/platforms/[slug]/page.jsx",
       "description": "Platform detail: reviews, comparison labels",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 58,
-      "phase": 8
+      "phase": 8,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1343,
@@ -4719,9 +4795,10 @@
       "file": "src/app/resources",
       "description": "Resources listing + detail",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 58,
-      "phase": 8
+      "phase": 8,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1344,
@@ -4729,9 +4806,10 @@
       "target": "script-setup",
       "description": "Create scripts/translate-content-nl.mjs using @iamtraction/google-translate",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 59,
-      "phase": 9
+      "phase": 9,
+      "note": "DB content translated via scripts/translate-db-content.mjs pt"
     },
     {
       "id": 1345,
@@ -4739,9 +4817,10 @@
       "target": "marketplaceCategories",
       "description": "Translate name, description for all categories",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 59,
-      "phase": 9
+      "phase": 9,
+      "note": "DB content translated via scripts/translate-db-content.mjs pt"
     },
     {
       "id": 1346,
@@ -4749,9 +4828,10 @@
       "target": "skills",
       "description": "Translate skill names",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 59,
-      "phase": 9
+      "phase": 9,
+      "note": "DB content translated via scripts/translate-db-content.mjs pt"
     },
     {
       "id": 1347,
@@ -4759,9 +4839,10 @@
       "target": "platforms",
       "description": "Translate name, description, pros, cons, features",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 59,
-      "phase": 9
+      "phase": 9,
+      "note": "DB content translated via scripts/translate-db-content.mjs pt"
     },
     {
       "id": 1348,
@@ -4769,9 +4850,10 @@
       "target": "posts",
       "description": "Translate title, excerpt, content, metaTitle, metaDescription",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 59,
-      "phase": 9
+      "phase": 9,
+      "note": "DB content translated via scripts/translate-db-content.mjs pt"
     },
     {
       "id": 1349,
@@ -4779,9 +4861,10 @@
       "target": "tools",
       "description": "Translate name, description",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 59,
-      "phase": 9
+      "phase": 9,
+      "note": "DB content translated via scripts/translate-db-content.mjs pt"
     },
     {
       "id": 1350,
@@ -4789,9 +4872,10 @@
       "target": "seoPages",
       "description": "Translate metaTitle, metaDescription, intro, sections, faqItems",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 59,
-      "phase": 9
+      "phase": 9,
+      "note": "DB content translated via scripts/translate-db-content.mjs pt"
     },
     {
       "id": 1351,
@@ -4799,9 +4883,10 @@
       "target": "resources",
       "description": "Translate metaTitle, metaDescription, intro, sections, faqItems",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 59,
-      "phase": 9
+      "phase": 9,
+      "note": "DB content translated via scripts/translate-db-content.mjs pt"
     },
     {
       "id": 1352,
@@ -4809,9 +4894,10 @@
       "file": "src/app/layout.js",
       "description": "Root metadata: locale-aware title/description",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 60,
-      "phase": 10
+      "phase": 10,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1353,
@@ -4819,9 +4905,10 @@
       "target": "page-metadata",
       "description": "All page generateMetadata() functions for NL locale",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 60,
-      "phase": 10
+      "phase": 10,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1354,
@@ -4829,9 +4916,10 @@
       "file": "src/app/sitemap.ts",
       "description": "Include NL pages with hreflang",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 60,
-      "phase": 10
+      "phase": 10,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1355,
@@ -4839,9 +4927,10 @@
       "file": "src/app/robots.ts",
       "description": "Verify robots.txt for both locales",
       "locale": "pt",
-      "status": "pending",
+      "status": "completed",
       "priority": 60,
-      "phase": 10
+      "phase": 10,
+      "note": "Components already use t(key) from NL phase; messages/pt.json created"
     },
     {
       "id": 1356,
