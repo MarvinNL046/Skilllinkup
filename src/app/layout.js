@@ -12,7 +12,7 @@ const dmSans = DM_Sans({
   variable: "--font-dm-sans",
 });
 
-const ogLocaleMap = { en: "en_US", nl: "nl_NL" };
+const ogLocaleMap = { en: "en_US", nl: "nl_NL", de: "de_DE", fr: "fr_FR", es: "es_ES", pt: "pt_BR", it: "it_IT", pl: "pl_PL" };
 
 export async function generateMetadata() {
   const locale = await getLocale();
