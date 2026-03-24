@@ -86,15 +86,34 @@ function extractSignificantWords(text: string, minLength = 2): string[] {
     .filter((w) => !STOP_WORDS.has(w) && w.length >= minLength);
 }
 
+function stemWord(word: string): string {
+  let w = word.replace(/[()]/g, "").replace(/'s$/i, "");
+  if (w.endsWith("ies") && w.length > 4) w = w.slice(0, -3) + "y";
+  else if (w.endsWith("ers") && w.length > 4) w = w.slice(0, -1); // freelancers → freelancer
+  else if (w.endsWith("ing") && w.length > 5) w = w.slice(0, -3);
+  else if (w.endsWith("es") && w.length > 4) w = w.slice(0, -2);
+  else if (w.endsWith("s") && !w.endsWith("ss") && w.length > 3) w = w.slice(0, -1);
+  return w;
+}
+
 function isSlugMatch(topicWords: string[], slug: string): boolean {
   if (topicWords.length === 0) return false;
-  // All significant words in the slug = definite match
-  const allMatch = topicWords.every((word) => slug.includes(word));
-  if (allMatch) return true;
-  // Fuzzy: 60%+ of words match with at least 3 hits
-  const matchCount = topicWords.filter((word) => slug.includes(word)).length;
-  const matchRatio = matchCount / topicWords.length;
-  return matchCount >= 3 && matchRatio >= 0.5;
+
+  // Stem topic words for better matching (e.g. "freelancers" → "freelancer")
+  const stemmedTopicWords = topicWords.map(stemWord);
+  const slugParts = slug.split("-");
+
+  const matchCount = stemmedTopicWords.filter((word) =>
+    // Check both: word contained in slug, OR slug part starts with word stem
+    slug.includes(word) || slugParts.some((part) => part.startsWith(word) || word.startsWith(part))
+  ).length;
+
+  // All significant words match = definite duplicate
+  if (matchCount === stemmedTopicWords.length) return true;
+
+  // Relaxed fuzzy: 2+ matches AND 40%+ ratio (lowered from 50% to catch more dupes)
+  const matchRatio = matchCount / stemmedTopicWords.length;
+  return matchCount >= 2 && matchRatio >= 0.4;
 }
 
 // ---------------------------------------------------------------------------

@@ -90,7 +90,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         );
       }
     } catch (err) {
-      console.warn("[pipeline/generate] Failed to fetch existing slugs from Convex:", err);
+      console.error("[pipeline/generate] Failed to fetch existing slugs from Convex:", err);
+      // SAFETY: If we can't check existing posts, abort to prevent duplicates
+      return NextResponse.json(
+        { error: "Cannot verify existing posts — aborting to prevent duplicates", details: String(err) },
+        { status: 503 }
+      );
     }
 
     // Step c: Select topic
@@ -194,6 +199,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         );
       } else {
         console.log(`[pipeline/generate] Post upserted to Convex: ${post.slug}`);
+
+        // Add slug to existingSlugs so any subsequent calls in this
+        // invocation won't re-select the same topic
+        existingSlugs.push(post.slug);
       }
     }
 
