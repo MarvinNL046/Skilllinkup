@@ -59,6 +59,19 @@ export default async function RootLayout({ children }) {
 
   return (
     <html lang={locale}>
+      <head>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-BRER9FEMTE" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-BRER9FEMTE');
+            `,
+          }}
+        />
+      </head>
       <body className={`${dmSans.className}`}>
         <NextIntlClientProvider messages={messages}>
           <ClientLayout>{children}</ClientLayout>
