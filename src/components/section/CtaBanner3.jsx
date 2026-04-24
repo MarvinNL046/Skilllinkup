@@ -1,80 +1,104 @@
 import Image from "next/image";
+import { BadgeCheck, DollarSign, ShieldCheck } from "lucide-react";
 
+/**
+ * "Why SkillLinkup" feature list on the /about page. Rebuilt on the
+ * design system — 3-column icon/title/body block on the left, illustrated
+ * image on the right.
+ */
 export default function CtaBanner3() {
+  const features = [
+    {
+      icon: BadgeCheck,
+      title: "Proof of quality",
+      body: "Check any pro's work samples, client reviews, and identity verification.",
+    },
+    {
+      icon: DollarSign,
+      title: "No cost until you hire",
+      body: "Interview potential fits for your job, negotiate rates, and only pay for work you approve.",
+    },
+    {
+      icon: ShieldCheck,
+      title: "Safe and secure",
+      body: "Focus on your work knowing we help protect your data and privacy. We're here with 24/7 support if you need it.",
+    },
+  ];
+
   return (
-    <>
-      <section className="p-0">
-        <div className="cta-banner mx-auto maxw1600 pt120 pt60-lg pb90 pb60-lg position-relative overflow-hidden mx20-lg">
-          <div className="container">
-            <div className="row align-items-center">
-              <div
-                className="col-md-6 col-xl-5 pl30-md pl15-xs wow fadeInRight"
-                data-wow-delay="500ms"
-              >
-                <div className="mb30">
-                  <div className="main-title">
-                    <h2 className="title">
-                      A whole world of freelance
-                      <br className="d-none d-lg-block" />
-                      talent at your fingertips
-                    </h2>
+    <section style={{ padding: "var(--space-14) 0" }}>
+      <div className="container">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            gap: "var(--space-10)",
+            alignItems: "center",
+          }}
+        >
+          <div>
+            <h2
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "var(--text-h2)",
+                fontWeight: 500,
+                letterSpacing: "-0.01em",
+                marginBottom: "var(--space-7)",
+              }}
+            >
+              A whole world of freelance talent at your fingertips
+            </h2>
+            <div style={{ display: "grid", gap: "var(--space-6)" }}>
+              {features.map(({ icon: Icon, title, body }) => (
+                <div
+                  key={title}
+                  style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-4)" }}
+                >
+                  <div
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: "var(--radius-md)",
+                      background: "var(--primary-50)",
+                      color: "var(--primary-600)",
+                      display: "grid",
+                      placeItems: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Icon size={20} />
+                  </div>
+                  <div style={{ minWidth: 0 }}>
+                    <div
+                      style={{
+                        fontFamily: "var(--font-display)",
+                        fontSize: "var(--text-h5)",
+                        fontWeight: 500,
+                        marginBottom: 4,
+                      }}
+                    >
+                      {title}
+                    </div>
+                    <p className="body-md" style={{ color: "var(--text-secondary)", margin: 0 }}>
+                      {body}
+                    </p>
                   </div>
                 </div>
-                <div className="why-chose-list">
-                  <div className="list-one d-flex align-items-start mb30">
-                    <span className="list-icon flex-shrink-0 flaticon-badge" />
-                    <div className="list-content flex-grow-1 ml20">
-                      <h4 className="mb-1">Proof of quality</h4>
-                      <p className="text mb-0 fz15">
-                        Check any pro's work samples, client reviews, and
-                        identity
-                        <br className="d-none d-lg-block" />
-                        verification.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="list-one d-flex align-items-start mb30">
-                    <span className="list-icon flex-shrink-0 flaticon-money" />
-                    <div className="list-content flex-grow-1 ml20">
-                      <h4 className="mb-1">No cost until you hire</h4>
-                      <p className="text mb-0 fz15">
-                        Interview potential fits for your job, negotiate rates,
-                        and only pay
-                        <br className="d-none d-lg-block" />
-                        for work you approve.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="list-one d-flex align-items-start mb30">
-                    <span className="list-icon flex-shrink-0 flaticon-security" />
-                    <div className="list-content flex-grow-1 ml20">
-                      <h4 className="mb-1">Safe and secure</h4>
-                      <p className="text mb-0 fz15">
-                        Focus on your work knowing we help protect your data and
-                        privacy. We're here with 24/7 support if you need it.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                className="col-md-6 col-xl-6 offset-xl-1 wow fadeInLeft"
-                data-wow-delay="500ms"
-              >
-                <div className="about-img">
-                  <Image
-                    height={700}
-                    width={700}
-                    className="w100 h-100 bdrs16"
-                    src="/images/about/about-6.png"
-                    alt="Diverse freelancers collaborating remotely on laptops and screens"
-                  />
-                </div>
-              </div>
+              ))}
             </div>
           </div>
+
+          <div>
+            <Image
+              height={700}
+              width={700}
+              style={{ width: "100%", height: "auto", borderRadius: "var(--radius-2xl)" }}
+              src="/images/about/about-6.png"
+              alt="Diverse freelancers collaborating remotely on laptops and screens"
+            />
+          </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }

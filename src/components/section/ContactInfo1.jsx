@@ -3,7 +3,12 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { Mail, Clock, MapPin, ArrowRight } from "lucide-react";
 
+/**
+ * /contact form + contact-method summary on the SkillLinkup DS.
+ * Uses .input class (sonner toast stack is themed via DS tokens).
+ */
 export default function ContactInfo1() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -55,134 +60,189 @@ export default function ContactInfo1() {
     }
   }
 
+  const contactFacts = [
+    { icon: Mail, title: t("emailLabel"), value: "info@skilllinkup.com" },
+    { icon: Clock, title: t("responseTime"), value: t("responseTimeDesc") },
+    { icon: MapPin, title: t("location"), value: t("locationDesc") },
+  ];
+
+  const labelStyle = {
+    display: "block",
+    fontFamily: "var(--font-display)",
+    fontSize: "var(--text-body-sm)",
+    fontWeight: 500,
+    color: "var(--text-primary)",
+    marginBottom: "var(--space-2)",
+  };
+
   return (
-    <>
-      <section className="pt-0">
-        <div className="container">
-          <div className="row wow fadeInUp" data-wow-delay="300ms">
-            <div className="col-lg-6">
-              <div className="position-relative mt40">
-                <div className="main-title">
-                  <h4 className="form-title mb25">{t("getInTouch")}</h4>
-                  <p className="text">{t("getInTouchDesc")}</p>
-                </div>
-                <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                  <div className="icon flex-shrink-0">
-                    <span className="flaticon-mail" />
-                  </div>
-                  <div className="details">
-                    <h5 className="title">{t("emailLabel")}</h5>
-                    <p className="mb-0 text">info@skilllinkup.com</p>
-                  </div>
-                </div>
-                <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                  <div className="icon flex-shrink-0">
-                    <span className="flaticon-clock" />
-                  </div>
-                  <div className="details">
-                    <h5 className="title">{t("responseTime")}</h5>
-                    <p className="mb-0 text">{t("responseTimeDesc")}</p>
-                  </div>
-                </div>
-                <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                  <div className="icon flex-shrink-0">
-                    <span className="flaticon-tracking" />
-                  </div>
-                  <div className="details">
-                    <h5 className="title">{t("location")}</h5>
-                    <p className="mb-0 text">{t("locationDesc")}</p>
-                  </div>
-                </div>
-              </div>
+    <section style={{ padding: "var(--space-10) 0 var(--space-16)" }}>
+      <div className="container">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+            gap: "var(--space-10)",
+          }}
+        >
+          {/* Left — contact facts */}
+          <div>
+            <div style={{ marginBottom: "var(--space-8)" }}>
+              <h2
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "var(--text-h2)",
+                  fontWeight: 500,
+                  letterSpacing: "-0.01em",
+                  margin: 0,
+                  marginBottom: "var(--space-3)",
+                }}
+              >
+                {t("getInTouch")}
+              </h2>
+              <p className="body-md" style={{ color: "var(--text-secondary)", margin: 0 }}>
+                {t("getInTouchDesc")}
+              </p>
             </div>
-            <div className="col-lg-6">
-              <div className="contact-page-form default-box-shadow1 bdrs8 bdr1 p50 mb30-md bgc-white">
-                <h4 className="form-title mb25">{t("sendUsMessage")}</h4>
-                <p className="text mb30">{t("sendUsMessageDesc")}</p>
-                <form className="form-style1" onSubmit={handleSubmit}>
-                  <div className="row">
-                    <div className="col-md-6">
-                      <div className="mb20">
-                        <label className="heading-color ff-heading fw500 mb10">
-                          {t("name")}
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder={t("namePlaceholder")}
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                        />
-                      </div>
+
+            <div style={{ display: "grid", gap: "var(--space-5)" }}>
+              {contactFacts.map(({ icon: Icon, title, value }) => (
+                <div
+                  key={title}
+                  style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-4)" }}
+                >
+                  <div
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: "var(--radius-md)",
+                      background: "var(--primary-50)",
+                      color: "var(--primary-600)",
+                      display: "grid",
+                      placeItems: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Icon size={18} />
+                  </div>
+                  <div style={{ minWidth: 0 }}>
+                    <div
+                      style={{
+                        fontFamily: "var(--font-display)",
+                        fontSize: "var(--text-h5)",
+                        fontWeight: 500,
+                        marginBottom: 2,
+                      }}
+                    >
+                      {title}
                     </div>
-                    <div className="col-md-6">
-                      <div className="mb20">
-                        <label className="heading-color ff-heading fw500 mb10">
-                          {t("email")}
-                        </label>
-                        <input
-                          type="email"
-                          className="form-control"
-                          placeholder={t("emailPlaceholder")}
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-12">
-                      <div className="mb20">
-                        <label className="heading-color ff-heading fw500 mb10">
-                          {t("subject")}
-                        </label>
-                        <select
-                          className="form-control form-select"
-                          value={subject}
-                          onChange={(e) => setSubject(e.target.value)}
-                        >
-                          <option value="">{t("selectTopic")}</option>
-                          <option value="general">{t("topicGeneral")}</option>
-                          <option value="account">{t("topicAccount")}</option>
-                          <option value="freelancer">{t("topicFreelancer")}</option>
-                          <option value="client">{t("topicClient")}</option>
-                          <option value="payment">{t("topicPayment")}</option>
-                          <option value="partnership">{t("topicPartnership")}</option>
-                          <option value="bug">{t("topicBug")}</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="col-md-12">
-                      <div className="mb20">
-                        <label className="heading-color ff-heading fw500 mb10">
-                          {t("message")}
-                        </label>
-                        <textarea
-                          cols={30}
-                          rows={6}
-                          placeholder={t("messagePlaceholder")}
-                          value={message}
-                          onChange={(e) => setMessage(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-12">
-                      <div>
-                        <button
-                          type="submit"
-                          className="ud-btn btn-thm"
-                          disabled={sending}
-                        >
-                          {sending ? t("sending") : t("sendMessage")}
-                          <i className="fal fa-arrow-right-long" />
-                        </button>
-                      </div>
+                    <div className="body-md" style={{ color: "var(--text-secondary)" }}>
+                      {value}
                     </div>
                   </div>
-                </form>
-              </div>
+                </div>
+              ))}
             </div>
           </div>
+
+          {/* Right — form */}
+          <div
+            className="card"
+            style={{
+              padding: "var(--space-8)",
+            }}
+          >
+            <h2
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "var(--text-h3)",
+                fontWeight: 500,
+                letterSpacing: "-0.01em",
+                marginBottom: "var(--space-2)",
+              }}
+            >
+              {t("sendUsMessage")}
+            </h2>
+            <p
+              className="body-md"
+              style={{ color: "var(--text-secondary)", marginBottom: "var(--space-6)" }}
+            >
+              {t("sendUsMessageDesc")}
+            </p>
+            <form onSubmit={handleSubmit}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                  gap: "var(--space-4)",
+                  marginBottom: "var(--space-4)",
+                }}
+              >
+                <div>
+                  <label style={labelStyle}>{t("name")}</label>
+                  <input
+                    type="text"
+                    className="input"
+                    placeholder={t("namePlaceholder")}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label style={labelStyle}>{t("email")}</label>
+                  <input
+                    type="email"
+                    className="input"
+                    placeholder={t("emailPlaceholder")}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div style={{ marginBottom: "var(--space-4)" }}>
+                <label style={labelStyle}>{t("subject")}</label>
+                <select
+                  className="input"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                >
+                  <option value="">{t("selectTopic")}</option>
+                  <option value="general">{t("topicGeneral")}</option>
+                  <option value="account">{t("topicAccount")}</option>
+                  <option value="freelancer">{t("topicFreelancer")}</option>
+                  <option value="client">{t("topicClient")}</option>
+                  <option value="payment">{t("topicPayment")}</option>
+                  <option value="partnership">{t("topicPartnership")}</option>
+                  <option value="bug">{t("topicBug")}</option>
+                </select>
+              </div>
+
+              <div style={{ marginBottom: "var(--space-6)" }}>
+                <label style={labelStyle}>{t("message")}</label>
+                <textarea
+                  className="input"
+                  rows={6}
+                  placeholder={t("messagePlaceholder")}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  style={{ minHeight: 140, resize: "vertical" }}
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="btn btn--primary btn--lg"
+                disabled={sending}
+                style={{ width: "100%", justifyContent: "center" }}
+              >
+                {sending ? t("sending") : t("sendMessage")}
+                <ArrowRight size={16} />
+              </button>
+            </form>
+          </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }

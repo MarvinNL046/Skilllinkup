@@ -1,6 +1,7 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { Plus, Minus } from "lucide-react";
 
 const faqs = [
   {
@@ -35,69 +36,111 @@ const faqs = [
   },
 ];
 
+/**
+ * FAQ accordion on the DS — controlled state replaces Bootstrap's
+ * data-bs-toggle. Single-open model with first item expanded by default.
+ */
 export default function OurFaq1() {
-  const path = usePathname();
+  const [openId, setOpenId] = useState(faqs[0].id);
 
   return (
-    <>
-      <section
-        className={`our-faqs pb50 ${
-          path === "/become-seller" ? "pt-0" : path === "/contact" ? "pb70" : ""
-        }`}
-      >
-        <div className="container">
-          <div className="row wow fadeInUp">
-            <div className="col-lg-6 m-auto">
-              <div className="main-title text-center">
-                <h2 className="title">Frequently Asked Questions</h2>
-                <p className="paragraph mt10">
-                  Everything you need to know about using SkillLinkup.
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="row wow fadeInUp" data-wow-delay="300ms">
-            <div className="col-lg-8 mx-auto">
-              <div className="ui-content">
-                <div className="accordion-style1 faq-page mb-4 mb-lg-5">
-                  <div className="accordion" id="accordionExample">
-                    {faqs.map((faq, index) => (
-                      <div
-                        key={faq.id}
-                        className={`accordion-item${index === 0 ? " active" : ""}`}
-                      >
-                        <h2
-                          className="accordion-header"
-                          id={`heading${faq.id}`}
-                        >
-                          <button
-                            className={`accordion-button${index !== 0 ? " collapsed" : ""}`}
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target={`#collapse${faq.id}`}
-                            aria-expanded={index === 0 ? "true" : "false"}
-                            aria-controls={`collapse${faq.id}`}
-                          >
-                            {faq.question}
-                          </button>
-                        </h2>
-                        <div
-                          id={`collapse${faq.id}`}
-                          className={`accordion-collapse collapse${index === 0 ? " show" : ""}`}
-                          aria-labelledby={`heading${faq.id}`}
-                          data-parent="#accordionExample"
-                        >
-                          <div className="accordion-body">{faq.answer}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+    <section style={{ padding: "var(--space-14) 0" }}>
+      <div className="container">
+        <div
+          style={{ maxWidth: 640, margin: "0 auto var(--space-10)", textAlign: "center" }}
+        >
+          <span className="overline" style={{ color: "var(--primary-600)" }}>
+            FAQ
+          </span>
+          <h2
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "var(--text-h2)",
+              fontWeight: 500,
+              letterSpacing: "-0.01em",
+              margin: "var(--space-2) 0 var(--space-3)",
+            }}
+          >
+            Frequently asked questions
+          </h2>
+          <p className="body-md" style={{ color: "var(--text-secondary)", margin: 0 }}>
+            Everything you need to know about using SkillLinkup.
+          </p>
+        </div>
+
+        <div style={{ maxWidth: 760, margin: "0 auto" }}>
+          <div style={{ display: "grid", gap: "var(--space-3)" }}>
+            {faqs.map((faq) => {
+              const isOpen = openId === faq.id;
+              return (
+                <div
+                  key={faq.id}
+                  className="card"
+                  style={{
+                    padding: 0,
+                    overflow: "hidden",
+                    border: `1px solid ${isOpen ? "var(--primary-500)" : "var(--border-subtle)"}`,
+                    boxShadow: isOpen ? "var(--shadow-2)" : "none",
+                    transition: "border-color 160ms, box-shadow 160ms",
+                  }}
+                >
+                  <button
+                    type="button"
+                    aria-expanded={isOpen}
+                    aria-controls={`faq-body-${faq.id}`}
+                    onClick={() => setOpenId(isOpen ? null : faq.id)}
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "var(--space-4)",
+                      padding: "var(--space-5) var(--space-6)",
+                      background: "transparent",
+                      border: "none",
+                      cursor: "pointer",
+                      textAlign: "left",
+                      fontFamily: "var(--font-display)",
+                      fontSize: "var(--text-h5)",
+                      fontWeight: 500,
+                      color: "var(--text-primary)",
+                    }}
+                  >
+                    {faq.question}
+                    <span
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: "999px",
+                        background: isOpen ? "var(--primary-600)" : "var(--surface-2)",
+                        color: isOpen ? "var(--neutral-0)" : "var(--text-primary)",
+                        display: "grid",
+                        placeItems: "center",
+                        flexShrink: 0,
+                        transition: "background 160ms, color 160ms",
+                      }}
+                    >
+                      {isOpen ? <Minus size={16} /> : <Plus size={16} />}
+                    </span>
+                  </button>
+                  {isOpen && (
+                    <div
+                      id={`faq-body-${faq.id}`}
+                      className="body-md"
+                      style={{
+                        padding: "0 var(--space-6) var(--space-6)",
+                        color: "var(--text-secondary)",
+                      }}
+                    >
+                      {faq.answer}
+                    </div>
+                  )}
                 </div>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
