@@ -8,6 +8,9 @@ import DashboardNavigation from "../header/DashboardNavigation";
 import Link from "next/link";
 import { useEffect } from "react";
 import { useTranslations } from "next-intl";
+import {
+  Briefcase, CheckCircle2, Clock, Wallet, ArrowRight,
+} from "lucide-react";
 
 export default function DashboardInfo() {
   const t = useTranslations("dashboard");
@@ -85,190 +88,267 @@ export default function DashboardInfo() {
     });
   }
 
+  const statCards = [
+    {
+      Icon: Briefcase,
+      accent: "var(--primary-600)",
+      tint:   "var(--primary-50)",
+      label: t("activeGigs"),
+      subtitle: t("activeGigsSubtitle"),
+      value: isLoading ? "…" : stats?.activeGigs ?? 0,
+      hint: t("liveOnMarketplace"),
+    },
+    {
+      Icon: CheckCircle2,
+      accent: "oklch(55% 0.17 268)",
+      tint:   "oklch(96% 0.04 268)",
+      label: t("totalOrders"),
+      subtitle: t("totalOrdersSubtitle"),
+      value: isLoading ? "…" : stats?.totalOrders ?? 0,
+      hint: (
+        <>
+          <strong style={{ color: "var(--primary-600)" }}>
+            {isLoading ? "…" : stats?.pendingOrders ?? 0}
+          </strong>{" "}
+          {t("inProgress")}
+        </>
+      ),
+    },
+    {
+      Icon: Clock,
+      accent: "var(--secondary-600, oklch(58% 0.16 38))",
+      tint:   "var(--secondary-50, oklch(96% 0.04 48))",
+      label: t("pendingOrders"),
+      subtitle: t("pendingOrdersSubtitle"),
+      value: isLoading ? "…" : stats?.pendingOrders ?? 0,
+      hint: t("activeQueue"),
+    },
+    {
+      Icon: Wallet,
+      accent: "var(--success-700)",
+      tint:   "var(--success-50)",
+      label: t("totalEarnings"),
+      subtitle: t("totalEarningsSubtitle"),
+      value: isLoading ? "…" : formatCurrency(stats?.totalEarnings ?? 0),
+      hint: t("lifetimeEarnings"),
+    },
+  ];
+
   return (
     <>
-      <div className="dashboard__content hover-bgc-color">
-        <div className="row pb40">
-          <div className="col-lg-12">
-            <DashboardNavigation />
-          </div>
-          <div className="col-lg-12">
-            <div className="dashboard_title_area">
-              <h2>{t("greeting", { name: convexUser?.name?.split(" ")[0] || "there" })}</h2>
-              <p className="text">
-                {freelancerProfile?.tagline || t("welcomeBack")}
-              </p>
-            </div>
-          </div>
+      <DashboardNavigation />
+
+      <div style={{ marginBottom: "var(--space-8)" }}>
+        <h1
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "var(--text-h2)",
+            fontWeight: 500,
+            letterSpacing: "-0.01em",
+            margin: 0,
+            marginBottom: "var(--space-2)",
+          }}
+        >
+          {t("greeting", { name: convexUser?.name?.split(" ")[0] || "there" })}
+        </h1>
+        <p className="body-md" style={{ color: "var(--text-secondary)", margin: 0 }}>
+          {freelancerProfile?.tagline || t("welcomeBack")}
+        </p>
+      </div>
+
+      {convexUser === undefined && !notAuthenticated && (
+        <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-6)", textAlign: "center" }}>
+          <div
+            role="status"
+            aria-label="Loading"
+            style={{
+              width: 24,
+              height: 24,
+              margin: "0 auto",
+              border: "3px solid var(--border-subtle)",
+              borderTopColor: "var(--primary-600)",
+              borderRadius: "999px",
+              animation: "spin 0.9s linear infinite",
+            }}
+          />
         </div>
-        {convexUser === undefined && !notAuthenticated && (
-          <div className="row"><div className="col-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30">
-              <div className="text-center py-4">
-                <div className="spinner-border spinner-border-sm text-success" role="status" />
-              </div>
-            </div>
-          </div></div>
-        )}
-        {convexUser === null && !notAuthenticated && (
-          <div className="row"><div className="col-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30">
-              <div className="text-center py-4">
-                <p className="text mb-0">{t("settingUpAccount")}</p>
-              </div>
-            </div>
-          </div></div>
-        )}
-        {notAuthenticated && (
-          <div className="row"><div className="col-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30">
-              <p className="text text-center mb-0">{t("signInPrompt")}</p>
-            </div>
-          </div></div>
-        )}
-        {!notAuthenticated && (<>
+      )}
+      {convexUser === null && !notAuthenticated && (
+        <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-6)", textAlign: "center" }}>
+          <p className="body-md" style={{ color: "var(--text-secondary)", margin: 0 }}>
+            {t("settingUpAccount")}
+          </p>
+        </div>
+      )}
+      {notAuthenticated && (
+        <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-6)", textAlign: "center" }}>
+          <p className="body-md" style={{ color: "var(--text-secondary)", margin: 0 }}>
+            {t("signInPrompt")}
+          </p>
+        </div>
+      )}
+      {!notAuthenticated && (<>
         {showBanner && (
-          <div className="row mb20">
-            <div className="col-12">
-              <div
-                className="bdrs8 p20 d-flex align-items-center justify-content-between flex-wrap gap-3"
-                style={{ background: "#fdf0f4", border: "1px solid #fbd5e2" }}
-              >
-                <div className="d-flex align-items-center gap-3">
-                  <div style={{ minWidth: 140 }}>
-                    <div className="fz13 text-muted mb-1">{t("profileCompleteness")}</div>
-                    <div style={{ height: 6, background: "#fbd5e2", borderRadius: 3 }}>
-                      <div
-                        style={{
-                          height: "100%",
-                          width: `${completenessPct}%`,
-                          background: "#ef2b70",
-                          borderRadius: 3,
-                          transition: "width 0.3s ease",
-                        }}
-                      />
-                    </div>
-                    <div className="fz12 text-muted mt-1">{t("percentComplete", { pct: completenessPct })}</div>
-                  </div>
-                  <div>
-                    {completenessItems
-                      .filter(i => !i.done)
-                      .slice(0, 2)
-                      .map(item => (
-                        <div key={item.label} className="fz13 text-muted">
-                          <span style={{ color: "#ef2b70" }}>•</span> {item.label}
-                        </div>
-                      ))}
-                  </div>
-                </div>
-                <Link
-                  href="/my-profile"
-                  className="btn btn-sm bdrs8 text-white fz13"
-                  style={{ background: "#ef2b70" }}
+          <div
+            className="card"
+            style={{
+              padding: "var(--space-5)",
+              marginBottom: "var(--space-6)",
+              background: "var(--primary-50)",
+              borderColor: "oklch(87% 0.06 293)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "var(--space-5)",
+              flexWrap: "wrap",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "var(--space-5)", flexWrap: "wrap", flex: 1 }}>
+              <div style={{ minWidth: 160 }}>
+                <div
+                  className="overline"
+                  style={{ color: "var(--primary-700)", marginBottom: 6 }}
                 >
-                  {t("completeProfile")} →
-                </Link>
+                  {t("profileCompleteness")}
+                </div>
+                <div
+                  style={{
+                    height: 6,
+                    background: "oklch(88% 0.04 293)",
+                    borderRadius: 3,
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      height: "100%",
+                      width: `${completenessPct}%`,
+                      background: "var(--primary-600)",
+                      borderRadius: 3,
+                      transition: "width 0.3s ease",
+                    }}
+                  />
+                </div>
+                <div
+                  className="body-sm"
+                  style={{ color: "var(--text-tertiary)", marginTop: 4 }}
+                >
+                  {t("percentComplete", { pct: completenessPct })}
+                </div>
+              </div>
+              <div style={{ display: "grid", gap: 2 }}>
+                {completenessItems
+                  .filter((i) => !i.done)
+                  .slice(0, 2)
+                  .map((item) => (
+                    <div
+                      key={item.label}
+                      className="body-sm"
+                      style={{ color: "var(--text-secondary)" }}
+                    >
+                      <span style={{ color: "var(--primary-600)" }}>•</span> {item.label}
+                    </div>
+                  ))}
               </div>
             </div>
+            <Link href="/my-profile" className="btn btn--primary btn--sm">
+              {t("completeProfile")}
+              <ArrowRight size={14} />
+            </Link>
           </div>
         )}
-        <div className="row">
-          <div className="col-sm-6 col-xxl-3">
-            <div className="d-flex align-items-center justify-content-between statistics_funfact" style={{ borderLeft: "4px solid #2A8703" }}>
-              <div className="details">
-                <div className="fz15">{t("activeGigs")}</div>
-                <div className="fz11 text-muted" style={{ marginTop: -2 }}>{t("activeGigsSubtitle")}</div>
-                <div className="title">
-                  {isLoading ? (
-                    <span className="text-muted fz20">...</span>
-                  ) : (
-                    stats?.activeGigs ?? 0
-                  )}
+
+        {/* Stat cards */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: "var(--space-4)",
+            marginBottom: "var(--space-8)",
+          }}
+        >
+          {statCards.map(({ Icon, accent, tint, label, subtitle, value, hint }) => (
+            <div
+              key={label}
+              className="card"
+              style={{
+                padding: "var(--space-5)",
+                borderLeft: `4px solid ${accent}`,
+                display: "flex",
+                alignItems: "flex-start",
+                justifyContent: "space-between",
+                gap: "var(--space-4)",
+              }}
+            >
+              <div style={{ minWidth: 0 }}>
+                <div
+                  className="body-sm"
+                  style={{ color: "var(--text-secondary)", fontWeight: 500 }}
+                >
+                  {label}
                 </div>
-                <div className="text fz14">
-                  {t("liveOnMarketplace")}
+                <div
+                  style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: -2 }}
+                >
+                  {subtitle}
                 </div>
-              </div>
-              <div className="icon text-center">
-                <i className="flaticon-contract" />
-              </div>
-            </div>
-          </div>
-          <div className="col-sm-6 col-xxl-3">
-            <div className="d-flex align-items-center justify-content-between statistics_funfact" style={{ borderLeft: "4px solid #6366f1" }}>
-              <div className="details">
-                <div className="fz15">{t("totalOrders")}</div>
-                <div className="fz11 text-muted" style={{ marginTop: -2 }}>{t("totalOrdersSubtitle")}</div>
-                <div className="title">
-                  {isLoading ? (
-                    <span className="text-muted fz20">...</span>
-                  ) : (
-                    stats?.totalOrders ?? 0
-                  )}
+                <div
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontSize: "var(--text-display-sm, 2rem)",
+                    fontWeight: 500,
+                    letterSpacing: "-0.02em",
+                    margin: "var(--space-2) 0",
+                    color: "var(--text-primary)",
+                  }}
+                >
+                  {value}
                 </div>
-                <div className="text fz14">
-                  <span className="text-thm">{isLoading ? "..." : stats?.pendingOrders ?? 0}</span> {t("inProgress")}
-                </div>
-              </div>
-              <div className="icon text-center">
-                <i className="flaticon-success" />
-              </div>
-            </div>
-          </div>
-          <div className="col-sm-6 col-xxl-3">
-            <div className="d-flex align-items-center justify-content-between statistics_funfact" style={{ borderLeft: "4px solid #f59e0b" }}>
-              <div className="details">
-                <div className="fz15">{t("pendingOrders")}</div>
-                <div className="fz11 text-muted" style={{ marginTop: -2 }}>{t("pendingOrdersSubtitle")}</div>
-                <div className="title">
-                  {isLoading ? (
-                    <span className="text-muted fz20">...</span>
-                  ) : (
-                    stats?.pendingOrders ?? 0
-                  )}
-                </div>
-                <div className="text fz14">
-                  {t("activeQueue")}
+                <div className="body-sm" style={{ color: "var(--text-secondary)" }}>
+                  {hint}
                 </div>
               </div>
-              <div className="icon text-center">
-                <i className="flaticon-review" />
-              </div>
-            </div>
-          </div>
-          <div className="col-sm-6 col-xxl-3">
-            <div className="d-flex align-items-center justify-content-between statistics_funfact" style={{ borderLeft: "4px solid #10b981" }}>
-              <div className="details">
-                <div className="fz15">{t("totalEarnings")}</div>
-                <div className="fz11 text-muted" style={{ marginTop: -2 }}>{t("totalEarningsSubtitle")}</div>
-                <div className="title">
-                  {isLoading ? (
-                    <span className="text-muted fz20">...</span>
-                  ) : (
-                    formatCurrency(stats?.totalEarnings ?? 0)
-                  )}
-                </div>
-                <div className="text fz14">
-                  {t("lifetimeEarnings")}
-                </div>
-              </div>
-              <div className="icon text-center">
-                <i className="flaticon-review-1" />
+              <div
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: "var(--radius-md)",
+                  background: tint,
+                  color: accent,
+                  display: "grid",
+                  placeItems: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <Icon size={18} />
               </div>
             </div>
-          </div>
+          ))}
         </div>
-        <div className="row">
-          <div className="col-xl-8">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            gap: "var(--space-5)",
+            marginBottom: "var(--space-2)",
+          }}
+        >
+          <div style={{ gridColumn: "span 2", minWidth: 0 }} className="chart-span-2">
             <LineChart userId={userId} />
           </div>
-          <div className="col-xl-4">
+          <div style={{ minWidth: 0 }}>
             <DoughnutChart userId={userId} />
           </div>
         </div>
-        <div className="row">
-          <div className="col-md-6 col-xxl-8">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            gap: "var(--space-5)",
+          }}
+        >
+          <div style={{ gridColumn: "span 2", minWidth: 0 }} className="chart-span-2">
+            <div className="card" style={{ padding: "var(--space-6)", marginBottom: "var(--space-6)" }}>
               <div className="d-flex justify-content-between bdrb1 pb15 mb20">
                 <h5 className="title">{t("recentOrders")}</h5>
                 <Link href="/orders" className="text-decoration-underline text-thm6">{t("viewAll")}</Link>
@@ -321,8 +401,8 @@ export default function DashboardInfo() {
               )}
             </div>
           </div>
-          <div className="col-md-6 col-xxl-4">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+          <div style={{ minWidth: 0 }}>
+            <div className="card" style={{ padding: "var(--space-6)", marginBottom: "var(--space-6)" }}>
               <div className="bdrb1 pb15 mb30">
                 <h5 className="title">{t("accountSummary")}</h5>
               </div>
@@ -390,7 +470,6 @@ export default function DashboardInfo() {
           </div>
         </div>
         </>)}
-      </div>
     </>
   );
 }
