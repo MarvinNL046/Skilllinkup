@@ -25,7 +25,7 @@ export default function Header20() {
   return (
     <>
       <header
-        className="nav"
+        className="nav d-none d-xl-flex"
         style={{
           position: "sticky",
           top: 0,
