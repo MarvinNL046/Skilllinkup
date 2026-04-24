@@ -228,3 +228,30 @@ export const sendReviewReceived = internalAction({
     });
   },
 });
+
+/**
+ * Scheduled from convex/waitlist.ts:join after a successful signup.
+ * Honest messaging that we're still building — no overselling.
+ */
+export const sendWaitlistWelcome = internalAction({
+  args: {
+    to: v.string(),
+    name: v.optional(v.string()),
+    skill: v.optional(v.string()),
+    userType: v.optional(v.string()),
+    locale: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const locale = args.locale === "nl" ? "nl" : "en";
+    const subject =
+      locale === "nl"
+        ? "Je staat op de SkillLinkup wachtlijst"
+        : "You're on the SkillLinkup waitlist";
+    await sendEmail("waitlistWelcome", args.to, subject, {
+      name: args.name,
+      skill: args.skill,
+      userType: args.userType,
+      locale,
+    });
+  },
+});

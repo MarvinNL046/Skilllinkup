@@ -82,18 +82,9 @@ export default function Header19() {
                       </button>
                     </>
                   ) : (
-                    <>
-                      <Link className="login-info" href="/become-seller">
-                        {t("becomeSeller")}
-                      </Link>
-                      <Link
-                        className="login-info mr10 home18-sign-btn px30 py-1 bdrs12 ml30 bdr1-dark"
-                        href="/login"
-                      >
-                        {t("signIn")}
-                      </Link>
-                      <WaitlistButton className="ud-btn add-joining home20-join-btn bdrs12 text-white" />
-                    </>
+                    // Pre-launch: single CTA. "Become a Seller" and "Sign in"
+                    // removed from public nav; Clerk routes still reachable via URL.
+                    <WaitlistButton className="ud-btn add-joining home20-join-btn bdrs12 text-white ml15" />
                   )}
                 </div>
               </div>

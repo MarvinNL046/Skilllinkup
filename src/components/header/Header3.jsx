@@ -2,6 +2,7 @@ import Link from "next/link";
 import Navigation from "./Navigation";
 import Image from "next/image";
 import MobileNavigation3 from "./MobileNavigation3";
+import WaitlistButton from "@/components/ui/WaitlistButton";
 
 export default function Header3() {
     return (
@@ -40,27 +41,8 @@ export default function Header3() {
                                     >
                                         <span className="flaticon-loupe" />
                                     </a>
-                                    <Link
-                                        className="login-info mx15-lg mx30"
-                                        href="/become-seller"
-                                    >
-                                        <span className="d-none d-xl-inline-block">
-                                            Become a{" "}
-                                        </span>
-                                        Seller
-                                    </Link>
-                                    <Link
-                                        className="login-info mr15-lg mr30"
-                                        href="/login"
-                                    >
-                                        Sign in
-                                    </Link>
-                                    <Link
-                                        className="ud-btn btn-home3 add-joining"
-                                        href="/register"
-                                    >
-                                        Join
-                                    </Link>
+                                    {/* Pre-launch: single CTA, no Become a Seller / Sign in / Join links. */}
+                                    <WaitlistButton className="ud-btn btn-home3 add-joining mx15-lg mx30" />
                                 </div>
                             </div>
                         </div>

@@ -935,8 +935,22 @@ export default defineSchema({
 
   waitlist: defineTable({
     email: v.string(),
+    name: v.optional(v.string()),
+    // Free-form skill / role description. We want to know what people
+    // want to offer or hire for without constraining to a fixed list.
+    skill: v.optional(v.string()),
+    // "freelancer" | "client" | "both" | undefined
+    userType: v.optional(v.string()),
+    // Where they signed up (landing page path, campaign, etc.)
+    source: v.optional(v.string()),
+    locale: v.optional(v.string()),
+    // When launch notification was sent — null until we go live.
+    notifiedAt: v.optional(v.number()),
     createdAt: v.number(),
-  }).index("by_email", ["email"]),
+  })
+    .index("by_email", ["email"])
+    .index("by_skill", ["skill"])
+    .index("by_userType", ["userType"]),
 
   // ============================================================
   // RESOURCES (SEO articles: pricing guides, comparisons, how-tos)

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import WaitlistButton from "@/components/ui/WaitlistButton";
 
 export default function MobileNavigation2() {
   const { isSignedIn, user } = useUser();
@@ -38,18 +39,8 @@ export default function MobileNavigation2() {
                       />
                     </Link>
                   ) : (
-                    <Link
-                      href="/login"
-                      style={{
-                        fontSize: 14,
-                        fontWeight: 600,
-                        color: "#222",
-                        textDecoration: "none",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {t("signIn")}
-                    </Link>
+                    // Pre-launch: Sign in link replaced by Join Waitlist.
+                    <WaitlistButton className="ud-btn btn-thm bdrs8 text-white fz13 py-1 px-3" />
                   )}
                   <a
                     className="menubar"

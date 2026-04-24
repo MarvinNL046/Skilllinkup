@@ -441,7 +441,20 @@
     "errorGeneric": "Etwas ist schief gelaufen. Bitte versuchen Sie es erneut.",
     "successTitle": "Du bist auf der Liste!",
     "successDescription": "Wir benachrichtigen Sie, sobald SkillLinkup live geht.",
-    "close": "Schließen"
+    "close": "Schließen",
+    "headline": "We're not live yet — and that's on purpose.",
+    "skillLabel": "What skill do you offer? (optional)",
+    "skillPlaceholder": "e.g. logo design, WordPress dev, copywriting",
+    "userTypeLabel": "I'm joining as…",
+    "userTypeFreelancer": "a freelancer",
+    "userTypeClient": "a client / buyer",
+    "userTypeBoth": "both",
+    "userTypeSkip": "— choose —",
+    "errorInvalidEmail": "That email doesn't look right.",
+    "successShare": "Know someone who should be on this list? Forward the email — that's the most useful thing you can do.",
+    "counterSingular": "{count} person already joined",
+    "counterPlural": "{count} people already joined",
+    "counterLoading": "Loading waitlist…"
   },
   "notifications": {
     "accountTypeUpdated": "Kontotyp aktualisiert",

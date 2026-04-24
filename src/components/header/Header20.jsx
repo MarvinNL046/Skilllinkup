@@ -81,24 +81,10 @@ export default function Header20() {
                                             </button>
                                         </>
                                     ) : (
-                                        <>
-                                            <Link
-                                                className="login-info ml15"
-                                                href="/become-seller"
-                                            >
-                                                <span className="d-none d-xl-inline-block">
-                                                    Become a
-                                                </span>{" "}
-                                                Seller
-                                            </Link>
-                                            <Link
-                                                className="login-info mr10 home18-sign-btn px30 py-1 bdrs12 ml30 bdr1-dark"
-                                                href="/login"
-                                            >
-                                                Sign in
-                                            </Link>
-                                            <WaitlistButton className="ud-btn add-joining home20-join-btn bdrs12 text-white" />
-                                        </>
+                                        // Pre-launch: single CTA only. "Become a Seller" and "Sign in"
+                                        // are removed from public nav — /login and /register remain
+                                        // reachable via URL for admin/existing accounts.
+                                        <WaitlistButton className="ud-btn add-joining home20-join-btn bdrs12 text-white ml15" />
                                     )}
                                 </div>
                             </div>

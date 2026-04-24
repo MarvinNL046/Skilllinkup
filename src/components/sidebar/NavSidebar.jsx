@@ -120,23 +120,9 @@ export default function NavSidebar() {
               </Link>
             </div>
           ) : (
+            // Pre-launch: single CTA. No Sign in / Become a Seller links.
             <div className="p-3 mt-3 border-top d-flex flex-column gap-2">
-              <Link
-                href="/login"
-                className="ud-btn btn-white bdrs8 w-100 text-center"
-              >
-                <span data-bs-dismiss="offcanvas">
-                  Sign in <i className="fal fa-arrow-right-long" />
-                </span>
-              </Link>
-              <Link
-                href="/become-seller"
-                className="ud-btn btn-thm bdrs8 w-100 text-white text-center"
-              >
-                <span data-bs-dismiss="offcanvas">
-                  Become a Seller <i className="fal fa-arrow-right-long" />
-                </span>
-              </Link>
+              <WaitlistButton className="ud-btn btn-thm bdrs8 w-100 text-white text-center" />
             </div>
           )}
         </div>

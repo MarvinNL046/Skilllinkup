@@ -13,6 +13,7 @@ import { BidAcceptedEmail } from "../../../../../emails/bid-accepted";
 import { BidRejectedEmail } from "../../../../../emails/bid-rejected";
 import { NewMessageEmail } from "../../../../../emails/new-message";
 import { ReviewReceivedEmail } from "../../../../../emails/review-received";
+import { WaitlistWelcomeEmail } from "../../../../../emails/waitlist-welcome";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -28,6 +29,7 @@ const templates: Record<string, (props: any) => React.ReactElement> = {
   bidRejected: (props) => BidRejectedEmail(props),
   newMessage: (props) => NewMessageEmail(props),
   reviewReceived: (props) => ReviewReceivedEmail(props),
+  waitlistWelcome: (props) => WaitlistWelcomeEmail(props),
 };
 
 export async function POST(request: NextRequest) {
