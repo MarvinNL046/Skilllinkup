@@ -18,13 +18,15 @@ export const category = [
   { id: 8, name: "Business Consulting", path: "/online/services?q=business+consulting" },
 ];
 
+// Pre-launch: "Become a Seller" removed from footer (route still reachable
+// by URL). Remaining entries are informational / discovery — not CTA links
+// to signup flows that don't exist yet.
 export const support = [
   { id: 1, name: "Help & Support", path: "/help" },
   { id: 2, name: "FAQ", path: "/faq" },
-  { id: 3, name: "Become a Seller", path: "/become-seller" },
-  { id: 4, name: "Find Freelancers", path: "/freelancers" },
-  { id: 5, name: "Browse Projects", path: "/projects" },
-  { id: 6, name: "Find Jobs", path: "/jobs" },
+  { id: 3, name: "Find Freelancers", path: "/freelancers" },
+  { id: 4, name: "Browse Projects", path: "/projects" },
+  { id: 5, name: "Find Jobs", path: "/jobs" },
 ];
 
 export const momney = ["US$ USD", "Euro", "Pound"];

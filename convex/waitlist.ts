@@ -144,6 +144,29 @@ export const markNotified = internalMutation({
 });
 
 /**
+ * Admin / debugging helper: delete waitlist entries by email.
+ * Used to clean up test entries left behind by e2e runs.
+ */
+export const deleteByEmails = internalMutation({
+  args: { emails: v.array(v.string()) },
+  handler: async (ctx, args) => {
+    let deleted = 0;
+    for (const raw of args.emails) {
+      const email = raw.toLowerCase().trim();
+      const entry = await ctx.db
+        .query("waitlist")
+        .withIndex("by_email", (q) => q.eq("email", email))
+        .first();
+      if (entry) {
+        await ctx.db.delete(entry._id);
+        deleted++;
+      }
+    }
+    return { deleted, total: args.emails.length };
+  },
+});
+
+/**
  * One-off bulk import used to migrate pre-waitlist signups into the
  * waitlist table as single source of truth for the launch blast.
  *
