@@ -154,6 +154,12 @@ a.btn-thm {
   box-shadow: var(--shadow-2) !important;
 }
 
+/* Shared spinner keyframe for DS loading states */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
 /* Legal / editorial long-form pages (terms, privacy, cookie, editorial,
    affiliate-disclosure, authors). Template uses .our-terms .grids with
    h4.title. Remap to DS type scale + comfortable reading measure. */
