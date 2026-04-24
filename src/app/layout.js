@@ -1,4 +1,4 @@
-import { DM_Sans } from "next/font/google";
+import { DM_Sans, Poppins, Inter, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import "react-tooltip/dist/react-tooltip.css";
 import "rc-slider/assets/index.css";
@@ -6,10 +6,33 @@ import ClientLayout from "@/components/ClientLayout";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 
+// Legacy DM_Sans — kept until all pages migrated to design-system typography
 const dmSans = DM_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
   variable: "--font-dm-sans",
+});
+
+// Design-system typography. Poppins as primary sans, Inter as UI-scale
+// companion (better at small sizes), Instrument Serif for display accents.
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-poppins",
+  display: "swap",
+});
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-inter",
+  display: "swap",
+});
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
+  variable: "--font-instrument-serif",
+  display: "swap",
 });
 
 const ogLocaleMap = { en: "en_US", nl: "nl_NL", de: "de_DE", fr: "fr_FR", es: "es_ES", pt: "pt_BR", it: "it_IT", pl: "pl_PL" };
@@ -58,7 +81,10 @@ export default async function RootLayout({ children }) {
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
+    <html
+      lang={locale}
+      className={`${poppins.variable} ${inter.variable} ${instrumentSerif.variable} ${dmSans.variable}`}
+    >
       <head>
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-BRER9FEMTE" />
         <script
@@ -72,7 +98,7 @@ export default async function RootLayout({ children }) {
           }}
         />
       </head>
-      <body className={`${dmSans.className}`}>
+      <body className={poppins.className}>
         <NextIntlClientProvider messages={messages}>
           <ClientLayout>{children}</ClientLayout>
         </NextIntlClientProvider>

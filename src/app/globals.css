@@ -1,3 +1,4 @@
+/* --- Legacy theme CSS (Bootstrap + template) — phased out during design-system rollout --- */
 @import "./../../public/css/bootstrap.min.css";
 @import "./../../public/css/animate.css";
 @import "./../../public/css/ace-responsive-menu.css";
@@ -11,6 +12,15 @@
 @import "./../../public/css/dashbord_navitaion.css";
 @import "./../../public/css/responsive.css";
 @import "./dashboard-theme.css";
+
+/* --- New design system (loaded AFTER legacy so it wins on conflicts) --- */
+@import "../styles/tokens.css";
+@import "../styles/components.css";
+
+/* --- Tailwind (directives — utilities load last so they override component styles when needed) --- */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 a {
   cursor: pointer;

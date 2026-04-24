@@ -1,0 +1,265 @@
+/* ============================================================
+   SkillLinkup Design System — Tokens
+   ============================================================ */
+
+:root {
+  /* ---------- PRIMARY — Deep Indigo-Aubergine ----------
+     Gekozen omdat het vertrouwen (blauw-familie) koppelt aan 
+     warmte/menselijkheid (paarse ondertoon). Onderscheidend
+     van Fiverr-groen, Upwork-groen, LinkedIn-blauw.         */
+  --primary-50:  oklch(97% 0.015 295);
+  --primary-100: oklch(94% 0.030 295);
+  --primary-200: oklch(87% 0.060 293);
+  --primary-300: oklch(77% 0.100 290);
+  --primary-400: oklch(65% 0.140 288);
+  --primary-500: oklch(54% 0.170 285);  /* brand default */
+  --primary-600: oklch(46% 0.170 284);
+  --primary-700: oklch(38% 0.150 283);
+  --primary-800: oklch(30% 0.120 283);
+  --primary-900: oklch(22% 0.085 284);
+
+  /* ---------- SECONDARY — Warm Terracotta-Amber ----------
+     De menselijke tegenhanger. Gebruikt voor CTA-accents,
+     trust-elementen, en het lokale/vakman-spoor.            */
+  --secondary-50:  oklch(97% 0.020 55);
+  --secondary-100: oklch(93% 0.045 52);
+  --secondary-200: oklch(87% 0.080 48);
+  --secondary-300: oklch(79% 0.120 45);
+  --secondary-400: oklch(72% 0.150 42);
+  --secondary-500: oklch(66% 0.165 40);  /* terracotta */
+  --secondary-600: oklch(58% 0.160 38);
+  --secondary-700: oklch(48% 0.140 36);
+  --secondary-800: oklch(38% 0.110 35);
+  --secondary-900: oklch(28% 0.080 35);
+
+  /* ---------- NEUTRALS — Warme grijzen ----------
+     Niet puur 0-chroma. Subtiele warme draai (chroma 0.006,
+     hue 60) voor papier-gevoel i.p.v. kil plastic.           */
+  --neutral-0:   oklch(100% 0 0);
+  --neutral-50:  oklch(98.5% 0.004 60);
+  --neutral-100: oklch(96.5% 0.006 60);
+  --neutral-200: oklch(92% 0.008 60);
+  --neutral-300: oklch(86% 0.009 60);
+  --neutral-400: oklch(71% 0.010 60);
+  --neutral-500: oklch(56% 0.010 60);
+  --neutral-600: oklch(44% 0.010 60);
+  --neutral-700: oklch(34% 0.009 60);
+  --neutral-800: oklch(24% 0.008 60);
+  --neutral-900: oklch(16% 0.007 60);
+  --neutral-1000: oklch(9% 0.006 60);
+
+  /* ---------- SEMANTIC ---------- */
+  --success-50:  oklch(96% 0.035 155);
+  --success-100: oklch(90% 0.070 155);
+  --success-500: oklch(58% 0.140 155);
+  --success-600: oklch(50% 0.135 155);
+  --success-700: oklch(42% 0.120 156);
+  --success-900: oklch(26% 0.080 157);
+
+  --warning-50:  oklch(97% 0.035 85);
+  --warning-100: oklch(92% 0.080 85);
+  --warning-500: oklch(75% 0.155 82);
+  --warning-600: oklch(66% 0.160 78);
+  --warning-700: oklch(54% 0.145 72);
+  --warning-900: oklch(32% 0.095 68);
+
+  --error-50:  oklch(97% 0.025 25);
+  --error-100: oklch(92% 0.055 25);
+  --error-500: oklch(60% 0.205 25);
+  --error-600: oklch(52% 0.200 25);
+  --error-700: oklch(44% 0.175 25);
+  --error-900: oklch(26% 0.110 25);
+
+  --info-50:  oklch(96% 0.025 230);
+  --info-100: oklch(90% 0.055 230);
+  --info-500: oklch(60% 0.140 230);
+  --info-600: oklch(52% 0.145 230);
+  --info-700: oklch(44% 0.130 230);
+  --info-900: oklch(26% 0.085 232);
+
+  /* ---------- SURFACE & TEXT (light default) ---------- */
+  --bg:           var(--neutral-50);
+  --bg-elevated:  var(--neutral-0);
+  --bg-sunken:    var(--neutral-100);
+  --bg-inverse:   var(--neutral-1000);
+  --surface-1:    var(--neutral-0);
+  --surface-2:    var(--neutral-100);
+  --surface-3:    var(--neutral-200);
+
+  --text-primary:   var(--neutral-900);
+  --text-secondary: var(--neutral-700);
+  --text-tertiary:  var(--neutral-500);
+  --text-inverse:   var(--neutral-50);
+  --text-accent:    var(--primary-600);
+
+  --border-subtle: oklch(92% 0.008 60 / 1);
+  --border-default: oklch(86% 0.009 60 / 1);
+  --border-strong: oklch(71% 0.010 60 / 1);
+
+  /* ---------- TYPOGRAPHY ----------
+     Actual font files are loaded by Next.js font loader in src/app/layout.js.
+     The `--font-*-serif`/`--font-poppins`/`--font-inter` CSS vars below are
+     populated at render time by next/font. */
+  --font-display: var(--font-instrument-serif), "Playfair Display", Georgia, serif;
+  --font-sans:    var(--font-poppins), var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-mono:    ui-monospace, "SF Mono", "JetBrains Mono", monospace;
+
+  /* Type scale — fluid, modular ratio 1.2 (minor third) */
+  --text-display-2xl: clamp(3.5rem, 8vw, 6.5rem);   /* 56-104 */
+  --text-display-xl:  clamp(2.75rem, 6vw, 4.5rem);  /* 44-72  */
+  --text-display-lg:  clamp(2.25rem, 5vw, 3.5rem);  /* 36-56  */
+  --text-h1:   2.25rem;   /* 36 */
+  --text-h2:   1.875rem;  /* 30 */
+  --text-h3:   1.5rem;    /* 24 */
+  --text-h4:   1.25rem;   /* 20 */
+  --text-h5:   1.125rem;  /* 18 */
+  --text-h6:   1rem;      /* 16 */
+  --text-body-lg: 1.125rem;
+  --text-body-md: 1rem;
+  --text-body-sm: 0.875rem;
+  --text-caption: 0.75rem;
+  --text-overline: 0.6875rem;
+
+  --leading-tight:   1.1;
+  --leading-snug:    1.25;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.65;
+
+  --tracking-tighter: -0.04em;
+  --tracking-tight:   -0.02em;
+  --tracking-normal:  0;
+  --tracking-wide:    0.04em;
+  --tracking-wider:   0.12em;
+
+  --weight-regular: 400;
+  --weight-medium:  500;
+  --weight-semibold: 600;
+  --weight-bold:    700;
+
+  /* ---------- SPACING (4px base) ---------- */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+  --space-32: 128px;
+
+  /* ---------- RADIUS ----------
+     Signature radius = --radius-md (12px). Komt door het hele
+     systeem terug: inputs, cards, buttons, badges.            */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;   /* ← SIGNATURE */
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-full: 999px;
+
+  /* ---------- ELEVATION ----------
+     Warme, gelaagde schaduwen i.p.v. harde drop shadows.
+     Elk level combineert een korte ambient + een langere key
+     shadow met lichte warmte (oklch hue 60, lichte chroma).   */
+  --shadow-1: 0 1px 2px oklch(22% 0.02 60 / 0.04),
+              0 1px 1px oklch(22% 0.02 60 / 0.03);
+  --shadow-2: 0 2px 4px oklch(22% 0.02 60 / 0.05),
+              0 4px 8px oklch(22% 0.02 60 / 0.04);
+  --shadow-3: 0 4px 8px oklch(22% 0.02 60 / 0.06),
+              0 12px 24px oklch(22% 0.02 60 / 0.07);
+  --shadow-4: 0 8px 16px oklch(22% 0.02 60 / 0.07),
+              0 24px 48px oklch(22% 0.02 60 / 0.09);
+  --shadow-5: 0 12px 24px oklch(22% 0.02 60 / 0.08),
+              0 48px 96px oklch(22% 0.02 60 / 0.12);
+
+  /* Focus ring — signature brand color */
+  --ring: 0 0 0 3px oklch(54% 0.170 285 / 0.28);
+  --ring-error: 0 0 0 3px oklch(60% 0.205 25 / 0.28);
+
+  /* ---------- MOTION ---------- */
+  --ease-standard:    cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized:  cubic-bezier(0.3, 0, 0, 1);
+  --ease-decelerate:  cubic-bezier(0, 0, 0.2, 1);
+  --ease-accelerate:  cubic-bezier(0.4, 0, 1, 1);
+  --ease-spring:      cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --dur-fast:   120ms;
+  --dur-base:   200ms;
+  --dur-slow:   320ms;
+  --dur-slower: 520ms;
+
+  /* ---------- LAYOUT ---------- */
+  --container-sm:  640px;
+  --container-md:  768px;
+  --container-lg:  1024px;
+  --container-xl:  1280px;
+  --container-2xl: 1440px;
+
+  /* Breakpoints (reference):  360 / 768 / 1024 / 1440 */
+}
+
+/* ============================================================
+   DARK MODE
+   Donker = warme, diepe neutraal met licht-paarse onderlaag
+   zodat de brand zich thuis voelt. Chroma's licht verhoogd op
+   accenten voor zichtbaarheid, maar niet neon.
+   ============================================================ */
+[data-theme="dark"] {
+  --bg:           oklch(14% 0.012 285);
+  --bg-elevated:  oklch(18% 0.015 285);
+  --bg-sunken:    oklch(11% 0.010 285);
+  --bg-inverse:   var(--neutral-50);
+  --surface-1:    oklch(18% 0.015 285);
+  --surface-2:    oklch(22% 0.018 285);
+  --surface-3:    oklch(26% 0.020 285);
+
+  --text-primary:   oklch(96% 0.006 60);
+  --text-secondary: oklch(78% 0.010 60);
+  --text-tertiary:  oklch(58% 0.010 60);
+  --text-inverse:   var(--neutral-900);
+  --text-accent:    oklch(75% 0.140 288);
+
+  --border-subtle:  oklch(24% 0.018 285 / 1);
+  --border-default: oklch(32% 0.020 285 / 1);
+  --border-strong:  oklch(46% 0.020 285 / 1);
+
+  --primary-500: oklch(68% 0.170 288);  /* iets lichter in dark */
+  --primary-600: oklch(60% 0.175 287);
+
+  --shadow-1: 0 1px 2px oklch(0% 0 0 / 0.30),
+              0 1px 1px oklch(0% 0 0 / 0.20);
+  --shadow-2: 0 2px 4px oklch(0% 0 0 / 0.32),
+              0 4px 8px oklch(0% 0 0 / 0.28);
+  --shadow-3: 0 4px 8px oklch(0% 0 0 / 0.36),
+              0 12px 24px oklch(0% 0 0 / 0.40);
+  --shadow-4: 0 8px 16px oklch(0% 0 0 / 0.40),
+              0 24px 48px oklch(0% 0 0 / 0.48);
+  --shadow-5: 0 12px 24px oklch(0% 0 0 / 0.44),
+              0 48px 96px oklch(0% 0 0 / 0.56);
+
+  --ring: 0 0 0 3px oklch(68% 0.170 288 / 0.36);
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-body-md);
+  line-height: var(--leading-normal);
+  color: var(--text-primary);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background var(--dur-slow) var(--ease-standard),
+              color var(--dur-slow) var(--ease-standard);
+}
+
+::selection { background: var(--primary-200); color: var(--primary-900); }
+[data-theme="dark"] ::selection { background: oklch(40% 0.15 285); color: var(--neutral-50); }
