@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { Calendar, MapPin, Clock, Wallet, Check, ArrowRight } from "lucide-react";
 import useConvexJobDetail from "@/hook/useConvexJobDetail";
 
 export default function JobDetail1() {
@@ -10,7 +11,6 @@ export default function JobDetail1() {
   const { id } = useParams();
   const convexData = useConvexJobDetail(id);
 
-  // convexData === undefined means still loading
   const isLoading = convexData === undefined;
 
   const data = !isLoading
@@ -50,15 +50,12 @@ export default function JobDetail1() {
       : null
     : null;
 
-  // Loading state
   if (isLoading) {
     return (
-      <section className="pt10 pb90 pb30-md">
+      <section style={{ padding: "var(--space-12) 0" }}>
         <div className="container">
-          <div className="row">
-            <div className="col-12 text-center py-5">
-              <p className="text">{t("loadingJob")}</p>
-            </div>
+          <div style={{ textAlign: "center", color: "var(--text-secondary)" }}>
+            <p>{t("loadingJob")}</p>
           </div>
         </div>
       </section>
@@ -73,114 +70,159 @@ export default function JobDetail1() {
   const responsibilities = data?.responsibilities || [];
   const requirements = data?.requirements || [];
 
-  // Only render the stats row if we have at least one stat to show
-  const hasStats = postedAt || location || hours || salary;
+  const stats = [
+    postedAt && { icon: Calendar, label: t("datePosted"), value: postedAt },
+    location && { icon: MapPin, label: t("location"), value: location },
+    hours && { icon: Clock, label: t("hours"), value: hours },
+    salary && { icon: Wallet, label: t("salary"), value: salary },
+  ].filter(Boolean);
 
   return (
-    <>
-      <section className="pt10 pb90 pb30-md">
-        <div className="container">
-          <div className="row wow fadeInUp">
-            <div className="col-lg-8 mx-auto">
-              {hasStats && (
-                <div className="row">
-                  {postedAt && (
-                    <div className="col-sm-6 col-xl-3">
-                      <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                        <div className="icon flex-shrink-0">
-                          <span className="flaticon-calendar" />
-                        </div>
-                        <div className="details">
-                          <h5 className="title">{t("datePosted")}</h5>
-                          <p className="mb-0 text">{postedAt}</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {location && (
-                    <div className="col-sm-6 col-xl-3">
-                      <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                        <div className="icon flex-shrink-0">
-                          <span className="flaticon-place" />
-                        </div>
-                        <div className="details">
-                          <h5 className="title">{t("location")}</h5>
-                          <p className="mb-0 text">{location}</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {hours && (
-                    <div className="col-sm-6 col-xl-3">
-                      <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                        <div className="icon flex-shrink-0">
-                          <span className="flaticon-fifteen" />
-                        </div>
-                        <div className="details">
-                          <h5 className="title">{t("hours")}</h5>
-                          <p className="mb-0 text">{hours}</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {salary && (
-                    <div className="col-sm-6 col-xl-3">
-                      <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                        <div className="icon flex-shrink-0">
-                          <span className="flaticon-pay-day" />
-                        </div>
-                        <div className="details">
-                          <h5 className="title">{t("salary")}</h5>
-                          <p className="mb-0 text">{salary}</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+    <section style={{ padding: "var(--space-12) 0 var(--space-16)" }}>
+      <div className="container" style={{ maxWidth: "var(--container-md)" }}>
+        {stats.length > 0 && (
+          <div
+            className="card"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+              gap: "var(--space-5)",
+              padding: "var(--space-6)",
+              marginBottom: "var(--space-8)",
+            }}
+          >
+            {stats.map(({ icon: Icon, label, value }) => (
+              <div
+                key={label}
+                style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-3)" }}
+              >
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: "var(--radius-md)",
+                    background: "var(--primary-50)",
+                    color: "var(--primary-600)",
+                    display: "grid",
+                    placeItems: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <Icon size={18} />
                 </div>
-              )}
-              <div className="service-about">
-                {description && (
-                  <>
-                    <h4 className="mb-4">{t("description")}</h4>
-                    <p className="text mb30">{description}</p>
-                  </>
-                )}
-                {responsibilities.length > 0 && (
-                  <>
-                    <h4 className="mb30">{t("keyResponsibilities")}</h4>
-                    <div className="list-style1 mb60 pr50 pr0-lg">
-                      <ul>
-                        {responsibilities.map((item, i) => (
-                          <li key={i}>
-                            <i className="far fa-check text-thm3 bgc-thm3-light" />
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </>
-                )}
-                {requirements.length > 0 && (
-                  <>
-                    <h4 className="mb30">{t("requirements")}</h4>
-                    <ul className="list-style-type-bullet ps-3 mb60">
-                      {requirements.map((item, i) => (
-                        <li key={i}>{item}</li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-                <div className="d-grid mb60">
-                  <Link href="/contact" className="ud-btn btn-thm2">
-                    {t("applyForJob")}
-                    <i className="fal fa-arrow-right-long" />
-                  </Link>
+                <div style={{ minWidth: 0 }}>
+                  <div
+                    className="overline"
+                    style={{ color: "var(--text-tertiary)", marginBottom: 2 }}
+                  >
+                    {label}
+                  </div>
+                  <div
+                    className="body-md"
+                    style={{ fontWeight: 600, color: "var(--text-primary)" }}
+                  >
+                    {value}
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
-        </div>
-      </section>
-    </>
+        )}
+
+        {description && (
+          <div style={{ marginBottom: "var(--space-10)" }}>
+            <h2
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "var(--text-h3)",
+                fontWeight: 500,
+                marginBottom: "var(--space-4)",
+              }}
+            >
+              {t("description")}
+            </h2>
+            <p
+              className="body-lg"
+              style={{ color: "var(--text-secondary)", whiteSpace: "pre-wrap" }}
+            >
+              {description}
+            </p>
+          </div>
+        )}
+
+        {responsibilities.length > 0 && (
+          <div style={{ marginBottom: "var(--space-10)" }}>
+            <h2
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "var(--text-h3)",
+                fontWeight: 500,
+                marginBottom: "var(--space-5)",
+              }}
+            >
+              {t("keyResponsibilities")}
+            </h2>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: "var(--space-3)" }}>
+              {responsibilities.map((item, i) => (
+                <li
+                  key={i}
+                  style={{ display: "flex", gap: "var(--space-3)", alignItems: "flex-start" }}
+                >
+                  <span
+                    style={{
+                      width: 22,
+                      height: 22,
+                      borderRadius: "999px",
+                      background: "var(--success-50)",
+                      color: "var(--success-700)",
+                      display: "grid",
+                      placeItems: "center",
+                      flexShrink: 0,
+                      marginTop: 2,
+                    }}
+                  >
+                    <Check size={13} strokeWidth={3} />
+                  </span>
+                  <span className="body-md" style={{ color: "var(--text-primary)" }}>
+                    {item}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {requirements.length > 0 && (
+          <div style={{ marginBottom: "var(--space-10)" }}>
+            <h2
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "var(--text-h3)",
+                fontWeight: 500,
+                marginBottom: "var(--space-5)",
+              }}
+            >
+              {t("requirements")}
+            </h2>
+            <ul style={{ paddingLeft: "var(--space-6)", margin: 0, display: "grid", gap: "var(--space-2)" }}>
+              {requirements.map((item, i) => (
+                <li key={i} className="body-md" style={{ color: "var(--text-secondary)" }}>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <Link
+          href="/contact"
+          className="btn btn--primary btn--lg"
+          style={{ width: "100%", justifyContent: "center" }}
+        >
+          {t("applyForJob")}
+          <ArrowRight size={18} />
+        </Link>
+      </div>
+    </section>
   );
 }

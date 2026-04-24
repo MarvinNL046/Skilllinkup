@@ -8,6 +8,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { useTranslations } from "next-intl";
+import { Star, MapPin, Calendar, Wallet, Briefcase, CheckCircle2 } from "lucide-react";
 import { api } from "../../../convex/_generated/api";
 import useConvexFreelancerDetail from "@/hook/useConvexFreelancerDetail";
 import ContactButton from "@/components/ui/ContactButton";
@@ -704,13 +705,9 @@ export default function FreelancerDetails3() {
 
   if (isLoading) {
     return (
-      <section className="pt10 pb90 pb30-md">
-        <div className="container">
-          <div className="row">
-            <div className="col-12 text-center py-5">
-              <p className="text">{t("loadingProfile")}</p>
-            </div>
-          </div>
+      <section style={{ padding: "var(--space-16) 0" }}>
+        <div className="container" style={{ textAlign: "center" }}>
+          <p className="body-md" style={{ color: "var(--text-secondary)" }}>{t("loadingProfile")}</p>
         </div>
       </section>
     );
@@ -718,14 +715,10 @@ export default function FreelancerDetails3() {
 
   if (!convexData) {
     return (
-      <section className="pt10 pb90 pb30-md">
-        <div className="container">
-          <div className="row">
-            <div className="col-12 text-center py-5">
-              <p className="text">{t("notFound")}</p>
-              <Link href="/freelancers" className="ud-btn btn-thm mt10">{t("browseFreelancers")}</Link>
-            </div>
-          </div>
+      <section style={{ padding: "var(--space-16) 0" }}>
+        <div className="container" style={{ textAlign: "center" }}>
+          <p className="body-md" style={{ color: "var(--text-secondary)", marginBottom: "var(--space-5)" }}>{t("notFound")}</p>
+          <Link href="/freelancers" className="btn btn--primary">{t("browseFreelancers")}</Link>
         </div>
       </section>
     );
@@ -746,106 +739,198 @@ export default function FreelancerDetails3() {
 
   const sidebar = <ProfileSidebar convexData={convexData} />;
 
+  const headerStats = [
+    rating > 0 && {
+      icon: Star,
+      label: t("rating"),
+      value: `${rating.toFixed(1)} (${reviewCount} ${t("reviews")})`,
+    },
+    convexData.hourlyRate && {
+      icon: Wallet,
+      label: t("hourlyRate"),
+      value: `€${convexData.hourlyRate}/hr`,
+    },
+    convexData.totalOrders > 0 && {
+      icon: Briefcase,
+      label: t("orders"),
+      value: `${convexData.totalOrders} ${t("completed")}`,
+    },
+  ].filter(Boolean);
+
   return (
-    <section className="pt10 pb90 pb30-md">
+    <section style={{ padding: "var(--space-10) 0 var(--space-16)" }}>
       <div className="container">
-        {/* Cover image banner */}
         {convexData.coverImageUrl && (
           <div
-            className="bdrs12 overflow-hidden mb30 wow fadeInUp"
-            style={{ height: 220, backgroundImage: `url(${convexData.coverImageUrl})`, backgroundSize: "cover", backgroundPosition: "center" }}
+            style={{
+              height: 240,
+              borderRadius: "var(--radius-xl)",
+              overflow: "hidden",
+              marginBottom: "var(--space-8)",
+              backgroundImage: `url(${convexData.coverImageUrl})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
           />
         )}
 
-        <div className="row wow fadeInUp">
+        <div className="row">
           {/* Left column */}
           <div className="col-lg-8">
-            {/* Profile header */}
-            <div className="px30 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1">
-              <div className="position-relative overflow-hidden d-flex align-items-center pb30 mb30 bdrb1">
-                <div className="row w-100">
-                  <div className="col-xl-12">
-                    <div className="list-meta d-sm-flex align-items-center">
-                      <a className="position-relative freelancer-single-style">
-                        <span className="online" />
-                        <Image
-                          width={90}
-                          height={90}
-                          className="rounded-circle w-100 wa-sm mb15-sm"
-                          src={profileImg}
-                          alt={profileName}
-                        />
-                      </a>
-                      <div className="ml20 ml0-xs">
-                        <h5 className="title mb-1">{profileName}</h5>
-                        {profession && <p className="mb-0">{profession}</p>}
-                        {rating > 0 && (
-                          <p className="mb-0 dark-color fz15 fw500 list-inline-item mb5-sm">
-                            <i className="fas fa-star vam fz10 review-color me-2" />
-                            {rating.toFixed(1)} ({reviewCount} {t("reviews")})
-                          </p>
-                        )}
-                        {location && (
-                          <p className="mb-0 dark-color fz15 fw500 list-inline-item ml15 mb5-sm ml0-xs">
-                            <i className="flaticon-place vam fz20 me-2" />
-                            {location}
-                          </p>
-                        )}
-                        {memberSince && (
-                          <p className="mb-0 dark-color fz15 fw500 list-inline-item ml15 mb5-sm ml0-xs">
-                            <i className="flaticon-30-days vam fz20 me-2" />
-                            {t("memberSince")} {memberSince}
-                          </p>
-                        )}
-                      </div>
-                    </div>
+            {/* Profile header — DS card */}
+            <div
+              className="card"
+              style={{
+                padding: "var(--space-7)",
+                marginBottom: "var(--space-6)",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  gap: "var(--space-5)",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                  paddingBottom: "var(--space-6)",
+                  marginBottom: "var(--space-6)",
+                  borderBottom: "1px solid var(--border-subtle)",
+                }}
+              >
+                <span className="avatar-wrap" style={{ flexShrink: 0 }}>
+                  <span className="avatar avatar--xl">
+                    <Image
+                      width={96}
+                      height={96}
+                      src={profileImg}
+                      alt={profileName}
+                    />
+                  </span>
+                  {convexData.isVerified && (
+                    <span className="verify verify--lg" aria-label={t("verified")}>
+                      <CheckCircle2 />
+                    </span>
+                  )}
+                </span>
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <h1
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontSize: "var(--text-h2)",
+                      fontWeight: 500,
+                      margin: 0,
+                      letterSpacing: "-0.01em",
+                    }}
+                  >
+                    {profileName}
+                  </h1>
+                  {profession && (
+                    <p
+                      className="body-md"
+                      style={{ color: "var(--text-secondary)", margin: "var(--space-1) 0 var(--space-3)" }}
+                    >
+                      {profession}
+                    </p>
+                  )}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "var(--space-4)",
+                      flexWrap: "wrap",
+                      color: "var(--text-secondary)",
+                      fontSize: "var(--text-body-sm)",
+                    }}
+                  >
+                    {rating > 0 && (
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                        <Star size={14} fill="currentColor" style={{ color: "var(--secondary-500)" }} />
+                        <strong style={{ color: "var(--text-primary)" }}>{rating.toFixed(1)}</strong>
+                        <span>({reviewCount} {t("reviews")})</span>
+                      </span>
+                    )}
+                    {location && (
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                        <MapPin size={14} />
+                        {location}
+                      </span>
+                    )}
+                    {memberSince && (
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                        <Calendar size={14} />
+                        {t("memberSince")} {memberSince}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
 
-              {/* Stats row */}
-              <div className="row">
-                {rating > 0 && (
-                  <div className="col-sm-6 col-xl-4">
-                    <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                      <div className="icon flex-shrink-0"><span className="flaticon-goal" /></div>
-                      <div className="details">
-                        <h5 className="title">{t("rating")}</h5>
-                        <p className="mb-0 text">{rating.toFixed(1)} ({reviewCount} {t("reviews")})</p>
+              {headerStats.length > 0 && (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+                    gap: "var(--space-5)",
+                  }}
+                >
+                  {headerStats.map(({ icon: Icon, label, value }) => (
+                    <div
+                      key={label}
+                      style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-3)" }}
+                    >
+                      <div
+                        style={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: "var(--radius-md)",
+                          background: "var(--primary-50)",
+                          color: "var(--primary-600)",
+                          display: "grid",
+                          placeItems: "center",
+                          flexShrink: 0,
+                        }}
+                      >
+                        <Icon size={18} />
+                      </div>
+                      <div style={{ minWidth: 0 }}>
+                        <div
+                          className="overline"
+                          style={{ color: "var(--text-tertiary)", marginBottom: 2 }}
+                        >
+                          {label}
+                        </div>
+                        <div
+                          className="body-md"
+                          style={{ fontWeight: 600, color: "var(--text-primary)" }}
+                        >
+                          {value}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-                {convexData.hourlyRate && (
-                  <div className="col-sm-6 col-xl-4">
-                    <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                      <div className="icon flex-shrink-0"><span className="flaticon-dollar" /></div>
-                      <div className="details">
-                        <h5 className="title">{t("hourlyRate")}</h5>
-                        <p className="mb-0 text">€{convexData.hourlyRate}/hr</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {convexData.totalOrders > 0 && (
-                  <div className="col-sm-6 col-xl-4">
-                    <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                      <div className="icon flex-shrink-0"><span className="flaticon-contract" /></div>
-                      <div className="details">
-                        <h5 className="title">{t("orders")}</h5>
-                        <p className="mb-0 text">{convexData.totalOrders} {t("completed")}</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Bio */}
             {bio && (
-              <div className="px30 pt30 pb30 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1">
-                <h4>{t("about")}</h4>
-                <p className="text mb-0">{bio}</p>
+              <div
+                className="card"
+                style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}
+              >
+                <h2
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontSize: "var(--text-h3)",
+                    fontWeight: 500,
+                    marginBottom: "var(--space-4)",
+                  }}
+                >
+                  {t("about")}
+                </h2>
+                <p
+                  className="body-md"
+                  style={{ color: "var(--text-secondary)", margin: 0, whiteSpace: "pre-wrap" }}
+                >
+                  {bio}
+                </p>
               </div>
             )}
 

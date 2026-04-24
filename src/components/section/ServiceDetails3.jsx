@@ -10,6 +10,7 @@ import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
+import { Star, Eye, ClipboardList, Clock, MapPin, ArrowRight } from "lucide-react";
 import useConvexGigDetail from "@/hook/useConvexGigDetail";
 import ContactButton from "@/components/ui/ContactButton";
 
@@ -56,16 +57,11 @@ export default function ServiceDetail3() {
         : null
       : null; // null = still loading
 
-  // Loading state while Convex query is in flight
   if (data === null) {
     return (
-      <section className="pt10 pb90 pb30-md">
-        <div className="container">
-          <div className="row">
-            <div className="col-12 text-center py-5">
-              <p className="text">{t("loadingDetails")}</p>
-            </div>
-          </div>
+      <section style={{ padding: "var(--space-16) 0" }}>
+        <div className="container" style={{ textAlign: "center" }}>
+          <p className="body-md" style={{ color: "var(--text-secondary)" }}>{t("loadingDetails")}</p>
         </div>
       </section>
     );
@@ -82,90 +78,152 @@ export default function ServiceDetail3() {
   const description = data?.description || null;
   const packages = data?.packages || [];
 
-  return (
-    <>
-      <section className="pt10 pb90 pb30-md">
-        <div className="container">
-          <div className="row wrap">
-            <div className="col-lg-8">
-              <div className="column">
-                <div className="row  px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
-                  <div className="col-xl-12 mb30 pb30 bdrb1">
-                    <div className="position-relative">
-                      {data?.title && <h2>{data.title}</h2>}
-                      <div className="list-meta mt30">
-                        <a className="list-inline-item mb5-sm" href="#">
-                          <span className="position-relative mr10">
-                            <Image
-                              width={40}
-                              height={40}
-                              className="rounded-circle"
-                              src={freelancerAvatar}
-                              alt="Freelancer Photo"
-                            />
-                            <span className="online-badge"></span>
-                          </span>
-                          <span className="fz14">{freelancerName}</span>
-                        </a>
-                        {rating > 0 && (
-                          <p className="mb-0 dark-color fz14 list-inline-item ml25 ml15-sm mb5-sm ml0-xs">
-                            <i className="fas fa-star vam fz10 review-color me-2"></i>{" "}
-                            {rating.toFixed(1)} ({reviewCount} {t("reviews")})
-                          </p>
-                        )}
-                        {orderCount > 0 && (
-                          <p className="mb-0 dark-color fz14 list-inline-item ml25 ml15-sm mb5-sm ml0-xs">
-                            <i className="flaticon-file-1 vam fz20 me-2"></i>{" "}
-                            {orderCount} {t("orderInQueue")}
-                          </p>
-                        )}
-                        {views > 0 && (
-                          <p className="mb-0 dark-color fz14 list-inline-item ml25 ml15-sm mb5-sm ml0-xs">
-                            <i className="flaticon-website vam fz20 me-2"></i>{" "}
-                            {views} {t("views")}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row">
-                    {packages.length > 0 && (
-                      <div className="col-sm-6 col-md-4">
-                        <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                          <div className="icon flex-shrink-0">
-                            <span className="flaticon-calendar" />
-                          </div>
-                          <div className="details">
-                            <h5 className="title">{t("deliveryTime")}</h5>
-                            <p className="mb-0 text">
-                              {packages[0].deliveryDays} {t("days")}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    <div className="col-sm-6 col-md-4">
-                      <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                        <div className="icon flex-shrink-0">
-                          <span className="flaticon-tracking" />
-                        </div>
-                        <div className="details">
-                          <h5 className="title">{t("location")}</h5>
-                          <p className="mb-0 text">{location}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+  const heroStats = [
+    packages.length > 0 && {
+      icon: Clock,
+      label: t("deliveryTime"),
+      value: `${packages[0].deliveryDays} ${t("days")}`,
+    },
+    {
+      icon: MapPin,
+      label: t("location"),
+      value: location,
+    },
+  ].filter(Boolean);
 
-                <ServiceDetailSlider2 />
-                <div className="service-about">
-                  {description && (
-                    <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
-                      <h4>{t("about")}</h4>
-                      <p className="text mb30">{description}</p>
+  return (
+    <section style={{ padding: "var(--space-10) 0 var(--space-16)" }}>
+      <div className="container">
+        <div className="row">
+          <div className="col-lg-8">
+            <div
+              className="card"
+              style={{
+                padding: "var(--space-7)",
+                marginBottom: "var(--space-6)",
+              }}
+            >
+              {data?.title && (
+                <h1
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontSize: "var(--text-h2)",
+                    fontWeight: 500,
+                    margin: 0,
+                    marginBottom: "var(--space-5)",
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  {data.title}
+                </h1>
+              )}
+
+              <div
+                style={{
+                  display: "flex",
+                  gap: "var(--space-4)",
+                  flexWrap: "wrap",
+                  alignItems: "center",
+                  paddingBottom: "var(--space-6)",
+                  marginBottom: "var(--space-6)",
+                  borderBottom: "1px solid var(--border-subtle)",
+                  color: "var(--text-secondary)",
+                  fontSize: "var(--text-body-sm)",
+                }}
+              >
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-2)" }}>
+                  <span className="avatar avatar--sm" style={{ flexShrink: 0 }}>
+                    <Image width={28} height={28} src={freelancerAvatar} alt={freelancerName} />
+                  </span>
+                  <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{freelancerName}</span>
+                </span>
+                {rating > 0 && (
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                    <Star size={14} fill="currentColor" style={{ color: "var(--secondary-500)" }} />
+                    <strong style={{ color: "var(--text-primary)" }}>{rating.toFixed(1)}</strong>
+                    <span>({reviewCount} {t("reviews")})</span>
+                  </span>
+                )}
+                {orderCount > 0 && (
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                    <ClipboardList size={14} />
+                    {orderCount} {t("orderInQueue")}
+                  </span>
+                )}
+                {views > 0 && (
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                    <Eye size={14} />
+                    {views} {t("views")}
+                  </span>
+                )}
+              </div>
+
+              {heroStats.length > 0 && (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+                    gap: "var(--space-5)",
+                  }}
+                >
+                  {heroStats.map(({ icon: Icon, label, value }) => (
+                    <div
+                      key={label}
+                      style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-3)" }}
+                    >
+                      <div
+                        style={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: "var(--radius-md)",
+                          background: "var(--primary-50)",
+                          color: "var(--primary-600)",
+                          display: "grid",
+                          placeItems: "center",
+                          flexShrink: 0,
+                        }}
+                      >
+                        <Icon size={18} />
+                      </div>
+                      <div style={{ minWidth: 0 }}>
+                        <div className="overline" style={{ color: "var(--text-tertiary)", marginBottom: 2 }}>
+                          {label}
+                        </div>
+                        <div className="body-md" style={{ fontWeight: 600, color: "var(--text-primary)" }}>
+                          {value}
+                        </div>
+                      </div>
                     </div>
-                  )}
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <ServiceDetailSlider2 />
+            <div className="service-about">
+              {description && (
+                <div
+                  className="card"
+                  style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}
+                >
+                  <h2
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontSize: "var(--text-h3)",
+                      fontWeight: 500,
+                      marginBottom: "var(--space-4)",
+                    }}
+                  >
+                    {t("about")}
+                  </h2>
+                  <p
+                    className="body-md"
+                    style={{ color: "var(--text-secondary)", margin: 0, whiteSpace: "pre-wrap" }}
+                  >
+                    {description}
+                  </p>
+                </div>
+              )}
                   {/* Compare Packages */}
                   {packages.length > 0 && (
                     <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
@@ -230,7 +288,6 @@ export default function ServiceDetail3() {
                   )}
                 </div>
               </div>
-            </div>
             <div className="col-lg-4" id="stikyContainer">
               <div className="column">
                 {isMatchedScreen ? (
@@ -281,6 +338,5 @@ export default function ServiceDetail3() {
           </div>
         </div>
       </section>
-    </>
   );
 }
