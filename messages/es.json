@@ -79,7 +79,8 @@
     "satisfaction": "Satisfacción",
     "satisfactionCount": "98%",
     "categoriesLabel": "Categorías",
-    "categoriesCount": "50+"
+    "categoriesCount": "50+",
+    "waitlistLabel": "On the waitlist"
   },
   "features": {
     "proofOfQuality": "Prueba de calidad",
@@ -1785,5 +1786,29 @@
       "title": "Enlace de habilidades | Elementos de la interfaz de usuario",
       "description": "Elementos de interfaz de usuario y componentes de diseño para SkillLinkup."
     }
+  },
+  "howItWorks": {
+    "eyebrow": "How it works",
+    "title": "A platform built network-first.",
+    "subtitle": "We're not pretending to be live yet. Here's what happens between now and launch.",
+    "step1Title": "Show your skill",
+    "step1Desc": "Join the waitlist and tell us what you offer — design, development, writing, whatever you're great at.",
+    "step2Title": "We build the match",
+    "step2Desc": "We assemble the network before going live — so day one has real freelancers, real clients, real demand.",
+    "step3Title": "Launch together",
+    "step3Desc": "When we hit critical mass, everyone on the waitlist gets the launch email. No marketing spam in between."
+  },
+  "ctaBanner": {
+    "eyebrow": "One platform, three worlds",
+    "title": "Online, local, jobs — pick your world.",
+    "subtitle": "Everything that connects skill and need — in one place. Join the waitlist to be part of day one.",
+    "cta": "Join the waitlist",
+    "b1": "Built network-first — day one with real demand",
+    "b2": "One place for online, local, and jobs",
+    "b3": "Honest pricing, transparent escrow",
+    "b4": "No spam between now and launch",
+    "onlineProp": "Digital freelancers, remote",
+    "localProp": "Local pros near you",
+    "jobsProp": "Permanent roles"
   }
 }

@@ -79,7 +79,8 @@
     "satisfaction": "Tevredenheid",
     "satisfactionCount": "98%",
     "categoriesLabel": "Categorieën",
-    "categoriesCount": "50+"
+    "categoriesCount": "50+",
+    "waitlistLabel": "Op de wachtlijst"
   },
   "features": {
     "proofOfQuality": "Bewijs van kwaliteit",
@@ -432,16 +433,29 @@
     "serverError": "Serverfout"
   },
   "waitlist": {
-    "title": "Schrijf je in voor de wachtlijst",
-    "description": "We werken hard aan het beste platform voor freelancers en opdrachtgevers. Laat je e-mail achter en we laten je weten zodra we live gaan.",
+    "joinWaitlist": "Schrijf je in",
+    "joinTheWaitlist": "Schrijf je in voor de wachtlijst",
+    "headline": "Nog niet live — en dat is met opzet.",
+    "description": "We bouwen SkillLinkup netwerk-first. Zodra we de kritische massa freelancers en opdrachtgevers hebben om dag 1 goed te kunnen draaien, krijg je een mail. Tussendoor geen marketing-spam.",
     "placeholder": "jouw@email.com",
-    "joinNow": "Nu inschrijven",
-    "submitting": "Versturen...",
-    "success": "Je staat op de lijst!",
-    "successDesc": "We laten je weten zodra SkillLinkup live gaat.",
-    "invalidEmail": "Vul een geldig e-mailadres in.",
-    "subscribed": "Bedankt voor je inschrijving! We houden je op de hoogte.",
-    "error": "Er ging iets mis. Probeer het opnieuw."
+    "skillLabel": "Welke skill bied je aan? (optioneel)",
+    "skillPlaceholder": "bijv. logo-ontwerp, WordPress-dev, copywriting",
+    "userTypeLabel": "Ik schrijf me in als…",
+    "userTypeFreelancer": "freelancer",
+    "userTypeClient": "opdrachtgever",
+    "userTypeBoth": "beide",
+    "userTypeSkip": "— kies —",
+    "submitting": "Verzenden...",
+    "joinNow": "Schrijf je in",
+    "errorGeneric": "Er ging iets mis. Probeer het opnieuw.",
+    "errorInvalidEmail": "Dat e-mailadres ziet er niet juist uit.",
+    "successTitle": "Je staat op de lijst.",
+    "successDescription": "Check je inbox voor een bevestigingsmail. We houden ons stil tot de lancering.",
+    "successShare": "Ken je iemand die ook op deze lijst hoort? Stuur de mail die je net kreeg door — dat is het nuttigste wat je nu voor ons kunt doen.",
+    "counterSingular": "{count} persoon al ingeschreven",
+    "counterPlural": "{count} mensen al ingeschreven",
+    "counterLoading": "Wachtlijst laden…",
+    "close": "Sluiten"
   },
   "notifications": {
     "accountTypeUpdated": "Accounttype bijgewerkt",
@@ -951,31 +965,6 @@
     "refundClient": "Klant terugbetalen",
     "resolvedNote": "Opgelost via admin dashboard: {resolution}",
     "errorPrefix": "Fout: "
-  },
-  "waitlist": {
-    "joinWaitlist": "Schrijf je in",
-    "joinTheWaitlist": "Schrijf je in voor de wachtlijst",
-    "headline": "Nog niet live — en dat is met opzet.",
-    "description": "We bouwen SkillLinkup netwerk-first. Zodra we de kritische massa freelancers en opdrachtgevers hebben om dag 1 goed te kunnen draaien, krijg je een mail. Tussendoor geen marketing-spam.",
-    "placeholder": "jouw@email.com",
-    "skillLabel": "Welke skill bied je aan? (optioneel)",
-    "skillPlaceholder": "bijv. logo-ontwerp, WordPress-dev, copywriting",
-    "userTypeLabel": "Ik schrijf me in als…",
-    "userTypeFreelancer": "freelancer",
-    "userTypeClient": "opdrachtgever",
-    "userTypeBoth": "beide",
-    "userTypeSkip": "— kies —",
-    "submitting": "Verzenden...",
-    "joinNow": "Schrijf je in",
-    "errorGeneric": "Er ging iets mis. Probeer het opnieuw.",
-    "errorInvalidEmail": "Dat e-mailadres ziet er niet juist uit.",
-    "successTitle": "Je staat op de lijst.",
-    "successDescription": "Check je inbox voor een bevestigingsmail. We houden ons stil tot de lancering.",
-    "successShare": "Ken je iemand die ook op deze lijst hoort? Stuur de mail die je net kreeg door — dat is het nuttigste wat je nu voor ons kunt doen.",
-    "counterSingular": "{count} persoon al ingeschreven",
-    "counterPlural": "{count} mensen al ingeschreven",
-    "counterLoading": "Wachtlijst laden…",
-    "close": "Sluiten"
   },
   "contactButton": {
     "contact": "Contact",
@@ -1906,5 +1895,29 @@
     "section4p2": "Voor meer details over hoe we kwaliteit en integriteit in onze content waarborgen, zie ons Redactioneel Beleid.",
     "section5Title": "Neem Contact Op",
     "section5p1": "Als je ons redactieteam wilt bereiken met vragen, correcties of contentsuggesties, neem dan contact met ons op via"
+  },
+  "howItWorks": {
+    "eyebrow": "Hoe het werkt",
+    "title": "Een platform dat eerst het netwerk bouwt.",
+    "subtitle": "We doen niet alsof we al live zijn. Zo ziet de weg naar de lancering eruit.",
+    "step1Title": "Laat je skill zien",
+    "step1Desc": "Schrijf je in op de wachtlijst en vertel wat je aanbiedt — design, development, writing, wat je ook kan.",
+    "step2Title": "Wij bouwen de match",
+    "step2Desc": "We zetten het netwerk op voordat we live gaan — zodat dag 1 echte freelancers, echte klanten en echte vraag heeft.",
+    "step3Title": "Lanceren samen",
+    "step3Desc": "Zodra we de kritische massa hebben, krijgt iedereen op de wachtlijst de lanceer-mail. Geen marketing-spam tussendoor."
+  },
+  "ctaBanner": {
+    "eyebrow": "Eén platform, drie werelden",
+    "title": "Online, lokaal, vacatures — kies jouw wereld.",
+    "subtitle": "Alles wat skill en behoefte verbindt — op één plek. Schrijf je in op de wachtlijst en wees erbij op dag 1.",
+    "cta": "Schrijf je in",
+    "b1": "Netwerk-first gebouwd — dag 1 met echte vraag",
+    "b2": "Eén plek voor online, lokaal en vacatures",
+    "b3": "Eerlijke pricing, transparante escrow",
+    "b4": "Geen spam tussen nu en de lancering",
+    "onlineProp": "Digitale freelancers, remote",
+    "localProp": "Lokale vakmensen dichtbij",
+    "jobsProp": "Vaste banen"
   }
 }

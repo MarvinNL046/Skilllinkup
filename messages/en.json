@@ -79,7 +79,8 @@
     "satisfaction": "Satisfaction",
     "satisfactionCount": "98%",
     "categoriesLabel": "Categories",
-    "categoriesCount": "50+"
+    "categoriesCount": "50+",
+    "waitlistLabel": "On the waitlist"
   },
   "features": {
     "proofOfQuality": "Proof of quality",
@@ -432,16 +433,29 @@
     "serverError": "Server Error"
   },
   "waitlist": {
-    "title": "Join the waitlist",
-    "description": "We're working hard to build the best platform for freelancers and clients. Leave your email and we'll let you know as soon as we go live.",
+    "joinWaitlist": "Join Waitlist",
+    "joinTheWaitlist": "Join the waitlist",
+    "headline": "We're not live yet — and that's on purpose.",
+    "description": "SkillLinkup is being built network-first. Once we hit the critical mass of freelancers and clients we need for day-one quality, we'll email everyone on the list. No marketing blasts in between.",
     "placeholder": "your@email.com",
-    "joinNow": "Join now",
+    "skillLabel": "What skill do you offer? (optional)",
+    "skillPlaceholder": "e.g. logo design, WordPress dev, copywriting",
+    "userTypeLabel": "I'm joining as…",
+    "userTypeFreelancer": "a freelancer",
+    "userTypeClient": "a client / buyer",
+    "userTypeBoth": "both",
+    "userTypeSkip": "— choose —",
     "submitting": "Submitting...",
-    "success": "You're on the list!",
-    "successDesc": "We'll notify you as soon as SkillLinkup goes live.",
-    "invalidEmail": "Please enter a valid email address.",
-    "subscribed": "Thanks for subscribing! We'll keep you updated.",
-    "error": "Something went wrong. Please try again."
+    "joinNow": "Join now",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "errorInvalidEmail": "That email doesn't look right.",
+    "successTitle": "You're on the list.",
+    "successDescription": "Check your inbox for a confirmation email. We'll stay quiet until launch.",
+    "successShare": "Know someone who should be on this list? Forward the email you just got — that's the most useful thing you can do for us right now.",
+    "counterSingular": "{count} person already joined",
+    "counterPlural": "{count} people already joined",
+    "counterLoading": "Loading waitlist…",
+    "close": "Close"
   },
   "notifications": {
     "accountTypeUpdated": "Account type updated",
@@ -951,31 +965,6 @@
     "refundClient": "Refund Client",
     "resolvedNote": "Resolved via admin dashboard: {resolution}",
     "errorPrefix": "Error: "
-  },
-  "waitlist": {
-    "joinWaitlist": "Join Waitlist",
-    "joinTheWaitlist": "Join the waitlist",
-    "headline": "We're not live yet — and that's on purpose.",
-    "description": "SkillLinkup is being built network-first. Once we hit the critical mass of freelancers and clients we need for day-one quality, we'll email everyone on the list. No marketing blasts in between.",
-    "placeholder": "your@email.com",
-    "skillLabel": "What skill do you offer? (optional)",
-    "skillPlaceholder": "e.g. logo design, WordPress dev, copywriting",
-    "userTypeLabel": "I'm joining as…",
-    "userTypeFreelancer": "a freelancer",
-    "userTypeClient": "a client / buyer",
-    "userTypeBoth": "both",
-    "userTypeSkip": "— choose —",
-    "submitting": "Submitting...",
-    "joinNow": "Join now",
-    "errorGeneric": "Something went wrong. Please try again.",
-    "errorInvalidEmail": "That email doesn't look right.",
-    "successTitle": "You're on the list.",
-    "successDescription": "Check your inbox for a confirmation email. We'll stay quiet until launch.",
-    "successShare": "Know someone who should be on this list? Forward the email you just got — that's the most useful thing you can do for us right now.",
-    "counterSingular": "{count} person already joined",
-    "counterPlural": "{count} people already joined",
-    "counterLoading": "Loading waitlist…",
-    "close": "Close"
   },
   "contactButton": {
     "contact": "Contact",
@@ -1906,5 +1895,29 @@
     "section4p2": "For more details on how we maintain quality and integrity in our content, see our Editorial Policy.",
     "section5Title": "Get in Touch",
     "section5p1": "If you would like to reach our editorial team with questions, corrections, or content suggestions, please contact us at"
+  },
+  "howItWorks": {
+    "eyebrow": "How it works",
+    "title": "A platform built network-first.",
+    "subtitle": "We're not pretending to be live yet. Here's what happens between now and launch.",
+    "step1Title": "Show your skill",
+    "step1Desc": "Join the waitlist and tell us what you offer — design, development, writing, whatever you're great at.",
+    "step2Title": "We build the match",
+    "step2Desc": "We assemble the network before going live — so day one has real freelancers, real clients, real demand.",
+    "step3Title": "Launch together",
+    "step3Desc": "When we hit critical mass, everyone on the waitlist gets the launch email. No marketing spam in between."
+  },
+  "ctaBanner": {
+    "eyebrow": "One platform, three worlds",
+    "title": "Online, local, jobs — pick your world.",
+    "subtitle": "Everything that connects skill and need — in one place. Join the waitlist to be part of day one.",
+    "cta": "Join the waitlist",
+    "b1": "Built network-first — day one with real demand",
+    "b2": "One place for online, local, and jobs",
+    "b3": "Honest pricing, transparent escrow",
+    "b4": "No spam between now and launch",
+    "onlineProp": "Digital freelancers, remote",
+    "localProp": "Local pros near you",
+    "jobsProp": "Permanent roles"
   }
 }
