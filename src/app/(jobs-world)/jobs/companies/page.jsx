@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import { Building2 } from "lucide-react";
 import EmptyState from "@/components/ui/EmptyState";
 
 export async function generateMetadata() {
@@ -14,48 +14,72 @@ export default async function CompaniesPage() {
   const t = await getTranslations("jobsHub");
   return (
     <>
-      <section className="breadcumb-section pt-0">
-        <div className="cta-job-v1 cta-banner mx-auto maxw1700 pt120 pb120 bdrs16 position-relative overflow-hidden d-flex align-items-center mx20-lg px30-lg">
-          <Image
-            height={226}
-            width={198}
-            className="left-top-img wow zoomIn"
-            src="/images/vector-img/left-top.png"
-            alt="left-top"
-          />
-          <Image
-            height={181}
-            width={255}
-            className="right-bottom-img wow zoomIn"
-            src="/images/vector-img/right-bottom.png"
-            alt="right-bottom"
-          />
-          <div className="container">
-            <div className="row wow fadeInUp">
-              <div className="col-xl-7">
-                <div className="position-relative">
-                  <h2>{t("companiesHeading")}</h2>
-                  <p className="text">
-                    {t("companiesText")}
-                  </p>
-                </div>
-              </div>
+      <section
+        style={{
+          padding: "var(--space-14) 0",
+          background:
+            "linear-gradient(135deg, var(--primary-50) 0%, var(--secondary-50) 100%)",
+          borderBottom: "1px solid var(--border-subtle)",
+        }}
+      >
+        <div className="container">
+          <div
+            style={{
+              display: "flex",
+              gap: "var(--space-5)",
+              alignItems: "flex-start",
+              maxWidth: 720,
+            }}
+          >
+            <div
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: "var(--radius-lg)",
+                background: "var(--bg-elevated)",
+                color: "var(--primary-600)",
+                display: "grid",
+                placeItems: "center",
+                flexShrink: 0,
+                boxShadow: "var(--shadow-1)",
+              }}
+            >
+              <Building2 size={26} />
+            </div>
+            <div style={{ minWidth: 0 }}>
+              <h1
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "var(--text-h1)",
+                  fontWeight: 500,
+                  letterSpacing: "-0.01em",
+                  margin: 0,
+                  marginBottom: "var(--space-3)",
+                }}
+              >
+                {t("companiesHeading")}
+              </h1>
+              <p
+                className="body-lg"
+                style={{ color: "var(--text-secondary)", margin: 0 }}
+              >
+                {t("companiesText")}
+              </p>
             </div>
           </div>
         </div>
       </section>
-      <section className="pt30 pb90">
+
+      <section style={{ padding: "var(--space-12) 0 var(--space-16)" }}>
         <div className="container">
-          <div className="row">
-            <div className="col-lg-9 mx-auto">
-              <EmptyState
-                icon="🏢"
-                title={t("companiesComingSoon")}
-                description={t("companiesComingSoonText")}
-                actionLabel={t("browseJobs")}
-                actionHref="/jobs/browse"
-              />
-            </div>
+          <div style={{ maxWidth: 720, margin: "0 auto" }}>
+            <EmptyState
+              icon="🏢"
+              title={t("companiesComingSoon")}
+              description={t("companiesComingSoonText")}
+              actionLabel={t("browseJobs")}
+              actionHref="/jobs/browse"
+            />
           </div>
         </div>
       </section>

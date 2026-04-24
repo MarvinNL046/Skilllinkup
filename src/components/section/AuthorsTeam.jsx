@@ -2,71 +2,107 @@
 
 import { useTranslations } from "next-intl";
 
+/**
+ * Long-form editorial-style page layout used by /authors and reused
+ * for editorial/legal pages. Keeps narrow reading measure with DS type
+ * scale + primary-colored inline links.
+ */
 export default function AuthorsTeam() {
   const t = useTranslations("authorsTeam");
 
   const emailLink = (
-    <a href="mailto:info@skilllinkup.com" className="text-thm">
+    <a
+      href="mailto:info@skilllinkup.com"
+      style={{ color: "var(--primary-600)", fontWeight: 500 }}
+    >
       info@skilllinkup.com
     </a>
   );
 
+  const h2 = {
+    fontFamily: "var(--font-display)",
+    fontSize: "var(--text-h3)",
+    fontWeight: 500,
+    letterSpacing: "-0.01em",
+    marginBottom: "var(--space-4)",
+    color: "var(--text-primary)",
+  };
+
+  const body = {
+    color: "var(--text-secondary)",
+    marginBottom: "var(--space-3)",
+  };
+
+  const bullets = {
+    color: "var(--text-secondary)",
+    paddingLeft: "var(--space-5)",
+    marginBottom: "var(--space-4)",
+    display: "grid",
+    gap: "var(--space-2)",
+  };
+
   return (
-    <section className="our-terms pb90">
-      <div className="container">
-        <div className="row">
-          <div className="col-lg-8">
-            <div className="main-title mb40">
-              <h2>{t("title")}</h2>
-              <p className="text">{t("subtitle")}</p>
-            </div>
-          </div>
+    <section style={{ padding: "var(--space-14) 0" }}>
+      <div className="container" style={{ maxWidth: 760 }}>
+        <div style={{ marginBottom: "var(--space-10)" }}>
+          <span className="overline" style={{ color: "var(--primary-600)" }}>
+            Team
+          </span>
+          <h1
+            className="display-lg"
+            style={{
+              fontWeight: 500,
+              margin: "var(--space-2) 0 var(--space-3)",
+            }}
+          >
+            {t("title")}
+          </h1>
+          <p className="body-lg" style={{ color: "var(--text-secondary)", margin: 0 }}>
+            {t("subtitle")}
+          </p>
         </div>
-        <div className="row">
-          <div className="col-xl-10">
-            <div className="terms_condition_grid text-start">
-              <div className="grids mb50">
-                <h4 className="title mb15">{t("section1Title")}</h4>
-                <p className="text fz15 mb15">{t("section1p1")}</p>
-                <p className="text fz15">{t("section1p2")}</p>
-              </div>
 
-              <div className="grids mb50">
-                <h4 className="title mb15">{t("section2Title")}</h4>
-                <p className="text fz15 mb15">{t("section2p1")}</p>
-                <ul className="list-style-type-disc ml20">
-                  <li className="text fz15 mb10">{t("section2li1")}</li>
-                  <li className="text fz15 mb10">{t("section2li2")}</li>
-                  <li className="text fz15 mb10">{t("section2li3")}</li>
-                  <li className="text fz15 mb10">{t("section2li4")}</li>
-                </ul>
-              </div>
+        <div style={{ display: "grid", gap: "var(--space-10)" }}>
+          <section>
+            <h2 style={h2}>{t("section1Title")}</h2>
+            <p className="body-md" style={body}>{t("section1p1")}</p>
+            <p className="body-md" style={body}>{t("section1p2")}</p>
+          </section>
 
-              <div className="grids mb50">
-                <h4 className="title mb15">{t("section3Title")}</h4>
-                <p className="text fz15 mb15">{t("section3p1")}</p>
-                <ul className="list-style-type-disc ml20">
-                  <li className="text fz15 mb10">{t("section3li1")}</li>
-                  <li className="text fz15 mb10">{t("section3li2")}</li>
-                  <li className="text fz15 mb10">{t("section3li3")}</li>
-                  <li className="text fz15 mb10">{t("section3li4")}</li>
-                </ul>
-              </div>
+          <section>
+            <h2 style={h2}>{t("section2Title")}</h2>
+            <p className="body-md" style={body}>{t("section2p1")}</p>
+            <ul className="body-md" style={bullets}>
+              <li>{t("section2li1")}</li>
+              <li>{t("section2li2")}</li>
+              <li>{t("section2li3")}</li>
+              <li>{t("section2li4")}</li>
+            </ul>
+          </section>
 
-              <div className="grids mb50">
-                <h4 className="title mb15">{t("section4Title")}</h4>
-                <p className="text fz15 mb15">{t("section4p1")}</p>
-                <p className="text fz15">{t("section4p2")}</p>
-              </div>
+          <section>
+            <h2 style={h2}>{t("section3Title")}</h2>
+            <p className="body-md" style={body}>{t("section3p1")}</p>
+            <ul className="body-md" style={bullets}>
+              <li>{t("section3li1")}</li>
+              <li>{t("section3li2")}</li>
+              <li>{t("section3li3")}</li>
+              <li>{t("section3li4")}</li>
+            </ul>
+          </section>
 
-              <div className="grids mb50">
-                <h4 className="title mb15">{t("section5Title")}</h4>
-                <p className="text fz15 mb15">
-                  {t("section5p1")} {emailLink}.
-                </p>
-              </div>
-            </div>
-          </div>
+          <section>
+            <h2 style={h2}>{t("section4Title")}</h2>
+            <p className="body-md" style={body}>{t("section4p1")}</p>
+            <p className="body-md" style={body}>{t("section4p2")}</p>
+          </section>
+
+          <section>
+            <h2 style={h2}>{t("section5Title")}</h2>
+            <p className="body-md" style={body}>
+              {t("section5p1")} {emailLink}.
+            </p>
+          </section>
         </div>
       </div>
     </section>

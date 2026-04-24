@@ -2,29 +2,53 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { UserSearch, ArrowRight } from "lucide-react";
 
 export default function FreelancerNotFound() {
   const t = useTranslations("errorPages");
 
   return (
-    <section className="our-error bgc-thm3">
+    <section
+      style={{
+        padding: "var(--space-16) 0",
+        minHeight: "60vh",
+        display: "flex",
+        alignItems: "center",
+        background: "var(--bg)",
+      }}
+    >
       <div className="container">
-        <div className="row align-items-center justify-content-center" style={{ minHeight: "60vh" }}>
-          <div className="col-lg-6 col-xl-5">
-            <div className="error_page_content text-center">
-              <div className="mb30" style={{ fontSize: 64 }}>
-                👤
-              </div>
-              <h2 className="title">{t("freelancerNotFound")}</h2>
-              <p className="text mb25">
-                {t("freelancerNotFoundDescription")}
-              </p>
-              <Link href="/online/freelancers" className="ud-btn btn-thm">
-                {t("browseFreelancers")}
-                <i className="fal fa-arrow-right-long" />
-              </Link>
-            </div>
+        <div style={{ maxWidth: 520, margin: "0 auto", textAlign: "center" }}>
+          <div
+            style={{
+              width: 72,
+              height: 72,
+              borderRadius: "999px",
+              background: "var(--primary-50)",
+              color: "var(--primary-600)",
+              display: "grid",
+              placeItems: "center",
+              margin: "0 auto var(--space-5)",
+            }}
+          >
+            <UserSearch size={32} />
           </div>
+          <h1
+            className="display-lg"
+            style={{ fontWeight: 500, marginBottom: "var(--space-3)" }}
+          >
+            {t("freelancerNotFound")}
+          </h1>
+          <p
+            className="body-lg"
+            style={{ color: "var(--text-secondary)", marginBottom: "var(--space-6)" }}
+          >
+            {t("freelancerNotFoundDescription")}
+          </p>
+          <Link href="/online/freelancers" className="btn btn--primary">
+            {t("browseFreelancers")}
+            <ArrowRight size={16} />
+          </Link>
         </div>
       </div>
     </section>
