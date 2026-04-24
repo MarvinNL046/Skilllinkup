@@ -6,6 +6,7 @@ import Header20 from "@/components/header/Header20";
 import Footer14 from "@/components/footer/Footer14";
 import useConvexPlatform from "@/hook/useConvexPlatform";
 import { useTranslations } from "next-intl";
+import { ArrowRight, ExternalLink } from "lucide-react";
 
 function StarRating({ rating }) {
   const clamped = Math.min(5, Math.max(0, rating ?? 0));
@@ -55,35 +56,65 @@ function PlatformDetailContent({ slug }) {
   const t = useTranslations("platformDetail");
   const platform = useConvexPlatform(slug);
 
-  // Loading
   if (platform === undefined) {
     return (
-      <section className="pt60 pb90">
+      <section style={{ padding: "var(--space-14) 0" }}>
         <div className="container">
-          <div className="text-center py-5">
-            <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">{tc("loading")}</span>
-            </div>
-            <p className="body-color mt-3">{tc("loading")}</p>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "var(--space-3)",
+              padding: "var(--space-12) 0",
+              color: "var(--text-secondary)",
+            }}
+          >
+            <div
+              role="status"
+              aria-label={tc("loading")}
+              style={{
+                width: 28,
+                height: 28,
+                border: "3px solid var(--border-subtle)",
+                borderTopColor: "var(--primary-600)",
+                borderRadius: "999px",
+                animation: "spin 0.9s linear infinite",
+              }}
+            />
+            <p className="body-sm" style={{ margin: 0 }}>{tc("loading")}</p>
           </div>
         </div>
       </section>
     );
   }
 
-  // Not found
   if (platform === null) {
     return (
-      <section className="pt60 pb90">
+      <section
+        style={{
+          padding: "var(--space-16) 0",
+          minHeight: "60vh",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
         <div className="container">
-          <div className="text-center py-5">
-            <h2 className="mb10">{t("notFound")}</h2>
-            <p className="body-color mb20">
+          <div style={{ maxWidth: 520, margin: "0 auto", textAlign: "center" }}>
+            <h1
+              className="display-lg"
+              style={{ fontWeight: 500, marginBottom: "var(--space-3)" }}
+            >
+              {t("notFound")}
+            </h1>
+            <p
+              className="body-lg"
+              style={{ color: "var(--text-secondary)", marginBottom: "var(--space-6)" }}
+            >
               {t("notFoundDescription")}
             </p>
-            <Link href="/platforms" className="ud-btn btn-thm">
+            <Link href="/platforms" className="btn btn--primary">
               {t("browsePlatforms")}
-              <i className="fal fa-arrow-right-long ms-2" />
             </Link>
           </div>
         </div>
@@ -131,7 +162,7 @@ function PlatformDetailContent({ slug }) {
           {/* Main Content */}
           <div className="col-lg-8">
             {/* Header Card */}
-            <div className="bgc-white default-box-shadow1 bdrs12 p30 mb30">
+            <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
               <div className="d-flex align-items-center mb20">
                 {logoUrl ? (
                   <div
@@ -178,7 +209,7 @@ function PlatformDetailContent({ slug }) {
                         className="ms-2 badge"
                         style={{
                           fontSize: "0.7rem",
-                          background: "#ef2b70",
+                          background: "var(--primary-600)",
                           color: "#fff",
                           verticalAlign: "middle",
                         }}
@@ -215,12 +246,12 @@ function PlatformDetailContent({ slug }) {
 
             {/* Pros & Cons */}
             {((pros && pros.length > 0) || (cons && cons.length > 0)) && (
-              <div className="bgc-white default-box-shadow1 bdrs12 p30 mb30">
+              <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
                 <h4 className="mb20">{t("prosAndCons")}</h4>
                 <div className="row">
                   {pros && pros.length > 0 && (
                     <div className="col-md-6 mb20">
-                      <h6 className="mb10" style={{ color: "#22c55e" }}>
+                      <h6 className="mb10" style={{ color: "var(--success-700)" }}>
                         <i className="fas fa-check-circle me-2" />
                         {t("pros")}
                       </h6>
@@ -232,7 +263,7 @@ function PlatformDetailContent({ slug }) {
                           >
                             <i
                               className="fas fa-plus fz10 me-2 mt-1"
-                              style={{ color: "#22c55e" }}
+                              style={{ color: "var(--success-700)" }}
                             />
                             {pro}
                           </li>
@@ -268,7 +299,7 @@ function PlatformDetailContent({ slug }) {
 
             {/* Features */}
             {features && features.length > 0 && (
-              <div className="bgc-white default-box-shadow1 bdrs12 p30 mb30">
+              <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
                 <h4 className="mb20">{t("features")}</h4>
                 <div className="row">
                   {features.map((feature, i) => (
@@ -276,7 +307,7 @@ function PlatformDetailContent({ slug }) {
                       <span className="fz14 body-color d-flex align-items-start">
                         <i
                           className="far fa-check me-2 mt-1"
-                          style={{ color: "#22c55e" }}
+                          style={{ color: "var(--success-700)" }}
                         />
                         {feature}
                       </span>
@@ -290,29 +321,35 @@ function PlatformDetailContent({ slug }) {
           {/* Sidebar */}
           <div className="col-lg-4">
             {/* CTA Card */}
-            <div className="bgc-white default-box-shadow1 bdrs12 p30 mb30">
+            <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
               {visitUrl && (
                 <a
                   href={visitUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="ud-btn btn-thm w-100 mb15"
+                  className="btn btn--primary btn--lg"
+                  style={{
+                    width: "100%",
+                    justifyContent: "center",
+                    marginBottom: "var(--space-3)",
+                  }}
                 >
                   {t("visit", { name })}
-                  <i className="fal fa-arrow-up-right-from-square ms-2" />
+                  <ExternalLink size={16} />
                 </a>
               )}
               <Link
                 href="/platforms"
-                className="ud-btn btn-white2 w-100"
+                className="btn btn--secondary"
+                style={{ width: "100%", justifyContent: "center" }}
               >
                 {t("comparePlatforms")}
-                <i className="fal fa-arrow-right-long ms-2" />
+                <ArrowRight size={16} />
               </Link>
             </div>
 
             {/* Quick Info Card */}
-            <div className="bgc-white default-box-shadow1 bdrs12 p30 mb30">
+            <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
               <h5 className="mb20">{t("quickInfo")}</h5>
 
               {category && (
