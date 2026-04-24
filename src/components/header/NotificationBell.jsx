@@ -1,8 +1,16 @@
 "use client";
+import { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation } from "convex/react";
+import { Bell } from "lucide-react";
 import { api } from "../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 
+/**
+ * Notification bell + DS-native dropdown. Replaces Bootstrap's
+ * data-bs-toggle="dropdown" pattern with a controlled popover that
+ * closes on outside-click + ESC. Only rendered for authenticated
+ * users with a matching Convex user record.
+ */
 export default function NotificationBell() {
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const userId = convexUser?._id;
@@ -28,6 +36,27 @@ export default function NotificationBell() {
   const markRead = useMutation(api.marketplace.notifications.markRead);
   const markAllRead = useMutation(api.marketplace.notifications.markAllRead);
 
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function onDoc(e) {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    }
+    function onKey(e) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
   if (!isLoaded || !isAuthenticated || !userId || !canReadNotifications) {
     return null;
   }
@@ -51,77 +80,168 @@ export default function NotificationBell() {
   }
 
   return (
-    <div className="dropdown">
-      <a
-        className="text-center mr5 text-thm2 dropdown-toggle fz20 position-relative"
-        role="button"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-        style={{ cursor: "pointer" }}
+    <div ref={containerRef} style={{ position: "relative" }}>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        aria-label="Notifications"
+        className="btn btn--ghost btn--icon btn--sm"
+        style={{ position: "relative" }}
       >
-        <span className="flaticon-notification"></span>
+        <Bell size={18} />
         {unreadCount > 0 && (
           <span
-            className="position-absolute badge bg-danger rounded-circle"
             style={{
-              top: "-8px",
-              right: "-8px",
-              fontSize: "10px",
-              minWidth: "16px",
-              height: "16px",
-              display: "flex",
+              position: "absolute",
+              top: -2,
+              right: -2,
+              minWidth: 16,
+              height: 16,
+              padding: "0 4px",
+              borderRadius: 999,
+              background: "var(--error-500, oklch(62% 0.2 22))",
+              color: "var(--neutral-0)",
+              fontSize: 10,
+              fontWeight: 600,
+              display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              padding: "0 4px",
+              lineHeight: 1,
+              boxShadow: "0 0 0 2px var(--bg-elevated)",
             }}
           >
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
-      </a>
-      <div
-        className="dropdown-menu dropdown-menu-end"
-        style={{ width: "340px", maxHeight: "400px", overflowY: "auto" }}
-      >
-        <div className="dboard_notific_dd px30 pt10 pb15">
-          <div className="d-flex justify-content-between align-items-center mb10">
-            <h6 className="mb-0 fw600">Notifications</h6>
-            {unreadCount > 0 && (
-              <button
-                className="btn btn-sm btn-link text-decoration-none fz12 text-thm p-0"
-                onClick={() => markAllRead({ userId })}
-              >
-                Mark all read
-              </button>
-            )}
-          </div>
-          <hr className="my-2" />
-          {!notifications || notifications.length === 0 ? (
-            <p className="text-center text mb-0 py-3">No notifications yet</p>
-          ) : (
-            notifications.map((notif) => (
-              <a
-                key={notif._id}
-                href={notif.link || "#"}
-                className={`d-block p-2 rounded mb-1 text-decoration-none notif_list ${!notif.isRead ? "bgc-thm3" : ""}`}
-                style={{ cursor: "pointer" }}
-                onClick={(e) => {
-                  if (!notif.link) e.preventDefault();
-                  if (!notif.isRead) {
-                    markRead({ notificationId: notif._id });
-                  }
+      </button>
+
+      {open && (
+        <div
+          role="menu"
+          style={{
+            position: "absolute",
+            top: "calc(100% + 8px)",
+            right: 0,
+            width: 340,
+            maxHeight: 420,
+            overflowY: "auto",
+            background: "var(--bg-elevated)",
+            border: "1px solid var(--border-subtle)",
+            borderRadius: "var(--radius-lg)",
+            boxShadow: "var(--shadow-3)",
+            zIndex: 60,
+          }}
+        >
+          <div style={{ padding: "var(--space-4) var(--space-5)" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: "var(--space-3)",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "var(--text-h5)",
+                  fontWeight: 600,
                 }}
               >
-                <strong className="d-block fz14 dark-color">{notif.title}</strong>
-                {notif.body && <span className="fz13 text">{notif.body}</span>}
-                <span className="d-block fz12 text mt-1">
-                  {formatDate(notif.createdAt || notif._creationTime)}
-                </span>
-              </a>
-            ))
-          )}
+                Notifications
+              </div>
+              {unreadCount > 0 && (
+                <button
+                  type="button"
+                  onClick={() => markAllRead({ userId })}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: 0,
+                    fontSize: "var(--text-body-sm)",
+                    fontWeight: 500,
+                    color: "var(--primary-600)",
+                  }}
+                >
+                  Mark all read
+                </button>
+              )}
+            </div>
+
+            {!notifications || notifications.length === 0 ? (
+              <p
+                className="body-sm"
+                style={{
+                  textAlign: "center",
+                  color: "var(--text-tertiary)",
+                  padding: "var(--space-6) 0",
+                  margin: 0,
+                }}
+              >
+                No notifications yet
+              </p>
+            ) : (
+              <div style={{ display: "grid", gap: 4 }}>
+                {notifications.map((notif) => (
+                  <a
+                    key={notif._id}
+                    href={notif.link || "#"}
+                    onClick={(e) => {
+                      if (!notif.link) e.preventDefault();
+                      if (!notif.isRead) {
+                        markRead({ notificationId: notif._id });
+                      }
+                      setOpen(false);
+                    }}
+                    style={{
+                      display: "block",
+                      padding: "var(--space-3)",
+                      borderRadius: "var(--radius-md)",
+                      textDecoration: "none",
+                      background: notif.isRead ? "transparent" : "var(--primary-50)",
+                    }}
+                  >
+                    <strong
+                      style={{
+                        display: "block",
+                        fontSize: "var(--text-body-sm)",
+                        color: "var(--text-primary)",
+                      }}
+                    >
+                      {notif.title}
+                    </strong>
+                    {notif.body && (
+                      <span
+                        className="body-sm"
+                        style={{
+                          display: "block",
+                          color: "var(--text-secondary)",
+                          marginTop: 2,
+                        }}
+                      >
+                        {notif.body}
+                      </span>
+                    )}
+                    <span
+                      style={{
+                        display: "block",
+                        fontSize: "var(--text-caption, 12px)",
+                        color: "var(--text-tertiary)",
+                        marginTop: 4,
+                      }}
+                    >
+                      {formatDate(notif.createdAt || notif._creationTime)}
+                    </span>
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

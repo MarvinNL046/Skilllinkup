@@ -3,69 +3,80 @@ import Image from "next/image";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
+import { Menu } from "lucide-react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import WaitlistButton from "@/components/ui/WaitlistButton";
+import navStore from "@/store/navStore";
 
+/**
+ * Compact mobile header strip — shown only below lg. Lg+ uses the
+ * full desktop Header19/20/WorldHeader. The hamburger opens the
+ * DS-native NavSidebar panel via navStore (no Bootstrap JS).
+ */
 export default function MobileNavigation2() {
   const { isSignedIn, user } = useUser();
   const t = useTranslations("nav");
+  const openNav = navStore((s) => s.openNav);
 
   return (
-    <>
-      <div className="mobilie_header_nav stylehome1">
-        <div className="mobile-menu">
-          <div className="header bdrb1">
-            <div className="menu_and_widgets">
-              <div className="mobile_menu_bar d-flex justify-content-between align-items-center">
-                <Link className="mobile_logo" href="/">
-                  <Image
-                    height={36}
-                    width={150}
-                    src="/images/logo/skilllinkup-transparant-rozepunt.webp"
-                    alt="Header Logo"
-                  />
-                </Link>
-                <div className="d-flex align-items-center gap-3">
-                  <LanguageSwitcher />
-                  {isSignedIn ? (
-                    <Link href="/dashboard" className="d-flex align-items-center">
-                      <Image
-                        width={32}
-                        height={32}
-                        src={user?.imageUrl || "/images/team/default-avatar.svg"}
-                        alt={user?.fullName || "User"}
-                        className="rounded-circle"
-                        style={{ objectFit: "cover" }}
-                      />
-                    </Link>
-                  ) : (
-                    // Pre-launch: Sign in link replaced by Join Waitlist.
-                    <WaitlistButton className="ud-btn btn-thm bdrs8 text-white fz13 py-1 px-3" />
-                  )}
-                  <a
-                    className="menubar"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvasExample"
-                    aria-controls="offcanvasExample"
-                  >
-                    <Image
-                      height={20}
-                      width={20}
-                      src="/images/mobile-dark-nav-icon.svg"
-                      alt="Menu"
-                    />
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="posr">
-              <div className="mobile_menu_close_btn">
-                <span className="far fa-times" />
-              </div>
-            </div>
-          </div>
+    <div
+      className="d-xl-none"
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 40,
+        background: "var(--bg-elevated)",
+        borderBottom: "1px solid var(--border-subtle)",
+      }}
+    >
+      <div
+        className="container"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "var(--space-3) 0",
+          gap: "var(--space-3)",
+        }}
+      >
+        <Link href="/" aria-label="SkillLinkup home" style={{ flexShrink: 0 }}>
+          <Image
+            height={32}
+            width={140}
+            src="/images/logo/skilllinkup-transparant-rozepunt.webp"
+            alt="SkillLinkup"
+          />
+        </Link>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+          <LanguageSwitcher />
+          {isSignedIn ? (
+            <Link href="/dashboard" className="avatar" aria-label={t("dashboard")}>
+              {user?.imageUrl ? (
+                <Image
+                  width={32}
+                  height={32}
+                  src={user.imageUrl}
+                  alt={user.fullName || "User"}
+                />
+              ) : (
+                <span>{(user?.firstName || "U").slice(0, 1)}</span>
+              )}
+            </Link>
+          ) : (
+            <WaitlistButton className="btn btn--primary btn--sm" />
+          )}
+          <button
+            type="button"
+            onClick={openNav}
+            aria-label="Open navigation"
+            aria-haspopup="dialog"
+            className="btn btn--ghost btn--icon btn--sm"
+          >
+            <Menu size={18} />
+          </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }

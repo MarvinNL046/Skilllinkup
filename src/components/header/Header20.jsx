@@ -56,15 +56,14 @@ export default function Header20() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", flexShrink: 0 }}>
-          <button
-            type="button"
+          <Link
+            href="/online/services"
             className="btn btn--ghost btn--icon btn--sm d-none d-md-inline-flex"
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModalToggle"
             aria-label="Search"
+            title="Search"
           >
             <Search size={18} />
-          </button>
+          </Link>
 
           <span className="d-none d-md-inline-flex">
             <LanguageSwitcher />

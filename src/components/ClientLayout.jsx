@@ -2,7 +2,6 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import BottomToTop from "@/components/button/BottomToTop";
-import SearchModal1 from "@/components/modal/SearchModal1";
 import NavSidebar from "@/components/sidebar/NavSidebar";
 import Providers from "@/components/Providers";
 import ExitIntentPopup from "@/components/ui/ExitIntentPopup";
@@ -10,14 +9,12 @@ import AnnouncementBar from "@/components/ui/AnnouncementBar";
 import CookieConsent from "@/components/ui/CookieConsent";
 import { Toaster } from "sonner";
 
-if (typeof window !== "undefined") {
-  import("bootstrap");
-}
-
 export default function ClientLayout({ children }) {
   const path = usePathname();
 
-  // wow js - re-initialize on route change
+  // wow.js - re-initialize fade-in animations on route change. Template-only
+  // scroll-reveal library; kept until we migrate wow classes to the DS Motion
+  // One pattern. Does not depend on Bootstrap.
   useEffect(() => {
     const WOW = require("@/utils/wow");
     const wow = new WOW.default({
@@ -33,13 +30,12 @@ export default function ClientLayout({ children }) {
         Skip to content
       </a>
       <AnnouncementBar />
-      <SearchModal1 />
       <main id="main-content">{children}</main>
 
-      {/* bottom to top */}
       <BottomToTop />
 
-      {/* sidebar mobile navigation */}
+      {/* Mobile navigation offcanvas — DS-native panel driven by navStore,
+          no Bootstrap JS required. */}
       <NavSidebar />
       <ExitIntentPopup />
       <Toaster position="bottom-right" richColors />
