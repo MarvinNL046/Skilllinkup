@@ -22,6 +22,138 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   LEGACY → DESIGN SYSTEM BRIDGE
+   Template uses .ud-btn, .btn-thm, custom card/form classes. These
+   overrides map them onto design-system tokens so pages we haven't
+   rewritten yet inherit the new visual language automatically.
+   Remove when Phase 9 cleanup strips the legacy theme.
+   ============================================================ */
+
+/* Body + links defer to tokens.css */
+body { font-family: var(--font-sans); color: var(--text-primary); background: var(--bg); }
+
+/* Template buttons → design-system primary/secondary look */
+.ud-btn,
+.btn-thm,
+button.ud-btn,
+a.ud-btn,
+a.btn-thm {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 44px;
+  padding: 0 20px;
+  font-family: var(--font-sans);
+  font-size: var(--text-body-md);
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  line-height: 1;
+  border-radius: var(--radius-md) !important;
+  border: 1px solid transparent;
+  background: var(--primary-600) !important;
+  color: var(--neutral-0) !important;
+  box-shadow: inset 0 1px 0 oklch(100% 0 0 / 0.15), 0 1px 2px oklch(22% 0.02 60 / 0.12);
+  transition:
+    background var(--dur-base) var(--ease-standard),
+    color var(--dur-base) var(--ease-standard),
+    border-color var(--dur-base) var(--ease-standard),
+    box-shadow var(--dur-base) var(--ease-standard),
+    transform var(--dur-base) var(--ease-spring);
+  text-decoration: none !important;
+}
+.ud-btn:hover, .btn-thm:hover {
+  background: var(--primary-700) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px oklch(46% 0.17 284 / 0.30);
+}
+
+/* Template section heading */
+.main-title h2,
+.main-title .title {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: var(--tracking-tight);
+}
+.main-title p,
+.main-title .text {
+  color: var(--text-secondary);
+}
+
+/* Template cards */
+.freelancer-style1,
+.listing-style1,
+.freelancer_style1,
+.listing_style1 {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg) !important;
+  box-shadow: none;
+  transition: transform var(--dur-slow) var(--ease-standard),
+              box-shadow var(--dur-slow) var(--ease-standard),
+              border-color var(--dur-base) var(--ease-standard);
+}
+.freelancer-style1:hover,
+.listing-style1:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-3);
+  border-color: var(--border-default);
+}
+
+/* Template form controls */
+.form-control {
+  height: 44px;
+  padding: 0 14px;
+  font-family: var(--font-sans);
+  font-size: var(--text-body-md);
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  transition:
+    border-color var(--dur-base) var(--ease-standard),
+    box-shadow var(--dur-base) var(--ease-standard);
+}
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary-500);
+  box-shadow: var(--ring);
+}
+
+/* Legacy link colors in template content */
+.text-thm { color: var(--primary-600) !important; }
+.bgc-thm,
+.bgc-thm2 { background: var(--primary-600) !important; }
+
+/* Template pink accent (#ef2b70) → design-system primary */
+[style*="#ef2b70"] { color: inherit; }
+.hero-title,
+.breadcumb-title {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* Keep container widths sensible */
+.container, .container-fluid {
+  max-width: var(--container-xl);
+}
+
+/* Ensure hover-lifts on design-system .card don't collide with Bootstrap's .card */
+.card.card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+/* Remove heavy template shadows that don't match warm-layered shadows */
+.shadow2, .shadow1, .default-box-shadow1, .default-box-shadow2 {
+  box-shadow: var(--shadow-2) !important;
+}
+
 a {
   cursor: pointer;
 }
