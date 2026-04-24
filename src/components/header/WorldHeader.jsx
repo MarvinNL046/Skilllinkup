@@ -7,102 +7,106 @@ import WorldSwitcher from "./WorldSwitcher";
 import MobileNavigation2 from "./MobileNavigation2";
 import NotificationBell from "./NotificationBell";
 import SearchBarWithDropdown from "@/components/ui/SearchBarWithDropdown";
+import WaitlistButton from "@/components/ui/WaitlistButton";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useUser, useClerk } from "@clerk/nextjs";
+import { useTranslations } from "next-intl";
+import { LogOut } from "lucide-react";
 
+/**
+ * Header for /online, /local, /jobs world sections. Same design-system
+ * language as Header19/20, with a WorldSwitcher between the brand and
+ * nav so visitors can jump between the three marketplaces.
+ */
 export default function WorldHeader() {
   const { user, isSignedIn } = useUser();
   const { signOut } = useClerk();
+  const t = useTranslations("nav");
 
   return (
     <>
-      <header className="header-nav nav-innerpage-style at-home20 main-menu border-0 ">
-        <nav className="posr">
-          <div className="container-fluid custom-container custom-container2 posr">
-            <div className="row align-items-center justify-content-between">
-              {/* Logo + World switcher */}
-              <div className="col-auto px-0 px-xl-3">
-                <div className="d-flex align-items-center justify-content-between gap-3">
-                  <div className="logos">
-                    <Link className="header-logo logo1" href="/">
-                      <Image
-                        width={172}
-                        height={40}
-                        src="/images/logo/skilllinkup-transparant-rozepunt.webp"
-                        alt="Header Logo"
-                        priority
-                      />
-                    </Link>
-                  </div>
-                  <WorldSwitcher />
-                </div>
-              </div>
-
-              {/* Zoekbalk — alleen desktop */}
-              <div className="col d-none d-xl-block px-3">
-                <SearchBarWithDropdown />
-              </div>
-
-              {/* Navigatie */}
-              <div className="col-auto px-0 px-xl-3">
-                <WorldNavigation />
-              </div>
-
-              {/* User buttons */}
-              <div className="col-auto pe-0">
-                <div className="d-flex align-items-center">
-                  {isSignedIn ? (
-                    <>
-                      <Link className="login-info" href="/dashboard">
-                        Dashboard
-                      </Link>
-                      <span className="ml15 mr5 position-relative d-inline-flex align-items-center">
-                        <NotificationBell />
-                      </span>
-                      <Link className="login-info mr10 ml15" href="/dashboard">
-                        {user?.imageUrl ? (
-                          <Image
-                            width={36}
-                            height={36}
-                            src={user.imageUrl}
-                            alt={user.fullName || "User"}
-                            className="rounded-circle"
-                          />
-                        ) : (
-                          <span>{user?.firstName || "User"}</span>
-                        )}
-                      </Link>
-                      <button
-                        className="ud-btn add-joining home20-join-btn bdrs12 text-white"
-                        onClick={() => signOut({ redirectUrl: "/" })}
-                      >
-                        Logout
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <Link className="login-info" href="/become-seller">
-                        <span className="d-none d-xl-inline-block">Become a</span>{" "}
-                        Seller
-                      </Link>
-                      <Link
-                        className="login-info mr10 home18-sign-btn px30 py-1 bdrs12 ml30 bdr1-dark"
-                        href="/login"
-                      >
-                        Sign in
-                      </Link>
-                      <Link
-                        className="ud-btn add-joining home20-join-btn bdrs12 text-white"
-                        href="/register"
-                      >
-                        Join
-                      </Link>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
+      <header
+        className="nav"
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 50,
+          padding: "var(--space-3) var(--space-6)",
+          gap: "var(--space-6)",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)", minWidth: 0 }}>
+          <Link
+            href="/"
+            className="nav__brand"
+            style={{ flexShrink: 0 }}
+            aria-label="SkillLinkup home"
+          >
+            <Image
+              width={140}
+              height={32}
+              src="/images/logo/skilllinkup-transparant-rozepunt.webp"
+              alt="SkillLinkup"
+              priority
+            />
+          </Link>
+          <WorldSwitcher />
+          <div className="d-none d-xl-block" style={{ minWidth: 0 }}>
+            <WorldNavigation />
           </div>
-        </nav>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", flexShrink: 0 }}>
+          <div className="d-none d-lg-block" style={{ width: 260 }}>
+            <SearchBarWithDropdown />
+          </div>
+
+          <span className="d-none d-md-inline-flex">
+            <LanguageSwitcher />
+          </span>
+
+          {isSignedIn ? (
+            <>
+              <Link
+                href="/dashboard"
+                className="btn btn--ghost btn--sm d-none d-md-inline-flex"
+              >
+                {t("dashboard")}
+              </Link>
+              <span className="d-inline-flex align-items-center position-relative">
+                <NotificationBell />
+              </span>
+              <Link
+                href="/dashboard"
+                className="avatar"
+                style={{ flexShrink: 0 }}
+                aria-label={user?.fullName || "Dashboard"}
+              >
+                {user?.imageUrl ? (
+                  <Image
+                    width={36}
+                    height={36}
+                    src={user.imageUrl}
+                    alt={user.fullName || "User"}
+                  />
+                ) : (
+                  <span>{(user?.firstName || "U").slice(0, 1)}</span>
+                )}
+              </Link>
+              <button
+                type="button"
+                className="btn btn--secondary btn--icon btn--sm"
+                onClick={() => signOut({ redirectUrl: "/" })}
+                aria-label={t("logout")}
+                title={t("logout")}
+              >
+                <LogOut size={16} />
+              </button>
+            </>
+          ) : (
+            <WaitlistButton className="btn btn--primary" />
+          )}
+        </div>
       </header>
       <MobileNavigation2 />
     </>
