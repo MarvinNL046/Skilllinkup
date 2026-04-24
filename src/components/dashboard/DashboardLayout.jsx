@@ -2,24 +2,32 @@
 
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import toggleStore from "@/store/toggleStore";
 import useConvexUser from "@/hook/useConvexUser";
 import DashboardHeader from "./header/DashboardHeader";
 import DashboardSidebar from "./sidebar/DashboardSidebar";
-import DashboardFooter from "./footer/DashboardFooter";
+import toggleStore from "@/store/toggleStore";
 
+/**
+ * Dashboard shell on the SkillLinkup Design System.
+ *
+ * - Sticky DashboardHeader at the top (DS-native, no Bootstrap JS)
+ * - DashboardSidebar on the left (lg+) with world switcher + nav groups
+ * - Main content fills the rest
+ *
+ * Auth gate: unauthenticated -> /login; missing userType/preferredWorld
+ * -> /onboarding.
+ */
 export default function DashboardLayout({ children }) {
-  const isActive = toggleStore((state) => state.isDasboardSidebarActive);
   const router = useRouter();
   const pathname = usePathname();
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
+  const sidebarHidden = toggleStore((s) => s.isDasboardSidebarActive);
 
   useEffect(() => {
     if (isLoaded && !isAuthenticated) {
       router.replace("/login");
       return;
     }
-    // Redirect to onboarding if user has no userType or preferredWorld
     if (
       convexUser &&
       (!convexUser.userType || !convexUser.preferredWorld) &&
@@ -30,21 +38,24 @@ export default function DashboardLayout({ children }) {
   }, [convexUser, isLoaded, isAuthenticated, pathname, router]);
 
   return (
-    <>
+    <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
       <DashboardHeader />
-      <div className="dashboard_content_wrapper">
-        <div
-          className={`dashboard dashboard_wrapper pr30 pr0-xl ${
-            isActive ? "dsh_board_sidebar_hidden" : ""
-          }`}
-        >
-          <DashboardSidebar />
-          <div className="dashboard__main pl0-md">
-            {children}
-            <DashboardFooter />
-          </div>
-        </div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: sidebarHidden ? "1fr" : "minmax(240px, 280px) 1fr",
+          gap: 0,
+          maxWidth: "var(--container-xl, 1280px)",
+          margin: "0 auto",
+          padding: "0 var(--space-6)",
+        }}
+        className="dashboard-shell"
+      >
+        {!sidebarHidden && <DashboardSidebar />}
+        <main style={{ minWidth: 0, padding: "var(--space-8) 0" }}>
+          {children}
+        </main>
       </div>
-    </>
+    </div>
   );
 }

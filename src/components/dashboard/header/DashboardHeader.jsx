@@ -1,177 +1,226 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import toggleStore from "@/store/toggleStore";
 import Image from "next/image";
 import Link from "next/link";
 import { useUser, useClerk } from "@clerk/nextjs";
+import { Menu, Search, MessageSquare, Bookmark, LogOut, User } from "lucide-react";
+import toggleStore from "@/store/toggleStore";
 import NotificationBell from "@/components/header/NotificationBell";
-import SearchBarWithDropdown from "@/components/ui/SearchBarWithDropdown";
 
+/**
+ * Dashboard header on the SkillLinkup Design System.
+ *
+ * Left: logo + sidebar toggle + desktop search (links to marketplace).
+ * Right: NotificationBell (DS-native popover), messages link, saved link,
+ * controlled avatar dropdown with outside-click + ESC dismiss. No
+ * Bootstrap data-bs-* attributes — runs without Bootstrap JS.
+ */
 export default function DashboardHeader() {
-  const toggle = toggleStore((state) => state.dashboardSlidebarToggleHandler);
+  const toggleSidebar = toggleStore((s) => s.dashboardSlidebarToggleHandler);
   const { user } = useUser();
   const { signOut } = useClerk();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    function handleClickOutside(e) {
+    if (!dropdownOpen) return;
+    function onDoc(e) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setDropdownOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    function onKey(e) {
+      if (e.key === "Escape") setDropdownOpen(false);
+    }
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [dropdownOpen]);
 
   return (
-    <>
-      <header className="header-nav nav-innerpage-style menu-home4 dashboard_header main-menu">
-        <nav className="posr">
-          <div className="container-fluid pr30 pr15-xs pl30 posr menu_bdrt1">
-            <div className="row align-items-center justify-content-between">
-              <div className="col-6 col-lg-auto">
-                <div className="text-center text-lg-start d-flex align-items-center">
-                  <div className="dashboard_header_logo position-relative me-2 me-xl-5">
-                    <Link href="/" className="logo">
-                      <Image
-                        height={40}
-                        width={172}
-                        src="/images/logo/skilllinkup-transparant-rozepunt.webp"
-                        alt="logo"
-                      />
-                    </Link>
-                  </div>
-                  <div className="fz20 ml90 ml10-xs">
-                    <a
-                      onClick={toggle}
-                      className="dashboard_sidebar_toggle_icon vam"
-                    >
-                      <Image
-                        height={18}
-                        width={20}
-                        src="/images/dashboard-navicon.svg"
-                        alt="navicon"
-                      />
-                    </a>
-                  </div>
-                  <a
-                    className="login-info d-block d-xl-none ml40 vam"
-                    data-bs-toggle="modal"
-                    href="#exampleModalToggle"
-                  >
-                    <span className="flaticon-loupe" />
-                  </a>
-                  <div className="ml40 d-none d-xl-block" style={{ minWidth: 320 }}>
-                    <SearchBarWithDropdown />
-                  </div>
+    <header
+      className="nav"
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 40,
+        padding: "var(--space-3) var(--space-6)",
+        gap: "var(--space-4)",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)", minWidth: 0 }}>
+        <Link
+          href="/"
+          className="nav__brand"
+          style={{ flexShrink: 0 }}
+          aria-label="SkillLinkup home"
+        >
+          <Image
+            height={32}
+            width={140}
+            src="/images/logo/skilllinkup-transparant-rozepunt.webp"
+            alt="SkillLinkup"
+            priority
+          />
+        </Link>
+
+        <button
+          type="button"
+          onClick={toggleSidebar}
+          className="btn btn--ghost btn--icon btn--sm"
+          aria-label="Toggle sidebar"
+          title="Toggle sidebar"
+        >
+          <Menu size={18} />
+        </button>
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", flexShrink: 0 }}>
+        <Link
+          href="/online/services"
+          className="btn btn--ghost btn--icon btn--sm d-none d-md-inline-flex"
+          aria-label="Search marketplace"
+          title="Search"
+        >
+          <Search size={18} />
+        </Link>
+
+        <span className="d-none d-sm-inline-flex">
+          <NotificationBell />
+        </span>
+
+        <Link
+          href="/message"
+          className="btn btn--ghost btn--icon btn--sm d-none d-sm-inline-flex"
+          aria-label="Messages"
+          title="Messages"
+        >
+          <MessageSquare size={18} />
+        </Link>
+
+        <Link
+          href="/saved"
+          className="btn btn--ghost btn--icon btn--sm d-none d-sm-inline-flex"
+          aria-label="Saved"
+          title="Saved"
+        >
+          <Bookmark size={18} />
+        </Link>
+
+        <div ref={dropdownRef} style={{ position: "relative" }}>
+          <button
+            type="button"
+            onClick={() => setDropdownOpen((v) => !v)}
+            aria-expanded={dropdownOpen}
+            aria-haspopup="menu"
+            aria-label="Account menu"
+            className="avatar"
+            style={{ cursor: "pointer", border: "none", padding: 0, flexShrink: 0 }}
+          >
+            {user?.imageUrl ? (
+              <Image
+                height={36}
+                width={36}
+                src={user.imageUrl}
+                alt={user?.fullName || "User"}
+              />
+            ) : (
+              <span>{(user?.firstName || "U").slice(0, 1)}</span>
+            )}
+          </button>
+          {dropdownOpen && (
+            <div
+              role="menu"
+              style={{
+                position: "absolute",
+                top: "calc(100% + 8px)",
+                right: 0,
+                minWidth: 240,
+                background: "var(--bg-elevated)",
+                border: "1px solid var(--border-subtle)",
+                borderRadius: "var(--radius-lg)",
+                boxShadow: "var(--shadow-3)",
+                padding: "var(--space-2)",
+                zIndex: 60,
+              }}
+            >
+              <div
+                style={{
+                  padding: "var(--space-2) var(--space-3) var(--space-3)",
+                  borderBottom: "1px solid var(--border-subtle)",
+                  marginBottom: "var(--space-1)",
+                }}
+              >
+                <div
+                  className="body-sm"
+                  style={{
+                    fontWeight: 600,
+                    color: "var(--text-primary)",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {user?.fullName || "Account"}
+                </div>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: "var(--text-tertiary)",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {user?.primaryEmailAddress?.emailAddress}
                 </div>
               </div>
-              <div className="col-6 col-lg-auto">
-                <div className="text-center text-lg-end header_right_widgets">
-                  <ul className="dashboard_dd_menu_list d-flex align-items-center justify-content-center justify-content-sm-end mb-0 p-0">
-                    <li className="d-none d-sm-block">
-                      <NotificationBell />
-                    </li>
-                    <li className="d-none d-sm-block">
-                      <a
-                        className="text-center mr5 text-thm2 dropdown-toggle fz20"
-                        type="button"
-                        data-bs-toggle="dropdown"
-                      >
-                        <span className="flaticon-mail" />
-                      </a>
-                      <div className="dropdown-menu">
-                        <div className="dboard_notific_dd px30 pt20 pb15">
-                          <div className="text-center py-3">
-                            <p className="text mb-2">Your messages will appear here.</p>
-                          </div>
-                          <div className="d-grid">
-                            <Link
-                              href="/message"
-                              className="ud-btn btn-thm w-100"
-                            >
-                              View All Messages
-                              <i className="fal fa-arrow-right-long" />
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                    {/* Saved — standalone icon link (from main) */}
-                    <li className="d-none d-sm-block">
-                      <Link
-                        href="/saved"
-                        className="text-center mr5 text-thm2 fz20"
-                      >
-                        <span className="flaticon-like" />
-                      </Link>
-                    </li>
-                    <li ref={dropdownRef} style={{ position: "relative", listStyle: "none" }}>
-                      <button
-                        onClick={() => setDropdownOpen((o) => !o)}
-                        style={{ background: "none", border: "none", padding: 0, cursor: "pointer", display: "flex", alignItems: "center" }}
-                      >
-                        <Image
-                          height={36}
-                          width={36}
-                          src={user?.imageUrl || "/images/resource/user.png"}
-                          alt={user?.fullName || "user"}
-                          className="rounded-circle"
-                          style={{ objectFit: "cover" }}
-                        />
-                      </button>
-                      {dropdownOpen && (
-                        <div style={{
-                          position: "absolute",
-                          top: "calc(100% + 10px)",
-                          right: 0,
-                          minWidth: "220px",
-                          background: "#ffffff",
-                          borderRadius: "12px",
-                          border: "1px solid rgba(0,0,0,0.08)",
-                          boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
-                          padding: "8px",
-                          zIndex: 9999,
-                        }}>
-                          <div style={{ padding: "8px 12px 10px", borderBottom: "1px solid rgba(0,0,0,0.06)", marginBottom: "4px" }}>
-                            <p style={{ fontWeight: 600, fontSize: "14px", margin: 0, color: "#111827", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                              {user?.fullName || "Account"}
-                            </p>
-                            <p style={{ fontSize: "12px", color: "#9ca3af", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                              {user?.primaryEmailAddress?.emailAddress}
-                            </p>
-                          </div>
-                          <Link
-                            href="/my-profile"
-                            onClick={() => setDropdownOpen(false)}
-                            style={{ display: "flex", alignItems: "center", padding: "8px 12px", fontSize: "14px", color: "#374151", borderRadius: "8px", textDecoration: "none", gap: "8px" }}
-                            onMouseEnter={e => e.currentTarget.style.background = "#f9fafb"}
-                            onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-                          >
-                            <i className="flaticon-photo" />
-                            My Profile
-                          </Link>
-                          <hr style={{ margin: "4px 0", borderColor: "rgba(0,0,0,0.06)" }} />
-                          <button
-                            onClick={() => signOut({ redirectUrl: "/" })}
-                            style={{ display: "flex", alignItems: "center", width: "100%", padding: "8px 12px", fontSize: "14px", color: "#ef4444", background: "none", border: "none", borderRadius: "8px", cursor: "pointer", gap: "8px", textAlign: "left" }}
-                            onMouseEnter={e => e.currentTarget.style.background = "#fff1f2"}
-                            onMouseLeave={e => e.currentTarget.style.background = "none"}
-                          >
-                            <i className="flaticon-logout" />
-                            Logout
-                          </button>
-                        </div>
-                      )}
-                    </li>
-                  </ul>
-                </div>
-              </div>
+              <Link
+                href="/my-profile"
+                onClick={() => setDropdownOpen(false)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "var(--space-3)",
+                  padding: "var(--space-2) var(--space-3)",
+                  fontSize: "var(--text-body-sm)",
+                  color: "var(--text-primary)",
+                  borderRadius: "var(--radius-md)",
+                  textDecoration: "none",
+                }}
+              >
+                <User size={15} />
+                My Profile
+              </Link>
+              <button
+                type="button"
+                onClick={() => signOut({ redirectUrl: "/" })}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  width: "100%",
+                  gap: "var(--space-3)",
+                  padding: "var(--space-2) var(--space-3)",
+                  fontSize: "var(--text-body-sm)",
+                  color: "var(--error-700, oklch(42% 0.18 25))",
+                  background: "transparent",
+                  border: "none",
+                  borderRadius: "var(--radius-md)",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  fontFamily: "inherit",
+                }}
+              >
+                <LogOut size={15} />
+                Logout
+              </button>
             </div>
-          </div>
-        </nav>
-      </header>
-    </>
+          )}
+        </div>
+      </div>
+    </header>
   );
 }
