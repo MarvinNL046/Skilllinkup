@@ -37,13 +37,31 @@ export default function Listing6() {
 
   if (product1 === undefined) {
     return (
-      <section className="pt30 pb90">
+      <section style={{ padding: "var(--space-14) 0" }}>
         <div className="container">
-          <div className="text-center py-5">
-            <div className="spinner-border text-thm" role="status">
-              <span className="visually-hidden">{t("loading")}</span>
-            </div>
-            <p className="body-color mt-3">{t("loadingServices")}</p>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "var(--space-3)",
+              padding: "var(--space-12) 0",
+              color: "var(--text-secondary)",
+            }}
+          >
+            <div
+              role="status"
+              aria-label={t("loading")}
+              style={{
+                width: 28,
+                height: 28,
+                border: "3px solid var(--border-subtle)",
+                borderTopColor: "var(--primary-600)",
+                borderRadius: "999px",
+                animation: "spin 0.9s linear infinite",
+              }}
+            />
+            <p className="body-sm" style={{ margin: 0 }}>{t("loadingServices")}</p>
           </div>
         </div>
       </section>
@@ -68,7 +86,7 @@ export default function Listing6() {
     getSpeak?.length !== 0 ? getSpeak.includes(item.language) : true;
 
   // Filters EERST, slice DAARNA (was omgekeerd — dat was de bug)
-  let content = product1
+  const filtered = product1
     .filter(deliveryFilter)
     .filter(priceFilter)
     .filter(levelFilter)
@@ -76,28 +94,27 @@ export default function Listing6() {
     .filter(sortByFilter)
     .filter(designToolFilter)
     .filter(speakFilter)
-    .slice(0, 9)
-    .map((item) => (
-      <div key={item._id} className="col-sm-6 col-xl-4">
-        {item?.gallery ? (
-          <PopularServiceSlideCard1 data={item} />
-        ) : (
-          <TrendingServiceCard1 data={item} />
-        )}
-      </div>
-    ));
+    .slice(0, 9);
 
   return (
     <>
-      <section className="pt30 pb90">
+      <section style={{ padding: "var(--space-10) 0 var(--space-16)" }}>
         <div className="container">
-          <div className="row">
-            <div className="col-lg-3">
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "minmax(240px, 280px) 1fr",
+              gap: "var(--space-8)",
+              alignItems: "start",
+            }}
+            className="listing-layout"
+          >
+            <aside style={{ minWidth: 0 }}>
               <ListingSidebar1 />
-            </div>
-            <div className="col-lg-9">
+            </aside>
+            <div style={{ minWidth: 0 }}>
               <CategoryPills />
-              <ListingOption2 itemLength={content?.length} />
+              <ListingOption2 itemLength={filtered.length} />
               {product1.length === 0 ? (
                 <EmptyState
                   icon="🎨"
@@ -106,16 +123,30 @@ export default function Listing6() {
                   actionLabel={t("noServicesAction")}
                   actionHref="/become-seller"
                 />
-              ) : content.length === 0 ? (
+              ) : filtered.length === 0 ? (
                 <EmptyState
                   icon="🔍"
                   title={t("noMatchTitle")}
                   description={t("noMatchDescription")}
                 />
               ) : (
-                <div className="row">{content}</div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+                    gap: "var(--space-5)",
+                  }}
+                >
+                  {filtered.map((item) =>
+                    item?.gallery ? (
+                      <PopularServiceSlideCard1 key={item._id} data={item} />
+                    ) : (
+                      <TrendingServiceCard1 key={item._id} data={item} />
+                    )
+                  )}
+                </div>
               )}
-              {content.length > 0 && <Pagination1 />}
+              {filtered.length > 0 && <Pagination1 />}
             </div>
           </div>
         </div>

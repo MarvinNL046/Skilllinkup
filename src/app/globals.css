@@ -160,6 +160,17 @@ a.btn-thm {
   to   { transform: rotate(360deg); }
 }
 
+/* Listing page layout — sidebar stacks on mobile, goes to side at lg.
+   Used by Listing6 (services), Listing14 (freelancers), Listing19 (projects). */
+.listing-layout {
+  grid-template-columns: 1fr !important;
+}
+@media (min-width: 992px) {
+  .listing-layout {
+    grid-template-columns: minmax(240px, 280px) 1fr !important;
+  }
+}
+
 /* Legal / editorial long-form pages (terms, privacy, cookie, editorial,
    affiliate-disclosure, authors). Template uses .our-terms .grids with
    h4.title. Remap to DS type scale + comfortable reading measure. */

@@ -82,18 +82,39 @@ export default function Listing14() {
 
   const freelancer1 = useConvexFreelancers();
 
-  // Show spinner while Convex data is loading
   if (freelancer1 === undefined) {
     return (
-      <div className="text-center py-5">
-        <div className="spinner-border text-thm" role="status">
-          <span className="visually-hidden">{t("loading")}</span>
+      <section style={{ padding: "var(--space-14) 0" }}>
+        <div className="container">
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "var(--space-3)",
+              padding: "var(--space-12) 0",
+              color: "var(--text-secondary)",
+            }}
+          >
+            <div
+              role="status"
+              aria-label={t("loading")}
+              style={{
+                width: 28,
+                height: 28,
+                border: "3px solid var(--border-subtle)",
+                borderTopColor: "var(--primary-600)",
+                borderRadius: "999px",
+                animation: "spin 0.9s linear infinite",
+              }}
+            />
+          </div>
         </div>
-      </div>
+      </section>
     );
   }
 
-  const content = freelancer1
+  const filtered = freelancer1
     .slice(0, 9)
     .filter(categoryFilter)
     .filter(priceFilter)
@@ -102,44 +123,55 @@ export default function Listing14() {
     .filter(levelFilter)
     .filter(languageFilter)
     .filter(availabilityFilter)
-    .sort(sortComparator)
-    .map((item, i) =>
-      getViewMode === "list" ? (
-        <div key={i} className="col-12 mb15">
-          <FreelancerCardList data={item} />
-        </div>
-      ) : (
-        <div key={i} className="col-sm-6 col-xl-4">
-          <FreelancerCard2 data={item} />
-        </div>
-      )
-    );
+    .sort(sortComparator);
+
+  const isList = getViewMode === "list";
+  const gridStyle = isList
+    ? { display: "grid", gap: "var(--space-4)" }
+    : {
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+        gap: "var(--space-5)",
+      };
 
   return (
     <>
-      <section className="pt30 pb90">
+      <section style={{ padding: "var(--space-10) 0 var(--space-16)" }}>
         <div className="container">
-          <div className="row">
-            <div className="col-lg-3">
+          <div
+            className="listing-layout"
+            style={{
+              display: "grid",
+              gap: "var(--space-8)",
+              alignItems: "start",
+            }}
+          >
+            <aside style={{ minWidth: 0 }}>
               <ListingSidebar5 />
-            </div>
-            <div className="col-lg-9">
-              <ListingOption2 itemLength={content?.length} itemLabel={t("freelancers")} />
-              <div className="row">
-                {content.length === 0 ? (
-                  <EmptyState
-                    icon="👤"
-                    title={t("noFreelancersTitle")}
-                    description={t("noFreelancersDescription")}
-                    actionLabel={t("noFreelancersAction")}
-                    actionHref="/register"
-                  />
-                ) : (
-                  content
-                )}
-              </div>
-              <div className="row mt30">
-                <Pagination1 itemCount={content.length} />
+            </aside>
+            <div style={{ minWidth: 0 }}>
+              <ListingOption2 itemLength={filtered.length} itemLabel={t("freelancers")} />
+              {filtered.length === 0 ? (
+                <EmptyState
+                  icon="👤"
+                  title={t("noFreelancersTitle")}
+                  description={t("noFreelancersDescription")}
+                  actionLabel={t("noFreelancersAction")}
+                  actionHref="/register"
+                />
+              ) : (
+                <div style={gridStyle}>
+                  {filtered.map((item, i) =>
+                    isList ? (
+                      <FreelancerCardList key={i} data={item} />
+                    ) : (
+                      <FreelancerCard2 key={i} data={item} />
+                    )
+                  )}
+                </div>
+              )}
+              <div style={{ marginTop: "var(--space-8)" }}>
+                <Pagination1 itemCount={filtered.length} />
               </div>
             </div>
           </div>

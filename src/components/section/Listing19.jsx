@@ -84,19 +84,36 @@ export default function Listing19() {
 
   const project1 = useConvexProjects();
 
-  // Show spinner while Convex data is loading
   if (project1 === undefined) {
     return (
-      <div className="text-center py-5">
-        <div className="spinner-border text-thm" role="status">
-          <span className="visually-hidden">{t("loading")}</span>
+      <section style={{ padding: "var(--space-14) 0" }}>
+        <div className="container">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              padding: "var(--space-12) 0",
+            }}
+          >
+            <div
+              role="status"
+              aria-label={t("loading")}
+              style={{
+                width: 28,
+                height: 28,
+                border: "3px solid var(--border-subtle)",
+                borderTopColor: "var(--primary-600)",
+                borderRadius: "999px",
+                animation: "spin 0.9s linear infinite",
+              }}
+            />
+          </div>
         </div>
-      </div>
+      </section>
     );
   }
 
-  // content
-  let content = project1
+  const filtered = project1
     .slice(0, 8)
     .filter(categoryFilter)
     .filter(projectTypeFilter)
@@ -106,24 +123,22 @@ export default function Listing19() {
     .filter(searchFilter)
     .filter(speakFilter)
     .filter(englishLevelFilter)
-    .filter(sortByFilter)
-    .map((item, i) => (
-      <div key={i} className="col-md-6 col-xl-12">
-        <ProjectCard3 data={item} />
-      </div>
-    ));
+    .filter(sortByFilter);
 
   return (
     <>
-      <section className="pt30 pb90">
+      <section style={{ padding: "var(--space-10) 0 var(--space-16)" }}>
         <div className="container">
-          <div className="row">
-            <div className="col-lg-3">
+          <div
+            className="listing-layout"
+            style={{ display: "grid", gap: "var(--space-8)", alignItems: "start" }}
+          >
+            <aside style={{ minWidth: 0 }}>
               <ListingSidebar6 />
-            </div>
-            <div className="col-lg-9">
-              <ListingOption2 itemLength={content?.length} itemLabel={t("itemLabel")} />
-              {content.length === 0 ? (
+            </aside>
+            <div style={{ minWidth: 0 }}>
+              <ListingOption2 itemLength={filtered.length} itemLabel={t("itemLabel")} />
+              {filtered.length === 0 ? (
                 <EmptyState
                   icon="📋"
                   title={t("noProjectsTitle")}
@@ -132,10 +147,14 @@ export default function Listing19() {
                   actionHref="/create-projects"
                 />
               ) : (
-                <div className="row">{content}</div>
+                <div style={{ display: "grid", gap: "var(--space-4)" }}>
+                  {filtered.map((item, i) => (
+                    <ProjectCard3 key={i} data={item} />
+                  ))}
+                </div>
               )}
-              <div className="mt30">
-                <Pagination1 itemCount={content.length} />
+              <div style={{ marginTop: "var(--space-8)" }}>
+                <Pagination1 itemCount={filtered.length} />
               </div>
             </div>
           </div>
