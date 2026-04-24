@@ -142,3 +142,54 @@ export const markNotified = internalMutation({
     await ctx.db.patch(args.id, { notifiedAt: Date.now() });
   },
 });
+
+/**
+ * One-off bulk import used to migrate pre-waitlist signups into the
+ * waitlist table as single source of truth for the launch blast.
+ *
+ * Does NOT trigger welcome emails — these people registered before the
+ * waitlist system existed, so a sudden "you're on the waitlist" email
+ * would feel weird. They'll get the actual launch email when that
+ * moment comes.
+ *
+ * Dedupes on email. Safe to re-run.
+ */
+export const bulkImport = internalMutation({
+  args: {
+    entries: v.array(
+      v.object({
+        email: v.string(),
+        name: v.optional(v.string()),
+        source: v.string(),
+      }),
+    ),
+  },
+  handler: async (ctx, args) => {
+    let inserted = 0;
+    let skipped = 0;
+    const now = Date.now();
+    for (const entry of args.entries) {
+      const email = entry.email.toLowerCase().trim();
+      if (!email || !email.includes("@")) {
+        skipped++;
+        continue;
+      }
+      const existing = await ctx.db
+        .query("waitlist")
+        .withIndex("by_email", (q) => q.eq("email", email))
+        .first();
+      if (existing) {
+        skipped++;
+        continue;
+      }
+      await ctx.db.insert("waitlist", {
+        email,
+        name: entry.name?.trim() || undefined,
+        source: entry.source,
+        createdAt: now,
+      });
+      inserted++;
+    }
+    return { inserted, skipped, total: args.entries.length };
+  },
+});
