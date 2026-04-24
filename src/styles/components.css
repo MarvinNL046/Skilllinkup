@@ -2,10 +2,12 @@
    SkillLinkup Design System — Components
    ============================================================ */
 
-/* ---------- TYPOGRAPHY UTILITIES ---------- */
-.display-2xl { font-family: var(--font-display); font-size: var(--text-display-2xl); line-height: var(--leading-tight); font-weight: var(--display-weight, 400); font-style: var(--display-italic, italic); letter-spacing: var(--tracking-tighter); }
-.display-xl  { font-family: var(--font-display); font-size: var(--text-display-xl); line-height: var(--leading-tight); font-weight: var(--display-weight, 400); font-style: var(--display-italic, normal); letter-spacing: var(--tracking-tight); }
-.display-lg  { font-family: var(--font-display); font-size: var(--text-display-lg); line-height: var(--leading-tight); font-weight: var(--display-weight, 400); font-style: var(--display-italic, normal); letter-spacing: var(--tracking-tight); }
+/* ---------- TYPOGRAPHY UTILITIES ----------
+   Display family = Space Grotesk (geometric, energetic, no italic). Weight
+   500 is default — bump to 600/700 inline for emphasis. */
+.display-2xl { font-family: var(--font-display); font-size: var(--text-display-2xl); line-height: var(--leading-tight); font-weight: var(--display-weight, 500); letter-spacing: var(--tracking-tighter); }
+.display-xl  { font-family: var(--font-display); font-size: var(--text-display-xl); line-height: var(--leading-tight); font-weight: var(--display-weight, 500); letter-spacing: var(--tracking-tight); }
+.display-lg  { font-family: var(--font-display); font-size: var(--text-display-lg); line-height: var(--leading-tight); font-weight: var(--display-weight, 500); letter-spacing: var(--tracking-tight); }
 .h1 { font: var(--weight-semibold) var(--text-h1)/var(--leading-tight) var(--font-sans); letter-spacing: var(--tracking-tight); }
 .h2 { font: var(--weight-semibold) var(--text-h2)/var(--leading-snug) var(--font-sans); letter-spacing: var(--tracking-tight); }
 .h3 { font: var(--weight-semibold) var(--text-h3)/var(--leading-snug) var(--font-sans); letter-spacing: var(--tracking-tight); }

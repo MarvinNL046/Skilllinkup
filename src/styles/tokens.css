@@ -98,9 +98,9 @@
 
   /* ---------- TYPOGRAPHY ----------
      Actual font files are loaded by Next.js font loader in src/app/layout.js.
-     The `--font-*-serif`/`--font-poppins`/`--font-inter` CSS vars below are
-     populated at render time by next/font. */
-  --font-display: var(--font-instrument-serif), "Playfair Display", Georgia, serif;
+     Stack: Poppins × Inter Modern (body/UI) + Space Grotesk (display).
+     CSS vars below are populated at render time by next/font. */
+  --font-display: var(--font-space-grotesk), "Poppins", system-ui, sans-serif;
   --font-sans:    var(--font-poppins), var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-mono:    ui-monospace, "SF Mono", "JetBrains Mono", monospace;
 

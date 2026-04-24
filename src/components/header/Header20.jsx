@@ -1,98 +1,118 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import Navigation from "./Navigation";
 import MobileNavigation2 from "./MobileNavigation2";
 import NotificationBell from "./NotificationBell";
 import { useUser, useClerk } from "@clerk/nextjs";
 import WaitlistButton from "@/components/ui/WaitlistButton";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useTranslations } from "next-intl";
+import { Search, LogOut } from "lucide-react";
 
+/**
+ * Header20 — primary header used across all /service, /employee, /auth,
+ * /dashboard and similar routes. Redesigned 2026-04-24 against the
+ * SkillLinkup Design System — same visual language as Header19 but kept
+ * as a separate component so page-specific imports don't break.
+ */
 export default function Header20() {
-    const path = usePathname();
-    const { user, isSignedIn } = useUser();
-    const { signOut } = useClerk();
+  const { user, isSignedIn } = useUser();
+  const { signOut } = useClerk();
+  const t = useTranslations("nav");
 
-    return (
-        <>
-            <header className="header-nav nav-innerpage-style at-home20 main-menu border-0">
-                <nav className="posr">
-                    <div className="container-fluid custom-container custom-container2 posr">
-                        <div className="row align-items-center justify-content-between">
-                            <div className="col-auto px-0 px-xl-3">
-                                <div className="d-flex align-items-center">
-                                    <div className="logos">
-                                        <Link className="header-logo logo1" href="/">
-                                            <Image
-                                                height={40}
-                                                width={172}
-                                                src="/images/logo/skilllinkup-transparant-rozepunt.webp"
-                                                alt="Header Logo"
-                                                priority
-                                            />
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-auto px-0 px-xl-3">
-                                <Navigation />
-                            </div>
-                            <div className="col-auto pe-0">
-                                <div className="d-flex align-items-center">
-                                    <a
-                                        className="login-info"
-                                        data-bs-toggle="modal"
-                                        href="#exampleModalToggle"
-                                    >
-                                        <span className="flaticon-loupe" />
-                                    </a>
-                                    {isSignedIn ? (
-                                        <>
-                                            <Link
-                                                className="login-info ml15"
-                                                href="/dashboard"
-                                            >
-                                                Dashboard
-                                            </Link>
-                                            <span className="ml15 mr5 position-relative d-inline-flex align-items-center">
-                                                <NotificationBell />
-                                            </span>
-                                            <Link
-                                                className="login-info mr10 ml15"
-                                                href="/dashboard"
-                                            >
-                                                {user?.imageUrl ? (
-                                                    <Image
-                                                        width={36}
-                                                        height={36}
-                                                        src={user.imageUrl}
-                                                        alt={user.fullName || "User"}
-                                                        className="rounded-circle"
-                                                    />
-                                                ) : (
-                                                    <span>{user?.firstName || "User"}</span>
-                                                )}
-                                            </Link>
-                                            <button
-                                                className="ud-btn add-joining home20-join-btn bdrs12 text-white"
-                                                onClick={() => signOut({ redirectUrl: "/" })}
-                                            >
-                                                Logout
-                                            </button>
-                                        </>
-                                    ) : (
-                                        // Pre-launch: single CTA only. "Become a Seller" and "Sign in"
-                                        // are removed from public nav — /login and /register remain
-                                        // reachable via URL for admin/existing accounts.
-                                        <WaitlistButton className="ud-btn add-joining home20-join-btn bdrs12 text-white ml15" />
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </nav>
-            </header>
-            <MobileNavigation2 />
-        </>
-    );
+  return (
+    <>
+      <header
+        className="nav"
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 50,
+          padding: "var(--space-3) var(--space-6)",
+          gap: "var(--space-6)",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-6)", minWidth: 0 }}>
+          <Link
+            href="/"
+            className="nav__brand"
+            style={{ flexShrink: 0 }}
+            aria-label="SkillLinkup home"
+          >
+            <Image
+              width={156}
+              height={36}
+              src="/images/logo/skilllinkup-transparant-rozepunt.webp"
+              alt="SkillLinkup"
+              priority
+            />
+          </Link>
+
+          <div className="d-none d-xl-block" style={{ minWidth: 0 }}>
+            <Navigation />
+          </div>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", flexShrink: 0 }}>
+          <button
+            type="button"
+            className="btn btn--ghost btn--icon btn--sm d-none d-md-inline-flex"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModalToggle"
+            aria-label="Search"
+          >
+            <Search size={18} />
+          </button>
+
+          <span className="d-none d-md-inline-flex">
+            <LanguageSwitcher />
+          </span>
+
+          {isSignedIn ? (
+            <>
+              <Link
+                href="/dashboard"
+                className="btn btn--ghost btn--sm d-none d-md-inline-flex"
+              >
+                {t("dashboard")}
+              </Link>
+              <span className="d-inline-flex align-items-center position-relative">
+                <NotificationBell />
+              </span>
+              <Link
+                href="/dashboard"
+                className="avatar"
+                style={{ flexShrink: 0 }}
+                aria-label={user?.fullName || "Dashboard"}
+              >
+                {user?.imageUrl ? (
+                  <Image
+                    width={36}
+                    height={36}
+                    src={user.imageUrl}
+                    alt={user.fullName || "User"}
+                  />
+                ) : (
+                  <span>{(user?.firstName || "U").slice(0, 1)}</span>
+                )}
+              </Link>
+              <button
+                type="button"
+                className="btn btn--secondary btn--icon btn--sm"
+                onClick={() => signOut({ redirectUrl: "/" })}
+                aria-label={t("logout")}
+                title={t("logout")}
+              >
+                <LogOut size={16} />
+              </button>
+            </>
+          ) : (
+            <WaitlistButton className="btn btn--primary" />
+          )}
+        </div>
+      </header>
+      <MobileNavigation2 />
+    </>
+  );
 }

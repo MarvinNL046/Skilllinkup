@@ -2,7 +2,6 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Navigation from "./Navigation";
 import MobileNavigation2 from "./MobileNavigation2";
 import NotificationBell from "./NotificationBell";
 import { useUser, useClerk } from "@clerk/nextjs";
@@ -10,7 +9,15 @@ import WaitlistButton from "@/components/ui/WaitlistButton";
 import SearchBarWithDropdown from "@/components/ui/SearchBarWithDropdown";
 import { useTranslations } from "next-intl";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import Navigation from "./Navigation";
+import { LogOut } from "lucide-react";
 
+/**
+ * Header — redesigned 2026-04-24 against the SkillLinkup Design System.
+ * Uses the `.nav` component class (warm neutral bg with backdrop blur,
+ * subtle border, token-driven spacing). Keeps Clerk sign-in logic for
+ * admin/existing users; public visitors see a single WaitlistButton CTA.
+ */
 export default function Header19() {
   const { user, isSignedIn } = useUser();
   const { signOut } = useClerk();
@@ -18,79 +25,91 @@ export default function Header19() {
 
   return (
     <>
-      <header className="header-nav nav-innerpage-style at-home20 main-menu border-0 ">
-        <nav className="posr">
-          <div className="container-fluid custom-container custom-container2 posr">
-            <div className="row align-items-center justify-content-between">
-              <div className="col-auto px-0 px-xl-3">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="logos">
-                    <Link className="header-logo logo1" href="/">
-                      <Image
-                        width={172}
-                        height={40}
-                        src="/images/logo/skilllinkup-transparant-rozepunt.webp"
-                        alt="Header Logo"
-                        priority
-                      />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-              <div className="col-auto px-0 px-xl-3">
-                <Navigation />
-              </div>
-              <div className="col-auto d-none d-lg-block">
-                <div style={{ maxWidth: 320 }}>
-                  <SearchBarWithDropdown placeholder={t("searchPlaceholder")} />
-                </div>
-              </div>
-              <div className="col-auto pe-0 ">
-                <div className="d-flex align-items-center">
-                  <span className="d-none d-lg-inline-flex mr15">
-                    <LanguageSwitcher />
-                  </span>
-                  {isSignedIn ? (
-                    <>
-                      <Link className="login-info" href="/dashboard">
-                        {t("dashboard")}
-                      </Link>
-                      <span className="ml15 mr5 position-relative d-inline-flex align-items-center">
-                        <NotificationBell />
-                      </span>
-                      <Link
-                        className="login-info mr10 ml15"
-                        href="/dashboard"
-                      >
-                        {user?.imageUrl ? (
-                          <Image
-                            width={36}
-                            height={36}
-                            src={user.imageUrl}
-                            alt={user.fullName || "User"}
-                            className="rounded-circle"
-                          />
-                        ) : (
-                          <span>{user?.firstName || "User"}</span>
-                        )}
-                      </Link>
-                      <button
-                        className="ud-btn add-joining home20-join-btn bdrs12 text-white"
-                        onClick={() => signOut({ redirectUrl: "/" })}
-                      >
-                        {t("logout")}
-                      </button>
-                    </>
-                  ) : (
-                    // Pre-launch: single CTA. "Become a Seller" and "Sign in"
-                    // removed from public nav; Clerk routes still reachable via URL.
-                    <WaitlistButton className="ud-btn add-joining home20-join-btn bdrs12 text-white ml15" />
-                  )}
-                </div>
-              </div>
-            </div>
+      <header
+        className="nav"
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 50,
+          padding: "var(--space-3) var(--space-6)",
+          gap: "var(--space-6)",
+        }}
+      >
+        {/* Brand + primary nav */}
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-6)", minWidth: 0 }}>
+          <Link
+            href="/"
+            className="nav__brand"
+            style={{ flexShrink: 0 }}
+            aria-label="SkillLinkup home"
+          >
+            <Image
+              width={156}
+              height={36}
+              src="/images/logo/skilllinkup-transparant-rozepunt.webp"
+              alt="SkillLinkup"
+              priority
+            />
+          </Link>
+
+          <div className="d-none d-xl-block" style={{ minWidth: 0 }}>
+            <Navigation />
           </div>
-        </nav>
+        </div>
+
+        {/* Right side: search + language + CTA */}
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", flexShrink: 0 }}>
+          <div className="d-none d-lg-block" style={{ width: 280 }}>
+            <SearchBarWithDropdown placeholder={t("searchPlaceholder")} />
+          </div>
+
+          <span className="d-none d-md-inline-flex">
+            <LanguageSwitcher />
+          </span>
+
+          {isSignedIn ? (
+            <>
+              <Link
+                href="/dashboard"
+                className="btn btn--ghost btn--sm d-none d-md-inline-flex"
+              >
+                {t("dashboard")}
+              </Link>
+              <span className="d-inline-flex align-items-center position-relative">
+                <NotificationBell />
+              </span>
+              <Link
+                href="/dashboard"
+                className="avatar"
+                style={{ flexShrink: 0 }}
+                aria-label={user?.fullName || "Dashboard"}
+              >
+                {user?.imageUrl ? (
+                  <Image
+                    width={36}
+                    height={36}
+                    src={user.imageUrl}
+                    alt={user.fullName || "User"}
+                  />
+                ) : (
+                  <span>{(user?.firstName || "U").slice(0, 1)}</span>
+                )}
+              </Link>
+              <button
+                type="button"
+                className="btn btn--secondary btn--icon btn--sm"
+                onClick={() => signOut({ redirectUrl: "/" })}
+                aria-label={t("logout")}
+                title={t("logout")}
+              >
+                <LogOut size={16} />
+              </button>
+            </>
+          ) : (
+            // Pre-launch: single CTA — Clerk routes still reachable via URL.
+            <WaitlistButton className="btn btn--primary" />
+          )}
+        </div>
       </header>
       <MobileNavigation2 />
     </>

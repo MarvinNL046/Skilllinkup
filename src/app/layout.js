@@ -1,4 +1,4 @@
-import { DM_Sans, Poppins, Inter, Instrument_Serif } from "next/font/google";
+import { DM_Sans, Poppins, Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import "react-tooltip/dist/react-tooltip.css";
 import "rc-slider/assets/index.css";
@@ -13,8 +13,10 @@ const dmSans = DM_Sans({
   variable: "--font-dm-sans",
 });
 
-// Design-system typography. Poppins as primary sans, Inter as UI-scale
-// companion (better at small sizes), Instrument Serif for display accents.
+// Design-system typography — "Poppins × Inter Modern + Space Grotesk".
+// Poppins: primary sans (fris, tech/creative, rounded geometric personality).
+// Inter: UI/body companion (optimised for small text and dense layouts).
+// Space Grotesk: display + numerics (super-geometric, energetic headlines).
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -27,11 +29,10 @@ const inter = Inter({
   variable: "--font-inter",
   display: "swap",
 });
-const instrumentSerif = Instrument_Serif({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  variable: "--font-instrument-serif",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-space-grotesk",
   display: "swap",
 });
 
@@ -83,7 +84,7 @@ export default async function RootLayout({ children }) {
   return (
     <html
       lang={locale}
-      className={`${poppins.variable} ${inter.variable} ${instrumentSerif.variable} ${dmSans.variable}`}
+      className={`${poppins.variable} ${inter.variable} ${spaceGrotesk.variable} ${dmSans.variable}`}
     >
       <head>
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-BRER9FEMTE" />

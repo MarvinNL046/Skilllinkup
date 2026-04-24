@@ -1,156 +1,252 @@
 "use client";
 import { useState } from "react";
+import { useMutation } from "convex/react";
 import { toast } from "sonner";
 import { about, category, support } from "@/data/footer";
 import Link from "next/link";
 import Image from "next/image";
-import FooterSelect1 from "./ui/FooterSelect1";
-import FooterSocial4 from "./ui/FooterSocial4";
-import FooterSocial from "./ui/FooterSocial";
-import FooterSocial2 from "./ui/FooterSocial2";
-import FooterSocial3 from "./ui/FooterSocial3";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { ArrowRight, Linkedin, Instagram, Mail } from "lucide-react";
+import { api } from "../../../convex/_generated/api";
 
+/**
+ * Footer — redesigned 2026-04-24 against the SkillLinkup Design System.
+ * Newsletter sits up top with token-driven .input + .btn--primary.
+ * The form pipes to Convex `waitlist.join` so any email captured from
+ * the footer lands in the same source of truth as the hero CTA — no
+ * parallel list to maintain.
+ */
 export default function Footer14() {
-    const [email, setEmail] = useState("");
-    const t = useTranslations("footer");
-    const tw = useTranslations("waitlist");
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const t = useTranslations("footer");
+  const tw = useTranslations("waitlist");
+  const locale = useLocale();
+  const joinWaitlist = useMutation(api.waitlist.join);
 
-    const handleSubscribe = () => {
-        if (!email || !email.includes("@")) {
-            toast.error(tw("invalidEmail"));
-            return;
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    if (!email || !email.includes("@")) {
+      toast.error(tw("errorInvalidEmail"));
+      return;
+    }
+    setLoading(true);
+    try {
+      await joinWaitlist({
+        email: email.trim(),
+        source: "footer-newsletter",
+        locale,
+      });
+      toast.success(tw("successTitle"));
+      setEmail("");
+    } catch {
+      toast.error(tw("errorGeneric"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const year = new Date().getFullYear();
+
+  return (
+    <footer
+      style={{
+        background: "var(--bg-sunken)",
+        borderTop: "1px solid var(--border-subtle)",
+        marginTop: "var(--space-24)",
+      }}
+    >
+      <div
+        className="container"
+        style={{ maxWidth: "var(--container-xl)", padding: "var(--space-16) var(--space-6)" }}
+      >
+        {/* Newsletter block */}
+        <div
+          style={{
+            display: "grid",
+            gap: "var(--space-8)",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            alignItems: "center",
+            paddingBottom: "var(--space-12)",
+            marginBottom: "var(--space-12)",
+            borderBottom: "1px solid var(--border-subtle)",
+          }}
+        >
+          <div>
+            <h3 className="h3" style={{ margin: 0, marginBottom: "var(--space-2)" }}>
+              {t("subscribe")}
+            </h3>
+            <p className="body-sm" style={{ color: "var(--text-secondary)", margin: 0 }}>
+              {tw("description")}
+            </p>
+          </div>
+          <form
+            onSubmit={handleSubscribe}
+            style={{ display: "flex", gap: "var(--space-2)", alignItems: "stretch" }}
+          >
+            <input
+              type="email"
+              className="input"
+              placeholder={t("emailPlaceholder")}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              style={{ flex: 1 }}
+            />
+            <button
+              type="submit"
+              className="btn btn--primary"
+              disabled={loading}
+              style={{ flexShrink: 0 }}
+            >
+              {loading ? tw("submitting") : tw("joinNow")}
+              <ArrowRight size={16} />
+            </button>
+          </form>
+        </div>
+
+        {/* Link columns + brand */}
+        <div
+          style={{
+            display: "grid",
+            gap: "var(--space-8)",
+            gridTemplateColumns: "2fr repeat(3, 1fr)",
+          }}
+          className="footer-columns"
+        >
+          <div>
+            <Link
+              href="/"
+              style={{ display: "inline-block", marginBottom: "var(--space-4)" }}
+              aria-label="SkillLinkup home"
+            >
+              <Image
+                width={156}
+                height={36}
+                src="/images/logo/skilllinkup-transparant-rozepunt.webp"
+                alt="SkillLinkup"
+              />
+            </Link>
+            <p
+              className="body-sm"
+              style={{
+                color: "var(--text-secondary)",
+                maxWidth: 380,
+                margin: 0,
+                marginBottom: "var(--space-4)",
+              }}
+            >
+              {t("tagline") ||
+                "SkillLinkup — where freelancers, local professionals and clients meet."}
+            </p>
+            <div className="flex items-center gap-3">
+              <a
+                href="mailto:info@skilllinkup.com"
+                className="btn btn--ghost btn--icon btn--sm"
+                aria-label="Email us"
+              >
+                <Mail size={18} />
+              </a>
+              <a
+                href="https://linkedin.com/company/skilllinkup"
+                className="btn btn--ghost btn--icon btn--sm"
+                aria-label="LinkedIn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Linkedin size={18} />
+              </a>
+              <a
+                href="https://instagram.com/skilllinkup"
+                className="btn btn--ghost btn--icon btn--sm"
+                aria-label="Instagram"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Instagram size={18} />
+              </a>
+            </div>
+          </div>
+
+          <FooterColumn title={t("aboutUs")} items={about} />
+          <FooterColumn title={t("categories")} items={category} />
+          <FooterColumn title={t("support")} items={support} />
+        </div>
+
+        {/* Bottom bar */}
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "var(--space-4)",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingTop: "var(--space-8)",
+            marginTop: "var(--space-12)",
+            borderTop: "1px solid var(--border-subtle)",
+          }}
+        >
+          <p className="caption" style={{ margin: 0 }}>
+            © {year} SkillLinkup. {t("allRightsReserved")}
+          </p>
+          <div className="flex items-center" style={{ gap: "var(--space-4)" }}>
+            <Link href="/terms" className="caption" style={{ textDecoration: "none", color: "var(--text-tertiary)" }}>
+              Terms
+            </Link>
+            <Link href="/privacy-policy" className="caption" style={{ textDecoration: "none", color: "var(--text-tertiary)" }}>
+              Privacy
+            </Link>
+            <Link href="/cookie-policy" className="caption" style={{ textDecoration: "none", color: "var(--text-tertiary)" }}>
+              Cookies
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <style jsx>{`
+        @media (max-width: 900px) {
+          :global(.footer-columns) {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
         }
-        toast.success(tw("subscribed"));
-        setEmail("");
-    };
+        @media (max-width: 520px) {
+          :global(.footer-columns) {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
+    </footer>
+  );
+}
 
-    return (
-        <>
-            <section className="footer-style1 at-home8 pb-0 pt60">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-lg-6">
-                            <div className="footer-widget mb-4 mb-lg-5">
-                                <div className="mailchimp-widget mb90">
-                                    <h6 className="title mb20">{t("subscribe")}</h6>
-                                    <form
-                                        onSubmit={(e) => {
-                                            e.preventDefault();
-                                            handleSubscribe();
-                                        }}
-                                        className="mailchimp-style1 at-home20 bdrs12 overflow-hidden"
-                                    >
-                                        <input
-                                            type="email"
-                                            className="form-control"
-                                            placeholder={t("emailPlaceholder")}
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            required
-                                        />
-                                        <button
-                                            className="text-thm"
-                                            type="submit"
-                                        >
-                                            {t("send")}
-                                        </button>
-                                    </form>
-                                </div>
-                                <div className="row justify-content-between">
-                                    <div className="col-auto">
-                                        <div className="link-style1 at-home8 mb-3">
-                                            <h6 className="mb25">{t("about")}</h6>
-                                            <div className="link-list">
-                                                {about.map((item, i) => (
-                                                    <Link
-                                                        key={i}
-                                                        href={item.path}
-                                                    >
-                                                        {item.name}
-                                                    </Link>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-auto">
-                                        <div className="link-style1 at-home8 mb-3">
-                                            <h6 className="mb25">{t("categories")}</h6>
-                                            <ul className="ps-0">
-                                                {category.map((item, i) => (
-                                                    <li key={i}>
-                                                        <Link href={item.path}>
-                                                            {item.name}
-                                                        </Link>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div className="col-auto">
-                                        <div className="link-style1 at-home8 mb-3">
-                                            <h6 className=" mb25">{t("support")}</h6>
-                                            <ul className="ps-0">
-                                                {support.map((item, i) => (
-                                                    <li key={i}>
-                                                        <Link href={item.path}>
-                                                            {item.name}
-                                                        </Link>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-6 col-xl-4 offset-xl-2">
-                            <div className="footer-widget mb-4 mb-lg-5">
-                                <Link className="footer-logo" href="/">
-                                    <Image
-                                        height={40}
-                                        width={172}
-                                        className="mb40 object-fit-contain"
-                                        src="/images/logo/skilllinkup-transparant-rozepunt.webp"
-                                        alt="SkillLinkup"
-                                    />
-                                </Link>
-                                <div className="row mb-4 mb-lg-5">
-                                    <div className="col-auto">
-                                        <div className="contact-info">
-                                            <p className="info-title mb-2">
-                                                {t("contact")}
-                                            </p>
-                                            <h5 className="info-mail">
-                                                <Link href="mailto:info@skilllinkup.com">
-                                                    info@skilllinkup.com
-                                                </Link>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                </div>
-                                <FooterSocial3 />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="container bdrt1 py-4">
-                    <div className="row">
-                        <div className="col-sm-6">
-                            <div className="text-center text-lg-start">
-                                <p className="copyright-text mb-0 at-home8 ff-heading">
-                                    © {new Date().getFullYear()} {t("copyright")}
-                                </p>
-                            </div>
-                        </div>
-                        <div className="col-sm-6">
-                            <div className="footer_bottom_right_btns at-home8 text-center text-lg-end">
-                                <FooterSelect1 />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </>
-    );
+function FooterColumn({ title, items }) {
+  return (
+    <div>
+      <h6
+        className="overline"
+        style={{ margin: 0, marginBottom: "var(--space-4)", color: "var(--text-secondary)" }}
+      >
+        {title}
+      </h6>
+      <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+        {items.map((item) => (
+          <li key={item.id}>
+            <Link
+              href={item.path}
+              className="body-sm"
+              style={{
+                color: "var(--text-secondary)",
+                textDecoration: "none",
+                transition: "color var(--dur-base) var(--ease-standard)",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text-primary)")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-secondary)")}
+            >
+              {item.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }

@@ -170,8 +170,9 @@ export default function HomepageHero() {
                 <span
                   style={{
                     fontFamily: "var(--font-display)",
-                    fontStyle: "italic",
+                    fontWeight: 600,
                     color: "var(--primary-600)",
+                    letterSpacing: "-0.025em",
                   }}
                 >
                   {accent}
