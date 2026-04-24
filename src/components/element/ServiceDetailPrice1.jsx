@@ -3,7 +3,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
+import { Clock, RefreshCcw, Check, ArrowRight } from "lucide-react";
 
+/**
+ * Gig pricing widget in the service-detail sidebar. Rebuilt on the
+ * SkillLinkup Design System — DS card, segmented control for tiers,
+ * feature list with success-tinted checks, primary CTA with price echo.
+ */
 export default function ServiceDetailPrice1({ packages = [], gigId }) {
   const t = useTranslations("gigDetail");
   const [selectedTab, setSelectedTab] = useState(0);
@@ -11,10 +17,8 @@ export default function ServiceDetailPrice1({ packages = [], gigId }) {
   const { isSignedIn } = useUser();
 
   const hasPackages = packages && packages.length > 0;
-
   const displayPackages = packages;
 
-  // Clamp selectedTab in case the number of packages differs from 3
   const activeIndex = Math.min(selectedTab, displayPackages.length - 1);
   const activePackage = displayPackages[activeIndex];
 
@@ -26,102 +30,204 @@ export default function ServiceDetailPrice1({ packages = [], gigId }) {
       : "€";
 
   function handleOrder() {
-    if (!hasPackages) {
-      return;
-    }
-
+    if (!hasPackages) return;
     if (!isSignedIn) {
-      // Redirect to login and come back to this page
       const currentPath =
         typeof window !== "undefined" ? window.location.pathname : "/";
       router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
       return;
     }
-
-    // Logged-in user: redirect to orders dashboard (Stripe not set up yet)
     router.push("/dashboard/orders");
   }
 
   if (!hasPackages) {
     return (
-      <div className="price-widget bdrs12 p30 bdr1">
-        <p className="text-muted fz14 mb0">{t("noPackages")}</p>
+      <div
+        className="card"
+        style={{ padding: "var(--space-6)", marginBottom: "var(--space-5)" }}
+      >
+        <p
+          className="body-sm"
+          style={{ color: "var(--text-tertiary)", margin: 0 }}
+        >
+          {t("noPackages")}
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="price-widget">
-      <div className="navtab-style1">
-        <nav>
-          <div className="nav nav-tabs mb20">
-            {displayPackages.map((pkg, i) => (
-              <button
-                key={pkg._id || i}
-                onClick={() => setSelectedTab(i)}
-                className={`nav-link fw500 ${activeIndex === i ? "active" : ""}`}
-              >
-                {pkg.tier || pkg.title}
-              </button>
-            ))}
-          </div>
-        </nav>
-
-        <div className="tab-content" id="nav-tabContent">
-          <div className="price-content">
-            <div className="price">
-              {currencySymbol}
-              {activePackage?.price}
-            </div>
-            <div className="h5 mb-2">{activePackage?.title}</div>
-            <p className="text fz14">{activePackage?.description}</p>
-
-            <hr className="opacity-100 mb20" />
-
-            <ul className="p-0 mb15 d-sm-flex align-items-center">
-              <li className="fz14 fw500 dark-color">
-                <i className="flaticon-sandclock fz20 text-thm2 me-2 vam" />
-                {activePackage?.deliveryDays} {t("daysDelivery")}
-              </li>
-              <li className="fz14 fw500 dark-color ml20 ml0-xs">
-                <i className="flaticon-recycle fz20 text-thm2 me-2 vam" />
-                {activePackage?.revisionCount != null
-                  ? activePackage.revisionCount === 0
-                    ? t("unlimited")
-                    : activePackage.revisionCount
-                  : t("unlimited")}{" "}
-                {t("revisions")}
-              </li>
-            </ul>
-
-            {activePackage?.features && activePackage.features.length > 0 && (
-              <div className="list-style1">
-                <ul>
-                  {activePackage.features.map((feature, fi) => (
-                    <li key={fi} className="mb15">
-                      <i className="far fa-check text-thm3 bgc-thm3-light" />
-                      {typeof feature === "string" ? feature : feature?.label || feature?.name || ""}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            <div className="d-grid mt20">
-              <button
-                className="ud-btn btn-thm"
-                onClick={handleOrder}
-                disabled={!hasPackages}
-                title={!hasPackages ? t("noPackagesTitle") : undefined}
-              >
-                {t("continue")} ({currencySymbol}
-                {activePackage?.price})
-                <i className="fal fa-arrow-right-long" />
-              </button>
-            </div>
-          </div>
-        </div>
+    <div
+      className="card"
+      style={{
+        padding: "var(--space-6)",
+        marginBottom: "var(--space-5)",
+      }}
+    >
+      {/* Segmented control: tier tabs */}
+      <div
+        role="tablist"
+        style={{
+          display: "flex",
+          gap: 4,
+          padding: 4,
+          background: "var(--surface-2)",
+          borderRadius: "var(--radius-md)",
+          marginBottom: "var(--space-5)",
+        }}
+      >
+        {displayPackages.map((pkg, i) => {
+          const active = activeIndex === i;
+          return (
+            <button
+              key={pkg._id || i}
+              role="tab"
+              aria-selected={active}
+              onClick={() => setSelectedTab(i)}
+              style={{
+                flex: 1,
+                padding: "8px 12px",
+                fontSize: "var(--text-body-sm)",
+                fontWeight: 500,
+                border: "none",
+                borderRadius: "var(--radius-sm)",
+                cursor: "pointer",
+                background: active ? "var(--bg-elevated)" : "transparent",
+                color: active ? "var(--text-primary)" : "var(--text-secondary)",
+                boxShadow: active ? "var(--shadow-1)" : "none",
+                textTransform: "capitalize",
+                transition: "all 140ms var(--ease-standard, ease-out)",
+              }}
+            >
+              {pkg.tier || pkg.title}
+            </button>
+          );
+        })}
       </div>
+
+      <div className="price" style={{ marginBottom: "var(--space-3)" }}>
+        <span
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "var(--text-display-sm, 2.25rem)",
+            fontWeight: 500,
+            letterSpacing: "-0.02em",
+          }}
+        >
+          {currencySymbol}
+          {activePackage?.price}
+        </span>
+      </div>
+      {activePackage?.title && (
+        <div
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "var(--text-h5)",
+            fontWeight: 500,
+            marginBottom: "var(--space-2)",
+          }}
+        >
+          {activePackage.title}
+        </div>
+      )}
+      {activePackage?.description && (
+        <p
+          className="body-sm"
+          style={{ color: "var(--text-secondary)", marginBottom: "var(--space-5)" }}
+        >
+          {activePackage.description}
+        </p>
+      )}
+
+      <div
+        style={{
+          display: "flex",
+          gap: "var(--space-5)",
+          paddingTop: "var(--space-4)",
+          marginTop: "var(--space-4)",
+          marginBottom: "var(--space-5)",
+          borderTop: "1px solid var(--border-subtle)",
+          flexWrap: "wrap",
+          fontSize: "var(--text-body-sm)",
+          color: "var(--text-secondary)",
+        }}
+      >
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <Clock size={14} style={{ color: "var(--primary-600)" }} />
+          <strong style={{ color: "var(--text-primary)" }}>
+            {activePackage?.deliveryDays}
+          </strong>
+          {t("daysDelivery")}
+        </span>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <RefreshCcw size={14} style={{ color: "var(--primary-600)" }} />
+          <strong style={{ color: "var(--text-primary)" }}>
+            {activePackage?.revisionCount != null
+              ? activePackage.revisionCount === 0
+                ? t("unlimited")
+                : activePackage.revisionCount
+              : t("unlimited")}
+          </strong>
+          {t("revisions")}
+        </span>
+      </div>
+
+      {activePackage?.features && activePackage.features.length > 0 && (
+        <ul
+          style={{
+            listStyle: "none",
+            padding: 0,
+            margin: "0 0 var(--space-5)",
+            display: "grid",
+            gap: "var(--space-3)",
+          }}
+        >
+          {activePackage.features.map((feature, fi) => (
+            <li
+              key={fi}
+              style={{
+                display: "flex",
+                gap: "var(--space-3)",
+                alignItems: "flex-start",
+                fontSize: "var(--text-body-sm)",
+                color: "var(--text-primary)",
+              }}
+            >
+              <span
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: "999px",
+                  background: "var(--success-50)",
+                  color: "var(--success-700)",
+                  display: "grid",
+                  placeItems: "center",
+                  flexShrink: 0,
+                  marginTop: 1,
+                }}
+              >
+                <Check size={12} strokeWidth={3} />
+              </span>
+              {typeof feature === "string"
+                ? feature
+                : feature?.label || feature?.name || ""}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <button
+        type="button"
+        className="btn btn--primary btn--lg"
+        onClick={handleOrder}
+        disabled={!hasPackages}
+        title={!hasPackages ? t("noPackagesTitle") : undefined}
+        style={{ width: "100%", justifyContent: "center" }}
+      >
+        {t("continue")} ({currencySymbol}
+        {activePackage?.price})
+        <ArrowRight size={16} />
+      </button>
     </div>
   );
 }

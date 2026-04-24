@@ -30,6 +30,48 @@ function formatMonthYear(ts, presentLabel = "Present") {
 
 // ---- Sidebar ----
 
+function SidebarRow({ label, value }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: "var(--space-3)",
+        padding: "var(--space-3) 0",
+        borderBottom: "1px solid var(--border-subtle)",
+        fontSize: "var(--text-body-sm)",
+      }}
+    >
+      <span style={{ color: "var(--text-secondary)" }}>{label}</span>
+      <span style={{ color: "var(--text-primary)", fontWeight: 500, textAlign: "right" }}>
+        {value}
+      </span>
+    </div>
+  );
+}
+
+function SocialLink({ href, children }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "var(--space-2)",
+        padding: "var(--space-2) 0",
+        color: "var(--primary-600)",
+        fontSize: "var(--text-body-sm)",
+        fontWeight: 500,
+      }}
+    >
+      {children}
+    </a>
+  );
+}
+
 function ProfileSidebar({ convexData }) {
   const t = useTranslations("freelancerProfile");
   const location = convexData?.locationCity
@@ -43,124 +85,122 @@ function ProfileSidebar({ convexData }) {
   const languages = convexData?.languages || [];
   const skills = convexData?.skills || [];
 
+  const LEVEL_CONFIG = {
+    top_rated: { key: "topRated", tone: "primary", captionKey: "top1Percent" },
+    pro:       { key: "pro",       tone: "accent",  captionKey: "verifiedProfessional" },
+    rising:    { key: "rising",    tone: "success", captionKey: "upAndComing" },
+  };
+  const levelCfg = convexData?.level && convexData.level !== "new" ? LEVEL_CONFIG[convexData.level] : null;
+
+  const hasSocial =
+    convexData?.websiteUrl || convexData?.linkedinUrl ||
+    convexData?.twitterUrl || convexData?.githubUrl;
+
   return (
     <>
-      {/* Hourly rate + contact */}
-      <div className="price-widget pt25 bdrs8 mb30">
+      {/* Hourly rate + quick facts */}
+      <div
+        className="card"
+        style={{ padding: "var(--space-6)", marginBottom: "var(--space-5)" }}
+      >
         {convexData?.hourlyRate && (
-          <h3 className="widget-title mb20">
-            €{convexData.hourlyRate}
-            <small className="fz15 fw500">{t("perHour")}</small>
-          </h3>
+          <div
+            className="price"
+            style={{
+              marginBottom: "var(--space-4)",
+              paddingBottom: "var(--space-4)",
+              borderBottom: "1px solid var(--border-subtle)",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "var(--text-display-sm, 2.25rem)",
+                fontWeight: 500,
+                letterSpacing: "-0.02em",
+              }}
+            >
+              €{convexData.hourlyRate}
+            </span>
+            <span
+              className="body-sm"
+              style={{ color: "var(--text-tertiary)", marginLeft: 4 }}
+            >
+              {t("perHour")}
+            </span>
+          </div>
         )}
-        <div className="category-list mt10">
-          {location && (
-            <div className="d-flex align-items-center justify-content-between bdrb1 pb10 mb10">
-              <span className="text">
-                <i className="flaticon-place text-thm2 pe-2 vam" />
-                {t("location")}
+        {location && <SidebarRow label={t("location")} value={location} />}
+        {memberSince && <SidebarRow label={t("memberSince")} value={memberSince} />}
+        {languages.length > 0 && (
+          <SidebarRow label={t("languages")} value={languages.join(", ")} />
+        )}
+        {convexData?.isVerified && (
+          <SidebarRow
+            label={t("verified")}
+            value={
+              <span style={{ color: "var(--success-700)" }}>
+                {t("yes")}
               </span>
-              <span className="fw500">{location}</span>
-            </div>
-          )}
-          {memberSince && (
-            <div className="d-flex align-items-center justify-content-between bdrb1 pb10 mb10">
-              <span className="text">
-                <i className="flaticon-30-days text-thm2 pe-2 vam" />
-                {t("memberSince")}
-              </span>
-              <span className="fw500">{memberSince}</span>
-            </div>
-          )}
-          {languages.length > 0 && (
-            <div className="d-flex align-items-center justify-content-between bdrb1 pb10 mb10">
-              <span className="text">
-                <i className="flaticon-translator text-thm2 pe-2 vam" />
-                {t("languages")}
-              </span>
-              <span className="fw500">{languages.join(", ")}</span>
-            </div>
-          )}
-          {convexData?.isVerified && (
-            <div className="d-flex align-items-center justify-content-between pb10 mb10">
-              <span className="text">
-                <i className="flaticon-verify text-thm2 pe-2 vam" />
-                {t("verified")}
-              </span>
-              <span className="fw500 text-success">{t("yes")}</span>
-            </div>
-          )}
-        </div>
+            }
+          />
+        )}
         {convexData?.userId && (
-          <div className="d-grid mt20">
+          <div style={{ marginTop: "var(--space-5)" }}>
             <ContactButton recipientId={convexData.userId} className="w-100" />
           </div>
         )}
       </div>
 
-      {/* Level badge */}
-      {convexData?.level && convexData.level !== "new" && (
-        <div className="ps-widget bdrs8 p30 bdr1 mb30">
-          <h6 className="mb15">{t("sellerLevel")}</h6>
-          {(() => {
-            const LEVEL_CONFIG = {
-              top_rated: { key: "topRated", color: "#1a73e8" },
-              pro:       { key: "pro",       color: "#ef2b70" },
-              rising:    { key: "rising",    color: "#22c55e" },
-            };
-            const cfg = LEVEL_CONFIG[convexData.level];
-            if (!cfg) return null;
-            return (
-              <div className="d-flex align-items-center gap-2">
-                <span
-                  className="badge px-3 py-2 fz14 fw600"
-                  style={{ backgroundColor: cfg.color, color: "#fff", borderRadius: 12 }}
-                >
-                  {t(cfg.key)}
-                </span>
-                {convexData.level === "top_rated" && (
-                  <span className="fz13 text-muted">{t("top1Percent")}</span>
-                )}
-                {convexData.level === "pro" && (
-                  <span className="fz13 text-muted">{t("verifiedProfessional")}</span>
-                )}
-                {convexData.level === "rising" && (
-                  <span className="fz13 text-muted">{t("upAndComing")}</span>
-                )}
-              </div>
-            );
-          })()}
+      {/* Seller level */}
+      {levelCfg && (
+        <div
+          className="card"
+          style={{ padding: "var(--space-6)", marginBottom: "var(--space-5)" }}
+        >
+          <div
+            className="overline"
+            style={{ color: "var(--text-tertiary)", marginBottom: "var(--space-3)" }}
+          >
+            {t("sellerLevel")}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", flexWrap: "wrap" }}>
+            <span className={`tag tag--${levelCfg.tone}`}>{t(levelCfg.key)}</span>
+            <span className="body-sm" style={{ color: "var(--text-tertiary)" }}>
+              {t(levelCfg.captionKey)}
+            </span>
+          </div>
         </div>
       )}
 
       {/* Social links */}
-      {(convexData?.websiteUrl || convexData?.linkedinUrl || convexData?.twitterUrl || convexData?.githubUrl) && (
-        <div className="sidebar-widget mb30 pb20 bdrs8">
-          <h4 className="widget-title">{t("links")}</h4>
-          <div className="d-flex flex-column gap-2 mt15">
+      {hasSocial && (
+        <div
+          className="card"
+          style={{ padding: "var(--space-6)", marginBottom: "var(--space-5)" }}
+        >
+          <div
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "var(--text-h5)",
+              fontWeight: 500,
+              marginBottom: "var(--space-3)",
+            }}
+          >
+            {t("links")}
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {convexData.websiteUrl && (
-              <a href={convexData.websiteUrl} target="_blank" rel="noopener noreferrer" className="d-flex align-items-center gap-2 fz14 text-thm">
-                <i className="flaticon-website fz16" />
-                {t("website")}
-              </a>
+              <SocialLink href={convexData.websiteUrl}>{t("website")}</SocialLink>
             )}
             {convexData.linkedinUrl && (
-              <a href={convexData.linkedinUrl} target="_blank" rel="noopener noreferrer" className="d-flex align-items-center gap-2 fz14 text-thm">
-                <i className="fab fa-linkedin fz16" />
-                LinkedIn
-              </a>
+              <SocialLink href={convexData.linkedinUrl}>LinkedIn</SocialLink>
             )}
             {convexData.twitterUrl && (
-              <a href={convexData.twitterUrl} target="_blank" rel="noopener noreferrer" className="d-flex align-items-center gap-2 fz14 text-thm">
-                <i className="fab fa-twitter fz16" />
-                Twitter / X
-              </a>
+              <SocialLink href={convexData.twitterUrl}>Twitter / X</SocialLink>
             )}
             {convexData.githubUrl && (
-              <a href={convexData.githubUrl} target="_blank" rel="noopener noreferrer" className="d-flex align-items-center gap-2 fz14 text-thm">
-                <i className="fab fa-github fz16" />
-                GitHub
-              </a>
+              <SocialLink href={convexData.githubUrl}>GitHub</SocialLink>
             )}
           </div>
         </div>
@@ -168,11 +208,23 @@ function ProfileSidebar({ convexData }) {
 
       {/* Skills */}
       {skills.length > 0 && (
-        <div className="sidebar-widget mb30 pb20 bdrs8">
-          <h4 className="widget-title">{t("skills")}</h4>
-          <div className="tag-list mt20">
+        <div
+          className="card"
+          style={{ padding: "var(--space-6)", marginBottom: "var(--space-5)" }}
+        >
+          <div
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "var(--text-h5)",
+              fontWeight: 500,
+              marginBottom: "var(--space-4)",
+            }}
+          >
+            {t("skills")}
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
             {skills.map((skill, i) => (
-              <a key={i}>{skill}</a>
+              <span key={i} className="tag">{skill}</span>
             ))}
           </div>
         </div>
@@ -211,7 +263,7 @@ function GigPackageTable({ gig, recipientUserId }) {
       )}
       <div className="table-responsive">
         <table className="table table-bordered align-middle text-center mb-0" style={{ minWidth: 480 }}>
-          <thead className="bgc-thm-light">
+          <thead style={{ background: "var(--primary-50)" }}>
             <tr>
               {packages.map((pkg) => (
                 <th key={pkg._id} scope="col" className="fz15 fw600 p20">
@@ -228,7 +280,7 @@ function GigPackageTable({ gig, recipientUserId }) {
               ))}
             </tr>
             {/* Price */}
-            <tr className="bgc-light">
+            <tr style={{ background: "var(--surface-2)" }}>
               {packages.map((pkg) => (
                 <td key={pkg._id} className="fz20 fw700 p15 dark-color">
                   {(Number(pkg.price) || 0).toLocaleString("nl-NL", {
@@ -314,8 +366,8 @@ function GigsSection({ freelancerProfileId, recipientUserId }) {
 
   if (gigs === undefined) {
     return (
-      <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
-        <h4 className="mb25">{t("services")}</h4>
+      <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+        <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("services")}</h2>
         <p className="text fz14">{t("loadingServices")}</p>
       </div>
     );
@@ -323,16 +375,16 @@ function GigsSection({ freelancerProfileId, recipientUserId }) {
 
   if (gigs.length === 0) {
     return (
-      <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
-        <h4 className="mb25">{t("services")}</h4>
+      <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+        <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("services")}</h2>
         <p className="text fz14">{t("noServices")}</p>
       </div>
     );
   }
 
   return (
-    <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
-      <h4 className="mb25">{t("services")}</h4>
+    <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+      <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("services")}</h2>
       {gigs.map((gig, idx) => (
         <div key={gig._id}>
           {idx > 0 && <hr className="my30" />}
@@ -354,8 +406,8 @@ function ProjectsSection({ userId }) {
 
   if (projects === undefined) {
     return (
-      <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
-        <h4 className="mb25">{t("projects")}</h4>
+      <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+        <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("projects")}</h2>
         <p className="text fz14">{t("loadingProjects")}</p>
       </div>
     );
@@ -363,24 +415,24 @@ function ProjectsSection({ userId }) {
 
   if (projects.length === 0) {
     return (
-      <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
-        <h4 className="mb25">{t("projects")}</h4>
+      <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+        <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("projects")}</h2>
         <p className="text fz14">{t("noProjects")}</p>
       </div>
     );
   }
 
   return (
-    <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
-      <h4 className="mb25">{t("projects")}</h4>
+    <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+      <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("projects")}</h2>
       <div className="row">
         {projects.map((project) => (
           <div key={project._id} className="col-sm-6 mb20">
-            <div className="bdrs8 p20 bdr1">
+            <div style={{ padding: "var(--space-5)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-lg)", height: "100%" }}>
               <h6 className="mb10">{project.title}</h6>
               <div className="d-flex flex-wrap gap-2 mb10">
                 {project.categoryName && (
-                  <span className="badge bg-light text-dark fz12">{project.categoryName}</span>
+                  <span className="tag">{project.categoryName}</span>
                 )}
                 {(project.budgetMin || project.budgetMax) && (
                   <span className="fz13 text">
@@ -422,8 +474,8 @@ function PortfolioSection({ userId }) {
 
   if (portfolioItems === undefined) {
     return (
-      <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
-        <h4 className="mb25">{t("portfolio")}</h4>
+      <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+        <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("portfolio")}</h2>
         <p className="text fz14">{t("loadingPortfolio")}</p>
       </div>
     );
@@ -431,20 +483,20 @@ function PortfolioSection({ userId }) {
 
   if (portfolioItems.length === 0) {
     return (
-      <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
-        <h4 className="mb25">{t("portfolio")}</h4>
+      <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+        <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("portfolio")}</h2>
         <p className="text fz14">{t("noPortfolio")}</p>
       </div>
     );
   }
 
   return (
-    <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
-      <h4 className="mb25">{t("portfolio")}</h4>
+    <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+      <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("portfolio")}</h2>
       <div className="row">
         {portfolioItems.map((item) => (
           <div key={item._id} className="col-sm-6 col-lg-4 mb20">
-            <div className="bdrs8 overflow-hidden bdr1">
+            <div style={{ border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-lg)", overflow: "hidden", height: "100%" }}>
               <div
                 style={{
                   height: 140,
@@ -474,7 +526,7 @@ function PortfolioSection({ userId }) {
                 {(item.tags || []).length > 0 && (
                   <div className="d-flex flex-wrap gap-1 mb10">
                     {item.tags.map((tag, i) => (
-                      <span key={i} className="badge bg-light text-dark fz11">{tag}</span>
+                      <span key={i} className="tag">{tag}</span>
                     ))}
                   </div>
                 )}
@@ -521,8 +573,8 @@ function ExperienceSection({ userId }) {
   if (!hasWork && !hasEdu && !hasCerts) return null;
 
   return (
-    <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
-      <h4 className="mb25">{t("experienceEducation")}</h4>
+    <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+      <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("experienceEducation")}</h2>
 
       {hasWork && (
         <>
@@ -597,8 +649,8 @@ function FreelancerReviews({ freelancerId }) {
 
   if (reviews === undefined) {
     return (
-      <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
-        <h4>{t("reviews")}</h4>
+      <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+        <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("reviews")}</h2>
         <p className="text fz14">{t("loadingReviews")}</p>
       </div>
     );
@@ -606,8 +658,8 @@ function FreelancerReviews({ freelancerId }) {
 
   if (!reviews || reviews.length === 0) {
     return (
-      <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
-        <h4>{t("reviews")}</h4>
+      <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+        <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("reviews")}</h2>
         <p className="text fz14">{t("noReviews")}</p>
       </div>
     );
@@ -616,78 +668,148 @@ function FreelancerReviews({ freelancerId }) {
   const avgRating = reviews.reduce((sum, r) => sum + r.overallRating, 0) / reviews.length;
 
   return (
-    <div className="px30 pt30 pb30 bg-white bdrs12 wow fadeInUp default-box-shadow1 bdr1 mb30">
-      <div className="product_single_content">
-        <div className="mbp_pagination_comments">
-          <div className="d-md-flex align-items-center mb30">
-            <div className="total-review-box d-flex align-items-center text-center mb30-sm me-4">
-              <div className="wrapper mx-auto">
-                <div className="t-review mb5">{avgRating.toFixed(1)}</div>
-                <StarRating value={Math.round(avgRating)} readOnly size="sm" />
-                <p className="text mb-0 mt5 fz13">
-                  {reviews.length} {reviews.length === 1 ? t("review") : t("reviews")}
-                </p>
-              </div>
-            </div>
+    <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+      <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("reviews")}</h2>
+
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "var(--space-5)",
+          padding: "var(--space-5)",
+          marginBottom: "var(--space-6)",
+          background: "var(--surface-2)",
+          borderRadius: "var(--radius-md)",
+        }}
+      >
+        <div style={{ textAlign: "center", minWidth: 80 }}>
+          <div
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "var(--text-display-sm, 2.25rem)",
+              fontWeight: 500,
+              letterSpacing: "-0.02em",
+              lineHeight: 1,
+            }}
+          >
+            {avgRating.toFixed(1)}
           </div>
+          <div style={{ marginTop: 4 }}>
+            <StarRating value={Math.round(avgRating)} readOnly size="sm" />
+          </div>
+          <p
+            className="body-sm"
+            style={{ color: "var(--text-tertiary)", marginTop: 4, marginBottom: 0 }}
+          >
+            {reviews.length} {reviews.length === 1 ? t("review") : t("reviews")}
+          </p>
+        </div>
+      </div>
 
-          {reviews.map((review, idx) => (
-            <div key={review._id} className={`col-md-12 ${idx > 0 ? "mt30" : ""}`}>
-              <div className="bdrb1 pb30">
-                <div className="mbp_first position-relative d-flex align-items-center justify-content-start mb15">
-                  {review.reviewerAvatar ? (
-                    <Image
-                      height={50}
-                      width={50}
-                      src={review.reviewerAvatar}
-                      className="rounded-circle mr-3"
-                      alt={review.reviewerName || "Reviewer"}
-                    />
-                  ) : (
-                    <div
-                      className="rounded-circle d-flex align-items-center justify-content-center bgc-thm-light mr-3 flex-shrink-0"
-                      style={{ width: 50, height: 50 }}
-                    >
-                      <i className="flaticon-user fz20 text-thm" />
-                    </div>
-                  )}
-                  <div className="ml15">
-                    <h6 className="mt-0 mb-0 fz15">{review.reviewerName || t("anonymous")}</h6>
-                    <div className="d-flex align-items-center gap-2 mt2">
-                      <StarRating value={review.overallRating} readOnly size="sm" />
-                      <span className="fz13 text">{formatReviewDate(review.createdAt)}</span>
-                    </div>
-                    {review.orderTitle && (
-                      <p className="mb-0 fz12 text mt2">
-                        <i className="flaticon-receipt fz12 vam me-1" />
-                        {review.orderTitle}
-                      </p>
-                    )}
-                  </div>
+      <div style={{ display: "grid", gap: "var(--space-6)" }}>
+        {reviews.map((review) => (
+          <div
+            key={review._id}
+            style={{
+              paddingBottom: "var(--space-6)",
+              borderBottom: "1px solid var(--border-subtle)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                gap: "var(--space-3)",
+                alignItems: "flex-start",
+                marginBottom: "var(--space-3)",
+              }}
+            >
+              {review.reviewerAvatar ? (
+                <span className="avatar avatar--lg" style={{ flexShrink: 0 }}>
+                  <Image
+                    height={48}
+                    width={48}
+                    src={review.reviewerAvatar}
+                    alt={review.reviewerName || "Reviewer"}
+                  />
+                </span>
+              ) : (
+                <span
+                  className="avatar avatar--lg"
+                  style={{
+                    flexShrink: 0,
+                    background: "var(--primary-50)",
+                    color: "var(--primary-600)",
+                    fontWeight: 600,
+                  }}
+                >
+                  {(review.reviewerName || "?").slice(0, 1).toUpperCase()}
+                </span>
+              )}
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div
+                  className="body-md"
+                  style={{ fontWeight: 600, color: "var(--text-primary)" }}
+                >
+                  {review.reviewerName || t("anonymous")}
                 </div>
-
-                {(review.communicationRating || review.qualityRating || review.timelinessRating || review.valueRating) && (
-                  <div className="d-flex flex-wrap gap-3 mb15">
-                    {review.communicationRating > 0 && (
-                      <span className="fz13 text">{t("communication")}: <strong>{review.communicationRating}/5</strong></span>
-                    )}
-                    {review.qualityRating > 0 && (
-                      <span className="fz13 text">{t("quality")}: <strong>{review.qualityRating}/5</strong></span>
-                    )}
-                    {review.timelinessRating > 0 && (
-                      <span className="fz13 text">{t("timeliness")}: <strong>{review.timelinessRating}/5</strong></span>
-                    )}
-                    {review.valueRating > 0 && (
-                      <span className="fz13 text">{t("value")}: <strong>{review.valueRating}/5</strong></span>
-                    )}
-                  </div>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginTop: 2 }}
+                >
+                  <StarRating value={review.overallRating} readOnly size="sm" />
+                  <span
+                    className="body-sm"
+                    style={{ color: "var(--text-tertiary)" }}
+                  >
+                    {formatReviewDate(review.createdAt)}
+                  </span>
+                </div>
+                {review.orderTitle && (
+                  <p
+                    className="body-sm"
+                    style={{ color: "var(--text-tertiary)", margin: "2px 0 0" }}
+                  >
+                    {review.orderTitle}
+                  </p>
                 )}
-
-                {review.content && <p className="text mb-0">{review.content}</p>}
               </div>
             </div>
-          ))}
-        </div>
+
+            {(review.communicationRating || review.qualityRating || review.timelinessRating || review.valueRating) && (
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "var(--space-4)",
+                  marginBottom: "var(--space-3)",
+                  fontSize: "var(--text-body-sm)",
+                  color: "var(--text-secondary)",
+                }}
+              >
+                {review.communicationRating > 0 && (
+                  <span>{t("communication")}: <strong style={{ color: "var(--text-primary)" }}>{review.communicationRating}/5</strong></span>
+                )}
+                {review.qualityRating > 0 && (
+                  <span>{t("quality")}: <strong style={{ color: "var(--text-primary)" }}>{review.qualityRating}/5</strong></span>
+                )}
+                {review.timelinessRating > 0 && (
+                  <span>{t("timeliness")}: <strong style={{ color: "var(--text-primary)" }}>{review.timelinessRating}/5</strong></span>
+                )}
+                {review.valueRating > 0 && (
+                  <span>{t("value")}: <strong style={{ color: "var(--text-primary)" }}>{review.valueRating}/5</strong></span>
+                )}
+              </div>
+            )}
+
+            {review.content && (
+              <p
+                className="body-md"
+                style={{ color: "var(--text-secondary)", margin: 0, whiteSpace: "pre-wrap" }}
+              >
+                {review.content}
+              </p>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );

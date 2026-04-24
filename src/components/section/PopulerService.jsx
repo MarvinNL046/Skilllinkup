@@ -1,45 +1,57 @@
 "use client";
-import Link from "next/link";
 import useConvexGigs from "@/hook/useConvexGigs";
 import PopularServiceSlideCard1 from "../card/PopularServiceSlideCard1";
 import PopularServiceCard1 from "../card/PopularServiceCard1";
 
+/**
+ * "You might also like" grid at the bottom of the service-detail page.
+ * Rebuilt on DS spacing + typography; individual gig cards already use
+ * Phase 5 card variants.
+ */
 export default function PopulerService() {
   const gigs = useConvexGigs();
 
   return (
-    <>
-      <section className="pb40-md pb70 mt70 mt0-lg">
-        <div className="container">
-          <div className="row align-items-center wow fadeInUp">
-            <div className="col-lg-12">
-              <div className="main-title mb30-lg">
-                <h2 className="title">
-                  People Who Viewed This Service Also Viewed
-                </h2>
-                <p className="paragraph">
-                  Give your visitor a smooth online experience with a solid UX
-                  design
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="row">
-            {(gigs || []).slice(0, 4).map((item, i) => (
-              <div key={i} className="col-sm-6 col-xl-3">
-                {item.gallery ? (
-                  <PopularServiceSlideCard1
-                    style="listing-style1"
-                    data={item}
-                  />
-                ) : (
-                  <PopularServiceCard1 style="listing-style1" data={item} />
-                )}
-              </div>
-            ))}
-          </div>
+    <section style={{ padding: "var(--space-16) 0", borderTop: "1px solid var(--border-subtle)" }}>
+      <div className="container">
+        <div style={{ marginBottom: "var(--space-10)", maxWidth: 720 }}>
+          <h2
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "var(--text-h2)",
+              fontWeight: 500,
+              letterSpacing: "-0.01em",
+              margin: 0,
+              marginBottom: "var(--space-3)",
+            }}
+          >
+            People who viewed this also viewed
+          </h2>
+          <p
+            className="body-md"
+            style={{ color: "var(--text-secondary)", margin: 0 }}
+          >
+            Similar services from freelancers on the marketplace.
+          </p>
         </div>
-      </section>
-    </>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+            gap: "var(--space-5)",
+          }}
+        >
+          {(gigs || []).slice(0, 4).map((item, i) => (
+            <div key={i}>
+              {item.gallery ? (
+                <PopularServiceSlideCard1 style="listing-style1" data={item} />
+              ) : (
+                <PopularServiceCard1 style="listing-style1" data={item} />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
