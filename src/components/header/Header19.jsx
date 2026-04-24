@@ -10,6 +10,7 @@ import SearchBarWithDropdown from "@/components/ui/SearchBarWithDropdown";
 import { useTranslations } from "next-intl";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Navigation from "./Navigation";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 import { LogOut } from "lucide-react";
 
 /**
@@ -66,6 +67,7 @@ export default function Header19() {
           <span className="d-none d-md-inline-flex">
             <LanguageSwitcher />
           </span>
+          <ThemeToggle />
 
           {isSignedIn ? (
             <>

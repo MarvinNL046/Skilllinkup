@@ -7,6 +7,7 @@ import NotificationBell from "./NotificationBell";
 import { useUser, useClerk } from "@clerk/nextjs";
 import WaitlistButton from "@/components/ui/WaitlistButton";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 import { useTranslations } from "next-intl";
 import { Search, LogOut } from "lucide-react";
 
@@ -68,6 +69,7 @@ export default function Header20() {
           <span className="d-none d-md-inline-flex">
             <LanguageSwitcher />
           </span>
+          <ThemeToggle />
 
           {isSignedIn ? (
             <>
