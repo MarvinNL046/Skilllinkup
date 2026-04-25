@@ -133,7 +133,7 @@ export default function PopularServiceSlideCard1({ data }) {
 
       <div
         style={{
-          padding: "var(--space-5)",
+          padding: "var(--space-6)",
           display: "flex",
           flexDirection: "column",
           gap: "var(--space-3)",

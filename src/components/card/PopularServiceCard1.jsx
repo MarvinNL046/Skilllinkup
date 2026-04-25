@@ -82,7 +82,7 @@ export default function PopularServiceCard1({
       </div>
       <div
         style={{
-          padding: "var(--space-5)",
+          padding: "var(--space-6)",
           display: "flex",
           flexDirection: "column",
           gap: "var(--space-3)",
