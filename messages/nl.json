@@ -464,6 +464,10 @@
     "counterSingular": "{count} persoon al ingeschreven",
     "counterPlural": "{count} mensen al ingeschreven",
     "counterLoading": "Wachtlijst laden…",
+    "successAlreadyTitle": "Je staat al op de lijst.",
+    "successAlreadyDescription": "Je was ons al voor. We mailen je zodra we lanceren.",
+    "gdprDisclaimer": "Door je in te schrijven, ga je akkoord met ons <link>privacybeleid</link>. We mailen je alleen over de lancering van SkillLinkup.",
+    "counterPioneer": "Wees een van de eersten",
     "close": "Sluiten"
   },
   "notifications": {

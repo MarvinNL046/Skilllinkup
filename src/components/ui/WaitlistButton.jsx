@@ -4,8 +4,11 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useMutation, useQuery } from "convex/react";
 import { useTranslations, useLocale } from "next-intl";
+import Link from "next/link";
 import { X, ArrowRight, Check, Sparkles } from "lucide-react";
 import { api } from "../../../convex/_generated/api";
+
+const PIONEER_THRESHOLD = 25;
 
 /**
  * Primary CTA for the pre-launch phase. Redesigned 2026-04-24 against the
@@ -29,6 +32,7 @@ export default function WaitlistButton({
   const [trap, setTrap] = useState(""); // honeypot
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [alreadyJoined, setAlreadyJoined] = useState(false);
   const [error, setError] = useState("");
 
   async function handleSubmit(e) {
@@ -55,6 +59,7 @@ export default function WaitlistButton({
         setError(t("errorInvalidEmail"));
         return;
       }
+      setAlreadyJoined(Boolean(result?.alreadyJoined));
       setDone(true);
       setEmail("");
       setName("");
@@ -71,6 +76,7 @@ export default function WaitlistButton({
     setOpen(false);
     setTimeout(() => {
       setDone(false);
+      setAlreadyJoined(false);
       setError("");
       setEmail("");
       setName("");
@@ -81,6 +87,7 @@ export default function WaitlistButton({
 
   const counterLabel = () => {
     if (count === undefined) return t("counterLoading");
+    if (count < PIONEER_THRESHOLD) return t("counterPioneer");
     if (count === 1) return t("counterSingular", { count });
     return t("counterPlural", { count });
   };
@@ -253,6 +260,28 @@ export default function WaitlistButton({
                       {loading ? t("submitting") : t("joinNow")}
                       <ArrowRight size={18} />
                     </button>
+                    <p
+                      className="body-sm"
+                      style={{
+                        color: "var(--text-tertiary)",
+                        fontSize: "var(--text-caption)",
+                        lineHeight: "var(--leading-relaxed)",
+                        marginTop: 12,
+                        marginBottom: 0,
+                        textAlign: "center",
+                      }}
+                    >
+                      {t.rich("gdprDisclaimer", {
+                        link: (chunks) => (
+                          <Link
+                            href="/privacy-policy"
+                            style={{ color: "var(--text-secondary)", textDecoration: "underline" }}
+                          >
+                            {chunks}
+                          </Link>
+                        ),
+                      })}
+                    </p>
                   </form>
                 </div>
               </>
@@ -276,21 +305,23 @@ export default function WaitlistButton({
                   <Check size={28} strokeWidth={2.4} />
                 </div>
                 <h2 id="waitlist-title" className="h3" style={{ margin: "0 0 8px" }}>
-                  {t("successTitle")}
+                  {alreadyJoined ? t("successAlreadyTitle") : t("successTitle")}
                 </h2>
                 <p className="body-sm" style={{ color: "var(--text-secondary)", marginBottom: 16 }}>
-                  {t("successDescription")}
+                  {alreadyJoined ? t("successAlreadyDescription") : t("successDescription")}
                 </p>
-                <p
-                  className="body-sm"
-                  style={{
-                    color: "var(--text-tertiary)",
-                    lineHeight: "var(--leading-relaxed)",
-                    marginBottom: 24,
-                  }}
-                >
-                  {t("successShare")}
-                </p>
+                {!alreadyJoined && (
+                  <p
+                    className="body-sm"
+                    style={{
+                      color: "var(--text-tertiary)",
+                      lineHeight: "var(--leading-relaxed)",
+                      marginBottom: 24,
+                    }}
+                  >
+                    {t("successShare")}
+                  </p>
+                )}
                 <button className="btn btn--secondary" onClick={handleClose}>
                   {t("close")}
                 </button>

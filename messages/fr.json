@@ -464,7 +464,11 @@
     "successShare": "Know someone who should be on this list? Forward the email — that's the most useful thing you can do.",
     "counterSingular": "{count} person already joined",
     "counterPlural": "{count} people already joined",
-    "counterLoading": "Loading waitlist…"
+    "counterLoading": "Loading waitlist…",
+    "successAlreadyTitle": "Vous êtes déjà sur la liste.",
+    "successAlreadyDescription": "Vous nous avez devancés. Nous vous écrirons dès le lancement.",
+    "gdprDisclaimer": "En vous inscrivant, vous acceptez notre <link>politique de confidentialité</link>. Nous vous écrirons uniquement pour le lancement de SkillLinkup.",
+    "counterPioneer": "Soyez parmi les premiers"
   },
   "notifications": {
     "accountTypeUpdated": "Type de compte mis à jour",
