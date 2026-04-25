@@ -8576,20 +8576,10 @@ li.mm-listitem:focus {
   max-width: 662px;
 }
 
-.modal:before {
-  background: rgba(34, 34, 34, 0.7);
-  bottom: 0;
-  content: "";
-  left: 0;
-  position: absolute;
-  right: 0px;
-  top: 0px;
-  -webkit-transition: all 0.4s ease;
-  -moz-transition: all 0.4s ease;
-  -ms-transition: all 0.4s ease;
-  -o-transition: all 0.4s ease;
-  transition: all 0.4s ease;
-}
+/* Removed legacy .modal:before grey overlay (Bootstrap-template leftover).
+   It sat on top of every DS modal's form content and blocked both
+   visibility and pointer events. The DS .modal in src/styles/components.css
+   has no ::before. */
 
 .hiddenbar-body-ovelay {
   background: rgba(34, 34, 34, 0.7);
