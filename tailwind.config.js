@@ -5,34 +5,11 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx,mdx}",
     "./emails/**/*.{js,jsx,ts,tsx}",
   ],
-  // Don't generate Tailwind utilities whose names collide with Bootstrap
-  // component classes still loaded from public/css/bootstrap.min.css.
-  // The remaining Bootstrap CSS provides the .row/.col grid + .d-* utility
-  // helpers that the legacy template + bridge depend on; Tailwind keeps
-  // the rest. Each blocked name maps to a clash that broke (or would
-  // break) something concrete:
-  //
-  //   collapse   — TW visibility:collapse hid every accordion panel
-  //                that depends on Bootstrap's .collapse.show state
-  //                (Category sidebar, FAQ, mobile nav offcanvas)
-  //   container  — BS .container has fixed max-widths per breakpoint;
-  //                TW .container resets that to 100% which broke the
-  //                expected centered-page rhythm on all listing pages
-  //   table      — BS .table is a component class with margin/border/
-  //                stripe styles for actual <table> elements; TW
-  //                display:table would silently override that
-  //   shadow     — BS .shadow is a heavy 0 .5rem 1rem rgba(0,0,0,.15);
-  //                TW .shadow is a thin 0 1px 3px. Different defaults,
-  //                inconsistent visual output. Use shadow-1..5 tokens
-  //                instead.
-  //   rounded    — BS .rounded uses --bs-border-radius (0.375rem) with
-  //                !important; TW .rounded is 0.25rem. Use rounded-md
-  //                or radius tokens instead.
-  //
-  // Verified via grep: none of the above are used as bare Tailwind
-  // utilities in src/. Adding them here doesn't break any current
-  // class lists.
-  blocklist: ["collapse", "container", "table", "shadow", "rounded"],
+  // Bootstrap is gone — most legacy class clashes resolved themselves.
+  // We still block the names that overlap with our bootstrap-shim.css
+  // grid utilities so the shim's max-width-per-breakpoint .container
+  // wins over Tailwind's 100% reset.
+  blocklist: ["container"],
   theme: {
     extend: {
       colors: {

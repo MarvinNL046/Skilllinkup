@@ -1,0 +1,305 @@
+/* ============================================================
+   bootstrap-shim.css — minimal CSS layer that lets existing
+   .row, .col, and .d- markup keep working after Bootstrap was
+   removed from the project. Only contains the utilities actually
+   used by src/. No --bs- variables, no component classes (.btn,
+   .card, .modal etc. are owned by the SkillLinkup Design System
+   now).
+
+   Replace with Tailwind utilities as components are migrated.
+   ============================================================ */
+
+/* ---- Container ----
+   Bootstrap default breakpoints: sm 540, md 720, lg 960, xl 1140,
+   xxl 1320. We bumped to 1430 globally (see globals.css media query). */
+.container,
+.container-fluid {
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 12px;
+  padding-left: 12px;
+}
+@media (min-width: 576px) { .container { max-width: 540px; } }
+@media (min-width: 768px) { .container { max-width: 720px; } }
+@media (min-width: 992px) { .container { max-width: 960px; } }
+@media (min-width: 1200px) { .container { max-width: 1140px; } }
+@media (min-width: 1400px) { .container { max-width: 1320px; } }
+
+/* ---- Row + columns ----
+   12-column flex grid with negative-margin gutter. */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -12px;
+  margin-left: -12px;
+}
+.row > * {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100%;
+  padding-right: 12px;
+  padding-left: 12px;
+}
+.col { flex: 1 0 0%; }
+.col-auto { flex: 0 0 auto; width: auto; }
+.col-12 { flex: 0 0 auto; width: 100%; }
+.col-11 { flex: 0 0 auto; width: 91.66667%; }
+.col-10 { flex: 0 0 auto; width: 83.33333%; }
+.col-9  { flex: 0 0 auto; width: 75%; }
+.col-8  { flex: 0 0 auto; width: 66.66667%; }
+.col-7  { flex: 0 0 auto; width: 58.33333%; }
+.col-6  { flex: 0 0 auto; width: 50%; }
+.col-5  { flex: 0 0 auto; width: 41.66667%; }
+.col-4  { flex: 0 0 auto; width: 33.33333%; }
+.col-3  { flex: 0 0 auto; width: 25%; }
+.col-2  { flex: 0 0 auto; width: 16.66667%; }
+.col-1  { flex: 0 0 auto; width: 8.33333%; }
+
+@media (min-width: 576px) {
+  .col-sm    { flex: 1 0 0%; }
+  .col-sm-auto { flex: 0 0 auto; width: auto; }
+  .col-sm-12 { flex: 0 0 auto; width: 100%; }
+  .col-sm-11 { flex: 0 0 auto; width: 91.66667%; }
+  .col-sm-10 { flex: 0 0 auto; width: 83.33333%; }
+  .col-sm-9  { flex: 0 0 auto; width: 75%; }
+  .col-sm-8  { flex: 0 0 auto; width: 66.66667%; }
+  .col-sm-7  { flex: 0 0 auto; width: 58.33333%; }
+  .col-sm-6  { flex: 0 0 auto; width: 50%; }
+  .col-sm-5  { flex: 0 0 auto; width: 41.66667%; }
+  .col-sm-4  { flex: 0 0 auto; width: 33.33333%; }
+  .col-sm-3  { flex: 0 0 auto; width: 25%; }
+  .col-sm-2  { flex: 0 0 auto; width: 16.66667%; }
+  .col-sm-1  { flex: 0 0 auto; width: 8.33333%; }
+}
+@media (min-width: 768px) {
+  .col-md    { flex: 1 0 0%; }
+  .col-md-auto { flex: 0 0 auto; width: auto; }
+  .col-md-12 { flex: 0 0 auto; width: 100%; }
+  .col-md-11 { flex: 0 0 auto; width: 91.66667%; }
+  .col-md-10 { flex: 0 0 auto; width: 83.33333%; }
+  .col-md-9  { flex: 0 0 auto; width: 75%; }
+  .col-md-8  { flex: 0 0 auto; width: 66.66667%; }
+  .col-md-7  { flex: 0 0 auto; width: 58.33333%; }
+  .col-md-6  { flex: 0 0 auto; width: 50%; }
+  .col-md-5  { flex: 0 0 auto; width: 41.66667%; }
+  .col-md-4  { flex: 0 0 auto; width: 33.33333%; }
+  .col-md-3  { flex: 0 0 auto; width: 25%; }
+  .col-md-2  { flex: 0 0 auto; width: 16.66667%; }
+  .col-md-1  { flex: 0 0 auto; width: 8.33333%; }
+}
+@media (min-width: 992px) {
+  .col-lg    { flex: 1 0 0%; }
+  .col-lg-auto { flex: 0 0 auto; width: auto; }
+  .col-lg-12 { flex: 0 0 auto; width: 100%; }
+  .col-lg-11 { flex: 0 0 auto; width: 91.66667%; }
+  .col-lg-10 { flex: 0 0 auto; width: 83.33333%; }
+  .col-lg-9  { flex: 0 0 auto; width: 75%; }
+  .col-lg-8  { flex: 0 0 auto; width: 66.66667%; }
+  .col-lg-7  { flex: 0 0 auto; width: 58.33333%; }
+  .col-lg-6  { flex: 0 0 auto; width: 50%; }
+  .col-lg-5  { flex: 0 0 auto; width: 41.66667%; }
+  .col-lg-4  { flex: 0 0 auto; width: 33.33333%; }
+  .col-lg-3  { flex: 0 0 auto; width: 25%; }
+  .col-lg-2  { flex: 0 0 auto; width: 16.66667%; }
+  .col-lg-1  { flex: 0 0 auto; width: 8.33333%; }
+  .offset-lg-1 { margin-left: 8.33333%; }
+}
+@media (min-width: 1200px) {
+  .col-xl    { flex: 1 0 0%; }
+  .col-xl-auto { flex: 0 0 auto; width: auto; }
+  .col-xl-12 { flex: 0 0 auto; width: 100%; }
+  .col-xl-11 { flex: 0 0 auto; width: 91.66667%; }
+  .col-xl-10 { flex: 0 0 auto; width: 83.33333%; }
+  .col-xl-9  { flex: 0 0 auto; width: 75%; }
+  .col-xl-8  { flex: 0 0 auto; width: 66.66667%; }
+  .col-xl-7  { flex: 0 0 auto; width: 58.33333%; }
+  .col-xl-6  { flex: 0 0 auto; width: 50%; }
+  .col-xl-5  { flex: 0 0 auto; width: 41.66667%; }
+  .col-xl-4  { flex: 0 0 auto; width: 33.33333%; }
+  .col-xl-3  { flex: 0 0 auto; width: 25%; }
+  .col-xl-2  { flex: 0 0 auto; width: 16.66667%; }
+  .col-xl-1  { flex: 0 0 auto; width: 8.33333%; }
+  .offset-xl-1 { margin-left: 8.33333%; }
+}
+@media (min-width: 1400px) {
+  .col-xxl-12 { flex: 0 0 auto; width: 100%; }
+  .col-xxl-8  { flex: 0 0 auto; width: 66.66667%; }
+  .col-xxl-6  { flex: 0 0 auto; width: 50%; }
+  .col-xxl-4  { flex: 0 0 auto; width: 33.33333%; }
+  .col-xxl-3  { flex: 0 0 auto; width: 25%; }
+}
+
+/* ---- Display utilities ----
+   .d-* keeps existing markup working. New code should use Tailwind
+   .block / .flex / .grid / .hidden directly. */
+.d-none          { display: none !important; }
+.d-block         { display: block !important; }
+.d-inline        { display: inline !important; }
+.d-inline-block  { display: inline-block !important; }
+.d-flex          { display: flex !important; }
+.d-inline-flex   { display: inline-flex !important; }
+.d-grid          { display: grid !important; }
+
+@media (min-width: 576px) {
+  .d-sm-none { display: none !important; }
+  .d-sm-block { display: block !important; }
+  .d-sm-inline { display: inline !important; }
+  .d-sm-inline-block { display: inline-block !important; }
+  .d-sm-flex { display: flex !important; }
+  .d-sm-inline-flex { display: inline-flex !important; }
+}
+@media (min-width: 768px) {
+  .d-md-none { display: none !important; }
+  .d-md-block { display: block !important; }
+  .d-md-inline { display: inline !important; }
+  .d-md-inline-block { display: inline-block !important; }
+  .d-md-flex { display: flex !important; }
+  .d-md-inline-flex { display: inline-flex !important; }
+}
+@media (min-width: 992px) {
+  .d-lg-none { display: none !important; }
+  .d-lg-block { display: block !important; }
+  .d-lg-flex { display: flex !important; }
+  .d-lg-inline-block { display: inline-block !important; }
+  .d-lg-inline-flex { display: inline-flex !important; }
+}
+@media (min-width: 1200px) {
+  .d-xl-none { display: none !important; }
+  .d-xl-block { display: block !important; }
+  .d-xl-flex { display: flex !important; }
+  .d-xl-inline-block { display: inline-block !important; }
+  .d-xl-inline-flex { display: inline-flex !important; }
+}
+
+/* ---- Flex helpers ---- */
+.flex-grow-1   { flex-grow: 1 !important; }
+.flex-grow-0   { flex-grow: 0 !important; }
+.flex-shrink-0 { flex-shrink: 0 !important; }
+.flex-shrink-1 { flex-shrink: 1 !important; }
+.flex-wrap     { flex-wrap: wrap !important; }
+.flex-nowrap   { flex-wrap: nowrap !important; }
+.flex-column   { flex-direction: column !important; }
+.flex-row      { flex-direction: row !important; }
+.flex-fill     { flex: 1 1 auto !important; }
+
+.justify-content-start   { justify-content: flex-start !important; }
+.justify-content-end     { justify-content: flex-end !important; }
+.justify-content-center  { justify-content: center !important; }
+.justify-content-between { justify-content: space-between !important; }
+.justify-content-around  { justify-content: space-around !important; }
+.justify-content-evenly  { justify-content: space-evenly !important; }
+.justify-content-sm-end  { /* lifted at sm */ }
+@media (min-width: 576px) {
+  .justify-content-sm-end { justify-content: flex-end !important; }
+  .justify-content-sm-start { justify-content: flex-start !important; }
+  .justify-content-sm-center { justify-content: center !important; }
+}
+@media (min-width: 768px) {
+  .justify-content-md-end { justify-content: flex-end !important; }
+  .justify-content-md-start { justify-content: flex-start !important; }
+  .justify-content-md-center { justify-content: center !important; }
+  .justify-content-md-between { justify-content: space-between !important; }
+}
+
+.align-items-start    { align-items: flex-start !important; }
+.align-items-end      { align-items: flex-end !important; }
+.align-items-center   { align-items: center !important; }
+.align-items-baseline { align-items: baseline !important; }
+.align-items-stretch  { align-items: stretch !important; }
+
+.align-self-start  { align-self: flex-start !important; }
+.align-self-end    { align-self: flex-end !important; }
+.align-self-center { align-self: center !important; }
+
+/* ---- Text alignment ---- */
+.text-start  { text-align: left !important; }
+.text-end    { text-align: right !important; }
+.text-center { text-align: center !important; }
+@media (min-width: 768px) {
+  .text-md-start  { text-align: left !important; }
+  .text-md-end    { text-align: right !important; }
+  .text-md-center { text-align: center !important; }
+}
+@media (min-width: 992px) {
+  .text-lg-start  { text-align: left !important; }
+  .text-lg-end    { text-align: right !important; }
+  .text-lg-center { text-align: center !important; }
+}
+
+.text-uppercase  { text-transform: uppercase !important; }
+.text-lowercase  { text-transform: lowercase !important; }
+.text-capitalize { text-transform: capitalize !important; }
+.text-decoration-underline { text-decoration: underline !important; }
+.text-decoration-none      { text-decoration: none !important; }
+
+/* ---- Position ---- */
+.position-relative { position: relative !important; }
+.position-absolute { position: absolute !important; }
+.position-fixed    { position: fixed !important; }
+.position-sticky   { position: sticky !important; }
+
+/* ---- Sizing ---- */
+.w-100 { width: 100% !important; }
+.w-75  { width: 75% !important; }
+.w-50  { width: 50% !important; }
+.w-25  { width: 25% !important; }
+.h-100 { height: 100% !important; }
+.h-75  { height: 75% !important; }
+.h-50  { height: 50% !important; }
+.h-25  { height: 25% !important; }
+.mw-100 { max-width: 100% !important; }
+.mh-100 { max-height: 100% !important; }
+.vh-100 { height: 100vh !important; }
+
+/* ---- A11y / misc ---- */
+.visually-hidden,
+.visually-hidden-focusable:not(:focus):not(:focus-within) {
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0,0,0,0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  position: absolute !important;
+}
+
+/* Bootstrap close button — used by some legacy modal/toast markup. */
+.btn-close {
+  box-sizing: content-box;
+  width: 1em;
+  height: 1em;
+  padding: 0.25em;
+  background: transparent center/1em auto no-repeat;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e");
+  border: 0;
+  border-radius: 0.375rem;
+  opacity: 0.5;
+  cursor: pointer;
+}
+.btn-close:hover { opacity: 0.75; }
+.btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+
+/* Margin/padding helpers Tailwind doesn't already define under the
+   same name. Bootstrap's mt-N etc. clash with Tailwind's so we leave
+   those to Tailwind. Only the very-specific Bootstrap-only helpers
+   stay here. */
+.mx-auto { margin-right: auto !important; margin-left: auto !important; }
+.my-auto { margin-top: auto !important; margin-bottom: auto !important; }
+.ms-auto { margin-left: auto !important; }
+.me-auto { margin-right: auto !important; }
+.mt-auto { margin-top: auto !important; }
+.mb-auto { margin-bottom: auto !important; }
+
+/* Gap utilities (used in flex rows) */
+.gap-0 { gap: 0 !important; }
+.gap-1 { gap: 0.25rem !important; }
+.gap-2 { gap: 0.5rem !important; }
+.gap-3 { gap: 1rem !important; }
+.gap-4 { gap: 1.5rem !important; }
+.gap-5 { gap: 3rem !important; }
+
+/* Border utilities */
+.border-0 { border: 0 !important; }
