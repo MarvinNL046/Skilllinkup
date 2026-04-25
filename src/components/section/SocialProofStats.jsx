@@ -19,9 +19,20 @@ const stats = [
   { end: 50, Icon: Sparkles, suffix: "+", labelKey: "categoriesLabel", tone: "secondary" },
 ];
 
+/**
+ * Threshold below which the live waitlist counter is hidden so the
+ * page doesn't render "0+ on the waitlist" (anti-social proof). Once
+ * we cross this number the counter appears with the real count.
+ */
+const WAITLIST_DISPLAY_THRESHOLD = 25;
+
 export default function SocialProofStats() {
   const t = useTranslations("stats");
   const waitlistCount = useQuery(api.waitlist.getCount);
+  const showWaitlist =
+    waitlistCount !== undefined && waitlistCount >= WAITLIST_DISPLAY_THRESHOLD;
+
+  const visibleStats = stats.filter((s) => s.key !== "waitlist" || showWaitlist);
 
   return (
     <section
@@ -40,7 +51,7 @@ export default function SocialProofStats() {
             gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
           }}
         >
-          {stats.map((stat) => {
+          {visibleStats.map((stat) => {
             const tone = stat.tone === "primary"
               ? { bg: "var(--primary-50)", fg: "var(--primary-700)" }
               : { bg: "var(--secondary-50)", fg: "var(--secondary-700)" };

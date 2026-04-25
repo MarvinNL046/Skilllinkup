@@ -9,6 +9,11 @@ function pathToServiceType(pathname) {
   return "digital"; // /online/, /jobs/, default
 }
 
+/**
+ * Category filter pills above the listing grid. DS tokens, primary-50
+ * track + primary-600 active fill. Uses flex-wrap (no scrollbar) so the
+ * row reflows on narrow viewports instead of forcing horizontal scroll.
+ */
 export default function CategoryPills() {
   const pathname = usePathname();
   const serviceType = pathToServiceType(pathname);
@@ -19,28 +24,31 @@ export default function CategoryPills() {
   const searchParams = useSearchParams();
   const q = searchParams.get("q") || "";
 
-  // Haal slug op uit /online/services/[slug]
   const pathParts = pathname.split("/online/services/");
   const currentSlug = pathParts.length > 1 ? pathParts[1].split("/")[0] : "";
   const isAll = !currentSlug && !q;
 
   const pillStyle = (active) => ({
-    padding: "6px 16px",
-    borderRadius: 20,
-    fontSize: 13,
-    fontWeight: 500,
-    background: active ? "#ef2b70" : "#f4f4f5",
-    color: active ? "#fff" : "#444",
+    padding: "6px 14px",
+    borderRadius: 999,
+    fontSize: "var(--text-body-sm)",
+    fontWeight: active ? 600 : 500,
+    background: active ? "var(--primary-600)" : "var(--surface-2)",
+    color: active ? "var(--neutral-0)" : "var(--text-secondary)",
+    border: active ? "1px solid var(--primary-600)" : "1px solid var(--border-subtle)",
     textDecoration: "none",
     whiteSpace: "nowrap",
-    display: "inline-block",
+    transition: "background 140ms var(--ease-standard, ease-out)",
   });
 
   return (
-    <div style={{ marginBottom: 24 }}>
+    <div style={{ marginBottom: "var(--space-6)" }}>
       {q && (
-        <p style={{ fontSize: 14, color: "#555", marginBottom: 12 }}>
-          Results for: <strong>&ldquo;{q}&rdquo;</strong>
+        <p
+          className="body-sm"
+          style={{ color: "var(--text-secondary)", marginBottom: "var(--space-3)" }}
+        >
+          Results for: <strong style={{ color: "var(--text-primary)" }}>&ldquo;{q}&rdquo;</strong>
         </p>
       )}
       <div
@@ -48,8 +56,6 @@ export default function CategoryPills() {
           display: "flex",
           gap: 8,
           flexWrap: "wrap",
-          overflowX: "auto",
-          paddingBottom: 4,
         }}
       >
         <Link href="/online/services" style={pillStyle(isAll)}>

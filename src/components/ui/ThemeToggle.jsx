@@ -44,7 +44,7 @@ export default function ThemeToggle() {
         className="btn btn--ghost btn--icon btn--sm"
         style={{ opacity: 0, pointerEvents: "none" }}
       >
-        <Sun size={16} />
+        <Sun size={18} />
       </button>
     );
   }
@@ -57,7 +57,7 @@ export default function ThemeToggle() {
       aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
       title={theme === "dark" ? "Light mode" : "Dark mode"}
     >
-      {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+      {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
     </button>
   );
 }

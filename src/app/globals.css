@@ -30,8 +30,26 @@
    Remove when Phase 9 cleanup strips the legacy theme.
    ============================================================ */
 
-/* Body + links defer to tokens.css */
-body { font-family: var(--font-sans); color: var(--text-primary); background: var(--bg); }
+/* Body + links defer to tokens.css.
+   Subtle warm radial gradient at top-right echoes the homepage hero on
+   every page so detail/listing pages don't feel "cold". The gradient is
+   ~5% chroma so it never dominates the actual page content. */
+body {
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  background:
+    radial-gradient(1100px 380px at 85% -8%, oklch(95% 0.04 38 / 0.55) 0%, transparent 60%),
+    radial-gradient(900px 320px at 5% 4%, oklch(96% 0.025 295 / 0.45) 0%, transparent 55%),
+    var(--bg);
+  background-attachment: fixed;
+}
+[data-theme="dark"] body {
+  background:
+    radial-gradient(1100px 380px at 85% -8%, oklch(28% 0.06 38 / 0.35) 0%, transparent 60%),
+    radial-gradient(900px 320px at 5% 4%, oklch(24% 0.045 295 / 0.35) 0%, transparent 55%),
+    var(--bg);
+  background-attachment: fixed;
+}
 
 /* Template buttons → design-system primary/secondary look */
 .ud-btn,
@@ -158,6 +176,38 @@ a.btn-thm {
 @keyframes spin {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
+}
+
+/* ace-responsive-menu sub-menu — upstream sets background:#333 (line 91 of
+   ace-responsive-menu.css) which made the Categories/Browse mega-menu
+   unreadable (dark bg + dark text). Restyle to DS card with primary-tinted
+   hover and proper text color. */
+.ace-responsive-menu li ul.sub-menu,
+.dropdown-megamenu,
+.ace-responsive-menu li ul.sub-menu > li ul.sub-menu {
+  background: var(--bg-elevated) !important;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-3);
+  padding: var(--space-2);
+}
+.ace-responsive-menu li ul.sub-menu li a,
+.dropdown-megamenu li a {
+  color: var(--text-primary) !important;
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  transition: background var(--dur-base) var(--ease-standard, ease-out),
+              color var(--dur-base) var(--ease-standard, ease-out);
+}
+.ace-responsive-menu li ul.sub-menu li a:hover,
+.dropdown-megamenu li a:hover {
+  background: var(--primary-50) !important;
+  color: var(--primary-700) !important;
+}
+.ace-responsive-menu li ul.sub-menu li.dropdown-active a,
+.ace-responsive-menu li ul.sub-menu li > a.active {
+  background: var(--primary-50) !important;
+  color: var(--primary-700) !important;
 }
 
 /* Listing page layout — sidebar stacks on mobile, goes to side at lg.
