@@ -1,6 +1,5 @@
 import { getTranslations } from "next-intl/server";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import MobileNavigation2 from "@/components/header/MobileNavigation2";
 import DashboardNavigation from "@/components/dashboard/header/DashboardNavigation";
 import OrderList from "@/components/section/OrderList";
 
@@ -14,7 +13,6 @@ export async function generateMetadata() {
 export default function page() {
   return (
     <>
-      <MobileNavigation2 />
       <DashboardLayout maxWidth="wide">
         <div className="dashboard__content hover-bgc-color">
           <div className="row pb40">

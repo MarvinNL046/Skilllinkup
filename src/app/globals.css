@@ -154,6 +154,45 @@ a.btn-thm {
   border-color: var(--border-default);
 }
 
+/* Account-summary timeline used 55px label column which truncated
+   "Earnings" and pushed it onto the timeline dot. Switch to a 3-col
+   grid with explicit gap so labels can breathe regardless of length. */
+.dashboard-timeline-label .timeline-item {
+  display: grid !important;
+  grid-template-columns: 78px 16px 1fr;
+  align-items: center;
+  gap: 12px;
+}
+.dashboard-timeline-label .child-timeline-label {
+  width: auto !important;
+  white-space: nowrap;
+}
+.dashboard-timeline-label .timeline-badge {
+  margin: 0 !important;
+}
+
+/* Bootstrap utility class fallbacks. Bootstrap is gone but template
+   markup still uses these names — without the framework they'd inherit
+   undefined values. Map them onto DS tokens so contrast stays
+   readable. */
+.text-muted        { color: var(--text-secondary) !important; }
+.text-secondary    { color: var(--text-secondary) !important; }
+.text-primary      { color: var(--primary-600) !important; }
+.text-success      { color: var(--success-700) !important; }
+.text-danger       { color: var(--error-600) !important; }
+.text-warning      { color: var(--warning-700) !important; }
+.text-info         { color: var(--info-700) !important; }
+.text-dark         { color: var(--text-primary) !important; }
+.text-light        { color: var(--text-tertiary) !important; }
+.text-white        { color: var(--neutral-0) !important; }
+
+.bg-light          { background-color: var(--surface-2) !important; }
+.bg-white          { background-color: var(--bg-elevated) !important; }
+.bg-primary        { background-color: var(--primary-600) !important; color: var(--neutral-0) !important; }
+.bg-success        { background-color: var(--success-600) !important; color: var(--neutral-0) !important; }
+.bg-danger         { background-color: var(--error-600) !important; color: var(--neutral-0) !important; }
+.bg-warning        { background-color: var(--warning-600) !important; color: var(--neutral-900) !important; }
+
 /* Template form controls */
 .form-control {
   height: 44px;

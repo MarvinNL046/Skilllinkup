@@ -1,7 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import ProjectBidsInfo from "@/components/dashboard/section/ProjectBidsInfo";
-import MobileNavigation2 from "@/components/header/MobileNavigation2";
 
 export async function generateMetadata() {
   const t = await getTranslations("projectBids");
@@ -15,7 +14,6 @@ export default async function ProjectBidsPage({ params }) {
 
   return (
     <>
-      <MobileNavigation2 />
       <DashboardLayout maxWidth="full">
         <ProjectBidsInfo projectId={id} />
       </DashboardLayout>

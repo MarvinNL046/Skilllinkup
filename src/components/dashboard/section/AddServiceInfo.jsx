@@ -165,6 +165,7 @@ export default function AddServiceInfo() {
                 className="ud-btn btn-thm default-box-shadow2"
                 onClick={handleSaveAndPublish}
                 disabled={saving || !profile}
+                style={{ whiteSpace: "nowrap", minWidth: 200 }}
               >
                 {saving ? t("saving") : t("saveAndPublish")}
                 <i className="fal fa-arrow-right-long" />
@@ -209,11 +210,56 @@ export default function AddServiceInfo() {
         )}
 
         {!profile && (
-          <div className="row mb20">
-            <div className="col-xl-12">
-              <div className="alert alert-info" role="alert">
+          <div
+            role="alert"
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              gap: "var(--space-4)",
+              padding: "var(--space-5)",
+              marginBottom: "var(--space-6)",
+              background: "var(--warning-50, oklch(97% 0.035 85))",
+              border: "1px solid var(--warning-500, oklch(75% 0.155 82))",
+              borderRadius: "var(--radius-lg)",
+              color: "var(--text-primary)",
+            }}
+          >
+            <span
+              aria-hidden="true"
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: "999px",
+                background: "var(--warning-500, oklch(75% 0.155 82))",
+                color: "var(--neutral-900)",
+                display: "grid",
+                placeItems: "center",
+                flexShrink: 0,
+                fontSize: 18,
+                fontWeight: 700,
+                lineHeight: 1,
+              }}
+            >
+              !
+            </span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "var(--text-h5)",
+                  fontWeight: 500,
+                  marginBottom: "var(--space-2)",
+                }}
+              >
                 {t("noProfileError")}
               </div>
+              <Link
+                href="/onboarding?role=freelancer"
+                className="btn btn--primary btn--sm"
+                style={{ marginTop: "var(--space-2)" }}
+              >
+                {t("switchToFreelancerLink", { default: "Switch to freelancer" })}
+              </Link>
             </div>
           </div>
         )}
@@ -442,6 +488,7 @@ export default function AddServiceInfo() {
                 className="ud-btn btn-thm default-box-shadow2"
                 onClick={handleSaveAndPublish}
                 disabled={saving || !profile}
+                style={{ whiteSpace: "nowrap", minWidth: 200 }}
               >
                 {saving ? t("saving") : t("saveAndPublish")}
                 <i className="fal fa-arrow-right-long" />

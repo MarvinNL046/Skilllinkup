@@ -1,6 +1,5 @@
 import { getTranslations } from "next-intl/server";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import MobileNavigation2 from "@/components/header/MobileNavigation2";
 import DashboardNavigation from "@/components/dashboard/header/DashboardNavigation";
 import AdminDisputeList from "@/components/dashboard/AdminDisputeList";
 import { currentUser } from "@clerk/nextjs/server";
@@ -38,7 +37,6 @@ export default async function AdminDisputesPage() {
 
   return (
     <>
-      <MobileNavigation2 />
       <DashboardLayout maxWidth="wide">
         <div className="dashboard__content hover-bgc-color">
           <div className="row pb40">
