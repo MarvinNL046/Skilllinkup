@@ -1,13 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { Search, ArrowLeft } from "lucide-react";
 import useConvexUser from "@/hook/useConvexUser";
 import useConvexMessages from "@/hook/useConvexMessages";
 import DashboardNavigation from "../header/DashboardNavigation";
 import UserChatList1 from "../card/UserChatList1";
 import MessageBox from "../element/MessageBox";
 
-function useIsMobile(breakpoint = 992) {
+function useIsMobile(breakpoint = 768) {
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < breakpoint);
@@ -18,6 +19,13 @@ function useIsMobile(breakpoint = 992) {
   return isMobile;
 }
 
+/**
+ * /message — true 2-pane app layout. Conversation list on the left at
+ * fixed 360px, message panel takes the rest of the dashboard content
+ * width. The dashboard sidebar lives outside this component so the
+ * effective layout is sidebar (264) + conv-list (360) + msg-panel
+ * (flex 1). On <768px viewports the panes stack with a back button.
+ */
 export default function MessageInfo() {
   const t = useTranslations("messages");
   const { convexUser } = useConvexUser();
@@ -36,7 +44,6 @@ export default function MessageInfo() {
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Filter conversations by search query
   const filteredConversations = conversations.filter((conv) => {
     if (!searchQuery.trim()) return true;
     const name = conv.otherParticipant?.name || "";
@@ -47,7 +54,6 @@ export default function MessageInfo() {
     );
   });
 
-  // Find selected conversation object
   const selectedConversation = conversations.find(
     (c) => c._id === selectedConversationId
   );
@@ -55,12 +61,11 @@ export default function MessageInfo() {
   async function handleSelectConversation(conversationId) {
     setSelectedConversationId(conversationId);
     if (isMobile) setMobileShowChat(true);
-    // Mark messages as read when selecting a conversation
     if (conversationId) {
       try {
         await markRead({ conversationId });
-      } catch (err) {
-        // Silently ignore read mark errors
+      } catch {
+        // ignore
       }
     }
   }
@@ -78,98 +83,195 @@ export default function MessageInfo() {
     });
   }
 
-  // On mobile: show either conversation list OR chat
-  const showConversationList = !isMobile || !mobileShowChat;
-  const showChatBox = !isMobile || mobileShowChat;
+  const showList = !isMobile || !mobileShowChat;
+  const showPanel = !isMobile || mobileShowChat;
 
   return (
-    <>
-      <div className="dashboard__content hover-bgc-color">
-        <div className="row pb40">
-          <div className="col-lg-12">
-            <DashboardNavigation />
-          </div>
-          <div className="col-lg-12">
-            <div className="dashboard_title_area">
-              <h2>{t("title")}</h2>
-              <p className="text">{t("pageDescription")}</p>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <DashboardNavigation />
+
+      <div
+        className="messages-2pane"
+        style={{
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "minmax(280px, 360px) 1fr",
+          gap: 0,
+          flex: 1,
+          minHeight: "calc(100vh - var(--dash-topbar-h, 64px) - 96px)",
+          background: "var(--bg-elevated)",
+          border: "1px solid var(--border-subtle)",
+          borderRadius: "var(--radius-xl)",
+          overflow: "hidden",
+          boxShadow: "var(--shadow-1)",
+        }}
+      >
+        {showList && (
+          <aside
+            style={{
+              borderRight: isMobile ? "none" : "1px solid var(--border-subtle)",
+              background: "var(--bg)",
+              display: "flex",
+              flexDirection: "column",
+              minWidth: 0,
+            }}
+          >
+            <div
+              style={{
+                padding: "var(--space-4) var(--space-5)",
+                borderBottom: "1px solid var(--border-subtle)",
+                background: "var(--bg-elevated)",
+              }}
+            >
+              <h2
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "var(--text-h4)",
+                  fontWeight: 500,
+                  letterSpacing: "-0.01em",
+                  margin: 0,
+                  marginBottom: "var(--space-3)",
+                }}
+              >
+                {t("title")}
+              </h2>
+              <form
+                onSubmit={(e) => e.preventDefault()}
+                style={{ position: "relative" }}
+              >
+                <Search
+                  size={15}
+                  style={{
+                    position: "absolute",
+                    left: 12,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    color: "var(--text-tertiary)",
+                    pointerEvents: "none",
+                  }}
+                  aria-hidden="true"
+                />
+                <input
+                  className="input"
+                  type="search"
+                  placeholder={t("searchConversations")}
+                  aria-label={t("searchConversations")}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{ paddingLeft: 36, width: "100%" }}
+                />
+              </form>
             </div>
-          </div>
-        </div>
-        <div className="row mb40">
-          {showConversationList && (
-            <div className={isMobile ? "col-12" : "col-lg-6 col-xl-5 col-xxl-4"}>
-              <div className="message_container">
-                <div className="inbox_user_list">
-                  <div className="iu_heading pr35">
-                    <div className="chat_user_search">
-                      <form className="flex items-center" onSubmit={(e) => e.preventDefault()}>
-                        <button className="btn" type="button">
-                          <span className="far fa-magnifying-glass" />
-                        </button>
-                        <input
-                          className="form-control"
-                          type="search"
-                          placeholder={t("searchConversations")}
-                          aria-label={t("searchConversations")}
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                      </form>
-                    </div>
-                  </div>
-                  <div className="chat-member-list pr20">
-                    {convexUser === undefined ? (
-                      <div className="text-center py-4">
-                        <div className="spinner-border spinner-border-sm text-success" role="status" />
-                      </div>
-                    ) : !userId ? (
-                      <div className="text-center py-4">
-                        <p className="text mb-0">{t("settingUpAccount")}</p>
-                      </div>
-                    ) : conversations === null || conversations.length === 0 ? (
-                      <div className="text-center py-4">
-                        <p className="text mb-0">{t("noConversationsYet")}</p>
-                      </div>
-                    ) : filteredConversations.length === 0 ? (
-                      <div className="text-center py-4">
-                        <p className="text mb-0">{t("noConversationsMatch")}</p>
-                      </div>
-                    ) : (
-                      filteredConversations.map((conv) => (
-                        <div
-                          key={conv._id}
-                          className={`list-item pt5 ${selectedConversationId === conv._id ? "active" : ""}`}
-                          style={{ cursor: "pointer" }}
-                          onClick={() => handleSelectConversation(conv._id)}
-                        >
-                          <UserChatList1
-                            data={conv}
-                            isSelected={selectedConversationId === conv._id}
-                          />
-                        </div>
-                      ))
-                    )}
-                  </div>
+
+            <div
+              style={{
+                flex: 1,
+                overflowY: "auto",
+                padding: "var(--space-2)",
+              }}
+            >
+              {convexUser === undefined ? (
+                <div style={{ textAlign: "center", padding: "var(--space-8) 0" }}>
+                  <div
+                    role="status"
+                    aria-label={t("loading", { default: "Loading" })}
+                    style={{
+                      width: 24,
+                      height: 24,
+                      margin: "0 auto",
+                      border: "3px solid var(--border-subtle)",
+                      borderTopColor: "var(--primary-600)",
+                      borderRadius: "999px",
+                      animation: "spin 0.9s linear infinite",
+                    }}
+                  />
                 </div>
+              ) : !userId ? (
+                <div style={{ textAlign: "center", padding: "var(--space-8) var(--space-4)" }}>
+                  <p className="body-sm" style={{ color: "var(--text-tertiary)", margin: 0 }}>
+                    {t("settingUpAccount")}
+                  </p>
+                </div>
+              ) : conversations === null || conversations.length === 0 ? (
+                <div style={{ textAlign: "center", padding: "var(--space-8) var(--space-4)" }}>
+                  <p className="body-sm" style={{ color: "var(--text-tertiary)", margin: 0 }}>
+                    {t("noConversationsYet")}
+                  </p>
+                </div>
+              ) : filteredConversations.length === 0 ? (
+                <div style={{ textAlign: "center", padding: "var(--space-8) var(--space-4)" }}>
+                  <p className="body-sm" style={{ color: "var(--text-tertiary)", margin: 0 }}>
+                    {t("noConversationsMatch")}
+                  </p>
+                </div>
+              ) : (
+                <div style={{ display: "grid", gap: 2 }}>
+                  {filteredConversations.map((conv) => {
+                    const active = selectedConversationId === conv._id;
+                    return (
+                      <button
+                        key={conv._id}
+                        type="button"
+                        onClick={() => handleSelectConversation(conv._id)}
+                        style={{
+                          padding: "var(--space-3)",
+                          borderRadius: "var(--radius-md)",
+                          background: active ? "var(--primary-50)" : "transparent",
+                          border: "none",
+                          cursor: "pointer",
+                          textAlign: "left",
+                          fontFamily: "inherit",
+                          color: "inherit",
+                        }}
+                      >
+                        <UserChatList1 data={conv} isSelected={active} />
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </aside>
+        )}
+
+        {showPanel && (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              minWidth: 0,
+              minHeight: 0,
+            }}
+          >
+            {isMobile && mobileShowChat && (
+              <div
+                style={{
+                  padding: "var(--space-3) var(--space-4)",
+                  borderBottom: "1px solid var(--border-subtle)",
+                  background: "var(--bg-elevated)",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={handleMobileBack}
+                  className="btn btn--ghost btn--sm"
+                >
+                  <ArrowLeft size={14} />
+                  {t("backToConversations", { default: "Back" })}
+                </button>
               </div>
-            </div>
-          )}
-          {showChatBox && (
-            <div className={isMobile ? "col-12" : "col-lg-6 col-xl-7 col-xxl-8"}>
-              <MessageBox
-                messages={messages}
-                currentUserId={userId}
-                otherParticipant={selectedConversation?.otherParticipant}
-                onSend={handleSendMessage}
-                hasConversation={!!selectedConversationId}
-                isMobile={isMobile}
-                onMobileBack={handleMobileBack}
-              />
-            </div>
-          )}
-        </div>
+            )}
+            <MessageBox
+              messages={messages}
+              currentUserId={userId}
+              otherParticipant={selectedConversation?.otherParticipant}
+              onSend={handleSendMessage}
+              hasConversation={!!selectedConversationId}
+              isMobile={isMobile}
+              onMobileBack={handleMobileBack}
+            />
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 }
