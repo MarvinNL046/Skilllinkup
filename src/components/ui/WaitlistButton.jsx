@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useMutation, useQuery } from "convex/react";
 import { useTranslations, useLocale } from "next-intl";
 import { X, ArrowRight, Check, Sparkles } from "lucide-react";
@@ -84,21 +85,49 @@ export default function WaitlistButton({
     return t("counterPlural", { count });
   };
 
+  // Lock body scroll + bind ESC while modal is open
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => e.key === "Escape" && handleClose();
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
+  // Portal target — body — so the modal escapes any flex/stacking
+  // context on <main> or any ancestor with transform/filter set.
+  const portalTarget = typeof window !== "undefined" ? document.body : null;
+
   return (
     <>
       <button type="button" className={className} onClick={() => setOpen(true)}>
         {label ?? t("joinWaitlist")}
       </button>
-
-      {open && (
+      {open && portalTarget && createPortal(
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-          style={{ background: "oklch(22% 0.02 60 / 0.45)", backdropFilter: "blur(4px)" }}
+          role="dialog"
+          aria-modal="true"
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "var(--space-4)",
+            background: "oklch(22% 0.02 60 / 0.45)",
+            backdropFilter: "blur(4px)",
+            WebkitBackdropFilter: "blur(4px)",
+          }}
           onClick={handleClose}
         >
           <div
             className="modal"
-            style={{ maxWidth: 480 }}
+            style={{ maxWidth: 480, width: "100%" }}
             onClick={(e) => e.stopPropagation()}
           >
             {!done ? (
@@ -219,7 +248,10 @@ export default function WaitlistButton({
                 </div>
               </>
             ) : (
-              <div className="modal__body" style={{ textAlign: "center", paddingTop: "var(--space-7)" }}>
+              <div
+                className="modal__body"
+                style={{ textAlign: "center", paddingTop: "var(--space-7)" }}
+              >
                 <div
                   className="inline-flex items-center justify-center mb-4"
                   style={{
@@ -254,7 +286,8 @@ export default function WaitlistButton({
               </div>
             )}
           </div>
-        </div>
+        </div>,
+        portalTarget
       )}
     </>
   );
