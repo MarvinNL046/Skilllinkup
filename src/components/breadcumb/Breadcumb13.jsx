@@ -29,7 +29,7 @@ export default function Breadcumb13() {
   return (
     <>
       <section className="breadcumb-section pt-0">
-        <div className="cta-job-v1 freelancer-single-style mx-auto maxw1700 pt120 pt60-sm pb120 pb60-sm bdrs16 position-relative overflow-hidden d-flex align-items-center mx20-lg px30-lg">
+        <div className="cta-job-v1 freelancer-single-style mx-auto maxw1700 pt120 pt60-sm pb120 pb60-sm bdrs16 relative overflow-hidden flex items-center mx20-lg px30-lg">
           <Image
             height={226}
             width={198}
@@ -47,10 +47,10 @@ export default function Breadcumb13() {
           <div className="container">
             <div className="row wow fadeInUp">
               <div className="col-xl-8 mx-auto">
-                <div className="position-relative">
-                  <div className="list-meta d-lg-flex align-items-end justify-content-between">
-                    <div className="wrapper d-sm-flex align-items-center mb20-md">
-                      <a className="position-relative freelancer-single-style">
+                <div className="relative">
+                  <div className="list-meta lg:flex items-end justify-between">
+                    <div className="wrapper sm:flex items-center mb20-md">
+                      <a className="relative freelancer-single-style">
                         <Image
                           height={100}
                           width={100}

@@ -9,7 +9,7 @@ export default function JobCard1({ data, i }) {
     <>
       <tr>
         <th className={`ps-0 ${i === 0 ? "pt-0" : ""}`} scope="row">
-          <div className="job-list-style1 at-dashboard p-0 d-xl-flex align-items-start mb-0">
+          <div className="job-list-style1 at-dashboard p-0 xl:flex items-start mb-0">
             <div className="icon2 mb10-lg mb-0 me-3 bg-transparent">
               <Image
                 height={60}

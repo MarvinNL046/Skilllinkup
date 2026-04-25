@@ -41,7 +41,7 @@ export default function OrderList() {
       {/* Role switcher */}
       <div className="row">
         <div className="col-12 mb20">
-          <div className="d-flex gap-2">
+          <div className="flex gap-2">
             <button
               className={`ud-btn ${roleView === "client" ? "btn-thm" : "btn-white"}`}
               onClick={() => setRoleView("client")}
@@ -89,7 +89,7 @@ export default function OrderList() {
 
       <div className="row">
         <div className="col-xl-12">
-          <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+          <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
             {/* Loading state */}
             {isLoading && (
               <div className="text-center py-5">
@@ -102,7 +102,7 @@ export default function OrderList() {
             {/* Empty state */}
             {!isLoading && filteredOrders.length === 0 && (
               <div className="text-center py-5">
-                <i className="flaticon-receipt fz40 text mb20 d-block" />
+                <i className="flaticon-receipt fz40 text mb20 block" />
                 <h5 className="mb10">{t("noOrdersFound")}</h5>
                 <p className="text mb-0">
                   {activeTab === "all"

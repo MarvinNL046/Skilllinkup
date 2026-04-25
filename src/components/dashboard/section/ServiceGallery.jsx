@@ -35,16 +35,16 @@ export default function ServiceGallery() {
   };
   return (
     <>
-      <div className="ps-widget bgc-white bdrs12 p30 mb30 overflow-hidden position-relative">
+      <div className="ps-widget bgc-white bdrs12 p30 mb30 overflow-hidden relative">
         <div className="bdrb1 pb15 mb30">
           <h5 className="list-title">Gallery</h5>
         </div>
         <div className="col-xl-9">
-          <div className="d-flex mb30 flex-wrap gap-3">
+          <div className="flex mb30 flex-wrap gap-3">
             {uploadedFiles.map((item, i) => (
               <div
                 key={i}
-                className="gallery-item bdrs4 overflow-hidden position-relative"
+                className="gallery-item bdrs4 overflow-hidden relative"
               >
                 <Image
                   height={119}
@@ -55,7 +55,7 @@ export default function ServiceGallery() {
                   alt="gallery"
                 />
                 <div className="del-edit">
-                  <div className="d-flex justify-content-center">
+                  <div className="flex justify-center">
                     <a className="icon me-2">
                       <span className="flaticon-pencil" />
                     </a>
@@ -76,14 +76,14 @@ export default function ServiceGallery() {
                   <Image
                     height={119}
                     width={136}
-                    className="w-100 h-auto"
+                    className="w-full h-auto"
                     src="/images/gallery/g-1.png"
                     alt="gallery"
                   />
                   <input
                     type="file"
                     accept=".png, .jpg, .jpeg"
-                    className="d-none"
+                    className="hidden"
                     onChange={handleFileUpload}
                     multiple
                   />

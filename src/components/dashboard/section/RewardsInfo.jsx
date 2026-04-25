@@ -26,7 +26,7 @@ function ProgressBar({ value, color = "#ef2b70", label }) {
   return (
     <div className="mb15">
       {label && (
-        <div className="d-flex justify-content-between mb5">
+        <div className="flex justify-between mb5">
           <span className="fz13 text-muted">{label}</span>
           <span className="fz13 fw500">{value}%</span>
         </div>
@@ -69,7 +69,7 @@ export default function RewardsInfo() {
 
   if (!convexUser || rewards === undefined) {
     return (
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: 200 }}>
+      <div className="flex justify-center items-center" style={{ minHeight: 200 }}>
         <div className="spinner-border text-primary" />
       </div>
     );
@@ -89,7 +89,7 @@ export default function RewardsInfo() {
       <div className="col-md-5 mb30">
         <div className="ps-widget bdrs8 p30 bdr1 mb25">
           <h5 className="mb20">{t("yourRewards")}</h5>
-          <div className="d-flex align-items-center gap-3 mb20">
+          <div className="flex items-center gap-3 mb20">
             <TierBadge tier={tier} label={TIER_LABELS[tier] || tier} />
             <span className="fz14 text-muted">{t("member")}</span>
           </div>
@@ -143,7 +143,7 @@ export default function RewardsInfo() {
           ].map((item) => (
             <div
               key={item.key}
-              className="d-flex align-items-center justify-content-between mb10 pb10"
+              className="flex items-center justify-between mb10 pb10"
               style={{ borderBottom: "1px solid #f0f0f0", opacity: item.key === tier ? 1 : 0.5 }}
             >
               <TierBadge tier={item.key} label={TIER_LABELS[item.key]} />
@@ -161,7 +161,7 @@ export default function RewardsInfo() {
           <h5 className="mb20">{t("creditHistory")}</h5>
           {!history || history.length === 0 ? (
             <div className="text-center py40 text-muted">
-              <i className="flaticon-dollar fz40 mb15 d-block" />
+              <i className="flaticon-dollar fz40 mb15 block" />
               <p className="mb0">{t("noTransactions")}<br />{t("noTransactionsHint")}</p>
             </div>
           ) : (
@@ -171,7 +171,7 @@ export default function RewardsInfo() {
                   <tr>
                     <th>{t("columnDate")}</th>
                     <th>{t("columnDescription")}</th>
-                    <th className="text-end">{t("columnAmount")}</th>
+                    <th className="text-right">{t("columnAmount")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -185,7 +185,7 @@ export default function RewardsInfo() {
                       <tr key={tx._id}>
                         <td className="fz13 text-muted">{date}</td>
                         <td className="fz13">{tx.description}</td>
-                        <td className={`text-end fz13 fw500 ${config.color}`}>
+                        <td className={`text-right fz13 fw500 ${config.color}`}>
                           {tx.type !== "tier_upgrade"
                             ? `${config.prefix}€${amountEuros}`
                             : "—"}

@@ -11,7 +11,7 @@ export default function ResourceGuideTemplate({ resource }) {
         {/* Hero */}
         <section className="pt80 pb60 bgc-thm3">
           <div className="container">
-            <div className="row justify-content-center">
+            <div className="row justify-center">
               <div className="col-lg-8 text-center">
                 <span className="badge bg-thm text-white px-3 py-2 bdrs8 fz13 mb20">Guide</span>
                 <h1 className="fz40 fw700 mb20">{resource.metaTitle}</h1>
@@ -34,7 +34,7 @@ export default function ResourceGuideTemplate({ resource }) {
                 <h2 className="fz20 fw700 mb20">What You&apos;ll Learn</h2>
                 <ul className="mb-0 ps-0" style={{ listStyle: "none" }}>
                   {resource.keyTakeaways.map((t, i) => (
-                    <li key={i} className="d-flex align-items-start gap-2 mb10 fz15">
+                    <li key={i} className="flex items-start gap-2 mb10 fz15">
                       <i className="fas fa-check-circle text-success mt-1" />
                       {t}
                     </li>

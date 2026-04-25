@@ -349,9 +349,9 @@ export default function DashboardInfo() {
         >
           <div style={{ gridColumn: "span 2", minWidth: 0 }} className="chart-span-2">
             <div className="card" style={{ padding: "var(--space-6)", marginBottom: "var(--space-6)" }}>
-              <div className="d-flex justify-content-between bdrb1 pb15 mb20">
+              <div className="flex justify-between bdrb1 pb15 mb20">
                 <h5 className="title">{t("recentOrders")}</h5>
-                <Link href="/orders" className="text-decoration-underline text-thm6">{t("viewAll")}</Link>
+                <Link href="/orders" className="underline text-thm6">{t("viewAll")}</Link>
               </div>
               {isLoading ? (
                 <div className="text-center py-4">
@@ -409,7 +409,7 @@ export default function DashboardInfo() {
               <div className="dashboard-timeline-label">
                 <div className="timeline-item pb15">
                   <div className="child-timeline-label">{t("gigsLabel")}</div>
-                  <div className="timeline-badge d-flex align-items-center">
+                  <div className="timeline-badge flex items-center">
                     <i className="fas fa-genderless" />
                   </div>
                   <div className="ra_pcontent pl10">
@@ -424,7 +424,7 @@ export default function DashboardInfo() {
               <div className="dashboard-timeline-label">
                 <div className="timeline-item pb15">
                   <div className="child-timeline-label color3">{t("ordersLabel")}</div>
-                  <div className="timeline-badge d-flex align-items-center color3">
+                  <div className="timeline-badge flex items-center color3">
                     <i className="fas fa-genderless" />
                   </div>
                   <div className="ra_pcontent pl10">
@@ -441,7 +441,7 @@ export default function DashboardInfo() {
               <div className="dashboard-timeline-label">
                 <div className="timeline-item pb15">
                   <div className="child-timeline-label color4">{t("earningsLabel")}</div>
-                  <div className="timeline-badge d-flex align-items-center color4">
+                  <div className="timeline-badge flex items-center color4">
                     <i className="fas fa-genderless" />
                   </div>
                   <div className="ra_pcontent pl10">
@@ -456,7 +456,7 @@ export default function DashboardInfo() {
               <div className="dashboard-timeline-label before-none mb30">
                 <div className="timeline-item pb0">
                   <div className="child-timeline-label color5">{t("statusLabel")}</div>
-                  <div className="timeline-badge d-flex align-items-center color5">
+                  <div className="timeline-badge flex items-center color5">
                     <i className="fas fa-genderless" />
                   </div>
                   <div className="ra_pcontent pl10">

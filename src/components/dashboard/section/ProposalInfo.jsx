@@ -44,7 +44,7 @@ export default function ProposalInfo() {
         </div>
         <div className="row">
           <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
               <div className="packages_table table-responsive">
                 {isAuthenticated && convexUser === undefined ? (
                   <div className="text-center py-4">

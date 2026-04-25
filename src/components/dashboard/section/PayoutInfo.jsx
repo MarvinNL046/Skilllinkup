@@ -79,7 +79,7 @@ export default function PayoutInfo() {
             <DashboardNavigation />
           </div>
         </div>
-        <div className="row align-items-center justify-content-between pb40">
+        <div className="row items-center justify-between pb40">
           <div className="col-lg-6">
             <div className="dashboard_title_area">
               <h2>{t("title")}</h2>
@@ -131,7 +131,7 @@ export default function PayoutInfo() {
         {!notAuthenticated && !noConvexProfile && (<>
         <div className="row mb30">
           <div className="col-sm-6 col-lg-4">
-            <div className="d-flex align-items-center justify-content-between statistics_funfact">
+            <div className="flex items-center justify-between statistics_funfact">
               <div className="details">
                 <div className="fz15">{t("totalEarned")}</div>
                 <div className="title">
@@ -151,7 +151,7 @@ export default function PayoutInfo() {
             </div>
           </div>
           <div className="col-sm-6 col-lg-4">
-            <div className="d-flex align-items-center justify-content-between statistics_funfact">
+            <div className="flex items-center justify-between statistics_funfact">
               <div className="details">
                 <div className="fz15">{t("pendingEarnings")}</div>
                 <div className="title">
@@ -171,7 +171,7 @@ export default function PayoutInfo() {
             </div>
           </div>
           <div className="col-sm-6 col-lg-4">
-            <div className="d-flex align-items-center justify-content-between statistics_funfact">
+            <div className="flex items-center justify-between statistics_funfact">
               <div className="details">
                 <div className="fz15">{t("availableForWithdrawal")}</div>
                 <div className="title">
@@ -194,8 +194,8 @@ export default function PayoutInfo() {
 
         <div className="row">
           <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb60 overflow-hidden position-relative">
-              <div className="d-flex justify-content-between bdrb1 pb15 mb20">
+            <div className="ps-widget bgc-white bdrs4 p30 mb60 overflow-hidden relative">
+              <div className="flex justify-between bdrb1 pb15 mb20">
                 <h5 className="title">{t("earningsHistory")}</h5>
               </div>
 
@@ -242,7 +242,7 @@ export default function PayoutInfo() {
                 </div>
               )}
             </div>
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 position-relative">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 relative">
               <div className="bdrb1 pb15 mb25">
                 <h5 className="list-title">{t("stripePayoutSetup")}</h5>
                 <p className="text fz14 mb-0">
@@ -251,7 +251,7 @@ export default function PayoutInfo() {
               </div>
               <StripeConnectButton />
             </div>
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 position-relative">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 relative">
               <div className="row">
                 <div className="col-lg-9">
                   <PaymentMethod />

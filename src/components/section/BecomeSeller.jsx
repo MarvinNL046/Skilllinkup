@@ -78,7 +78,7 @@ export default function BecomeSeller() {
     <>
       {/* Section 1: Hero */}
       <section
-        className="position-relative overflow-hidden"
+        className="relative overflow-hidden"
         style={{
           background: "linear-gradient(135deg, #1e1541 0%, #2d2060 60%, #3a1a6e 100%)",
           paddingTop: "100px",
@@ -112,8 +112,8 @@ export default function BecomeSeller() {
           }}
         />
 
-        <div className="container position-relative">
-          <div className="row justify-content-center text-center">
+        <div className="container relative">
+          <div className="row justify-center text-center">
             <div className="col-lg-8 col-xl-7">
               <div className="wow fadeInUp" data-wow-delay="100ms">
                 <h1
@@ -128,7 +128,7 @@ export default function BecomeSeller() {
                 >
                   {t("heroSubtitle")}
                 </p>
-                <div className="d-flex flex-wrap justify-content-center gap-3 mb50">
+                <div className="flex flex-wrap justify-center gap-3 mb50">
                   <Link
                     href="/register?role=freelancer"
                     className="ud-btn btn-thm bdrs8"
@@ -146,7 +146,7 @@ export default function BecomeSeller() {
                   </a>
                 </div>
 
-                <div className="row justify-content-center g-4">
+                <div className="row justify-center g-4">
                   {heroStats.map((item, i) => (
                     <div key={i} className="col-auto">
                       <div
@@ -194,7 +194,7 @@ export default function BecomeSeller() {
             {waysToEarn.map((card) => (
               <div key={card.id} className="col-lg-4 col-sm-6">
                 <div
-                  className="h-100 bdrs12"
+                  className="h-full bdrs12"
                   style={{
                     background: "#fff",
                     boxShadow: "0 4px 30px rgba(0,0,0,0.07)",
@@ -248,7 +248,7 @@ export default function BecomeSeller() {
 
                   <ul className="mb30 p-0" style={{ listStyle: "none" }}>
                     {card.features.map((feature, fi) => (
-                      <li key={fi} className="d-flex align-items-center fz14 mb10" style={{ color: "#555" }}>
+                      <li key={fi} className="flex items-center fz14 mb10" style={{ color: "#555" }}>
                         <i className="far fa-check-circle me-2" style={{ color: card.color, flexShrink: 0 }} />
                         {feature}
                       </li>
@@ -302,7 +302,7 @@ export default function BecomeSeller() {
             {steps.map((step, i) => (
               <div key={i} className="col-lg-4 col-sm-6">
                 <div
-                  className="h-100 bdrs12"
+                  className="h-full bdrs12"
                   style={{
                     background: "#fff",
                     boxShadow: "0 2px 20px rgba(0,0,0,0.06)",
@@ -369,7 +369,7 @@ export default function BecomeSeller() {
             {benefits.map((benefit, i) => (
               <div key={i} className="col-lg-4 col-sm-6">
                 <div
-                  className="d-flex align-items-start bdrs12 h-100"
+                  className="flex items-start bdrs12 h-full"
                   style={{
                     padding: "28px 24px",
                     border: "1px solid rgba(0,0,0,0.07)",
@@ -413,7 +413,7 @@ export default function BecomeSeller() {
       {/* Section 5: CTA Banner */}
       <section className="pt80 pb80" style={{ background: "#1e1541" }}>
         <div className="container">
-          <div className="row justify-content-center text-center wow fadeInUp">
+          <div className="row justify-center text-center wow fadeInUp">
             <div className="col-lg-6">
               <h2 className="text-white mb20" style={{ fontWeight: 700 }}>{t("ctaTitle")}</h2>
               <p className="mb40" style={{ color: "rgba(255,255,255,0.75)", fontSize: "1.05rem" }}>

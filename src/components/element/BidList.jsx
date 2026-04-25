@@ -69,12 +69,12 @@ export default function BidList({ projectId, isOwner }) {
         {bids.map((bid) => (
           <div
             key={bid._id}
-            className={`d-flex align-items-start mb20 pb20 bdrb1 ${
+            className={`flex items-start mb20 pb20 bdrb1 ${
               bid.status === "accepted" ? "bid-accepted" : ""
             }`}
           >
             {/* Freelancer avatar */}
-            <div className="thumb flex-shrink-0 me-3">
+            <div className="thumb shrink-0 me-3">
               {bid.freelancerAvatar ? (
                 <Image
                   src={bid.freelancerAvatar}
@@ -85,7 +85,7 @@ export default function BidList({ projectId, isOwner }) {
                 />
               ) : (
                 <div
-                  className="rounded-circle bg-secondary d-flex align-items-center justify-content-center"
+                  className="rounded-circle bg-secondary flex items-center justify-center"
                   style={{ width: 50, height: 50 }}
                 >
                   <span className="text-white fw600 fz16">
@@ -96,8 +96,8 @@ export default function BidList({ projectId, isOwner }) {
             </div>
 
             {/* Bid details */}
-            <div className="flex-grow-1">
-              <div className="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div className="grow">
+              <div className="flex items-center justify-between flex-wrap gap-2">
                 <div>
                   <h6 className="mb-0">
                     {bid.freelancerName}
@@ -115,7 +115,7 @@ export default function BidList({ projectId, isOwner }) {
                     </p>
                   )}
                 </div>
-                <div className="text-end">
+                <div className="text-right">
                   <p className="mb-0 fw600 dark-color">
                     €{bid.amount}
                   </p>

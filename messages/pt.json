@@ -203,7 +203,8 @@
     "lifetimeFreelancerEarnings": "Ganhos vitalícios de freelancer",
     "statusLabel": "Status",
     "accountActive": "Conta ativa",
-    "accountGoodStanding": "Sua conta está em situação regular"
+    "accountGoodStanding": "Sua conta está em situação regular",
+    "navigation": "Navegação"
   },
   "marketplace": {
     "onlineMarketplace": "Mercado on-line",

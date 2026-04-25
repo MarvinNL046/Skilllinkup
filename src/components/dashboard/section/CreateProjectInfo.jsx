@@ -259,7 +259,7 @@ export default function CreateProjectInfo() {
 
         <div className="row mb20">
           <div className="col-xl-12">
-            <div className="d-flex align-items-center gap-2 px-3 py-2 bdrs4" style={{ background: "#f0f9ff", border: "1px solid #bae6fd" }}>
+            <div className="flex items-center gap-2 px-3 py-2 bdrs4" style={{ background: "#f0f9ff", border: "1px solid #bae6fd" }}>
               <i className="flaticon-document fz16" style={{ color: "#0284c7" }} />
               <span className="fz14" style={{ color: "#0369a1" }}>
                 {t("offerServicesInstead")}{" "}
@@ -274,7 +274,7 @@ export default function CreateProjectInfo() {
 
         <div className="row">
           <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
               <div className="bdrb1 pb15 mb25">
                 <h5 className="list-title">{t("projectDetails")}</h5>
               </div>
@@ -448,7 +448,7 @@ export default function CreateProjectInfo() {
                     </div>
 
                     <div className="col-md-12">
-                      <div className="text-start">
+                      <div className="text-left">
                         <button
                           type="submit"
                           className="ud-btn btn-thm"

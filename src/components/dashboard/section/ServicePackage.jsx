@@ -1,7 +1,7 @@
 export default function ServicePackage() {
   return (
     <>
-      <div className="ps-widget bgc-white bdrs12 p30 mb30 overflow-hidden position-relative">
+      <div className="ps-widget bgc-white bdrs12 p30 mb30 overflow-hidden relative">
         <div className="bdrb1 pb15 mb30">
           <h5 className="list-title">Packages</h5>
         </div>
@@ -19,9 +19,9 @@ export default function ServicePackage() {
                     <br />
                     <span className="text">
                       I will redesign your current
-                      <br className="d-none d-lg-block" />
+                      <br className="hidden lg:block" />
                       landing page or create one for
-                      <br className="d-none d-lg-block" />
+                      <br className="hidden lg:block" />
                       you (upto 4 sections)
                     </span>
                   </th>
@@ -33,7 +33,7 @@ export default function ServicePackage() {
                     <br />
                     <span className="text">
                       4 High Quality Desktop
-                      <br className="d-none d-lg-block" />
+                      <br className="hidden lg:block" />
                       Pages.
                     </span>
                   </th>
@@ -45,7 +45,7 @@ export default function ServicePackage() {
                     <br />
                     <span className="text">
                       4 High Quality Desktop and
-                      <br className="d-none d-lg-block" />
+                      <br className="hidden lg:block" />
                       Mobile Pages.
                     </span>
                   </th>

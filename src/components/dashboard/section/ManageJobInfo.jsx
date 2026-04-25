@@ -72,7 +72,7 @@ export default function ManageJobInfo() {
         </div>
         <div className="row">
           <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
               <div className="text-center py-4">
                 <div className="spinner-border spinner-border-sm text-success" role="status" />
               </div>
@@ -93,7 +93,7 @@ export default function ManageJobInfo() {
         </div>
         <div className="row">
           <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
               <div className="text-center py-4">
                 <p className="text mb-0">{t("settingUpAccount")}</p>
               </div>
@@ -114,7 +114,7 @@ export default function ManageJobInfo() {
         </div>
         <div className="row">
           <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
               <div className="text-center py30">
                 <p className="fz15 text-muted">{t("signInPrompt")}</p>
               </div>
@@ -153,7 +153,7 @@ export default function ManageJobInfo() {
         </div>
         <div className="row">
           <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
               <div className="navtab-style1">
                 <nav>
                   <div className="nav nav-tabs mb30">

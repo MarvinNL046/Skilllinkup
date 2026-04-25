@@ -203,7 +203,8 @@
     "lifetimeFreelancerEarnings": "Lebenslanges Einkommen als Freiberufler",
     "statusLabel": "Status",
     "accountActive": "Konto aktiv",
-    "accountGoodStanding": "Ihr Konto ist in gutem Zustand"
+    "accountGoodStanding": "Ihr Konto ist in gutem Zustand",
+    "navigation": "Navigation"
   },
   "marketplace": {
     "onlineMarketplace": "Online-Marktplatz",

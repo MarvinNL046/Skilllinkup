@@ -90,7 +90,7 @@ export default function PayoutForm() {
         </div>
         <div className="row">
           <div className="col-md-12">
-            <div className="text-start">
+            <div className="text-left">
               <button type="submit" className="ud-btn btn-thm">
                 {t("saveDetail")}
                 <i className="fal fa-arrow-right-long" />

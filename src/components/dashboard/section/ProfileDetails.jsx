@@ -142,9 +142,9 @@ export default function ProfileDetails() {
   // Still loading: Clerk or Convex user not yet resolved
   if (!isLoaded || convexUser === undefined) {
     return (
-      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
         <div className="bdrb1 pb15 mb25"><h5 className="list-title">{t("profileDetails")}</h5></div>
-        <div className="d-flex align-items-center gap-2">
+        <div className="flex items-center gap-2">
           <div className="spinner-border spinner-border-sm text-success" role="status" />
           <p className="text mb-0">{t("loadingProfile")}</p>
         </div>
@@ -155,7 +155,7 @@ export default function ProfileDetails() {
   // Clerk is loaded but no Convex user yet (being synced)
   if (isLoaded && !convexUser && convexUser !== undefined) {
     return (
-      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
         <div className="bdrb1 pb15 mb25"><h5 className="list-title">{t("profileDetails")}</h5></div>
         <p className="text">{t("settingUpAccount")}</p>
       </div>
@@ -166,7 +166,7 @@ export default function ProfileDetails() {
   const isFreelancer = convexUser?.userType === "freelancer";
   if (!isFreelancer && profile === null) {
     return (
-      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
         <div className="bdrb1 pb15 mb25">
           <h5 className="list-title">{t("profileDetails")}</h5>
         </div>
@@ -198,9 +198,9 @@ export default function ProfileDetails() {
   // Profile query still loading (profile === undefined but userType is freelancer)
   if (profile === undefined) {
     return (
-      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
         <div className="bdrb1 pb15 mb25"><h5 className="list-title">{t("profileDetails")}</h5></div>
-        <div className="d-flex align-items-center gap-2">
+        <div className="flex items-center gap-2">
           <div className="spinner-border spinner-border-sm text-success" role="status" />
           <p className="text mb-0">{t("loadingProfile")}</p>
         </div>
@@ -210,7 +210,7 @@ export default function ProfileDetails() {
 
   return (
     <>
-      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
         <div className="bdrb1 pb15 mb25">
           <h5 className="list-title">{t("profileDetails")}</h5>
         </div>
@@ -218,7 +218,7 @@ export default function ProfileDetails() {
         {/* Cover image */}
         <div className="mb25">
           <div
-            className="position-relative bdrs4 overflow-hidden"
+            className="relative bdrs4 overflow-hidden"
             style={{
               height: 160,
               background: coverPreviewUrl
@@ -229,13 +229,13 @@ export default function ProfileDetails() {
             }}
           >
             <label
-              className="position-absolute bottom-0 end-0 m-2 ud-btn btn-white btn-sm"
+              className="absolute bottom-0 end-0 m-2 ud-btn btn-white btn-sm"
               style={{ cursor: "pointer" }}
             >
               <input
                 type="file"
                 accept=".png,.jpg,.jpeg"
-                className="d-none"
+                className="hidden"
                 onChange={(e) => {
                   const f = e.target.files[0];
                   if (f) { setSelectedCoverFile(f); setCoverPreviewUrl(URL.createObjectURL(f)); }
@@ -248,7 +248,7 @@ export default function ProfileDetails() {
 
         {/* Avatar section */}
         <div className="col-xl-7">
-          <div className="profile-box d-sm-flex align-items-center mb30">
+          <div className="profile-box sm:flex items-center mb30">
             <div className="profile-img mb20-sm">
               <Image
                 height={71}
@@ -268,7 +268,7 @@ export default function ProfileDetails() {
               />
             </div>
             <div className="profile-content ml20 ml0-xs">
-              <div className="d-flex align-items-center my-3">
+              <div className="flex items-center my-3">
                 <a
                   className="tag-delt text-thm2"
                   onClick={() => { setSelectedFile(null); setPreviewUrl(null); }}
@@ -280,7 +280,7 @@ export default function ProfileDetails() {
                   <input
                     type="file"
                     accept=".png, .jpg, .jpeg"
-                    className="d-none"
+                    className="hidden"
                     onChange={handleImageChange}
                   />
                   <a className="upload-btn ml10">{t("uploadImages")}</a>
@@ -496,7 +496,7 @@ export default function ProfileDetails() {
 
               {/* Submit */}
               <div className="col-md-12">
-                <div className="text-start">
+                <div className="text-left">
                   <button
                     type="submit"
                     className="ud-btn btn-thm"

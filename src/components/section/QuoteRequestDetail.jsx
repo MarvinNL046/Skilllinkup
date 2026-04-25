@@ -65,7 +65,7 @@ export default function QuoteRequestDetail({ requestId }) {
             <div className="bdr1 bdrs8 p30 mb30">
               <h3 className="mb15">{request.title}</h3>
 
-              <div className="d-flex gap-3 mb20 fz14 body-color">
+              <div className="flex gap-3 mb20 fz14 body-color">
                 <span><i className="flaticon-place me-1" />{request.locationCity || t("noLocation")}</span>
                 <span><i className="flaticon-briefcase me-1" />{request.categoryName || t("general")}</span>
                 <span><i className="flaticon-dollar me-1" />{request.budgetIndication || t("flexible")}</span>
@@ -120,19 +120,19 @@ export default function QuoteRequestDetail({ requestId }) {
             <div className="bdr1 bdrs8 p30">
               <h5 className="mb15">{t("leadStatus")}</h5>
 
-              <div className="d-flex justify-content-between fz14 mb10">
+              <div className="flex justify-between fz14 mb10">
                 <span>{t("slotsTaken")}</span>
                 <span className="fw500">
                   {leadStatus?.claimedSlots ?? 0} / {leadStatus?.maxSlots ?? 3}
                 </span>
               </div>
 
-              <div className="d-flex justify-content-between fz14 mb10">
+              <div className="flex justify-between fz14 mb10">
                 <span>{t("slotsRemaining")}</span>
                 <span className="fw500">{leadStatus?.slotsRemaining ?? 3}</span>
               </div>
 
-              <div className="d-flex justify-content-between fz14 mb20">
+              <div className="flex justify-between fz14 mb20">
                 <span>{t("yourBalance")}</span>
                 <span className="fw500">{balance} {t("credits")}</span>
               </div>
@@ -141,7 +141,7 @@ export default function QuoteRequestDetail({ requestId }) {
 
               {leadStatus?.alreadyClaimed ? (
                 <div className="text-center">
-                  <i className="flaticon-review-1 fz30 text-success d-block mb10" />
+                  <i className="flaticon-review-1 fz30 text-success block mb10" />
                   <p className="fw500">{t("youClaimedLead")}</p>
                 </div>
               ) : request.isOwner ? (
@@ -149,7 +149,7 @@ export default function QuoteRequestDetail({ requestId }) {
               ) : request.status !== "open" ? (
                 <p className="text-center body-color">{t("requestClosed")}</p>
               ) : !isLoggedIn ? (
-                <Link href="/login" className="ud-btn btn-thm bdrs4 w-100">
+                <Link href="/login" className="ud-btn btn-thm bdrs4 w-full">
                   {t("logInToClaim")}
                 </Link>
               ) : !isFreelancer ? (
@@ -161,7 +161,7 @@ export default function QuoteRequestDetail({ requestId }) {
                   {/* Shared claim */}
                   {leadStatus?.slotsRemaining > 0 && !leadStatus?.isExclusive && (
                     <button
-                      className="ud-btn btn-thm bdrs4 w-100 mb10"
+                      className="ud-btn btn-thm bdrs4 w-full mb10"
                       onClick={() => handleClaim("shared")}
                       disabled={claiming || balance < leadStatus.creditCost}
                     >
@@ -174,7 +174,7 @@ export default function QuoteRequestDetail({ requestId }) {
                   {/* Exclusive claim */}
                   {leadStatus?.canClaimExclusive && (
                     <button
-                      className="ud-btn btn-thm2 bdrs4 w-100 mb10"
+                      className="ud-btn btn-thm2 bdrs4 w-full mb10"
                       onClick={() => handleClaim("exclusive")}
                       disabled={claiming || balance < leadStatus.exclusiveCost}
                     >
@@ -188,7 +188,7 @@ export default function QuoteRequestDetail({ requestId }) {
                   {balance < leadStatus?.creditCost && (
                     <div className="mt10 text-center">
                       <p className="fz13 text-danger mb10">{t("insufficientCredits")}</p>
-                      <Link href="/dashboard/credits" className="ud-btn btn-white bdrs4 w-100">
+                      <Link href="/dashboard/credits" className="ud-btn btn-white bdrs4 w-full">
                         {t("buyCredits")}
                       </Link>
                     </div>

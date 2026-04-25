@@ -18,7 +18,7 @@ export default function SortOption2() {
 
   return (
     <>
-      <div  className="page_control_shorting mb10 d-flex align-items-center justify-content-center justify-content-sm-end">
+      <div  className="page_control_shorting mb10 flex items-center justify-center sm:justify-end">
         <div className="pcs_dropdown dark-color pr10 pr0-xs text-center">
           <span className="pr10">Sort by</span>
           <div className="dropdown bootstrap-select show-tick">

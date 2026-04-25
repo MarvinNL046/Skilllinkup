@@ -37,7 +37,7 @@ export default function TrendingServiceCard1({ data }) {
           <Image
             height={190}
             width={255}
-            className="w-100 object-fit-cover"
+            className="w-full object-fit-cover"
             style={{ height: "auto" }}
             src={data.img}
             alt="thumbnail"
@@ -56,7 +56,7 @@ export default function TrendingServiceCard1({ data }) {
               {data.title.slice(0, 40) + "..."}
             </Link>
           </h5>
-          <div className="review-meta d-flex align-items-center">
+          <div className="review-meta flex items-center">
             <i className="fas fa-star fz10 review-color me-2" />
             <p className="mb-0 body-color fz14">
               <span className="dark-color me-2">{data.rating}</span>
@@ -64,9 +64,9 @@ export default function TrendingServiceCard1({ data }) {
             </p>
           </div>
           <hr className="my-2" />
-          <div className="list-meta d-flex justify-content-between align-items-center mt15">
-            <a className="d-flex" href="#">
-              <span className="position-relative mr10">
+          <div className="list-meta flex justify-between items-center mt15">
+            <a className="flex" href="#">
+              <span className="relative mr10">
                 <Image
                   height={24}
                   width={24}

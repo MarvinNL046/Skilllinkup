@@ -79,10 +79,10 @@ export default async function ResourcesPage() {
                   <div className="row g-4">
                     {items.map((resource) => (
                       <div key={resource._id} className="col-md-6 col-lg-4">
-                        <Link href={`/resources/${resource.slug}`} className="text-decoration-none">
-                          <div className="bdr1 bdrs12 p30 h-100 hover-box-shadow" style={{ transition: "box-shadow 0.2s" }}>
+                        <Link href={`/resources/${resource.slug}`} className="no-underline">
+                          <div className="bdr1 bdrs12 p30 h-full hover-box-shadow" style={{ transition: "box-shadow 0.2s" }}>
                             <span
-                              className="badge px-3 py-2 bdrs8 fz12 mb15 d-inline-block text-white"
+                              className="badge px-3 py-2 bdrs8 fz12 mb15 inline-block text-white"
                               style={{ background: TYPE_COLORS[resource.type] }}
                             >
                               {typeLabels[resource.type]}

@@ -203,7 +203,8 @@
     "lifetimeFreelancerEarnings": "Dożywotnie zarobki freelancera",
     "statusLabel": "Status",
     "accountActive": "Konto aktywne",
-    "accountGoodStanding": "Twoje konto ma dobrą opinię"
+    "accountGoodStanding": "Twoje konto ma dobrą opinię",
+    "navigation": "Nawigacja"
   },
   "marketplace": {
     "onlineMarketplace": "Rynek internetowy",

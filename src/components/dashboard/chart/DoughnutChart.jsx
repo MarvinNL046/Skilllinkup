@@ -59,7 +59,7 @@ export default function DoughnutChart({ userId }) {
 
   return (
     <>
-      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
         <div className="bdrb1 pb15 mb30">
           <h5 className="title">Order Status</h5>
         </div>

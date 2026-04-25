@@ -100,7 +100,7 @@ export default function OrdersInfo() {
       {/* Role switcher */}
       <div className="row">
         <div className="col-12 mb20">
-          <div className="d-flex gap-2">
+          <div className="flex gap-2">
             <button
               className={`ud-btn ${role === "client" ? "btn-thm" : "btn-white"}`}
               onClick={() => setRole("client")}
@@ -119,7 +119,7 @@ export default function OrdersInfo() {
 
       <div className="row">
         <div className="col-xl-12">
-          <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+          <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
             {/* Revision message inline form */}
             {revisionOrderId && (
               <div className="bgc-thm4 bdrs4 p20 mb20">
@@ -131,7 +131,7 @@ export default function OrdersInfo() {
                   onChange={(e) => setRevisionMessage(e.target.value)}
                   placeholder={t("revisionPlaceholder")}
                 />
-                <div className="d-flex gap-2">
+                <div className="flex gap-2">
                   <button
                     className="ud-btn btn-thm btn-sm fz14"
                     disabled={!revisionMessage.trim() || actionLoading === revisionOrderId}
@@ -231,7 +231,7 @@ export default function OrdersInfo() {
                               : (order.amount ?? 0).toFixed(2)}
                           </span>
                           {role === "freelancer" && order.freelancerEarnings !== null && order.freelancerEarnings !== undefined && (
-                            <span className="fz12 text d-block">{t("afterFee")}</span>
+                            <span className="fz12 text block">{t("afterFee")}</span>
                           )}
                         </td>
                         <td>
@@ -260,7 +260,7 @@ export default function OrdersInfo() {
                           )}
 
                           {role === "client" && order.status === "delivered" && (
-                            <div className="d-flex gap-2">
+                            <div className="flex gap-2">
                               <button
                                 className="ud-btn btn-thm btn-sm fz14"
                                 disabled={actionLoading === order._id}

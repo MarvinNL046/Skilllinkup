@@ -203,7 +203,8 @@
     "lifetimeFreelancerEarnings": "Lifetime freelancer earnings",
     "statusLabel": "Status",
     "accountActive": "Account Active",
-    "accountGoodStanding": "Your account is in good standing"
+    "accountGoodStanding": "Your account is in good standing",
+    "navigation": "Navigation"
   },
   "marketplace": {
     "onlineMarketplace": "Online Marketplace",

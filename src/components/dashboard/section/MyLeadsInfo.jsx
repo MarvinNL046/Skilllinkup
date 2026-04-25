@@ -19,7 +19,7 @@ export default function MyLeadsInfo() {
   if (claims.length === 0) {
     return (
       <div className="text-center py-5">
-        <i className="flaticon-place fz40 text mb20 d-block" />
+        <i className="flaticon-place fz40 text mb20 block" />
         <h4>{t("noClaimsTitle")}</h4>
         <p className="body-color mb20">
           {t("noClaimsDescription")}
@@ -36,7 +36,7 @@ export default function MyLeadsInfo() {
       {claims.map((claim) => (
         <div key={claim._id} className="col-lg-6 mb20">
           <div className="dashboard-style1 bdrs8 p20">
-            <div className="d-flex justify-content-between align-items-start mb10">
+            <div className="flex justify-between items-start mb10">
               <div>
                 <h5 className="list-title mb-1">
                   {claim.request?.title || t("quoteRequest")}
@@ -83,7 +83,7 @@ export default function MyLeadsInfo() {
               </div>
             )}
 
-            <div className="d-flex justify-content-between fz13 body-color">
+            <div className="flex justify-between fz13 body-color">
               <span>
                 {claim.request?.locationCity && `${claim.request.locationCity}`}
                 {claim.request?.budgetIndication && ` · ${claim.request.budgetIndication}`}

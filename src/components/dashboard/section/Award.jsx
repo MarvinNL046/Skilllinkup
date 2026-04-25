@@ -4,19 +4,19 @@ import { Tooltip } from "react-tooltip";
 export default function Award() {
   return (
     <>
-      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
-        <div className="bdrb1 pb15 mb30 d-sm-flex justify-content-between">
+      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
+        <div className="bdrb1 pb15 mb30 sm:flex justify-between">
           <h5 className="list-title">Awards</h5>
           <a className="add-more-btn text-thm">
             <i className="icon far fa-plus mr10" />
             Add Awards
           </a>
         </div>
-        <div className="position-relative">
+        <div className="relative">
           <div className="educational-quality ps-0">
-            <div className="wrapper mb40 position-relative">
+            <div className="wrapper mb40 relative">
               <div className="del-edit">
-                <div className="d-flex">
+                <div className="flex">
                   <a className="icon me-2" id="edit">
                     <Tooltip anchorSelect="#edit" className="ui-tooltip">
                       Edit
@@ -37,12 +37,12 @@ export default function Award() {
               <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a
                 ipsum tellus. Interdum et malesuada fames ac ante ipsum{" "}
-                <br className="d-none d-lg-block" /> primis in faucibus.
+                <br className="hidden lg:block" /> primis in faucibus.
               </p>
             </div>
-            <div className="wrapper mb40 position-relative">
+            <div className="wrapper mb40 relative">
               <div className="del-edit">
-                <div className="d-flex">
+                <div className="flex">
                   <a className="icon me-2" id="edit">
                     <Tooltip anchorSelect="#edit" className="ui-tooltip">
                       Edit
@@ -63,11 +63,11 @@ export default function Award() {
               <p className="mb-0">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a
                 ipsum tellus. Interdum et malesuada fames ac ante ipsum{" "}
-                <br className="d-none d-lg-block" /> primis in faucibus.
+                <br className="hidden lg:block" /> primis in faucibus.
               </p>
             </div>
           </div>
-          <div className="text-start">
+          <div className="text-left">
             <a className="ud-btn btn-thm" href="#">
               Save
               <i className="fal fa-arrow-right-long" />

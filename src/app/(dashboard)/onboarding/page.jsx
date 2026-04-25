@@ -34,7 +34,7 @@ function ProgressBar({ step, totalSteps, t }) {
   const pct = Math.round((step / totalSteps) * 100);
   return (
     <div className="mb-4">
-      <div className="d-flex justify-content-between align-items-center mb-2">
+      <div className="flex justify-between items-center mb-2">
         <span className="fz13 text-muted">{t("stepOf", { step, total: totalSteps })}</span>
         <span className="fz13 text-muted">{pct}%</span>
       </div>
@@ -220,7 +220,7 @@ function OnboardingContent() {
 
   if (!isLoaded || !convexUser) {
     return (
-      <div className="d-flex justify-content-center align-items-center vh-100">
+      <div className="flex justify-center items-center min-h-screen">
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">{t("loading")}</span>
         </div>
@@ -231,7 +231,7 @@ function OnboardingContent() {
   // Fix #3: wait for freelancer profile to resolve before showing step 3+
   if (role === "freelancer" && step >= 3 && freelancerProfile === undefined) {
     return (
-      <div className="d-flex justify-content-center align-items-center vh-100">
+      <div className="flex justify-center items-center min-h-screen">
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">{t("loading")}</span>
         </div>
@@ -240,7 +240,7 @@ function OnboardingContent() {
   }
 
   return (
-    <div className="bg-white min-vh-100 d-flex flex-column">
+    <div className="bg-white min-min-h-screen flex flex-col">
       <header className="py-4 text-center border-bottom">
         <Image
           src="/images/logo/skilllinkup-transparant-rozepunt.webp"
@@ -252,9 +252,9 @@ function OnboardingContent() {
         />
       </header>
 
-      <main className="flex-grow-1 d-flex align-items-center py-5">
+      <main className="grow flex items-center py-5">
         <div className="container">
-          <div className="row justify-content-center">
+          <div className="row justify-center">
             <div className="col-lg-7 col-xl-6">
 
               {step > 1 && <ProgressBar step={step} totalSteps={totalSteps} t={t} />}
@@ -266,7 +266,7 @@ function OnboardingContent() {
                     <h2 className="title mb-2">{t("welcomeTitle")}</h2>
                     <p className="fz17 text-muted">{t("welcomeSubtitle")}</p>
                   </div>
-                  <div className="row g-4 justify-content-center">
+                  <div className="row g-4 justify-center">
                     {[
                       { type: "client",     icon: "flaticon-search-1",     label: t("lookingForTalent"),  desc: t("lookingForTalentDesc") },
                       { type: "freelancer", icon: "flaticon-presentation",  label: t("offerServices"),        desc: t("offerServicesDesc") },
@@ -276,7 +276,7 @@ function OnboardingContent() {
                         <button
                           type="button"
                           onClick={() => handleRoleSelect(type)}
-                          className="w-100 border-0 p-0 bg-transparent"
+                          className="w-full border-0 p-0 bg-transparent"
                           style={{ cursor: "pointer" }}
                         >
                           <div
@@ -286,7 +286,7 @@ function OnboardingContent() {
                             onMouseLeave={e => e.currentTarget.style.boxShadow = ""}
                           >
                             <div
-                              className="d-flex align-items-center justify-content-center mx-auto mb-4 rounded-circle"
+                              className="flex items-center justify-center mx-auto mb-4 rounded-circle"
                               style={{ width: 80, height: 80, background: "#f5f5f5" }}
                             >
                               <i className={`${icon} fz30`} style={{ color: "#ef2b70" }} />
@@ -308,7 +308,7 @@ function OnboardingContent() {
                     <h2 className="title mb-2">{t("chooseWorld")}</h2>
                     <p className="fz17 text-muted">{t("chooseWorldSubtitle")}</p>
                   </div>
-                  <div className="row g-4 justify-content-center">
+                  <div className="row g-4 justify-center">
                     {WORLDS.map((w) => (
                       <div key={w.id} className="col-sm-4">
                         {/* Fix #8: type="button" */}
@@ -316,7 +316,7 @@ function OnboardingContent() {
                           type="button"
                           onClick={() => handleWorldSelect(w.id)}
                           disabled={saving}
-                          className="w-100 border-0 p-0 bg-transparent"
+                          className="w-full border-0 p-0 bg-transparent"
                           style={{ cursor: saving ? "wait" : "pointer" }}
                         >
                           <div
@@ -326,7 +326,7 @@ function OnboardingContent() {
                             onMouseLeave={e => e.currentTarget.style.boxShadow = ""}
                           >
                             <div
-                              className="d-flex align-items-center justify-content-center mx-auto mb-3 rounded-circle"
+                              className="flex items-center justify-center mx-auto mb-3 rounded-circle"
                               style={{ width: 64, height: 64, background: "#f5f5f5" }}
                             >
                               <i className={`${w.icon} fz26`} style={{ color: "#ef2b70" }} />
@@ -344,7 +344,7 @@ function OnboardingContent() {
                       <button
                         type="button"
                         onClick={() => goTo(1, "back")}
-                        className="btn btn-link text-muted text-decoration-none fz14"
+                        className="btn btn-link text-muted no-underline fz14"
                         disabled={saving}
                       >
                         ← {t("back")}
@@ -373,7 +373,7 @@ function OnboardingContent() {
                         : t("selectServices")}
                     </p>
                   </div>
-                  <div className="d-flex flex-wrap gap-2 justify-content-center mb-4">
+                  <div className="flex flex-wrap gap-2 justify-center mb-4">
                     {(role === "freelancer" ? SKILLS : CLIENT_INTERESTS).map((skill) => {
                       const active = selectedSkills.includes(skill);
                       return (
@@ -401,16 +401,16 @@ function OnboardingContent() {
                       {t("skillsSelected", { count: selectedSkills.length })}
                     </p>
                   )}
-                  <div className="d-flex justify-content-between align-items-center mt-2">
+                  <div className="flex justify-between items-center mt-2">
                     {/* Fix #8: type="button" */}
                     <button
                       type="button"
                       onClick={() => goTo(2, "back")}
-                      className="btn btn-link text-muted text-decoration-none fz14"
+                      className="btn btn-link text-muted no-underline fz14"
                     >
                       ← Back
                     </button>
-                    <div className="d-flex gap-3">
+                    <div className="flex gap-3">
                       {/* Fix #8: type="button" */}
                       <button
                         type="button"
@@ -442,7 +442,7 @@ function OnboardingContent() {
                     <p className="fz17 text-muted">{t("profileViews")}</p>
                   </div>
                   <div className="mb-3">
-                    <label className="fz14 fw600 mb-1 d-block">
+                    <label className="fz14 fw600 mb-1 block">
                       {t("tagline")} <span className="text-muted fw400">{t("taglineHint")}</span>
                     </label>
                     <input
@@ -455,7 +455,7 @@ function OnboardingContent() {
                     />
                   </div>
                   <div className="mb-3">
-                    <label className="fz14 fw600 mb-1 d-block">{t("bio")}</label>
+                    <label className="fz14 fw600 mb-1 block">{t("bio")}</label>
                     <textarea
                       className="form-control bdrs8"
                       rows={4}
@@ -464,10 +464,10 @@ function OnboardingContent() {
                       onChange={e => setBio(e.target.value)}
                       maxLength={800}
                     />
-                    <div className="text-end fz12 text-muted mt-1">{bio.length}/800</div>
+                    <div className="text-right fz12 text-muted mt-1">{bio.length}/800</div>
                   </div>
                   <div className="mb-4">
-                    <label className="fz14 fw600 mb-1 d-block">
+                    <label className="fz14 fw600 mb-1 block">
                       {t("hourlyRate")} <span className="text-muted fw400">{t("hourlyRateCurrency")}</span>
                     </label>
                     <div className="input-group" style={{ maxWidth: 200 }}>
@@ -485,17 +485,17 @@ function OnboardingContent() {
                       <span className="input-group-text">{t("perHour")}</span>
                     </div>
                   </div>
-                  <div className="d-flex justify-content-between align-items-center">
+                  <div className="flex justify-between items-center">
                     {/* Fix #8: type="button" */}
                     <button
                       type="button"
                       onClick={() => goTo(3, "back")}
-                      className="btn btn-link text-muted text-decoration-none fz14"
+                      className="btn btn-link text-muted no-underline fz14"
                       disabled={saving}
                     >
                       ← Back
                     </button>
-                    <div className="d-flex gap-3">
+                    <div className="flex gap-3">
                       {/* Fix #8: type="button" */}
                       <button
                         type="button"
@@ -542,7 +542,7 @@ export default function OnboardingPage() {
   return (
     <Suspense
       fallback={
-        <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="flex justify-center items-center min-h-screen">
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">{tc("loading")}</span>
           </div>

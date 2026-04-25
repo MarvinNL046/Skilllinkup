@@ -9,7 +9,7 @@ import ClearButton from "../button/ClearButton";
 export default function ListingSidebarShell({ children, hideClear = false }) {
   return (
     <div
-      className="card d-none d-lg-block"
+      className="card hidden lg:block"
       style={{
         padding: "var(--space-5) var(--space-6)",
         position: "sticky",

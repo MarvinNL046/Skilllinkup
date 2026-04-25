@@ -396,7 +396,7 @@ export default function ServiceDetail3() {
                           <div style={{ marginTop: "var(--space-3)" }}>
                             <ContactButton
                               recipientId={gigData.freelancerProfile.userId}
-                              className="w-100"
+                              className="w-full"
                             />
                           </div>
                         )}
@@ -417,7 +417,7 @@ export default function ServiceDetail3() {
                         <div className="mt20">
                           <ContactButton
                             recipientId={gigData.freelancerProfile.userId}
-                            className="w-100"
+                            className="w-full"
                           />
                         </div>
                       )}

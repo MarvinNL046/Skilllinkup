@@ -13,7 +13,7 @@ function ProjectCard({ project, onEdit, onDelete }) {
 
   return (
     <div className="col-sm-6 col-lg-4 mb20">
-      <div className="ps-widget bgc-white bdrs4 overflow-hidden position-relative bdr1">
+      <div className="ps-widget bgc-white bdrs4 overflow-hidden relative bdr1">
         {/* Thumbnail */}
         <div
           style={{
@@ -49,7 +49,7 @@ function ProjectCard({ project, onEdit, onDelete }) {
             </p>
           )}
           {tags.length > 0 && (
-            <div className="d-flex flex-wrap gap-1 mb10">
+            <div className="flex flex-wrap gap-1 mb10">
               {tags.map((tag, i) => (
                 <span key={i} className="badge bg-light text-dark fz11">
                   {tag}
@@ -57,7 +57,7 @@ function ProjectCard({ project, onEdit, onDelete }) {
               ))}
             </div>
           )}
-          <div className="d-flex gap-2">
+          <div className="flex gap-2">
             <button
               className="ud-btn btn-white btn-sm"
               onClick={() => onEdit(project)}
@@ -114,7 +114,7 @@ export default function PortfolioTab() {
   return (
     <>
       <div className="ps-widget bgc-white bdrs4 p30 mb30">
-        <div className="d-flex justify-content-between align-items-center bdrb1 pb15 mb25">
+        <div className="flex justify-between items-center bdrb1 pb15 mb25">
           <h5 className="list-title">Portfolio Projects</h5>
           <button
             className="ud-btn btn-thm btn-sm"

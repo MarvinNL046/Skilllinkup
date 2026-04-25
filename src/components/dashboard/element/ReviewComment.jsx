@@ -30,7 +30,7 @@ export default function ReviewComment({ review, i, lenght }) {
   return (
     <>
       <div className={`pb20 ${!isLast ? "bdrb1" : ""}`}>
-        <div className="mbp_first position-relative d-sm-flex align-items-center justify-content-start mb30-sm mt30">
+        <div className="mbp_first relative sm:flex items-center justify-start mb30-sm mt30">
           <Image
             height={60}
             width={60}
@@ -46,7 +46,7 @@ export default function ReviewComment({ review, i, lenght }) {
               <span className="flaticon-flag" />
             </div>
             <h6 className="mt-0 mb-1">{reviewerName}</h6>
-            <div className="d-flex align-items-center">
+            <div className="flex items-center">
               <div>
                 <i className="fas fa-star vam fz10 review-color me-2" />
                 <span className="fz15 fw500">{rating.toFixed(1)}</span>

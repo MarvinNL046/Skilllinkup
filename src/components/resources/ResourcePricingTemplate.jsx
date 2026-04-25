@@ -11,7 +11,7 @@ export default function ResourcePricingTemplate({ resource }) {
         {/* Hero */}
         <section className="pt80 pb60 bgc-thm3">
           <div className="container">
-            <div className="row justify-content-center">
+            <div className="row justify-center">
               <div className="col-lg-8 text-center">
                 <span className="badge bg-thm text-white px-3 py-2 bdrs8 fz13 mb20">Pricing Guide</span>
                 <h1 className="fz40 fw700 mb20">{resource.metaTitle}</h1>
@@ -34,7 +34,7 @@ export default function ResourcePricingTemplate({ resource }) {
                 <h2 className="fz20 fw700 mb20">Key Takeaways</h2>
                 <ul className="mb-0 ps-0" style={{ listStyle: "none" }}>
                   {resource.keyTakeaways.map((t, i) => (
-                    <li key={i} className="d-flex align-items-start gap-2 mb10 fz15">
+                    <li key={i} className="flex items-start gap-2 mb10 fz15">
                       <i className="fas fa-check-circle text-success mt-1" />
                       {t}
                     </li>
@@ -50,16 +50,16 @@ export default function ResourcePricingTemplate({ resource }) {
           <section className="pt40 pb60">
             <div className="container">
               <h2 className="fz28 fw700 mb30 text-center">Pricing Plans</h2>
-              <div className="row g-4 justify-content-center">
+              <div className="row g-4 justify-center">
                 {resource.pricingData.map((plan, i) => (
                   <div key={i} className="col-md-4">
-                    <div className="bdr1 bdrs12 p30 h-100 text-center hover-box-shadow">
+                    <div className="bdr1 bdrs12 p30 h-full text-center hover-box-shadow">
                       <h3 className="fz20 fw700 mb10">{plan.tier}</h3>
                       <div className="fz32 fw700 text-thm mb5">{plan.price}</div>
                       {plan.billingPeriod && <p className="fz13 text-muted mb20">{plan.billingPeriod}</p>}
-                      <ul className="text-start ps-0" style={{ listStyle: "none" }}>
+                      <ul className="text-left ps-0" style={{ listStyle: "none" }}>
                         {plan.features?.map((f, j) => (
-                          <li key={j} className="d-flex gap-2 mb8 fz14">
+                          <li key={j} className="flex gap-2 mb8 fz14">
                             <i className="fas fa-check text-success mt-1" />
                             {f}
                           </li>

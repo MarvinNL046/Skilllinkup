@@ -28,7 +28,7 @@ export default function HeroSearch1() {
 
   return (
     <>
-      <form className="form-search position-relative">
+      <form className="form-search relative">
         <div className="box-search">
           <span className="icon far fa-magnifying-glass" />
           <input

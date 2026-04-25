@@ -50,7 +50,7 @@ export default function Skill() {
   };
   return (
     <>
-      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
         <div className="bdrb1 pb15 mb25">
           <h5 className="list-title">Skills</h5>
         </div>
@@ -173,7 +173,7 @@ export default function Skill() {
                   </div>
                 </div>
                 <div className="col-md-12">
-                  <div className="text-start">
+                  <div className="text-left">
                     <Link className="ud-btn btn-thm" href="/contact">
                       Save
                       <i className="fal fa-arrow-right-long" />

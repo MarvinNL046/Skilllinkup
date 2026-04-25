@@ -123,7 +123,7 @@ export default function StatementInfo() {
 
         {(isAuthenticated || !isLoaded) && (<><div className="row">
           <div className="col-sm-6 col-xxl-3">
-            <div className="d-flex align-items-center justify-content-between statistics_funfact">
+            <div className="flex items-center justify-between statistics_funfact">
               <div className="details">
                 <div className="fz15">{t("netIncome")}</div>
                 <div className="title">
@@ -139,7 +139,7 @@ export default function StatementInfo() {
             </div>
           </div>
           <div className="col-sm-6 col-xxl-3">
-            <div className="d-flex align-items-center justify-content-between statistics_funfact">
+            <div className="flex items-center justify-between statistics_funfact">
               <div className="details">
                 <div className="fz15">{t("totalSpent")}</div>
                 <div className="title">
@@ -155,7 +155,7 @@ export default function StatementInfo() {
             </div>
           </div>
           <div className="col-sm-6 col-xxl-3">
-            <div className="d-flex align-items-center justify-content-between statistics_funfact">
+            <div className="flex items-center justify-between statistics_funfact">
               <div className="details">
                 <div className="fz15">{t("pendingClearance")}</div>
                 <div className="title">
@@ -171,7 +171,7 @@ export default function StatementInfo() {
             </div>
           </div>
           <div className="col-sm-6 col-xxl-3">
-            <div className="d-flex align-items-center justify-content-between statistics_funfact">
+            <div className="flex items-center justify-between statistics_funfact">
               <div className="details">
                 <div className="fz15">{t("totalTransactions")}</div>
                 <div className="title">
@@ -189,7 +189,7 @@ export default function StatementInfo() {
         </div>
         <div className="row">
           <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
               {isLoading ? (
                 <div className="text-center py-4">
                   <div className="spinner-border spinner-border-sm text-thm" role="status">

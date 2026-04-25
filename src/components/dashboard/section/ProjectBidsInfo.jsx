@@ -105,7 +105,7 @@ export default function ProjectBidsInfo({ projectId }) {
           <div className="col-lg-12">
             {/* Project summary header */}
             <div className="ps-widget bgc-white bdrs4 p30 mb30">
-              <div className="d-flex justify-content-between align-items-start flex-wrap gap-3 bdrb1 pb20 mb20">
+              <div className="flex justify-between items-start flex-wrap gap-3 bdrb1 pb20 mb20">
                 <div>
                   <h4 className="title mb5">{project.title}</h4>
                   <p className="text fz14 mb-0">
@@ -125,7 +125,7 @@ export default function ProjectBidsInfo({ projectId }) {
                     </span>
                   </p>
                 </div>
-                <div className="text-end">
+                <div className="text-right">
                   <span className="fz20 fw600 dark-color">{project.bidCount ?? 0}</span>
                   <p className="text fz13 mb-0">{(project.bidCount ?? 0) !== 1 ? t("bidsReceivedPlural") : t("bidsReceived")}</p>
                 </div>
@@ -136,7 +136,7 @@ export default function ProjectBidsInfo({ projectId }) {
             </div>
 
             {/* Action links */}
-            <div className="d-flex gap-3 flex-wrap">
+            <div className="flex gap-3 flex-wrap">
               <Link href="/manage-projects" className="ud-btn btn-thm-border btn-sm">
                 <i className="fal fa-arrow-left me-1" />
                 {t("backToMyProjects")}

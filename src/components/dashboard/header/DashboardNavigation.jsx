@@ -70,7 +70,7 @@ function MobileNavLink({ item, active, onNavigate }) {
 
 /**
  * Mobile-only collapsible nav inserted at the top of dashboard pages
- * (d-lg-none). Lets users reach every sidebar destination without the
+ * (lg:hidden). Lets users reach every sidebar destination without the
  * full desktop sidebar showing. Fully DS + controlled — no Bootstrap JS.
  */
 export default function DashboardNavigation() {
@@ -111,7 +111,7 @@ export default function DashboardNavigation() {
   const closeOnClick = () => setOpen(false);
 
   return (
-    <div ref={panelRef} className="d-block d-lg-none" style={{ marginBottom: "var(--space-6)" }}>
+    <div ref={panelRef} className="block lg:hidden" style={{ marginBottom: "var(--space-6)" }}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}

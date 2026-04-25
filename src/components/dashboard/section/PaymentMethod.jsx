@@ -57,7 +57,7 @@ export default function PaymentMethod() {
       </div>
       <h5 className="mb15">{t("payoutDetails")}</h5>
       <div className="navpill-style1 payout-style">
-        <ul className="nav nav-pills align-items-center justify-content-center mb30">
+        <ul className="nav nav-pills items-center justify-center mb30">
           {method.map((item, i) => (
             <li key={i} className="nav-item">
               <button

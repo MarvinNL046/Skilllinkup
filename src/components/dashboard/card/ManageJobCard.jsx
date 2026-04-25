@@ -40,7 +40,7 @@ export default function ManageJobCard({ job, onEdit, onDelete }) {
     <tr>
       <th scope="row">
         <div className="freelancer-style1 box-shadow-none row m-0 p-0">
-          <div className="d-lg-flex px-0">
+          <div className="lg:flex px-0">
             <div className="details mb15-md-md">
               <h5 className="title mb5">{title}</h5>
               {company && (
@@ -67,7 +67,7 @@ export default function ManageJobCard({ job, onEdit, onDelete }) {
         <span className={`fz13 fw500 ${statusInfo.className}`}>{statusInfo.label}</span>
       </td>
       <td>
-        <div className="d-flex align-items-center">
+        <div className="flex items-center">
           {slug && (
             <Link
               href={`/jobs/${slug}`}

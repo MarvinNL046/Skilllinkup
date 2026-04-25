@@ -203,7 +203,8 @@
     "lifetimeFreelancerEarnings": "Ganancias de por vida de un autónomo",
     "statusLabel": "Estado",
     "accountActive": "Cuenta activa",
-    "accountGoodStanding": "Su cuenta está al día"
+    "accountGoodStanding": "Su cuenta está al día",
+    "navigation": "Navegación"
   },
   "marketplace": {
     "onlineMarketplace": "Mercado en línea",

@@ -165,7 +165,7 @@ export default function SettingsTab() {
           Your account type determines which features and dashboard sections are
           available to you.
         </p>
-        <div className="d-flex gap-2 mb20 flex-wrap">
+        <div className="flex gap-2 mb20 flex-wrap">
           {ACCOUNT_TYPES.map((t) => (
             <button
               key={t.key}
@@ -196,7 +196,7 @@ export default function SettingsTab() {
         ].map(({ key, label }) => (
           <div
             key={key}
-            className="d-flex justify-content-between align-items-center bdrb1 pb15 mb15"
+            className="flex justify-between items-center bdrb1 pb15 mb15"
           >
             <span className="fz15">{label}</span>
             <div className="form-check form-switch mb-0">

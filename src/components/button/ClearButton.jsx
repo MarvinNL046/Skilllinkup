@@ -69,7 +69,7 @@ export default function ClearButton() {
       getNoOfEmployee?.length !== 0 ? (
         <button
           onClick={clearHandler}
-          className="ud-btn btn-thm ui-clear-btn w-100"
+          className="ud-btn btn-thm ui-clear-btn w-full"
         >
           Clear
           <i className="fal fa-arrow-right-long"></i>

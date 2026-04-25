@@ -103,7 +103,7 @@ export default function MessageInfo() {
                 <div className="inbox_user_list">
                   <div className="iu_heading pr35">
                     <div className="chat_user_search">
-                      <form className="d-flex align-items-center" onSubmit={(e) => e.preventDefault()}>
+                      <form className="flex items-center" onSubmit={(e) => e.preventDefault()}>
                         <button className="btn" type="button">
                           <span className="far fa-magnifying-glass" />
                         </button>

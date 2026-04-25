@@ -9,7 +9,7 @@ export default function CtaBanner1() {
     <>
       <section className="p-0">
         <div
-          className={`cta-banner3 mx-auto maxw1600 pt120 pt60-lg pb90 pb60-lg position-relative overflow-hidden ${
+          className={`cta-banner3 mx-auto maxw1600 pt120 pt60-lg pb90 pb60-lg relative overflow-hidden ${
             path === "/" || path === "/about-1"
               ? "bgc-light-yellow"
               : path === "/become-seller"
@@ -24,37 +24,37 @@ export default function CtaBanner1() {
                   <div className="main-title">
                     <h2 className="title">
                       A whole world of freelance{" "}
-                      <br className="d-none d-xl-block" /> talent at your
+                      <br className="hidden xl:block" /> talent at your
                       fingertips
                     </h2>
                   </div>
                 </div>
                 <div className="why-chose-list">
-                  <div className="list-one d-flex align-items-start mb30">
-                    <span className="list-icon flex-shrink-0 flaticon-badge" />
-                    <div className="list-content flex-grow-1 ml20">
+                  <div className="list-one flex items-start mb30">
+                    <span className="list-icon shrink-0 flaticon-badge" />
+                    <div className="list-content grow ml20">
                       <h4 className="mb-1">Proof of quality</h4>
                       <p className="text mb-0 fz15">
                         Check any pro’s work samples, client reviews, and
-                        identity <br className="d-none d-lg-block" />{" "}
+                        identity <br className="hidden lg:block" />{" "}
                         verification.
                       </p>
                     </div>
                   </div>
-                  <div className="list-one d-flex align-items-start mb30">
-                    <span className="list-icon flex-shrink-0 flaticon-money" />
-                    <div className="list-content flex-grow-1 ml20">
+                  <div className="list-one flex items-start mb30">
+                    <span className="list-icon shrink-0 flaticon-money" />
+                    <div className="list-content grow ml20">
                       <h4 className="mb-1">No cost until you hire</h4>
                       <p className="text mb-0 fz15">
                         Interview potential fits for your job, negotiate rates,
-                        and only pay <br className="d-none d-lg-block" /> for
+                        and only pay <br className="hidden lg:block" /> for
                         work you approve.
                       </p>
                     </div>
                   </div>
-                  <div className="list-one d-flex align-items-start mb30">
-                    <span className="list-icon flex-shrink-0 flaticon-security" />
-                    <div className="list-content flex-grow-1 ml20">
+                  <div className="list-one flex items-start mb30">
+                    <span className="list-icon shrink-0 flaticon-security" />
+                    <div className="list-content grow ml20">
                       <h4 className="mb-1">Safe and secure</h4>
                       <p className="text mb-0 fz15">
                         Focus on your work knowing we help protect your data and
@@ -69,7 +69,7 @@ export default function CtaBanner1() {
           <Image
             height={500}
             width={500}
-            className="cta-banner3-img wow fadeInLeft h-100 object-fit-cover"
+            className="cta-banner3-img wow fadeInLeft h-full object-fit-cover"
             src="/images/about/about-5.jpg"
             alt="cta banner 3"
             data-wow-delay="300ms"

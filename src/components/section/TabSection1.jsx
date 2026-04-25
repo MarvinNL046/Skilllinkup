@@ -33,7 +33,7 @@ export default function TabSection1() {
           <div className="row">
             <div className="col-lg-12">
               <div className="listings_category_nav_list_menu">
-                <ul className="mb0 d-flex ps-0">
+                <ul className="mb0 flex ps-0">
                   {categoryKeys.map((key, index) => (
                     <li key={index}>
                       <a

@@ -82,7 +82,7 @@ export default function Breadcumb10({ path }) {
             aria-label="Share"
           >
             {copied ? <Check size={15} /> : <Share2 size={15} />}
-            <span className="d-none d-sm-inline">
+            <span className="hidden sm:inline">
               {copied ? "Copied" : "Share"}
             </span>
           </button>
@@ -94,7 +94,7 @@ export default function Breadcumb10({ path }) {
             aria-label={saved ? "Saved" : "Save"}
           >
             <Bookmark size={15} fill={saved ? "currentColor" : "none"} />
-            <span className="d-none d-sm-inline">{saved ? "Saved" : "Save"}</span>
+            <span className="hidden sm:inline">{saved ? "Saved" : "Save"}</span>
           </button>
         </div>
       </div>

@@ -28,7 +28,7 @@ export default function BlogCard4({ data, index }) {
           <Image
             height={398}
             width={736}
-            className="w-100 bdrs4 object-fit-cover"
+            className="w-full bdrs4 object-fit-cover"
             style={{ height: "auto" }}
             src={imgSrc}
             alt={data.title}
@@ -37,7 +37,7 @@ export default function BlogCard4({ data, index }) {
         </div>
         <div className="blog-content px-0 pt20 pb-0">
           <div className="blog-single-meta mb25">
-            <div className="post-author d-sm-flex align-items-center">
+            <div className="post-author sm:flex items-center">
               <Image
                 height={60}
                 width={60}

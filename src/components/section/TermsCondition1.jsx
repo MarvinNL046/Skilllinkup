@@ -24,7 +24,7 @@ export default function TermsCondition1() {
         </div>
         <div className="row">
           <div className="col-xl-10">
-            <div className="terms_condition_grid text-start">
+            <div className="terms_condition_grid text-left">
               <div className="grids mb50">
                 <h4 className="title mb15">{t("section1Title")}</h4>
                 <p className="text fz15 mb15">{t("section1p1")}</p>

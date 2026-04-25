@@ -43,7 +43,7 @@ export default function FreelancerCard2({ data }) {
             />
           </div>
         )}
-        <div className="thumb w90 mb15 mx-auto position-relative rounded-circle" style={{ marginTop: data.portfolioImg ? 16 : 0 }}>
+        <div className="thumb w90 mb15 mx-auto relative rounded-circle" style={{ marginTop: data.portfolioImg ? 16 : 0 }}>
           <Image
             height={90}
             width={90}
@@ -96,7 +96,7 @@ export default function FreelancerCard2({ data }) {
             </p>
           </div>
           {visibleTags.length > 0 && (
-            <div className="skill-tags d-flex align-items-center justify-content-center mb5 flex-wrap gap-1">
+            <div className="skill-tags flex items-center justify-center mb5 flex-wrap gap-1">
               {visibleTags.map((tag, i) => (
                 <span key={i} className="tag">{tag}</span>
               ))}
@@ -118,24 +118,24 @@ export default function FreelancerCard2({ data }) {
             </p>
           )}
           <hr className="opacity-100 mt15 mb15" />
-          <div className="fl-meta d-flex align-items-center justify-content-between">
-            <a className="meta fw500 text-start">
+          <div className="fl-meta flex items-center justify-between">
+            <a className="meta fw500 text-left">
               {t("location")}
               <br />
               <span className="fz14 fw400">{data.location || t("remote")}</span>
             </a>
-            <a className="meta fw500 text-start">
+            <a className="meta fw500 text-left">
               {t("rate")}
               <br />
               <span className="fz14 fw400">{data.price ? `€${data.price}/hr` : t("onRequest")}</span>
             </a>
-            <a className="meta fw500 text-start">
+            <a className="meta fw500 text-left">
               {t("level")}
               <br />
               <LevelBadge level={data.level} />
             </a>
           </div>
-          <div className="d-grid mt15">
+          <div className="grid mt15">
             <Link
               href={`/online/freelancer/${data.slug || data._id || data.id}`}
               className="ud-btn btn-light-thm"

@@ -20,17 +20,17 @@ export default function ManageServiceCard1({ data, removeGig }) {
     <>
       <tr>
         <th className="dashboard-img-service" scope="row">
-          <div className="listing-style1 list-style d-block d-xl-flex align-items-start border-0 mb-0">
-            <div className="list-thumb flex-shrink-0 bdrs4 mb10-lg">
+          <div className="listing-style1 list-style block xl:flex items-start border-0 mb-0">
+            <div className="list-thumb shrink-0 bdrs4 mb10-lg">
               <Image
                 height={91}
                 width={122}
-                className="w-100"
+                className="w-full"
                 src={data.img}
                 alt="thumb"
               />
             </div>
-            <div className="list-content flex-grow-1 py-0 pl15 pl0-lg">
+            <div className="list-content grow py-0 pl15 pl0-lg">
               <h6 className="list-title mb-0">
                 <Link href="/services">{data.title}</Link>
               </h6>
@@ -49,7 +49,7 @@ export default function ManageServiceCard1({ data, removeGig }) {
           <span className="fz14 fw400">${(data.cost || 0).toFixed(2)}/{t("fixed")}</span>
         </td>
         <td className="align-top">
-          <div className="d-flex">
+          <div className="flex">
             <a
               className="icon me-2"
               id={`edit-${data._id || data.id}`}

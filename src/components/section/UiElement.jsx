@@ -288,7 +288,7 @@ export default function UiElement() {
               </div>
               <div className="row">
                 <div className="col-lg-6">
-                  <div className="advance-search-field position-relative bdr1">
+                  <div className="advance-search-field relative bdr1">
                     <HeroSearch1 />
                   </div>
                 </div>

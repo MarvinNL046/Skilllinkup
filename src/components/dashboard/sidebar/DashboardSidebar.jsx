@@ -121,7 +121,7 @@ export default function DashboardSidebar() {
 
   return (
     <aside
-      className="d-none d-lg-block"
+      className="hidden lg:block"
       style={{
         minWidth: 0,
         padding: "var(--space-6) var(--space-4) var(--space-6) 0",

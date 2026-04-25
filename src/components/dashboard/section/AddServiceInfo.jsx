@@ -175,7 +175,7 @@ export default function AddServiceInfo() {
 
         <div className="row mb20">
           <div className="col-xl-12">
-            <div className="d-flex align-items-center gap-2 px-3 py-2 bdrs4" style={{ background: "#f0f9ff", border: "1px solid #bae6fd" }}>
+            <div className="flex items-center gap-2 px-3 py-2 bdrs4" style={{ background: "#f0f9ff", border: "1px solid #bae6fd" }}>
               <i className="flaticon-content fz16" style={{ color: "#0284c7" }} />
               <span className="fz14" style={{ color: "#0369a1" }}>
                 {t("lookingToHire")}{" "}
@@ -221,7 +221,7 @@ export default function AddServiceInfo() {
         <div className="row">
           <div className="col-xl-12">
             {/* Basic Information */}
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
               <div className="bdrb1 pb15 mb25">
                 <h5 className="list-title">{t("basicInfo")}</h5>
               </div>
@@ -346,7 +346,7 @@ export default function AddServiceInfo() {
             </div>
 
             {/* Packages */}
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
               <div className="bdrb1 pb15 mb25">
                 <h5 className="list-title">{t("packages")}</h5>
                 <p className="text fz14 mt5">
@@ -437,7 +437,7 @@ export default function AddServiceInfo() {
             <ServiceGallery />
 
             {/* Bottom submit button */}
-            <div className="col-xl-12 text-end mb30">
+            <div className="col-xl-12 text-right mb30">
               <button
                 className="ud-btn btn-thm default-box-shadow2"
                 onClick={handleSaveAndPublish}

@@ -27,7 +27,7 @@ export default function Header19() {
   return (
     <>
       <header
-        className="nav d-none d-xl-flex"
+        className="nav hidden xl:flex"
         style={{
           position: "sticky",
           top: 0,
@@ -53,18 +53,18 @@ export default function Header19() {
             />
           </Link>
 
-          <div className="d-none d-xl-block" style={{ minWidth: 0 }}>
+          <div className="hidden xl:block" style={{ minWidth: 0 }}>
             <Navigation />
           </div>
         </div>
 
         {/* Right side: search + language + CTA */}
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", flexShrink: 0 }}>
-          <div className="d-none d-lg-block" style={{ width: 280 }}>
+          <div className="hidden lg:block" style={{ width: 280 }}>
             <SearchBarWithDropdown placeholder={t("searchPlaceholder")} />
           </div>
 
-          <span className="d-none d-md-inline-flex">
+          <span className="hidden md:inline-flex">
             <LanguageSwitcher />
           </span>
           <ThemeToggle />
@@ -73,11 +73,11 @@ export default function Header19() {
             <>
               <Link
                 href="/dashboard"
-                className="btn btn--ghost btn--sm d-none d-md-inline-flex"
+                className="btn btn--ghost btn--sm hidden md:inline-flex"
               >
                 {t("dashboard")}
               </Link>
-              <span className="d-inline-flex align-items-center position-relative">
+              <span className="inline-flex items-center relative">
                 <NotificationBell />
               </span>
               <Link

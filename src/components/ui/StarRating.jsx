@@ -12,7 +12,7 @@ export default function StarRating({ value = 0, onChange, readOnly = false, size
   const sizeCls = size === "sm" ? "fz12" : "fz18";
 
   return (
-    <div className="d-flex align-items-center gap-1">
+    <div className="flex items-center gap-1">
       {[1, 2, 3, 4, 5].map((star) => {
         const filled = star <= value;
         return (

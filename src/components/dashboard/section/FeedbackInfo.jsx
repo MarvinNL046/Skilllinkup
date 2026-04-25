@@ -8,7 +8,7 @@ import useConvexUser from "@/hook/useConvexUser";
 
 function StarRating({ value, onChange }) {
   return (
-    <div className="d-flex gap-1 mb-3">
+    <div className="flex gap-1 mb-3">
       {[1, 2, 3, 4, 5].map((star) => (
         <i
           key={star}
@@ -95,7 +95,7 @@ export default function FeedbackInfo() {
           <h6 className="mb20">{t("sendFeedback")}</h6>
           <form onSubmit={handleSubmit}>
             {/* Type tabs */}
-            <div className="d-flex gap-2 mb20">
+            <div className="flex gap-2 mb20">
               {["feedback", "bug", "feature"].map((item) => (
                 <button
                   key={item}
@@ -141,7 +141,7 @@ export default function FeedbackInfo() {
 
             <button
               type="submit"
-              className="ud-btn btn-thm w-100"
+              className="ud-btn btn-thm w-full"
               disabled={loading || !message.trim()}
             >
               {loading ? t("submitting") : t("submit")}
@@ -167,11 +167,11 @@ export default function FeedbackInfo() {
           )}
 
           {feedbackList && feedbackList.length > 0 && (
-            <div className="d-flex flex-column gap-3">
+            <div className="flex flex-col gap-3">
               {feedbackList.map((item) => (
                 <div key={item._id} className="bdr1 bdrs8 p20">
-                  <div className="d-flex align-items-center justify-content-between mb10">
-                    <div className="d-flex align-items-center gap-2">
+                  <div className="flex items-center justify-between mb10">
+                    <div className="flex items-center gap-2">
                       <span className="badge bg-light text-dark fz11 fw500 px-2 py-1" style={{ borderRadius: 8 }}>
                         {TYPE_CONFIG[item.type]?.label || item.type}
                       </span>
@@ -181,7 +181,7 @@ export default function FeedbackInfo() {
                         </span>
                       )}
                     </div>
-                    <div className="d-flex align-items-center gap-2">
+                    <div className="flex items-center gap-2">
                       <span className={`badge px-2 py-1 fz11 fw500 ${(STATUS_CONFIG[item.status] || STATUS_CONFIG.new).className}`} style={{ borderRadius: 8 }}>
                         {(STATUS_CONFIG[item.status] || STATUS_CONFIG.new).label}
                       </span>

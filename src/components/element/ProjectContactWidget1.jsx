@@ -8,8 +8,8 @@ export default function ProjectContactWidget1({ clientName, clientAvatar, locati
     <>
       <div className="freelancer-style1 service-single mb-0 bdrs8">
         <h4>{t("aboutBuyer")}</h4>
-        <div className="wrapper d-flex align-items-center mt20">
-          <div className="thumb position-relative mb25">
+        <div className="wrapper flex items-center mt20">
+          <div className="thumb relative mb25">
             <Image
               height={60}
               width={60}
@@ -26,8 +26,8 @@ export default function ProjectContactWidget1({ clientName, clientAvatar, locati
         <hr className="opacity-100" />
         {location && (
           <div className="details">
-            <div className="fl-meta d-flex align-items-center">
-              <span className="meta fw500 text-start">
+            <div className="fl-meta flex items-center">
+              <span className="meta fw500 text-left">
                 {t("location")}
                 <br />
                 <span className="fz14 fw400">{location}</span>

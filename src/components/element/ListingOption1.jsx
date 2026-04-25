@@ -80,7 +80,7 @@ export default function ListingOption1() {
 
   return (
     <>
-      <div className="row align-items-center mb20">
+      <div className="row items-center mb20">
         <div className="col-6 col-sm-6 col-lg-9 pe-0">
           <div className="text-center text-sm-start">
             <div className="dropdown-lists">
@@ -101,7 +101,7 @@ export default function ListingOption1() {
                     All Filter
                   </button>
                 </li>
-                <li className="list-inline-item position-relative d-none d-xl-inline-block">
+                <li className="list-inline-item relative hidden xl:inline-block">
                   <button
                     className="open-btn mb10 dropdown-toggle"
                     type="button"
@@ -117,7 +117,7 @@ export default function ListingOption1() {
                         {deliveryTime.map((item, i) => (
                           <div
                             key={i}
-                            className="form-check d-flex align-items-center mb10"
+                            className="form-check flex items-center mb10"
                           >
                             <input
                               className="form-check-input"
@@ -146,7 +146,7 @@ export default function ListingOption1() {
                     </button>
                   </div>
                 </li>
-                <li className="list-inline-item position-relative d-none d-xl-inline-block">
+                <li className="list-inline-item relative hidden xl:inline-block">
                   <button
                     className="open-btn mb10 dropdown-toggle"
                     type="button"
@@ -160,7 +160,7 @@ export default function ListingOption1() {
                     <PriceDropdown1 />
                   </div>
                 </li>
-                <li className="list-inline-item position-relative d-none d-xl-inline-block">
+                <li className="list-inline-item relative hidden xl:inline-block">
                   <button
                     className="open-btn mb10 dropdown-toggle"
                     type="button"
@@ -174,7 +174,7 @@ export default function ListingOption1() {
                     <LevelDropdown1 />
                   </div>
                 </li>
-                <li className="list-inline-item position-relative d-none d-xl-inline-block">
+                <li className="list-inline-item relative hidden xl:inline-block">
                   <button
                     className="open-btn mb10 dropdown-toggle"
                     type="button"
@@ -188,7 +188,7 @@ export default function ListingOption1() {
                     <LocationDropdown1 />
                   </div>
                 </li>
-                <li className="list-inline-item position-relative d-none d-xl-inline-block">
+                <li className="list-inline-item relative hidden xl:inline-block">
                   <ClearButton />
                 </li>
               </ul>
@@ -196,7 +196,7 @@ export default function ListingOption1() {
           </div>
         </div>
         <div className="col-6 col-sm-6 col-lg-3 px-0">
-          <div className="page_control_shorting mb10 d-flex align-items-center justify-content-center justify-content-sm-end">
+          <div className="page_control_shorting mb10 flex items-center justify-center sm:justify-end">
             <SortOption1 />
           </div>
         </div>

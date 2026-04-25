@@ -111,7 +111,7 @@ export default function BidForm({ projectId, onSuccess }) {
           </div>
         </div>
         <div className="col-md-12">
-          <div className="d-grid">
+          <div className="grid">
             <button
               type="submit"
               className="ud-btn btn-thm"

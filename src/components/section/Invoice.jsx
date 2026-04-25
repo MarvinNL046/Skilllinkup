@@ -30,7 +30,7 @@ export default function Invoice() {
             <div className="col-lg-12">
               <div className="invoice_table">
                 <div className="wrapper">
-                  <div className="row mb20 align-items-center">
+                  <div className="row mb20 items-center">
                     <div className="col-lg-7">
                       <div className="main_logo mb30-md">
                         <Image
@@ -61,7 +61,7 @@ export default function Invoice() {
                         <h6 className="fw500">Jobio LLC</h6>
                         <p className="dark-color ff-heading">
                           2301 Ravenswood Rd Madison,
-                          <br className="d-none d-lg-block" />
+                          <br className="hidden lg:block" />
                           WI 53711
                         </p>
                       </div>
@@ -78,7 +78,7 @@ export default function Invoice() {
                         <h6 className="fw500">John Doe</h6>
                         <p className="dark-color ff-heading">
                           329 Queensberry Street, North Melbourne
-                          <br className="d-none d-lg-block" />
+                          <br className="hidden lg:block" />
                           VIC 3051, Australia.
                         </p>
                       </div>
@@ -136,7 +136,7 @@ export default function Invoice() {
                   </div>
                 </div>
                 <div className="invoice_footer">
-                  <div className="row justify-content-center">
+                  <div className="row justify-center">
                     <div className="col-auto">
                       <div className="invoice_footer_content text-center">
                         <a className="ff-heading">www.skilllinkup.com</a>

@@ -22,7 +22,7 @@ export default function QuoteRequestListing() {
     return (
       <section className="pt30 pb90">
         <div className="container text-center py-5">
-          <i className="flaticon-clipboard fz40 text mb20 d-block" />
+          <i className="flaticon-clipboard fz40 text mb20 block" />
           <h4>{t("noQuoteRequests")}</h4>
           <p className="body-color">{t("checkBackSoon")}</p>
         </div>
@@ -43,7 +43,7 @@ export default function QuoteRequestListing() {
             return (
               <div key={req._id} className="col-sm-6 col-lg-4 mb20">
                 <div className={`listing-style1 bdrs8 p20 ${isFull ? "opacity-50" : ""}`}>
-                  <div className="d-flex justify-content-between align-items-start mb10">
+                  <div className="flex justify-between items-start mb10">
                     <h5 className="list-title mb-1">
                       {req.title || req.description?.slice(0, 50) || t("quoteRequest")}
                     </h5>
@@ -57,7 +57,7 @@ export default function QuoteRequestListing() {
                       ? req.description.slice(0, 120) + "..."
                       : req.description}
                   </p>
-                  <div className="d-flex justify-content-between align-items-center mb10">
+                  <div className="flex justify-between items-center mb10">
                     <span className="fz13 body-color">
                       {req.budgetIndication || t("flexible")}
                     </span>
@@ -65,7 +65,7 @@ export default function QuoteRequestListing() {
                       {slotsRemaining}/{maxSlots} {t("slots")}
                     </span>
                   </div>
-                  <div className="d-flex justify-content-between align-items-center">
+                  <div className="flex justify-between items-center">
                     {req.locationCity && (
                       <span className="fz13 body-color">
                         <i className="flaticon-place me-1" />{req.locationCity}

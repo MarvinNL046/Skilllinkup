@@ -10,7 +10,7 @@ export default function BudgetOption1() {
         <div className="range-slider-style2">
           <div className="range-wrapper">
             <PriceRange1 />
-            <div className="d-flex align-items-center justify-content-center pt-3">
+            <div className="flex items-center justify-center pt-3">
               <span id="slider-range-value1">${getPriceRange.min}</span>
               <i className="fa-sharp fa-solid fa-minus mx-2 dark-color icon" />
               <span id="slider-range-value2">${getPriceRange.max}</span>

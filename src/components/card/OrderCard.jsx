@@ -113,11 +113,11 @@ export default function OrderCard({ order, role }) {
 
   return (
     <div className="freelancer-style1 bdr1 hover-box-shadow ms-0 mb20">
-      <div className="row align-items-lg-center">
+      <div className="row lg:items-center">
         {/* Left section: order info */}
         <div className="col-lg-8 ps-0">
-          <div className="d-lg-flex bdrr1 bdrn-xl pr15 pr0-lg align-items-start">
-            <div className="thumb w60 position-relative mb15-md d-flex align-items-center justify-content-center bgc-thm-light bdrs4">
+          <div className="lg:flex bdrr1 bdrn-xl pr15 pr0-lg items-start">
+            <div className="thumb w60 relative mb15-md flex items-center justify-center bgc-thm-light bdrs4">
               <i className="flaticon-receipt fz30 text-thm" />
             </div>
 
@@ -127,7 +127,7 @@ export default function OrderCard({ order, role }) {
                 <span className="fw500 dark-color">{order.orderNumber}</span>
               </p>
 
-              <div className="d-flex flex-wrap align-items-center gap-3 mt10">
+              <div className="flex flex-wrap items-center gap-3 mt10">
                 <p className="mb-0 fz14">
                   <i className="flaticon-user fz14 vam text-thm2 me-1" />
                   {role === "client"
@@ -161,7 +161,7 @@ export default function OrderCard({ order, role }) {
               <span className={statusConfig.className}>{statusConfig.label}</span>
             </div>
 
-            <div className="d-grid gap-2 mt10">
+            <div className="grid gap-2 mt10">
               {showDeliverButton && (
                 <button
                   className="ud-btn btn-thm fz14"

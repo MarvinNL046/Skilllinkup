@@ -17,9 +17,9 @@ export default function FreelancerCardList({ data }) {
       className="freelancer-style1 bdr1 hover-box-shadow"
       style={{ borderRadius: 8, padding: 0, overflow: "hidden" }}
     >
-      <div className="row g-0 align-items-center">
+      <div className="row g-0 items-center">
         {/* Left: Portfolio / Avatar */}
-        <div className="col-auto d-none d-md-block">
+        <div className="col-auto hidden md:block">
           <div style={{ width: 160, height: 120, position: "relative", overflow: "hidden" }}>
             {data.portfolioImg ? (
               <Image
@@ -30,7 +30,7 @@ export default function FreelancerCardList({ data }) {
               />
             ) : (
               <div
-                className="d-flex align-items-center justify-content-center h-100"
+                className="flex items-center justify-center h-full"
                 style={{ background: "#f9fafb" }}
               >
                 <Image
@@ -48,18 +48,18 @@ export default function FreelancerCardList({ data }) {
         {/* Middle: Details */}
         <div className="col" style={{ padding: "16px 20px" }}>
           {/* Row 1: Avatar + Name + Tagline + Location */}
-          <div className="d-flex align-items-center gap-2 mb-1 flex-wrap">
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
             <Image
               height={40}
               width={40}
-              className="rounded-circle d-md-none"
+              className="rounded-circle md:hidden"
               src={data.img}
               alt={data.name}
             />
             <Image
               height={40}
               width={40}
-              className="rounded-circle d-none d-md-inline-block"
+              className="rounded-circle hidden md:inline-block"
               src={data.img}
               alt={data.name}
             />
@@ -68,7 +68,7 @@ export default function FreelancerCardList({ data }) {
               <span className="fz13 text-muted">{data.profession}</span>
             </div>
             {data.location && (
-              <span className="fz12 text-muted ms-auto d-none d-lg-block">
+              <span className="fz12 text-muted ms-auto hidden lg:block">
                 <i className="flaticon-place fz12 me-1" />
                 {data.location}
               </span>
@@ -76,7 +76,7 @@ export default function FreelancerCardList({ data }) {
           </div>
 
           {/* Row 2: Stats */}
-          <div className="d-flex align-items-center gap-3 fz13 mt-1 flex-wrap">
+          <div className="flex items-center gap-3 fz13 mt-1 flex-wrap">
             {data.price > 0 && (
               <span className="fw500">€{data.price}/hr</span>
             )}
@@ -95,7 +95,7 @@ export default function FreelancerCardList({ data }) {
           </div>
 
           {/* Row 3: Availability + Level */}
-          <div className="d-flex align-items-center gap-2 mt-2">
+          <div className="flex items-center gap-2 mt-2">
             {data.isAvailable && (
               <span
                 style={{
@@ -116,7 +116,7 @@ export default function FreelancerCardList({ data }) {
 
           {/* Row 4: Skill tags */}
           {visibleTags.length > 0 && (
-            <div className="skill-tags d-flex align-items-center gap-1 mt-2 flex-wrap">
+            <div className="skill-tags flex items-center gap-1 mt-2 flex-wrap">
               {visibleTags.map((tag, i) => (
                 <span key={i} className="tag">{tag}</span>
               ))}
@@ -146,7 +146,7 @@ export default function FreelancerCardList({ data }) {
         </div>
 
         {/* Right: View Profile button */}
-        <div className="col-auto d-none d-md-flex align-items-center" style={{ padding: "16px 20px" }}>
+        <div className="col-auto hidden md:flex items-center" style={{ padding: "16px 20px" }}>
           <Link
             href={profileHref}
             className="ud-btn btn-light-thm"
@@ -163,10 +163,10 @@ export default function FreelancerCardList({ data }) {
       </div>
 
       {/* Mobile-only: full-width button */}
-      <div className="d-md-none px-3 pb-3">
+      <div className="md:hidden px-3 pb-3">
         <Link
           href={profileHref}
-          className="ud-btn btn-light-thm w-100 text-center"
+          className="ud-btn btn-light-thm w-full text-center"
           style={{ border: "2px solid var(--primary-600)", borderRadius: 8 }}
         >
           {t("viewProfile")}

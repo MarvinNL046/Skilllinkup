@@ -60,8 +60,8 @@ export default function ManageProjectCard({ project, onEdit, onDelete }) {
   return (
     <tr data-testid="manage-project-row">
       <th scope="row">
-        <div className="freelancer-style1 box-shadow-none row m-0 p-0 align-items-lg-end">
-          <div className="d-lg-flex px-0">
+        <div className="freelancer-style1 box-shadow-none row m-0 p-0 lg:items-end">
+          <div className="lg:flex px-0">
             <div className="details mb15-md-md">
               <h5 className="title mb10">{title}</h5>
               <p className="mb-0 fz14 list-inline-item mb5-sm pe-1">
@@ -91,7 +91,7 @@ export default function ManageProjectCard({ project, onEdit, onDelete }) {
         </div>
       </td>
       <td>
-        <div className="d-flex align-items-center">
+        <div className="flex items-center">
           {project?._id && (
             <Link
               href={`/projects/${project._id}`}

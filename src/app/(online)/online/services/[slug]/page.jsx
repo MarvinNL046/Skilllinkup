@@ -100,7 +100,7 @@ function CategoryContent({ slug }) {
         {hasChildren && (
           <div className="row mb30">
             <div className="col-12">
-              <div className="d-flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2">
                 {category.children.map((child) => (
                   <Link
                     key={child._id}

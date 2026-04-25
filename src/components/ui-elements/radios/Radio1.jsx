@@ -1,7 +1,7 @@
 export default function Radio1({ i = 0 }) {
   return (
     <>
-      <div className="form-check d-flex align-items-center mb15">
+      <div className="form-check flex items-center mb15">
         <input
           className="form-check-input"
           type="radio"

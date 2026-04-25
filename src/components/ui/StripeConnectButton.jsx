@@ -63,7 +63,7 @@ export default function StripeConnectButton({ className = "" }) {
   return (
     <div className={`stripe-connect-button ${className}`}>
       {isConnected && (
-        <div className="d-flex align-items-center gap-2">
+        <div className="flex items-center gap-2">
           <span
             className="badge rounded-pill px-3 py-2"
             style={{ backgroundColor: "var(--primary-600)", color: "#fff", fontSize: "14px" }}

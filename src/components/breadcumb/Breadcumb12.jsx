@@ -22,7 +22,7 @@ export default function Breadcumb12() {
   return (
     <>
       <section className="breadcumb-section pt-0">
-        <div className="cta-job-v1 cta-banner mx-auto maxw1700 pt120 pb120 bdrs16 position-relative overflow-hidden d-flex align-items-center mx20-lg px30-lg">
+        <div className="cta-job-v1 cta-banner mx-auto maxw1700 pt120 pb120 bdrs16 relative overflow-hidden flex items-center mx20-lg px30-lg">
           <Image
             height={226}
             width={198}
@@ -40,7 +40,7 @@ export default function Breadcumb12() {
           <div className="container">
             <div className="row wow fadeInUp">
               <div className="col-xl-7">
-                <div className="position-relative">
+                <div className="relative">
                   <h2>{t("jobList")}</h2>
                   <p className="text">
                     {t("jobListText")}
@@ -51,7 +51,7 @@ export default function Breadcumb12() {
                     <div className="col-md-5 col-lg-6 col-xl-6">
                       <div className="advance-search-field bdrr1 bdrn-sm">
                         <form
-                          className="form-search position-relative"
+                          className="form-search relative"
                           onSubmit={(e) => e.preventDefault()}
                         >
                           <div className="box-search">
@@ -91,7 +91,7 @@ export default function Breadcumb12() {
                       <div className="text-center text-xl-start">
                         <button
                           type="button"
-                          className="ud-btn btn-thm2 w-100 vam"
+                          className="ud-btn btn-thm2 w-full vam"
                           onClick={() => {
                             const el = document.querySelector(".pt30");
                             if (el) el.scrollIntoView({ behavior: "smooth" });

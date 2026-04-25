@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function ConfirmPassword() {
   return (
     <>
-      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
         <div className="col-lg-7">
           <div className="row">
             <div className="bdrb1 pb15 mb25">
@@ -29,7 +29,7 @@ export default function ConfirmPassword() {
                       placeholder="********"
                     />
                   </div>
-                  <div className="text-start">
+                  <div className="text-left">
                     <Link className="ud-btn btn-thm" href="/contact">
                       Change Password
                       <i className="fal fa-arrow-right-long" />

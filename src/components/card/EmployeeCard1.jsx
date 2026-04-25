@@ -7,7 +7,7 @@ export default function EmployeeCard1({ data }) {
   return (
     <>
       <div className="job-list-style1 bdr1 pb10">
-        <div className="icon d-flex align-items-center mb20">
+        <div className="icon flex items-center mb20">
           <Image
             height={60}
             width={60}

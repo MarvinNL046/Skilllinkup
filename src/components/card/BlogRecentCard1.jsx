@@ -4,11 +4,11 @@ export default function BlogRecentCard1({ data, index }) {
   return (
     <>
       <div
-        className={`list-news-style d-flex align-items-center ${
+        className={`list-news-style flex items-center ${
           index.firstIndex === data.id ? "mt30" : ""
         } ${index.lastIndex === data.id ? "mb0" : "mb20"}`}
       >
-        <div className="news-img flex-shrink-0">
+        <div className="news-img shrink-0">
           <Image
             height={70}
             width={70}
@@ -17,7 +17,7 @@ export default function BlogRecentCard1({ data, index }) {
             alt="recent post"
           />
         </div>
-        <div className="news-content flex-shrink-1 ms-3">
+        <div className="news-content shrink ms-3">
           <h6 className="new-text mb0">{data.title}</h6>
           <a className="body-light-color">{data.date}</a>
         </div>

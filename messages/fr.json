@@ -203,7 +203,8 @@
     "lifetimeFreelancerEarnings": "Gains d'indépendant à vie",
     "statusLabel": "Statut",
     "accountActive": "Compte actif",
-    "accountGoodStanding": "Votre compte est en règle"
+    "accountGoodStanding": "Votre compte est en règle",
+    "navigation": "Navigation"
   },
   "marketplace": {
     "onlineMarketplace": "Marché en ligne",

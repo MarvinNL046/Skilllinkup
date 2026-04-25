@@ -9,7 +9,7 @@ function StarRating({ rating }) {
   const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
 
   return (
-    <div className="d-flex align-items-center gap-1">
+    <div className="flex items-center gap-1">
       {Array.from({ length: fullStars }).map((_, i) => (
         <i key={`full-${i}`} className="fas fa-star fz10 review-color" />
       ))}
@@ -57,10 +57,10 @@ export default function PlatformCard({ data }) {
     <div className="listing-style1">
       <div className="list-content px20 pt20 pb20">
         {/* Header: logo + name */}
-        <div className="d-flex align-items-center mb15">
+        <div className="flex items-center mb15">
           {logoUrl ? (
             <div
-              className="position-relative me-3 flex-shrink-0"
+              className="relative me-3 shrink-0"
               style={{ width: 48, height: 48, borderRadius: 8, overflow: "hidden", background: "#f5f5f5" }}
             >
               <Image
@@ -72,7 +72,7 @@ export default function PlatformCard({ data }) {
             </div>
           ) : (
             <div
-              className="me-3 flex-shrink-0 d-flex align-items-center justify-content-center"
+              className="me-3 shrink-0 flex items-center justify-center"
               style={{
                 width: 48,
                 height: 48,
@@ -85,7 +85,7 @@ export default function PlatformCard({ data }) {
               <i className="flaticon-web" />
             </div>
           )}
-          <div className="flex-grow-1 min-w-0">
+          <div className="grow min-w-0">
             <h5 className="list-title mb-0" style={{ fontSize: "1rem", lineHeight: 1.3 }}>
               {name}
               {featured && (
@@ -105,7 +105,7 @@ export default function PlatformCard({ data }) {
 
         {/* Rating */}
         {rating !== null && rating !== undefined && (
-          <div className="review-meta d-flex align-items-center mb10">
+          <div className="review-meta flex items-center mb10">
             <StarRating rating={rating} />
             <span className="body-color fz13 ms-2">{rating.toFixed(1)}</span>
           </div>
@@ -121,7 +121,7 @@ export default function PlatformCard({ data }) {
         <hr className="my-2" />
 
         {/* Footer: fees + difficulty + link */}
-        <div className="d-flex justify-content-between align-items-center mt10">
+        <div className="flex justify-between items-center mt10">
           <div>
             {fees && (
               <span className="body-color fz13">

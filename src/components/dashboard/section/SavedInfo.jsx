@@ -72,7 +72,7 @@ export default function SavedInfo() {
         </div>
         <div className="row">
           <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 position-relative">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 relative">
               <div className="navtab-style1">
                 <nav>
                   <div className="nav nav-tabs mb30">
@@ -156,7 +156,7 @@ export default function SavedInfo() {
 
                           <div className="list-content p20">
                             {/* Item type badge */}
-                            <span className="list-meta fz12 fw400 ff-heading mb10 d-block">
+                            <span className="list-meta fz12 fw400 ff-heading mb10 block">
                               <span className="tag-list bdrs4 bgc-thm4 text-thm px10 py5">
                                 {item.itemType}
                               </span>
@@ -174,7 +174,7 @@ export default function SavedInfo() {
                             </h6>
 
                             {/* Actions */}
-                            <div className="d-flex align-items-center justify-content-between mt15">
+                            <div className="flex items-center justify-between mt15">
                               {item.itemUrl && (
                                 <Link
                                   href={item.itemUrl}

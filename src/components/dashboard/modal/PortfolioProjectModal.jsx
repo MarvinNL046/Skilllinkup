@@ -161,11 +161,11 @@ export default function PortfolioProjectModal({ project, onClose }) {
                 <label className="heading-color ff-heading fw500 mb10">
                   Images ({imageUrls.length}/5)
                 </label>
-                <div className="d-flex flex-wrap gap-2 mb10">
+                <div className="flex flex-wrap gap-2 mb10">
                   {imageUrls.map((url, idx) => (
                     <div
                       key={idx}
-                      className="position-relative"
+                      className="relative"
                       style={{ width: 80, height: 80 }}
                     >
                       <div
@@ -183,7 +183,7 @@ export default function PortfolioProjectModal({ project, onClose }) {
                       </div>
                       <button
                         type="button"
-                        className="position-absolute top-0 end-0 btn btn-sm btn-danger p-0"
+                        className="absolute top-0 end-0 btn btn-sm btn-danger p-0"
                         style={{ width: 20, height: 20, fontSize: 10 }}
                         onClick={() => removeImage(idx)}
                       >
@@ -193,14 +193,14 @@ export default function PortfolioProjectModal({ project, onClose }) {
                   ))}
                   {imageUrls.length < 5 && (
                     <label
-                      className="bdrs4 bdr1 d-flex align-items-center justify-content-center text-muted"
+                      className="bdrs4 bdr1 flex items-center justify-center text-muted"
                       style={{ width: 80, height: 80, cursor: "pointer" }}
                     >
                       <input
                         type="file"
                         accept="image/*"
                         multiple
-                        className="d-none"
+                        className="hidden"
                         onChange={handleImageUpload}
                         disabled={uploading}
                       />

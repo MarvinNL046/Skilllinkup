@@ -15,18 +15,18 @@ export default function Breadcumb14() {
   return (
     <>
       <section className="breadcumb-section pt-0">
-        <div className="cta-employee-single cta-banner mx-auto maxw1700 pt120 pt60-sm pb120 pb60-sm bdrs16 position-relative d-flex align-items-center">
+        <div className="cta-employee-single cta-banner mx-auto maxw1700 pt120 pt60-sm pb120 pb60-sm bdrs16 relative flex items-center">
           <Image
             height={300}
             width={532}
-            className="service-v1-vector at-job bounce-x d-none d-xl-block"
+            className="service-v1-vector at-job bounce-x hidden xl:block"
             src="/images/vector-img/vector-service-v1.png"
             alt="service"
           />
           <div className="container">
             <div className="row wow fadeInUp">
               <div className="col-xl-7">
-                <div className="position-relative">
+                <div className="relative">
                   <h2>Employer List</h2>
                   <p className="text">
                     Discover top companies and employers hiring on SkillLinkup.
@@ -83,7 +83,7 @@ export default function Breadcumb14() {
                     </div>
                     <div className="col-md-3 col-lg-2 col-xl-3">
                       <div className="text-center text-xl-start">
-                        <a className="ud-btn btn-thm2 w-100 vam">Search</a>
+                        <a className="ud-btn btn-thm2 w-full vam">Search</a>
                       </div>
                     </div>
                   </div>

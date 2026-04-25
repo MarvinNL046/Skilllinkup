@@ -11,7 +11,7 @@ export default function ServiceCard1({ data }) {
           <Image
             height={204}
             width={274}
-            className="w-100 h-auto"
+            className="w-full h-auto"
             src={data.img}
             alt="img"
           />
@@ -33,7 +33,7 @@ export default function ServiceCard1({ data }) {
           <h5 className="list-title">
             <Link href="/services">{data.title}</Link>
           </h5>
-          <div className="review-meta d-flex align-items-center">
+          <div className="review-meta flex items-center">
             <i className="fas fa-star fz10 review-color me-2" />
             <p className="mb-0 body-color fz14">
               <span className="dark-color me-2">{data.rating}</span>
@@ -41,9 +41,9 @@ export default function ServiceCard1({ data }) {
             </p>
           </div>
           <hr className="my-2" />
-          <div className="list-meta d-flex justify-content-between align-items-center mt15">
-            <a className="d-flex">
-              <span className="position-relative mr10">
+          <div className="list-meta flex justify-between items-center mt15">
+            <a className="flex">
+              <span className="relative mr10">
                 <Image
                   height={30}
                   width={30}

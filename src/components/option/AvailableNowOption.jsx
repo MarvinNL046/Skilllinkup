@@ -10,7 +10,7 @@ export default function AvailableNowOption() {
   return (
     <div className="card mb20 pb10">
       <div className="card-body px-0 pt-0">
-        <div className="form-check form-switch d-flex align-items-center">
+        <div className="form-check form-switch flex items-center">
           <input
             className="form-check-input"
             type="checkbox"

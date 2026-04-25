@@ -70,10 +70,10 @@ export default function CreditsInfo() {
       <div className="row mb40">
         {CREDIT_PACKAGES.map((pkg) => (
           <div key={pkg.id} className="col-sm-6 col-lg-4 mb20">
-            <div className="dashboard-style1 bdrs8 p30 text-center position-relative">
+            <div className="dashboard-style1 bdrs8 p30 text-center relative">
               {pkg.id === "popular" && (
                 <span
-                  className="position-absolute top-0 end-0 badge bg-thm m10"
+                  className="absolute top-0 end-0 badge bg-thm m10"
                   style={{ fontSize: "0.7rem" }}
                 >
                   {t("mostPopular")}
@@ -86,7 +86,7 @@ export default function CreditsInfo() {
                 &euro;{(pkg.priceEur / pkg.credits).toFixed(2)} {t("perCredit")}
               </p>
               <button
-                className="ud-btn btn-thm bdrs4 w-100"
+                className="ud-btn btn-thm bdrs4 w-full"
                 onClick={() => handleBuy(pkg.id)}
                 disabled={purchasing !== null}
               >
@@ -111,7 +111,7 @@ export default function CreditsInfo() {
                 <th>{t("date")}</th>
                 <th>{t("type")}</th>
                 <th>{t("description")}</th>
-                <th className="text-end">{t("creditsColumn")}</th>
+                <th className="text-right">{t("creditsColumn")}</th>
               </tr>
             </thead>
             <tbody>
@@ -133,7 +133,7 @@ export default function CreditsInfo() {
                   </td>
                   <td className="fz14">{txn.description}</td>
                   <td
-                    className={`text-end fw-bold ${
+                    className={`text-right fw-bold ${
                       txn.amount > 0 ? "text-success" : "text-danger"
                     }`}
                   >

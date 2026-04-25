@@ -79,11 +79,11 @@ export default function LineChart({ userId }) {
 
   return (
     <>
-      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
         <div className="navtab-style1">
-          <div className="d-sm-flex align-items-center justify-content-between">
+          <div className="sm:flex items-center justify-between">
             <h4 className="title fz17 mb20">Orders</h4>
-            <div className="page_control_shorting dark-color pr10 text-center text-md-end">
+            <div className="page_control_shorting dark-color pr10 text-center md:text-right">
               <div className="dropdown bootstrap-select show-tick">
                 <button
                   type="button"

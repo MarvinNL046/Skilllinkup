@@ -66,7 +66,7 @@ function GigTable({ gigs, removeGig, t }) {
       <div className="mt20 mb10">
         <Link
           href="/add-services"
-          className="d-flex align-items-center gap-2 fz14 fw500"
+          className="flex items-center gap-2 fz14 fw500"
           style={{ color: "#ef2b70", textDecoration: "none" }}
         >
           <span style={{ fontSize: 18, lineHeight: 1 }}>+</span>
@@ -127,7 +127,7 @@ export default function ManageServiceInfo() {
         </div>
         <div className="row">
           <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
               <div className="navtab-style1">
                 <nav>
                   <div className="nav nav-tabs mb30">

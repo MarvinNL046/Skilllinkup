@@ -9,7 +9,7 @@ import ExperienceModal from "../modal/ExperienceModal";
 
 function SectionHeader({ title, modalType, onAdd, setModalType }) {
   return (
-    <div className="d-flex justify-content-between align-items-center bdrb1 pb15 mb20">
+    <div className="flex justify-between items-center bdrb1 pb15 mb20">
       <h5 className="list-title mb-0">{title}</h5>
       <button
         className="ud-btn btn-thm btn-sm"
@@ -99,7 +99,7 @@ export default function ExperienceTab() {
           (workExp || []).map((item) => (
             <div
               key={item._id}
-              className="d-flex justify-content-between align-items-start bdrb1 pb15 mb15"
+              className="flex justify-between items-start bdrb1 pb15 mb15"
             >
               <div>
                 <h6 className="mb2">{item.title}</h6>
@@ -112,7 +112,7 @@ export default function ExperienceTab() {
                   <p className="fz13 text mb-0">{item.description}</p>
                 )}
               </div>
-              <div className="d-flex gap-2">
+              <div className="flex gap-2">
                 <a
                   className="icon"
                   style={{ cursor: "pointer" }}
@@ -149,7 +149,7 @@ export default function ExperienceTab() {
           (education || []).map((item) => (
             <div
               key={item._id}
-              className="d-flex justify-content-between align-items-start bdrb1 pb15 mb15"
+              className="flex justify-between items-start bdrb1 pb15 mb15"
             >
               <div>
                 <h6 className="mb2">{item.school}</h6>
@@ -166,7 +166,7 @@ export default function ExperienceTab() {
                   </p>
                 )}
               </div>
-              <div className="d-flex gap-2">
+              <div className="flex gap-2">
                 <a
                   className="icon"
                   style={{ cursor: "pointer" }}
@@ -203,7 +203,7 @@ export default function ExperienceTab() {
           (certs || []).map((item) => (
             <div
               key={item._id}
-              className="d-flex justify-content-between align-items-start bdrb1 pb15 mb15"
+              className="flex justify-between items-start bdrb1 pb15 mb15"
             >
               <div>
                 <h6 className="mb2">{item.name}</h6>

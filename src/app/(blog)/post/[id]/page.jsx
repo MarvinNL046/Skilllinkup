@@ -93,7 +93,7 @@ function PostContent({ slug }) {
               {post.title}
             </h1>
             <div className="blog-single-meta mb30">
-              <div className="post-author d-sm-flex align-items-center">
+              <div className="post-author sm:flex items-center">
                 <Image
                   height={40}
                   width={40}
@@ -121,7 +121,7 @@ function PostContent({ slug }) {
             <Image
               height={530}
               width={1200}
-              className="w-100 bdrs12 object-fit-cover"
+              className="w-full bdrs12 object-fit-cover"
               style={{ maxHeight: "500px" }}
               src={featSrc}
               alt={post.title}
@@ -144,7 +144,7 @@ function PostContent({ slug }) {
 
             {/* Tags */}
             {post.tags && post.tags.length > 0 && (
-              <div className="bdrt1 mt40 pt30 d-flex align-items-center flex-wrap gap-2">
+              <div className="bdrt1 mt40 pt30 flex items-center flex-wrap gap-2">
                 <span className="dark-color fw500 me-2">{t("tags")}</span>
                 {post.tags.map((tag, i) => (
                   <span

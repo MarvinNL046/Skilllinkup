@@ -36,7 +36,7 @@ export default function MyProfileInfo() {
           <DashboardNavigation />
         </div>
         <div className="col-lg-9">
-          <div className="dashboard_title_area d-flex align-items-center justify-content-between">
+          <div className="dashboard_title_area flex items-center justify-between">
             <div>
               <h2>{t("title")}</h2>
               <p className="text">{t("manageProfile")}</p>

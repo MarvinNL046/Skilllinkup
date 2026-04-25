@@ -81,20 +81,20 @@ export default function DashboardHeader() {
       <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", flexShrink: 0 }}>
         <Link
           href="/online/services"
-          className="btn btn--ghost btn--icon btn--sm d-none d-md-inline-flex"
+          className="btn btn--ghost btn--icon btn--sm hidden md:inline-flex"
           aria-label="Search marketplace"
           title="Search"
         >
           <Search size={18} />
         </Link>
 
-        <span className="d-none d-sm-inline-flex">
+        <span className="hidden sm:inline-flex">
           <NotificationBell />
         </span>
 
         <Link
           href="/message"
-          className="btn btn--ghost btn--icon btn--sm d-none d-sm-inline-flex"
+          className="btn btn--ghost btn--icon btn--sm hidden sm:inline-flex"
           aria-label="Messages"
           title="Messages"
         >
@@ -103,7 +103,7 @@ export default function DashboardHeader() {
 
         <Link
           href="/saved"
-          className="btn btn--ghost btn--icon btn--sm d-none d-sm-inline-flex"
+          className="btn btn--ghost btn--icon btn--sm hidden sm:inline-flex"
           aria-label="Saved"
           title="Saved"
         >

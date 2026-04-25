@@ -87,7 +87,7 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
   if (submitted || alreadyReviewed) {
     return (
       <div className="bsp_reveiw_wrt mt20">
-        <div className="d-flex align-items-center gap-2 mb10">
+        <div className="flex items-center gap-2 mb10">
           <i className="fas fa-check-circle text-success fz18" />
           <h6 className="fz16 mb-0">
             {alreadyReviewed && !submitted
@@ -115,7 +115,7 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
         <div className="row">
           {/* Overall rating - required */}
           <div className="col-md-12 mb20">
-            <label className="fw500 ff-heading dark-color mb-2 d-block">
+            <label className="fw500 ff-heading dark-color mb-2 block">
               {t("overallRating")} <span className="text-danger">*</span>
             </label>
             <StarRating value={overallRating} onChange={setOverallRating} />
@@ -123,28 +123,28 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
 
           {/* Sub-ratings */}
           <div className="col-sm-6 col-xl-3 mb20">
-            <label className="fw500 ff-heading dark-color mb-2 d-block fz14">
+            <label className="fw500 ff-heading dark-color mb-2 block fz14">
               {t("communication")}
             </label>
             <StarRating value={communicationRating} onChange={setCommunicationRating} size="sm" />
           </div>
 
           <div className="col-sm-6 col-xl-3 mb20">
-            <label className="fw500 ff-heading dark-color mb-2 d-block fz14">
+            <label className="fw500 ff-heading dark-color mb-2 block fz14">
               {t("quality")}
             </label>
             <StarRating value={qualityRating} onChange={setQualityRating} size="sm" />
           </div>
 
           <div className="col-sm-6 col-xl-3 mb20">
-            <label className="fw500 ff-heading dark-color mb-2 d-block fz14">
+            <label className="fw500 ff-heading dark-color mb-2 block fz14">
               {t("timeliness")}
             </label>
             <StarRating value={timelinessRating} onChange={setTimelinessRating} size="sm" />
           </div>
 
           <div className="col-sm-6 col-xl-3 mb20">
-            <label className="fw500 ff-heading dark-color mb-2 d-block fz14">
+            <label className="fw500 ff-heading dark-color mb-2 block fz14">
               {t("value")}
             </label>
             <StarRating value={valueRating} onChange={setValueRating} size="sm" />
@@ -152,7 +152,7 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
 
           {/* Written review */}
           <div className="col-md-12 mb20">
-            <label className="fw500 ff-heading dark-color mb-2 d-block">
+            <label className="fw500 ff-heading dark-color mb-2 block">
               {t("writtenReview")} <span className="text fz13">{t("optional")}</span>
             </label>
             <textarea

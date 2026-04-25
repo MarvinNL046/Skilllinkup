@@ -18,7 +18,7 @@ export default function DeliveryTimeOption1() {
           {deliveryTime.map((item,i) => (
             <div
               key={ i }
-              className="form-check d-flex align-items-center mb10"
+              className="form-check flex items-center mb10"
             >
               <input
                 className="form-check-input"

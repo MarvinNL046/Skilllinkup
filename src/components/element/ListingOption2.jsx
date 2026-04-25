@@ -50,11 +50,11 @@ export default function ListingOption2({
           marginLeft: "auto",
         }}
       >
-        {/* Mobile filter button — d-lg-none stays */}
+        {/* Mobile filter button — lg:hidden stays */}
         <button
           type="button"
           onClick={listingToggle}
-          className="btn btn--secondary btn--sm d-lg-none"
+          className="btn btn--secondary btn--sm lg:hidden"
           aria-label={t("allFilter")}
         >
           <SlidersHorizontal size={14} />
@@ -63,7 +63,7 @@ export default function ListingOption2({
 
         {/* Grid / List view toggle — md+ */}
         <div
-          className="d-none d-md-inline-flex"
+          className="hidden md:inline-flex"
           role="group"
           aria-label={t("viewMode")}
           style={{

@@ -44,7 +44,7 @@ export default function ReviewForm1() {
               </div>
             </div>
             <div className="col-md-12">
-              <div className="checkbox-style1 d-block d-sm-flex align-items-center justify-content-between mb20">
+              <div className="checkbox-style1 block sm:flex items-center justify-between mb20">
                 <label className="custom_checkbox fz15 ff-heading">
                   Save my name, email, and website in this browser for the next
                   time I comment.

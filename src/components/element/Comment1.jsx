@@ -13,7 +13,7 @@ export default function Comment1() {
           <div className="row">
             <div className="col-lg-12">
               <div
-                className={`total_review d-flex align-items-center justify-content-between mb20  ${
+                className={`total_review flex items-center justify-between mb20  ${
                   path !== "/shop-single" ? "mt60" : ""
                 }`}
               >
@@ -21,7 +21,7 @@ export default function Comment1() {
               </div>
             </div>
             <div className="col-md-12">
-              <div className="mbp_first position-relative d-flex align-items-center justify-content-start mb30-sm">
+              <div className="mbp_first relative flex items-center justify-start mb30-sm">
                 <Image
                   height={60}
                   width={60}
@@ -44,7 +44,7 @@ export default function Comment1() {
                 Ipsum, you need to be sure there isn't anything embarrassing
                 hidden in the middle of text.
               </p>
-              <div className="review_cansel_btns d-flex">
+              <div className="review_cansel_btns flex">
                 <a>
                   <i className="fas fa-thumbs-up" />
                   Helpful
@@ -56,7 +56,7 @@ export default function Comment1() {
               </div>
             </div>
             <div className="col-md-12">
-              <div className="mbp_first position-relative d-flex align-items-center justify-content-start mt30 mb30-sm">
+              <div className="mbp_first relative flex items-center justify-start mt30 mb30-sm">
                 <Image
                   height={60}
                   width={60}
@@ -79,7 +79,7 @@ export default function Comment1() {
                 Ipsum, you need to be sure there isn't anything embarrassing
                 hidden in the middle of text.
               </p>
-              <div className="review_cansel_btns d-flex pb30">
+              <div className="review_cansel_btns flex pb30">
                 <a>
                   <i className="fas fa-thumbs-up" />
                   Helpful
@@ -91,7 +91,7 @@ export default function Comment1() {
               </div>
             </div>
             <div className="col-md-12">
-              <div className="position-relative bdrb1 pb50">
+              <div className="relative bdrb1 pb50">
                 <Link href="/services" className="ud-btn btn-light-thm">
                   See More
                   <i className="fal fa-arrow-right-long" />

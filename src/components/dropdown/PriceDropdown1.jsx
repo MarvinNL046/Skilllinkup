@@ -39,10 +39,10 @@ export default function PriceDropdown1() {
                 onChange={priceHandler}
               />
             </div>
-            <div className="d-flex gap-1 align-items-center pt-4">
+            <div className="flex gap-1 items-center pt-4">
               <input
                 type="number"
-                className="amount w-100"
+                className="amount w-full"
                 placeholder="$20"
                 min={0}
                 value={getPrice.min}
@@ -56,7 +56,7 @@ export default function PriceDropdown1() {
               <span className="fa-sharp fa-solid fa-minus mx-1 dark-color" />
               <input
                 type="number"
-                className="amount2 w-100"
+                className="amount2 w-full"
                 placeholder="$100000"
                 min={0}
                 max={100000}

@@ -5,7 +5,7 @@ import { Tooltip } from "react-tooltip";
 export default function ProjectCard1({ data }) {
   return (
     <>
-      <div className="freelancer-style1 bdr1 box-shadow-none row ms-0 pr20 align-items-lg-end">
+      <div className="freelancer-style1 bdr1 box-shadow-none row ms-0 pr20 lg:items-end">
         <a className="tag-del" id={`delete${data.id}`}>
           <Tooltip
             anchorSelect={`#delete${data.id}`}
@@ -18,8 +18,8 @@ export default function ProjectCard1({ data }) {
           <span className="flaticon-delete" />
         </a>
         <div className="col-lg-9 px-0">
-          <div className="d-lg-flex">
-            <div className="thumb w60 position-relative rounded-circle mb15-md">
+          <div className="lg:flex">
+            <div className="thumb w60 relative rounded-circle mb15-md">
               <Image
                 height={60}
                 width={60}
@@ -43,7 +43,7 @@ export default function ProjectCard1({ data }) {
                 <i className="flaticon-contract fz16 vam text-thm2 me-1 bdrl1 pl15 pl0-xs bdrn-xs" />{" "}
                 1 Received
               </p>
-              <div className="skill-tags d-flex align-items-center justify-content-start mt-3">
+              <div className="skill-tags flex items-center justify-start mt-3">
                 {data.tags.map((item, i) => (
                   <span key={i} className={`tag ${i === 1 ? "mx10" : ""}`}>
                     {item}

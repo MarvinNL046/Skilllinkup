@@ -16,7 +16,7 @@ export default function ProjectPriceWidget1({ budgetMin, budgetMax, currency, sc
       <div className="price-widget pt25 bdrs8">
         <h3 className="widget-title">{budgetDisplay}</h3>
         <p className="text fz14">{t("fixedPrice")}</p>
-        <div className="d-grid">
+        <div className="grid">
           <button
             type="button"
             className="ud-btn btn-thm"

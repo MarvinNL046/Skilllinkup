@@ -4,7 +4,7 @@ export default function PaymentOption1() {
       <div className="payment_widget default-box-shadow1">
         <h4 className="title">Payment</h4>
         <div className="radio-element">
-          <div className="form-check d-flex align-items-center mb15">
+          <div className="form-check flex items-center mb15">
             <input
               className="form-check-input"
               type="radio"
@@ -23,7 +23,7 @@ export default function PaymentOption1() {
               until the funds have cleared in our account.
             </p>
           </div>
-          <div className="form-check d-flex align-items-center mb15">
+          <div className="form-check flex items-center mb15">
             <input
               className="form-check-input"
               type="radio"
@@ -34,7 +34,7 @@ export default function PaymentOption1() {
               Check payments
             </label>
           </div>
-          <div className="form-check d-flex align-items-center mb15">
+          <div className="form-check flex items-center mb15">
             <input
               className="form-check-input"
               type="radio"
@@ -45,7 +45,7 @@ export default function PaymentOption1() {
               Cash on delivery
             </label>
           </div>
-          <div className="form-check d-flex align-items-center">
+          <div className="form-check flex items-center">
             <input
               className="form-check-input"
               type="radio"

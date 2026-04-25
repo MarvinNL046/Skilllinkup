@@ -57,11 +57,11 @@ export default function ProposalModal1({ project, onUpdate }) {
       data-testid="manage-project-edit-modal"
     >
       <div className="modal-dialog modal-dialog-centered">
-        <div className="modal-content position-relative">
+        <div className="modal-content relative">
           <button
             ref={closeRef}
             type="button"
-            className="btn-close position-absolute"
+            className="btn-close absolute"
             data-bs-dismiss="modal"
             aria-label="Close"
             style={{ top: "10px", right: "10px", zIndex: "9" }}

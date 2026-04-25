@@ -15,7 +15,7 @@ function StarRating({ rating }) {
   const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
 
   return (
-    <div className="d-flex align-items-center gap-1">
+    <div className="flex items-center gap-1">
       {Array.from({ length: fullStars }).map((_, i) => (
         <span key={`full-${i}`} className="fas fa-star fz14 review-color" />
       ))}
@@ -163,10 +163,10 @@ function PlatformDetailContent({ slug }) {
           <div className="col-lg-8">
             {/* Header Card */}
             <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
-              <div className="d-flex align-items-center mb20">
+              <div className="flex items-center mb20">
                 {logoUrl ? (
                   <div
-                    className="position-relative me-3 flex-shrink-0"
+                    className="relative me-3 shrink-0"
                     style={{
                       width: 64,
                       height: 64,
@@ -185,7 +185,7 @@ function PlatformDetailContent({ slug }) {
                   </div>
                 ) : (
                   <div
-                    className="me-3 flex-shrink-0 d-flex align-items-center justify-content-center"
+                    className="me-3 shrink-0 flex items-center justify-center"
                     style={{
                       width: 64,
                       height: 64,
@@ -218,7 +218,7 @@ function PlatformDetailContent({ slug }) {
                       </span>
                     )}
                   </h1>
-                  <div className="d-flex align-items-center flex-wrap gap-2">
+                  <div className="flex items-center flex-wrap gap-2">
                     {category && (
                       <span className="body-color fz14">{category}</span>
                     )}
@@ -259,7 +259,7 @@ function PlatformDetailContent({ slug }) {
                         {pros.map((pro, i) => (
                           <li
                             key={i}
-                            className="fz14 body-color mb-2 d-flex align-items-start"
+                            className="fz14 body-color mb-2 flex items-start"
                           >
                             <i
                               className="fas fa-plus fz10 me-2 mt-1"
@@ -281,7 +281,7 @@ function PlatformDetailContent({ slug }) {
                         {cons.map((con, i) => (
                           <li
                             key={i}
-                            className="fz14 body-color mb-2 d-flex align-items-start"
+                            className="fz14 body-color mb-2 flex items-start"
                           >
                             <i
                               className="fas fa-minus fz10 me-2 mt-1"
@@ -304,7 +304,7 @@ function PlatformDetailContent({ slug }) {
                 <div className="row">
                   {features.map((feature, i) => (
                     <div key={i} className="col-md-6 mb10">
-                      <span className="fz14 body-color d-flex align-items-start">
+                      <span className="fz14 body-color flex items-start">
                         <i
                           className="far fa-check me-2 mt-1"
                           style={{ color: "var(--success-700)" }}
@@ -353,28 +353,28 @@ function PlatformDetailContent({ slug }) {
               <h5 className="mb20">{t("quickInfo")}</h5>
 
               {category && (
-                <div className="d-flex justify-content-between align-items-center mb15 pb15 bdrb1">
+                <div className="flex justify-between items-center mb15 pb15 bdrb1">
                   <span className="body-color fz14">{t("category")}</span>
                   <span className="dark-color fz14 fw500">{category}</span>
                 </div>
               )}
 
               {fees && (
-                <div className="d-flex justify-content-between align-items-center mb15 pb15 bdrb1">
+                <div className="flex justify-between items-center mb15 pb15 bdrb1">
                   <span className="body-color fz14">{t("fees")}</span>
                   <span className="dark-color fz14 fw500">{fees}</span>
                 </div>
               )}
 
               {difficulty && (
-                <div className="d-flex justify-content-between align-items-center mb15 pb15 bdrb1">
+                <div className="flex justify-between items-center mb15 pb15 bdrb1">
                   <span className="body-color fz14">{t("difficulty")}</span>
                   <DifficultyBadge difficulty={difficulty} />
                 </div>
               )}
 
               {workType && (
-                <div className="d-flex justify-content-between align-items-center mb15 pb15 bdrb1">
+                <div className="flex justify-between items-center mb15 pb15 bdrb1">
                   <span className="body-color fz14">{t("workType")}</span>
                   <span className="dark-color fz14 fw500 text-capitalize">
                     {workType}
@@ -383,7 +383,7 @@ function PlatformDetailContent({ slug }) {
               )}
 
               {countries && countries.length > 0 && (
-                <div className="d-flex justify-content-between align-items-center mb15">
+                <div className="flex justify-between items-center mb15">
                   <span className="body-color fz14">{t("availableIn")}</span>
                   <span className="dark-color fz14 fw500">
                     {countries.includes("Worldwide")
@@ -394,9 +394,9 @@ function PlatformDetailContent({ slug }) {
               )}
 
               {rating != null && (
-                <div className="d-flex justify-content-between align-items-center">
+                <div className="flex justify-between items-center">
                   <span className="body-color fz14">{t("rating")}</span>
-                  <div className="d-flex align-items-center gap-2">
+                  <div className="flex items-center gap-2">
                     <StarRating rating={rating} />
                     <span className="dark-color fw500">
                       {rating.toFixed(1)}

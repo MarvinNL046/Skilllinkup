@@ -44,7 +44,7 @@ export default function ServiceDetailExtra1() {
     <>
       <div className="extra-service-tab mb40 mt30">
         <nav>
-          <div className="nav flex-column nav-tabs">
+          <div className="nav flex-col nav-tabs">
             {extraService.map((item,i) => (
               <button
                 key={ i }
@@ -52,7 +52,7 @@ export default function ServiceDetailExtra1() {
                   getSelect?.includes(item.value) ? "active" : ""
                 }`}
               >
-                <label className="custom_checkbox fw500 text-start">
+                <label className="custom_checkbox fw500 text-left">
                   {item.title}
                   <span className="text text-bottom">{item.brief}</span>
                   <input

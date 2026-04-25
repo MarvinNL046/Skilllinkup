@@ -5,7 +5,7 @@ import NoOfEmployeeOption1 from "../option/NoOfEmployeeOption1";
 export default function ListingSidebar4() {
   return (
     <>
-      <div className="list-sidebar-style1 d-none d-lg-block">
+      <div className="list-sidebar-style1 hidden lg:block">
         <div className="accordion" id="accordionExample">
           <div className="card mb20 pb10 mt-0">
             <div className="card-header" id="heading0">

@@ -1,5 +1,5 @@
-/* --- Legacy template CSS (Bootstrap is GONE — replaced by bootstrap-shim.css) --- */
-@import "../styles/bootstrap-shim.css";
+/* --- SkillLinkup layout helpers (.container/.row/.col-*) --- */
+@import "../styles/layout.css";
 @import "./../../public/css/animate.css";
 @import "./../../public/css/ace-responsive-menu.css";
 @import "./../../public/css/menu.css";

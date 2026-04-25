@@ -16,10 +16,10 @@ function timeAgo(timestamp) {
 export default function ProjectCard3({ data }) {
   return (
     <>
-      <div  className="freelancer-style1 bdr1 bdrs12 hover-box-shadow row ms-0 align-items-lg-center">
+      <div  className="freelancer-style1 bdr1 bdrs12 hover-box-shadow row ms-0 lg:items-center">
         <div  className="col-lg-8 ps-0 bdrr1 bdrn-xl">
-          <div  className="d-lg-flex">
-            <div  className="thumb w60 position-relative rounded-circle mb15-md">
+          <div  className="lg:flex">
+            <div  className="thumb w60 relative rounded-circle mb15-md">
               <Image
                 height={60}
                 width={60}
@@ -48,7 +48,7 @@ export default function ProjectCard3({ data }) {
           <p  className="text mt10">
             {data.brief || ""}{" "}
           </p>
-          <div  className="skill-tags d-flex align-items-center justify-content-start mb20-md">
+          <div  className="skill-tags flex items-center justify-start mb20-md">
             {data.tags.map((item, i) => (
               <span key={i} className={`tag ${i === 1 ? "mx10" : ""}`}>
                 {item}
@@ -64,7 +64,7 @@ export default function ProjectCard3({ data }) {
               </h4>
               <p  className="text">Hourly Rate</p>
             </div>
-            <div  className="d-grid mt15">
+            <div  className="grid mt15">
               <Link
                 href={`/project/${data.slug || data.id}`}
                 className="ud-btn btn-thm-border bdrs12 hover-default-box-shadow1"

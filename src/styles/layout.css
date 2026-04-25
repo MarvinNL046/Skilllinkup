@@ -1,0 +1,166 @@
+/* ============================================================
+   SkillLinkup — layout helpers
+   12-column grid + responsive container. The only legacy-friendly
+   markup we kept after the Bootstrap removal: existing pages still
+   author <div class="row"><div class="col-md-6">…</div></div> and
+   we provide the matching CSS so they keep rendering. New components
+   should prefer Tailwind grid/flex utilities directly.
+   ============================================================ */
+
+/* Container — centered with max-widths per breakpoint. */
+.container,
+.container-fluid {
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 12px;
+  padding-left: 12px;
+}
+@media (min-width: 576px)  { .container { max-width: 540px; } }
+@media (min-width: 768px)  { .container { max-width: 720px; } }
+@media (min-width: 992px)  { .container { max-width: 960px; } }
+@media (min-width: 1200px) { .container { max-width: 1140px; } }
+@media (min-width: 1400px) { .container { max-width: 1320px; } }
+
+/* Row — flex wrap with negative-margin gutter. Children get .col-* */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -12px;
+  margin-left: -12px;
+}
+.row > * {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100%;
+  padding-right: 12px;
+  padding-left: 12px;
+}
+
+/* Columns — base, then per breakpoint */
+.col      { flex: 1 0 0%; }
+.col-auto { flex: 0 0 auto; width: auto; }
+.col-12   { flex: 0 0 auto; width: 100%; }
+.col-11   { flex: 0 0 auto; width: 91.66667%; }
+.col-10   { flex: 0 0 auto; width: 83.33333%; }
+.col-9    { flex: 0 0 auto; width: 75%; }
+.col-8    { flex: 0 0 auto; width: 66.66667%; }
+.col-7    { flex: 0 0 auto; width: 58.33333%; }
+.col-6    { flex: 0 0 auto; width: 50%; }
+.col-5    { flex: 0 0 auto; width: 41.66667%; }
+.col-4    { flex: 0 0 auto; width: 33.33333%; }
+.col-3    { flex: 0 0 auto; width: 25%; }
+.col-2    { flex: 0 0 auto; width: 16.66667%; }
+.col-1    { flex: 0 0 auto; width: 8.33333%; }
+
+@media (min-width: 576px) {
+  .col-sm      { flex: 1 0 0%; }
+  .col-sm-auto { flex: 0 0 auto; width: auto; }
+  .col-sm-12 { flex: 0 0 auto; width: 100%; }
+  .col-sm-11 { flex: 0 0 auto; width: 91.66667%; }
+  .col-sm-10 { flex: 0 0 auto; width: 83.33333%; }
+  .col-sm-9  { flex: 0 0 auto; width: 75%; }
+  .col-sm-8  { flex: 0 0 auto; width: 66.66667%; }
+  .col-sm-7  { flex: 0 0 auto; width: 58.33333%; }
+  .col-sm-6  { flex: 0 0 auto; width: 50%; }
+  .col-sm-5  { flex: 0 0 auto; width: 41.66667%; }
+  .col-sm-4  { flex: 0 0 auto; width: 33.33333%; }
+  .col-sm-3  { flex: 0 0 auto; width: 25%; }
+  .col-sm-2  { flex: 0 0 auto; width: 16.66667%; }
+  .col-sm-1  { flex: 0 0 auto; width: 8.33333%; }
+}
+@media (min-width: 768px) {
+  .col-md      { flex: 1 0 0%; }
+  .col-md-auto { flex: 0 0 auto; width: auto; }
+  .col-md-12 { flex: 0 0 auto; width: 100%; }
+  .col-md-11 { flex: 0 0 auto; width: 91.66667%; }
+  .col-md-10 { flex: 0 0 auto; width: 83.33333%; }
+  .col-md-9  { flex: 0 0 auto; width: 75%; }
+  .col-md-8  { flex: 0 0 auto; width: 66.66667%; }
+  .col-md-7  { flex: 0 0 auto; width: 58.33333%; }
+  .col-md-6  { flex: 0 0 auto; width: 50%; }
+  .col-md-5  { flex: 0 0 auto; width: 41.66667%; }
+  .col-md-4  { flex: 0 0 auto; width: 33.33333%; }
+  .col-md-3  { flex: 0 0 auto; width: 25%; }
+  .col-md-2  { flex: 0 0 auto; width: 16.66667%; }
+  .col-md-1  { flex: 0 0 auto; width: 8.33333%; }
+}
+@media (min-width: 992px) {
+  .col-lg      { flex: 1 0 0%; }
+  .col-lg-auto { flex: 0 0 auto; width: auto; }
+  .col-lg-12 { flex: 0 0 auto; width: 100%; }
+  .col-lg-11 { flex: 0 0 auto; width: 91.66667%; }
+  .col-lg-10 { flex: 0 0 auto; width: 83.33333%; }
+  .col-lg-9  { flex: 0 0 auto; width: 75%; }
+  .col-lg-8  { flex: 0 0 auto; width: 66.66667%; }
+  .col-lg-7  { flex: 0 0 auto; width: 58.33333%; }
+  .col-lg-6  { flex: 0 0 auto; width: 50%; }
+  .col-lg-5  { flex: 0 0 auto; width: 41.66667%; }
+  .col-lg-4  { flex: 0 0 auto; width: 33.33333%; }
+  .col-lg-3  { flex: 0 0 auto; width: 25%; }
+  .col-lg-2  { flex: 0 0 auto; width: 16.66667%; }
+  .col-lg-1  { flex: 0 0 auto; width: 8.33333%; }
+  .offset-lg-1 { margin-left: 8.33333%; }
+}
+@media (min-width: 1200px) {
+  .col-xl      { flex: 1 0 0%; }
+  .col-xl-auto { flex: 0 0 auto; width: auto; }
+  .col-xl-12 { flex: 0 0 auto; width: 100%; }
+  .col-xl-11 { flex: 0 0 auto; width: 91.66667%; }
+  .col-xl-10 { flex: 0 0 auto; width: 83.33333%; }
+  .col-xl-9  { flex: 0 0 auto; width: 75%; }
+  .col-xl-8  { flex: 0 0 auto; width: 66.66667%; }
+  .col-xl-7  { flex: 0 0 auto; width: 58.33333%; }
+  .col-xl-6  { flex: 0 0 auto; width: 50%; }
+  .col-xl-5  { flex: 0 0 auto; width: 41.66667%; }
+  .col-xl-4  { flex: 0 0 auto; width: 33.33333%; }
+  .col-xl-3  { flex: 0 0 auto; width: 25%; }
+  .col-xl-2  { flex: 0 0 auto; width: 16.66667%; }
+  .col-xl-1  { flex: 0 0 auto; width: 8.33333%; }
+  .offset-xl-1 { margin-left: 8.33333%; }
+}
+@media (min-width: 1400px) {
+  .col-xxl-12 { flex: 0 0 auto; width: 100%; }
+  .col-xxl-8  { flex: 0 0 auto; width: 66.66667%; }
+  .col-xxl-6  { flex: 0 0 auto; width: 50%; }
+  .col-xxl-4  { flex: 0 0 auto; width: 33.33333%; }
+  .col-xxl-3  { flex: 0 0 auto; width: 25%; }
+}
+
+/* Bare-class helpers still referenced by some legacy markup. Tailwind
+   doesn't ship them under these names. */
+.flex-wrap { flex-wrap: wrap; }
+.flex-nowrap { flex-wrap: nowrap; }
+.flex-row { flex-direction: row; }
+.text-uppercase  { text-transform: uppercase; }
+.text-lowercase  { text-transform: lowercase; }
+.text-capitalize { text-transform: capitalize; }
+.mx-auto { margin-right: auto; margin-left: auto; }
+.my-auto { margin-top: auto; margin-bottom: auto; }
+.ms-auto { margin-left: auto; }
+.me-auto { margin-right: auto; }
+.mt-auto { margin-top: auto; }
+.mb-auto { margin-bottom: auto; }
+.gap-0 { gap: 0; }
+.gap-1 { gap: 0.25rem; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 1rem; }
+.gap-4 { gap: 1.5rem; }
+.gap-5 { gap: 3rem; }
+.border-0 { border: 0; }
+.max-w-full { max-width: 100%; }
+.min-h-screen { min-height: 100vh; }
+
+/* A11y — visually-hidden + focusable variant */
+.visually-hidden,
+.visually-hidden-focusable:not(:focus):not(:focus-within) {
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0,0,0,0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  position: absolute !important;
+}

@@ -91,10 +91,10 @@ export default function ProjectDetail3() {
               <div className="column">
                 <div className="scrollbalance-inner">
                   <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
-                    <div className="position-relative overflow-hidden d-flex align-items-center">
+                    <div className="relative overflow-hidden flex items-center">
                       <div className="row ">
                         <div className="col-xl-12">
-                          <div className="position-relative">
+                          <div className="relative">
                             {title && <h2>{title}</h2>}
                             <div className="list-meta mt15 mb30 pb30 bdrb1 ">
                               {location && (
@@ -123,8 +123,8 @@ export default function ProjectDetail3() {
                     <div className="row">
                       {data?.projectType && (
                         <div className="col-sm-6 col-xl-4">
-                          <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                            <div className="icon flex-shrink-0">
+                          <div className="iconbox-style1 contact-style flex items-start mb30">
+                            <div className="icon shrink-0">
                               <span className="flaticon-dollar" />
                             </div>
                             <div className="details">
@@ -136,8 +136,8 @@ export default function ProjectDetail3() {
                       )}
                       {data?.duration && (
                         <div className="col-sm-6 col-xl-4">
-                          <div className="iconbox-style1 contact-style d-flex align-items-start mb30">
-                            <div className="icon flex-shrink-0">
+                          <div className="iconbox-style1 contact-style flex items-start mb30">
+                            <div className="icon shrink-0">
                               <span className="flaticon-fifteen" />
                             </div>
                             <div className="details">

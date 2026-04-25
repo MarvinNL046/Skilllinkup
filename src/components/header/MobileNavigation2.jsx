@@ -20,7 +20,7 @@ export default function MobileNavigation2() {
 
   return (
     <div
-      className="d-xl-none"
+      className="xl:hidden"
       style={{
         position: "sticky",
         top: 0,

@@ -30,11 +30,11 @@ export default function DeleteModal({ projectId, projectTitle, onDelete }) {
       data-testid="manage-project-delete-modal"
     >
       <div className="modal-dialog modal-dialog-centered">
-        <div className="modal-content position-relative">
+        <div className="modal-content relative">
           <button
             ref={closeRef}
             type="button"
-            className="btn-close position-absolute"
+            className="btn-close absolute"
             data-bs-dismiss="modal"
             aria-label="Close"
             style={{ top: "10px", right: "10px", zIndex: "9" }}
@@ -48,7 +48,7 @@ export default function DeleteModal({ projectId, projectTitle, onDelete }) {
                 {t("deleteConfirmMessage", { title: projectTitle || t("thisProject") })}
               </p>
             </div>
-            <div className="d-flex justify-content-center gap-3">
+            <div className="flex justify-center gap-3">
               <button
                 className="ud-btn bg-danger text-white mb25"
                 onClick={handleDelete}

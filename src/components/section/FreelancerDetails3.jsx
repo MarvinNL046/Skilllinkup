@@ -147,7 +147,7 @@ function ProfileSidebar({ convexData }) {
         )}
         {convexData?.userId && (
           <div style={{ marginTop: "var(--space-5)" }}>
-            <ContactButton recipientId={convexData.userId} className="w-100" />
+            <ContactButton recipientId={convexData.userId} className="w-full" />
           </div>
         )}
       </div>
@@ -317,7 +317,7 @@ function GigPackageTable({ gig, recipientUserId }) {
                 {packages.map((pkg) => (
                   <td key={pkg._id} className="fz13 text p15" style={{ verticalAlign: "top" }}>
                     {(pkg.features || []).map((f, i) => (
-                      <div key={`${pkg._id}-f${i}`} className="d-flex align-items-center justify-content-center gap-1 mb5">
+                      <div key={`${pkg._id}-f${i}`} className="flex items-center justify-center gap-1 mb5">
                         <i className="flaticon-check text-success fz12" />
                         <span>{String(f)}</span>
                       </div>
@@ -336,12 +336,12 @@ function GigPackageTable({ gig, recipientUserId }) {
                 return (
                   <td key={pkg._id} className="p15">
                     {href ? (
-                      <Link href={href} className="ud-btn btn-thm btn-sm w-100" onClick={handleContactClick}>
+                      <Link href={href} className="ud-btn btn-thm btn-sm w-full" onClick={handleContactClick}>
                         {t("contact")}
                         <i className="fal fa-arrow-right-long ms-1" />
                       </Link>
                     ) : (
-                      <button className="ud-btn btn-thm btn-sm w-100" disabled>
+                      <button className="ud-btn btn-thm btn-sm w-full" disabled>
                         {t("contact")}
                         <i className="fal fa-arrow-right-long ms-1" />
                       </button>
@@ -430,7 +430,7 @@ function ProjectsSection({ userId }) {
           <div key={project._id} className="col-sm-6 mb20">
             <div style={{ padding: "var(--space-5)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-lg)", height: "100%" }}>
               <h6 className="mb10">{project.title}</h6>
-              <div className="d-flex flex-wrap gap-2 mb10">
+              <div className="flex flex-wrap gap-2 mb10">
                 {project.categoryName && (
                   <span className="tag">{project.categoryName}</span>
                 )}
@@ -524,7 +524,7 @@ function PortfolioSection({ userId }) {
                   </p>
                 )}
                 {(item.tags || []).length > 0 && (
-                  <div className="d-flex flex-wrap gap-1 mb10">
+                  <div className="flex flex-wrap gap-1 mb10">
                     {item.tags.map((tag, i) => (
                       <span key={i} className="tag">{tag}</span>
                     ))}

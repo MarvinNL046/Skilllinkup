@@ -82,7 +82,7 @@ export default function EmplyeeDetail1() {
                 <div className="price-widget pt25 widget-mt-minus bdrs8">
                   <h4 className="widget-title">Company Info</h4>
                   <div className="category-list mt20">
-                    <a className="d-flex align-items-center justify-content-between bdrb1 pb-2">
+                    <a className="flex items-center justify-between bdrb1 pb-2">
                       <span className="text">
                         <i className="flaticon-factory text-thm2 pe-2 vam" />
                         Company
@@ -90,7 +90,7 @@ export default function EmplyeeDetail1() {
                       <span>{company?.server || "Unknown"}</span>
                     </a>
                     {memberSince && (
-                      <a className="d-flex align-items-center justify-content-between bdrb1 pb-2">
+                      <a className="flex items-center justify-between bdrb1 pb-2">
                         <span className="text">
                           <i className="flaticon-calendar text-thm2 pe-2 vam" />
                           Member since
@@ -98,14 +98,14 @@ export default function EmplyeeDetail1() {
                         <span>{memberSince}</span>
                       </a>
                     )}
-                    <a className="d-flex align-items-center justify-content-between bdrb1 pb-2">
+                    <a className="flex items-center justify-between bdrb1 pb-2">
                       <span className="text">
                         <i className="flaticon-place text-thm2 pe-2 vam" />
                         Location
                       </span>
                       <span>{company?.location || "Remote"}</span>
                     </a>
-                    <a className="d-flex align-items-center justify-content-between">
+                    <a className="flex items-center justify-between">
                       <span className="text">
                         <i className="flaticon-briefcase text-thm2 pe-2 vam" />
                         Open jobs
@@ -113,7 +113,7 @@ export default function EmplyeeDetail1() {
                       <span>{companyJobs.length}</span>
                     </a>
                   </div>
-                  <div className="d-grid mt20">
+                  <div className="grid mt20">
                     <Link href="/contact" className="ud-btn btn-thm">
                       Contact
                       <i className="fal fa-arrow-right-long" />

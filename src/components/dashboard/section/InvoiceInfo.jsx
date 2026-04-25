@@ -43,7 +43,7 @@ export default function InvoiceInfo() {
             <DashboardNavigation />
           </div>
         </div>
-        <div className="row align-items-center justify-content-between pb40">
+        <div className="row items-center justify-between pb40">
           <div className="col-xl-4">
             <div className="dashboard_title_area">
               <h2>{t("title")}</h2>
@@ -53,7 +53,7 @@ export default function InvoiceInfo() {
         </div>
         <div className="row">
           <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
 
               {isLoaded && !isAuthenticated && (
                 <div className="text-center py-5">

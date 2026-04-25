@@ -203,7 +203,8 @@
     "lifetimeFreelancerEarnings": "Totale freelancer inkomsten",
     "statusLabel": "Status",
     "accountActive": "Account actief",
-    "accountGoodStanding": "Je account is in goede staat"
+    "accountGoodStanding": "Je account is in goede staat",
+    "navigation": "Navigatie"
   },
   "marketplace": {
     "onlineMarketplace": "Online marktplaats",
