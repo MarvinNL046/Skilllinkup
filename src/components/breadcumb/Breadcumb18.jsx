@@ -1,14 +1,7 @@
 "use client";
 import { useTranslations } from "next-intl";
-import { useQuery } from "convex/react";
 import { Search } from "lucide-react";
 import listingStore from "@/store/listingStore";
-import { api } from "../../../convex/_generated/api";
-
-// Defensive: if api.marketplace.projects.getOpenCount isn't yet
-// deployed (older Convex push, schema drift, missing env), don't crash
-// the page — fall back to the badge being hidden.
-const safeGetOpenCount = api?.marketplace?.projects?.getOpenCount ?? null;
 
 /**
  * /online/projects hero — DS rewrite of the legacy .cta-service-v6
@@ -16,17 +9,17 @@ const safeGetOpenCount = api?.marketplace?.projects?.getOpenCount ?? null;
  * deep-aubergine gradient with a subtle "project cards" SVG pattern
  * that visually nods to the cards rendered below the hero. Heading
  * is a proper <h1> on display-lg type.
+ *
+ * Earlier versions also rendered a live "X open projects · live now"
+ * counter via api.marketplace.projects.getOpenCount, but that meant
+ * the entire page crashed on environments where Convex deploy was out
+ * of sync (audit 2026-04-25). The counter is dropped — a non-essential
+ * stat is not allowed to break the page.
  */
 export default function Breadcumb18() {
   const t = useTranslations("projects");
   const getSearch = listingStore((state) => state.getSearch);
   const setSearch = listingStore((state) => state.setSearch);
-  // Pass "skip" when the function reference is missing so useQuery
-  // doesn't try to dispatch and crash the render.
-  const projectsCount = useQuery(
-    safeGetOpenCount ?? api.marketplace.projects.list,
-    safeGetOpenCount ? {} : "skip"
-  );
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -77,34 +70,6 @@ export default function Breadcumb18() {
           </svg>
 
           <div style={{ position: "relative", maxWidth: 720 }}>
-            {projectsCount != null && projectsCount > 0 && (
-              <div
-                className="overline"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "var(--space-2)",
-                  padding: "6px 12px",
-                  borderRadius: "999px",
-                  background: "oklch(100% 0 0 / 0.12)",
-                  color: "var(--secondary-300)",
-                  border: "1px solid oklch(100% 0 0 / 0.16)",
-                  marginBottom: "var(--space-4)",
-                }}
-              >
-                <span
-                  style={{
-                    width: 6,
-                    height: 6,
-                    borderRadius: "999px",
-                    background: "var(--secondary-400)",
-                    boxShadow: "0 0 0 3px oklch(100% 0 0 / 0.15)",
-                  }}
-                />
-                {projectsCount} {t("itemLabel")} · live now
-              </div>
-            )}
-
             <h1
               className="display-lg"
               style={{
