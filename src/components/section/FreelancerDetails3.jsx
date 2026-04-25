@@ -366,7 +366,7 @@ function GigsSection({ freelancerProfileId, recipientUserId }) {
 
   if (gigs === undefined) {
     return (
-      <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+      <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("services")}</h2>
         <p className="text fz14">{t("loadingServices")}</p>
       </div>
@@ -375,7 +375,7 @@ function GigsSection({ freelancerProfileId, recipientUserId }) {
 
   if (gigs.length === 0) {
     return (
-      <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+      <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("services")}</h2>
         <p className="text fz14">{t("noServices")}</p>
       </div>
@@ -383,7 +383,7 @@ function GigsSection({ freelancerProfileId, recipientUserId }) {
   }
 
   return (
-    <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+    <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
       <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("services")}</h2>
       {gigs.map((gig, idx) => (
         <div key={gig._id}>
@@ -406,7 +406,7 @@ function ProjectsSection({ userId }) {
 
   if (projects === undefined) {
     return (
-      <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+      <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("projects")}</h2>
         <p className="text fz14">{t("loadingProjects")}</p>
       </div>
@@ -415,7 +415,7 @@ function ProjectsSection({ userId }) {
 
   if (projects.length === 0) {
     return (
-      <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+      <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("projects")}</h2>
         <p className="text fz14">{t("noProjects")}</p>
       </div>
@@ -423,7 +423,7 @@ function ProjectsSection({ userId }) {
   }
 
   return (
-    <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+    <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
       <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("projects")}</h2>
       <div className="row">
         {projects.map((project) => (
@@ -474,7 +474,7 @@ function PortfolioSection({ userId }) {
 
   if (portfolioItems === undefined) {
     return (
-      <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+      <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("portfolio")}</h2>
         <p className="text fz14">{t("loadingPortfolio")}</p>
       </div>
@@ -483,7 +483,7 @@ function PortfolioSection({ userId }) {
 
   if (portfolioItems.length === 0) {
     return (
-      <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+      <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("portfolio")}</h2>
         <p className="text fz14">{t("noPortfolio")}</p>
       </div>
@@ -491,7 +491,7 @@ function PortfolioSection({ userId }) {
   }
 
   return (
-    <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+    <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
       <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("portfolio")}</h2>
       <div className="row">
         {portfolioItems.map((item) => (
@@ -573,7 +573,7 @@ function ExperienceSection({ userId }) {
   if (!hasWork && !hasEdu && !hasCerts) return null;
 
   return (
-    <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+    <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
       <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("experienceEducation")}</h2>
 
       {hasWork && (
@@ -649,7 +649,7 @@ function FreelancerReviews({ freelancerId }) {
 
   if (reviews === undefined) {
     return (
-      <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+      <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("reviews")}</h2>
         <p className="text fz14">{t("loadingReviews")}</p>
       </div>
@@ -658,7 +658,7 @@ function FreelancerReviews({ freelancerId }) {
 
   if (!reviews || reviews.length === 0) {
     return (
-      <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+      <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("reviews")}</h2>
         <p className="text fz14">{t("noReviews")}</p>
       </div>
@@ -668,7 +668,7 @@ function FreelancerReviews({ freelancerId }) {
   const avgRating = reviews.reduce((sum, r) => sum + r.overallRating, 0) / reviews.length;
 
   return (
-    <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+    <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
       <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("reviews")}</h2>
 
       <div
@@ -1035,7 +1035,7 @@ export default function FreelancerDetails3() {
             {bio && (
               <div
                 className="card"
-                style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}
+                style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}
               >
                 <h2
                   style={{

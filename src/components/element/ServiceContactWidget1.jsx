@@ -34,8 +34,8 @@ export default function ServiceContactWidget1({ freelancer }) {
     <div
       className="card"
       style={{
-        padding: "var(--space-6)",
-        marginBottom: "var(--space-5)",
+        padding: "var(--space-7)",
+        marginBottom: "var(--space-6)",
       }}
     >
       <div

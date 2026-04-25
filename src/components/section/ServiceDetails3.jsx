@@ -92,15 +92,15 @@ export default function ServiceDetail3() {
   ].filter(Boolean);
 
   return (
-    <section style={{ padding: "var(--space-10) 0 var(--space-16)" }}>
+    <section style={{ padding: "var(--space-12) 0 var(--space-20, 80px)" }}>
       <div className="container">
-        <div className="row">
+        <div className="row" style={{ rowGap: "var(--space-8)" }}>
           <div className="col-lg-8">
             <div
               className="card"
               style={{
-                padding: "var(--space-7)",
-                marginBottom: "var(--space-6)",
+                padding: "var(--space-8)",
+                marginBottom: "var(--space-8)",
               }}
             >
               {data?.title && (
@@ -204,7 +204,7 @@ export default function ServiceDetail3() {
               {description && (
                 <div
                   className="card"
-                  style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}
+                  style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}
                 >
                   <h2
                     style={{
@@ -226,57 +226,148 @@ export default function ServiceDetail3() {
               )}
                   {/* Compare Packages */}
                   {packages.length > 0 && (
-                    <div className="px30 bdr1 pt30 pb-0 mb30 bg-white bdrs12 wow fadeInUp default-box-shadow1">
-                      <h4>{t("comparePackages")}</h4>
-                      <div className="table-style2 table-responsive bdr1 mt30 mb60">
-                        <table className="table table-borderless mb-0">
-                          <thead className="t-head">
+                    <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
+                      <h2
+                        style={{
+                          fontFamily: "var(--font-display)",
+                          fontSize: "var(--text-h3)",
+                          fontWeight: 500,
+                          letterSpacing: "-0.01em",
+                          marginBottom: "var(--space-6)",
+                        }}
+                      >
+                        {t("comparePackages")}
+                      </h2>
+                      <div style={{ overflowX: "auto", margin: "0 calc(-1 * var(--space-2))" }}>
+                        <table
+                          style={{
+                            width: "100%",
+                            borderCollapse: "separate",
+                            borderSpacing: 0,
+                            fontSize: "var(--text-body-sm)",
+                          }}
+                        >
+                          <thead>
                             <tr>
-                              <th className="col" scope="col" />
+                              <th
+                                scope="col"
+                                style={{ padding: "var(--space-4)", textAlign: "left" }}
+                              />
                               {packages.map((pkg, i) => (
-                                <th key={i} className="col" scope="col">
-                                  <span className="h2">
-                                    &euro;{pkg.price}
-                                  </span>
-                                  <br />
-                                  <span className="h4">
+                                <th
+                                  key={i}
+                                  scope="col"
+                                  style={{
+                                    padding: "var(--space-5) var(--space-4)",
+                                    textAlign: "left",
+                                    background: "var(--surface-2)",
+                                    borderTopLeftRadius: i === 0 ? "var(--radius-md)" : 0,
+                                    borderTopRightRadius:
+                                      i === packages.length - 1 ? "var(--radius-md)" : 0,
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontFamily: "var(--font-display)",
+                                      fontSize: "var(--text-h3)",
+                                      fontWeight: 500,
+                                      letterSpacing: "-0.02em",
+                                      color: "var(--text-primary)",
+                                      marginBottom: 4,
+                                    }}
+                                  >
+                                    €{pkg.price}
+                                  </div>
+                                  <div
+                                    style={{
+                                      fontFamily: "var(--font-display)",
+                                      fontSize: "var(--text-h5)",
+                                      fontWeight: 500,
+                                      color: "var(--text-primary)",
+                                      marginBottom: 2,
+                                    }}
+                                  >
                                     {pkg.title || pkg.tier}
-                                  </span>
-                                  <br />
-                                  <span className="text">{pkg.description}</span>
+                                  </div>
+                                  {pkg.description && (
+                                    <div
+                                      style={{
+                                        color: "var(--text-secondary)",
+                                        fontWeight: 400,
+                                        fontSize: 12,
+                                      }}
+                                    >
+                                      {pkg.description}
+                                    </div>
+                                  )}
                                 </th>
                               ))}
                             </tr>
                           </thead>
-                          <tbody className="t-body">
-                            <tr>
-                              <th scope="row">{t("deliveryTime")}</th>
-                              {packages.map((pkg, i) => (
-                                <td key={i}>{pkg.deliveryDays} {t("days")}</td>
-                              ))}
-                            </tr>
-                            <tr className="bgc-thm3">
-                              <th scope="row">{t("revisions")}</th>
-                              {packages.map((pkg, i) => (
-                                <td key={i}>{pkg.revisionCount || 0}</td>
-                              ))}
-                            </tr>
-                            <tr>
-                              <th scope="row">{t("total")}</th>
-                              {packages.map((pkg, i) => (
-                                <td key={i}>&euro;{pkg.price}</td>
-                              ))}
-                            </tr>
-                            <tr>
-                              <th scope="row" />
-                              {packages.map((pkg, i) => (
-                                <td key={i}>
-                                  <button
-                                    className="ud-btn btn-thm"
-                                    onClick={handleSelectPackage}
+                          <tbody>
+                            {[
+                              {
+                                label: t("deliveryTime"),
+                                values: packages.map((p) => `${p.deliveryDays} ${t("days")}`),
+                              },
+                              {
+                                label: t("revisions"),
+                                values: packages.map((p) => p.revisionCount ?? 0),
+                              },
+                              {
+                                label: t("total"),
+                                values: packages.map((p) => `€${p.price}`),
+                              },
+                            ].map((row, idx) => (
+                              <tr key={idx}>
+                                <th
+                                  scope="row"
+                                  style={{
+                                    padding: "var(--space-4)",
+                                    textAlign: "left",
+                                    color: "var(--text-secondary)",
+                                    fontWeight: 500,
+                                    borderTop: "1px solid var(--border-subtle)",
+                                  }}
+                                >
+                                  {row.label}
+                                </th>
+                                {row.values.map((v, i) => (
+                                  <td
+                                    key={i}
+                                    style={{
+                                      padding: "var(--space-4)",
+                                      borderTop: "1px solid var(--border-subtle)",
+                                      color: "var(--text-primary)",
+                                      fontWeight: row.label === t("total") ? 600 : 400,
+                                    }}
                                   >
-                                    {t("select")}{" "}
-                                    <i className="fal fa-arrow-right-long" />
+                                    {v}
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                            <tr>
+                              <th
+                                scope="row"
+                                style={{ padding: "var(--space-4) 0 0", borderTop: "1px solid var(--border-subtle)" }}
+                              />
+                              {packages.map((pkg, i) => (
+                                <td
+                                  key={i}
+                                  style={{
+                                    padding: "var(--space-4)",
+                                    borderTop: "1px solid var(--border-subtle)",
+                                  }}
+                                >
+                                  <button
+                                    type="button"
+                                    className="btn btn--primary btn--sm"
+                                    onClick={handleSelectPackage}
+                                    style={{ width: "100%", justifyContent: "center" }}
+                                  >
+                                    {t("select")}
+                                    <ArrowRight size={14} />
                                   </button>
                                 </td>
                               ))}

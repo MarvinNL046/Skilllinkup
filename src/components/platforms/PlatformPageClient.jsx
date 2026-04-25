@@ -162,7 +162,7 @@ function PlatformDetailContent({ slug }) {
           {/* Main Content */}
           <div className="col-lg-8">
             {/* Header Card */}
-            <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+            <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
               <div className="d-flex align-items-center mb20">
                 {logoUrl ? (
                   <div
@@ -246,7 +246,7 @@ function PlatformDetailContent({ slug }) {
 
             {/* Pros & Cons */}
             {((pros && pros.length > 0) || (cons && cons.length > 0)) && (
-              <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+              <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
                 <h4 className="mb20">{t("prosAndCons")}</h4>
                 <div className="row">
                   {pros && pros.length > 0 && (
@@ -299,7 +299,7 @@ function PlatformDetailContent({ slug }) {
 
             {/* Features */}
             {features && features.length > 0 && (
-              <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+              <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
                 <h4 className="mb20">{t("features")}</h4>
                 <div className="row">
                   {features.map((feature, i) => (
@@ -321,7 +321,7 @@ function PlatformDetailContent({ slug }) {
           {/* Sidebar */}
           <div className="col-lg-4">
             {/* CTA Card */}
-            <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+            <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
               {visitUrl && (
                 <a
                   href={visitUrl}
@@ -349,7 +349,7 @@ function PlatformDetailContent({ slug }) {
             </div>
 
             {/* Quick Info Card */}
-            <div className="card" style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}>
+            <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
               <h5 className="mb20">{t("quickInfo")}</h5>
 
               {category && (

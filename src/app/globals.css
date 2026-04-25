@@ -185,6 +185,22 @@ a.btn-thm {
   background-color: transparent !important;
 }
 
+/* Legacy template paints mint-green / peach tints on detail-page wrappers
+   (.bgc-thm3 = #f1fcfa, .bgc-thm4 = #ffede8, .bgc-thm5 = #fff8f6,
+   .bgc-thm7 = various). These conflict with the SkillLinkup body bg
+   wash. Force them transparent so the page picks up the warm gradient
+   defined on body. Buttons/badges using .bgc-thm{2} are still bridged
+   in the .text-thm rule above. */
+.bgc-thm3,
+.bgc-thm4,
+.bgc-thm5,
+.bgc-thm7 {
+  background-color: transparent !important;
+}
+.bgc-thm3-light {
+  background-color: var(--primary-50) !important;
+}
+
 /* Announcement bar — single-line ellipsis below md, full wrap from md+ */
 @media (min-width: 768px) {
   .announcement-text {
