@@ -62,7 +62,18 @@ main#main-content {
   flex-direction: column;
   min-width: 0;
 }
-main#main-content > footer {
+/* Make any wrapper div between main and footer behave like a flex
+   column too, so margin-top:auto on the footer (or last child)
+   actually pushes it to the viewport bottom on short pages. */
+main#main-content > div {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  min-width: 0;
+}
+/* Pin the page footer to the bottom regardless of nesting depth. */
+main#main-content footer,
+main#main-content > *:last-child {
   margin-top: auto;
 }
 [data-theme="dark"] body {
