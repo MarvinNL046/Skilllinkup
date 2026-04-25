@@ -4,6 +4,22 @@ import { internal } from "../_generated/api";
 import { requireAuthUser, requireOwner } from "../lib/authHelpers";
 
 /**
+ * Count of currently-open projects. Used by the /online/projects hero
+ * to show a live "X open projects · live now" badge. Cheap query —
+ * just collects the by_status index on "open".
+ */
+export const getOpenCount = query({
+  args: {},
+  handler: async (ctx) => {
+    const open = await ctx.db
+      .query("projects")
+      .withIndex("by_status", (q) => q.eq("status", "open"))
+      .collect();
+    return open.length;
+  },
+});
+
+/**
  * List open projects with client info, category name, and bid count.
  */
 export const list = query({
