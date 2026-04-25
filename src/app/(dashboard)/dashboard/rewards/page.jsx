@@ -14,7 +14,7 @@ export default function RewardsPage() {
   return (
     <>
       <MobileNavigation2 />
-      <DashboardLayout>
+      <DashboardLayout maxWidth="medium">
         <RewardsInfo />
       </DashboardLayout>
     </>

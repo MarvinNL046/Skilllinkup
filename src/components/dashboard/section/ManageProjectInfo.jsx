@@ -15,6 +15,8 @@ export default function ManageProjectInfo() {
   const t = useTranslations("manageProjects");
   const [selectedTab, setSelectedTab] = useState(0);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
 
   const updateProject = useMutation(api.marketplace.projects.update);
@@ -215,8 +217,8 @@ export default function ManageProjectInfo() {
                           <ManageProjectCard
                             key={project._id}
                             project={project}
-                            onEdit={(p) => setSelectedProject(p)}
-                            onDelete={(p) => setSelectedProject(p)}
+                            onEdit={(p) => { setSelectedProject(p); setEditOpen(true); }}
+                            onDelete={(p) => { setSelectedProject(p); setDeleteOpen(true); }}
                           />
                         ))}
                       </tbody>
@@ -229,10 +231,14 @@ export default function ManageProjectInfo() {
         </div>
       </div>
       <ProposalModal1
+        isOpen={editOpen}
+        onClose={() => setEditOpen(false)}
         project={selectedProject}
         onUpdate={handleUpdate}
       />
       <DeleteModal
+        isOpen={deleteOpen}
+        onClose={() => setDeleteOpen(false)}
         projectId={selectedProject?._id}
         projectTitle={selectedProject?.title}
         onDelete={handleDelete}

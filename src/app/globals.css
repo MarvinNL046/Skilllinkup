@@ -1,5 +1,7 @@
 /* --- SkillLinkup layout helpers (.container/.row/.col-*) --- */
 @import "../styles/layout.css";
+/* --- Dashboard app-shell --- */
+@import "../styles/dashboard-shell.css";
 @import "./../../public/css/animate.css";
 @import "./../../public/css/ace-responsive-menu.css";
 @import "./../../public/css/menu.css";

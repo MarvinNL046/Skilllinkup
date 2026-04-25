@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useUser, useClerk } from "@clerk/nextjs";
 import { Menu, Search, MessageSquare, Bookmark, LogOut, User } from "lucide-react";
-import toggleStore from "@/store/toggleStore";
+import dashboardSidebarStore from "@/store/dashboardSidebarStore";
 import NotificationBell from "@/components/header/NotificationBell";
 
 /**
@@ -16,7 +16,7 @@ import NotificationBell from "@/components/header/NotificationBell";
  * Bootstrap data-bs-* attributes — runs without Bootstrap JS.
  */
 export default function DashboardHeader() {
-  const toggleSidebar = toggleStore((s) => s.dashboardSlidebarToggleHandler);
+  const toggleMobile = dashboardSidebarStore((s) => s.toggleMobile);
   const { user } = useUser();
   const { signOut } = useClerk();
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -46,8 +46,9 @@ export default function DashboardHeader() {
       style={{
         position: "sticky",
         top: 0,
-        zIndex: 40,
-        padding: "var(--space-3) var(--space-6)",
+        zIndex: 60,
+        height: "var(--dash-topbar-h, 64px)",
+        padding: "0 var(--space-6)",
         gap: "var(--space-4)",
       }}
     >
@@ -69,10 +70,10 @@ export default function DashboardHeader() {
 
         <button
           type="button"
-          onClick={toggleSidebar}
-          className="btn btn--ghost btn--icon btn--sm"
-          aria-label="Toggle sidebar"
-          title="Toggle sidebar"
+          onClick={toggleMobile}
+          className="btn btn--ghost btn--icon btn--sm lg:hidden"
+          aria-label="Open navigation"
+          title="Open navigation"
         >
           <Menu size={18} />
         </button>

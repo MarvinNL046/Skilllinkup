@@ -16,7 +16,7 @@ export default function MyLeadsPage() {
   return (
     <>
       <MobileNavigation2 />
-      <DashboardLayout>
+      <DashboardLayout maxWidth="wide">
         <div className="dashboard__content hover-bgc-color">
           <div className="row pb40">
             <div className="col-lg-12">

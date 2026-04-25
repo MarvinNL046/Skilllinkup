@@ -83,8 +83,6 @@ export default function ManageJobCard({ job, onEdit, onDelete }) {
           <a
             className="icon me-2"
             id={tooltipEditId}
-            data-bs-toggle="modal"
-            data-bs-target="#proposalModal"
             onClick={() => onEdit?.(job)}
             style={{ cursor: "pointer" }}
           >
@@ -96,8 +94,6 @@ export default function ManageJobCard({ job, onEdit, onDelete }) {
           <a
             className="icon"
             id={tooltipDeleteId}
-            data-bs-toggle="modal"
-            data-bs-target="#deleteModal"
             onClick={() => onDelete?.(job)}
             style={{ cursor: "pointer" }}
           >

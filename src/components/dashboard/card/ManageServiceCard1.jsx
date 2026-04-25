@@ -53,8 +53,6 @@ export default function ManageServiceCard1({ data, removeGig }) {
             <a
               className="icon me-2"
               id={`edit-${data._id || data.id}`}
-              data-bs-toggle="modal"
-              data-bs-target="#proposalModal"
             >
               <Tooltip
                 anchorSelect={`#edit-${data._id || data.id}`}
@@ -68,8 +66,6 @@ export default function ManageServiceCard1({ data, removeGig }) {
             <a
               className="icon"
               id={`delete-${data._id || data.id}`}
-              data-bs-toggle="modal"
-              data-bs-target="#deleteModal"
               onClick={handleDelete}
               style={{ cursor: "pointer" }}
             >

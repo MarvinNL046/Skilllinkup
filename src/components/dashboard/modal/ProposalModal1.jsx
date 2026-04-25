@@ -1,8 +1,15 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-export default function ProposalModal1({ project, onUpdate }) {
+/**
+ * Edit-project modal — DS-native, controlled via isOpen prop. Portal'd
+ * to document.body. Pre-fills the form from the `project` prop on open.
+ * Replaces the legacy Bootstrap-JS modal markup.
+ */
+export default function ProposalModal1({ isOpen, onClose, project, onUpdate }) {
   const t = useTranslations("proposals");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -10,23 +17,34 @@ export default function ProposalModal1({ project, onUpdate }) {
   const [budgetMax, setBudgetMax] = useState("");
   const [workType, setWorkType] = useState("remote");
   const [isUpdating, setIsUpdating] = useState(false);
-  const closeRef = useRef(null);
 
-  // Pre-populate fields when project changes
   useEffect(() => {
-    if (project) {
-      setTitle(project.title ?? "");
-      setDescription(project.description ?? "");
-      setBudgetMin(project.budgetMin != null ? String(project.budgetMin) : "");
-      setBudgetMax(project.budgetMax != null ? String(project.budgetMax) : "");
-      setWorkType(project.workType ?? "remote");
-    }
+    if (!project) return;
+    setTitle(project.title ?? "");
+    setDescription(project.description ?? "");
+    setBudgetMin(project.budgetMin != null ? String(project.budgetMin) : "");
+    setBudgetMax(project.budgetMax != null ? String(project.budgetMax) : "");
+    setWorkType(project.workType ?? "remote");
   }, [project]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e) => e.key === "Escape" && !isUpdating && onClose?.();
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [isOpen, isUpdating, onClose]);
+
+  if (!isOpen) return null;
+  if (typeof window === "undefined") return null;
 
   const handleUpdate = async (e) => {
     e.preventDefault();
     if (!project?._id || !onUpdate) return;
-
     setIsUpdating(true);
     try {
       const fields = {
@@ -37,126 +55,148 @@ export default function ProposalModal1({ project, onUpdate }) {
       };
       if (budgetMin !== "") fields.budgetMin = Number(budgetMin);
       if (budgetMax !== "") fields.budgetMax = Number(budgetMax);
-
       await onUpdate(fields);
-      closeRef.current?.click();
+      onClose?.();
     } catch {
-      // Error handled by parent via toast
+      // parent shows toast
     } finally {
       setIsUpdating(false);
     }
   };
 
-  return (
+  const labelStyle = {
+    display: "block",
+    fontFamily: "var(--font-display)",
+    fontSize: "var(--text-body-sm)",
+    fontWeight: 500,
+    color: "var(--text-primary)",
+    marginBottom: "var(--space-2)",
+  };
+
+  return createPortal(
     <div
-      className="modal fade"
-      id="proposalModal"
-      tabIndex={-1}
-      aria-labelledby="proposalModalLabel"
-      aria-hidden="true"
-      data-testid="manage-project-edit-modal"
+      role="dialog"
+      aria-modal="true"
+      onClick={() => !isUpdating && onClose?.()}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 9999,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "var(--space-4)",
+        background: "oklch(22% 0.02 60 / 0.45)",
+        backdropFilter: "blur(4px)",
+      }}
     >
-      <div className="modal-dialog modal-dialog-centered">
-        <div className="modal-content relative">
+      <div
+        className="modal"
+        style={{ maxWidth: 560, width: "100%" }}
+        onClick={(e) => e.stopPropagation()}
+        data-testid="manage-project-edit-modal"
+      >
+        <div className="modal__header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <h3 className="h4" style={{ margin: 0 }}>{t("editProject")}</h3>
           <button
-            ref={closeRef}
             type="button"
-            className="btn-close absolute"
-            data-bs-dismiss="modal"
+            className="btn btn--ghost btn--icon btn--sm"
+            onClick={() => !isUpdating && onClose?.()}
             aria-label="Close"
-            style={{ top: "10px", right: "10px", zIndex: "9" }}
-          />
-          <div className="modal-body p-4">
-            <h4 className="mb20">{t("editProject")}</h4>
-            <form onSubmit={handleUpdate}>
-              <div className="mb-3">
-                <label className="form-label fw500">{t("labelTitle")}</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  required
-                  data-testid="manage-project-edit-title"
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label fw500">{t("labelDescription")}</label>
-                <textarea
-                  className="form-control"
-                  rows={4}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  required
-                  data-testid="manage-project-edit-description"
-                />
-              </div>
-              <div className="row">
-                <div className="col">
-                  <div className="mb-3">
-                    <label className="form-label fw500">{t("labelBudgetMin")}</label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      value={budgetMin}
-                      onChange={(e) => setBudgetMin(e.target.value)}
-                      min="0"
-                      data-testid="manage-project-edit-budget-min"
-                    />
-                  </div>
-                </div>
-                <div className="col">
-                  <div className="mb-3">
-                    <label className="form-label fw500">{t("labelBudgetMax")}</label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      value={budgetMax}
-                      onChange={(e) => setBudgetMax(e.target.value)}
-                      min="0"
-                      data-testid="manage-project-edit-budget-max"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="mb-3">
-                <label className="form-label fw500">{t("labelWorkType")}</label>
-                <select
-                  className="form-select"
-                  value={workType}
-                  onChange={(e) => setWorkType(e.target.value)}
-                  data-testid="manage-project-edit-work-type"
-                >
-                  <option value="remote">{t("remote")}</option>
-                  <option value="local">{t("onSite")}</option>
-                  <option value="hybrid">{t("hybrid")}</option>
-                </select>
-              </div>
-              <button
-                type="submit"
-                className="ud-btn btn-thm"
-                disabled={isUpdating}
-                data-testid="manage-project-edit-submit"
-              >
-                {isUpdating ? (
-                  <>
-                    <span
-                      className="spinner-border spinner-border-sm me-2"
-                      role="status"
-                    />
-                    {t("updating")}
-                  </>
-                ) : (
-                  <>
-                    {t("update")}
-                    <i className="fal fa-arrow-right-long" />
-                  </>
-                )}
-              </button>
-            </form>
-          </div>
+            disabled={isUpdating}
+          >
+            <X size={16} />
+          </button>
         </div>
+        <form onSubmit={handleUpdate}>
+          <div className="modal__body">
+            <div style={{ marginBottom: "var(--space-4)" }}>
+              <label style={labelStyle}>{t("labelTitle")}</label>
+              <input
+                type="text"
+                className="input"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+                data-testid="manage-project-edit-title"
+                style={{ width: "100%" }}
+              />
+            </div>
+            <div style={{ marginBottom: "var(--space-4)" }}>
+              <label style={labelStyle}>{t("labelDescription")}</label>
+              <textarea
+                className="input"
+                rows={4}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+                data-testid="manage-project-edit-description"
+                style={{ width: "100%", minHeight: 96, resize: "vertical" }}
+              />
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "var(--space-3)",
+                marginBottom: "var(--space-4)",
+              }}
+            >
+              <div>
+                <label style={labelStyle}>{t("labelBudgetMin")}</label>
+                <input
+                  type="number"
+                  className="input"
+                  value={budgetMin}
+                  onChange={(e) => setBudgetMin(e.target.value)}
+                  style={{ width: "100%" }}
+                />
+              </div>
+              <div>
+                <label style={labelStyle}>{t("labelBudgetMax")}</label>
+                <input
+                  type="number"
+                  className="input"
+                  value={budgetMax}
+                  onChange={(e) => setBudgetMax(e.target.value)}
+                  style={{ width: "100%" }}
+                />
+              </div>
+            </div>
+            <div>
+              <label style={labelStyle}>{t("labelWorkType")}</label>
+              <select
+                className="input"
+                value={workType}
+                onChange={(e) => setWorkType(e.target.value)}
+                style={{ width: "100%" }}
+              >
+                <option value="remote">{t("workTypeRemote")}</option>
+                <option value="onsite">{t("workTypeOnsite")}</option>
+                <option value="hybrid">{t("workTypeHybrid")}</option>
+              </select>
+            </div>
+          </div>
+          <div className="modal__footer">
+            <button
+              type="button"
+              className="btn btn--secondary"
+              onClick={() => onClose?.()}
+              disabled={isUpdating}
+            >
+              {t("cancel")}
+            </button>
+            <button
+              type="submit"
+              className="btn btn--primary"
+              disabled={isUpdating}
+            >
+              {isUpdating ? t("saving") : t("save")}
+            </button>
+          </div>
+        </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

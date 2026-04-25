@@ -13,7 +13,6 @@ function SectionHeader({ title, modalType, onAdd, setModalType }) {
       <h5 className="list-title mb-0">{title}</h5>
       <button
         className="ud-btn btn-thm btn-sm"
-        data-bs-toggle="modal"
         data-bs-target="#experienceModal"
         onClick={() => {
           setModalType(modalType);
@@ -116,7 +115,6 @@ export default function ExperienceTab() {
                 <a
                   className="icon"
                   style={{ cursor: "pointer" }}
-                  data-bs-toggle="modal"
                   data-bs-target="#experienceModal"
                   onClick={() => handleEdit("work", item)}
                 >
@@ -170,7 +168,6 @@ export default function ExperienceTab() {
                 <a
                   className="icon"
                   style={{ cursor: "pointer" }}
-                  data-bs-toggle="modal"
                   data-bs-target="#experienceModal"
                   onClick={() => handleEdit("education", item)}
                 >

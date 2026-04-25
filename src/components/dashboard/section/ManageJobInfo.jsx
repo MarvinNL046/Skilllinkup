@@ -15,6 +15,8 @@ export default function ManageJobInfo() {
   const t = useTranslations("manageJobs");
   const [selectedTab, setSelectedTab] = useState(0);
   const [selectedJob, setSelectedJob] = useState(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
 
   const removeJob = useMutation(api.marketplace.jobs.remove);
@@ -221,8 +223,8 @@ export default function ManageJobInfo() {
                           <ManageJobCard
                             key={job._id}
                             job={job}
-                            onEdit={(j) => setSelectedJob(j)}
-                            onDelete={(j) => setSelectedJob(j)}
+                            onEdit={(j) => { setSelectedJob(j); setEditOpen(true); }}
+                            onDelete={(j) => { setSelectedJob(j); setDeleteOpen(true); }}
                           />
                         ))}
                       </tbody>
@@ -235,10 +237,14 @@ export default function ManageJobInfo() {
         </div>
       </div>
       <ProposalModal1
+        isOpen={editOpen}
+        onClose={() => setEditOpen(false)}
         project={selectedJob}
         onUpdate={handleUpdate}
       />
       <DeleteModal
+        isOpen={deleteOpen}
+        onClose={() => setDeleteOpen(false)}
         projectId={selectedJob?._id}
         projectTitle={selectedJob?.title}
         onDelete={handleDelete}

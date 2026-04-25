@@ -142,12 +142,45 @@ export default function ProfileDetails() {
   // Still loading: Clerk or Convex user not yet resolved
   if (!isLoaded || convexUser === undefined) {
     return (
-      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
-        <div className="bdrb1 pb15 mb25"><h5 className="list-title">{t("profileDetails")}</h5></div>
-        <div className="flex items-center gap-2">
-          <div className="spinner-border spinner-border-sm text-success" role="status" />
-          <p className="text mb-0">{t("loadingProfile")}</p>
+      <div
+        className="card"
+        style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}
+      >
+        <div
+          style={{
+            paddingBottom: "var(--space-4)",
+            marginBottom: "var(--space-5)",
+            borderBottom: "1px solid var(--border-subtle)",
+          }}
+        >
+          <div
+            aria-hidden="true"
+            style={{
+              height: 20,
+              width: 200,
+              borderRadius: "var(--radius-sm)",
+              background: "var(--surface-2)",
+              animation: "skl-pulse 1.4s ease-in-out infinite",
+            }}
+          />
         </div>
+        <div style={{ display: "grid", gap: "var(--space-3)" }} aria-hidden="true">
+          {[120, 90, 110, 95, 80].map((w, i) => (
+            <div
+              key={i}
+              style={{
+                display: "grid",
+                gridTemplateColumns: `${w}px 1fr`,
+                gap: "var(--space-4)",
+                alignItems: "center",
+              }}
+            >
+              <div style={{ height: 14, borderRadius: 4, background: "var(--surface-2)", animation: "skl-pulse 1.4s ease-in-out infinite", animationDelay: `${i * 0.05}s` }} />
+              <div style={{ height: 36, borderRadius: "var(--radius-sm)", background: "var(--surface-2)", animation: "skl-pulse 1.4s ease-in-out infinite", animationDelay: `${i * 0.05 + 0.04}s` }} />
+            </div>
+          ))}
+        </div>
+        <span className="visually-hidden" role="status">{t("loadingProfile")}</span>
       </div>
     );
   }
@@ -198,12 +231,45 @@ export default function ProfileDetails() {
   // Profile query still loading (profile === undefined but userType is freelancer)
   if (profile === undefined) {
     return (
-      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
-        <div className="bdrb1 pb15 mb25"><h5 className="list-title">{t("profileDetails")}</h5></div>
-        <div className="flex items-center gap-2">
-          <div className="spinner-border spinner-border-sm text-success" role="status" />
-          <p className="text mb-0">{t("loadingProfile")}</p>
+      <div
+        className="card"
+        style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}
+      >
+        <div
+          style={{
+            paddingBottom: "var(--space-4)",
+            marginBottom: "var(--space-5)",
+            borderBottom: "1px solid var(--border-subtle)",
+          }}
+        >
+          <div
+            aria-hidden="true"
+            style={{
+              height: 20,
+              width: 200,
+              borderRadius: "var(--radius-sm)",
+              background: "var(--surface-2)",
+              animation: "skl-pulse 1.4s ease-in-out infinite",
+            }}
+          />
         </div>
+        <div style={{ display: "grid", gap: "var(--space-3)" }} aria-hidden="true">
+          {[120, 90, 110, 95, 80].map((w, i) => (
+            <div
+              key={i}
+              style={{
+                display: "grid",
+                gridTemplateColumns: `${w}px 1fr`,
+                gap: "var(--space-4)",
+                alignItems: "center",
+              }}
+            >
+              <div style={{ height: 14, borderRadius: 4, background: "var(--surface-2)", animation: "skl-pulse 1.4s ease-in-out infinite", animationDelay: `${i * 0.05}s` }} />
+              <div style={{ height: 36, borderRadius: "var(--radius-sm)", background: "var(--surface-2)", animation: "skl-pulse 1.4s ease-in-out infinite", animationDelay: `${i * 0.05 + 0.04}s` }} />
+            </div>
+          ))}
+        </div>
+        <span className="visually-hidden" role="status">{t("loadingProfile")}</span>
       </div>
     );
   }

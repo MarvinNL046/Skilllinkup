@@ -108,8 +108,6 @@ export default function ManageProjectCard({ project, onEdit, onDelete }) {
             type="button"
             className="icon me-2"
             id={tooltipEditId}
-            data-bs-toggle="modal"
-            data-bs-target="#proposalModal"
             onClick={() => onEdit?.(project)}
             style={{ cursor: "pointer", border: "none", background: "transparent", padding: 0 }}
             data-testid="manage-project-edit"
@@ -123,8 +121,6 @@ export default function ManageProjectCard({ project, onEdit, onDelete }) {
             type="button"
             className="icon"
             id={tooltipDeleteId}
-            data-bs-toggle="modal"
-            data-bs-target="#deleteModal"
             onClick={() => onDelete?.(project)}
             style={{ cursor: "pointer", border: "none", background: "transparent", padding: 0 }}
             data-testid="manage-project-delete"

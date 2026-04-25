@@ -17,7 +17,7 @@ export default function page() {
     <>
 
     <MobileNavigation2 />
-      <DashboardLayout>
+      <DashboardLayout maxWidth="medium">
         <Suspense>
           <MyProfileInfo />
         </Suspense>

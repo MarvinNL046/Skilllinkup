@@ -16,7 +16,7 @@ export default async function ProjectBidsPage({ params }) {
   return (
     <>
       <MobileNavigation2 />
-      <DashboardLayout>
+      <DashboardLayout maxWidth="full">
         <ProjectBidsInfo projectId={id} />
       </DashboardLayout>
     </>

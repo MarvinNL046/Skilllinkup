@@ -61,7 +61,6 @@ function ProjectCard({ project, onEdit, onDelete }) {
             <button
               className="ud-btn btn-white btn-sm"
               onClick={() => onEdit(project)}
-              data-bs-toggle="modal"
               data-bs-target="#portfolioModal"
             >
               <span className="flaticon-pencil me-1" />
@@ -118,7 +117,6 @@ export default function PortfolioTab() {
           <h5 className="list-title">Portfolio Projects</h5>
           <button
             className="ud-btn btn-thm btn-sm"
-            data-bs-toggle="modal"
             data-bs-target="#portfolioModal"
             onClick={handleAddNew}
           >
@@ -134,7 +132,6 @@ export default function PortfolioTab() {
             </p>
             <button
               className="ud-btn btn-thm"
-              data-bs-toggle="modal"
               data-bs-target="#portfolioModal"
               onClick={handleAddNew}
             >

@@ -1,0 +1,96 @@
+/* ============================================================
+   SkillLinkup — Dashboard app-shell layout
+   Full-width app pattern: sticky header at top, sticky sidebar
+   pinned to the left viewport edge, content takes the rest.
+   Per-route max-width is opt-in via data-max-width on the content
+   slot so dashboard tables can sprawl while forms stay readable.
+   ============================================================ */
+
+:root {
+  --dash-sidebar-w:           264px;
+  --dash-sidebar-w-collapsed: 72px;
+  --dash-topbar-h:            64px;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: var(--dash-sidebar-w) 1fr;
+  min-height: calc(100vh - var(--dash-topbar-h));
+  background: var(--bg);
+}
+
+.app-shell[data-sidebar="collapsed"] {
+  grid-template-columns: var(--dash-sidebar-w-collapsed) 1fr;
+}
+
+.app-shell__sidebar {
+  position: sticky;
+  top: var(--dash-topbar-h);
+  align-self: start;
+  height: calc(100vh - var(--dash-topbar-h));
+  overflow-y: auto;
+  border-right: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+  z-index: 10;
+}
+
+.app-shell__content {
+  min-width: 0; /* essential — lets flex/grid children shrink instead of overflowing */
+  padding: var(--space-6) var(--space-8);
+}
+
+/* Per-route content width — opt-in via data-max-width */
+.app-shell__content[data-max-width="form"]   { max-width: 880px;  margin-right: auto; margin-left: auto; }
+.app-shell__content[data-max-width="medium"] { max-width: 1100px; margin-right: auto; margin-left: auto; }
+.app-shell__content[data-max-width="wide"]   { max-width: 1400px; margin-right: auto; margin-left: auto; }
+/* default = full-width — no max-width, no auto margin */
+
+/* Tablet — sidebar collapses to 72px icon rail */
+@media (max-width: 1279px) and (min-width: 1024px) {
+  .app-shell {
+    grid-template-columns: var(--dash-sidebar-w-collapsed) 1fr;
+  }
+  .app-shell__sidebar {
+    --dash-sidebar-w: var(--dash-sidebar-w-collapsed);
+  }
+  .app-shell__content {
+    padding: var(--space-5) var(--space-6);
+  }
+}
+
+/* Mobile — sidebar becomes a slide-out drawer */
+@media (max-width: 1023px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+  .app-shell__sidebar {
+    position: fixed;
+    left: 0;
+    top: var(--dash-topbar-h);
+    bottom: 0;
+    width: min(86vw, 320px);
+    transform: translateX(-100%);
+    transition: transform 240ms var(--ease-standard, ease-out);
+    box-shadow: var(--shadow-3);
+    z-index: 50;
+  }
+  .app-shell__sidebar[data-mobile-open="true"] {
+    transform: translateX(0);
+  }
+  .app-shell__content {
+    padding: var(--space-5) var(--space-4);
+  }
+  .app-shell__backdrop {
+    position: fixed;
+    inset: var(--dash-topbar-h) 0 0 0;
+    background: oklch(22% 0.02 60 / 0.45);
+    backdrop-filter: blur(2px);
+    z-index: 40;
+  }
+}
+
+/* Skeleton pulse animation used by dashboard loading states */
+@keyframes skl-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}

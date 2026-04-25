@@ -114,8 +114,6 @@ export default function ProposalCard1({ data, bid }) {
             <a
               className="icon me-2"
               id={tooltipEditId}
-              data-bs-toggle="modal"
-              data-bs-target="#proposalModal"
             >
               <Tooltip anchorSelect={`#${tooltipEditId}`} className="ui-tooltip">
                 {t("edit")}
@@ -125,8 +123,6 @@ export default function ProposalCard1({ data, bid }) {
             <a
               className="icon"
               id={tooltipDeleteId}
-              data-bs-toggle="modal"
-              data-bs-target="#deleteModal"
             >
               <Tooltip anchorSelect={`#${tooltipDeleteId}`} className="ui-tooltip">
                 {t("delete")}

@@ -16,7 +16,7 @@ export default function page() {
     <>
 
     <MobileNavigation2 />
-      <DashboardLayout>
+      <DashboardLayout maxWidth="wide">
         <ProposalInfo />
       </DashboardLayout>
     </>

@@ -14,7 +14,7 @@ export default function FeedbackPage() {
   return (
     <>
       <MobileNavigation2 />
-      <DashboardLayout>
+      <DashboardLayout maxWidth="medium">
         <FeedbackInfo />
       </DashboardLayout>
     </>

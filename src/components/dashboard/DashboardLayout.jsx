@@ -5,23 +5,29 @@ import { useRouter, usePathname } from "next/navigation";
 import useConvexUser from "@/hook/useConvexUser";
 import DashboardHeader from "./header/DashboardHeader";
 import DashboardSidebar from "./sidebar/DashboardSidebar";
-import toggleStore from "@/store/toggleStore";
+import dashboardSidebarStore from "@/store/dashboardSidebarStore";
 
 /**
- * Dashboard shell on the SkillLinkup Design System.
+ * Dashboard app-shell — full-width layout, NOT a centered marketing
+ * container. The sidebar pins to the left viewport edge (sticky), the
+ * content takes the remaining width with an opt-in max-width per route.
  *
- * - Sticky DashboardHeader at the top (DS-native, no Bootstrap JS)
- * - DashboardSidebar on the left (lg+) with world switcher + nav groups
- * - Main content fills the rest
+ * maxWidth options:
+ *   "full"   — no constraint (default; dashboards, messages)
+ *   "wide"   — 1400px (listings: orders, saved, manage-*)
+ *   "medium" — 1100px (profile, rewards, feedback)
+ *   "form"   — 880px  (create-projects, add-services, settings forms)
  *
- * Auth gate: unauthenticated -> /login; missing userType/preferredWorld
- * -> /onboarding.
+ * Auth gate: unauthenticated → /login; missing userType / preferredWorld
+ * → /onboarding.
  */
-export default function DashboardLayout({ children }) {
+export default function DashboardLayout({ children, maxWidth = "full" }) {
   const router = useRouter();
   const pathname = usePathname();
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
-  const sidebarHidden = toggleStore((s) => s.isDasboardSidebarActive);
+  const collapsed = dashboardSidebarStore((s) => s.collapsed);
+  const mobileOpen = dashboardSidebarStore((s) => s.mobileOpen);
+  const closeMobile = dashboardSidebarStore((s) => s.closeMobile);
 
   useEffect(() => {
     if (isLoaded && !isAuthenticated) {
@@ -37,22 +43,36 @@ export default function DashboardLayout({ children }) {
     }
   }, [convexUser, isLoaded, isAuthenticated, pathname, router]);
 
+  // Close mobile drawer on route change so navigation away dismisses it
+  useEffect(() => {
+    closeMobile();
+  }, [pathname, closeMobile]);
+
   return (
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
       <DashboardHeader />
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: sidebarHidden ? "1fr" : "minmax(240px, 280px) 1fr",
-          gap: 0,
-          maxWidth: "var(--container-xl, 1280px)",
-          margin: "0 auto",
-          padding: "0 var(--space-6)",
-        }}
-        className="dashboard-shell"
+        className="app-shell"
+        data-sidebar={collapsed ? "collapsed" : "expanded"}
       >
-        {!sidebarHidden && <DashboardSidebar />}
-        <main style={{ minWidth: 0, padding: "var(--space-8) 0" }}>
+        <aside
+          className="app-shell__sidebar"
+          data-mobile-open={mobileOpen ? "true" : "false"}
+        >
+          <DashboardSidebar />
+        </aside>
+        {mobileOpen && (
+          <div
+            className="app-shell__backdrop"
+            onClick={closeMobile}
+            aria-hidden="true"
+          />
+        )}
+        <main
+          className="app-shell__content"
+          data-max-width={maxWidth}
+          id="dashboard-content"
+        >
           {children}
         </main>
       </div>
