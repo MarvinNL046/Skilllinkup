@@ -35,9 +35,17 @@
    page so detail/listing pages don't feel "cold". The gradient is
    anchored to the page (not viewport) so the footer always butts up
    against its own --bg-sunken without a strip of body bg showing
-   through underneath. ~5% chroma so it never dominates content. */
-html, body { min-height: 100%; }
+   through underneath. ~5% chroma so it never dominates content.
+
+   Sticky-footer pattern: html+body fill the viewport, body is a flex
+   column, main grows to fill, footer (rendered as the last child of
+   main on most routes) gets margin-top: auto so it always sits at the
+   bottom even on short pages (404, empty states, loaders). */
+html, body { height: 100%; }
 body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
   font-family: var(--font-sans);
   color: var(--text-primary);
   background:
@@ -46,6 +54,15 @@ body {
     var(--bg);
   background-repeat: no-repeat;
   background-size: 100% 800px, 100% 800px, auto;
+}
+main#main-content {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+main#main-content > footer {
+  margin-top: auto;
 }
 [data-theme="dark"] body {
   background:
