@@ -69,7 +69,11 @@
       "videoEditing": "edición de vídeo",
       "graphicDesign": "diseño grafico",
       "contentWriting": "redacción de contenidos"
-    }
+    },
+    "waitlistAlreadyJoined": "ya en la lista",
+    "worldWhatsComing": "Lo que llegará cuando lancemos",
+    "worldCategoriesTitle": "Categorías que construimos primero",
+    "worldCategoriesHint": "Las categorías crecerán cuando más freelancers se unan a la lista."
   },
   "stats": {
     "freelancers": "autónomos",

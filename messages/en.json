@@ -69,7 +69,11 @@
       "videoEditing": "video editing",
       "graphicDesign": "graphic design",
       "contentWriting": "content writing"
-    }
+    },
+    "waitlistAlreadyJoined": "already on the list",
+    "worldWhatsComing": "What's coming when we launch",
+    "worldCategoriesTitle": "Categories we're building first",
+    "worldCategoriesHint": "Categories will expand as more freelancers join the waitlist."
   },
   "stats": {
     "freelancers": "Freelancers",

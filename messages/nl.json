@@ -69,7 +69,11 @@
       "videoEditing": "video bewerking",
       "graphicDesign": "grafisch ontwerp",
       "contentWriting": "content schrijven"
-    }
+    },
+    "waitlistAlreadyJoined": "al aangemeld",
+    "worldWhatsComing": "Wat er komt zodra we live gaan",
+    "worldCategoriesTitle": "Categorieën die we als eerste bouwen",
+    "worldCategoriesHint": "Categorieën breiden uit zodra meer freelancers zich aanmelden."
   },
   "stats": {
     "freelancers": "Freelancers",

@@ -69,7 +69,11 @@
       "videoEditing": "montage vidéo",
       "graphicDesign": "conception graphique",
       "contentWriting": "rédaction de contenu"
-    }
+    },
+    "waitlistAlreadyJoined": "déjà inscrit·e",
+    "worldWhatsComing": "Ce qui arrive au lancement",
+    "worldCategoriesTitle": "Les catégories que nous construisons d'abord",
+    "worldCategoriesHint": "Les catégories s'étendent à mesure que de nouveaux freelances rejoignent."
   },
   "stats": {
     "freelancers": "Indépendants",

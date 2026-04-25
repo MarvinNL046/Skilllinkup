@@ -69,7 +69,11 @@
       "videoEditing": "Videobearbeitung",
       "graphicDesign": "Grafikdesign",
       "contentWriting": "Schreiben von Inhalten"
-    }
+    },
+    "waitlistAlreadyJoined": "bereits angemeldet",
+    "worldWhatsComing": "Was beim Launch kommt",
+    "worldCategoriesTitle": "Kategorien, die wir zuerst aufbauen",
+    "worldCategoriesHint": "Kategorien werden erweitert, sobald mehr Freelancer beitreten."
   },
   "stats": {
     "freelancers": "Freiberufler",
