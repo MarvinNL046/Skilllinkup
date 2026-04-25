@@ -246,9 +246,9 @@ export default function PrelaunchWorld({
                 gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
               }}
             >
-              {categories.map((cat) => (
+              {categories.map((cat, i) => (
                 <Link
-                  key={cat.href || cat.name}
+                  key={`${cat.name}-${i}`}
                   href={cat.href || "#"}
                   className="card group"
                   style={{
