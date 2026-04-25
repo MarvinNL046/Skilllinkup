@@ -111,6 +111,7 @@ export default function WaitlistButton({
         <div
           role="dialog"
           aria-modal="true"
+          aria-labelledby="waitlist-title"
           style={{
             position: "fixed",
             inset: 0,
@@ -148,9 +149,9 @@ export default function WaitlistButton({
                         <Sparkles size={13} strokeWidth={2.2} />
                         <span>{counterLabel()}</span>
                       </div>
-                      <h3 className="h3" style={{ margin: 0 }}>
+                      <h2 id="waitlist-title" className="h3" style={{ margin: 0 }}>
                         {t("headline")}
-                      </h3>
+                      </h2>
                     </div>
                     <button
                       type="button"
@@ -201,6 +202,9 @@ export default function WaitlistButton({
                         onChange={(e) => setEmail(e.target.value)}
                         required
                         autoFocus
+                        autoComplete="email"
+                        inputMode="email"
+                        aria-invalid={error ? "true" : undefined}
                       />
                     </div>
 
@@ -231,7 +235,12 @@ export default function WaitlistButton({
                     </div>
 
                     {error && (
-                      <p className="field__hint field__hint--error" style={{ marginBottom: 10 }}>
+                      <p
+                        role="alert"
+                        aria-live="assertive"
+                        className="field__hint field__hint--error"
+                        style={{ marginBottom: 10 }}
+                      >
                         {error}
                       </p>
                     )}
@@ -249,6 +258,8 @@ export default function WaitlistButton({
               </>
             ) : (
               <div
+                role="status"
+                aria-live="polite"
                 className="modal__body"
                 style={{ textAlign: "center", paddingTop: "var(--space-7)" }}
               >
@@ -264,9 +275,9 @@ export default function WaitlistButton({
                 >
                   <Check size={28} strokeWidth={2.4} />
                 </div>
-                <h3 className="h3" style={{ margin: "0 0 8px" }}>
+                <h2 id="waitlist-title" className="h3" style={{ margin: "0 0 8px" }}>
                   {t("successTitle")}
-                </h3>
+                </h2>
                 <p className="body-sm" style={{ color: "var(--text-secondary)", marginBottom: 16 }}>
                   {t("successDescription")}
                 </p>
