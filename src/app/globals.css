@@ -195,29 +195,57 @@ a.btn-thm {
   to   { transform: rotate(360deg); }
 }
 
-/* ace-responsive-menu sub-menu — upstream sets background:#333 (line 91 of
-   ace-responsive-menu.css) which made the Categories/Browse mega-menu
-   unreadable (dark bg + dark text). Restyle to DS card with primary-tinted
-   hover and proper text color. */
-.ace-responsive-menu li ul.sub-menu,
-.dropdown-megamenu,
-.ace-responsive-menu li ul.sub-menu > li ul.sub-menu {
+/* ace-responsive-menu mega-menu — upstream sets background:#333 (line 91
+   of ace-responsive-menu.css) which made Categories/Browse unreadable
+   (dark bg + dark text). Outer .dropdown-megamenu becomes the DS card;
+   inner .sub-menu is flattened so we don't get nested-card visuals. */
+.dropdown-megamenu {
   background: var(--bg-elevated) !important;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-3);
-  padding: var(--space-2);
+  padding: var(--space-3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
+.dropdown-megamenu > li.mega_menu_list {
+  flex: 1 1 200px;
+  min-width: 0;
+  padding: 0;
+}
+.dropdown-megamenu ul.sub-menu,
+.ace-responsive-menu li ul.sub-menu,
+.ace-responsive-menu li ul.sub-menu > li ul.sub-menu {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0;
+  list-style: none;
+  margin: 0;
+}
+.dropdown-megamenu ul.sub-menu > li,
+.ace-responsive-menu li ul.sub-menu > li {
+  width: auto !important;
+  list-style: none;
+}
+.dropdown-megamenu ul.sub-menu li a,
 .ace-responsive-menu li ul.sub-menu li a,
-.dropdown-megamenu li a {
+.dropdown-megamenu li > a {
   color: var(--text-primary) !important;
   border-radius: var(--radius-md);
-  padding: 8px 12px;
+  padding: 8px 12px !important;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   transition: background var(--dur-base) var(--ease-standard, ease-out),
               color var(--dur-base) var(--ease-standard, ease-out);
+  text-decoration: none;
 }
+.dropdown-megamenu ul.sub-menu li a:hover,
 .ace-responsive-menu li ul.sub-menu li a:hover,
-.dropdown-megamenu li a:hover {
+.dropdown-megamenu li > a:hover {
   background: var(--primary-50) !important;
   color: var(--primary-700) !important;
 }

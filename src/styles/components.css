@@ -385,9 +385,9 @@
   max-width: 480px; width: 100%;
   overflow: hidden;
 }
-.modal__header { padding: var(--space-6) var(--space-6) var(--space-2); }
-.modal__body { padding: 0 var(--space-6) var(--space-4); color: var(--text-secondary); }
-.modal__footer { display: flex; justify-content: flex-end; gap: var(--space-3); padding: var(--space-4) var(--space-6); border-top: 1px solid var(--border-subtle); background: var(--bg-sunken); }
+.modal__header { padding: var(--space-6) var(--space-6) var(--space-4); }
+.modal__body { padding: var(--space-2) var(--space-6) var(--space-6); color: var(--text-secondary); }
+.modal__footer { display: flex; justify-content: flex-end; gap: var(--space-3); padding: var(--space-5) var(--space-6); border-top: 1px solid var(--border-subtle); background: var(--bg-sunken); }
 
 .toast {
   display: flex; gap: var(--space-4); align-items: flex-start;

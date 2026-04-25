@@ -18,10 +18,24 @@ import { ChevronLeft, ChevronRight, ImageIcon } from "lucide-react";
  * - DS card wrapper with radius-2xl, no dark letterbox.
  * - Prev/Next buttons rebuilt on .btn .btn--secondary with lucide icons.
  */
+/**
+ * Filter out template/placeholder URLs so we render the DS gradient card
+ * instead of "839×548" stock placeholders. The Uideck template seeded
+ * these paths at install time; real gig uploads land under /uploads/
+ * or external CDNs (cloudinary, convex storage).
+ */
+function isRealImage(src) {
+  if (typeof src !== "string" || !src) return false;
+  if (src.includes("/images/listings/service-details")) return false;
+  if (src.includes("placeholder")) return false;
+  return true;
+}
+
 export default function ServiceDetailSlider2({ images = [], title }) {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
-  const hasImages = Array.isArray(images) && images.length > 0;
-  const slides = hasImages ? images : [null];
+  const realImages = Array.isArray(images) ? images.filter(isRealImage) : [];
+  const hasImages = realImages.length > 0;
+  const slides = hasImages ? realImages : [null];
 
   return (
     <div style={{ marginBottom: "var(--space-6)" }}>
@@ -148,7 +162,7 @@ export default function ServiceDetailSlider2({ images = [], title }) {
         )}
       </div>
 
-      {hasImages && images.length > 1 && (
+      {hasImages && realImages.length > 1 && (
         <div style={{ marginTop: "var(--space-3)" }}>
           <Swiper
             onSwiper={setThumbsSwiper}
@@ -160,7 +174,7 @@ export default function ServiceDetailSlider2({ images = [], title }) {
             modules={[FreeMode, Navigation, Thumbs]}
             className="mySwiper ui-service-gig-slder-bottom"
           >
-            {images.map((src, i) => (
+            {realImages.map((src, i) => (
               <SwiperSlide key={i}>
                 <Image
                   height={112}

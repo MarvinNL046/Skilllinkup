@@ -103,7 +103,7 @@ export default function WaitlistButton({
           >
             {!done ? (
               <>
-                <div className="modal__header" style={{ padding: "24px 24px 8px" }}>
+                <div className="modal__header">
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <div
@@ -219,7 +219,7 @@ export default function WaitlistButton({
                 </div>
               </>
             ) : (
-              <div className="modal__body" style={{ padding: "32px 24px 28px", textAlign: "center" }}>
+              <div className="modal__body" style={{ textAlign: "center", paddingTop: "var(--space-7)" }}>
                 <div
                   className="inline-flex items-center justify-center mb-4"
                   style={{

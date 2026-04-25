@@ -302,7 +302,7 @@ export default function ServiceDetail3() {
                           freelancer={data?.freelancer}
                         />
                         {gigData?.freelancerProfile?.userId && (
-                          <div className="mt20">
+                          <div style={{ marginTop: "var(--space-3)" }}>
                             <ContactButton
                               recipientId={gigData.freelancerProfile.userId}
                               className="w-100"
