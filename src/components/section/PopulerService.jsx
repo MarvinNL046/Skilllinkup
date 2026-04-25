@@ -38,7 +38,7 @@ export default function PopulerService() {
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-            gap: "var(--space-5)",
+            gap: "var(--space-8)",
           }}
         >
           {(gigs || []).slice(0, 4).map((item, i) => (

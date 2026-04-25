@@ -44,7 +44,7 @@ export default function ServiceDetailPrice1({ packages = [], gigId }) {
     return (
       <div
         className="card"
-        style={{ padding: "var(--space-7)", marginBottom: "var(--space-6)" }}
+        style={{ padding: "var(--space-6)", marginBottom: "var(--space-5)" }}
       >
         <p
           className="body-sm"
@@ -60,8 +60,8 @@ export default function ServiceDetailPrice1({ packages = [], gigId }) {
     <div
       className="card"
       style={{
-        padding: "var(--space-7)",
-        marginBottom: "var(--space-6)",
+        padding: "var(--space-6)",
+        marginBottom: "var(--space-5)",
       }}
     >
       {/* Segmented control: tier tabs */}
