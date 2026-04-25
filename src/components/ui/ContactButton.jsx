@@ -4,6 +4,7 @@ import { useMutation } from "convex/react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { Mail } from "lucide-react";
 import { api } from "../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 
@@ -42,12 +43,13 @@ export default function ContactButton({ recipientId, className = "" }) {
 
   return (
     <button
-      className={`ud-btn btn-thm2 ${className}`}
+      className={`btn btn--secondary ${className}`}
       onClick={handleContact}
       disabled={isLoading}
+      style={{ justifyContent: "center" }}
     >
+      <Mail size={16} />
       {isLoading ? t("openingChat") : t("contact")}
-      <i className="fal fa-envelope ms-2"></i>
     </button>
   );
 }

@@ -172,6 +172,23 @@ a.btn-thm {
   box-shadow: var(--shadow-2) !important;
 }
 
+/* Kill upstream dark letterbox on legacy gig slider (style.css line 10056
+   sets background:#404040 on .service-single-sldier:after which created
+   the black-bordered look). Any remaining legacy slider falls back to
+   the page background instead. */
+.service-single-sldier:after {
+  background-color: transparent !important;
+}
+
+/* Announcement bar — single-line ellipsis below md, full wrap from md+ */
+@media (min-width: 768px) {
+  .announcement-text {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+}
+
 /* Shared spinner keyframe for DS loading states */
 @keyframes spin {
   from { transform: rotate(0deg); }

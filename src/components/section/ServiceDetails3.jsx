@@ -199,7 +199,7 @@ export default function ServiceDetail3() {
               )}
             </div>
 
-            <ServiceDetailSlider2 />
+            <ServiceDetailSlider2 images={data?.images || []} title={data?.title} />
             <div className="service-about">
               {description && (
                 <div
