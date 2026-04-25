@@ -1466,7 +1466,8 @@
     "sendFailed": "Bericht kon niet worden verstuurd.",
     "backToConversations": "Terug naar gesprekken",
     "contactBlocked": "Contactgegevens delen is niet toegestaan. E-mailadressen, telefoonnummers, links en e-mailproviders (Gmail, Outlook, etc.) worden geblokkeerd.",
-    "file": "[Bestand] {name}"
+    "file": "[Bestand] {name}",
+    "findClients": "Vind klanten"
   },
   "reviews": {
     "title": "Reviews",
@@ -1517,7 +1518,10 @@
     "untitled": "Naamloos",
     "savedItem": "Opgeslagen item",
     "view": "Bekijken",
-    "remove": "Verwijderen"
+    "remove": "Verwijderen",
+    "browseServices": "Bekijk diensten",
+    "browseProjects": "Bekijk projecten",
+    "browseJobs": "Bekijk vacatures"
   },
   "proposals": {
     "title": "Mijn voorstellen",

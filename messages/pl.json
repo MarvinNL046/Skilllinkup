@@ -1466,7 +1466,8 @@
     "sendFailed": "Nie udało się wysłać wiadomości.",
     "backToConversations": "Wracając do rozmów",
     "contactBlocked": "Udostępnianie informacji kontaktowych jest niedozwolone. Adresy e-mail, numery telefonów, łącza i dostawcy poczty e-mail (Gmail, Outlook itp.) są blokowane.",
-    "file": "[Plik] {name}"
+    "file": "[Plik] {name}",
+    "findClients": "Znajdź klientów"
   },
   "reviews": {
     "title": "Recenzje",
@@ -1517,7 +1518,10 @@
     "untitled": "Nieuprawny",
     "savedItem": "Zapisano element",
     "view": "Pogląd",
-    "remove": "Usunąć"
+    "remove": "Usunąć",
+    "browseServices": "Przeglądaj usługi",
+    "browseProjects": "Przeglądaj projekty",
+    "browseJobs": "Przeglądaj oferty pracy"
   },
   "proposals": {
     "title": "Moje propozycje",

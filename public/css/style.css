@@ -3988,12 +3988,12 @@ li {
 
 /*	Brands  */
 /*  Commons Styles of Template  */
-section {
+section:not([aria-live]):not([role="region"]):not([data-sonner-toaster]):not([data-radix-toast-viewport]) {
   padding: 120px 0;
   position: relative;
 }
 @media (max-width: 991.98px) {
-  section {
+  section:not([aria-live]):not([role="region"]):not([data-sonner-toaster]):not([data-radix-toast-viewport]) {
     padding: 60px 0;
   }
 }

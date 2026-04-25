@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import Link from "next/link";
+import TagsInput from "@/components/ui/TagsInput";
 import { useTranslations } from "next-intl";
 import DashboardNavigation from "../header/DashboardNavigation";
 import ServiceGallery from "./ServiceGallery";
@@ -45,7 +46,7 @@ export default function AddServiceInfo() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState("");
-  const [tags, setTags] = useState("");
+  const [tags, setTags] = useState([]);
   const [workType, setWorkType] = useState("remote");
   const [locationCountry, setLocationCountry] = useState("");
   const [locationCity, setLocationCity] = useState("");
@@ -101,7 +102,7 @@ export default function AddServiceInfo() {
         slug,
         description: description.trim(),
         categoryId: categoryId || undefined,
-        tags: tags ? tags.split(",").map((t) => t.trim()).filter(Boolean) : undefined,
+        tags: tags.length > 0 ? tags : undefined,
         workType,
         locationCountry: locationCountry.trim() || undefined,
         locationCity: locationCity.trim() || undefined,
@@ -315,12 +316,10 @@ export default function AddServiceInfo() {
                         <label className="heading-color ff-heading fw500 mb10">
                           {t("tags")}
                         </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder={t("tagsPlaceholder")}
+                        <TagsInput
                           value={tags}
-                          onChange={(e) => setTags(e.target.value)}
+                          onChange={setTags}
+                          placeholder={t("tagsPlaceholder")}
                         />
                       </div>
                     </div>

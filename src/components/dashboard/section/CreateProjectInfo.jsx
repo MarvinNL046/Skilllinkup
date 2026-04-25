@@ -8,6 +8,7 @@ import { useTranslations, useLocale } from "next-intl";
 import DashboardNavigation from "../header/DashboardNavigation";
 import useConvexUser from "@/hook/useConvexUser";
 import { flattenLeafMarketplaceCategories } from "@/lib/marketplaceCategories";
+import TagsInput from "@/components/ui/TagsInput";
 import { toast } from "sonner";
 
 function generateSlug(title) {
@@ -47,7 +48,7 @@ export default function CreateProjectInfo() {
     categoryId: "",
     budgetMin: "",
     budgetMax: "",
-    requiredSkills: "",
+    requiredSkills: [],
     deadline: "",
     workType: "remote",
   });
@@ -117,9 +118,7 @@ export default function CreateProjectInfo() {
     try {
       const slug = generateSlug(form.title) + "-" + Date.now();
 
-      const skillsArray = form.requiredSkills
-        ? form.requiredSkills.split(",").map((s) => s.trim()).filter(Boolean)
-        : undefined;
+      const skillsArray = form.requiredSkills.length > 0 ? form.requiredSkills : undefined;
 
       const budgetMin = Number.isFinite(parsedMin) ? parsedMin : undefined;
       const budgetMax = Number.isFinite(parsedMax) ? parsedMax : undefined;
@@ -149,7 +148,7 @@ export default function CreateProjectInfo() {
         categoryId: "",
         budgetMin: "",
         budgetMax: "",
-        requiredSkills: "",
+        requiredSkills: [],
         deadline: "",
         workType: "remote",
       });
@@ -421,14 +420,12 @@ export default function CreateProjectInfo() {
                         <label className="heading-color ff-heading fw500 mb10">
                           {t("requiredSkills")}
                         </label>
-                        <input
-                          type="text"
-                          name="requiredSkills"
-                          className="form-control"
-                          placeholder={t("requiredSkillsPlaceholder")}
+                        <TagsInput
                           value={form.requiredSkills}
-                          onChange={handleChange}
-                          data-testid="create-project-skills"
+                          onChange={(arr) =>
+                            setForm((prev) => ({ ...prev, requiredSkills: arr }))
+                          }
+                          placeholder={t("requiredSkillsPlaceholder")}
                         />
                       </div>
                     </div>

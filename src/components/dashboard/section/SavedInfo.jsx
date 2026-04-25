@@ -1,5 +1,6 @@
 "use client";
 import DashboardNavigation from "../header/DashboardNavigation";
+import DashboardTabs from "../element/DashboardTabs";
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { useTranslations } from "next-intl";
@@ -74,26 +75,19 @@ export default function SavedInfo() {
           <div className="col-xl-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30 relative">
               <div className="navtab-style1">
-                <nav>
-                  <div className="nav nav-tabs mb30">
-                    {tabs.map((item, i) => (
-                      <button
-                        onClick={() => setCurrentTab(i)}
-                        key={i}
-                        className={`nav-link fw500 ps-0 ${
-                          getCurrentTab === i ? "active" : ""
-                        }`}
-                      >
-                        {item}
-                        {savedItems !== undefined && countByType(TAB_TYPES[i]) > 0 && (
-                          <span className="ms-1 fz12 text">
-                            ({countByType(TAB_TYPES[i])})
-                          </span>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </nav>
+                <div style={{ marginBottom: "var(--space-5)" }}>
+                  <DashboardTabs
+                    value={getCurrentTab}
+                    onChange={setCurrentTab}
+                    ariaLabel={t("title")}
+                    options={tabs.map((label, i) => ({
+                      value: i,
+                      label,
+                      count:
+                        savedItems !== undefined ? countByType(TAB_TYPES[i]) : undefined,
+                    }))}
+                  />
+                </div>
 
                 {/* Not authenticated */}
                 {isLoaded && !isAuthenticated && (
@@ -127,9 +121,26 @@ export default function SavedInfo() {
                 {savedItems !== undefined && currentItems.length === 0 && (
                   <div className="text-center py-5">
                     <i className="flaticon-like fz40 text mb20" />
-                    <p className="text mb-0">
+                    <p className="text mb20">
                       {emptyMessages[getCurrentTab]}
                     </p>
+                    <Link
+                      href={
+                        currentType === "gig"
+                          ? "/online/services"
+                          : currentType === "project"
+                          ? "/online/projects"
+                          : "/online/jobs"
+                      }
+                      className="ud-btn btn-thm bdrs8"
+                    >
+                      {currentType === "gig"
+                        ? t("browseServices")
+                        : currentType === "project"
+                        ? t("browseProjects")
+                        : t("browseJobs")}
+                      <i className="fal fa-arrow-right-long" />
+                    </Link>
                   </div>
                 )}
 

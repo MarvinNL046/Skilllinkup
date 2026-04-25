@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import DashboardNavigation from "../header/DashboardNavigation";
+import DashboardTabs from "../element/DashboardTabs";
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -158,29 +159,22 @@ export default function ManageProjectInfo() {
           <div className="col-xl-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
               <div className="navtab-style1">
-                <nav>
-                  <div className="nav nav-tabs mb30">
-                    {tabs.map((tab, i) => (
-                      <button
-                        key={i}
-                        className={`nav-link fw500 ps-0 ${
-                          selectedTab === i ? "active" : ""
-                        }`}
-                        onClick={() => setSelectedTab(i)}
-                      >
-                        {tab.label}
-                        {projects && tab.status === null && (
-                          <span className="ms-1 badge bg-secondary fz11">{projects.length}</span>
-                        )}
-                        {projects && tab.status !== null && (
-                          <span className="ms-1 badge bg-secondary fz11">
-                            {projects.filter((p) => p.status === tab.status).length}
-                          </span>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </nav>
+                <div style={{ marginBottom: "var(--space-5)" }}>
+                  <DashboardTabs
+                    value={selectedTab}
+                    onChange={setSelectedTab}
+                    ariaLabel={t("title")}
+                    options={tabs.map((tab, i) => ({
+                      value: i,
+                      label: tab.label,
+                      count: projects
+                        ? tab.status === null
+                          ? projects.length
+                          : projects.filter((p) => p.status === tab.status).length
+                        : undefined,
+                    }))}
+                  />
+                </div>
 
                 <div className="packages_table table-responsive">
                   {isLoading ? (

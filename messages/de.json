@@ -1466,7 +1466,8 @@
     "sendFailed": "Die Nachricht konnte nicht gesendet werden.",
     "backToConversations": "Zurück zu den Gesprächen",
     "contactBlocked": "Die Weitergabe von Kontaktdaten ist nicht gestattet. E-Mail-Adressen, Telefonnummern, Links und E-Mail-Anbieter (Gmail, Outlook usw.) werden blockiert.",
-    "file": "[Datei] {name}"
+    "file": "[Datei] {name}",
+    "findClients": "Kunden finden"
   },
   "reviews": {
     "title": "Rezensionen",
@@ -1517,7 +1518,10 @@
     "untitled": "Ohne Titel",
     "savedItem": "Gespeicherter Artikel",
     "view": "Sicht",
-    "remove": "Entfernen"
+    "remove": "Entfernen",
+    "browseServices": "Dienste durchsuchen",
+    "browseProjects": "Projekte durchsuchen",
+    "browseJobs": "Jobs durchsuchen"
   },
   "proposals": {
     "title": "Meine Vorschläge",

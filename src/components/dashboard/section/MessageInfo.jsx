@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { Search, ArrowLeft } from "lucide-react";
 import useConvexUser from "@/hook/useConvexUser";
 import useConvexMessages from "@/hook/useConvexMessages";
@@ -193,9 +194,18 @@ export default function MessageInfo() {
                 </div>
               ) : conversations === null || conversations.length === 0 ? (
                 <div style={{ textAlign: "center", padding: "var(--space-8) var(--space-4)" }}>
-                  <p className="body-sm" style={{ color: "var(--text-tertiary)", margin: 0 }}>
+                  <p
+                    className="body-sm"
+                    style={{ color: "var(--text-tertiary)", margin: 0, marginBottom: "var(--space-4)" }}
+                  >
                     {t("noConversationsYet")}
                   </p>
+                  <Link
+                    href="/online/projects"
+                    className="btn btn--secondary btn--sm"
+                  >
+                    {t("findClients", { default: "Find clients" })}
+                  </Link>
                 </div>
               ) : filteredConversations.length === 0 ? (
                 <div style={{ textAlign: "center", padding: "var(--space-8) var(--space-4)" }}>

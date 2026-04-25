@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { api } from "../../../../convex/_generated/api";
 import DashboardNavigation from "../header/DashboardNavigation";
+import DashboardTabs from "../element/DashboardTabs";
 import ReviewComment from "../element/ReviewComment";
 import useConvexUser from "@/hook/useConvexUser";
 
@@ -63,26 +64,21 @@ export default function ReviewsInfo() {
             <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
               <div className="packages_table table-responsive">
                 <div className="navtab-style1">
-                  <nav>
-                    <div className="nav nav-tabs mb30">
-                      {tabs.map((item, i) => (
-                        <button
-                          onClick={() => setCurrentTab(i)}
-                          key={i}
-                          className={`nav-link fw500 ps-0 ${
-                            getCurrentTab === i ? "active" : ""
-                          }`}
-                        >
-                          {item}
-                          {reviews && Array.isArray(reviews) && groupedReviews[i].length > 0 && (
-                            <span className="ms-1 fz12 text">
-                              ({groupedReviews[i].length})
-                            </span>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  </nav>
+                  <div style={{ marginBottom: "var(--space-5)" }}>
+                    <DashboardTabs
+                      value={getCurrentTab}
+                      onChange={setCurrentTab}
+                      ariaLabel={t("title")}
+                      options={tabs.map((label, i) => ({
+                        value: i,
+                        label,
+                        count:
+                          reviews !== undefined && Array.isArray(reviews)
+                            ? groupedReviews[i].length
+                            : undefined,
+                      }))}
+                    />
+                  </div>
 
                   {/* Still loading Convex user */}
                   {isAuthenticated && convexUser === undefined && (

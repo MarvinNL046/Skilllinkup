@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import DashboardNavigation from "../header/DashboardNavigation";
+import DashboardTabs from "../element/DashboardTabs";
 import { useState } from "react";
 import Pagination1 from "@/components/section/Pagination1";
 import ManageServiceCard1 from "../card/ManageServiceCard1";
@@ -98,6 +99,15 @@ export default function ManageServiceInfo() {
     ? gigs.filter((g) => g.status === currentStatus).map((g) => mapGigToCard(g, t))
     : [];
 
+  const tabCounts = Array.isArray(gigs)
+    ? Object.fromEntries(
+        Object.entries(STATUS_MAP).map(([idx, status]) => [
+          idx,
+          gigs.filter((g) => g.status === status).length,
+        ])
+      )
+    : {};
+
   return (
     <>
       <div className="dashboard__content hover-bgc-color">
@@ -129,21 +139,18 @@ export default function ManageServiceInfo() {
           <div className="col-xl-12">
             <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
               <div className="navtab-style1">
-                <nav>
-                  <div className="nav nav-tabs mb30">
-                    {tabs.map((item, i) => (
-                      <button
-                        key={i}
-                        className={`nav-link fw500 ps-0 ${
-                          selectedTab === i ? "active" : ""
-                        }`}
-                        onClick={() => setSelectedTab(i)}
-                      >
-                        {item}
-                      </button>
-                    ))}
-                  </div>
-                </nav>
+                <div style={{ marginBottom: "var(--space-5)" }}>
+                  <DashboardTabs
+                    value={selectedTab}
+                    onChange={setSelectedTab}
+                    ariaLabel={t("title")}
+                    options={tabs.map((label, i) => ({
+                      value: i,
+                      label,
+                      count: Array.isArray(gigs) ? tabCounts[i] ?? 0 : undefined,
+                    }))}
+                  />
+                </div>
                 <GigTable gigs={filteredGigs} removeGig={removeGig} t={t} />
               </div>
             </div>

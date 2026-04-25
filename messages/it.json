@@ -1466,7 +1466,8 @@
     "sendFailed": "Impossibile inviare il messaggio.",
     "backToConversations": "Torniamo alle conversazioni",
     "contactBlocked": "Non è consentita la condivisione delle informazioni di contatto. Indirizzi e-mail, numeri di telefono, collegamenti e provider di posta elettronica (Gmail, Outlook, ecc.) vengono bloccati.",
-    "file": "[File] {name}"
+    "file": "[File] {name}",
+    "findClients": "Trova clienti"
   },
   "reviews": {
     "title": "Recensioni",
@@ -1517,7 +1518,10 @@
     "untitled": "Senza titolo",
     "savedItem": "Articolo salvato",
     "view": "Visualizzazione",
-    "remove": "Rimuovere"
+    "remove": "Rimuovere",
+    "browseServices": "Sfoglia servizi",
+    "browseProjects": "Sfoglia progetti",
+    "browseJobs": "Sfoglia lavori"
   },
   "proposals": {
     "title": "Le mie proposte",

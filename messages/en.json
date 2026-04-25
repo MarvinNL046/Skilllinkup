@@ -1466,7 +1466,8 @@
     "sendFailed": "Message could not be sent.",
     "backToConversations": "Back to conversations",
     "contactBlocked": "Sharing contact info is not allowed. Email addresses, phone numbers, links, and email providers (Gmail, Outlook, etc.) are blocked.",
-    "file": "[File] {name}"
+    "file": "[File] {name}",
+    "findClients": "Find clients"
   },
   "reviews": {
     "title": "Reviews",
@@ -1517,7 +1518,10 @@
     "untitled": "Untitled",
     "savedItem": "Saved item",
     "view": "View",
-    "remove": "Remove"
+    "remove": "Remove",
+    "browseServices": "Browse services",
+    "browseProjects": "Browse projects",
+    "browseJobs": "Browse jobs"
   },
   "proposals": {
     "title": "My Proposals",

@@ -1,30 +1,49 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
+import { toast } from "sonner";
 
-const imgs = [
-  "/images/gallery/g-1.jpg",
-  "/images/gallery/g-2.jpg",
-  "/images/gallery/g-3.jpg",
-  "/images/gallery/g-4.jpg",
+const MAX_FILE_SIZE_MB = 5;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+const MAX_FILES = 8;
+const ACCEPTED_TYPES = [
+  "image/png",
+  "image/jpeg",
+  "image/webp",
 ];
 
 export default function ServiceGallery() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
-  // upload handler
   const handleFileUpload = (event) => {
     const newFiles = Array.from(event.target.files);
+    const isDup = (file, list) => list.some((f) => f.name === file.name);
 
-    const isFileDuplicate = (file, fileList) => {
-      return fileList.some((existingFile) => existingFile.name === file.name);
-    };
+    const accepted = [];
+    for (const file of newFiles) {
+      if (!ACCEPTED_TYPES.includes(file.type)) {
+        toast.error(`${file.name}: unsupported file type`);
+        continue;
+      }
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+        toast.error(`${file.name}: exceeds ${MAX_FILE_SIZE_MB}MB limit`);
+        continue;
+      }
+      if (isDup(file, uploadedFiles) || isDup(file, accepted)) continue;
+      accepted.push(file);
+    }
 
-    const uniqueNewFiles = newFiles.filter(
-      (file) => !isFileDuplicate(file, uploadedFiles),
-    );
+    if (uploadedFiles.length + accepted.length > MAX_FILES) {
+      const remaining = Math.max(0, MAX_FILES - uploadedFiles.length);
+      toast.error(`Maximum ${MAX_FILES} images. Skipped ${accepted.length - remaining}.`);
+      accepted.length = remaining;
+    }
 
-    setUploadedFiles((prevFiles) => [...prevFiles, ...uniqueNewFiles]);
+    if (accepted.length > 0) {
+      setUploadedFiles((prev) => [...prev, ...accepted]);
+    }
+    // Reset input so re-selecting the same file works
+    event.target.value = "";
   };
 
   // delete handler
@@ -82,7 +101,7 @@ export default function ServiceGallery() {
                   />
                   <input
                     type="file"
-                    accept=".png, .jpg, .jpeg"
+                    accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
                     className="hidden"
                     onChange={handleFileUpload}
                     multiple
@@ -92,8 +111,8 @@ export default function ServiceGallery() {
             </div>
           </div>
           <p className="text">
-            Max file size is 1MB, Minimum dimension: 330x300 And Suitable files
-            are .jpg &amp; .png
+            Up to {MAX_FILES} images. Max file size {MAX_FILE_SIZE_MB}MB.
+            Supported formats: .jpg, .png, .webp.
           </p>
           <a className="ud-btn btn-thm mt-2">
             Save

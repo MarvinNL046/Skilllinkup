@@ -4,6 +4,7 @@ import { api } from "../../../../convex/_generated/api";
 import { useTranslations } from "next-intl";
 import useConvexUser from "@/hook/useConvexUser";
 import DashboardNavigation from "../header/DashboardNavigation";
+import DashboardTabs from "../element/DashboardTabs";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -97,50 +98,16 @@ export default function OrdersInfo() {
         </div>
       </div>
 
-      {/* Role switcher — segmented control on surface-2 track */}
       <div style={{ marginBottom: "var(--space-5)" }}>
-        <div
-          role="tablist"
-          aria-label="Order role"
-          style={{
-            display: "inline-flex",
-            padding: 4,
-            gap: 2,
-            background: "var(--surface-2)",
-            borderRadius: "var(--radius-md)",
-          }}
-        >
-          {[
+        <DashboardTabs
+          value={role}
+          onChange={setRole}
+          ariaLabel="Order role"
+          options={[
             { value: "client",     label: t("asBuyer") },
             { value: "freelancer", label: t("asSeller") },
-          ].map((opt) => {
-            const active = role === opt.value;
-            return (
-              <button
-                key={opt.value}
-                type="button"
-                role="tab"
-                aria-selected={active}
-                onClick={() => setRole(opt.value)}
-                style={{
-                  padding: "8px 16px",
-                  border: "none",
-                  borderRadius: "var(--radius-sm)",
-                  fontFamily: "inherit",
-                  fontSize: "var(--text-body-sm)",
-                  fontWeight: active ? 600 : 500,
-                  cursor: active ? "default" : "pointer",
-                  background: active ? "var(--bg-elevated)" : "transparent",
-                  color: active ? "var(--text-primary)" : "var(--text-secondary)",
-                  boxShadow: active ? "var(--shadow-1)" : "none",
-                  transition: "all 140ms var(--ease-standard, ease-out)",
-                }}
-              >
-                {opt.label}
-              </button>
-            );
-          })}
-        </div>
+          ]}
+        />
       </div>
 
       <div className="row">
