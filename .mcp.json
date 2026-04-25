@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "stripe": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@stripe/mcp",
+        "--tools=customers.create,customers.read,customers.update,products.create,products.read,products.update,products.list,prices.create,prices.read,prices.list,paymentIntents.create,paymentIntents.read,paymentIntents.update,paymentIntents.capture,paymentIntents.cancel,paymentIntents.list,charges.read,charges.list,refunds.create,refunds.read,refunds.list,transfers.create,transfers.read,transfers.list,accounts.create,accounts.read,accounts.update,accounts.list,accountLinks.create,applicationFees.read,applicationFees.list,payouts.create,payouts.read,payouts.list,disputes.read,disputes.update,disputes.list,balance.read"
+      ],
+      "env": {
+        "STRIPE_SECRET_KEY": "${STRIPE_SECRET_KEY}"
+      }
+    }
+  }
+}
