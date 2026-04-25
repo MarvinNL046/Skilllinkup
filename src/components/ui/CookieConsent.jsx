@@ -121,7 +121,7 @@ export default function CookieConsent() {
                 href="/privacy-policy"
                 className="cookie-policy-link"
                 style={{
-                  color: "#2A8703",
+                  color: "var(--primary-600)",
                   fontWeight: 600,
                   textDecoration: "none",
                 }}
@@ -167,8 +167,8 @@ export default function CookieConsent() {
                 fontSize: "13px",
                 fontWeight: 600,
                 color: "#ffffff",
-                background: "#2A8703",
-                border: "1.5px solid #2A8703",
+                background: "var(--primary-600)",
+                border: "1.5px solid var(--primary-600)",
                 borderRadius: "7px",
                 cursor: "pointer",
                 transition: "background-color 0.2s",

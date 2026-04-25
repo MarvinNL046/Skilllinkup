@@ -57,7 +57,7 @@ export default function CreditsInfo() {
       <div className="row mb30">
         <div className="col-lg-4">
           <div className="dashboard-style1 bdrs8 p30 text-center">
-            <h2 className="title mb-1" style={{ fontSize: "3rem", color: "#22c55e" }}>
+            <h2 className="title mb-1" style={{ fontSize: "3rem", color: "var(--primary-600)" }}>
               {credits?.balance ?? 0}
             </h2>
             <p className="body-color">{t("creditsAvailable")}</p>

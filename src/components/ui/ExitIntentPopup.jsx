@@ -101,7 +101,7 @@ export default function ExitIntentPopup() {
           animation: exitScaleIn 0.3s ease forwards;
         }
         .exit-subscribe-btn:hover {
-          background-color: #16a34a !important;
+          background-color: var(--primary-700) !important;
         }
         .exit-register-btn:hover {
           background-color: #ef2b70 !important;
@@ -229,7 +229,7 @@ export default function ExitIntentPopup() {
             style={{
               flex: 1,
               padding: "11px 16px",
-              background: "#22c55e",
+              background: "var(--primary-600)",
               color: "#ffffff",
               border: "none",
               borderRadius: "8px",

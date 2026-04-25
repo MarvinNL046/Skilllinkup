@@ -110,7 +110,7 @@ export default function MessageBox({
         <div style={{ textAlign: "center" }}>
           <i
             className="flaticon-chat"
-            style={{ fontSize: 50, color: "#2A8703", display: "block", marginBottom: 16 }}
+            style={{ fontSize: 50, color: "var(--primary-600)", display: "block", marginBottom: 16 }}
           />
           <h5>{t("selectConversation")}</h5>
           <p style={{ color: "#6b7280" }}>
@@ -177,7 +177,7 @@ export default function MessageBox({
           <h6 style={{ margin: 0, fontSize: isMobile ? 14 : 15, fontWeight: 600 }}>
             {otherName}
           </h6>
-          <p style={{ margin: 0, fontSize: 12, color: "#10b981" }}>{t("active")}</p>
+          <p style={{ margin: 0, fontSize: 12, color: "var(--primary-600)" }}>{t("active")}</p>
         </div>
       </div>
 
@@ -259,7 +259,7 @@ export default function MessageBox({
                       borderRadius: isOwn
                         ? "12px 0 12px 12px"
                         : "0 12px 12px 12px",
-                      background: isOwn ? "#2A8703" : "#f3f4f6",
+                      background: isOwn ? "var(--primary-600)" : "#f3f4f6",
                       color: isOwn ? "#fff" : "#111827",
                       wordBreak: "break-word",
                     }}
@@ -317,7 +317,7 @@ export default function MessageBox({
               background:
                 isSending || !inputValue.trim() || blockError
                   ? "#a3d48f"
-                  : "#2A8703",
+                  : "var(--primary-600)",
               border: "none",
               borderRadius: 10,
               cursor:

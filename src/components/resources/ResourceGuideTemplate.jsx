@@ -30,7 +30,7 @@ export default function ResourceGuideTemplate({ resource }) {
         {resource.keyTakeaways?.length > 0 && (
           <section className="pt60 pb20">
             <div className="container">
-              <div className="col-lg-8 mx-auto bdr1 bdrs12 p30" style={{ borderLeft: "4px solid #22c55e" }}>
+              <div className="col-lg-8 mx-auto bdr1 bdrs12 p30" style={{ borderLeft: "4px solid var(--primary-600)" }}>
                 <h2 className="fz20 fw700 mb20">What You&apos;ll Learn</h2>
                 <ul className="mb-0 ps-0" style={{ listStyle: "none" }}>
                   {resource.keyTakeaways.map((t, i) => (

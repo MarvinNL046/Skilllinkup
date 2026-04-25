@@ -102,7 +102,7 @@ export default function LanguageSwitcher() {
               <span>{l.label}</span>
               {l.code === locale && (
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ marginLeft: "auto" }}>
-                  <path d="M3 7L6 10L11 4" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M3 7L6 10L11 4" stroke="var(--primary-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               )}
             </button>

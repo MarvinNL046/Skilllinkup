@@ -66,7 +66,7 @@ export default function StripeConnectButton({ className = "" }) {
         <div className="d-flex align-items-center gap-2">
           <span
             className="badge rounded-pill px-3 py-2"
-            style={{ backgroundColor: "#22c55e", color: "#fff", fontSize: "14px" }}
+            style={{ backgroundColor: "var(--primary-600)", color: "#fff", fontSize: "14px" }}
           >
             <i className="fal fa-check-circle me-2" />
             {t("paymentsConnected")}

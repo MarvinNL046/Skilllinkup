@@ -29,9 +29,9 @@ function StarRating({ rating }) {
 
 function DifficultyBadge({ difficulty }) {
   const colors = {
-    Easy: { bg: "#dcfce7", text: "#166534" },
-    Medium: { bg: "#fef3c7", text: "#92400e" },
-    Hard: { bg: "#fce7f3", text: "#9d174d" },
+    Easy:   { bg: "var(--primary-50)",   text: "var(--primary-700)" },
+    Medium: { bg: "var(--secondary-50)", text: "var(--secondary-700)" },
+    Hard:   { bg: "var(--error-50)",     text: "var(--error-700)" },
   };
   const style = colors[difficulty] || colors.Medium;
 

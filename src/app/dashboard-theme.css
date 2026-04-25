@@ -10,9 +10,9 @@
   --dash-sidebar-border:     rgba(0, 0, 0, 0.07);
   --dash-sidebar-text:       #4b5563;
   --dash-sidebar-text-hover: #111827;
-  --dash-sidebar-active-bar: #2A8703;
+  --dash-sidebar-active-bar: var(--primary-600);
   --dash-sidebar-active-bg:  rgba(42, 135, 3, 0.07);
-  --dash-sidebar-active-text:#2A8703;
+  --dash-sidebar-active-text:var(--primary-600);
   --dash-sidebar-hover-bg:   rgba(0, 0, 0, 0.04);
   --dash-content-bg:         #ffffff;
   --dash-card-bg:            #ffffff;
@@ -281,7 +281,7 @@
 
 .user_heading .authors .preview {
   font-size: 12px !important;
-  color: #10b981 !important;
+  color: var(--primary-600) !important;
   margin: 0 !important;
 }
 
@@ -363,7 +363,7 @@
 }
 
 .chatting_content li.reply > p {
-  background: #2A8703 !important;
+  background: var(--primary-600) !important;
   color: #ffffff !important;
   border-radius: 12px 0 12px 12px !important;
   padding: 10px 14px !important;
@@ -415,8 +415,8 @@
 }
 
 .message_input .ud-btn.btn-thm {
-  background: #2A8703 !important;
-  border-color: #2A8703 !important;
+  background: var(--primary-600) !important;
+  border-color: var(--primary-600) !important;
   color: #ffffff !important;
   border-radius: 10px !important;
   font-size: 14px !important;

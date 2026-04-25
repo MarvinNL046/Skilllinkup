@@ -49,12 +49,15 @@
   --neutral-1000: oklch(9% 0.006 60);
 
   /* ---------- SEMANTIC ---------- */
-  --success-50:  oklch(96% 0.035 155);
-  --success-100: oklch(90% 0.070 155);
-  --success-500: oklch(58% 0.140 155);
-  --success-600: oklch(50% 0.135 155);
-  --success-700: oklch(42% 0.120 156);
-  --success-900: oklch(26% 0.080 157);
+  /* Success — teal-leaning (hue 195) instead of green so the palette
+     reads coherent with the purple-aubergine brand. Still communicates
+     "positive / verified" without the Uideck green look. */
+  --success-50:  oklch(96% 0.035 195);
+  --success-100: oklch(90% 0.070 195);
+  --success-500: oklch(58% 0.135 195);
+  --success-600: oklch(50% 0.130 195);
+  --success-700: oklch(42% 0.115 195);
+  --success-900: oklch(26% 0.075 195);
 
   --warning-50:  oklch(97% 0.035 85);
   --warning-100: oklch(92% 0.080 85);

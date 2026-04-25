@@ -101,7 +101,7 @@ export default function FreelancerCardList({ data }) {
                 style={{
                   display: "inline-block",
                   background: "#f0fdf4",
-                  color: "#166534",
+                  color: "var(--primary-700)",
                   fontSize: 12,
                   padding: "2px 10px",
                   borderRadius: 999,
@@ -151,7 +151,7 @@ export default function FreelancerCardList({ data }) {
             href={profileHref}
             className="ud-btn btn-light-thm"
             style={{
-              border: "2px solid #22c55e",
+              border: "2px solid var(--primary-600)",
               borderRadius: 8,
               whiteSpace: "nowrap",
             }}
@@ -167,7 +167,7 @@ export default function FreelancerCardList({ data }) {
         <Link
           href={profileHref}
           className="ud-btn btn-light-thm w-100 text-center"
-          style={{ border: "2px solid #22c55e", borderRadius: 8 }}
+          style={{ border: "2px solid var(--primary-600)", borderRadius: 8 }}
         >
           {t("viewProfile")}
           <i className="fal fa-arrow-right-long" />

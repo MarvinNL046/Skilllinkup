@@ -334,8 +334,8 @@ a {
   left: 16px;
   z-index: 99999;
   padding: 12px 24px;
-  background: #2A8703;
-  color: #fff !important;
+  background: var(--primary-600);
+  color: var(--neutral-0) !important;
   border-radius: 0 0 8px 8px;
   font-weight: 600;
   font-size: 14px;
@@ -345,8 +345,11 @@ a {
 .skip-nav:focus {
   top: 0;
 }
+
+/* Legacy template uses --primary-color throughout style.css; alias it to
+   the DS primary so the green Uideck accent never appears. */
 :root {
-  --primary-color: #5bbb7b;
+  --primary-color: var(--primary-600);
 }
 /* slider arrow start*/
 .next-btn,

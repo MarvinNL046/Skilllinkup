@@ -80,8 +80,8 @@ export default async function PricingPage() {
               borderRadius: "var(--radius-2xl)",
               textAlign: "center",
               background:
-                "linear-gradient(135deg, var(--success-50) 0%, oklch(96% 0.04 155) 100%)",
-              border: "2px solid var(--success-500, oklch(60% 0.15 155))",
+                "linear-gradient(135deg, var(--success-50) 0%, oklch(96% 0.04 195) 100%)",
+              border: "2px solid var(--success-500)",
               boxShadow: "var(--shadow-2)",
             }}
           >

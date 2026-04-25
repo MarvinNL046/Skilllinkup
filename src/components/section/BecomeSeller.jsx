@@ -33,7 +33,7 @@ export default function BecomeSeller() {
     },
     {
       id: "jobs",
-      color: "#22c55e",
+      color: "var(--primary-600)",
       bgLight: "rgba(34, 197, 94, 0.08)",
       icon: "flaticon-briefcase",
       world: t("jobsWorld"),

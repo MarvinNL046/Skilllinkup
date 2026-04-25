@@ -173,7 +173,7 @@
 }
 .tag--primary { color: var(--primary-700); background: var(--primary-50); border-color: oklch(87% 0.06 293 / 1); }
 .tag--accent  { color: var(--secondary-700); background: var(--secondary-50); border-color: oklch(87% 0.08 48 / 1); }
-.tag--success { color: var(--success-700); background: var(--success-50); border-color: oklch(90% 0.07 155 / 1); }
+.tag--success { color: var(--success-700); background: var(--success-50); border-color: oklch(90% 0.07 195 / 1); }
 .tag--solid   { color: var(--neutral-0); background: var(--neutral-900); border-color: transparent; }
 
 .badge {

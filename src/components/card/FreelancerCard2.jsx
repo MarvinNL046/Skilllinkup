@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 const LEVEL_KEYS = {
   top_rated: { key: "topRated", color: "#1a73e8", textColor: "#fff" },
   pro:       { key: "pro",      color: "#ef2b70", textColor: "#fff" },
-  rising:    { key: "rising",   color: "#22c55e", textColor: "#fff" },
+  rising:    { key: "rising",   color: "var(--primary-600)", textColor: "#fff" },
   new:       { key: "levelNew", color: "#9ca3af", textColor: "#fff" },
 };
 
@@ -61,7 +61,7 @@ export default function FreelancerCard2({ data }) {
               style={{
                 display: "inline-block",
                 background: "#f0fdf4",
-                color: "#166534",
+                color: "var(--primary-700)",
                 fontSize: 12,
                 padding: "2px 10px",
                 borderRadius: 999,

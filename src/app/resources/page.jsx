@@ -8,9 +8,9 @@ import { getTranslations } from "next-intl/server";
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://skilllinkup.com";
 
 const TYPE_COLORS = {
-  pricing: "#ef2b70",
-  comparison: "#1e1541",
-  guide: "#22c55e",
+  pricing: "var(--primary-600)",
+  comparison: "var(--primary-900)",
+  guide: "var(--secondary-600)",
 };
 
 export async function generateMetadata() {
