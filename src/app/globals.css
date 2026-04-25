@@ -31,24 +31,29 @@
    ============================================================ */
 
 /* Body + links defer to tokens.css.
-   Subtle warm radial gradient at top-right echoes the homepage hero on
-   every page so detail/listing pages don't feel "cold". The gradient is
-   ~5% chroma so it never dominates the actual page content. */
+   Subtle warm radial gradient at top echoes the homepage hero on every
+   page so detail/listing pages don't feel "cold". The gradient is
+   anchored to the page (not viewport) so the footer always butts up
+   against its own --bg-sunken without a strip of body bg showing
+   through underneath. ~5% chroma so it never dominates content. */
+html, body { min-height: 100%; }
 body {
   font-family: var(--font-sans);
   color: var(--text-primary);
   background:
-    radial-gradient(1100px 380px at 85% -8%, oklch(95% 0.04 38 / 0.55) 0%, transparent 60%),
+    radial-gradient(1100px 380px at 85% 0, oklch(95% 0.04 38 / 0.55) 0%, transparent 60%),
     radial-gradient(900px 320px at 5% 4%, oklch(96% 0.025 295 / 0.45) 0%, transparent 55%),
     var(--bg);
-  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: 100% 800px, 100% 800px, auto;
 }
 [data-theme="dark"] body {
   background:
-    radial-gradient(1100px 380px at 85% -8%, oklch(28% 0.06 38 / 0.35) 0%, transparent 60%),
+    radial-gradient(1100px 380px at 85% 0, oklch(28% 0.06 38 / 0.35) 0%, transparent 60%),
     radial-gradient(900px 320px at 5% 4%, oklch(24% 0.045 295 / 0.35) 0%, transparent 55%),
     var(--bg);
-  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: 100% 800px, 100% 800px, auto;
 }
 
 /* Template buttons → design-system primary/secondary look */

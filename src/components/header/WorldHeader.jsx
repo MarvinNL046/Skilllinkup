@@ -36,7 +36,7 @@ export default function WorldHeader() {
           gap: "var(--space-6)",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)", minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-5)", minWidth: 0 }}>
           <Link
             href="/"
             className="nav__brand"
@@ -44,8 +44,8 @@ export default function WorldHeader() {
             aria-label="SkillLinkup home"
           >
             <Image
-              width={140}
-              height={32}
+              width={156}
+              height={36}
               src="/images/logo/skilllinkup-transparant-rozepunt.webp"
               alt="SkillLinkup"
               priority
@@ -58,7 +58,7 @@ export default function WorldHeader() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", flexShrink: 0 }}>
-          <div className="d-none d-lg-block" style={{ width: 260 }}>
+          <div className="d-none d-lg-block" style={{ width: 280 }}>
             <SearchBarWithDropdown />
           </div>
 

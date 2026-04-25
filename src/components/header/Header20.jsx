@@ -1,21 +1,23 @@
 "use client";
-import Link from "next/link";
+import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import Navigation from "./Navigation";
 import MobileNavigation2 from "./MobileNavigation2";
 import NotificationBell from "./NotificationBell";
 import { useUser, useClerk } from "@clerk/nextjs";
 import WaitlistButton from "@/components/ui/WaitlistButton";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import SearchBarWithDropdown from "@/components/ui/SearchBarWithDropdown";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { useTranslations } from "next-intl";
-import { Search, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 
 /**
  * Header20 — primary header used across all /service, /employee, /auth,
- * /dashboard and similar routes. Redesigned 2026-04-24 against the
- * SkillLinkup Design System — same visual language as Header19 but kept
- * as a separate component so page-specific imports don't break.
+ * /dashboard and similar routes. Visually identical to Header19 so the
+ * navbar stays consistent across the site (only WorldHeader on /online,
+ * /local, /jobs intentionally diverges to insert the WorldSwitcher).
  */
 export default function Header20() {
   const { user, isSignedIn } = useUser();
@@ -56,14 +58,9 @@ export default function Header20() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", flexShrink: 0 }}>
-          <Link
-            href="/online/services"
-            className="btn btn--ghost btn--icon btn--sm d-none d-md-inline-flex"
-            aria-label="Search"
-            title="Search"
-          >
-            <Search size={18} />
-          </Link>
+          <div className="d-none d-lg-block" style={{ width: 280 }}>
+            <SearchBarWithDropdown placeholder={t("searchPlaceholder")} />
+          </div>
 
           <span className="d-none d-md-inline-flex">
             <LanguageSwitcher />
