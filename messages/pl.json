@@ -618,7 +618,8 @@
     "sortBy": "Sortuj według",
     "bestSeller": "Najlepszy sprzedawca",
     "recommended": "Zalecony",
-    "newArrivals": "Nowości"
+    "newArrivals": "Nowości",
+    "viewMode": "Tryb widoku"
   },
   "freelancerCard": {
     "availableNow": "Dostępne teraz",

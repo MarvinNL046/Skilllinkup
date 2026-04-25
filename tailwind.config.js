@@ -5,6 +5,13 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx,mdx}",
     "./emails/**/*.{js,jsx,ts,tsx}",
   ],
+  // Don't generate Tailwind utilities whose names collide with Bootstrap
+  // component classes still loaded from public/css/bootstrap.min.css.
+  // Without this, Tailwind's `.collapse` (visibility: collapse) wins
+  // the cascade over Bootstrap's `.collapse.show` accordion state and
+  // hides every accordion panel on listing sidebars + FAQs.
+  // Tracking issue: 2026-04-25 audit on /online/projects.
+  blocklist: ["collapse", "container"],
   theme: {
     extend: {
       colors: {

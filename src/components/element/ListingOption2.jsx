@@ -1,10 +1,16 @@
 "use client";
+import { LayoutGrid, List, SlidersHorizontal } from "lucide-react";
+import { useTranslations } from "next-intl";
 import toggleStore from "@/store/toggleStore";
 import listingStore from "@/store/listingStore";
 import SortOption1 from "../option/SortOption1";
-import Image from "next/image";
-import { useTranslations } from "next-intl";
 
+/**
+ * Listing toolbar — count on the left, view-mode toggle + sort on the
+ * right. Rebuilt on a flex row with gap (no Bootstrap row/col, no
+ * absolute-positioned dropdowns) so the "Sort by" label can no longer
+ * be overlapped by the dropdown button.
+ */
 export default function ListingOption2({
   itemLength,
   itemLabel = "services",
@@ -15,74 +21,94 @@ export default function ListingOption2({
   const setViewMode = listingStore((state) => state.setViewMode);
 
   return (
-    <>
-      <div className="row align-items-center mb20">
-        <div className="col-md-6">
-          <div className="text-center text-md-start">
-            <p className="text mb-0 mb10-sm">
-              <span className="fw500">{itemLength}</span> {itemLabel} {t("available")}
-            </p>
-          </div>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: "var(--space-4)",
+        flexWrap: "wrap",
+        marginBottom: "var(--space-5)",
+      }}
+    >
+      <p
+        className="body-sm"
+        style={{ color: "var(--text-secondary)", margin: 0, flexShrink: 0 }}
+      >
+        <strong style={{ color: "var(--text-primary)", fontWeight: 600 }}>
+          {itemLength}
+        </strong>{" "}
+        {itemLabel} {t("available")}
+      </p>
+
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "var(--space-3)",
+          flexWrap: "wrap",
+          marginLeft: "auto",
+        }}
+      >
+        {/* Mobile filter button — d-lg-none stays */}
+        <button
+          type="button"
+          onClick={listingToggle}
+          className="btn btn--secondary btn--sm d-lg-none"
+          aria-label={t("allFilter")}
+        >
+          <SlidersHorizontal size={14} />
+          {t("allFilter")}
+        </button>
+
+        {/* Grid / List view toggle — md+ */}
+        <div
+          className="d-none d-md-inline-flex"
+          role="group"
+          aria-label={t("viewMode")}
+          style={{
+            padding: 3,
+            background: "var(--surface-2)",
+            borderRadius: "var(--radius-md)",
+            gap: 2,
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setViewMode("grid")}
+            aria-pressed={viewMode === "grid"}
+            title={t("gridView")}
+            style={iconBtn(viewMode === "grid")}
+          >
+            <LayoutGrid size={14} />
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode("list")}
+            aria-pressed={viewMode === "list"}
+            title={t("listView")}
+            style={iconBtn(viewMode === "list")}
+          >
+            <List size={14} />
+          </button>
         </div>
-        <div className="col-md-6">
-          <div className="page_control_shorting d-md-flex align-items-center justify-content-center justify-content-md-end">
-            <div className="dropdown-lists d-block d-lg-none me-2 mb10-sm">
-              <ul className="p-0 mb-0 text-center text-md-start">
-                <li>
-                  <button
-                    onClick={listingToggle}
-                    type="button"
-                    className="open-btn filter-btn-left"
-                  >
-                    <Image
-                      height={18}
-                      width={18}
-                      className="me-2"
-                      src="/images/icon/all-filter-icon.svg"
-                      alt="icon"
-                    />
-                    {t("allFilter")}
-                  </button>
-                </li>
-              </ul>
-            </div>
-            {/* Grid / List toggle */}
-            <div className="d-none d-md-flex align-items-center gap-2 me-3">
-              <button
-                type="button"
-                onClick={() => setViewMode("grid")}
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  padding: 4,
-                  color: viewMode === "grid" ? "#ef2b70" : "#999",
-                  fontSize: 16,
-                }}
-                title={t("gridView")}
-              >
-                <i className="fa fa-th-large" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMode("list")}
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  padding: 4,
-                  color: viewMode === "list" ? "#ef2b70" : "#999",
-                  fontSize: 16,
-                }}
-                title={t("listView")}
-              >
-                <i className="fa fa-list-ul" />
-              </button>
-            </div>
-            <SortOption1 />
-          </div>
-        </div>
+
+        <SortOption1 />
       </div>
-    </>
+    </div>
   );
 }
+
+const iconBtn = (active) => ({
+  width: 28,
+  height: 28,
+  display: "grid",
+  placeItems: "center",
+  border: "none",
+  background: active ? "var(--bg-elevated)" : "transparent",
+  color: active ? "var(--primary-700)" : "var(--text-secondary)",
+  borderRadius: "var(--radius-sm)",
+  cursor: "pointer",
+  boxShadow: active ? "var(--shadow-1)" : "none",
+  transition: "all 140ms var(--ease-standard, ease-out)",
+});

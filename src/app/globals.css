@@ -293,6 +293,15 @@ a.btn-thm {
   color: var(--primary-700) !important;
 }
 
+/* Tailwind/Bootstrap collision safety net — Tailwind's .collapse utility
+   would otherwise force visibility: collapse on Bootstrap's .collapse.show
+   accordion state. The blocklist in tailwind.config.js stops the utility
+   from being generated; this rule is a belt-and-braces in case the build
+   ever ships without it (e.g. external Tailwind import). */
+.collapse.show {
+  visibility: visible !important;
+}
+
 /* Listing page layout — sidebar stacks on mobile, goes to side at lg.
    Used by Listing6 (services), Listing14 (freelancers), Listing19 (projects). */
 .listing-layout {

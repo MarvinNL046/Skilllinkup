@@ -5,6 +5,11 @@ import { Search } from "lucide-react";
 import listingStore from "@/store/listingStore";
 import { api } from "../../../convex/_generated/api";
 
+// Defensive: if api.marketplace.projects.getOpenCount isn't yet
+// deployed (older Convex push, schema drift, missing env), don't crash
+// the page — fall back to the badge being hidden.
+const safeGetOpenCount = api?.marketplace?.projects?.getOpenCount ?? null;
+
 /**
  * /online/projects hero — DS rewrite of the legacy .cta-service-v6
  * banner. Drops the generic Trafalgar template image, uses a primary→
@@ -16,7 +21,12 @@ export default function Breadcumb18() {
   const t = useTranslations("projects");
   const getSearch = listingStore((state) => state.getSearch);
   const setSearch = listingStore((state) => state.setSearch);
-  const projectsCount = useQuery(api.marketplace.projects.getOpenCount, {});
+  // Pass "skip" when the function reference is missing so useQuery
+  // doesn't try to dispatch and crash the render.
+  const projectsCount = useQuery(
+    safeGetOpenCount ?? api.marketplace.projects.list,
+    safeGetOpenCount ? {} : "skip"
+  );
 
   function handleSubmit(e) {
     e.preventDefault();
