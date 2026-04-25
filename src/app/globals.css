@@ -302,6 +302,45 @@ a.btn-thm {
   visibility: visible !important;
 }
 
+/* Bootstrap CSS custom properties → SkillLinkup DS tokens. Bootstrap's
+   .text-primary / .bg-primary / .border-primary / .btn-primary all
+   resolve to var(--bs-primary), which by default is BS's brand blue
+   #0d6efd — completely off-brand. Same for the other semantic colors.
+   Remapping the BS variables here means any legacy class on a BS
+   utility now renders the DS color, AND it neutralises the
+   Tailwind ⚔️ Bootstrap clash on .text-primary etc. (both definitions
+   now resolve to the same brand color). */
+:root {
+  --bs-primary: var(--primary-600);
+  --bs-primary-rgb: 95, 80, 166;             /* approx of --primary-600 in sRGB */
+  --bs-secondary: var(--secondary-500);
+  --bs-secondary-rgb: 217, 130, 79;
+  --bs-success: var(--success-600);
+  --bs-success-rgb: 76, 168, 158;
+  --bs-info: var(--info-600);
+  --bs-info-rgb: 56, 130, 191;
+  --bs-warning: var(--warning-600);
+  --bs-warning-rgb: 218, 158, 65;
+  --bs-danger: var(--error-600);
+  --bs-danger-rgb: 215, 76, 76;
+  --bs-light: var(--surface-2);
+  --bs-light-rgb: 244, 240, 234;
+  --bs-dark: var(--neutral-900);
+  --bs-dark-rgb: 32, 28, 24;
+
+  --bs-body-color: var(--text-primary);
+  --bs-body-bg: var(--bg);
+  --bs-border-color: var(--border-default);
+  --bs-border-radius: var(--radius-md);
+  --bs-link-color: var(--primary-600);
+  --bs-link-hover-color: var(--primary-700);
+}
+[data-theme="dark"] {
+  --bs-body-color: var(--text-primary);
+  --bs-body-bg: var(--bg);
+  --bs-border-color: var(--border-default);
+}
+
 /* Listing page layout — sidebar stacks on mobile, goes to side at lg.
    Used by Listing6 (services), Listing14 (freelancers), Listing19 (projects). */
 .listing-layout {
