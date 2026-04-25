@@ -49,7 +49,15 @@ export default function DashboardLayout({ children, maxWidth = "full" }) {
   }, [pathname, closeMobile]);
 
   return (
-    <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
+    <div
+      style={{
+        background: "var(--bg)",
+        display: "flex",
+        flexDirection: "column",
+        flex: "1 0 auto",
+        minWidth: 0,
+      }}
+    >
       <DashboardHeader />
       <div
         className="app-shell"
