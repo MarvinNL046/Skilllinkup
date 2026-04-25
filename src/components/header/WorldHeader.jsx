@@ -59,7 +59,7 @@ export default function WorldHeader() {
 
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", flexShrink: 0 }}>
           <div className="hidden lg:block" style={{ width: 280 }}>
-            <SearchBarWithDropdown />
+            <SearchBarWithDropdown placeholder={t("searchPlaceholderShort")} />
           </div>
 
           <span className="hidden md:inline-flex">

@@ -124,12 +124,25 @@ export default function SearchBarWithDropdown({
           }}
           onFocus={() => setIsOpen(true)}
           onKeyDown={(e) => e.key === "Escape" && setIsOpen(false)}
-          style={{ background: "transparent", fontSize: 14, boxShadow: "none" }}
+          style={{
+            flex: "1 1 0",
+            minWidth: 0,
+            width: "auto",
+            background: "transparent",
+            fontSize: 14,
+            boxShadow: "none",
+          }}
           autoComplete="off"
         />
         <button
           type="submit"
+          aria-label="Search"
           style={{
+            flex: "0 0 auto",
+            alignSelf: "stretch",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             background: "none",
             border: "none",
             padding: "0 14px",

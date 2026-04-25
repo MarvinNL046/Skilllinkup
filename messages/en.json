@@ -46,7 +46,8 @@
     "signIn": "Sign in",
     "logout": "Logout",
     "joinWaitlist": "Join Waitlist",
-    "searchPlaceholder": "What service are you looking for today?"
+    "searchPlaceholder": "What service are you looking for today?",
+    "searchPlaceholderShort": "Search services…"
   },
   "home": {
     "metaTitle": "SkillLinkup — Find the Right Talent, Anywhere",

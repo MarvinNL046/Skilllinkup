@@ -46,7 +46,8 @@
     "signIn": "Registrazione",
     "logout": "Esci",
     "joinWaitlist": "Iscriviti alla lista d'attesa",
-    "searchPlaceholder": "Che servizio cerchi oggi?"
+    "searchPlaceholder": "Che servizio cerchi oggi?",
+    "searchPlaceholderShort": "Cerca servizi…"
   },
   "home": {
     "metaTitle": "SkillLinkup: trova il talento giusto, ovunque",

@@ -62,10 +62,13 @@ main#main-content {
   flex-direction: column;
   min-width: 0;
 }
-/* Make any wrapper div between main and footer behave like a flex
-   column too, so margin-top:auto on the footer (or last child)
-   actually pushes it to the viewport bottom on short pages. */
-main#main-content > div {
+/* Make the layout wrapper div between main and footer behave like a
+   flex column too, so margin-top:auto on the footer (or last child)
+   actually pushes it to the viewport bottom on short pages.
+   Scoped to .wrapper so it doesn't override sibling utilities like
+   .xl\:hidden on MobileNavigation2 (which is a direct child of main
+   in route groups that don't use a .wrapper container). */
+main#main-content > .wrapper {
   display: flex;
   flex-direction: column;
   flex: 1 0 auto;

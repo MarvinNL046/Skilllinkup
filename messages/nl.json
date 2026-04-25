@@ -46,7 +46,8 @@
     "signIn": "Inloggen",
     "logout": "Uitloggen",
     "joinWaitlist": "Schrijf je in",
-    "searchPlaceholder": "Welke dienst zoek je vandaag?"
+    "searchPlaceholder": "Welke dienst zoek je vandaag?",
+    "searchPlaceholderShort": "Zoek diensten…"
   },
   "home": {
     "metaTitle": "SkillLinkup — Vind het juiste talent, overal",
