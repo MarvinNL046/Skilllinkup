@@ -214,11 +214,33 @@ export default function ProfileDetails() {
           </div>
           <div className="col-sm-6 mb20">
             <label className="heading-color ff-heading fw500 mb10">{t("accountType")}</label>
-            <input type="text" className="form-control" value={convexUser?.userType || t("notSet")} disabled />
+            <input
+              type="text"
+              className="form-control"
+              value={
+                convexUser?.userType === "freelancer"
+                  ? t("accountTypeFreelancer", { default: "Freelancer" })
+                  : convexUser?.userType === "client"
+                  ? t("accountTypeClient", { default: "Client" })
+                  : t("notSet")
+              }
+              disabled
+            />
           </div>
           <div className="col-sm-6 mb20">
-            <label className="heading-color ff-heading fw500 mb10">{t("world")}</label>
-            <input type="text" className="form-control" value={convexUser?.preferredWorld || "online"} disabled />
+            <label className="heading-color ff-heading fw500 mb10">{t("marketplace", { default: "Marketplace" })}</label>
+            <input
+              type="text"
+              className="form-control"
+              value={
+                convexUser?.preferredWorld === "local"
+                  ? t("marketplaceLocal", { default: "Local marketplace" })
+                  : convexUser?.preferredWorld === "jobs"
+                  ? t("marketplaceJobs", { default: "Jobs board" })
+                  : t("marketplaceOnline", { default: "Online marketplace" })
+              }
+              disabled
+            />
           </div>
         </div>
         <div className="alert alert-light mt10" role="alert">

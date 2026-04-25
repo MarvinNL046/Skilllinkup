@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useQuery } from "convex/react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { api } from "../../../../convex/_generated/api";
 import DashboardNavigation from "../header/DashboardNavigation";
@@ -113,9 +114,31 @@ export default function ReviewsInfo() {
 
                   {/* Empty state */}
                   {reviews !== undefined && currentReviews.length === 0 && (
-                    <div className="text-center py-5">
-                      <i className="flaticon-review-1 fz40 text mb20" />
-                      <p className="text mb-0">{t("noReviewsYet")}</p>
+                    <div style={{ textAlign: "center", padding: "var(--space-12) var(--space-4)" }}>
+                      <div
+                        style={{
+                          width: 56,
+                          height: 56,
+                          margin: "0 auto var(--space-4)",
+                          borderRadius: "var(--radius-lg)",
+                          background: "var(--primary-50)",
+                          color: "var(--primary-700)",
+                          display: "grid",
+                          placeItems: "center",
+                          fontSize: 28,
+                        }}
+                      >
+                        <i className="flaticon-review-1" />
+                      </div>
+                      <p
+                        className="body-md"
+                        style={{ color: "var(--text-secondary)", margin: 0, marginBottom: "var(--space-5)" }}
+                      >
+                        {t("noReviewsYet")}
+                      </p>
+                      <Link href="/online/freelancers" className="btn btn--secondary btn--sm">
+                        {t("browseFreelancers", { default: "Browse freelancers" })}
+                      </Link>
                     </div>
                   )}
 

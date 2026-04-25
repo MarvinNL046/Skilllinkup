@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import DashboardNavigation from "../header/DashboardNavigation";
 import useConvexUser from "@/hook/useConvexUser";
 import { flattenLeafMarketplaceCategories } from "@/lib/marketplaceCategories";
@@ -27,6 +27,7 @@ function worldToServiceType(world) {
 
 export default function CreateProjectInfo() {
   const t = useTranslations("createProject");
+  const locale = useLocale();
   const router = useRouter();
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const createProject = useMutation(api.marketplace.projects.create);
@@ -402,12 +403,16 @@ export default function CreateProjectInfo() {
                         <input
                           type="date"
                           name="deadline"
+                          lang={locale}
                           className="form-control"
                           value={form.deadline}
                           onChange={handleChange}
                           min={new Date().toISOString().split("T")[0]}
                           data-testid="create-project-deadline"
                         />
+                        <p className="body-sm" style={{ color: "var(--text-tertiary)", marginTop: 6, marginBottom: 0 }}>
+                          {t("deadlineHint", { default: "Format: YYYY-MM-DD" })}
+                        </p>
                       </div>
                     </div>
 

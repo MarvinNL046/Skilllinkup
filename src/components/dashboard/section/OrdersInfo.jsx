@@ -97,23 +97,49 @@ export default function OrdersInfo() {
         </div>
       </div>
 
-      {/* Role switcher */}
-      <div className="row">
-        <div className="col-12 mb20">
-          <div className="flex gap-2">
-            <button
-              className={`ud-btn ${role === "client" ? "btn-thm" : "btn-white"}`}
-              onClick={() => setRole("client")}
-            >
-              {t("asBuyer")}
-            </button>
-            <button
-              className={`ud-btn ${role === "freelancer" ? "btn-thm" : "btn-white"}`}
-              onClick={() => setRole("freelancer")}
-            >
-              {t("asSeller")}
-            </button>
-          </div>
+      {/* Role switcher — segmented control on surface-2 track */}
+      <div style={{ marginBottom: "var(--space-5)" }}>
+        <div
+          role="tablist"
+          aria-label="Order role"
+          style={{
+            display: "inline-flex",
+            padding: 4,
+            gap: 2,
+            background: "var(--surface-2)",
+            borderRadius: "var(--radius-md)",
+          }}
+        >
+          {[
+            { value: "client",     label: t("asBuyer") },
+            { value: "freelancer", label: t("asSeller") },
+          ].map((opt) => {
+            const active = role === opt.value;
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                onClick={() => setRole(opt.value)}
+                style={{
+                  padding: "8px 16px",
+                  border: "none",
+                  borderRadius: "var(--radius-sm)",
+                  fontFamily: "inherit",
+                  fontSize: "var(--text-body-sm)",
+                  fontWeight: active ? 600 : 500,
+                  cursor: active ? "default" : "pointer",
+                  background: active ? "var(--bg-elevated)" : "transparent",
+                  color: active ? "var(--text-primary)" : "var(--text-secondary)",
+                  boxShadow: active ? "var(--shadow-1)" : "none",
+                  transition: "all 140ms var(--ease-standard, ease-out)",
+                }}
+              >
+                {opt.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 

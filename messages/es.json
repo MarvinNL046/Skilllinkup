@@ -1195,12 +1195,18 @@
     "saving": "Ahorro...",
     "saveProfile": "Guardar perfil",
     "profileSaved": "¡Perfil guardado exitosamente!",
-    "saveFailed": "Algo salió mal al guardar. Por favor inténtalo de nuevo."
+    "saveFailed": "Algo salió mal al guardar. Por favor inténtalo de nuevo.",
+    "marketplace": "Mercado",
+    "marketplaceOnline": "Mercado online",
+    "marketplaceLocal": "Mercado local",
+    "marketplaceJobs": "Tablón de empleos",
+    "accountTypeFreelancer": "Freelancer",
+    "accountTypeClient": "Cliente"
   },
   "addService": {
     "title": "Agregar servicio",
     "pageTitle": "Agregar servicios",
-    "pageDescription": "Cree una lista de servicios con paquetes de precios fijos. Los clientes pueden navegar y realizar pedidos directamente, como en un concierto de Fiverr.",
+    "pageDescription": "Crea un servicio con paquetes de precio fijo. Los clientes pueden contratar directamente — sin propuestas.",
     "saving": "Ahorro...",
     "saveAndPublish": "Guardar y publicar",
     "lookingToHire": "¿Quieres contratar en su lugar?",
@@ -1272,7 +1278,7 @@
   },
   "createProject": {
     "title": "Crear proyecto",
-    "pageDescription": "Describe lo que necesitas y fija tu presupuesto. Los autónomos enviarán propuestas, como publicar en Upwork.",
+    "pageDescription": "Describe lo que necesitas y establece tu presupuesto. Los freelancers envían propuestas que puedes comparar.",
     "saving": "Ahorro...",
     "saveAndPublish": "Guardar y publicar",
     "settingUpAccount": "Configurando tu cuenta...",

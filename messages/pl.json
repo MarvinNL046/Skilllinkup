@@ -1195,12 +1195,18 @@
     "saving": "Oszczędność...",
     "saveProfile": "Zapisz profil",
     "profileSaved": "Profil został pomyślnie zapisany!",
-    "saveFailed": "Coś poszło nie tak podczas zapisywania. Spróbuj ponownie."
+    "saveFailed": "Coś poszło nie tak podczas zapisywania. Spróbuj ponownie.",
+    "marketplace": "Marketplace",
+    "marketplaceOnline": "Marketplace online",
+    "marketplaceLocal": "Marketplace lokalny",
+    "marketplaceJobs": "Tablica ofert pracy",
+    "accountTypeFreelancer": "Freelancer",
+    "accountTypeClient": "Klient"
   },
   "addService": {
     "title": "Dodaj usługę",
     "pageTitle": "Dodaj usługi",
-    "pageDescription": "Utwórz listę usług ze stałymi pakietami cenowymi. Klienci mogą bezpośrednio przeglądać i zamawiać — jak w przypadku koncertu Fiverr.",
+    "pageDescription": "Utwórz usługę z pakietami ze stałą ceną. Klienci mogą zamawiać bezpośrednio — bez propozycji.",
     "saving": "Oszczędność...",
     "saveAndPublish": "Zapisz i opublikuj",
     "lookingToHire": "Chcesz zamiast tego zatrudnić?",
@@ -1272,7 +1278,7 @@
   },
   "createProject": {
     "title": "Utwórz projekt",
-    "pageDescription": "Opisz, czego potrzebujesz i ustal budżet. Freelancerzy będą przesyłać propozycje — na przykład poprzez publikację na Upwork.",
+    "pageDescription": "Opisz, czego potrzebujesz i ustaw budżet. Freelancerzy wysyłają propozycje, które możesz porównać.",
     "saving": "Oszczędność...",
     "saveAndPublish": "Zapisz i opublikuj",
     "settingUpAccount": "Konfigurowanie konta...",

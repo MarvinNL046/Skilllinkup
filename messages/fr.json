@@ -1195,12 +1195,18 @@
     "saving": "Économie...",
     "saveProfile": "Enregistrer le profil",
     "profileSaved": "Profil enregistré avec succès !",
-    "saveFailed": "Une erreur s'est produite lors de l'enregistrement. Veuillez réessayer."
+    "saveFailed": "Une erreur s'est produite lors de l'enregistrement. Veuillez réessayer.",
+    "marketplace": "Marketplace",
+    "marketplaceOnline": "Marketplace en ligne",
+    "marketplaceLocal": "Marketplace local",
+    "marketplaceJobs": "Offres d'emploi",
+    "accountTypeFreelancer": "Freelance",
+    "accountTypeClient": "Client"
   },
   "addService": {
     "title": "Ajouter un service",
     "pageTitle": "Ajouter des services",
-    "pageDescription": "Créez une liste de services avec des forfaits à prix fixes. Les clients peuvent parcourir et commander directement, comme un concert Fiverr.",
+    "pageDescription": "Créez une offre de service avec des forfaits à prix fixe. Les clients peuvent commander directement — sans propositions.",
     "saving": "Économie...",
     "saveAndPublish": "Enregistrer et publier",
     "lookingToHire": "Vous cherchez plutôt à embaucher ?",
@@ -1272,7 +1278,7 @@
   },
   "createProject": {
     "title": "Créer un projet",
-    "pageDescription": "Décrivez ce dont vous avez besoin et définissez votre budget. Les pigistes enverront des propositions, comme la publication sur Upwork.",
+    "pageDescription": "Décrivez vos besoins et fixez votre budget. Les freelances envoient des propositions à comparer.",
     "saving": "Économie...",
     "saveAndPublish": "Enregistrer et publier",
     "settingUpAccount": "Configuration de votre compte...",

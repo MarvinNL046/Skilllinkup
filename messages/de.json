@@ -1195,12 +1195,18 @@
     "saving": "Sparen...",
     "saveProfile": "Profil speichern",
     "profileSaved": "Profil erfolgreich gespeichert!",
-    "saveFailed": "Beim Speichern ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
+    "saveFailed": "Beim Speichern ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+    "marketplace": "Marktplatz",
+    "marketplaceOnline": "Online-Marktplatz",
+    "marketplaceLocal": "Lokaler Marktplatz",
+    "marketplaceJobs": "Stellenbörse",
+    "accountTypeFreelancer": "Freelancer",
+    "accountTypeClient": "Auftraggeber"
   },
   "addService": {
     "title": "Dienst hinzufügen",
     "pageTitle": "Dienste hinzufügen",
-    "pageDescription": "Erstellen Sie eine Serviceliste mit Festpreispaketen. Kunden können direkt stöbern und bestellen – wie bei einem Fiverr-Auftritt.",
+    "pageDescription": "Erstelle ein Dienstleistungsangebot mit festen Preispaketen. Kunden buchen direkt — ohne Angebotsphase.",
     "saving": "Sparen...",
     "saveAndPublish": "Speichern und veröffentlichen",
     "lookingToHire": "Möchten Sie stattdessen jemanden einstellen?",
@@ -1272,7 +1278,7 @@
   },
   "createProject": {
     "title": "Projekt erstellen",
-    "pageDescription": "Beschreiben Sie, was Sie brauchen und legen Sie Ihr Budget fest. Freiberufler senden Vorschläge – beispielsweise Beiträge auf Upwork.",
+    "pageDescription": "Beschreibe, was du brauchst, und lege dein Budget fest. Freelancer reichen Vorschläge ein, die du vergleichen kannst.",
     "saving": "Sparen...",
     "saveAndPublish": "Speichern und veröffentlichen",
     "settingUpAccount": "Richten Sie Ihr Konto ein...",
