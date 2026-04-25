@@ -24,6 +24,44 @@ export default function ClientLayout({ children }) {
     wow.init();
   }, [path]);
 
+  // Motion One — subtle spring-based hover lift on every .card. Per the
+  // SkillLinkup Design System v2 handoff: scale 1.012 with the spring
+  // easing on enter, ease back on leave. Wrapped in try/catch so a CDN
+  // miss doesn't break the page. Re-runs on route change so newly
+  // mounted cards get the listeners.
+  useEffect(() => {
+    let cleanups = [];
+    let cancelled = false;
+    (async () => {
+      try {
+        const { animate } = await import("motion");
+        if (cancelled) return;
+        const cards = document.querySelectorAll(".card, .card-vakman");
+        cards.forEach((el) => {
+          if (el.dataset.motionLiftBound === "1") return;
+          el.dataset.motionLiftBound = "1";
+          const onEnter = () =>
+            animate(el, { scale: 1.012 }, { duration: 0.25, easing: [0.34, 1.56, 0.64, 1] });
+          const onLeave = () =>
+            animate(el, { scale: 1 }, { duration: 0.25 });
+          el.addEventListener("mouseenter", onEnter);
+          el.addEventListener("mouseleave", onLeave);
+          cleanups.push(() => {
+            el.removeEventListener("mouseenter", onEnter);
+            el.removeEventListener("mouseleave", onLeave);
+            delete el.dataset.motionLiftBound;
+          });
+        });
+      } catch {
+        // Motion One unavailable — cards stay static, no error surfaced
+      }
+    })();
+    return () => {
+      cancelled = true;
+      cleanups.forEach((fn) => fn());
+    };
+  }, [path]);
+
   return (
     <Providers>
       <a href="#main-content" className="skip-nav">
