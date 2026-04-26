@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { Clock, RefreshCcw, Check, ArrowRight } from "lucide-react";
 
 /**
@@ -10,9 +11,15 @@ import { Clock, RefreshCcw, Check, ArrowRight } from "lucide-react";
  * SkillLinkup Design System — DS card, segmented control for tiers,
  * feature list with success-tinted checks, primary CTA with price echo.
  */
-export default function ServiceDetailPrice1({ packages = [], gigId }) {
+export default function ServiceDetailPrice1({
+  packages = [],
+  gigId,
+  gigTitle,
+  freelancerStripeAccountId,
+}) {
   const t = useTranslations("gigDetail");
   const [selectedTab, setSelectedTab] = useState(0);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
   const router = useRouter();
   const { isSignedIn } = useUser();
 
@@ -29,15 +36,40 @@ export default function ServiceDetailPrice1({ packages = [], gigId }) {
       ? "£"
       : "€";
 
-  function handleOrder() {
-    if (!hasPackages) return;
+  async function handleOrder() {
+    if (!hasPackages || !activePackage) return;
     if (!isSignedIn) {
       const currentPath =
         typeof window !== "undefined" ? window.location.pathname : "/";
       router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
       return;
     }
-    router.push("/dashboard/orders");
+
+    setIsCheckingOut(true);
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          gigId,
+          packageId: activePackage._id,
+          gigTitle,
+          packageTitle: activePackage.title || activePackage.tier || "",
+          price: activePackage.price,
+          currency: (activePackage.currency || "eur").toLowerCase(),
+          freelancerStripeAccountId: freelancerStripeAccountId || "",
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.url) {
+        throw new Error(json.error || "Checkout failed to start");
+      }
+      window.location.href = json.url;
+    } catch (err) {
+      console.error("[checkout] error:", err);
+      toast.error(err.message || "Could not start checkout");
+      setIsCheckingOut(false);
+    }
   }
 
   if (!hasPackages) {
@@ -220,13 +252,19 @@ export default function ServiceDetailPrice1({ packages = [], gigId }) {
         type="button"
         className="btn btn--primary btn--lg"
         onClick={handleOrder}
-        disabled={!hasPackages}
+        disabled={!hasPackages || isCheckingOut}
         title={!hasPackages ? t("noPackagesTitle") : undefined}
         style={{ width: "100%", justifyContent: "center" }}
       >
-        {t("continue")} ({currencySymbol}
-        {activePackage?.price})
-        <ArrowRight size={16} />
+        {isCheckingOut ? (
+          <span className="spinner-border spinner-border-sm" role="status" />
+        ) : (
+          <>
+            {t("continue")} ({currencySymbol}
+            {activePackage?.price})
+            <ArrowRight size={16} />
+          </>
+        )}
       </button>
     </div>
   );

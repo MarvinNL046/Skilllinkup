@@ -388,6 +388,8 @@ export default function ServiceDetail3() {
                         <ServiceDetailPrice1
                           packages={packages}
                           gigId={data?.id}
+                          gigTitle={data?.title}
+                          freelancerStripeAccountId={data?.freelancer?.stripeAccountId || ""}
                         />
                         <ServiceContactWidget1
                           freelancer={data?.freelancer}
@@ -409,6 +411,8 @@ export default function ServiceDetail3() {
                       <ServiceDetailPrice1
                         packages={packages}
                         gigId={data?.id}
+                        gigTitle={data?.title}
+                        freelancerStripeAccountId={data?.freelancer?.stripeAccountId || ""}
                       />
                       <ServiceContactWidget1
                         freelancer={data?.freelancer}
