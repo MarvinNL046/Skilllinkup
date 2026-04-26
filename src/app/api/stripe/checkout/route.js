@@ -148,7 +148,7 @@ export async function POST(request) {
       },
 
       // Where Stripe redirects after checkout.
-      success_url: `${baseUrl}/dashboard/orders?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${baseUrl}/orders?success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: request.headers.get("referer") || `${baseUrl}/`,
     });
 
