@@ -1943,5 +1943,21 @@
     "onlineProp": "Digital freelancers, remote",
     "localProp": "Local pros near you",
     "jobsProp": "Permanent roles"
+  },
+  "disputes": {
+    "openDisputeTitle": "Open a dispute",
+    "openDisputeDescription": "Tell us what went wrong. The freelancer will be notified and an admin will review the case. The funds will be frozen until the dispute is resolved.",
+    "reasonLabel": "Reason",
+    "descriptionLabel": "Description (30–1000 characters)",
+    "descriptionPlaceholder": "Describe what happened in detail. Include dates, what was delivered, what was promised, and what's wrong.",
+    "submitDispute": "Submit dispute",
+    "cancel": "Cancel",
+    "disputeOpened": "Dispute opened. An admin will review it shortly.",
+    "disputeOpenFailed": "Failed to open dispute",
+    "openDispute": "Open dispute",
+    "disputeReasonNotDelivered": "Not delivered",
+    "disputeReasonQualityIssues": "Quality issues",
+    "disputeReasonCommunication": "Communication problems",
+    "disputeReasonOther": "Other"
   }
 }

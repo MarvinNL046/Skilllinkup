@@ -1943,5 +1943,21 @@
     "onlineProp": "Digitale freelancers, remote",
     "localProp": "Lokale vakmensen dichtbij",
     "jobsProp": "Vaste banen"
+  },
+  "disputes": {
+    "openDisputeTitle": "Geschil openen",
+    "openDisputeDescription": "Vertel ons wat er mis is gegaan. De freelancer wordt op de hoogte gesteld en een admin beoordeelt de zaak. De betaling wordt bevroren tot het geschil is afgehandeld.",
+    "reasonLabel": "Reden",
+    "descriptionLabel": "Omschrijving (30–1000 tekens)",
+    "descriptionPlaceholder": "Beschrijf in detail wat er is gebeurd. Vermeld data, wat er is geleverd, wat was beloofd en wat er mis is.",
+    "submitDispute": "Geschil indienen",
+    "cancel": "Annuleren",
+    "disputeOpened": "Geschil geopend. Een admin beoordeelt het zo snel mogelijk.",
+    "disputeOpenFailed": "Kon geschil niet openen",
+    "openDispute": "Geschil openen",
+    "disputeReasonNotDelivered": "Niet geleverd",
+    "disputeReasonQualityIssues": "Kwaliteit niet goed",
+    "disputeReasonCommunication": "Communicatieproblemen",
+    "disputeReasonOther": "Anders"
   }
 }
