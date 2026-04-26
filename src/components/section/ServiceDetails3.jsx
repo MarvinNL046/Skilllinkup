@@ -1,6 +1,8 @@
 "use client";
 
 import Sticky from "react-stickynode";
+import { useState } from "react";
+import { toast } from "sonner";
 
 import useScreen from "@/hook/useScreen";
 import ServiceContactWidget1 from "../element/ServiceContactWidget1";
@@ -20,15 +22,42 @@ export default function ServiceDetail3() {
   const { id } = useParams();
   const router = useRouter();
   const { isSignedIn } = useUser();
+  const [orderingPackageId, setOrderingPackageId] = useState(null);
 
-  function handleSelectPackage() {
+  async function handleSelectPackage(pkg) {
+    if (!pkg) return;
     if (!isSignedIn) {
       const currentPath =
         typeof window !== "undefined" ? window.location.pathname : "/";
       router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
       return;
     }
-    router.push("/dashboard/orders");
+
+    setOrderingPackageId(pkg._id);
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          gigId: data?.id,
+          packageId: pkg._id,
+          gigTitle: data?.title,
+          packageTitle: pkg.title || pkg.tier || "",
+          price: pkg.price,
+          currency: (pkg.currency || "eur").toLowerCase(),
+          freelancerStripeAccountId: data?.freelancer?.stripeAccountId || "",
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.url) {
+        throw new Error(json.error || "Checkout failed to start");
+      }
+      window.location.href = json.url;
+    } catch (err) {
+      console.error("[checkout] error:", err);
+      toast.error(err.message || "Could not start checkout");
+      setOrderingPackageId(null);
+    }
   }
 
   const gigData = useConvexGigDetail(id);
@@ -363,11 +392,18 @@ export default function ServiceDetail3() {
                                   <button
                                     type="button"
                                     className="btn btn--primary btn--sm"
-                                    onClick={handleSelectPackage}
+                                    onClick={() => handleSelectPackage(pkg)}
+                                    disabled={orderingPackageId === pkg._id}
                                     style={{ width: "100%", justifyContent: "center" }}
                                   >
-                                    {t("select")}
-                                    <ArrowRight size={14} />
+                                    {orderingPackageId === pkg._id ? (
+                                      <span className="spinner-border spinner-border-sm" role="status" />
+                                    ) : (
+                                      <>
+                                        {t("select")}
+                                        <ArrowRight size={14} />
+                                      </>
+                                    )}
                                   </button>
                                 </td>
                               ))}
