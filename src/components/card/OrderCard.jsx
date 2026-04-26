@@ -4,6 +4,7 @@ import { useMutation, useQuery } from "convex/react";
 import { useTranslations } from "next-intl";
 import { api } from "../../../convex/_generated/api";
 import ReviewForm from "@/components/element/ReviewForm";
+import OpenDisputeModal from "@/components/dispute/OpenDisputeModal";
 import useConvexUser from "@/hook/useConvexUser";
 import { toast } from "sonner";
 
@@ -29,6 +30,7 @@ export default function OrderCard({ order, role }) {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [showRevisionForm, setShowRevisionForm] = useState(false);
   const [revisionMessage, setRevisionMessage] = useState("");
+  const [showDisputeModal, setShowDisputeModal] = useState(false);
 
   const { convexUser } = useConvexUser();
 
@@ -100,6 +102,14 @@ export default function OrderCard({ order, role }) {
   const showDeliverButton = role === "freelancer" && order.status === "in_progress";
   const showClientButtons = role === "client" && order.status === "delivered";
   const isCompleted = order.status === "completed";
+
+  const canOpenDispute =
+    ["in_progress", "delivered", "revision_requested"].includes(order.status) &&
+    order.escrowStatus !== "disputed" &&
+    order.escrowStatus !== "released" &&
+    order.escrowStatus !== "refunded";
+
+  const tDispute = useTranslations("disputes");
 
   const alreadyReviewed =
     orderReviews !== undefined &&
@@ -224,6 +234,22 @@ export default function OrderCard({ order, role }) {
                   )}
                 </button>
               )}
+
+              {canOpenDispute && (
+                <button
+                  className="ud-btn btn-white fz14"
+                  type="button"
+                  onClick={() => setShowDisputeModal(true)}
+                  disabled={actionLoading}
+                  style={{
+                    borderColor: "var(--danger-200, #fecaca)",
+                    color: "var(--danger-600, #dc2626)",
+                  }}
+                >
+                  {tDispute("openDispute")}
+                  <i className="fal fa-exclamation-triangle" />
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -269,6 +295,13 @@ export default function OrderCard({ order, role }) {
             />
           </div>
         </div>
+      )}
+
+      {showDisputeModal && (
+        <OpenDisputeModal
+          orderId={order._id}
+          onClose={() => setShowDisputeModal(false)}
+        />
       )}
     </div>
   );
