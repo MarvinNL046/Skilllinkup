@@ -141,3 +141,35 @@ After Vercel env is set + webhook registered:
 | (Vercel env, Stripe Dashboard) | external | Out-of-repo config |
 
 No Convex schema changes. No new Convex actions. Backend already supports every step.
+
+---
+
+## Verification (2026-04-26)
+
+End-to-end checkout-to-payout flow proven on production (`skilllinkup.com`):
+
+- ✅ Buyer Marvin S paid €129 via Stripe Checkout (test card `4242…`).
+- ✅ Production webhook created Convex order `ORD-20260426-MPKVIB` (`md7785ytgs1sw1j3ezy8zhtqd985jef8`) with `escrowStatus: held`, linked to PaymentIntent `pi_3TQRbvEPjKUovbQK0OMP6WGW`.
+- ✅ Resend emails fired: "Order placed" (to client), "Order delivered" (to client).
+- ✅ Freelancer (StayCool Airco) clicked Mark as delivered → `status: delivered`, `autoReleaseJobId: kc21hzc24zb8g7sb3kgpab018h85k09q` set (7-day scheduler).
+- ✅ Client clicked Approve → scheduler cancelled, `releaseToFreelancer` action invoked.
+- ✅ Stripe transfer `tr_3TQRbvEPjKUovbQK0qZss6Vz` of €113.52 to `acct_1TQQrgCYr4Em6ASP` (StayCool Connect Express account), `source_transaction: ch_3TQRbvEPjKUovbQK01Hq6ut0`.
+- ✅ Order patched to `escrowStatus: released`, `stripeTransferId` set.
+- ✅ Platform fee (€15.48) implicitly retained on platform balance — Separate Charges + Manual Transfers model confirmed.
+
+### Bugs caught during e2e (and fixed)
+
+1. **`application_fee_amount` rejected by Stripe** — original 2026-03-05 escrow plan kept it after removing `transfer_data`. Stripe only allows it for Direct/Destination charges. Removed entirely. Commit `bce7b71`.
+2. **Webhook silently swallowed Convex errors** — `gigs.getPackageById` and `gigs.getById` need `serverSecret`, but the webhook never passed it. Outer catch returned 200 anyway, so Stripe never retried. Fix: pass secret + rethrow on failure → outer 500 → Stripe retries. Commit `92a83a9`.
+3. **Vercel prod env vars stored as empty `""`** — `vercel env add` via stdin pipe silently saved empty values despite reporting "Added". Fixed via Vercel REST API direct PATCH/POST.
+4. **Connect onboarding writes only to one Convex deployment** — when triggered from localhost, the Convex mutation hits dev Convex; production freelancerProfile never received the `stripeAccountId`, so `releaseToFreelancer` errored. Fix: copy account ID from dev to prod, OR initiate Connect onboarding from prod URL.
+5. **Stripe Connect platform profile** — required two acknowledgments ("loss management" + "ongoing seller compliance") before any `accounts.create` call worked. Confirmed in dashboard.
+
+### Known follow-ups (out of scope, but recorded)
+
+- `/orders?success=true` UX: page renders success even when webhook silently failed downstream — should query session and show pending/error state.
+- Stripe Dashboard Connect-onboarding branding shows "wetryleadflow" / shared platform branding rather than SkillLinkup-specific (single Stripe account hosts multiple platforms).
+- `src/app/api/stripe/webhook/route.js:39` exports deprecated `config = { api: { bodyParser: false } }` — Next.js 16 ignores it; should be removed.
+- Connect platform profile says "Direct Charges" model; actual implementation uses Separate Charges + Manual Transfers — informational mismatch only, not blocking.
+- Live keys (`sk_live_…44YD`) deferred until separate live-mode webhook is registered.
+- Manual dispute path (T7 button + admin resolve) not yet exercised end-to-end — code paths verified earlier via Stripe CLI triggers, but no full UI walkthrough on prod.
