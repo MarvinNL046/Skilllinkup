@@ -176,10 +176,11 @@ async function handleCheckoutSessionCompleted(session) {
   try {
     gigPackage = await convex.query(api.marketplace.gigs.getPackageById, {
       packageId,
+      serverSecret: SERVER_SECRET,
     });
   } catch (err) {
     console.error("[stripe/webhook] Failed to fetch gig package from Convex:", err);
-    return;
+    throw err;
   }
 
   if (!gigPackage) {
@@ -190,10 +191,13 @@ async function handleCheckoutSessionCompleted(session) {
   // Fetch the gig to get the freelancer profile ID.
   let gig;
   try {
-    gig = await convex.query(api.marketplace.gigs.getById, { gigId });
+    gig = await convex.query(api.marketplace.gigs.getById, {
+      gigId,
+      serverSecret: SERVER_SECRET,
+    });
   } catch (err) {
     console.error("[stripe/webhook] Failed to fetch gig from Convex:", err);
-    return;
+    throw err;
   }
 
   if (!gig) {
