@@ -20,26 +20,6 @@ import { currentUser } from "@clerk/nextjs/server";
 //   { url }  – Redirect the client to this Stripe-hosted checkout URL.
 // ---------------------------------------------------------------------------
 
-/**
- * Calculate the platform fee in cents based on the order amount.
- *
- * IMPORTANT: Fee tiers must match convex/marketplace/orders.ts:calculatePlatformFee
- * Tiers: <$50 → 15%, $50-500 → 12%, >$500 → 10%
- */
-function calculateApplicationFeeAmountCents(amountCents) {
-  const amount = amountCents / 100;
-  let feeRate;
-  if (amount < 50) {
-    feeRate = 0.15;
-  } else if (amount <= 500) {
-    feeRate = 0.12;
-  } else {
-    feeRate = 0.10;
-  }
-  // Round to avoid floating-point surprises; Stripe expects an integer in cents.
-  return Math.round(amountCents * feeRate);
-}
-
 export async function POST(request) {
   // Guard: Stripe not configured yet.
   if (!stripe) {
@@ -100,8 +80,6 @@ export async function POST(request) {
     );
   }
 
-  const applicationFeeAmountCents = calculateApplicationFeeAmountCents(amountCents);
-
   // Determine base URL for success / cancel redirects.
   const baseUrl =
     process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -128,14 +106,14 @@ export async function POST(request) {
         },
       ],
 
-      // Funds land on the platform account (escrow). The transfer to the
-      // freelancer happens later via the webhook after order completion.
-      payment_intent_data: {
-        // SkillLinkup platform fee (retained by the platform account).
-        application_fee_amount: applicationFeeAmountCents,
-      },
+      // Funds land on the platform account (Separate Charges + Manual
+      // Transfers). The transfer to the freelancer happens later via
+      // releaseToFreelancer in convex/marketplace/escrow.ts. The platform fee
+      // is the difference between amount and transfer (implicit, not declared
+      // as application_fee_amount — that field requires Direct/Destination
+      // charges, not Separate Charges).
 
-      // Metadata is stored on the PaymentIntent for webhook reference.
+      // Metadata is stored on the Checkout Session for webhook reference.
       // NOTE: freelancerStripeAccountId here is a convenience passthrough only.
       // The actual Stripe transfer always reads the account ID from Convex DB
       // (via the releaseToFreelancer internal action) — never trusts this value blindly.
