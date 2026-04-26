@@ -36,7 +36,7 @@ export async function GET(request) {
   if (isRefresh && accountId) {
     if (!stripe) {
       return NextResponse.redirect(
-        `${baseUrl}/dashboard/payouts?stripe_error=not_configured`
+        `${baseUrl}/payouts?stripe_error=not_configured`
       );
     }
 
@@ -53,20 +53,20 @@ export async function GET(request) {
     } catch (err) {
       console.error("[stripe/connect/callback] Failed to refresh link:", err);
       return NextResponse.redirect(
-        `${baseUrl}/dashboard/payouts?stripe_error=refresh_failed`
+        `${baseUrl}/payouts?stripe_error=refresh_failed`
       );
     }
   }
 
   if (!accountId) {
     return NextResponse.redirect(
-      `${baseUrl}/dashboard/payouts?stripe_error=missing_account`
+      `${baseUrl}/payouts?stripe_error=missing_account`
     );
   }
 
   if (!stripe) {
     return NextResponse.redirect(
-      `${baseUrl}/dashboard/payouts?stripe_error=not_configured`
+      `${baseUrl}/payouts?stripe_error=not_configured`
     );
   }
 
@@ -82,7 +82,7 @@ export async function GET(request) {
       if (convexUserId) {
         if (!SERVER_SECRET) {
           return NextResponse.redirect(
-            `${baseUrl}/dashboard/payouts?stripe_error=server_secret_missing`
+            `${baseUrl}/payouts?stripe_error=server_secret_missing`
           );
         }
         try {
@@ -100,19 +100,19 @@ export async function GET(request) {
       }
 
       return NextResponse.redirect(
-        `${baseUrl}/dashboard/payouts?stripe_connected=true`
+        `${baseUrl}/payouts?stripe_connected=true`
       );
     } else {
       // Onboarding was started but not completed (user exited early).
       // Redirect to payouts page where the StripeConnectButton lets them retry.
       return NextResponse.redirect(
-        `${baseUrl}/dashboard/payouts?stripe_pending=true`
+        `${baseUrl}/payouts?stripe_pending=true`
       );
     }
   } catch (err) {
     console.error("[stripe/connect/callback] Stripe error:", err);
     return NextResponse.redirect(
-      `${baseUrl}/dashboard/payouts?stripe_error=verification_failed`
+      `${baseUrl}/payouts?stripe_error=verification_failed`
     );
   }
 }
