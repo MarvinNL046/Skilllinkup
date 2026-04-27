@@ -86,6 +86,8 @@ export default function LineChart({ userId }) {
   };
 
   const options = {
+    responsive: true,
+    maintainAspectRatio: false,
     scales: {
       y: {
         min: 0,
@@ -225,7 +227,9 @@ export default function LineChart({ userId }) {
           </p>
         </div>
       ) : (
-        <Line options={options} data={data} />
+        <div style={{ position: "relative", height: 320 }}>
+          <Line options={options} data={data} />
+        </div>
       )}
     </div>
   );

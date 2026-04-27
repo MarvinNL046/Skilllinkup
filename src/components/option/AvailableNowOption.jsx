@@ -8,7 +8,7 @@ export default function AvailableNowOption() {
   const setAvailableOnly = listingStore((state) => state.setAvailableOnly);
 
   return (
-    <div className="card mb20 pb10">
+    <div className="card mb-5 pb-2.5">
       <div className="card-body px-0 pt-0">
         <div className="form-check form-switch flex items-center">
           <input
@@ -18,7 +18,7 @@ export default function AvailableNowOption() {
             checked={getAvailableOnly}
             onChange={(e) => setAvailableOnly(e.target.checked)}
           />
-          <label className="form-check-label ms-2 fw500" htmlFor="availableNow">
+          <label className="form-check-label ms-2 font-medium" htmlFor="availableNow">
             {t("availableNow")}
           </label>
         </div>

@@ -54,7 +54,7 @@ export default function Listing12() {
 
   return (
     <>
-      <section className="pt30 pb90">
+      <section className="pt-8 pb-24">
         <div className="container">
           <div className="row">
             <div className="col-lg-3">
@@ -75,7 +75,7 @@ export default function Listing12() {
                   content
                 )}
               </div>
-              <div className="row mt30">
+              <div className="row mt-8">
                 <Pagination1 />
               </div>
             </div>

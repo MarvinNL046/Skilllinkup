@@ -8,14 +8,32 @@ import useConvexUser from "@/hook/useConvexUser";
 
 function StarRating({ value, onChange }) {
   return (
-    <div className="flex gap-1 mb-3">
+    <div role="radiogroup" aria-label="Rating" className="flex gap-1 mb-3">
       {[1, 2, 3, 4, 5].map((star) => (
-        <i
+        <button
           key={star}
-          className={`fas fa-star fz18 ${star <= value ? "text-warning" : "text-muted"}`}
-          style={{ cursor: "pointer" }}
+          type="button"
+          role="radio"
+          aria-checked={star === value}
+          aria-label={`${star} ${star === 1 ? "star" : "stars"}`}
           onClick={() => onChange(star)}
-        />
+          style={{
+            width: 44,
+            height: 44,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "none",
+            background: "transparent",
+            padding: 0,
+            cursor: "pointer",
+          }}
+        >
+          <i
+            className={`fas fa-star text-2xl ${star <= value ? "text-warning" : "text-muted"}`}
+            aria-hidden="true"
+          />
+        </button>
       ))}
     </div>
   );
@@ -86,16 +104,16 @@ export default function FeedbackInfo() {
   return (
     <div className="row">
       <div className="col-12 mb-4">
-        <h4 className="title fz17 mb-0">{t("title")}</h4>
+        <h4 className="title text-lg mb-0">{t("title")}</h4>
       </div>
 
       {/* Submit form */}
       <div className="col-lg-5 mb-4">
-        <div className="ps-widget bdrs8 p30 bdr1">
-          <h6 className="mb20">{t("sendFeedback")}</h6>
+        <div className="ps-widget bdrs8 p-8 bdr1">
+          <h6 className="mb-5">{t("sendFeedback")}</h6>
           <form onSubmit={handleSubmit}>
             {/* Type tabs */}
-            <div className="flex gap-2 mb20">
+            <div className="flex gap-2 mb-5">
               {["feedback", "bug", "feature"].map((item) => (
                 <button
                   key={item}
@@ -111,13 +129,13 @@ export default function FeedbackInfo() {
             {/* Star rating — only for feedback type */}
             {type === "feedback" && (
               <div className="mb-2">
-                <label className="form-label fz14 fw500">{t("ratingLabel")}</label>
+                <label className="form-label text-sm font-medium">{t("ratingLabel")}</label>
                 <StarRating value={rating} onChange={setRating} />
               </div>
             )}
 
-            <div className="mb20">
-              <label className="form-label fz14 fw500">
+            <div className="mb-5">
+              <label className="form-label text-sm font-medium">
                 {type === "feedback" && t("promptFeedback")}
                 {type === "bug" && t("promptBug")}
                 {type === "feature" && t("promptFeature")}
@@ -132,9 +150,9 @@ export default function FeedbackInfo() {
               />
             </div>
 
-            {error && <p className="text-danger fz13 mb10">{error}</p>}
+            {error && <p className="text-danger text-sm mb-2.5">{error}</p>}
             {success && (
-              <p className="text-success fz13 mb10">
+              <p className="text-success text-sm mb-2.5">
                 {t("successMessage")}
               </p>
             )}
@@ -153,8 +171,8 @@ export default function FeedbackInfo() {
 
       {/* Feedback history */}
       <div className="col-lg-7 mb-4">
-        <div className="ps-widget bdrs8 p30 bdr1">
-          <h6 className="mb20">{t("yourFeedback")}</h6>
+        <div className="ps-widget bdrs8 p-8 bdr1">
+          <h6 className="mb-5">{t("yourFeedback")}</h6>
 
           {feedbackList === undefined && (
             <div className="text-center py-4">
@@ -163,32 +181,32 @@ export default function FeedbackInfo() {
           )}
 
           {feedbackList?.length === 0 && (
-            <p className="text-muted fz14">{t("noFeedbackYet")}</p>
+            <p className="text-muted text-sm">{t("noFeedbackYet")}</p>
           )}
 
           {feedbackList && feedbackList.length > 0 && (
             <div className="flex flex-col gap-3">
               {feedbackList.map((item) => (
-                <div key={item._id} className="bdr1 bdrs8 p20">
-                  <div className="flex items-center justify-between mb10">
+                <div key={item._id} className="bdr1 bdrs8 p-5">
+                  <div className="flex items-center justify-between mb-2.5">
                     <div className="flex items-center gap-2">
-                      <span className="badge bg-light text-dark fz11 fw500 px-2 py-1" style={{ borderRadius: 8 }}>
+                      <span className="badge bg-light text-dark text-xs font-medium px-2 py-1" style={{ borderRadius: 8 }}>
                         {TYPE_CONFIG[item.type]?.label || item.type}
                       </span>
                       {item.rating > 0 && (
-                        <span className="fz12 text-warning">
+                        <span className="text-xs text-warning">
                           {"★".repeat(item.rating)}{"☆".repeat(5 - item.rating)}
                         </span>
                       )}
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className={`badge px-2 py-1 fz11 fw500 ${(STATUS_CONFIG[item.status] || STATUS_CONFIG.new).className}`} style={{ borderRadius: 8 }}>
+                      <span className={`badge px-2 py-1 text-xs font-medium ${(STATUS_CONFIG[item.status] || STATUS_CONFIG.new).className}`} style={{ borderRadius: 8 }}>
                         {(STATUS_CONFIG[item.status] || STATUS_CONFIG.new).label}
                       </span>
-                      <span className="fz12 text-muted">{timeAgo(item.createdAt)}</span>
+                      <span className="text-xs text-muted">{timeAgo(item.createdAt)}</span>
                     </div>
                   </div>
-                  <p className="fz14 mb-0 text-dark" style={{ whiteSpace: "pre-wrap" }}>
+                  <p className="text-sm mb-0 text-dark" style={{ whiteSpace: "pre-wrap" }}>
                     {item.message}
                   </p>
                 </div>

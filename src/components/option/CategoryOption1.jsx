@@ -24,14 +24,14 @@ export default function CategoryOption1() {
   };
 
   if (!categories) {
-    return <div className="text-muted fz14">{t("loading")}</div>;
+    return <div className="text-muted text-sm">{t("loading")}</div>;
   }
 
   const sorted = flattenLeafMarketplaceCategories(categories).slice(0, 10);
 
   return (
     <>
-      <div className="checkbox-style1 mb15">
+      <div className="checkbox-style1 mb-4">
         {sorted.map((cat) => (
           <label key={cat._id} className="custom_checkbox">
             {cat.label}

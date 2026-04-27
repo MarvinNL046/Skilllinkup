@@ -9,6 +9,9 @@ import ManageServiceCard1 from "../card/ManageServiceCard1";
 import ProposalModal1 from "../modal/ProposalModal1";
 import DeleteModal from "../modal/DeleteModal";
 import useConvexMyGigs from "@/hook/useConvexMyGigs";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Plus } from "lucide-react";
 
 const STATUS_MAP = {
   0: "active",
@@ -34,15 +37,16 @@ function mapGigToCard(gig, t) {
 function GigTable({ gigs, removeGig, t }) {
   if (gigs.length === 0) {
     return (
-      <div className="text-center py-5">
-        <div style={{ fontSize: 40, marginBottom: 12 }}>🎯</div>
-        <p className="fw500 dark-color mb-1">{t("noServicesYet")}</p>
-        <p className="text fz14 mb20">
-          {t("noServicesHint")}
-        </p>
-        <Link href="/add-services" className="ud-btn btn-thm bdrs8">
-          {t("createFirstGig")} <i className="fal fa-arrow-right-long" />
-        </Link>
+      <div className="text-center py-12">
+        <div className="text-4xl mb-3" aria-hidden="true">🎯</div>
+        <p className="font-medium mb-1">{t("noServicesYet")}</p>
+        <p className="text-sm text-[var(--text-secondary)] mb-5">{t("noServicesHint")}</p>
+        <Button asChild>
+          <Link href="/add-services">
+            {t("createFirstGig")}
+            <ArrowRight className="ml-1 h-4 w-4" />
+          </Link>
+        </Button>
       </div>
     );
   }
@@ -64,17 +68,16 @@ function GigTable({ gigs, removeGig, t }) {
           ))}
         </tbody>
       </table>
-      <div className="mt20 mb10">
+      <div className="mt-5 mb-3">
         <Link
           href="/add-services"
-          className="flex items-center gap-2 fz14 fw500"
-          style={{ color: "#ef2b70", textDecoration: "none" }}
+          className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
         >
-          <span style={{ fontSize: 18, lineHeight: 1 }}>+</span>
+          <Plus className="h-4 w-4" />
           {t("addAnotherGig")}
         </Link>
       </div>
-      <div className="mt20">
+      <div className="mt-5">
         <Pagination1 />
       </div>
     </div>
@@ -111,51 +114,36 @@ export default function ManageServiceInfo() {
   return (
     <>
       <div className="dashboard__content hover-bgc-color">
-        <div className="row pb40">
-          <div className="col-lg-12">
-            <DashboardNavigation />
+        <DashboardNavigation />
+        <div className="dashboard_title_area mb-6">
+          <div>
+            <h2>{t("title")}</h2>
+            <p className="text-[var(--text-secondary)]">{t("pageDescription")}</p>
           </div>
-          <div className="col-lg-9">
-            <div className="dashboard_title_area">
-              <h2>{t("title")}</h2>
-              <p className="text">
-                {t("pageDescription")}
-              </p>
-            </div>
-          </div>
-          <div className="col-lg-3">
-            <div className="text-lg-end">
-              <Link
-                href="/add-services"
-                className="ud-btn btn-thm default-box-shadow2"
-              >
-                {t("newGig")}
-                <i className="fal fa-arrow-right-long" />
-              </Link>
-            </div>
-          </div>
+          <Button asChild>
+            <Link href="/add-services">
+              {t("newGig")}
+              <ArrowRight className="ml-1 h-4 w-4" />
+            </Link>
+          </Button>
         </div>
-        <div className="row">
-          <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
-              <div className="navtab-style1">
-                <div style={{ marginBottom: "var(--space-5)" }}>
-                  <DashboardTabs
-                    value={selectedTab}
-                    onChange={setSelectedTab}
-                    ariaLabel={t("title")}
-                    options={tabs.map((label, i) => ({
-                      value: i,
-                      label,
-                      count: Array.isArray(gigs) ? tabCounts[i] ?? 0 : undefined,
-                    }))}
-                  />
-                </div>
-                <GigTable gigs={filteredGigs} removeGig={removeGig} t={t} />
-              </div>
+        <Card className="overflow-hidden">
+          <CardContent className="p-6">
+            <div className="mb-5">
+              <DashboardTabs
+                value={selectedTab}
+                onChange={setSelectedTab}
+                ariaLabel={t("title")}
+                options={tabs.map((label, i) => ({
+                  value: i,
+                  label,
+                  count: Array.isArray(gigs) ? tabCounts[i] ?? 0 : undefined,
+                }))}
+              />
             </div>
-          </div>
-        </div>
+            <GigTable gigs={filteredGigs} removeGig={removeGig} t={t} />
+          </CardContent>
+        </Card>
       </div>
       <ProposalModal1 />
       <DeleteModal />

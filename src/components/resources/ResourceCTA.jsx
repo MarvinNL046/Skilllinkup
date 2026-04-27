@@ -1,17 +1,23 @@
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 
 export default function ResourceCTA() {
   return (
-    <section className="pt60 pb80 bgc-thm3">
+    <section className="pt-16 pb-20 bg-primary/5">
       <div className="container text-center">
-        <h2 className="fz28 fw700 mb15">Find top freelancers on SkillLinkup</h2>
-        <p className="fz16 text-muted mb30">
+        <h2 className="text-2xl md:text-3xl font-bold mb-4">
+          Find top freelancers on SkillLinkup
+        </h2>
+        <p className="text-base text-[var(--text-secondary)] mb-8 max-w-xl mx-auto">
           Compare talent, read reviews, and hire with confidence — no hidden fees.
         </p>
-        <Link href="/online" className="ud-btn btn-thm bdrs8 px40 py15 fz16">
-          Browse Freelancers
-          <i className="fal fa-arrow-right-long ms-2" />
-        </Link>
+        <Button asChild size="lg">
+          <Link href="/online">
+            Browse Freelancers
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
+        </Button>
       </div>
     </section>
   );

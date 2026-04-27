@@ -939,7 +939,9 @@
     "columnAmount": "Amount",
     "tierBronze": "Bronze",
     "tierSilver": "Silver",
-    "tierGold": "Gold"
+    "tierGold": "Gold",
+    "signInPrompt": "Please sign in to view your rewards.",
+    "settingUpAccount": "Setting up your account... Please refresh in a moment."
   },
   "feedback": {
     "title": "Feedback",
@@ -1256,7 +1258,8 @@
     "deliveryDays": "Delivery Days",
     "deliveryDaysPlaceholder": "e.g. 3",
     "revisions": "Revisions",
-    "revisionsPlaceholder": "e.g. 2"
+    "revisionsPlaceholder": "e.g. 2",
+    "switchToFreelancerLink": "Switch to freelancer mode"
   },
   "manageServices": {
     "title": "Manage Services",
@@ -1309,6 +1312,7 @@
     "onSite": "On-site",
     "hybrid": "Hybrid",
     "deadline": "Deadline",
+    "deadlineHint": "Format: YYYY-MM-DD",
     "requiredSkills": "Required Skills (comma separated)",
     "requiredSkillsPlaceholder": "e.g. React, TypeScript, Node.js",
     "projectDescription": "Project Description",

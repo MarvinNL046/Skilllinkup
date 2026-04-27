@@ -1,14 +1,25 @@
 "use client";
 import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
-import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-/**
- * Edit-project modal — DS-native, controlled via isOpen prop. Portal'd
- * to document.body. Pre-fills the form from the `project` prop on open.
- * Replaces the legacy Bootstrap-JS modal markup.
- */
 export default function ProposalModal1({ isOpen, onClose, project, onUpdate }) {
   const t = useTranslations("proposals");
   const [title, setTitle] = useState("");
@@ -26,21 +37,6 @@ export default function ProposalModal1({ isOpen, onClose, project, onUpdate }) {
     setBudgetMax(project.budgetMax != null ? String(project.budgetMax) : "");
     setWorkType(project.workType ?? "remote");
   }, [project]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const onKey = (e) => e.key === "Escape" && !isUpdating && onClose?.();
-    document.addEventListener("keydown", onKey);
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prev;
-    };
-  }, [isOpen, isUpdating, onClose]);
-
-  if (!isOpen) return null;
-  if (typeof window === "undefined") return null;
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -64,139 +60,87 @@ export default function ProposalModal1({ isOpen, onClose, project, onUpdate }) {
     }
   };
 
-  const labelStyle = {
-    display: "block",
-    fontFamily: "var(--font-display)",
-    fontSize: "var(--text-body-sm)",
-    fontWeight: 500,
-    color: "var(--text-primary)",
-    marginBottom: "var(--space-2)",
+  const handleOpenChange = (next) => {
+    if (!next && !isUpdating) onClose?.();
   };
 
-  return createPortal(
-    <div
-      role="dialog"
-      aria-modal="true"
-      onClick={() => !isUpdating && onClose?.()}
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 9999,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "var(--space-4)",
-        background: "oklch(22% 0.02 60 / 0.45)",
-        backdropFilter: "blur(4px)",
-      }}
-    >
-      <div
-        className="modal"
-        style={{ maxWidth: 560, width: "100%" }}
-        onClick={(e) => e.stopPropagation()}
-        data-testid="manage-project-edit-modal"
-      >
-        <div className="modal__header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <h3 className="h4" style={{ margin: 0 }}>{t("editProject")}</h3>
-          <button
-            type="button"
-            className="btn btn--ghost btn--icon btn--sm"
-            onClick={() => !isUpdating && onClose?.()}
-            aria-label="Close"
-            disabled={isUpdating}
-          >
-            <X size={16} />
-          </button>
-        </div>
-        <form onSubmit={handleUpdate}>
-          <div className="modal__body">
-            <div style={{ marginBottom: "var(--space-4)" }}>
-              <label style={labelStyle}>{t("labelTitle")}</label>
-              <input
-                type="text"
-                className="input"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-                data-testid="manage-project-edit-title"
-                style={{ width: "100%" }}
+  return (
+    <Dialog open={!!isOpen} onOpenChange={handleOpenChange}>
+      <DialogContent className="max-w-xl" data-testid="manage-project-edit-modal">
+        <DialogHeader>
+          <DialogTitle>{t("editProject")}</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleUpdate} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="proposal-title">{t("labelTitle")}</Label>
+            <Input
+              id="proposal-title"
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              data-testid="manage-project-edit-title"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="proposal-description">{t("labelDescription")}</Label>
+            <Textarea
+              id="proposal-description"
+              rows={4}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
+              data-testid="manage-project-edit-description"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label htmlFor="proposal-budget-min">{t("labelBudgetMin")}</Label>
+              <Input
+                id="proposal-budget-min"
+                type="number"
+                value={budgetMin}
+                onChange={(e) => setBudgetMin(e.target.value)}
               />
             </div>
-            <div style={{ marginBottom: "var(--space-4)" }}>
-              <label style={labelStyle}>{t("labelDescription")}</label>
-              <textarea
-                className="input"
-                rows={4}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                required
-                data-testid="manage-project-edit-description"
-                style={{ width: "100%", minHeight: 96, resize: "vertical" }}
+            <div className="space-y-2">
+              <Label htmlFor="proposal-budget-max">{t("labelBudgetMax")}</Label>
+              <Input
+                id="proposal-budget-max"
+                type="number"
+                value={budgetMax}
+                onChange={(e) => setBudgetMax(e.target.value)}
               />
-            </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "var(--space-3)",
-                marginBottom: "var(--space-4)",
-              }}
-            >
-              <div>
-                <label style={labelStyle}>{t("labelBudgetMin")}</label>
-                <input
-                  type="number"
-                  className="input"
-                  value={budgetMin}
-                  onChange={(e) => setBudgetMin(e.target.value)}
-                  style={{ width: "100%" }}
-                />
-              </div>
-              <div>
-                <label style={labelStyle}>{t("labelBudgetMax")}</label>
-                <input
-                  type="number"
-                  className="input"
-                  value={budgetMax}
-                  onChange={(e) => setBudgetMax(e.target.value)}
-                  style={{ width: "100%" }}
-                />
-              </div>
-            </div>
-            <div>
-              <label style={labelStyle}>{t("labelWorkType")}</label>
-              <select
-                className="input"
-                value={workType}
-                onChange={(e) => setWorkType(e.target.value)}
-                style={{ width: "100%" }}
-              >
-                <option value="remote">{t("workTypeRemote")}</option>
-                <option value="onsite">{t("workTypeOnsite")}</option>
-                <option value="hybrid">{t("workTypeHybrid")}</option>
-              </select>
             </div>
           </div>
-          <div className="modal__footer">
-            <button
+          <div className="space-y-2">
+            <Label htmlFor="proposal-work-type">{t("labelWorkType")}</Label>
+            <Select value={workType} onValueChange={setWorkType}>
+              <SelectTrigger id="proposal-work-type">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="remote">{t("workTypeRemote")}</SelectItem>
+                <SelectItem value="onsite">{t("workTypeOnsite")}</SelectItem>
+                <SelectItem value="hybrid">{t("workTypeHybrid")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button
               type="button"
-              className="btn btn--secondary"
+              variant="outline"
               onClick={() => onClose?.()}
               disabled={isUpdating}
             >
               {t("cancel")}
-            </button>
-            <button
-              type="submit"
-              className="btn btn--primary"
-              disabled={isUpdating}
-            >
+            </Button>
+            <Button type="submit" disabled={isUpdating}>
               {isUpdating ? t("saving") : t("save")}
-            </button>
-          </div>
+            </Button>
+          </DialogFooter>
         </form>
-      </div>
-    </div>,
-    document.body
+      </DialogContent>
+    </Dialog>
   );
 }

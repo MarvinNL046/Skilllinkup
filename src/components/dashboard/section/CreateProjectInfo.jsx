@@ -167,14 +167,14 @@ export default function CreateProjectInfo() {
   if (isAuthenticated && convexUser === undefined) {
     return (
       <div className="dashboard__content hover-bgc-color">
-        <div className="row pb40">
+        <div className="row pb-10">
           <div className="col-lg-12">
             <DashboardNavigation />
           </div>
         </div>
         <div className="row">
           <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 text-center">
+            <div className="ps-widget bgc-white bdrs4 p-8 mb-8 text-center">
               <div className="spinner-border spinner-border-sm text-success" role="status" />
             </div>
           </div>
@@ -186,14 +186,14 @@ export default function CreateProjectInfo() {
   if (isAuthenticated && convexUser === null) {
     return (
       <div className="dashboard__content hover-bgc-color">
-        <div className="row pb40">
+        <div className="row pb-10">
           <div className="col-lg-12">
             <DashboardNavigation />
           </div>
         </div>
         <div className="row">
           <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 text-center">
+            <div className="ps-widget bgc-white bdrs4 p-8 mb-8 text-center">
               <p className="text-muted mb0">{t("settingUpAccount")}</p>
             </div>
           </div>
@@ -205,16 +205,16 @@ export default function CreateProjectInfo() {
   if (isLoaded && !isAuthenticated) {
     return (
       <div className="dashboard__content hover-bgc-color">
-        <div className="row pb40">
+        <div className="row pb-10">
           <div className="col-lg-12">
             <DashboardNavigation />
           </div>
         </div>
         <div className="row">
           <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 text-center">
-              <h4 className="mb15">{t("signInRequired")}</h4>
-              <p className="text-muted mb20">{t("signInRequiredDesc")}</p>
+            <div className="ps-widget bgc-white bdrs4 p-8 mb-8 text-center">
+              <h4 className="mb-4">{t("signInRequired")}</h4>
+              <p className="text-muted mb-5">{t("signInRequiredDesc")}</p>
               <button
                 onClick={() => router.push("/login")}
                 className="ud-btn btn-thm"
@@ -232,7 +232,7 @@ export default function CreateProjectInfo() {
   return (
     <>
       <div className="dashboard__content hover-bgc-color">
-        <div className="row pb40">
+        <div className="row pb-10">
           <div className="col-lg-12">
             <DashboardNavigation />
           </div>
@@ -257,13 +257,13 @@ export default function CreateProjectInfo() {
           </div>
         </div>
 
-        <div className="row mb20">
+        <div className="row mb-5">
           <div className="col-xl-12">
             <div className="flex items-center gap-2 px-3 py-2 bdrs4" style={{ background: "#f0f9ff", border: "1px solid #bae6fd" }}>
-              <i className="flaticon-document fz16" style={{ color: "#0284c7" }} />
-              <span className="fz14" style={{ color: "#0369a1" }}>
+              <i className="flaticon-document text-base" style={{ color: "#0284c7" }} />
+              <span className="text-sm" style={{ color: "#0369a1" }}>
                 {t("offerServicesInstead")}{" "}
-                <Link href="/add-services" className="fw500" style={{ color: "#0284c7", textDecoration: "underline" }}>
+                <Link href="/add-services" className="font-medium" style={{ color: "#0284c7", textDecoration: "underline" }}>
                   {t("addAService")}
                 </Link>{" "}
                 {t("addAServiceHint")}
@@ -274,18 +274,18 @@ export default function CreateProjectInfo() {
 
         <div className="row">
           <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
-              <div className="bdrb1 pb15 mb25">
+            <div className="ps-widget bgc-white bdrs4 p-8 mb-8 overflow-hidden relative">
+              <div className="bdrb1 pb-4 mb-6">
                 <h5 className="list-title">{t("projectDetails")}</h5>
               </div>
 
               {status.error && (
-                <div className="alert alert-danger mb20" role="alert">
+                <div className="alert alert-danger mb-5" role="alert">
                   {status.error}
                 </div>
               )}
               {status.success && (
-                <div className="alert alert-success mb20" role="alert">
+                <div className="alert alert-success mb-5" role="alert">
                   {t("successMessage")}
                 </div>
               )}
@@ -299,8 +299,8 @@ export default function CreateProjectInfo() {
                 >
                   <div className="row">
                     <div className="col-sm-12">
-                      <div className="mb20">
-                        <label className="heading-color ff-heading fw500 mb10">
+                      <div className="mb-5">
+                        <label className="heading-color  font-medium mb-2.5">
                           {t("projectTitle")} <span className="text-danger">*</span>
                         </label>
                         <input
@@ -317,8 +317,8 @@ export default function CreateProjectInfo() {
                     </div>
 
                     <div className="col-sm-12">
-                      <div className="mb20">
-                        <label className="heading-color ff-heading fw500 mb10">
+                      <div className="mb-5">
+                        <label className="heading-color  font-medium mb-2.5">
                           {t("category")}
                         </label>
                         <select
@@ -341,8 +341,8 @@ export default function CreateProjectInfo() {
                     </div>
 
                     <div className="col-sm-6">
-                      <div className="mb20">
-                        <label className="heading-color ff-heading fw500 mb10">
+                      <div className="mb-5">
+                        <label className="heading-color  font-medium mb-2.5">
                           {t("budgetMin")}
                         </label>
                         <input
@@ -359,8 +359,8 @@ export default function CreateProjectInfo() {
                     </div>
 
                     <div className="col-sm-6">
-                      <div className="mb20">
-                        <label className="heading-color ff-heading fw500 mb10">
+                      <div className="mb-5">
+                        <label className="heading-color  font-medium mb-2.5">
                           {t("budgetMax")}
                         </label>
                         <input
@@ -377,8 +377,8 @@ export default function CreateProjectInfo() {
                     </div>
 
                     <div className="col-sm-6">
-                      <div className="mb20">
-                        <label className="heading-color ff-heading fw500 mb10">
+                      <div className="mb-5">
+                        <label className="heading-color  font-medium mb-2.5">
                           {t("workType")}
                         </label>
                         <select
@@ -395,8 +395,8 @@ export default function CreateProjectInfo() {
                     </div>
 
                     <div className="col-sm-6">
-                      <div className="mb20">
-                        <label className="heading-color ff-heading fw500 mb10">
+                      <div className="mb-5">
+                        <label className="heading-color  font-medium mb-2.5">
                           {t("deadline")}
                         </label>
                         <input
@@ -410,14 +410,14 @@ export default function CreateProjectInfo() {
                           data-testid="create-project-deadline"
                         />
                         <p className="body-sm" style={{ color: "var(--text-tertiary)", marginTop: 6, marginBottom: 0 }}>
-                          {t("deadlineHint", { default: "Format: YYYY-MM-DD" })}
+                          {t("deadlineHint")}
                         </p>
                       </div>
                     </div>
 
                     <div className="col-sm-12">
-                      <div className="mb20">
-                        <label className="heading-color ff-heading fw500 mb10">
+                      <div className="mb-5">
+                        <label className="heading-color  font-medium mb-2.5">
                           {t("requiredSkills")}
                         </label>
                         <TagsInput
@@ -431,8 +431,8 @@ export default function CreateProjectInfo() {
                     </div>
 
                     <div className="col-md-12">
-                      <div className="mb20">
-                        <label className="heading-color ff-heading fw500 mb10">
+                      <div className="mb-5">
+                        <label className="heading-color  font-medium mb-2.5">
                           {t("projectDescription")} <span className="text-danger">*</span>
                         </label>
                         <textarea

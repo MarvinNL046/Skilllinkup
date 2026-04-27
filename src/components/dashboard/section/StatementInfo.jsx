@@ -4,6 +4,32 @@ import { useTranslations } from "next-intl";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import DashboardNavigation from "../header/DashboardNavigation";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { TrendingUp, TrendingDown, Clock, BarChart3 } from "lucide-react";
+
+function StatCard({ Icon, label, value, sublabel, isLoading }) {
+  return (
+    <Card>
+      <CardContent className="p-5 flex items-center justify-between">
+        <div className="min-w-0">
+          <div className="text-sm text-[var(--text-secondary)]">{label}</div>
+          <div className="text-2xl font-semibold mt-1">
+            {isLoading ? (
+              <span className="text-[var(--text-tertiary)] text-xl">...</span>
+            ) : (
+              value
+            )}
+          </div>
+          <div className="text-xs text-[var(--text-secondary)] mt-1">{sublabel}</div>
+        </div>
+        <div className="flex h-12 w-12 items-center justify-center rounded-md bg-primary/10 text-primary flex-shrink-0">
+          <Icon className="h-5 w-5" />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function StatementInfo() {
   const t = useTranslations("statements");
@@ -20,16 +46,19 @@ export default function StatementInfo() {
     userId ? { userId, role: "freelancer" } : "skip"
   );
 
-  const isLoading = isAuthenticated && (clientOrders === undefined || freelancerOrders === undefined);
+  const isLoading =
+    isAuthenticated && (clientOrders === undefined || freelancerOrders === undefined);
 
   const allOrders = (() => {
     const seen = new Set();
     const merged = [...(clientOrders || []), ...(freelancerOrders || [])];
-    return merged.filter((o) => {
-      if (seen.has(o._id)) return false;
-      seen.add(o._id);
-      return true;
-    }).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    return merged
+      .filter((o) => {
+        if (seen.has(o._id)) return false;
+        seen.add(o._id);
+        return true;
+      })
+      .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
   })();
 
   const netIncome = (freelancerOrders || [])
@@ -73,134 +102,98 @@ export default function StatementInfo() {
     return "purchase";
   }
 
-  function getTypeLabel(type) {
-    if (type === "sale") return <span className="pending-style style4">{t("serviceSale")}</span>;
-    if (type === "purchase") return <span className="pending-style style5">{t("servicePurchased")}</span>;
-    return <span className="pending-style">{t("transaction")}</span>;
+  function getTypeBadge(type) {
+    if (type === "sale") return <Badge variant="success">{t("serviceSale")}</Badge>;
+    if (type === "purchase") return <Badge variant="info">{t("servicePurchased")}</Badge>;
+    return <Badge variant="muted">{t("transaction")}</Badge>;
   }
 
   return (
-    <>
-      <div className="dashboard__content hover-bgc-color">
-        <div className="row pb40">
-          <div className="col-lg-12">
-            <DashboardNavigation />
-          </div>
-          <div className="col-lg-12">
-            <div className="dashboard_title_area">
-              <h2>{t("title")}</h2>
-              <p className="text">{t("pageDescription")}</p>
-            </div>
-          </div>
-        </div>
-        {isLoaded && !isAuthenticated && (
-          <div className="row"><div className="col-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30">
-              <p className="text text-center mb-0">{t("signInPrompt")}</p>
-            </div>
-          </div></div>
-        )}
+    <div className="dashboard__content hover-bgc-color">
+      <DashboardNavigation />
+      <div className="dashboard_title_area mb-6">
+        <h2>{t("title")}</h2>
+        <p className="text-[var(--text-secondary)]">{t("pageDescription")}</p>
+      </div>
 
-        {isAuthenticated && convexUser === undefined && (
-          <div className="row"><div className="col-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30">
-              <div className="text-center py-4">
-                <div className="spinner-border spinner-border-sm text-success" role="status" />
-              </div>
-            </div>
-          </div></div>
-        )}
+      {isLoaded && !isAuthenticated && (
+        <Card className="mb-6">
+          <CardContent className="p-8 text-center">
+            <p className="text-[var(--text-secondary)]">{t("signInPrompt")}</p>
+          </CardContent>
+        </Card>
+      )}
 
-        {isAuthenticated && convexUser === null && (
-          <div className="row"><div className="col-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30">
-              <div className="text-center py-4">
-                <p className="text mb-0">{t("settingUpAccount")}</p>
-              </div>
-            </div>
-          </div></div>
-        )}
+      {isAuthenticated && convexUser === undefined && (
+        <Card className="mb-6">
+          <CardContent className="p-8 flex justify-center">
+            <div
+              role="status"
+              aria-label="Loading"
+              className="h-6 w-6 animate-spin rounded-full border-3 border-[var(--border-subtle)] border-t-primary"
+            />
+          </CardContent>
+        </Card>
+      )}
 
-        {(isAuthenticated || !isLoaded) && (<><div className="row">
-          <div className="col-sm-6 col-xxl-3">
-            <div className="flex items-center justify-between statistics_funfact">
-              <div className="details">
-                <div className="fz15">{t("netIncome")}</div>
-                <div className="title">
-                  {isLoading ? <span className="text-muted fz20">...</span> : formatCurrency(netIncome)}
-                </div>
-                <div className="text fz14">
-                  {t("freelancerEarnings")}
-                </div>
-              </div>
-              <div className="icon text-center">
-                <i className="flaticon-income" />
-              </div>
-            </div>
+      {isAuthenticated && convexUser === null && (
+        <Card className="mb-6">
+          <CardContent className="p-8 text-center">
+            <p className="text-[var(--text-secondary)]">{t("settingUpAccount")}</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {(isAuthenticated || !isLoaded) && (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-6">
+            <StatCard
+              Icon={TrendingUp}
+              label={t("netIncome")}
+              value={formatCurrency(netIncome)}
+              sublabel={t("freelancerEarnings")}
+              isLoading={isLoading}
+            />
+            <StatCard
+              Icon={TrendingDown}
+              label={t("totalSpent")}
+              value={formatCurrency(totalSpent)}
+              sublabel={t("asClientPurchases")}
+              isLoading={isLoading}
+            />
+            <StatCard
+              Icon={Clock}
+              label={t("pendingClearance")}
+              value={formatCurrency(pendingAmount)}
+              sublabel={t("activeOrders")}
+              isLoading={isLoading}
+            />
+            <StatCard
+              Icon={BarChart3}
+              label={t("totalTransactions")}
+              value={allOrders.length}
+              sublabel={t("allOrdersCombined")}
+              isLoading={isLoading}
+            />
           </div>
-          <div className="col-sm-6 col-xxl-3">
-            <div className="flex items-center justify-between statistics_funfact">
-              <div className="details">
-                <div className="fz15">{t("totalSpent")}</div>
-                <div className="title">
-                  {isLoading ? <span className="text-muted fz20">...</span> : formatCurrency(totalSpent)}
-                </div>
-                <div className="text fz14">
-                  {t("asClientPurchases")}
-                </div>
-              </div>
-              <div className="icon text-center">
-                <i className="flaticon-withdraw" />
-              </div>
-            </div>
-          </div>
-          <div className="col-sm-6 col-xxl-3">
-            <div className="flex items-center justify-between statistics_funfact">
-              <div className="details">
-                <div className="fz15">{t("pendingClearance")}</div>
-                <div className="title">
-                  {isLoading ? <span className="text-muted fz20">...</span> : formatCurrency(pendingAmount)}
-                </div>
-                <div className="text fz14">
-                  {t("activeOrders")}
-                </div>
-              </div>
-              <div className="icon text-center">
-                <i className="flaticon-review" />
-              </div>
-            </div>
-          </div>
-          <div className="col-sm-6 col-xxl-3">
-            <div className="flex items-center justify-between statistics_funfact">
-              <div className="details">
-                <div className="fz15">{t("totalTransactions")}</div>
-                <div className="title">
-                  {isLoading ? <span className="text-muted fz20">...</span> : allOrders.length}
-                </div>
-                <div className="text fz14">
-                  {t("allOrdersCombined")}
-                </div>
-              </div>
-              <div className="icon text-center">
-                <i className="flaticon-review-1" />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
+
+          <Card className="overflow-hidden">
+            <CardContent className="p-6">
               {isLoading ? (
-                <div className="text-center py-4">
-                  <div className="spinner-border spinner-border-sm text-thm" role="status">
-                    <span className="visually-hidden">{t("loading")}</span>
-                  </div>
-                  <p className="text mt-2 mb-0">{t("loadingStatements")}</p>
+                <div className="text-center py-12">
+                  <div
+                    role="status"
+                    aria-label={t("loading")}
+                    className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--border-subtle)] border-t-primary mx-auto"
+                  />
+                  <p className="mt-3 text-sm text-[var(--text-secondary)]">
+                    {t("loadingStatements")}
+                  </p>
                 </div>
               ) : allOrders.length === 0 ? (
-                <div className="text-center py-4">
-                  <p className="text mb-0">{t("noTransactions")}</p>
-                </div>
+                <p className="text-center text-[var(--text-secondary)] py-12">
+                  {t("noTransactions")}
+                </p>
               ) : (
                 <div className="packages_table table-responsive">
                   <table className="table-style3 table at-savesearch">
@@ -222,14 +215,22 @@ export default function StatementInfo() {
                             : order.amount ?? 0;
                         return (
                           <tr key={order._id}>
-                            <th scope="row">{formatDate(order.createdAt)}</th>
-                            <td className="vam">{getTypeLabel(orderType)}</td>
-                            <td className="vam">
-                              <div className="fz14">{order.title}</div>
-                              <div className="fz12 text">{order.orderNumber}</div>
+                            <td data-label={t("columnDate")}>{formatDate(order.createdAt)}</td>
+                            <td data-label={t("columnType")} className="vam">
+                              {getTypeBadge(orderType)}
                             </td>
-                            <td className="vam">{formatCurrency(order.amount ?? 0)}</td>
-                            <td className="vam">{formatCurrency(displayAmount)}</td>
+                            <td data-label={t("columnDetail")} className="vam">
+                              <div className="text-sm">{order.title}</div>
+                              <div className="text-xs text-[var(--text-secondary)]">
+                                {order.orderNumber}
+                              </div>
+                            </td>
+                            <td data-label={t("columnAmount")} className="vam">
+                              {formatCurrency(order.amount ?? 0)}
+                            </td>
+                            <td data-label={t("columnStatus")} className="vam">
+                              {formatCurrency(displayAmount)}
+                            </td>
                           </tr>
                         );
                       })}
@@ -237,11 +238,10 @@ export default function StatementInfo() {
                   </table>
                 </div>
               )}
-            </div>
-          </div>
-        </div>
-        </>)}
-      </div>
-    </>
+            </CardContent>
+          </Card>
+        </>
+      )}
+    </div>
   );
 }

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Tooltip } from "react-tooltip";
 import { useTranslations } from "next-intl";
+import { Pencil, Trash2 } from "lucide-react";
 
 export default function ManageServiceCard1({ data, removeGig }) {
   const t = useTranslations("manageServices");
@@ -16,71 +17,72 @@ export default function ManageServiceCard1({ data, removeGig }) {
     }
   };
 
+  const id = data._id || data.id;
+
   return (
-    <>
-      <tr>
-        <th className="dashboard-img-service" scope="row">
-          <div className="listing-style1 list-style block xl:flex items-start border-0 mb-0">
-            <div className="list-thumb shrink-0 bdrs4 mb10-lg">
-              <Image
-                height={91}
-                width={122}
-                className="w-full"
-                src={data.img}
-                alt="thumb"
-              />
-            </div>
-            <div className="list-content grow py-0 pl15 pl0-lg">
-              <h6 className="list-title mb-0">
-                <Link href="/services">{data.title}</Link>
-              </h6>
-              <ul className="list-style-type-bullet ps-3 dashboard-style mb-0">
-                {data.list && data.list.map((item, i) => (
+    <tr>
+      <td data-label={t("columnTitle")} className="align-top">
+        <div className="flex flex-col xl:flex-row xl:items-start gap-3">
+          <div className="flex-shrink-0 rounded-md overflow-hidden">
+            <Image
+              height={91}
+              width={122}
+              src={data.img}
+              alt="thumb"
+              className="object-cover"
+            />
+          </div>
+          <div className="flex-grow">
+            <h6 className="text-base font-semibold mb-1">
+              <Link href="/services" className="hover:text-primary">
+                {data.title}
+              </Link>
+            </h6>
+            {data.list && data.list.length > 0 && (
+              <ul className="list-disc pl-4 text-sm text-[var(--text-secondary)] space-y-0.5">
+                {data.list.map((item, i) => (
                   <li key={i}>{item}</li>
                 ))}
               </ul>
-            </div>
+            )}
           </div>
-        </th>
-        <td className="align-top">
-          <span className="fz15 fw400">{data.category}</span>
-        </td>
-        <td className="align-top">
-          <span className="fz14 fw400">${(data.cost || 0).toFixed(2)}/{t("fixed")}</span>
-        </td>
-        <td className="align-top">
-          <div className="flex">
-            <a
-              className="icon me-2"
-              id={`edit-${data._id || data.id}`}
-            >
-              <Tooltip
-                anchorSelect={`#edit-${data._id || data.id}`}
-                className="ui-tooltip"
-                place="top"
-              >
-                {t("edit")}
-              </Tooltip>
-              <span className="flaticon-pencil" />
-            </a>
-            <a
-              className="icon"
-              id={`delete-${data._id || data.id}`}
-              onClick={handleDelete}
-              style={{ cursor: "pointer" }}
-            >
-              <Tooltip
-                anchorSelect={`#delete-${data._id || data.id}`}
-                place="top"
-                className="ui-tooltip"
-              >
-                {t("delete")}
-              </Tooltip>
-              <span className="flaticon-delete" />
-            </a>
-          </div>
-        </td>
-      </tr>
-    </>
+        </div>
+      </td>
+      <td data-label={t("columnCategory")} className="align-top">
+        <span className="text-base">{data.category}</span>
+      </td>
+      <td data-label={t("columnTypeCost")} className="align-top">
+        <span className="text-sm">
+          ${(data.cost || 0).toFixed(2)}/{t("fixed")}
+        </span>
+      </td>
+      <td data-label={t("columnActions")} className="align-top">
+        <div className="flex gap-2">
+          <button
+            type="button"
+            id={`edit-${id}`}
+            aria-label={t("edit")}
+            className="text-[var(--text-tertiary)] hover:text-foreground"
+          >
+            <Pencil className="h-4 w-4" />
+          </button>
+          <Tooltip anchorSelect={`#edit-${id}`} place="top">
+            {t("edit")}
+          </Tooltip>
+          <button
+            type="button"
+            id={`delete-${id}`}
+            onClick={handleDelete}
+            aria-label={t("delete")}
+            className="text-[var(--text-tertiary)] hover:text-destructive"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+          <Tooltip anchorSelect={`#delete-${id}`} place="top">
+            {t("delete")}
+          </Tooltip>
+        </div>
+      </td>
+    </tr>
   );
 }

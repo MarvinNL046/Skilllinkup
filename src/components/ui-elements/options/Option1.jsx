@@ -37,7 +37,7 @@ export default function Option1({ lebel, data, selected, handler }) {
   return (
     <>
       <div className="form-style1">
-        <lebel className="form-label fw500 fz16 dark-color block">
+        <lebel className="form-label font-medium text-base dark-color block">
           {lebel}
         </lebel>
         <div className="bootselect-multiselect">
@@ -45,7 +45,6 @@ export default function Option1({ lebel, data, selected, handler }) {
             <button
               type="button"
               className="btn dropdown-toggle btn-light"
-              data-bs-toggle="dropdown"
             >
               <div className="filter-option">
                 <div className="filter-option-inner">

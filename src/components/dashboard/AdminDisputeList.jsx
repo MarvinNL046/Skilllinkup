@@ -45,8 +45,8 @@ export default function AdminDisputeList() {
         <tbody>
           {disputes.map((d) => (
             <tr key={d._id}>
-              <td className="fz13">{d._id.slice(-8)}</td>
-              <td className="fz13">{d.orderId.slice(-8)}</td>
+              <td className="text-sm">{d._id.slice(-8)}</td>
+              <td className="text-sm">{d.orderId.slice(-8)}</td>
               <td>{d.reason}</td>
               <td>{new Date(d.openedAt).toLocaleDateString()}</td>
               <td>

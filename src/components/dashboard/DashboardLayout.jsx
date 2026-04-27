@@ -48,6 +48,17 @@ export default function DashboardLayout({ children, maxWidth = "full" }) {
     closeMobile();
   }, [pathname, closeMobile]);
 
+  // Lock body scroll while the mobile drawer is open so the page behind
+  // the overlay doesn't scroll when users swipe inside the drawer.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileOpen]);
+
   return (
     <div
       style={{

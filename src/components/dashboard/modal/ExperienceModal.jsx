@@ -4,6 +4,17 @@ import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 function formatDateInput(ts) {
   if (!ts) return "";
@@ -15,7 +26,7 @@ function parseDateInput(str) {
   return new Date(str + "-01").getTime();
 }
 
-export default function ExperienceModal({ type, item, onClose }) {
+export default function ExperienceModal({ type, item, open, onOpenChange }) {
   const tt = useTranslations("toasts");
   const isEdit = !!item;
 
@@ -101,7 +112,7 @@ export default function ExperienceModal({ type, item, onClose }) {
         });
       }
       toast.success(isEdit ? tt("updated") : tt("added"));
-      onClose?.();
+      onOpenChange?.(false);
     } catch (err) {
       toast.error(err.message || tt("failedToSave"));
     } finally {
@@ -116,21 +127,17 @@ export default function ExperienceModal({ type, item, onClose }) {
   };
 
   return (
-    <div className="modal fade" id="experienceModal" tabIndex={-1}>
-      <div className="modal-dialog modal-dialog-centered">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">
-              {isEdit ? "Edit" : "Add"} {titles[type]}
-            </h5>
-            <button type="button" className="btn-close" data-bs-dismiss="modal" />
-          </div>
-          <form onSubmit={handleSave}>
-            <div className="modal-body p30">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{isEdit ? "Edit" : "Add"} {titles[type]}</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSave}>
+          <div className="space-y-5">
               {type === "work" && (
                 <>
-                  <div className="mb20">
-                    <label className="heading-color ff-heading fw500 mb10">Company *</label>
+                  <div className="mb-5">
+                    <label className="heading-color  font-medium mb-2.5">Company *</label>
                     <input
                       className="form-control"
                       value={company}
@@ -139,8 +146,8 @@ export default function ExperienceModal({ type, item, onClose }) {
                       placeholder="e.g. Acme Corp"
                     />
                   </div>
-                  <div className="mb20">
-                    <label className="heading-color ff-heading fw500 mb10">Job Title *</label>
+                  <div className="mb-5">
+                    <label className="heading-color  font-medium mb-2.5">Job Title *</label>
                     <input
                       className="form-control"
                       value={jobTitle}
@@ -150,8 +157,8 @@ export default function ExperienceModal({ type, item, onClose }) {
                     />
                   </div>
                   <div className="row">
-                    <div className="col-sm-6 mb20">
-                      <label className="heading-color ff-heading fw500 mb10">Start Date</label>
+                    <div className="col-sm-6 mb-5">
+                      <label className="heading-color  font-medium mb-2.5">Start Date</label>
                       <input
                         type="month"
                         className="form-control"
@@ -159,8 +166,8 @@ export default function ExperienceModal({ type, item, onClose }) {
                         onChange={(e) => setStartDate(e.target.value)}
                       />
                     </div>
-                    <div className="col-sm-6 mb20">
-                      <label className="heading-color ff-heading fw500 mb10">End Date</label>
+                    <div className="col-sm-6 mb-5">
+                      <label className="heading-color  font-medium mb-2.5">End Date</label>
                       <input
                         type="month"
                         className="form-control"
@@ -170,7 +177,7 @@ export default function ExperienceModal({ type, item, onClose }) {
                       />
                     </div>
                   </div>
-                  <div className="mb20">
+                  <div className="mb-5">
                     <div className="form-check">
                       <input
                         type="checkbox"
@@ -184,10 +191,10 @@ export default function ExperienceModal({ type, item, onClose }) {
                       </label>
                     </div>
                   </div>
-                  <div className="mb20">
-                    <label className="heading-color ff-heading fw500 mb10">Description</label>
+                  <div className="mb-5">
+                    <label className="heading-color  font-medium mb-2.5">Description</label>
                     <textarea
-                      className="form-control pt15"
+                      className="form-control pt-4"
                       rows={3}
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
@@ -198,8 +205,8 @@ export default function ExperienceModal({ type, item, onClose }) {
               )}
               {type === "education" && (
                 <>
-                  <div className="mb20">
-                    <label className="heading-color ff-heading fw500 mb10">School *</label>
+                  <div className="mb-5">
+                    <label className="heading-color  font-medium mb-2.5">School *</label>
                     <input
                       className="form-control"
                       value={school}
@@ -208,8 +215,8 @@ export default function ExperienceModal({ type, item, onClose }) {
                       placeholder="e.g. University of Amsterdam"
                     />
                   </div>
-                  <div className="mb20">
-                    <label className="heading-color ff-heading fw500 mb10">Degree</label>
+                  <div className="mb-5">
+                    <label className="heading-color  font-medium mb-2.5">Degree</label>
                     <input
                       className="form-control"
                       value={degree}
@@ -217,8 +224,8 @@ export default function ExperienceModal({ type, item, onClose }) {
                       placeholder="e.g. Bachelor"
                     />
                   </div>
-                  <div className="mb20">
-                    <label className="heading-color ff-heading fw500 mb10">Field of Study</label>
+                  <div className="mb-5">
+                    <label className="heading-color  font-medium mb-2.5">Field of Study</label>
                     <input
                       className="form-control"
                       value={field}
@@ -227,8 +234,8 @@ export default function ExperienceModal({ type, item, onClose }) {
                     />
                   </div>
                   <div className="row">
-                    <div className="col-sm-6 mb20">
-                      <label className="heading-color ff-heading fw500 mb10">Start Year</label>
+                    <div className="col-sm-6 mb-5">
+                      <label className="heading-color  font-medium mb-2.5">Start Year</label>
                       <input
                         type="number"
                         className="form-control"
@@ -239,8 +246,8 @@ export default function ExperienceModal({ type, item, onClose }) {
                         max="2030"
                       />
                     </div>
-                    <div className="col-sm-6 mb20">
-                      <label className="heading-color ff-heading fw500 mb10">End Year</label>
+                    <div className="col-sm-6 mb-5">
+                      <label className="heading-color  font-medium mb-2.5">End Year</label>
                       <input
                         type="number"
                         className="form-control"
@@ -256,8 +263,8 @@ export default function ExperienceModal({ type, item, onClose }) {
               )}
               {type === "certification" && (
                 <>
-                  <div className="mb20">
-                    <label className="heading-color ff-heading fw500 mb10">
+                  <div className="mb-5">
+                    <label className="heading-color  font-medium mb-2.5">
                       Certificate Name *
                     </label>
                     <input
@@ -268,8 +275,8 @@ export default function ExperienceModal({ type, item, onClose }) {
                       placeholder="e.g. AWS Solutions Architect"
                     />
                   </div>
-                  <div className="mb20">
-                    <label className="heading-color ff-heading fw500 mb10">
+                  <div className="mb-5">
+                    <label className="heading-color  font-medium mb-2.5">
                       Issuing Organization
                     </label>
                     <input
@@ -280,8 +287,8 @@ export default function ExperienceModal({ type, item, onClose }) {
                     />
                   </div>
                   <div className="row">
-                    <div className="col-sm-6 mb20">
-                      <label className="heading-color ff-heading fw500 mb10">Year</label>
+                    <div className="col-sm-6 mb-5">
+                      <label className="heading-color  font-medium mb-2.5">Year</label>
                       <input
                         type="number"
                         className="form-control"
@@ -290,8 +297,8 @@ export default function ExperienceModal({ type, item, onClose }) {
                         placeholder="2023"
                       />
                     </div>
-                    <div className="col-sm-6 mb20">
-                      <label className="heading-color ff-heading fw500 mb10">
+                    <div className="col-sm-6 mb-5">
+                      <label className="heading-color  font-medium mb-2.5">
                         Credential URL
                       </label>
                       <input
@@ -305,18 +312,17 @@ export default function ExperienceModal({ type, item, onClose }) {
                   </div>
                 </>
               )}
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="ud-btn btn-white" data-bs-dismiss="modal">
-                Cancel
-              </button>
-              <button type="submit" className="ud-btn btn-thm" disabled={saving}>
-                {saving ? "Saving..." : "Save"}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+          </div>
+          <DialogFooter className="gap-2 mt-6">
+            <Button type="button" variant="outline" onClick={() => onOpenChange?.(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={saving}>
+              {saving ? "Saving..." : "Save"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

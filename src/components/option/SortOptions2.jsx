@@ -18,14 +18,13 @@ export default function SortOption2() {
 
   return (
     <>
-      <div  className="page_control_shorting mb10 flex items-center justify-center sm:justify-end">
-        <div className="pcs_dropdown dark-color pr10 pr0-xs text-center">
-          <span className="pr10">Sort by</span>
+      <div  className="page_control_shorting mb-2.5 flex items-center justify-center sm:justify-end">
+        <div className="pcs_dropdown dark-color pr-2.5 pr0-xs text-center">
+          <span className="pr-2.5">Sort by</span>
           <div className="dropdown bootstrap-select show-tick">
             <button
               type="button"
               className="btn dropdown-toggle btn-light"
-              data-bs-toggle="dropdown"
             >
               <div className="filter-option">
                 <div className="filter-option-inner">

@@ -2,17 +2,12 @@
 import Link from "next/link";
 import { Globe, MapPin, Briefcase } from "lucide-react";
 import { useWorld } from "@/context/WorldContext";
+import { cn } from "@/lib/utils";
 
-/**
- * Compact world switcher inserted between brand and nav on world routes
- * (/online, /local, /jobs). Visual treatment is subtler than the previous
- * full pills — segmented control on a surface-2 track, primary-tinted
- * active state. Aligns with the dashboard sidebar's switcher.
- */
 const worlds = [
   { key: "online", label: "Online", href: "/online", Icon: Globe },
-  { key: "local",  label: "Local",  href: "/local",  Icon: MapPin },
-  { key: "jobs",   label: "Jobs",   href: "/jobs",   Icon: Briefcase },
+  { key: "local", label: "Local", href: "/local", Icon: MapPin },
+  { key: "jobs", label: "Jobs", href: "/jobs", Icon: Briefcase },
 ];
 
 export default function WorldSwitcher() {
@@ -22,13 +17,7 @@ export default function WorldSwitcher() {
     <div
       role="tablist"
       aria-label="Marketplace"
-      style={{
-        display: "inline-flex",
-        gap: 2,
-        padding: 3,
-        background: "var(--surface-2)",
-        borderRadius: "var(--radius-md)",
-      }}
+      className="inline-flex gap-0.5 p-1 bg-[var(--surface-2)] rounded-md"
     >
       {worlds.map(({ key, label, href, Icon }) => {
         const active = activeWorld === key;
@@ -38,22 +27,14 @@ export default function WorldSwitcher() {
             href={href}
             role="tab"
             aria-selected={active}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              padding: "6px 12px",
-              borderRadius: "var(--radius-sm)",
-              fontSize: "var(--text-body-sm)",
-              fontWeight: active ? 600 : 500,
-              textDecoration: "none",
-              background: active ? "var(--bg-elevated)" : "transparent",
-              color: active ? "var(--primary-700)" : "var(--text-secondary)",
-              boxShadow: active ? "var(--shadow-1)" : "none",
-              transition: "background 140ms var(--ease-standard, ease-out)",
-            }}
+            className={cn(
+              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-sm transition-colors",
+              active
+                ? "bg-[var(--bg-elevated)] text-primary font-semibold shadow-sm"
+                : "text-[var(--text-secondary)] font-medium hover:text-foreground"
+            )}
           >
-            <Icon size={13} />
+            <Icon className="h-3.5 w-3.5" />
             {label}
           </Link>
         );

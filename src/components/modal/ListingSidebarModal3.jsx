@@ -6,137 +6,56 @@ import BudgetOption1 from "../option/BudgetOption1";
 import ClearButton from "../button/ClearButton";
 import JobTypeOption1 from "../option/JobTypeOption1";
 import LevelOption1 from "../option/LevelOption1";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 
 export default function ListingSidebarModal3() {
   const t = useTranslations("filterModals");
   const listingToggle = toggleStore((state) => state.listingToggleHandler);
 
+  const filters = [
+    { value: "category", label: t("category"), content: <CategoryOption1 /> },
+    { value: "salary", label: t("salary"), content: <BudgetOption1 /> },
+    { value: "jobType", label: t("jobType"), content: <JobTypeOption1 /> },
+    { value: "level", label: t("level"), content: <LevelOption1 /> },
+  ];
+
   return (
     <>
       <div className="lefttside-hidden-bar">
-        <div className="hsidebar-header bdrb1 ">
+        <div className="hsidebar-header bdrb1">
           <h4 className="list-title">{t("allFilters")}</h4>
-          <div className="sidebar-close-icon" onClick={listingToggle}>
+          <button
+            type="button"
+            onClick={listingToggle}
+            className="sidebar-close-icon"
+            aria-label="Close filters"
+          >
             <span className="far fa-times" />
-          </div>
+          </button>
         </div>
         <div className="hsidebar-content">
           <div className="widget-wrapper">
-            <div className="sidebar-accordion">
-              <div className="accordion" id="accordionExample2">
-                <div className="card mb20 pb10">
-                  <div className="card-header" id="headingZero">
-                    <h4>
-                      <button
-                        className="btn btn-link ps-0 collapsed"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#collapseZero"
-                        aria-expanded="false"
-                        aria-controls="collapseZero"
-                      >
-                        {t("category")}
-                      </button>
-                    </h4>
-                  </div>
-                  <div
-                    id="collapseZero"
-                    className="collapse show"
-                    aria-labelledby="headingZero"
-                    data-parent="#accordionExample"
-                  >
-                    <div className="card-body card-body px-0 pt-0">
-                      <CategoryOption1 />
-                    </div>
-                  </div>
-                </div>
-                <div className="card mb20 pb0">
-                  <div className="card-header" id="headingOnes">
-                    <h4>
-                      <button
-                        className="btn btn-link ps-0 collapsed"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#collapseOnes"
-                        aria-expanded="false"
-                        aria-controls="collapseOnes"
-                      >
-                        {t("salary")}
-                      </button>
-                    </h4>
-                  </div>
-                  <div
-                    id="collapseOnes"
-                    className="collapse"
-                    aria-labelledby="headingOnes"
-                    data-parent="#accordionExample"
-                  >
-                    <div className="card-body card-body px-0 pt-0">
-                      <div className="range-slider-style2">
-                        <BudgetOption1 />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="card mb20 pb5">
-                  <div className="card-header" id="headingTwos">
-                    <h4>
-                      <button
-                        className="btn btn-link ps-0 collapsed"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#collapseTwos"
-                        aria-expanded="false"
-                        aria-controls="collapseTwos"
-                      >
-                        {t("jobType")}
-                      </button>
-                    </h4>
-                  </div>
-                  <div
-                    id="collapseTwos"
-                    className="collapse"
-                    aria-labelledby="headingTwos"
-                    data-parent="#accordionExample"
-                  >
-                    <div className="card-body card-body px-0 pt-0">
-                      <JobTypeOption1 />
-                    </div>
-                  </div>
-                </div>
-                <div className="card mb20 pb5">
-                  <div className="card-header" id="headingThrees">
-                    <h4>
-                      <button
-                        className="btn btn-link ps-0"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#collapseThrees"
-                        aria-expanded="true"
-                        aria-controls="collapseThrees"
-                      >
-                        {t("level")}
-                      </button>
-                    </h4>
-                  </div>
-                  <div
-                    id="collapseThrees"
-                    className="collapse"
-                    aria-labelledby="headingThrees"
-                    data-parent="#accordionExample"
-                  >
-                    <div className="card-body card-body px-0 pt-0">
-                      <LevelOption1 />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Accordion
+              type="multiple"
+              defaultValue={filters.map((f) => f.value)}
+              className="w-full"
+            >
+              {filters.map(({ value, label, content }) => (
+                <AccordionItem key={value} value={value}>
+                  <AccordionTrigger className="text-base font-medium">{label}</AccordionTrigger>
+                  <AccordionContent>{content}</AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+            <ClearButton />
           </div>
-          <ClearButton />
         </div>
       </div>
-
       <div onClick={listingToggle} className="hiddenbar-body-ovelay" />
     </>
   );

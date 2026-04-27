@@ -1,82 +1,87 @@
 "use client";
 import { Tooltip } from "react-tooltip";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Plus, Pencil, Trash2, ArrowRight, Briefcase } from "lucide-react";
+
+const workItems = [
+  {
+    id: 1,
+    period: "2012 - 2014",
+    title: "UX Designer",
+    company: "Dropbox",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a ipsum tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus.",
+  },
+  {
+    id: 2,
+    period: "2008 - 2012",
+    title: "Art Director",
+    company: "amazon",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a ipsum tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus.",
+  },
+];
 
 export default function WorkExperience() {
   return (
-    <>
-      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
-        <div className="bdrb1 pb15 mb30 sm:flex justify-between">
-          <h5 className="list-title">Work &amp; Experience</h5>
-          <a className="add-more-btn text-thm">
-            <i className="icon far fa-plus mr10" />
-            Add Experience
-          </a>
-        </div>
-        <div className="relative">
-          <div className="educational-quality">
-            <div className="m-circle text-thm">M</div>
-            <div className="wrapper mb40 relative">
-              <div className="del-edit">
-                <div className="flex">
-                  <a className="icon me-2" id="edit">
-                    <Tooltip anchorSelect="#edit" className="ui-tooltip">
-                      Edit
-                    </Tooltip>
-                    <span className="flaticon-pencil" />
-                  </a>
-                  <a className="icon" id="delete">
-                    <Tooltip anchorSelect="#delete" className="ui-tooltip">
-                      Delete
-                    </Tooltip>
-                    <span className="flaticon-delete" />
-                  </a>
-                </div>
+    <Card className="mb-6 overflow-hidden">
+      <CardHeader className="border-b border-[var(--border-subtle)] pb-4 sm:flex sm:flex-row sm:items-center sm:justify-between space-y-0">
+        <CardTitle className="text-lg font-semibold">Work &amp; Experience</CardTitle>
+        <button
+          type="button"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+        >
+          <Plus className="h-4 w-4" />
+          Add Experience
+        </button>
+      </CardHeader>
+      <CardContent className="pt-6 space-y-6">
+        {workItems.map((item) => (
+          <div key={item.id} className="relative flex gap-4">
+            <div className="flex-shrink-0">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <Briefcase className="h-5 w-5" />
               </div>
-              <span className="tag">2012 - 2014</span>
-              <h5 className="mt15">UX Designer</h5>
-              <h6 className="text-thm">Dropbox</h6>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a
-                ipsum tellus. Interdum et malesuada fames ac ante ipsum{" "}
-                <br className="hidden lg:block" /> primis in faucibus.
-              </p>
             </div>
-            <div className="m-circle before-none text-thm">M</div>
-            <div className="wrapper mb30 relative">
-              <div className="del-edit">
-                <div className="flex">
-                  <a className="icon me-2" id="edit">
-                    <Tooltip anchorSelect="#edit" className="ui-tooltip">
-                      Edit
-                    </Tooltip>
-                    <span className="flaticon-pencil" />
-                  </a>
-                  <a className="icon" id="delete">
-                    <Tooltip anchorSelect="#delete" className="ui-tooltip">
-                      Delete
-                    </Tooltip>
-                    <span className="flaticon-delete" />
-                  </a>
-                </div>
+            <div className="flex-1 min-w-0">
+              <div className="absolute right-0 top-0 flex gap-2">
+                <button
+                  type="button"
+                  id={`work-edit-${item.id}`}
+                  aria-label="Edit"
+                  className="text-[var(--text-tertiary)] hover:text-foreground"
+                >
+                  <Pencil className="h-4 w-4" />
+                </button>
+                <Tooltip anchorSelect={`#work-edit-${item.id}`}>Edit</Tooltip>
+                <button
+                  type="button"
+                  id={`work-delete-${item.id}`}
+                  aria-label="Delete"
+                  className="text-[var(--text-tertiary)] hover:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+                <Tooltip anchorSelect={`#work-delete-${item.id}`}>Delete</Tooltip>
               </div>
-              <span className="tag">2008 - 2012</span>
-              <h5 className="mt15">Art Director</h5>
-              <h6 className="text-thm">amazon</h6>
-              <p className="mb-0">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a
-                ipsum tellus. Interdum et malesuada fames ac ante ipsum{" "}
-                <br className="hidden lg:block" /> primis in faucibus.
+              <Badge variant="muted">{item.period}</Badge>
+              <h5 className="text-base font-semibold mt-2">{item.title}</h5>
+              <h6 className="text-sm text-primary font-medium mt-1">{item.company}</h6>
+              <p className="text-sm text-[var(--text-secondary)] mt-2 mb-0">
+                {item.description}
               </p>
             </div>
           </div>
-          <div className="text-left">
-            <a className="ud-btn btn-thm">
-              Save
-              <i className="fal fa-arrow-right-long" />
-            </a>
-          </div>
+        ))}
+        <div>
+          <Button>
+            Save
+            <ArrowRight className="ml-1 h-4 w-4" />
+          </Button>
         </div>
-      </div>
-    </>
+      </CardContent>
+    </Card>
   );
 }

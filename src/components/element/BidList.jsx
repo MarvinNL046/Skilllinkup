@@ -4,6 +4,17 @@ import { useQuery, useMutation } from "convex/react";
 import { useTranslations } from "next-intl";
 import { api } from "../../../convex/_generated/api";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Star,
+  CheckCircle2,
+  AlertCircle,
+  DollarSign,
+  Check,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function BidList({ projectId, isOwner }) {
   const t = useTranslations("projectDetail");
@@ -28,24 +39,17 @@ export default function BidList({ projectId, isOwner }) {
   };
 
   if (!isOwner) {
-    return (
-      <p className="text mb20">{t("proposalsOwnerOnly")}</p>
-    );
+    return <p className="text-[var(--text-secondary)] mb-5">{t("proposalsOwnerOnly")}</p>;
   }
 
   if (bids === undefined) {
-    return (
-      <p className="text mb20">{t("loadingProposals")}</p>
-    );
+    return <p className="text-[var(--text-secondary)] mb-5">{t("loadingProposals")}</p>;
   }
 
   if (!bids || bids.length === 0) {
-    return (
-      <p className="text mb20">{t("noProposals")}</p>
-    );
+    return <p className="text-[var(--text-secondary)] mb-5">{t("noProposals")}</p>;
   }
 
-  // Compute average bid amount
   const avgAmount =
     bids.length > 0
       ? (bids.reduce((sum, b) => sum + b.amount, 0) / bids.length).toFixed(0)
@@ -54,96 +58,91 @@ export default function BidList({ projectId, isOwner }) {
   return (
     <div>
       {isOwner && avgAmount && (
-        <p className="text fz14 mb20">
-          <i className="flaticon-dollar vam me-1 text-thm2"></i>
-          {t("averageBid")} <strong>€{avgAmount}</strong>
+        <p className="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] mb-5">
+          <DollarSign className="h-4 w-4 text-primary" />
+          {t("averageBid")} <strong className="text-foreground">€{avgAmount}</strong>
         </p>
       )}
       {acceptError && (
-        <div className="alert alert-danger mb20 bdrs8 p15">
-          <i className="fas fa-exclamation-circle me-2"></i>
-          {acceptError}
-        </div>
+        <Alert variant="destructive" className="mb-5">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{acceptError}</AlertDescription>
+        </Alert>
       )}
-      <div className="bids-list">
+      <div className="space-y-5">
         {bids.map((bid) => (
           <div
             key={bid._id}
-            className={`flex items-start mb20 pb20 bdrb1 ${
-              bid.status === "accepted" ? "bid-accepted" : ""
-            }`}
+            className={cn(
+              "flex items-start gap-3 pb-5 border-b border-[var(--border-subtle)]",
+              bid.status === "accepted" && "opacity-90"
+            )}
           >
-            {/* Freelancer avatar */}
-            <div className="thumb shrink-0 me-3">
+            <div className="flex-shrink-0">
               {bid.freelancerAvatar ? (
                 <Image
                   src={bid.freelancerAvatar}
                   alt={bid.freelancerName}
                   width={50}
                   height={50}
-                  className="rounded-circle"
+                  className="rounded-full h-[50px] w-[50px] object-cover"
                 />
               ) : (
-                <div
-                  className="rounded-circle bg-secondary flex items-center justify-center"
-                  style={{ width: 50, height: 50 }}
-                >
-                  <span className="text-white fw600 fz16">
-                    {bid.freelancerName?.charAt(0)?.toUpperCase() || "?"}
-                  </span>
+                <div className="flex items-center justify-center h-[50px] w-[50px] rounded-full bg-secondary text-secondary-foreground font-semibold">
+                  {bid.freelancerName?.charAt(0)?.toUpperCase() || "?"}
                 </div>
               )}
             </div>
 
-            {/* Bid details */}
-            <div className="grow">
+            <div className="flex-grow min-w-0">
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div>
-                  <h6 className="mb-0">
+                  <h6 className="text-base font-semibold mb-0 inline-flex items-center gap-1">
                     {bid.freelancerName}
                     {bid.freelancerVerified && (
-                      <i
-                        className="fas fa-check-circle text-thm fz12 ms-1"
-                        title={t("verifiedFreelancer")}
-                      ></i>
+                      <CheckCircle2
+                        className="h-3 w-3 text-primary"
+                        aria-label={t("verifiedFreelancer")}
+                      />
                     )}
                   </h6>
                   {bid.freelancerRating > 0 && (
-                    <p className="mb-0 fz12 text">
-                      <i className="fas fa-star fz10 review-color me-1"></i>
+                    <p className="inline-flex items-center gap-1 text-xs text-[var(--text-secondary)] mb-0">
+                      <Star
+                        className="h-2.5 w-2.5 fill-warning text-warning"
+                        aria-hidden="true"
+                      />
                       {bid.freelancerRating.toFixed(1)}
                     </p>
                   )}
                 </div>
                 <div className="text-right">
-                  <p className="mb-0 fw600 dark-color">
-                    €{bid.amount}
+                  <p className="font-semibold text-foreground mb-0">€{bid.amount}</p>
+                  <p className="text-xs text-[var(--text-secondary)] mb-0">
+                    {bid.deliveryDays} {t("days")}
                   </p>
-                  <p className="mb-0 fz12 text">{bid.deliveryDays} {t("days")}</p>
                 </div>
               </div>
 
-              {/* Pitch / proposal text */}
-              <p className="text fz14 mt10 mb10">{bid.pitch}</p>
+              <p className="text-sm text-[var(--text-secondary)] mt-3 mb-3">
+                {bid.pitch}
+              </p>
 
-              {/* Status badge */}
               {bid.status === "accepted" && (
-                <span className="badge badge-thm fz12 px-2 py-1 bdrs4">
-                  {t("accepted")}
-                </span>
+                <Badge variant="success">{t("accepted")}</Badge>
               )}
 
-              {/* Accept button — only for owner, only for pending bids */}
               {isOwner && bid.status === "pending" && (
-                <button
-                  className="ud-btn btn-thm-border btn-sm mt10"
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-3"
                   onClick={() => handleAccept(bid._id)}
                   disabled={acceptingId === bid._id}
-                  style={{ fontSize: "13px", padding: "6px 16px" }}
                 >
                   {acceptingId === bid._id ? t("accepting") : t("acceptBid")}
-                  <i className="fal fa-check ms-1"></i>
-                </button>
+                  <Check className="ml-1 h-4 w-4" />
+                </Button>
               )}
             </div>
           </div>

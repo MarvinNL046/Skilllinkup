@@ -1,80 +1,84 @@
 "use client";
 import { Tooltip } from "react-tooltip";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Plus, Pencil, Trash2, ArrowRight } from "lucide-react";
+
+const awards = [
+  {
+    id: 1,
+    period: "2012 - 2014",
+    title: "UI UX Design",
+    org: "Udemy",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a ipsum tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus.",
+  },
+  {
+    id: 2,
+    period: "2008 - 2012",
+    title: "App Design",
+    org: "Google",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a ipsum tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus.",
+  },
+];
 
 export default function Award() {
   return (
-    <>
-      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
-        <div className="bdrb1 pb15 mb30 sm:flex justify-between">
-          <h5 className="list-title">Awards</h5>
-          <a className="add-more-btn text-thm">
-            <i className="icon far fa-plus mr10" />
-            Add Awards
-          </a>
-        </div>
-        <div className="relative">
-          <div className="educational-quality ps-0">
-            <div className="wrapper mb40 relative">
-              <div className="del-edit">
-                <div className="flex">
-                  <a className="icon me-2" id="edit">
-                    <Tooltip anchorSelect="#edit" className="ui-tooltip">
-                      Edit
-                    </Tooltip>
-                    <span className="flaticon-pencil" />
-                  </a>
-                  <a className="icon" id="delete">
-                    <Tooltip anchorSelect="#delete" className="ui-tooltip">
-                      Delete
-                    </Tooltip>
-                    <span className="flaticon-delete" />
-                  </a>
-                </div>
-              </div>
-              <span className="tag">2012 - 2014</span>
-              <h5 className="mt15">UI UX Design</h5>
-              <h6 className="text-thm">Udemy</h6>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a
-                ipsum tellus. Interdum et malesuada fames ac ante ipsum{" "}
-                <br className="hidden lg:block" /> primis in faucibus.
-              </p>
+    <Card className="mb-6 overflow-hidden">
+      <CardHeader className="border-b border-[var(--border-subtle)] pb-4 sm:flex sm:flex-row sm:items-center sm:justify-between space-y-0">
+        <CardTitle className="text-lg font-semibold">Awards</CardTitle>
+        <button
+          type="button"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+        >
+          <Plus className="h-4 w-4" />
+          Add Awards
+        </button>
+      </CardHeader>
+      <CardContent className="pt-6 space-y-8">
+        {awards.map((award) => (
+          <div key={award.id} className="relative">
+            <div className="absolute right-0 top-0 flex gap-2">
+              <button
+                type="button"
+                id={`award-edit-${award.id}`}
+                aria-label="Edit award"
+                className="text-[var(--text-tertiary)] hover:text-foreground"
+              >
+                <Pencil className="h-4 w-4" />
+              </button>
+              <Tooltip anchorSelect={`#award-edit-${award.id}`}>Edit</Tooltip>
+              <button
+                type="button"
+                id={`award-delete-${award.id}`}
+                aria-label="Delete award"
+                className="text-[var(--text-tertiary)] hover:text-destructive"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+              <Tooltip anchorSelect={`#award-delete-${award.id}`}>Delete</Tooltip>
             </div>
-            <div className="wrapper mb40 relative">
-              <div className="del-edit">
-                <div className="flex">
-                  <a className="icon me-2" id="edit">
-                    <Tooltip anchorSelect="#edit" className="ui-tooltip">
-                      Edit
-                    </Tooltip>
-                    <span className="flaticon-pencil" />
-                  </a>
-                  <a className="icon" id="delete">
-                    <Tooltip anchorSelect="#delete" className="ui-tooltip">
-                      Delete
-                    </Tooltip>
-                    <span className="flaticon-delete" />
-                  </a>
-                </div>
-              </div>
-              <span className="tag">2008 - 2012</span>
-              <h5 className="mt15">App Design</h5>
-              <h6 className="text-thm">Google</h6>
-              <p className="mb-0">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a
-                ipsum tellus. Interdum et malesuada fames ac ante ipsum{" "}
-                <br className="hidden lg:block" /> primis in faucibus.
-              </p>
-            </div>
+            <Badge variant="muted" className="mb-2">
+              {award.period}
+            </Badge>
+            <h5 className="text-base font-semibold mt-2">{award.title}</h5>
+            <h6 className="text-sm text-primary font-medium mt-1">{award.org}</h6>
+            <p className="text-sm text-[var(--text-secondary)] mt-2 mb-0">
+              {award.description}
+            </p>
           </div>
-          <div className="text-left">
-            <a className="ud-btn btn-thm" href="#">
+        ))}
+        <div>
+          <Button asChild>
+            <a href="#">
               Save
-              <i className="fal fa-arrow-right-long" />
+              <ArrowRight className="ml-1 h-4 w-4" />
             </a>
-          </div>
+          </Button>
         </div>
-      </div>
-    </>
+      </CardContent>
+    </Card>
   );
 }

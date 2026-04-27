@@ -4,6 +4,7 @@ import { useQuery } from "convex/react";
 import { useTranslations } from "next-intl";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
+import DashboardNavigation from "../header/DashboardNavigation";
 
 function TierBadge({ tier, label }) {
   const TIER_COLORS = {
@@ -14,7 +15,7 @@ function TierBadge({ tier, label }) {
   const config = TIER_COLORS[tier] || TIER_COLORS.bronze;
   return (
     <span
-      className="badge px-3 py-2 fz14 fw600 bdrs20"
+      className="badge px-3 py-2 text-sm font-semibold bdrs20"
       style={{ backgroundColor: config.bg, color: config.text }}
     >
       {label}
@@ -24,11 +25,11 @@ function TierBadge({ tier, label }) {
 
 function ProgressBar({ value, color = "#ef2b70", label }) {
   return (
-    <div className="mb15">
+    <div className="mb-4">
       {label && (
-        <div className="flex justify-between mb5">
-          <span className="fz13 text-muted">{label}</span>
-          <span className="fz13 fw500">{value}%</span>
+        <div className="flex justify-between mb-1">
+          <span className="text-sm text-muted">{label}</span>
+          <span className="text-sm font-medium">{value}%</span>
         </div>
       )}
       <div className="progress" style={{ height: 8, borderRadius: 4 }}>
@@ -49,7 +50,7 @@ const TRANSACTION_LABELS = {
 
 export default function RewardsInfo() {
   const t = useTranslations("rewards");
-  const { convexUser } = useConvexUser();
+  const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
 
   const TIER_LABELS = {
     bronze: t("tierBronze"),
@@ -59,19 +60,59 @@ export default function RewardsInfo() {
 
   const rewards = useQuery(
     api.marketplace.rewards.getClientRewards,
-    convexUser ? { userId: convexUser._id } : "skip"
+    convexUser?._id ? { userId: convexUser._id } : "skip"
   );
 
   const history = useQuery(
     api.marketplace.rewards.getRewardHistory,
-    convexUser ? { userId: convexUser._id, limit: 15 } : "skip"
+    convexUser?._id ? { userId: convexUser._id, limit: 15 } : "skip"
   );
 
-  if (!convexUser || rewards === undefined) {
+  // Auth/profile gates — without these the page renders an infinite spinner
+  // when the visitor isn't signed in or has no Convex profile yet.
+  if (isLoaded && !isAuthenticated) {
     return (
-      <div className="flex justify-center items-center" style={{ minHeight: 200 }}>
-        <div className="spinner-border text-primary" />
-      </div>
+      <>
+        <DashboardNavigation />
+        <div className="dashboard_title_area">
+          <h2>{t("title")}</h2>
+        </div>
+        <div className="card" style={{ padding: "var(--space-8)", textAlign: "center" }}>
+          <p className="body-md" style={{ color: "var(--text-secondary)", margin: 0 }}>
+            {t("signInPrompt")}
+          </p>
+        </div>
+      </>
+    );
+  }
+
+  if (isAuthenticated && convexUser === null) {
+    return (
+      <>
+        <DashboardNavigation />
+        <div className="dashboard_title_area">
+          <h2>{t("title")}</h2>
+        </div>
+        <div className="card" style={{ padding: "var(--space-8)", textAlign: "center" }}>
+          <p className="body-md" style={{ color: "var(--text-secondary)", margin: 0 }}>
+            {t("settingUpAccount")}
+          </p>
+        </div>
+      </>
+    );
+  }
+
+  if (convexUser === undefined || rewards === undefined) {
+    return (
+      <>
+        <DashboardNavigation />
+        <div className="dashboard_title_area">
+          <h2>{t("title")}</h2>
+        </div>
+        <div className="flex justify-center items-center" style={{ minHeight: 200 }}>
+          <div className="spinner-border text-primary" />
+        </div>
+      </>
     );
   }
 
@@ -84,35 +125,40 @@ export default function RewardsInfo() {
   const cashbackPct = Math.round((rewards?.cashbackRate || 0.03) * 100);
 
   return (
+    <>
+      <DashboardNavigation />
+      <div className="dashboard_title_area">
+        <h2>{t("title")}</h2>
+      </div>
     <div className="row">
       {/* Left: Tier card */}
-      <div className="col-md-5 mb30">
-        <div className="ps-widget bdrs8 p30 bdr1 mb25">
-          <h5 className="mb20">{t("yourRewards")}</h5>
-          <div className="flex items-center gap-3 mb20">
+      <div className="col-md-5 mb-8">
+        <div className="ps-widget bdrs8 p-8 bdr1 mb-6">
+          <h5 className="mb-5">{t("yourRewards")}</h5>
+          <div className="flex items-center gap-3 mb-5">
             <TierBadge tier={tier} label={TIER_LABELS[tier] || tier} />
-            <span className="fz14 text-muted">{t("member")}</span>
+            <span className="text-sm text-muted">{t("member")}</span>
           </div>
 
-          <div className="mb20">
-            <p className="fz13 text-muted mb5">{t("creditBalance")}</p>
+          <div className="mb-5">
+            <p className="text-sm text-muted mb-1">{t("creditBalance")}</p>
             <h3 className="mb0" style={{ color: "#ef2b70" }}>&euro;{balanceEuros}</h3>
           </div>
 
-          <div className="mb20">
-            <p className="fz13 text-muted mb5">{t("yearlySpend")}</p>
+          <div className="mb-5">
+            <p className="text-sm text-muted mb-1">{t("yearlySpend")}</p>
             <h5 className="mb0">&euro;{yearlySpendEuros}</h5>
           </div>
 
-          <div className="mb20">
-            <p className="fz13 text-muted mb5">{t("cashbackRate")}</p>
+          <div className="mb-5">
+            <p className="text-sm text-muted mb-1">{t("cashbackRate")}</p>
             <h5 className="mb0">{cashbackPct}% {t("perCompletedOrder")}</h5>
           </div>
 
           {nextTierAmount && (
             <>
-              <hr className="opacity-100 mb15 mt15" />
-              <p className="fz13 text-muted mb10">
+              <hr className="opacity-100 mb-4 mt-4" />
+              <p className="text-sm text-muted mb-2.5">
                 {t("progressTo", {
                   tier: tier === "bronze" ? TIER_LABELS.silver : TIER_LABELS.gold,
                   amount: nextTierAmount,
@@ -127,15 +173,15 @@ export default function RewardsInfo() {
           )}
 
           {tier === "gold" && (
-            <div className="alert alert-warning mt15 fz13 mb0">
+            <div className="alert alert-warning mt-4 text-sm mb0">
               {t("goldMaxCashback")}
             </div>
           )}
         </div>
 
         {/* Tier overview */}
-        <div className="ps-widget bdrs8 p30 bdr1">
-          <h6 className="mb15">{t("tierOverview")}</h6>
+        <div className="ps-widget bdrs8 p-8 bdr1">
+          <h6 className="mb-4">{t("tierOverview")}</h6>
           {[
             { key: "bronze", threshold: "€0+",        rate: "3%" },
             { key: "silver", threshold: "€1.000+/jr", rate: "5%" },
@@ -143,25 +189,25 @@ export default function RewardsInfo() {
           ].map((item) => (
             <div
               key={item.key}
-              className="flex items-center justify-between mb10 pb10"
+              className="flex items-center justify-between mb-2.5 pb-2.5"
               style={{ borderBottom: "1px solid #f0f0f0", opacity: item.key === tier ? 1 : 0.5 }}
             >
               <TierBadge tier={item.key} label={TIER_LABELS[item.key]} />
-              <span className="fz13 text-muted">{item.threshold}</span>
-              <span className="fz13 fw500">{item.rate}</span>
-              {item.key === tier && <i className="flaticon-check text-success fz16" />}
+              <span className="text-sm text-muted">{item.threshold}</span>
+              <span className="text-sm font-medium">{item.rate}</span>
+              {item.key === tier && <i className="flaticon-check text-success text-base" />}
             </div>
           ))}
         </div>
       </div>
 
       {/* Right: Transaction history */}
-      <div className="col-md-7 mb30">
-        <div className="ps-widget bdrs8 p30 bdr1">
-          <h5 className="mb20">{t("creditHistory")}</h5>
+      <div className="col-md-7 mb-8">
+        <div className="ps-widget bdrs8 p-8 bdr1">
+          <h5 className="mb-5">{t("creditHistory")}</h5>
           {!history || history.length === 0 ? (
             <div className="text-center py40 text-muted">
-              <i className="flaticon-dollar fz40 mb15 block" />
+              <i className="flaticon-dollar text-4xl mb-4 block" />
               <p className="mb0">{t("noTransactions")}<br />{t("noTransactionsHint")}</p>
             </div>
           ) : (
@@ -183,9 +229,9 @@ export default function RewardsInfo() {
                     });
                     return (
                       <tr key={tx._id}>
-                        <td className="fz13 text-muted">{date}</td>
-                        <td className="fz13">{tx.description}</td>
-                        <td className={`text-right fz13 fw500 ${config.color}`}>
+                        <td className="text-sm text-muted">{date}</td>
+                        <td className="text-sm">{tx.description}</td>
+                        <td className={`text-right text-sm font-medium ${config.color}`}>
                           {tx.type !== "tier_upgrade"
                             ? `${config.prefix}€${amountEuros}`
                             : "—"}
@@ -200,5 +246,6 @@ export default function RewardsInfo() {
         </div>
       </div>
     </div>
+    </>
   );
 }

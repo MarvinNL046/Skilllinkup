@@ -2,6 +2,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 
 const FALLBACK_IMG = "/images/blog/default-blog-feature.jpg";
 const FALLBACK_AVATAR = "/images/blog/default-avatar.png";
@@ -11,59 +13,55 @@ function stripHtml(html) {
   return html.replace(/<[^>]*>/g, "").slice(0, 200);
 }
 
-export default function BlogCard4({ data, index }) {
+export default function BlogCard4({ data }) {
   const postUrl = data.slug ? `/post/${data.slug}` : `/post/${data.id}`;
   const excerpt = data.brief || stripHtml(data.description);
   const [imgSrc, setImgSrc] = useState(data.img || FALLBACK_IMG);
   const [avatarSrc, setAvatarSrc] = useState(data.author?.img || FALLBACK_AVATAR);
 
   return (
-    <>
-      <div
-        className={`blog-style1 large-size mb20 ${
-          index === data.id ? "mb50" : ""
-        }`}
-      >
-        <div className="blog-img">
+    <article className="mb-5">
+      <Image
+        height={398}
+        width={736}
+        className="w-full rounded-md object-cover h-auto"
+        src={imgSrc}
+        alt={data.title}
+        onError={() => setImgSrc(FALLBACK_IMG)}
+      />
+      <div className="pt-5">
+        <div className="flex flex-wrap items-center gap-3 mb-5">
           <Image
-            height={398}
-            width={736}
-            className="w-full bdrs4 object-fit-cover"
-            style={{ height: "auto" }}
-            src={imgSrc}
-            alt={data.title}
-            onError={() => setImgSrc(FALLBACK_IMG)}
+            height={40}
+            width={40}
+            className="rounded-full object-contain h-10 w-10"
+            src={avatarSrc}
+            alt="avatar"
+            onError={() => setAvatarSrc(FALLBACK_AVATAR)}
           />
+          <span className="text-sm text-[var(--text-secondary)]">
+            {data.author?.name || "Author"}
+          </span>
+          <span className="text-sm text-[var(--text-tertiary)]">·</span>
+          <span className="text-sm text-[var(--text-secondary)]">
+            {data.category}
+          </span>
+          <span className="text-sm text-[var(--text-tertiary)]">·</span>
+          <span className="text-sm text-[var(--text-secondary)]">{data.date}</span>
         </div>
-        <div className="blog-content px-0 pt20 pb-0">
-          <div className="blog-single-meta mb25">
-            <div className="post-author sm:flex items-center">
-              <Image
-                height={60}
-                width={60}
-                className="mr10 object-fit-contain"
-                src={avatarSrc}
-                alt="avatar"
-                onError={() => setAvatarSrc(FALLBACK_AVATAR)}
-              />
-              <a className="pr15 body-light-color">{data.author?.name || "Author"}</a>
-              <a className="ml15 pr15 body-light-color">{data.category}</a>
-              <a className="ml15 body-light-color">{data.date}</a>
-            </div>
-          </div>
-          <h3 className="title mt-1 mb10">
-            <Link href={postUrl}>{data.title}</Link>
-          </h3>
-          <p className="text mb25">{excerpt}</p>
-          <Link
-            href={postUrl}
-            className="ud-btn btn-light-thm"
-          >
-            Read More
-            <i className="fal fa-arrow-right-long" />
+        <h3 className="text-2xl font-semibold mb-2">
+          <Link href={postUrl} className="hover:text-primary">
+            {data.title}
           </Link>
-        </div>
+        </h3>
+        <p className="text-base text-[var(--text-secondary)] mb-6">{excerpt}</p>
+        <Button asChild variant="outline">
+          <Link href={postUrl}>
+            Read More
+            <ArrowRight className="ml-1 h-4 w-4" />
+          </Link>
+        </Button>
       </div>
-    </>
+    </article>
   );
 }

@@ -5,8 +5,8 @@ export default function BlogRecentCard1({ data, index }) {
     <>
       <div
         className={`list-news-style flex items-center ${
-          index.firstIndex === data.id ? "mt30" : ""
-        } ${index.lastIndex === data.id ? "mb0" : "mb20"}`}
+          index.firstIndex === data.id ? "mt-8" : ""
+        } ${index.lastIndex === data.id ? "mb0" : "mb-5"}`}
       >
         <div className="news-img shrink-0">
           <Image

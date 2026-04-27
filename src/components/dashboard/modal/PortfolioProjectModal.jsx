@@ -4,8 +4,19 @@ import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
-export default function PortfolioProjectModal({ project, onClose }) {
+export default function PortfolioProjectModal({ project, open, onOpenChange }) {
   const tt = useTranslations("toasts");
   const createProject = useMutation(api.marketplace.portfolio.create);
   const updateProject = useMutation(api.marketplace.portfolio.update);
@@ -97,7 +108,7 @@ export default function PortfolioProjectModal({ project, onClose }) {
         });
         toast.success(tt("projectAdded"));
       }
-      onClose?.();
+      onOpenChange?.(false);
     } catch (err) {
       toast.error(err.message || tt("failedToSave"));
     } finally {
@@ -106,129 +117,100 @@ export default function PortfolioProjectModal({ project, onClose }) {
   };
 
   return (
-    <div className="modal fade" id="portfolioModal" tabIndex={-1}>
-      <div className="modal-dialog modal-lg modal-dialog-centered">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">
-              {isEdit ? "Edit Project" : "Add Portfolio Project"}
-            </h5>
-            <button type="button" className="btn-close" data-bs-dismiss="modal" />
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{isEdit ? "Edit Project" : "Add Portfolio Project"}</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSave} className="space-y-5">
+          <div className="space-y-2">
+            <Label htmlFor="portfolio-title">Title *</Label>
+            <Input
+              id="portfolio-title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g. E-commerce website redesign"
+              required
+            />
           </div>
-          <form onSubmit={handleSave}>
-            <div className="modal-body p30">
-              <div className="mb20">
-                <label className="heading-color ff-heading fw500 mb10">Title *</label>
-                <input
-                  className="form-control"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g. E-commerce website redesign"
-                  required
-                />
-              </div>
-              <div className="mb20">
-                <label className="heading-color ff-heading fw500 mb10">Description</label>
-                <textarea
-                  className="form-control pt15"
-                  rows={3}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="What did you build and what was the outcome?"
-                />
-              </div>
-              <div className="mb20">
-                <label className="heading-color ff-heading fw500 mb10">Tags</label>
-                <input
-                  className="form-control"
-                  value={tagsInput}
-                  onChange={(e) => setTagsInput(e.target.value)}
-                  placeholder="e.g. React, UI Design, Figma"
-                />
-                <small className="text-muted">Separate with commas</small>
-              </div>
-              <div className="mb20">
-                <label className="heading-color ff-heading fw500 mb10">External Link</label>
-                <input
-                  type="url"
-                  className="form-control"
-                  value={externalUrl}
-                  onChange={(e) => setExternalUrl(e.target.value)}
-                  placeholder="https://..."
-                />
-              </div>
-              <div className="mb20">
-                <label className="heading-color ff-heading fw500 mb10">
-                  Images ({imageUrls.length}/5)
-                </label>
-                <div className="flex flex-wrap gap-2 mb10">
-                  {imageUrls.map((url, idx) => (
-                    <div
-                      key={idx}
-                      className="relative"
-                      style={{ width: 80, height: 80 }}
-                    >
-                      <div
-                        className="bdrs4 overflow-hidden"
-                        style={{
-                          width: 80,
-                          height: 80,
-                          background: "#eee",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <span className="fz12 text-muted">img {idx + 1}</span>
-                      </div>
-                      <button
-                        type="button"
-                        className="absolute top-0 end-0 btn btn-sm btn-danger p-0"
-                        style={{ width: 20, height: 20, fontSize: 10 }}
-                        onClick={() => removeImage(idx)}
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))}
-                  {imageUrls.length < 5 && (
-                    <label
-                      className="bdrs4 bdr1 flex items-center justify-center text-muted"
-                      style={{ width: 80, height: 80, cursor: "pointer" }}
-                    >
-                      <input
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        className="hidden"
-                        onChange={handleImageUpload}
-                        disabled={uploading}
-                      />
-                      {uploading ? "..." : "+ Add"}
-                    </label>
-                  )}
+          <div className="space-y-2">
+            <Label htmlFor="portfolio-desc">Description</Label>
+            <Textarea
+              id="portfolio-desc"
+              rows={3}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="What did you build and what was the outcome?"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="portfolio-tags">Tags</Label>
+            <Input
+              id="portfolio-tags"
+              value={tagsInput}
+              onChange={(e) => setTagsInput(e.target.value)}
+              placeholder="e.g. React, UI Design, Figma"
+            />
+            <p className="text-xs text-[var(--text-tertiary)]">Separate with commas</p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="portfolio-url">External Link</Label>
+            <Input
+              id="portfolio-url"
+              type="url"
+              value={externalUrl}
+              onChange={(e) => setExternalUrl(e.target.value)}
+              placeholder="https://..."
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Images ({imageUrls.length}/5)</Label>
+            <div className="flex flex-wrap gap-2">
+              {imageUrls.map((url, idx) => (
+                <div
+                  key={idx}
+                  className="relative h-20 w-20 overflow-hidden rounded-md border border-[var(--border-subtle)] bg-[var(--surface-2)] flex items-center justify-center"
+                >
+                  <span className="text-xs text-[var(--text-tertiary)]">img {idx + 1}</span>
+                  <button
+                    type="button"
+                    className="absolute right-0 top-0 inline-flex h-5 w-5 items-center justify-center rounded-bl-md bg-destructive text-destructive-foreground text-[10px]"
+                    onClick={() => removeImage(idx)}
+                    aria-label="Remove image"
+                  >
+                    ×
+                  </button>
                 </div>
-              </div>
+              ))}
+              {imageUrls.length < 5 && (
+                <label className="flex h-20 w-20 cursor-pointer items-center justify-center rounded-md border border-dashed border-[var(--border-default)] text-sm text-[var(--text-tertiary)] hover:bg-[var(--surface-2)]">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={handleImageUpload}
+                    disabled={uploading}
+                  />
+                  {uploading ? "..." : "+ Add"}
+                </label>
+              )}
             </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="ud-btn btn-white"
-                data-bs-dismiss="modal"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="ud-btn btn-thm"
-                disabled={saving}
-              >
-                {saving ? "Saving..." : isEdit ? "Save Changes" : "Add Project"}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange?.(false)}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={saving}>
+              {saving ? "Saving..." : isEdit ? "Save Changes" : "Add Project"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

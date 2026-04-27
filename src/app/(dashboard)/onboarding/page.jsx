@@ -35,8 +35,8 @@ function ProgressBar({ step, totalSteps, t }) {
   return (
     <div className="mb-4">
       <div className="flex justify-between items-center mb-2">
-        <span className="fz13 text-muted">{t("stepOf", { step, total: totalSteps })}</span>
-        <span className="fz13 text-muted">{pct}%</span>
+        <span className="text-sm text-muted">{t("stepOf", { step, total: totalSteps })}</span>
+        <span className="text-sm text-muted">{pct}%</span>
       </div>
       <div style={{ height: 4, background: "#e5e7eb", borderRadius: 2 }}>
         <div
@@ -264,7 +264,7 @@ function OnboardingContent() {
                 <StepWrapper direction={direction}>
                   <div className="text-center mb-5">
                     <h2 className="title mb-2">{t("welcomeTitle")}</h2>
-                    <p className="fz17 text-muted">{t("welcomeSubtitle")}</p>
+                    <p className="text-lg text-muted">{t("welcomeSubtitle")}</p>
                   </div>
                   <div className="row g-4 justify-center">
                     {[
@@ -289,10 +289,10 @@ function OnboardingContent() {
                               className="flex items-center justify-center mx-auto mb-4 rounded-circle"
                               style={{ width: 80, height: 80, background: "#f5f5f5" }}
                             >
-                              <i className={`${icon} fz30`} style={{ color: "#ef2b70" }} />
+                              <i className={`${icon} text-3xl`} style={{ color: "#ef2b70" }} />
                             </div>
                             <h4 className="title mb-2">{label}</h4>
-                            <p className="fz14 text-muted mb-0">{desc}</p>
+                            <p className="text-sm text-muted mb-0">{desc}</p>
                           </div>
                         </button>
                       </div>
@@ -306,7 +306,7 @@ function OnboardingContent() {
                 <StepWrapper direction={direction}>
                   <div className="text-center mb-5">
                     <h2 className="title mb-2">{t("chooseWorld")}</h2>
-                    <p className="fz17 text-muted">{t("chooseWorldSubtitle")}</p>
+                    <p className="text-lg text-muted">{t("chooseWorldSubtitle")}</p>
                   </div>
                   <div className="row g-4 justify-center">
                     {WORLDS.map((w) => (
@@ -329,10 +329,10 @@ function OnboardingContent() {
                               className="flex items-center justify-center mx-auto mb-3 rounded-circle"
                               style={{ width: 64, height: 64, background: "#f5f5f5" }}
                             >
-                              <i className={`${w.icon} fz26`} style={{ color: "#ef2b70" }} />
+                              <i className={`${w.icon} text-2xl`} style={{ color: "#ef2b70" }} />
                             </div>
                             <h5 className="title mb-1">{w.title}</h5>
-                            <p className="fz13 text-muted mb-0">{t(w.descKey)}</p>
+                            <p className="text-sm text-muted mb-0">{t(w.descKey)}</p>
                           </div>
                         </button>
                       </div>
@@ -344,7 +344,7 @@ function OnboardingContent() {
                       <button
                         type="button"
                         onClick={() => goTo(1, "back")}
-                        className="btn btn-link text-muted no-underline fz14"
+                        className="btn btn-link text-muted no-underline text-sm"
                         disabled={saving}
                       >
                         ← {t("back")}
@@ -354,7 +354,7 @@ function OnboardingContent() {
                   {saving && (
                     <div className="text-center mt-3">
                       <div className="spinner-border spinner-border-sm me-2" style={{ color: "#ef2b70" }} role="status" />
-                      <span className="fz14 text-muted">{t("saving")}</span>
+                      <span className="text-sm text-muted">{t("saving")}</span>
                     </div>
                   )}
                 </StepWrapper>
@@ -367,7 +367,7 @@ function OnboardingContent() {
                     <h2 className="title mb-2">
                       {role === "freelancer" ? t("whatAreYourSkills") : t("whatLookingFor")}
                     </h2>
-                    <p className="fz17 text-muted">
+                    <p className="text-lg text-muted">
                       {role === "freelancer"
                         ? t("pickSkills")
                         : t("selectServices")}
@@ -397,7 +397,7 @@ function OnboardingContent() {
                     })}
                   </div>
                   {role === "freelancer" && (
-                    <p className="text-center fz13 text-muted mb-4">
+                    <p className="text-center text-sm text-muted mb-4">
                       {t("skillsSelected", { count: selectedSkills.length })}
                     </p>
                   )}
@@ -406,7 +406,7 @@ function OnboardingContent() {
                     <button
                       type="button"
                       onClick={() => goTo(2, "back")}
-                      className="btn btn-link text-muted no-underline fz14"
+                      className="btn btn-link text-muted no-underline text-sm"
                     >
                       ← Back
                     </button>
@@ -439,11 +439,11 @@ function OnboardingContent() {
                 <StepWrapper direction={direction}>
                   <div className="text-center mb-4">
                     <h2 className="title mb-2">{t("tellAboutYourself")}</h2>
-                    <p className="fz17 text-muted">{t("profileViews")}</p>
+                    <p className="text-lg text-muted">{t("profileViews")}</p>
                   </div>
                   <div className="mb-3">
-                    <label className="fz14 fw600 mb-1 block">
-                      {t("tagline")} <span className="text-muted fw400">{t("taglineHint")}</span>
+                    <label className="text-sm font-semibold mb-1 block">
+                      {t("tagline")} <span className="text-muted font-normal">{t("taglineHint")}</span>
                     </label>
                     <input
                       type="text"
@@ -455,7 +455,7 @@ function OnboardingContent() {
                     />
                   </div>
                   <div className="mb-3">
-                    <label className="fz14 fw600 mb-1 block">{t("bio")}</label>
+                    <label className="text-sm font-semibold mb-1 block">{t("bio")}</label>
                     <textarea
                       className="form-control bdrs8"
                       rows={4}
@@ -464,11 +464,11 @@ function OnboardingContent() {
                       onChange={e => setBio(e.target.value)}
                       maxLength={800}
                     />
-                    <div className="text-right fz12 text-muted mt-1">{bio.length}/800</div>
+                    <div className="text-right text-xs text-muted mt-1">{bio.length}/800</div>
                   </div>
                   <div className="mb-4">
-                    <label className="fz14 fw600 mb-1 block">
-                      {t("hourlyRate")} <span className="text-muted fw400">{t("hourlyRateCurrency")}</span>
+                    <label className="text-sm font-semibold mb-1 block">
+                      {t("hourlyRate")} <span className="text-muted font-normal">{t("hourlyRateCurrency")}</span>
                     </label>
                     <div className="input-group" style={{ maxWidth: 200 }}>
                       <span className="input-group-text" style={{ borderRight: 0 }}>$</span>
@@ -490,7 +490,7 @@ function OnboardingContent() {
                     <button
                       type="button"
                       onClick={() => goTo(3, "back")}
-                      className="btn btn-link text-muted no-underline fz14"
+                      className="btn btn-link text-muted no-underline text-sm"
                       disabled={saving}
                     >
                       ← Back
@@ -524,7 +524,7 @@ function OnboardingContent() {
 
               {/* Fix #4: error display */}
               {errorMessage && (
-                <div className="alert alert-danger mt-3 fz14 bdrs8" role="alert">
+                <div className="alert alert-danger mt-3 text-sm bdrs8" role="alert">
                   {errorMessage}
                 </div>
               )}

@@ -2,6 +2,14 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 
 export default function BecomeSeller() {
   const t = useTranslations("becomeSeller");
@@ -117,33 +125,27 @@ export default function BecomeSeller() {
             <div className="col-lg-8 col-xl-7">
               <div className="wow fadeInUp" data-wow-delay="100ms">
                 <h1
-                  className="text-white mb20"
+                  className="text-white mb-5"
                   style={{ fontSize: "clamp(2rem, 5vw, 3.25rem)", fontWeight: 700, lineHeight: 1.2 }}
                 >
                   {t("heroTitle")}
                 </h1>
                 <p
-                  className="mb40"
+                  className="mb-10"
                   style={{ color: "rgba(255,255,255,0.8)", fontSize: "1.125rem", lineHeight: 1.7 }}
                 >
                   {t("heroSubtitle")}
                 </p>
-                <div className="flex flex-wrap justify-center gap-3 mb50">
-                  <Link
-                    href="/register?role=freelancer"
-                    className="ud-btn btn-thm bdrs8"
-                    style={{ minWidth: "180px" }}
-                  >
-                    {t("getStartedFree")}
-                    <i className="fal fa-arrow-right-long" />
-                  </Link>
-                  <a
-                    href="#how-it-works"
-                    className="ud-btn btn-white bdrs8"
-                    style={{ minWidth: "160px" }}
-                  >
-                    {t("howItWorks")}
-                  </a>
+                <div className="flex flex-wrap justify-center gap-3 mb-12">
+                  <Button asChild size="lg" className="min-w-[180px]">
+                    <Link href="/register?role=freelancer">
+                      {t("getStartedFree")}
+                      <ArrowRight className="ml-1 h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <Button asChild size="lg" variant="outline" className="min-w-[160px]">
+                    <a href="#how-it-works">{t("howItWorks")}</a>
+                  </Button>
                 </div>
 
                 <div className="row justify-center g-4">
@@ -160,7 +162,7 @@ export default function BecomeSeller() {
                         }}
                       >
                         <div
-                          className="text-white fw600"
+                          className="text-white font-semibold"
                           style={{ fontSize: "1.1rem", marginBottom: "2px" }}
                         >
                           {item.stat}
@@ -179,13 +181,13 @@ export default function BecomeSeller() {
       </section>
 
       {/* Section 2: Three Ways to Earn */}
-      <section className="pt90 pb90">
+      <section className="pt-24 pb-24">
         <div className="container">
           <div className="row wow fadeInUp">
             <div className="col-lg-8 mx-auto text-center">
-              <div className="main-title mb50">
+              <div className="main-title mb-12">
                 <h2 className="title">{t("threeWaysTitle")}</h2>
-                <p className="paragraph mt10">{t("threeWaysSubtitle")}</p>
+                <p className="paragraph mt-2.5">{t("threeWaysSubtitle")}</p>
               </div>
             </div>
           </div>
@@ -230,7 +232,7 @@ export default function BecomeSeller() {
                   </div>
 
                   <span
-                    className="fz13 fw600 mb10"
+                    className="text-sm font-semibold mb-2.5"
                     style={{
                       color: card.color,
                       textTransform: "uppercase",
@@ -241,14 +243,14 @@ export default function BecomeSeller() {
                     {card.world}
                   </span>
 
-                  <h4 className="mb15" style={{ fontWeight: 700 }}>{card.title}</h4>
-                  <p className="body-color fz15 mb25" style={{ lineHeight: 1.7, flexGrow: 1 }}>
+                  <h4 className="mb-4" style={{ fontWeight: 700 }}>{card.title}</h4>
+                  <p className="body-color text-base mb-6" style={{ lineHeight: 1.7, flexGrow: 1 }}>
                     {card.description}
                   </p>
 
-                  <ul className="mb30 p-0" style={{ listStyle: "none" }}>
+                  <ul className="mb-8 p-0" style={{ listStyle: "none" }}>
                     {card.features.map((feature, fi) => (
-                      <li key={fi} className="flex items-center fz14 mb10" style={{ color: "#555" }}>
+                      <li key={fi} className="flex items-center text-sm mb-2.5" style={{ color: "#555" }}>
                         <i className="far fa-check-circle me-2" style={{ color: card.color, flexShrink: 0 }} />
                         {feature}
                       </li>
@@ -257,21 +259,10 @@ export default function BecomeSeller() {
 
                   <Link
                     href={card.href}
-                    className="ud-btn bdrs8"
+                    className="inline-flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg font-semibold text-white no-underline transition-opacity hover:opacity-85"
                     style={{
                       background: card.color,
-                      color: "#fff",
                       border: `1px solid ${card.color}`,
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "8px",
-                      fontWeight: 600,
-                      padding: "12px 24px",
-                      borderRadius: "8px",
-                      textDecoration: "none",
-                      transition: "opacity 0.2s ease",
-                      width: "100%",
-                      justifyContent: "center",
                     }}
                     onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
                     onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
@@ -287,13 +278,13 @@ export default function BecomeSeller() {
       </section>
 
       {/* Section 3: How It Works */}
-      <section id="how-it-works" className="pt80 pb80" style={{ background: "#f8f9fb" }}>
+      <section id="how-it-works" className="pt-20 pb-20" style={{ background: "#f8f9fb" }}>
         <div className="container">
           <div className="row wow fadeInUp">
             <div className="col-lg-7 mx-auto text-center">
-              <div className="main-title mb50">
+              <div className="main-title mb-12">
                 <h2 className="title">{t("stepsTitle")}</h2>
-                <p className="paragraph mt10">{t("stepsSubtitle")}</p>
+                <p className="paragraph mt-2.5">{t("stepsSubtitle")}</p>
               </div>
             </div>
           </div>
@@ -328,7 +319,7 @@ export default function BecomeSeller() {
                   </span>
 
                   <div
-                    className="mb20"
+                    className="mb-5"
                     style={{
                       width: "44px",
                       height: "44px",
@@ -344,8 +335,8 @@ export default function BecomeSeller() {
                   >
                     {i + 1}
                   </div>
-                  <h4 className="mb15" style={{ fontWeight: 700 }}>{step.title}</h4>
-                  <p className="body-color fz15 mb-0" style={{ lineHeight: 1.7 }}>{step.description}</p>
+                  <h4 className="mb-4" style={{ fontWeight: 700 }}>{step.title}</h4>
+                  <p className="body-color text-base mb-0" style={{ lineHeight: 1.7 }}>{step.description}</p>
                 </div>
               </div>
             ))}
@@ -354,13 +345,13 @@ export default function BecomeSeller() {
       </section>
 
       {/* Section 4: Why SkillLinkup */}
-      <section className="pt90 pb90">
+      <section className="pt-24 pb-24">
         <div className="container">
           <div className="row wow fadeInUp">
             <div className="col-lg-7 mx-auto text-center">
-              <div className="main-title mb50">
+              <div className="main-title mb-12">
                 <h2 className="title">{t("whyTitle")}</h2>
-                <p className="paragraph mt10">{t("whySubtitle")}</p>
+                <p className="paragraph mt-2.5">{t("whySubtitle")}</p>
               </div>
             </div>
           </div>
@@ -400,8 +391,8 @@ export default function BecomeSeller() {
                     <span className={benefit.icon} style={{ color: "#ef2b70", fontSize: "22px" }} />
                   </div>
                   <div>
-                    <h5 className="mb10" style={{ fontWeight: 700, fontSize: "1rem" }}>{benefit.title}</h5>
-                    <p className="body-color fz14 mb-0" style={{ lineHeight: 1.6 }}>{benefit.text}</p>
+                    <h5 className="mb-2.5" style={{ fontWeight: 700, fontSize: "1rem" }}>{benefit.title}</h5>
+                    <p className="body-color text-sm mb-0" style={{ lineHeight: 1.6 }}>{benefit.text}</p>
                   </div>
                 </div>
               </div>
@@ -411,71 +402,51 @@ export default function BecomeSeller() {
       </section>
 
       {/* Section 5: CTA Banner */}
-      <section className="pt80 pb80" style={{ background: "#1e1541" }}>
+      <section className="pt-20 pb-20" style={{ background: "#1e1541" }}>
         <div className="container">
           <div className="row justify-center text-center wow fadeInUp">
             <div className="col-lg-6">
-              <h2 className="text-white mb20" style={{ fontWeight: 700 }}>{t("ctaTitle")}</h2>
-              <p className="mb40" style={{ color: "rgba(255,255,255,0.75)", fontSize: "1.05rem" }}>
+              <h2 className="text-white mb-5" style={{ fontWeight: 700 }}>{t("ctaTitle")}</h2>
+              <p className="mb-10" style={{ color: "rgba(255,255,255,0.75)", fontSize: "1.05rem" }}>
                 {t("ctaSubtitle")}
               </p>
-              <Link
-                href="/register?role=freelancer"
-                className="ud-btn btn-thm bdrs8"
-                style={{ minWidth: "220px" }}
-              >
-                {t("ctaButton")}
-                <i className="fal fa-arrow-right-long" />
-              </Link>
+              <Button asChild size="lg" className="min-w-[220px]">
+                <Link href="/register?role=freelancer">
+                  {t("ctaButton")}
+                  <ArrowRight className="ml-1 h-4 w-4" />
+                </Link>
+              </Button>
             </div>
           </div>
         </div>
       </section>
 
       {/* Section 6: FAQ */}
-      <section className="our-faqs pt80 pb80">
+      <section className="our-faqs pt-20 pb-20">
         <div className="container">
           <div className="row wow fadeInUp">
             <div className="col-lg-6 mx-auto text-center">
-              <div className="main-title mb40">
+              <div className="main-title mb-10">
                 <h2 className="title">{t("faqTitle")}</h2>
-                <p className="paragraph mt10">{t("faqSubtitle")}</p>
+                <p className="paragraph mt-2.5">{t("faqSubtitle")}</p>
               </div>
             </div>
           </div>
 
           <div className="row wow fadeInUp" data-wow-delay="200ms">
             <div className="col-lg-8 mx-auto">
-              <div className="ui-content">
-                <div className="accordion-style1 faq-page mb-4 mb-lg-5">
-                  <div className="accordion" id="accordionBecomeSeller">
-                    {faqs.map((faq, index) => (
-                      <div key={faq.id} className={`accordion-item${index === 0 ? " active" : ""}`}>
-                        <h2 className="accordion-header" id={`heading${faq.id}`}>
-                          <button
-                            className={`accordion-button${index !== 0 ? " collapsed" : ""}`}
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target={`#collapse${faq.id}`}
-                            aria-expanded={index === 0 ? "true" : "false"}
-                            aria-controls={`collapse${faq.id}`}
-                          >
-                            {faq.question}
-                          </button>
-                        </h2>
-                        <div
-                          id={`collapse${faq.id}`}
-                          className={`accordion-collapse collapse${index === 0 ? " show" : ""}`}
-                          aria-labelledby={`heading${faq.id}`}
-                          data-parent="#accordionBecomeSeller"
-                        >
-                          <div className="accordion-body">{faq.answer}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <Accordion type="single" collapsible defaultValue={faqs[0]?.id} className="w-full">
+                {faqs.map((faq) => (
+                  <AccordionItem key={faq.id} value={faq.id}>
+                    <AccordionTrigger className="text-base font-medium">
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-[var(--text-secondary)]">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
             </div>
           </div>
         </div>

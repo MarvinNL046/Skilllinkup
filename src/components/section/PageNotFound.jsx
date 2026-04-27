@@ -4,36 +4,23 @@ import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-/**
- * 404 page content on the SkillLinkup Design System.
- */
 export default function PageNotFound() {
   const t = useTranslations("errorPages");
 
   return (
     <section
-      style={{
-        padding: "var(--space-16) 0",
-        minHeight: "calc(100vh - 240px)",
-        display: "flex",
-        alignItems: "center",
-      }}
+      className="py-16 flex items-center"
+      style={{ minHeight: "calc(100vh - 240px)" }}
     >
       <div className="container">
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: "var(--space-10)",
-            alignItems: "center",
-          }}
-        >
-          <div style={{ textAlign: "center" }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+          <div className="text-center">
             <Image
               height={500}
               width={500}
-              style={{ width: "100%", height: "auto", maxWidth: 440 }}
+              className="w-full h-auto max-w-md mx-auto"
               src="/images/icon/error-page-img.svg"
               alt=""
             />
@@ -41,36 +28,26 @@ export default function PageNotFound() {
 
           <div>
             <div
+              className="font-medium leading-none tracking-tight mb-4"
               style={{
                 fontFamily: "var(--font-display)",
                 fontSize: "clamp(5rem, 10vw, 8rem)",
-                fontWeight: 500,
-                lineHeight: 1,
-                letterSpacing: "-0.04em",
-                marginBottom: "var(--space-4)",
               }}
             >
-              40<span style={{ color: "var(--primary-600)" }}>4</span>
+              40<span className="text-primary">4</span>
             </div>
-            <h1
-              className="display-lg"
-              style={{
-                fontWeight: 500,
-                marginBottom: "var(--space-3)",
-              }}
-            >
+            <h1 className="text-3xl md:text-4xl font-medium mb-3">
               {t("notFoundTitle")}
             </h1>
-            <p
-              className="body-lg"
-              style={{ color: "var(--text-secondary)", marginBottom: "var(--space-6)" }}
-            >
+            <p className="text-lg text-[var(--text-secondary)] mb-6">
               {t("notFoundDescription")}
             </p>
-            <Link href="/" className="btn btn--primary btn--lg">
-              {t("goBackHome")}
-              <ArrowRight size={18} />
-            </Link>
+            <Button asChild size="lg">
+              <Link href="/">
+                {t("goBackHome")}
+                <ArrowRight className="ml-1 h-5 w-5" />
+              </Link>
+            </Button>
           </div>
         </div>
       </div>

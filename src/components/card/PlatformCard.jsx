@@ -1,6 +1,11 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Star, StarHalf, Globe, DollarSign, Signal, ArrowRight } from "lucide-react";
 
 function StarRating({ rating }) {
   const clamped = Math.min(5, Math.max(0, rating ?? 0));
@@ -9,13 +14,23 @@ function StarRating({ rating }) {
   const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-0.5">
       {Array.from({ length: fullStars }).map((_, i) => (
-        <i key={`full-${i}`} className="fas fa-star fz10 review-color" />
+        <Star
+          key={`full-${i}`}
+          className="h-3 w-3 fill-warning text-warning"
+          aria-hidden="true"
+        />
       ))}
-      {halfStar && <i className="fas fa-star-half-alt fz10 review-color" />}
+      {halfStar && (
+        <StarHalf className="h-3 w-3 fill-warning text-warning" aria-hidden="true" />
+      )}
       {Array.from({ length: emptyStars }).map((_, i) => (
-        <i key={`empty-${i}`} className="far fa-star fz10 review-color" />
+        <Star
+          key={`empty-${i}`}
+          className="h-3 w-3 text-[var(--text-tertiary)]"
+          aria-hidden="true"
+        />
       ))}
     </div>
   );
@@ -54,98 +69,74 @@ export default function PlatformCard({ data }) {
       : plainDescription;
 
   return (
-    <div className="listing-style1">
-      <div className="list-content px20 pt20 pb20">
-        {/* Header: logo + name */}
-        <div className="flex items-center mb15">
+    <Card>
+      <CardContent className="p-5">
+        <div className="flex items-center gap-3 mb-4">
           {logoUrl ? (
-            <div
-              className="relative me-3 shrink-0"
-              style={{ width: 48, height: 48, borderRadius: 8, overflow: "hidden", background: "#f5f5f5" }}
-            >
+            <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-md bg-[var(--surface-2)]">
               <Image
                 src={logoUrl}
                 alt={`${name} logo`}
                 fill
-                className="object-fit-contain"
+                className="object-contain"
               />
             </div>
           ) : (
-            <div
-              className="me-3 shrink-0 flex items-center justify-center"
-              style={{
-                width: 48,
-                height: 48,
-                borderRadius: 8,
-                background: "#f0f0f0",
-                fontSize: 22,
-                color: "#999",
-              }}
-            >
-              <i className="flaticon-web" />
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-md bg-[var(--surface-2)] text-[var(--text-tertiary)]">
+              <Globe className="h-5 w-5" />
             </div>
           )}
-          <div className="grow min-w-0">
-            <h5 className="list-title mb-0" style={{ fontSize: "1rem", lineHeight: 1.3 }}>
-              {name}
-              {featured && (
-                <span
-                  className="ms-2 badge"
-                  style={{ fontSize: "0.65rem", background: "#ef2b70", color: "#fff", verticalAlign: "middle" }}
-                >
-                  Featured
-                </span>
-              )}
+          <div className="flex-grow min-w-0">
+            <h5 className="text-base font-semibold flex items-center gap-2 leading-tight">
+              <span className="truncate">{name}</span>
+              {featured && <Badge>Featured</Badge>}
             </h5>
             {category && (
-              <p className="body-color fz12 mb-0">{category}</p>
+              <p className="text-xs text-[var(--text-secondary)] mb-0">{category}</p>
             )}
           </div>
         </div>
 
-        {/* Rating */}
         {rating !== null && rating !== undefined && (
-          <div className="review-meta flex items-center mb10">
+          <div className="flex items-center gap-2 mb-2">
             <StarRating rating={rating} />
-            <span className="body-color fz13 ms-2">{rating.toFixed(1)}</span>
+            <span className="text-sm text-[var(--text-secondary)]">
+              {rating.toFixed(1)}
+            </span>
           </div>
         )}
 
-        {/* Description */}
         {truncatedDescription && (
-          <p className="body-color fz14 mb10" style={{ minHeight: 40 }}>
+          <p className="text-sm text-[var(--text-secondary)] mb-2 min-h-[40px]">
             {truncatedDescription}
           </p>
         )}
 
-        <hr className="my-2" />
+        <Separator className="my-3" />
 
-        {/* Footer: fees + difficulty + link */}
-        <div className="flex justify-between items-center mt10">
-          <div>
+        <div className="flex justify-between items-center gap-3 flex-wrap">
+          <div className="flex flex-wrap gap-3 text-sm text-[var(--text-secondary)]">
             {fees && (
-              <span className="body-color fz13">
-                <i className="far fa-money-bill-alt me-1" />
+              <span className="inline-flex items-center gap-1">
+                <DollarSign className="h-3.5 w-3.5" />
                 {fees}
               </span>
             )}
             {difficulty && (
-              <span className="body-color fz13 ms-2">
-                <i className="far fa-signal me-1" />
+              <span className="inline-flex items-center gap-1">
+                <Signal className="h-3.5 w-3.5" />
                 {difficulty}
               </span>
             )}
           </div>
-          <Link
-            href={slug ? `/platforms/${slug}` : "#"}
-            className="ud-btn btn-thm2 bdrs4"
-            style={{ fontSize: "0.8rem", padding: "6px 14px" }}
-          >
-            View Details
-            <i className="fal fa-arrow-right-long ms-1" />
-          </Link>
+          <Button asChild size="sm" variant="outline">
+            <Link href={slug ? `/platforms/${slug}` : "#"}>
+              View Details
+              <ArrowRight className="ml-1 h-3 w-3" />
+            </Link>
+          </Button>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

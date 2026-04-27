@@ -15,7 +15,7 @@ export default function ProjectTypeOption1() {
     <>
       {projectType.map((item,i) => (
         <div key={ i } className="switch-style1">
-          <div className="form-check form-switch mb20">
+          <div className="form-check form-switch mb-5">
             <input
               className="form-check-input mt-0"
               type="checkbox"

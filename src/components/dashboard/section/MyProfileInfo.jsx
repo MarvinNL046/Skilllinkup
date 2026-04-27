@@ -8,6 +8,9 @@ import PortfolioTab from "./PortfolioTab";
 import ExperienceTab from "./ExperienceTab";
 import SettingsTab from "./SettingsTab";
 import useConvexProfile from "@/hook/useConvexProfile";
+import { Button } from "@/components/ui/button";
+import { ExternalLink } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function MyProfileInfo() {
   const t = useTranslations("myProfile");
@@ -31,58 +34,59 @@ export default function MyProfileInfo() {
 
   return (
     <div className="dashboard__content hover-bgc-color">
-      <div className="row pb40">
-        <div className="col-lg-12">
-          <DashboardNavigation />
+      <DashboardNavigation />
+      <div className="dashboard_title_area mb-6">
+        <div>
+          <h2>{t("title")}</h2>
+          <p className="text-[var(--text-secondary)]">{t("manageProfile")}</p>
         </div>
-        <div className="col-lg-9">
-          <div className="dashboard_title_area flex items-center justify-between">
-            <div>
-              <h2>{t("title")}</h2>
-              <p className="text">{t("manageProfile")}</p>
-            </div>
-            {profile?._id && (
-              <Link
-                href={`/online/freelancer/${profile.slug || profile._id}`}
-                className="ud-btn btn-white bdrs8"
-                target="_blank"
-              >
-                {t("viewLiveProfile")} <i className="fal fa-external-link ms-1" />
-              </Link>
-            )}
-          </div>
-        </div>
+        {profile?._id && (
+          <Button asChild variant="outline">
+            <Link
+              href={`/online/freelancer/${profile.slug || profile._id}`}
+              target="_blank"
+            >
+              {t("viewLiveProfile")}
+              <ExternalLink className="ml-1 h-4 w-4" />
+            </Link>
+          </Button>
+        )}
       </div>
 
       {/* Tab bar */}
-      <div className="row mb20">
-        <div className="col-xl-12">
-          <div className="navtab-style1">
-            <nav>
-              <div className="nav nav-tabs">
-                {TABS.map((tab) => (
-                  <button
-                    key={tab.key}
-                    className={`nav-link fw500 ps-0 ${activeTab === tab.key ? "active" : ""}`}
-                    onClick={() => setTab(tab.key)}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-            </nav>
-          </div>
-        </div>
+      <div
+        role="tablist"
+        aria-label={t("title")}
+        className="mb-6 flex flex-wrap gap-1 border-b border-[var(--border-subtle)] overflow-x-auto"
+      >
+        {TABS.map((tab) => {
+          const active = activeTab === tab.key;
+          return (
+            <button
+              key={tab.key}
+              role="tab"
+              aria-selected={active}
+              type="button"
+              onClick={() => setTab(tab.key)}
+              className={cn(
+                "px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors min-h-[44px]",
+                active
+                  ? "border-primary text-primary"
+                  : "border-transparent text-[var(--text-secondary)] hover:text-foreground"
+              )}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* Tab content */}
-      <div className="row">
-        <div className="col-xl-12">
-          {activeTab === "profile" && <ProfileDetails />}
-          {activeTab === "portfolio" && <PortfolioTab />}
-          {activeTab === "experience" && <ExperienceTab />}
-          {activeTab === "settings" && <SettingsTab />}
-        </div>
+      <div>
+        {activeTab === "profile" && <ProfileDetails />}
+        {activeTab === "portfolio" && <PortfolioTab />}
+        {activeTab === "experience" && <ExperienceTab />}
+        {activeTab === "settings" && <SettingsTab />}
       </div>
     </div>
   );

@@ -2,97 +2,63 @@
 import { useState } from "react";
 import HeroSearch1 from "../element/HeroSearch1";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-const role = ["City, state, or zip", "Miami", "New York"];
+const ROLES = [
+  { value: "any", label: "City, state, or zip" },
+  { value: "miami", label: "Miami" },
+  { value: "new-york", label: "New York" },
+];
+
 export default function Breadcumb14() {
-  const [getSelectedRole, setSelectedRole] = useState(null);
-
-  // role handler
-  const roleHandler = (select) => {
-    setSelectedRole(select);
-  };
+  const [selectedRole, setSelectedRole] = useState("any");
 
   return (
-    <>
-      <section className="breadcumb-section pt-0">
-        <div className="cta-employee-single cta-banner mx-auto maxw1700 pt120 pt60-sm pb120 pb60-sm bdrs16 relative flex items-center">
-          <Image
-            height={300}
-            width={532}
-            className="service-v1-vector at-job bounce-x hidden xl:block"
-            src="/images/vector-img/vector-service-v1.png"
-            alt="service"
-          />
-          <div className="container">
-            <div className="row wow fadeInUp">
-              <div className="col-xl-7">
-                <div className="relative">
-                  <h2>Employer List</h2>
-                  <p className="text">
-                    Discover top companies and employers hiring on SkillLinkup.
-                  </p>
-                </div>
-                <div className="advance-search-tab bgc-white p10 bdrs4 mt30">
-                  <div className="row">
-                    <div className="col-md-5 col-lg-6 col-xl-6">
-                      <div className="advance-search-field bdrr1 bdrn-sm">
-                        <HeroSearch1 />
-                      </div>
-                    </div>
-                    <div className="col-md-4 col-lg-4 col-xl-3">
-                      <div className="bselect-style1">
-                        <div className="dropdown bootstrap-select">
-                          <button
-                            type="button"
-                            className="btn dropdown-toggle btn-light"
-                            data-bs-toggle="dropdown"
-                          >
-                            <div className="filter-option">
-                              <div className="filter-option-inner">
-                                <div className="filter-option-inner-inner">
-                                  {getSelectedRole !== null
-                                    ? getSelectedRole
-                                    : "City, state, or zip"}
-                                </div>
-                              </div>{" "}
-                            </div>
-                          </button>
-                          <div className="dropdown-menu ">
-                            <div className="inner show">
-                              <ul className="dropdown-menu inner show">
-                                {role.map((item, index) => (
-                                  <li
-                                    onClick={() => roleHandler(item)}
-                                    key={index}
-                                    className="selected active"
-                                  >
-                                    <a
-                                      className={`dropdown-item selected ${
-                                        getSelectedRole === item ? "active" : ""
-                                      }`}
-                                    >
-                                      <span className="text">{item}</span>
-                                    </a>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-3 col-lg-2 col-xl-3">
-                      <div className="text-center text-xl-start">
-                        <a className="ud-btn btn-thm2 w-full vam">Search</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+    <section>
+      <div className="mx-auto max-w-screen-2xl mx-4 lg:mx-5 px-6 lg:px-8 pt-16 sm:pt-32 pb-16 sm:pb-32 rounded-2xl relative flex items-center bg-[var(--surface-2)] overflow-hidden">
+        <Image
+          height={300}
+          width={532}
+          className="absolute right-0 top-1/2 -translate-y-1/2 hidden xl:block opacity-80 pointer-events-none"
+          src="/images/vector-img/vector-service-v1.png"
+          alt=""
+          aria-hidden="true"
+        />
+        <div className="container relative">
+          <div className="max-w-3xl">
+            <h2 className="text-3xl md:text-5xl font-bold mb-3">Employer List</h2>
+            <p className="text-base text-[var(--text-secondary)] mb-8">
+              Discover top companies and employers hiring on SkillLinkup.
+            </p>
+
+            <div className="bg-[var(--bg-elevated)] rounded-md p-3 grid grid-cols-1 md:grid-cols-[2fr_1fr_auto] gap-3 items-center shadow-sm">
+              <div className="md:border-r md:border-[var(--border-subtle)] md:pr-3">
+                <HeroSearch1 />
               </div>
+              <Select value={selectedRole} onValueChange={setSelectedRole}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {ROLES.map((role) => (
+                    <SelectItem key={role.value} value={role.value}>
+                      {role.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button variant="secondary">Search</Button>
             </div>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }

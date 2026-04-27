@@ -150,7 +150,7 @@ export default function AddServiceInfo() {
   return (
     <>
       <div className="dashboard__content hover-bgc-color">
-        <div className="row pb40">
+        <div className="row pb-10">
           <div className="col-lg-12">
             <DashboardNavigation />
           </div>
@@ -175,13 +175,13 @@ export default function AddServiceInfo() {
           </div>
         </div>
 
-        <div className="row mb20">
+        <div className="row mb-5">
           <div className="col-xl-12">
             <div className="flex items-center gap-2 px-3 py-2 bdrs4" style={{ background: "#f0f9ff", border: "1px solid #bae6fd" }}>
-              <i className="flaticon-content fz16" style={{ color: "#0284c7" }} />
-              <span className="fz14" style={{ color: "#0369a1" }}>
+              <i className="flaticon-content text-base" style={{ color: "#0284c7" }} />
+              <span className="text-sm" style={{ color: "#0369a1" }}>
                 {t("lookingToHire")}{" "}
-                <Link href="/create-projects" className="fw500" style={{ color: "#0284c7", textDecoration: "underline" }}>
+                <Link href="/create-projects" className="font-medium" style={{ color: "#0284c7", textDecoration: "underline" }}>
                   {t("createProject")}
                 </Link>{" "}
                 {t("createProjectHint")}
@@ -191,7 +191,7 @@ export default function AddServiceInfo() {
         </div>
 
         {saveError && (
-          <div className="row mb20">
+          <div className="row mb-5">
             <div className="col-xl-12">
               <div className="alert alert-danger" role="alert">
                 {saveError}
@@ -201,7 +201,7 @@ export default function AddServiceInfo() {
         )}
 
         {saveSuccess && (
-          <div className="row mb20">
+          <div className="row mb-5">
             <div className="col-xl-12">
               <div className="alert alert-success" role="alert">
                 {t("successMessage")}
@@ -259,7 +259,7 @@ export default function AddServiceInfo() {
                 className="btn btn--primary btn--sm"
                 style={{ marginTop: "var(--space-2)" }}
               >
-                {t("switchToFreelancerLink", { default: "Switch to freelancer" })}
+                {t("switchToFreelancerLink")}
               </Link>
             </div>
           </div>
@@ -268,16 +268,16 @@ export default function AddServiceInfo() {
         <div className="row">
           <div className="col-xl-12">
             {/* Basic Information */}
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
-              <div className="bdrb1 pb15 mb25">
+            <div className="ps-widget bgc-white bdrs4 p-8 mb-8 overflow-hidden relative">
+              <div className="bdrb1 pb-4 mb-6">
                 <h5 className="list-title">{t("basicInfo")}</h5>
               </div>
               <div className="col-xl-8">
                 <div className="form-style1">
                   <div className="row">
                     <div className="col-sm-6">
-                      <div className="mb20">
-                        <label className="heading-color ff-heading fw500 mb10">
+                      <div className="mb-5">
+                        <label className="heading-color  font-medium mb-2.5">
                           {t("serviceTitle")}
                         </label>
                         <input
@@ -290,8 +290,8 @@ export default function AddServiceInfo() {
                       </div>
                     </div>
                     <div className="col-sm-6">
-                      <div className="mb20">
-                        <label className="heading-color ff-heading fw500 mb10">
+                      <div className="mb-5">
+                        <label className="heading-color  font-medium mb-2.5">
                           {t("category")}
                         </label>
                         <select
@@ -312,8 +312,8 @@ export default function AddServiceInfo() {
                       </div>
                     </div>
                     <div className="col-sm-6">
-                      <div className="mb20">
-                        <label className="heading-color ff-heading fw500 mb10">
+                      <div className="mb-5">
+                        <label className="heading-color  font-medium mb-2.5">
                           {t("tags")}
                         </label>
                         <TagsInput
@@ -324,8 +324,8 @@ export default function AddServiceInfo() {
                       </div>
                     </div>
                     <div className="col-sm-6">
-                      <div className="mb20">
-                        <label className="heading-color ff-heading fw500 mb10">
+                      <div className="mb-5">
+                        <label className="heading-color  font-medium mb-2.5">
                           {t("workType")}
                         </label>
                         <select
@@ -342,8 +342,8 @@ export default function AddServiceInfo() {
                     {(workType === "local" || workType === "hybrid") && (
                       <>
                         <div className="col-sm-6">
-                          <div className="mb20">
-                            <label className="heading-color ff-heading fw500 mb10">
+                          <div className="mb-5">
+                            <label className="heading-color  font-medium mb-2.5">
                               {t("country")}
                             </label>
                             <input
@@ -356,8 +356,8 @@ export default function AddServiceInfo() {
                           </div>
                         </div>
                         <div className="col-sm-6">
-                          <div className="mb20">
-                            <label className="heading-color ff-heading fw500 mb10">
+                          <div className="mb-5">
+                            <label className="heading-color  font-medium mb-2.5">
                               {t("city")}
                             </label>
                             <input
@@ -372,8 +372,8 @@ export default function AddServiceInfo() {
                       </>
                     )}
                     <div className="col-md-12">
-                      <div className="mb10">
-                        <label className="heading-color ff-heading fw500 mb10">
+                      <div className="mb-2.5">
+                        <label className="heading-color  font-medium mb-2.5">
                           {t("serviceDescription")}
                         </label>
                         <textarea
@@ -391,10 +391,10 @@ export default function AddServiceInfo() {
             </div>
 
             {/* Packages */}
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
-              <div className="bdrb1 pb15 mb25">
+            <div className="ps-widget bgc-white bdrs4 p-8 mb-8 overflow-hidden relative">
+              <div className="bdrb1 pb-4 mb-6">
                 <h5 className="list-title">{t("packages")}</h5>
-                <p className="text fz14 mt5">
+                <p className="text text-sm mt-1">
                   {t("packagesDescription")}
                 </p>
               </div>
@@ -404,14 +404,14 @@ export default function AddServiceInfo() {
                   { label: t("standard"), pkg: standardPkg, setter: setStandardPkg, required: false },
                   { label: t("premium"), pkg: premiumPkg, setter: setPremiumPkg, required: false },
                 ].map(({ label, pkg, setter, required }) => (
-                  <div className="col-md-4" key={label}>
-                    <div className="package-tier-card bdr1 bdrs4 p20 mb20">
-                      <h6 className="heading-color ff-heading fw600 mb15">
+                  <div className="col-lg-4" key={label}>
+                    <div className="package-tier-card bdr1 bdrs4 p-5 mb-5">
+                      <h6 className="heading-color  font-semibold mb-4">
                         {label}
                         {required && <span className="text-danger ms-1">*</span>}
                       </h6>
-                      <div className="mb15">
-                        <label className="heading-color ff-heading fw500 mb8 fz14">
+                      <div className="mb-4">
+                        <label className="heading-color  font-medium mb8 text-sm">
                           {t("packageName")}
                         </label>
                         <input
@@ -422,8 +422,8 @@ export default function AddServiceInfo() {
                           onChange={(e) => updatePkg(setter, "title", e.target.value)}
                         />
                       </div>
-                      <div className="mb15">
-                        <label className="heading-color ff-heading fw500 mb8 fz14">
+                      <div className="mb-4">
+                        <label className="heading-color  font-medium mb8 text-sm">
                           {t("description")}
                         </label>
                         <textarea
@@ -434,8 +434,8 @@ export default function AddServiceInfo() {
                           onChange={(e) => updatePkg(setter, "description", e.target.value)}
                         />
                       </div>
-                      <div className="mb15">
-                        <label className="heading-color ff-heading fw500 mb8 fz14">
+                      <div className="mb-4">
+                        <label className="heading-color  font-medium mb8 text-sm">
                           {t("priceEur")}
                         </label>
                         <input
@@ -447,8 +447,8 @@ export default function AddServiceInfo() {
                           onChange={(e) => updatePkg(setter, "price", e.target.value)}
                         />
                       </div>
-                      <div className="mb15">
-                        <label className="heading-color ff-heading fw500 mb8 fz14">
+                      <div className="mb-4">
+                        <label className="heading-color  font-medium mb8 text-sm">
                           {t("deliveryDays")}
                         </label>
                         <input
@@ -460,8 +460,8 @@ export default function AddServiceInfo() {
                           onChange={(e) => updatePkg(setter, "deliveryDays", e.target.value)}
                         />
                       </div>
-                      <div className="mb10">
-                        <label className="heading-color ff-heading fw500 mb8 fz14">
+                      <div className="mb-2.5">
+                        <label className="heading-color  font-medium mb8 text-sm">
                           {t("revisions")}
                         </label>
                         <input
@@ -482,7 +482,7 @@ export default function AddServiceInfo() {
             <ServiceGallery />
 
             {/* Bottom submit button */}
-            <div className="col-xl-12 text-right mb30">
+            <div className="col-xl-12 text-right mb-8">
               <button
                 className="ud-btn btn-thm default-box-shadow2"
                 onClick={handleSaveAndPublish}

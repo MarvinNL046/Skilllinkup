@@ -17,11 +17,11 @@ function StarRating({ rating }) {
   return (
     <div className="flex items-center gap-1">
       {Array.from({ length: fullStars }).map((_, i) => (
-        <span key={`full-${i}`} className="fas fa-star fz14 review-color" />
+        <span key={`full-${i}`} className="fas fa-star text-sm review-color" />
       ))}
-      {halfStar && <span className="fas fa-star-half-alt fz14 review-color" />}
+      {halfStar && <span className="fas fa-star-half-alt text-sm review-color" />}
       {Array.from({ length: emptyStars }).map((_, i) => (
-        <span key={`empty-${i}`} className="far fa-star fz14 review-color" />
+        <span key={`empty-${i}`} className="far fa-star text-sm review-color" />
       ))}
     </div>
   );
@@ -143,19 +143,19 @@ function PlatformDetailContent({ slug }) {
   const visitUrl = affiliateLink || websiteUrl;
 
   return (
-    <section className="pt30 pb90">
+    <section className="pt-8 pb-24">
       <div className="container">
         {/* Breadcrumb */}
-        <nav className="mb20">
-          <Link href="/" className="body-color fz14">
+        <nav className="mb-5">
+          <Link href="/" className="body-color text-sm">
             {t("home")}
           </Link>
-          <span className="body-color fz14 mx-1">/</span>
-          <Link href="/platforms" className="body-color fz14">
+          <span className="body-color text-sm mx-1">/</span>
+          <Link href="/platforms" className="body-color text-sm">
             {t("platforms")}
           </Link>
-          <span className="body-color fz14 mx-1">/</span>
-          <span className="dark-color fz14 fw500">{name}</span>
+          <span className="body-color text-sm mx-1">/</span>
+          <span className="dark-color text-sm font-medium">{name}</span>
         </nav>
 
         <div className="row">
@@ -163,7 +163,7 @@ function PlatformDetailContent({ slug }) {
           <div className="col-lg-8">
             {/* Header Card */}
             <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
-              <div className="flex items-center mb20">
+              <div className="flex items-center mb-5">
                 {logoUrl ? (
                   <div
                     className="relative me-3 shrink-0"
@@ -200,7 +200,7 @@ function PlatformDetailContent({ slug }) {
                 )}
                 <div>
                   <h1
-                    className="mb5"
+                    className="mb-1"
                     style={{ fontSize: "1.75rem", lineHeight: 1.3 }}
                   >
                     {name}
@@ -220,13 +220,13 @@ function PlatformDetailContent({ slug }) {
                   </h1>
                   <div className="flex items-center flex-wrap gap-2">
                     {category && (
-                      <span className="body-color fz14">{category}</span>
+                      <span className="body-color text-sm">{category}</span>
                     )}
                     {rating != null && (
                       <>
                         <span className="body-color">|</span>
                         <StarRating rating={rating} />
-                        <span className="dark-color fw500 fz14">
+                        <span className="dark-color font-medium text-sm">
                           {rating.toFixed(1)}
                         </span>
                       </>
@@ -238,7 +238,7 @@ function PlatformDetailContent({ slug }) {
               {/* Description */}
               {description && (
                 <div
-                  className="fz15 body-color lh-lg"
+                  className="text-base body-color lh-lg"
                   dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description) }}
                 />
               )}
@@ -247,11 +247,11 @@ function PlatformDetailContent({ slug }) {
             {/* Pros & Cons */}
             {((pros && pros.length > 0) || (cons && cons.length > 0)) && (
               <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
-                <h4 className="mb20">{t("prosAndCons")}</h4>
+                <h4 className="mb-5">{t("prosAndCons")}</h4>
                 <div className="row">
                   {pros && pros.length > 0 && (
-                    <div className="col-md-6 mb20">
-                      <h6 className="mb10" style={{ color: "var(--success-700)" }}>
+                    <div className="col-md-6 mb-5">
+                      <h6 className="mb-2.5" style={{ color: "var(--success-700)" }}>
                         <i className="fas fa-check-circle me-2" />
                         {t("pros")}
                       </h6>
@@ -259,10 +259,10 @@ function PlatformDetailContent({ slug }) {
                         {pros.map((pro, i) => (
                           <li
                             key={i}
-                            className="fz14 body-color mb-2 flex items-start"
+                            className="text-sm body-color mb-2 flex items-start"
                           >
                             <i
-                              className="fas fa-plus fz10 me-2 mt-1"
+                              className="fas fa-plus text-xs me-2 mt-1"
                               style={{ color: "var(--success-700)" }}
                             />
                             {pro}
@@ -272,8 +272,8 @@ function PlatformDetailContent({ slug }) {
                     </div>
                   )}
                   {cons && cons.length > 0 && (
-                    <div className="col-md-6 mb20">
-                      <h6 className="mb10" style={{ color: "#ef4444" }}>
+                    <div className="col-md-6 mb-5">
+                      <h6 className="mb-2.5" style={{ color: "#ef4444" }}>
                         <i className="fas fa-times-circle me-2" />
                         {t("cons")}
                       </h6>
@@ -281,10 +281,10 @@ function PlatformDetailContent({ slug }) {
                         {cons.map((con, i) => (
                           <li
                             key={i}
-                            className="fz14 body-color mb-2 flex items-start"
+                            className="text-sm body-color mb-2 flex items-start"
                           >
                             <i
-                              className="fas fa-minus fz10 me-2 mt-1"
+                              className="fas fa-minus text-xs me-2 mt-1"
                               style={{ color: "#ef4444" }}
                             />
                             {con}
@@ -300,11 +300,11 @@ function PlatformDetailContent({ slug }) {
             {/* Features */}
             {features && features.length > 0 && (
               <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
-                <h4 className="mb20">{t("features")}</h4>
+                <h4 className="mb-5">{t("features")}</h4>
                 <div className="row">
                   {features.map((feature, i) => (
-                    <div key={i} className="col-md-6 mb10">
-                      <span className="fz14 body-color flex items-start">
+                    <div key={i} className="col-md-6 mb-2.5">
+                      <span className="text-sm body-color flex items-start">
                         <i
                           className="far fa-check me-2 mt-1"
                           style={{ color: "var(--success-700)" }}
@@ -350,42 +350,42 @@ function PlatformDetailContent({ slug }) {
 
             {/* Quick Info Card */}
             <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
-              <h5 className="mb20">{t("quickInfo")}</h5>
+              <h5 className="mb-5">{t("quickInfo")}</h5>
 
               {category && (
-                <div className="flex justify-between items-center mb15 pb15 bdrb1">
-                  <span className="body-color fz14">{t("category")}</span>
-                  <span className="dark-color fz14 fw500">{category}</span>
+                <div className="flex justify-between items-center mb-4 pb-4 bdrb1">
+                  <span className="body-color text-sm">{t("category")}</span>
+                  <span className="dark-color text-sm font-medium">{category}</span>
                 </div>
               )}
 
               {fees && (
-                <div className="flex justify-between items-center mb15 pb15 bdrb1">
-                  <span className="body-color fz14">{t("fees")}</span>
-                  <span className="dark-color fz14 fw500">{fees}</span>
+                <div className="flex justify-between items-center mb-4 pb-4 bdrb1">
+                  <span className="body-color text-sm">{t("fees")}</span>
+                  <span className="dark-color text-sm font-medium">{fees}</span>
                 </div>
               )}
 
               {difficulty && (
-                <div className="flex justify-between items-center mb15 pb15 bdrb1">
-                  <span className="body-color fz14">{t("difficulty")}</span>
+                <div className="flex justify-between items-center mb-4 pb-4 bdrb1">
+                  <span className="body-color text-sm">{t("difficulty")}</span>
                   <DifficultyBadge difficulty={difficulty} />
                 </div>
               )}
 
               {workType && (
-                <div className="flex justify-between items-center mb15 pb15 bdrb1">
-                  <span className="body-color fz14">{t("workType")}</span>
-                  <span className="dark-color fz14 fw500 text-capitalize">
+                <div className="flex justify-between items-center mb-4 pb-4 bdrb1">
+                  <span className="body-color text-sm">{t("workType")}</span>
+                  <span className="dark-color text-sm font-medium text-capitalize">
                     {workType}
                   </span>
                 </div>
               )}
 
               {countries && countries.length > 0 && (
-                <div className="flex justify-between items-center mb15">
-                  <span className="body-color fz14">{t("availableIn")}</span>
-                  <span className="dark-color fz14 fw500">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="body-color text-sm">{t("availableIn")}</span>
+                  <span className="dark-color text-sm font-medium">
                     {countries.includes("Worldwide")
                       ? t("worldwide")
                       : countries.join(", ")}
@@ -395,10 +395,10 @@ function PlatformDetailContent({ slug }) {
 
               {rating != null && (
                 <div className="flex justify-between items-center">
-                  <span className="body-color fz14">{t("rating")}</span>
+                  <span className="body-color text-sm">{t("rating")}</span>
                   <div className="flex items-center gap-2">
                     <StarRating rating={rating} />
-                    <span className="dark-color fw500">
+                    <span className="dark-color font-medium">
                       {rating.toFixed(1)}
                     </span>
                   </div>

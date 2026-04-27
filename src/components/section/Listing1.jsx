@@ -55,7 +55,7 @@ export default function Listing1() {
 
   return (
     <>
-      <section className="pt30 pb90">
+      <section className="pt-8 pb-24">
         <div className="container">
           <ListingOption1 />
           <div className="row">

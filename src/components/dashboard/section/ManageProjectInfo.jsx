@@ -11,6 +11,18 @@ import ProposalModal1 from "../modal/ProposalModal1";
 import DeleteModal from "../modal/DeleteModal";
 import useConvexUser from "@/hook/useConvexUser";
 import { toast } from "sonner";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+
+function PageShell({ children }) {
+  return (
+    <div className="dashboard__content hover-bgc-color">
+      <DashboardNavigation />
+      {children}
+    </div>
+  );
+}
 
 export default function ManageProjectInfo() {
   const t = useTranslations("manageProjects");
@@ -69,160 +81,136 @@ export default function ManageProjectInfo() {
 
   if (isAuthenticated && convexUser === undefined) {
     return (
-      <div className="dashboard__content hover-bgc-color">
-        <div className="row pb40">
-          <div className="col-lg-12">
-            <DashboardNavigation />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
-              <div className="text-center py-4">
-                <div className="spinner-border spinner-border-sm text-success" role="status" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PageShell>
+        <Card>
+          <CardContent className="p-8 flex justify-center">
+            <div
+              role="status"
+              aria-label="Loading"
+              className="h-6 w-6 animate-spin rounded-full border-3 border-[var(--border-subtle)] border-t-primary"
+            />
+          </CardContent>
+        </Card>
+      </PageShell>
     );
   }
 
   if (isAuthenticated && convexUser === null) {
     return (
-      <div className="dashboard__content hover-bgc-color">
-        <div className="row pb40">
-          <div className="col-lg-12">
-            <DashboardNavigation />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
-              <div className="text-center py-4">
-                <p className="text mb-0">{t("settingUpAccount")}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PageShell>
+        <Card>
+          <CardContent className="p-8 text-center">
+            <p className="text-[var(--text-secondary)]">{t("settingUpAccount")}</p>
+          </CardContent>
+        </Card>
+      </PageShell>
     );
   }
 
   if (isLoaded && !isAuthenticated) {
     return (
-      <div className="dashboard__content hover-bgc-color">
-        <div className="row pb40">
-          <div className="col-lg-12">
-            <DashboardNavigation />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
-              <div className="text-center py30">
-                <p className="fz15 text-muted">{t("signInPrompt")}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PageShell>
+        <Card>
+          <CardContent className="p-12 text-center">
+            <p className="text-[var(--text-secondary)]">{t("signInPrompt")}</p>
+          </CardContent>
+        </Card>
+      </PageShell>
     );
   }
 
   return (
     <>
       <div className="dashboard__content hover-bgc-color">
-        <div className="row pb40">
-          <div className="col-lg-12">
-            <DashboardNavigation />
+        <DashboardNavigation />
+        <div className="dashboard_title_area mb-6">
+          <div>
+            <h2>{t("title")}</h2>
+            <p className="text-[var(--text-secondary)]">{t("pageDescription")}</p>
           </div>
-          <div className="col-lg-9">
-            <div className="dashboard_title_area">
-              <h2>{t("title")}</h2>
-              <p className="text">{t("pageDescription")}</p>
-            </div>
-          </div>
-          <div className="col-lg-3">
-            <div className="text-lg-end">
-              <Link
-                href="/create-projects"
-                className="ud-btn btn-thm default-box-shadow2"
-              >
-                {t("createProject")}
-                <i className="fal fa-arrow-right-long" />
-              </Link>
-            </div>
-          </div>
+          <Button asChild>
+            <Link href="/create-projects">
+              {t("createProject")}
+              <ArrowRight className="ml-1 h-4 w-4" />
+            </Link>
+          </Button>
         </div>
-        <div className="row">
-          <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
-              <div className="navtab-style1">
-                <div style={{ marginBottom: "var(--space-5)" }}>
-                  <DashboardTabs
-                    value={selectedTab}
-                    onChange={setSelectedTab}
-                    ariaLabel={t("title")}
-                    options={tabs.map((tab, i) => ({
-                      value: i,
-                      label: tab.label,
-                      count: projects
-                        ? tab.status === null
-                          ? projects.length
-                          : projects.filter((p) => p.status === tab.status).length
-                        : undefined,
-                    }))}
-                  />
-                </div>
+        <Card className="overflow-hidden">
+          <CardContent className="p-6">
+            <div className="mb-5">
+              <DashboardTabs
+                value={selectedTab}
+                onChange={setSelectedTab}
+                ariaLabel={t("title")}
+                options={tabs.map((tab, i) => ({
+                  value: i,
+                  label: tab.label,
+                  count: projects
+                    ? tab.status === null
+                      ? projects.length
+                      : projects.filter((p) => p.status === tab.status).length
+                    : undefined,
+                }))}
+              />
+            </div>
 
-                <div className="packages_table table-responsive">
-                  {isLoading ? (
-                    <div className="text-center py30">
-                      <div className="spinner-border text-primary" role="status">
-                        <span className="visually-hidden">{t("loading")}</span>
-                      </div>
-                      <p className="mt10 fz14 text-muted">{t("loadingProjects")}</p>
-                    </div>
-                  ) : filteredProjects.length === 0 ? (
-                    <div className="text-center py30">
-                      <p className="fz15 text-muted">
-                        {activeStatus
-                          ? t("noProjectsStatus", { status: activeStatus.replace("_", " ") })
-                          : t("noProjectsYet")}
-                      </p>
-                      <Link href="/create-projects" className="ud-btn btn-thm mt10">
-                        {t("postFirstProject")}
-                        <i className="fal fa-arrow-right-long" />
-                      </Link>
-                    </div>
-                  ) : (
-                    <table className="table-style3 table at-savesearch">
-                      <thead className="t-head">
-                        <tr>
-                          <th scope="col">{t("columnTitle")}</th>
-                          <th scope="col">{t("columnCategory")}</th>
-                          <th scope="col">{t("columnBudgetStatus")}</th>
-                          <th scope="col">{t("columnActions")}</th>
-                        </tr>
-                      </thead>
-                      <tbody className="t-body">
-                        {filteredProjects.map((project) => (
-                          <ManageProjectCard
-                            key={project._id}
-                            project={project}
-                            onEdit={(p) => { setSelectedProject(p); setEditOpen(true); }}
-                            onDelete={(p) => { setSelectedProject(p); setDeleteOpen(true); }}
-                          />
-                        ))}
-                      </tbody>
-                    </table>
-                  )}
+            <div className="packages_table table-responsive">
+              {isLoading ? (
+                <div className="text-center py-12">
+                  <div
+                    role="status"
+                    aria-label={t("loading")}
+                    className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--border-subtle)] border-t-primary mx-auto"
+                  />
+                  <p className="mt-3 text-sm text-[var(--text-secondary)]">
+                    {t("loadingProjects")}
+                  </p>
                 </div>
-              </div>
+              ) : filteredProjects.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-[var(--text-secondary)] mb-5">
+                    {activeStatus
+                      ? t("noProjectsStatus", { status: activeStatus.replace("_", " ") })
+                      : t("noProjectsYet")}
+                  </p>
+                  <Button asChild>
+                    <Link href="/create-projects">
+                      {t("postFirstProject")}
+                      <ArrowRight className="ml-1 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+              ) : (
+                <table className="table-style3 table at-savesearch">
+                  <thead className="t-head">
+                    <tr>
+                      <th scope="col">{t("columnTitle")}</th>
+                      <th scope="col">{t("columnCategory")}</th>
+                      <th scope="col">{t("columnBudgetStatus")}</th>
+                      <th scope="col">{t("columnActions")}</th>
+                    </tr>
+                  </thead>
+                  <tbody className="t-body">
+                    {filteredProjects.map((project) => (
+                      <ManageProjectCard
+                        key={project._id}
+                        project={project}
+                        onEdit={(p) => {
+                          setSelectedProject(p);
+                          setEditOpen(true);
+                        }}
+                        onDelete={(p) => {
+                          setSelectedProject(p);
+                          setDeleteOpen(true);
+                        }}
+                      />
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
       <ProposalModal1
         isOpen={editOpen}

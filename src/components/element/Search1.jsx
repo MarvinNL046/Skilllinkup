@@ -12,7 +12,7 @@ export default function Search1() {
     <>
       <div
         className={`default-box-shadow1 ${
-          path === "/service-1" ? "mb15" : "mb30"
+          path === "/service-1" ? "mb-4" : "mb-8"
         }`}
       >
         <div className="search_area">

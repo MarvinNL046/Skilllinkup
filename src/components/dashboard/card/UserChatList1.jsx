@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 export default function UserChatList1({ data, isSelected, onClick }) {
   const otherParticipant = data?.otherParticipant;
@@ -9,12 +10,10 @@ export default function UserChatList1({ data, isSelected, onClick }) {
 
   function formatTime(timestamp) {
     if (!timestamp) return "";
-    const now = Date.now();
-    const diff = now - timestamp;
+    const diff = Date.now() - timestamp;
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);
-
     if (minutes < 1) return "Just now";
     if (minutes < 60) return `${minutes}m`;
     if (hours < 24) return `${hours}h`;
@@ -26,55 +25,56 @@ export default function UserChatList1({ data, isSelected, onClick }) {
   }
 
   return (
-    <>
-      <div
-        className={`flex items-center relative ${isSelected ? "bgc-thm3 bdrs4 px10 py5" : ""}`}
-        onClick={onClick}
-        style={{ cursor: "pointer" }}
-      >
-        <div className="relative shrink-0 mr10">
-          <Image
-            height={50}
-            width={50}
-            className="img-fluid rounded-circle"
-            src={avatarSrc}
-            alt={name}
-            onError={(e) => {
-              e.target.src = "/images/resource/user.png";
-            }}
-          />
-          {unreadCount > 0 && (
-            <span
-              className="absolute badge bg-danger rounded-circle"
-              style={{ top: "-4px", right: "-4px", fontSize: "10px", minWidth: "16px", height: "16px", display: "flex", alignItems: "center", justifyContent: "center" }}
-            >
-              {unreadCount > 9 ? "9+" : unreadCount}
-            </span>
-          )}
-        </div>
-        <div className="sm:flex grow overflow-hidden">
-          <div className="inline-block overflow-hidden">
-            <div className={`fz15 fw500 dark-color ff-heading mb-0 ${unreadCount > 0 ? "fw600" : ""}`}>
-              {name}
-            </div>
-            <p
-              className="preview mb-0"
-              style={{
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-                maxWidth: "160px",
-                fontWeight: unreadCount > 0 ? "600" : "normal",
-              }}
-            >
-              {preview}
-            </p>
-          </div>
-          <div className="iul_notific ms-auto shrink-0">
-            <small>{formatTime(data?.lastMessageAt)}</small>
-          </div>
-        </div>
+    <div
+      className={cn(
+        "flex items-center gap-3 cursor-pointer",
+        isSelected && "bg-primary/10 rounded-md"
+      )}
+      onClick={onClick}
+    >
+      <div className="relative flex-shrink-0">
+        <Image
+          height={50}
+          width={50}
+          className="rounded-full object-cover h-[50px] w-[50px]"
+          src={avatarSrc}
+          alt={name}
+          onError={(e) => {
+            e.target.src = "/images/resource/user.png";
+          }}
+        />
+        {unreadCount > 0 && (
+          <span
+            className="absolute -right-1 -top-1 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-destructive text-[10px] text-destructive-foreground px-1"
+            aria-label={`${unreadCount} unread messages`}
+          >
+            {unreadCount > 9 ? "9+" : unreadCount}
+          </span>
+        )}
       </div>
-    </>
+      <div className="flex-grow flex items-start gap-2 overflow-hidden">
+        <div className="min-w-0 flex-1">
+          <div
+            className={cn(
+              "text-sm text-foreground mb-0.5 truncate",
+              unreadCount > 0 ? "font-semibold" : "font-medium"
+            )}
+          >
+            {name}
+          </div>
+          <p
+            className={cn(
+              "truncate text-xs text-[var(--text-secondary)] mb-0",
+              unreadCount > 0 && "font-semibold"
+            )}
+          >
+            {preview}
+          </p>
+        </div>
+        <span className="text-xs text-[var(--text-tertiary)] flex-shrink-0">
+          {formatTime(data?.lastMessageAt)}
+        </span>
+      </div>
+    </div>
   );
 }

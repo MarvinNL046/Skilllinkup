@@ -70,9 +70,9 @@ export default function Navigation() {
                       <li key={cat._id}>
                         <Link href={`/online/services/${cat.slug}`}>
                           {cat.icon && (
-                            <span className={`${cat.icon} mr5`} />
+                            <span className={`${cat.icon} mr-1`} />
                           )}
-                          <span className="fw500">{cat.name}</span>
+                          <span className="font-medium">{cat.name}</span>
                         </Link>
                       </li>
                     ))}
@@ -102,19 +102,19 @@ export default function Navigation() {
               <ul className="sub-menu">
                 <li>
                   <Link href="/online/services">
-                    <span className="flaticon-developer mr5" />
+                    <span className="flaticon-developer mr-1" />
                     All Services
                   </Link>
                 </li>
                 <li>
                   <Link href="/online/projects">
-                    <span className="flaticon-document mr5" />
+                    <span className="flaticon-document mr-1" />
                     Projects
                   </Link>
                 </li>
                 <li>
                   <Link href="/jobs/browse">
-                    <span className="flaticon-briefcase mr5" />
+                    <span className="flaticon-briefcase mr-1" />
                     Jobs
                   </Link>
                 </li>
@@ -124,13 +124,13 @@ export default function Navigation() {
               <ul className="sub-menu">
                 <li>
                   <Link href="/online/freelancers">
-                    <span className="flaticon-user mr5" />
+                    <span className="flaticon-user mr-1" />
                     Freelancers
                   </Link>
                 </li>
                 <li>
                   <Link href="/platforms">
-                    <span className="flaticon-web-design-1 mr5" />
+                    <span className="flaticon-web-design-1 mr-1" />
                     Platforms
                   </Link>
                 </li>

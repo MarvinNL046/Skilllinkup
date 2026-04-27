@@ -28,7 +28,7 @@ export default function Breadcumb15() {
   return (
     <>
       <section className="breadcumb-section pt-0">
-        <div className="cta-employee-single freelancer-single-style mx-auto maxw1700 pt120 pt60-sm pb120 pb60-sm bdrs16 relative overflow-hidden flex items-center mx20-lg px30-lg">
+        <div className="cta-employee-single freelancer-single-style mx-auto maxw1700 pt-32 pt-14-sm pb-32 pb-14-sm bdrs16 relative overflow-hidden flex items-center mx20-lg px-8-lg">
           <Image
             height={226}
             width={198}
@@ -52,24 +52,24 @@ export default function Breadcumb15() {
                       <Image
                         height={120}
                         width={120}
-                        className="rounded-circle w-full wa-sm mb15-sm"
+                        className="rounded-circle w-full wa-sm mb-4-sm"
                         src={avatar}
                         alt={`${title} logo`}
                       />
                       <span className="online2" />
                     </a>
-                    <div className="ml20 ml0-xs">
+                    <div className="ml-5 ml0-xs">
                       <h5 className="title mb-1">{title}</h5>
-                      <p className="text fz14 mb-2">Company Profile</p>
+                      <p className="text text-sm mb-2">Company Profile</p>
                       {location && (
-                        <p className="mb-0 dark-color fz15 fw500 list-inline-item mb5-sm">
-                          <i className="flaticon-place vam fz20 me-2" />
+                        <p className="mb-0 dark-color text-base font-medium list-inline-item mb-1-sm">
+                          <i className="flaticon-place vam text-xl me-2" />
                           {location}
                         </p>
                       )}
                       {memberSince && (
-                        <p className="mb-0 dark-color fz15 fw500 list-inline-item ml15 mb5-sm ml0-xs">
-                          <i className="flaticon-30-days vam fz20 me-2" />
+                        <p className="mb-0 dark-color text-base font-medium list-inline-item ml-4 mb-1-sm ml0-xs">
+                          <i className="flaticon-30-days vam text-xl me-2" />
                           Since {memberSince}
                         </p>
                       )}

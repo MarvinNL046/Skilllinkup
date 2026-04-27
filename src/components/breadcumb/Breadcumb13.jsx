@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 
 export default function Breadcumb13() {
   const { id } = useParams();
@@ -20,72 +22,75 @@ export default function Breadcumb13() {
   const workType = job?.workType || "Remote";
   const jobType = job?.jobType || "";
 
-  const salaryLabel = salaryMin && salaryMax
-    ? `€${salaryMin.toLocaleString()}–€${salaryMax.toLocaleString()}`
-    : salaryMin
-    ? `From €${salaryMin.toLocaleString()}`
-    : "";
+  const salaryLabel =
+    salaryMin && salaryMax
+      ? `€${salaryMin.toLocaleString()}–€${salaryMax.toLocaleString()}`
+      : salaryMin
+      ? `From €${salaryMin.toLocaleString()}`
+      : "";
 
   return (
-    <>
-      <section className="breadcumb-section pt-0">
-        <div className="cta-job-v1 freelancer-single-style mx-auto maxw1700 pt120 pt60-sm pb120 pb60-sm bdrs16 relative overflow-hidden flex items-center mx20-lg px30-lg">
-          <Image
-            height={226}
-            width={198}
-            className="left-top-img wow zoomIn"
-            src="/images/vector-img/left-top.png"
-            alt="left-top"
-          />
-          <Image
-            height={181}
-            width={255}
-            className="right-bottom-img wow zoomIn"
-            src="/images/vector-img/right-bottom.png"
-            alt="right-bottom"
-          />
-          <div className="container">
-            <div className="row wow fadeInUp">
-              <div className="col-xl-8 mx-auto">
-                <div className="relative">
-                  <div className="list-meta lg:flex items-end justify-between">
-                    <div className="wrapper sm:flex items-center mb20-md">
-                      <a className="relative freelancer-single-style">
-                        <Image
-                          height={100}
-                          width={100}
-                          className="wa"
-                          src="/images/team/job-single.png"
-                          alt="job-single"
-                        />
-                      </a>
-                      <div className="ml20 ml0-xs mt15-sm">
-                        <h4 className="title">{title}</h4>
-                        {company && <h6 className="mb-3 text-thm">{company}</h6>}
-                        {salaryLabel && (
-                          <h6 className="list-inline-item mb-0">{salaryLabel}</h6>
-                        )}
-                        {jobType && (
-                          <h6 className="list-inline-item mb-0 bdrl-eunry pl15">
-                            {jobType.replace("_", " ")}
-                          </h6>
-                        )}
-                        <h6 className="list-inline-item mb-0 bdrl-eunry pl15">
-                          {workType}
-                        </h6>
-                      </div>
-                    </div>
-                    <Link href="/contact" className="ud-btn btn-thm2">
-                      Apply For Job
-                      <i className="fal fa-arrow-right-long" />
-                    </Link>
+    <section>
+      <div className="mx-auto max-w-screen-2xl mx-4 lg:mx-5 px-6 lg:px-8 pt-16 sm:pt-32 pb-16 sm:pb-32 rounded-2xl relative overflow-hidden flex items-center bg-[var(--surface-2)]">
+        <Image
+          height={226}
+          width={198}
+          className="absolute top-0 left-0 hidden md:block opacity-40 pointer-events-none"
+          src="/images/vector-img/left-top.png"
+          alt=""
+          aria-hidden="true"
+        />
+        <Image
+          height={181}
+          width={255}
+          className="absolute bottom-0 right-0 hidden md:block opacity-40 pointer-events-none"
+          src="/images/vector-img/right-bottom.png"
+          alt=""
+          aria-hidden="true"
+        />
+        <div className="container relative">
+          <div className="max-w-4xl mx-auto">
+            <div className="lg:flex lg:items-end lg:justify-between gap-6">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-5 mb-6 lg:mb-0">
+                <Image
+                  height={100}
+                  width={100}
+                  className="rounded-md flex-shrink-0"
+                  src="/images/team/job-single.png"
+                  alt="job"
+                />
+                <div>
+                  <h4 className="text-2xl md:text-3xl font-semibold mb-2">
+                    {title}
+                  </h4>
+                  {company && (
+                    <h6 className="text-base text-primary mb-3">{company}</h6>
+                  )}
+                  <div className="flex flex-wrap items-center gap-2 text-sm">
+                    {salaryLabel && (
+                      <span className="font-medium">{salaryLabel}</span>
+                    )}
+                    {jobType && (
+                      <>
+                        <span className="text-[var(--text-tertiary)]">·</span>
+                        <span>{jobType.replace("_", " ")}</span>
+                      </>
+                    )}
+                    <span className="text-[var(--text-tertiary)]">·</span>
+                    <span>{workType}</span>
                   </div>
                 </div>
               </div>
+              <Button asChild variant="secondary">
+                <Link href="/contact">
+                  Apply For Job
+                  <ArrowRight className="ml-1 h-4 w-4" />
+                </Link>
+              </Button>
             </div>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }

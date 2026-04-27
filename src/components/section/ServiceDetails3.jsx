@@ -454,7 +454,7 @@ export default function ServiceDetail3() {
                         freelancer={data?.freelancer}
                       />
                       {gigData?.freelancerProfile?.userId && (
-                        <div className="mt20">
+                        <div className="mt-5">
                           <ContactButton
                             recipientId={gigData.freelancerProfile.userId}
                             className="w-full"

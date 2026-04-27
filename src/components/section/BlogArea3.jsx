@@ -13,7 +13,7 @@ export default function BlogArea3() {
   // Loading state
   if (blog1 === undefined) {
     return (
-      <section className="our-blog pt40 pb90">
+      <section className="our-blog pt-10 pb-24">
         <div className="container">
           <div className="text-center py-5">
             <div className="spinner-border text-thm" role="status">
@@ -29,7 +29,7 @@ export default function BlogArea3() {
   // Empty state
   if (blog1.length === 0) {
     return (
-      <section className="our-blog pt40 pb90">
+      <section className="our-blog pt-10 pb-24">
         <div className="container">
           <EmptyState
             icon="📝"
@@ -48,7 +48,7 @@ export default function BlogArea3() {
 
   return (
     <>
-      <section className="our-blog pt40 pb90">
+      <section className="our-blog pt-10 pb-24">
         <div className="container">
           <div className="row wow fadeInUp" data-wow-delay="300ms">
             <div className="col-lg-8">
@@ -58,35 +58,35 @@ export default function BlogArea3() {
             </div>
             <div className="col-lg-4">
               <div className="blog-sidebar ms-lg-auto">
-                <div className="sidebar-widget mb30">
+                <div className="sidebar-widget mb-8">
                   <h4 className="title">{t("aboutBlog")}</h4>
-                  <p className="body-color fz14 mt10">
+                  <p className="body-color text-sm mt-2.5">
                     {t("aboutBlogDescription")}
                   </p>
                 </div>
-                <div className="sidebar-widget mb30">
+                <div className="sidebar-widget mb-8">
                   <h4 className="title">{t("quickLinks")}</h4>
-                  <ul className="list-unstyled mt15">
-                    <li className="mb10">
-                      <Link href="/platforms" className="body-color fz14">
+                  <ul className="list-unstyled mt-4">
+                    <li className="mb-2.5">
+                      <Link href="/platforms" className="body-color text-sm">
                         <i className="far fa-angle-right me-2" />
                         {t("comparePlatforms")}
                       </Link>
                     </li>
-                    <li className="mb10">
-                      <Link href="/services" className="body-color fz14">
+                    <li className="mb-2.5">
+                      <Link href="/services" className="body-color text-sm">
                         <i className="far fa-angle-right me-2" />
                         {t("browseServices")}
                       </Link>
                     </li>
-                    <li className="mb10">
-                      <Link href="/become-seller" className="body-color fz14">
+                    <li className="mb-2.5">
+                      <Link href="/become-seller" className="body-color text-sm">
                         <i className="far fa-angle-right me-2" />
                         {t("becomeSeller")}
                       </Link>
                     </li>
-                    <li className="mb10">
-                      <Link href="/contact" className="body-color fz14">
+                    <li className="mb-2.5">
+                      <Link href="/contact" className="body-color text-sm">
                         <i className="far fa-angle-right me-2" />
                         {t("contactUs")}
                       </Link>

@@ -142,7 +142,7 @@ export default function DashboardInfo() {
         <h1
           style={{
             fontFamily: "var(--font-display)",
-            fontSize: "var(--text-h2)",
+            fontSize: "clamp(1.375rem, 4vw, var(--text-h2))",
             fontWeight: 500,
             letterSpacing: "-0.01em",
             margin: 0,
@@ -349,9 +349,9 @@ export default function DashboardInfo() {
         >
           <div style={{ gridColumn: "span 2", minWidth: 0 }} className="chart-span-2">
             <div className="card" style={{ padding: "var(--space-6)", marginBottom: "var(--space-6)" }}>
-              <div className="flex justify-between bdrb1 pb15 mb20">
+              <div className="flex justify-between bdrb1 pb-4 mb-5">
                 <h5 className="title">{t("recentOrders")}</h5>
-                <Link href="/orders" className="underline text-thm6">{t("viewAll")}</Link>
+                <Link href="/orders" className="underline text-primary">{t("viewAll")}</Link>
               </div>
               {isLoading ? (
                 <div className="text-center py-4">
@@ -378,17 +378,17 @@ export default function DashboardInfo() {
                     <tbody className="t-body">
                       {recentOrders.map((order) => (
                         <tr key={order._id}>
-                          <td className="vam">
-                            <div className="fz14 fw500 dark-color">{order.title}</div>
-                            <div className="fz12 text">
+                          <td data-label={t("orderColumn")} className="vam">
+                            <div className="text-sm font-medium dark-color">{order.title}</div>
+                            <div className="text-xs text">
                               {order.orderNumber}
                               {order.clientName && ` · ${order.clientName}`}
                               {order.freelancerName && ` · ${order.freelancerName}`}
                             </div>
                           </td>
-                          <td className="vam fz14 fw500">{formatCurrency(order.amount)}</td>
-                          <td className="vam fz13 text">{formatDate(order.createdAt)}</td>
-                          <td className="vam">
+                          <td data-label={t("amountColumn")} className="vam text-sm font-medium">{formatCurrency(order.amount)}</td>
+                          <td data-label={t("dateColumn")} className="vam text-sm text">{formatDate(order.createdAt)}</td>
+                          <td data-label={t("statusColumn")} className="vam">
                             <span className={getStatusClass(order.status)}>
                               {order.status?.replace(/_/g, " ")}
                             </span>
@@ -403,16 +403,16 @@ export default function DashboardInfo() {
           </div>
           <div style={{ minWidth: 0 }}>
             <div className="card" style={{ padding: "var(--space-6)", marginBottom: "var(--space-6)" }}>
-              <div className="bdrb1 pb15 mb30">
+              <div className="bdrb1 pb-4 mb-8">
                 <h5 className="title">{t("accountSummary")}</h5>
               </div>
               <div className="dashboard-timeline-label">
-                <div className="timeline-item pb15">
+                <div className="timeline-item pb-4">
                   <div className="child-timeline-label">{t("gigsLabel")}</div>
                   <div className="timeline-badge flex items-center">
                     <i className="fas fa-genderless" />
                   </div>
-                  <div className="ra_pcontent pl10">
+                  <div className="ra_pcontent pl-2.5">
                     <span className="title">
                       {t("activeGigsCount", { count: isLoading ? "..." : stats?.activeGigs ?? 0 })}
                     </span>
@@ -422,12 +422,12 @@ export default function DashboardInfo() {
                 </div>
               </div>
               <div className="dashboard-timeline-label">
-                <div className="timeline-item pb15">
+                <div className="timeline-item pb-4">
                   <div className="child-timeline-label color3">{t("ordersLabel")}</div>
                   <div className="timeline-badge flex items-center color3">
                     <i className="fas fa-genderless" />
                   </div>
-                  <div className="ra_pcontent pl10">
+                  <div className="ra_pcontent pl-2.5">
                     <span className="title">
                       {t("totalOrdersCount", { count: isLoading ? "..." : stats?.totalOrders ?? 0 })}
                     </span>
@@ -439,12 +439,12 @@ export default function DashboardInfo() {
                 </div>
               </div>
               <div className="dashboard-timeline-label">
-                <div className="timeline-item pb15">
+                <div className="timeline-item pb-4">
                   <div className="child-timeline-label color4">{t("earningsLabel")}</div>
                   <div className="timeline-badge flex items-center color4">
                     <i className="fas fa-genderless" />
                   </div>
-                  <div className="ra_pcontent pl10">
+                  <div className="ra_pcontent pl-2.5">
                     <span className="title">
                       {t("totalAmount", { amount: isLoading ? "..." : formatCurrency(stats?.totalEarnings ?? 0) })}
                     </span>
@@ -453,13 +453,13 @@ export default function DashboardInfo() {
                   </div>
                 </div>
               </div>
-              <div className="dashboard-timeline-label before-none mb30">
-                <div className="timeline-item pb0">
+              <div className="dashboard-timeline-label before-none mb-8">
+                <div className="timeline-item pb-0">
                   <div className="child-timeline-label color5">{t("statusLabel")}</div>
                   <div className="timeline-badge flex items-center color5">
                     <i className="fas fa-genderless" />
                   </div>
-                  <div className="ra_pcontent pl10">
+                  <div className="ra_pcontent pl-2.5">
                     <span className="title">{t("accountActive")}</span>
                     <br />
                     <span className="subtitle">{t("accountGoodStanding")}</span>

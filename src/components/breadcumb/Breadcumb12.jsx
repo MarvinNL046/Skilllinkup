@@ -2,6 +2,25 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import listingStore from "@/store/listingStore";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search } from "lucide-react";
+
+const CATEGORIES = [
+  "Graphics & Design",
+  "Digital Marketing",
+  "Writing & Translation",
+  "Video & Animation",
+  "Music & Audio",
+  "Programming & Tech",
+];
 
 export default function Breadcumb12() {
   const t = useTranslations("jobsHub");
@@ -10,104 +29,85 @@ export default function Breadcumb12() {
   const setCategory = listingStore((state) => state.setCategory);
   const getCategory = listingStore((state) => state.getCategory);
 
-  const categories = [
-    "Graphics & Design",
-    "Digital Marketing",
-    "Writing & Translation",
-    "Video & Animation",
-    "Music & Audio",
-    "Programming & Tech",
-  ];
-
   return (
-    <>
-      <section className="breadcumb-section pt-0">
-        <div className="cta-job-v1 cta-banner mx-auto maxw1700 pt120 pb120 bdrs16 relative overflow-hidden flex items-center mx20-lg px30-lg">
-          <Image
-            height={226}
-            width={198}
-            className="left-top-img wow zoomIn"
-            src="/images/vector-img/left-top.png"
-            alt="left-top"
-          />
-          <Image
-            height={181}
-            width={255}
-            className="right-bottom-img wow zoomIn"
-            src="/images/vector-img/right-bottom.png"
-            alt="right-bottom"
-          />
-          <div className="container">
-            <div className="row wow fadeInUp">
-              <div className="col-xl-7">
+    <section>
+      <div className="mx-auto max-w-screen-2xl mx-4 lg:mx-5 px-6 lg:px-8 pt-32 pb-32 rounded-2xl relative overflow-hidden flex items-center bg-[var(--surface-2)]">
+        <Image
+          height={226}
+          width={198}
+          className="absolute top-0 left-0 hidden md:block opacity-40 pointer-events-none"
+          src="/images/vector-img/left-top.png"
+          alt=""
+          aria-hidden="true"
+        />
+        <Image
+          height={181}
+          width={255}
+          className="absolute bottom-0 right-0 hidden md:block opacity-40 pointer-events-none"
+          src="/images/vector-img/right-bottom.png"
+          alt=""
+          aria-hidden="true"
+        />
+        <div className="container relative">
+          <div className="max-w-3xl">
+            <h2 className="text-3xl md:text-5xl font-bold mb-3">{t("jobList")}</h2>
+            <p className="text-base text-[var(--text-secondary)] mb-8">
+              {t("jobListText")}
+            </p>
+
+            <div className="bg-[var(--bg-elevated)] rounded-md p-3 grid grid-cols-1 md:grid-cols-[2fr_1fr_auto] gap-3 items-center shadow-sm">
+              <form
+                onSubmit={(e) => e.preventDefault()}
+                className="md:border-r md:border-[var(--border-subtle)] md:pr-3"
+              >
                 <div className="relative">
-                  <h2>{t("jobList")}</h2>
-                  <p className="text">
-                    {t("jobListText")}
-                  </p>
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-tertiary)]" />
+                  <Input
+                    type="text"
+                    name="search"
+                    placeholder={t("searchPlaceholder")}
+                    value={getSearch}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="pl-9 border-0 focus-visible:ring-0"
+                  />
                 </div>
-                <div className="advance-search-tab bgc-white p10 bdrs4 mt30">
-                  <div className="row">
-                    <div className="col-md-5 col-lg-6 col-xl-6">
-                      <div className="advance-search-field bdrr1 bdrn-sm">
-                        <form
-                          className="form-search relative"
-                          onSubmit={(e) => e.preventDefault()}
-                        >
-                          <div className="box-search">
-                            <span className="icon far fa-magnifying-glass" />
-                            <input
-                              className="form-control"
-                              type="text"
-                              name="search"
-                              placeholder={t("searchPlaceholder")}
-                              value={getSearch}
-                              onChange={(e) => setSearch(e.target.value)}
-                            />
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-                    <div className="col-md-4 col-lg-4 col-xl-3">
-                      <div className="bselect-style1">
-                        <select
-                          className="form-select"
-                          value={getCategory[0] || ""}
-                          onChange={(e) => {
-                            listingStore.getState().getCategory.forEach(() => setCategory(""));
-                            if (e.target.value) setCategory(e.target.value);
-                          }}
-                        >
-                          <option value="">{t("allCategories")}</option>
-                          {categories.map((cat) => (
-                            <option key={cat} value={cat}>
-                              {cat}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="col-md-3 col-lg-2 col-xl-3">
-                      <div className="text-center text-xl-start">
-                        <button
-                          type="button"
-                          className="ud-btn btn-thm2 w-full vam"
-                          onClick={() => {
-                            const el = document.querySelector(".pt30");
-                            if (el) el.scrollIntoView({ behavior: "smooth" });
-                          }}
-                        >
-                          {t("search")}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              </form>
+
+              <Select
+                value={getCategory[0] || ""}
+                onValueChange={(value) => {
+                  listingStore
+                    .getState()
+                    .getCategory.forEach(() => setCategory(""));
+                  if (value) setCategory(value);
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={t("allCategories")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {CATEGORIES.map((cat) => (
+                    <SelectItem key={cat} value={cat}>
+                      {cat}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  const el = document.querySelector("[data-listing-results]");
+                  if (el) el.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                {t("search")}
+              </Button>
             </div>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }

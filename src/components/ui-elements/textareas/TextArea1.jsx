@@ -1,9 +1,9 @@
 export default function TextArea1() {
   return (
     <>
-      <div className="ui-content mb40">
+      <div className="ui-content mb-10">
         <div className="form-style1">
-          <label className="form-label fw500 fz16 dark-color">Textarea</label>
+          <label className="form-label font-medium text-base dark-color">Textarea</label>
           <textarea
             name="text"
             cols={30}

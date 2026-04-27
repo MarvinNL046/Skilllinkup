@@ -11,196 +11,128 @@ import SortOption1 from "../option/SortOption1";
 import PriceDropdown1 from "../dropdown/PriceDropdown1";
 import LevelDropdown1 from "../dropdown/LevelDropdown1";
 import LocationDropdown1 from "../dropdown/LocationDropdown1";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { ChevronDown, ArrowRight, Filter } from "lucide-react";
+
+function FilterDropdown({ label, children }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="sm" className="gap-1">
+          {label}
+          <ChevronDown className="h-3.5 w-3.5" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-72 p-0" align="start">
+        {children}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 export default function ListingOption1() {
   const [getDelivery, SetDelivery] = useState("");
-
-  const [getPrice, setPrice] = useState({
-    min: 0,
-    max: 100000,
-  });
+  const [getPrice, setPrice] = useState({ min: 0, max: 100000 });
   const [getLevel, setLevel] = useState([]);
   const [getLocation, setLocation] = useState([]);
 
   const priceRange = priceStore((state) => state.priceRange);
-  const setPriceRange = priceStore((state) => state.priceRangeHandler);
   const listingToggle = toggleStore((state) => state.listingToggleHandler);
   const setOurDeliveryTime = listingStore((state) => state.setDeliveryTime);
   const getDeliveryTime = listingStore((state) => state.getDeliveryTime);
-  const setOurLevel = listingStore((state) => state.setLevel);
   const getOurLevel = listingStore((state) => state.getLevel);
   const getOurLocation = listingStore((state) => state.getLocation);
-  const setOurLocation = listingStore((state) => state.setLocation);
-
-  // filters handler
-  const deliveryHandler = (data) => {
-    SetDelivery(data);
-  };
 
   useEffect(() => {
     SetDelivery(getDeliveryTime);
   }, [getDeliveryTime]);
 
-  const priceHandler = (data) => {
-    setPrice({
-      min: data[0],
-      max: data[1],
-    });
-  };
-
   useEffect(() => {
     setPrice(priceRange);
   }, [priceRange]);
 
-  const levelHandler = (data) => {
-    const isExist = getLevel.includes(data);
-    if (!isExist) {
-      return setLevel((item) => [...item, data]);
-    }
-    const deleted = getLevel.filter((item) => item !== data);
-    setLevel(deleted);
-  };
-
   useEffect(() => {
     setLevel(getOurLevel);
   }, [getOurLevel]);
-
-  const locationHandler = (data) => {
-    const isExist = getLocation.includes(data);
-    if (!isExist) {
-      return setLocation((item) => [...item, data]);
-    }
-    const deleted = getLocation.filter((item) => item !== data);
-    setLocation(deleted);
-  };
 
   useEffect(() => {
     setLocation(getOurLocation);
   }, [getOurLocation]);
 
   return (
-    <>
-      <div className="row items-center mb20">
-        <div className="col-6 col-sm-6 col-lg-9 pe-0">
-          <div className="text-center text-sm-start">
-            <div className="dropdown-lists">
-              <ul className="p-0 mb-0 text-center text-sm-start">
-                <li className="list-inline-item">
-                  <button
-                    onClick={listingToggle}
-                    type="button"
-                    className="open-btn filter-btn-left mb10"
-                  >
-                    <Image
-                      height={18}
-                      width={18}
-                      className="me-2"
-                      src="/images/icon/all-filter-icon.svg"
-                      alt="icon"
+    <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+      <div className="flex flex-wrap items-center gap-2">
+        <Button
+          onClick={listingToggle}
+          type="button"
+          variant="outline"
+          size="sm"
+          className="gap-2"
+        >
+          <Filter className="h-4 w-4" />
+          All Filter
+        </Button>
+
+        <div className="hidden xl:flex flex-wrap gap-2">
+          <FilterDropdown label="Delivery Time">
+            <div className="px-5 py-4">
+              <RadioGroup
+                value={getDelivery}
+                onValueChange={(val) => SetDelivery(val)}
+              >
+                {deliveryTime.map((item) => (
+                  <div key={item.id} className="flex items-center gap-2">
+                    <RadioGroupItem
+                      id={`delivery-${item.id}`}
+                      value={item.value}
                     />
-                    All Filter
-                  </button>
-                </li>
-                <li className="list-inline-item relative hidden xl:inline-block">
-                  <button
-                    className="open-btn mb10 dropdown-toggle"
-                    type="button"
-                    data-bs-toggle="dropdown"
-                    data-bs-auto-close="outside"
-                  >
-                    Delivery Time
-                    <i className="fa fa-angle-down ms-2" />
-                  </button>
-                  <div className="dropdown-menu">
-                    <div className="widget-wrapper pb25 mb0">
-                      <div className="radio-element">
-                        {deliveryTime.map((item, i) => (
-                          <div
-                            key={i}
-                            className="form-check flex items-center mb10"
-                          >
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="flexRadioDefault"
-                              id={`flexRadioDefault1${item.id}`}
-                              checked={getDelivery === item.value}
-                              onChange={() => deliveryHandler(item.value)}
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor={`flexRadioDefault1${item.id}`}
-                            >
-                              {item.title}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => setOurDeliveryTime(getDelivery)}
-                      className="done-btn ud-btn btn-thm drop_btn"
+                    <Label
+                      htmlFor={`delivery-${item.id}`}
+                      className="cursor-pointer text-sm"
                     >
-                      Apply
-                      <i className="fal fa-arrow-right-long" />
-                    </button>
+                      {item.title}
+                    </Label>
                   </div>
-                </li>
-                <li className="list-inline-item relative hidden xl:inline-block">
-                  <button
-                    className="open-btn mb10 dropdown-toggle"
-                    type="button"
-                    data-bs-toggle="dropdown"
-                    data-bs-auto-close="outside"
-                  >
-                    Budget
-                    <i className="fa fa-angle-down ms-2" />
-                  </button>
-                  <div className="dropdown-menu dd3">
-                    <PriceDropdown1 />
-                  </div>
-                </li>
-                <li className="list-inline-item relative hidden xl:inline-block">
-                  <button
-                    className="open-btn mb10 dropdown-toggle"
-                    type="button"
-                    data-bs-toggle="dropdown"
-                    data-bs-auto-close="outside"
-                  >
-                    Level
-                    <i className="fa fa-angle-down ms-2" />
-                  </button>
-                  <div className="dropdown-menu">
-                    <LevelDropdown1 />
-                  </div>
-                </li>
-                <li className="list-inline-item relative hidden xl:inline-block">
-                  <button
-                    className="open-btn mb10 dropdown-toggle"
-                    type="button"
-                    data-bs-toggle="dropdown"
-                    data-bs-auto-close="outside"
-                  >
-                    Location
-                    <i className="fa fa-angle-down ms-2" />
-                  </button>
-                  <div className="dropdown-menu dd4 pb20">
-                    <LocationDropdown1 />
-                  </div>
-                </li>
-                <li className="list-inline-item relative hidden xl:inline-block">
-                  <ClearButton />
-                </li>
-              </ul>
+                ))}
+              </RadioGroup>
             </div>
-          </div>
-        </div>
-        <div className="col-6 col-sm-6 col-lg-3 px-0">
-          <div className="page_control_shorting mb10 flex items-center justify-center sm:justify-end">
-            <SortOption1 />
-          </div>
+            <div className="px-5 pb-4">
+              <Button
+                onClick={() => setOurDeliveryTime(getDelivery)}
+                className="w-full"
+              >
+                Apply
+                <ArrowRight className="ml-1 h-4 w-4" />
+              </Button>
+            </div>
+          </FilterDropdown>
+
+          <FilterDropdown label="Budget">
+            <PriceDropdown1 />
+          </FilterDropdown>
+
+          <FilterDropdown label="Level">
+            <LevelDropdown1 />
+          </FilterDropdown>
+
+          <FilterDropdown label="Location">
+            <LocationDropdown1 />
+          </FilterDropdown>
+
+          <ClearButton />
         </div>
       </div>
-    </>
+
+      <div className="flex items-center justify-center sm:justify-end">
+        <SortOption1 />
+      </div>
+    </div>
   );
 }

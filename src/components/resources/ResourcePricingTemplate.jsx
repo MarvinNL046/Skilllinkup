@@ -2,41 +2,50 @@ import Header20 from "@/components/header/Header20";
 import Footer14 from "@/components/footer/Footer14";
 import ResourceFAQ from "./ResourceFAQ";
 import ResourceCTA from "./ResourceCTA";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Check, CheckCircle2 } from "lucide-react";
 
 export default function ResourcePricingTemplate({ resource }) {
+  const dateLabel = resource.updatedAt || resource.publishedAt;
+
   return (
     <>
       <Header20 />
       <main>
         {/* Hero */}
-        <section className="pt80 pb60 bgc-thm3">
+        <section className="pt-20 pb-16 bg-primary/5">
           <div className="container">
-            <div className="row justify-center">
-              <div className="col-lg-8 text-center">
-                <span className="badge bg-thm text-white px-3 py-2 bdrs8 fz13 mb20">Pricing Guide</span>
-                <h1 className="fz40 fw700 mb20">{resource.metaTitle}</h1>
-                <p className="fz17 text-muted">{resource.intro}</p>
-                {(resource.updatedAt || resource.publishedAt) && (
-                  <p className="fz13 text-muted mt15">
-                    Last updated: {new Date(resource.updatedAt || resource.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long" })}
-                  </p>
-                )}
-              </div>
+            <div className="max-w-3xl mx-auto text-center">
+              <Badge className="mb-5">Pricing Guide</Badge>
+              <h1 className="text-3xl md:text-5xl font-bold mb-5">
+                {resource.metaTitle}
+              </h1>
+              <p className="text-lg text-[var(--text-secondary)]">{resource.intro}</p>
+              {dateLabel && (
+                <p className="text-xs text-[var(--text-tertiary)] mt-4">
+                  Last updated:{" "}
+                  {new Date(dateLabel).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                  })}
+                </p>
+              )}
             </div>
           </div>
         </section>
 
         {/* Key takeaways */}
         {resource.keyTakeaways?.length > 0 && (
-          <section className="pt60 pb40">
+          <section className="pt-16 pb-10">
             <div className="container">
-              <div className="col-lg-8 mx-auto bdr1 bdrs12 p30" style={{ borderLeft: "4px solid #ef2b70" }}>
-                <h2 className="fz20 fw700 mb20">Key Takeaways</h2>
-                <ul className="mb-0 ps-0" style={{ listStyle: "none" }}>
-                  {resource.keyTakeaways.map((t, i) => (
-                    <li key={i} className="flex items-start gap-2 mb10 fz15">
-                      <i className="fas fa-check-circle text-success mt-1" />
-                      {t}
+              <div className="max-w-3xl mx-auto rounded-xl border border-[var(--border-subtle)] border-l-4 border-l-primary p-8">
+                <h2 className="text-lg font-bold mb-5">Key Takeaways</h2>
+                <ul className="space-y-3">
+                  {resource.keyTakeaways.map((takeaway, i) => (
+                    <li key={i} className="flex items-start gap-2 text-base">
+                      <CheckCircle2 className="h-4 w-4 text-success mt-1 flex-shrink-0" />
+                      <span>{takeaway}</span>
                     </li>
                   ))}
                 </ul>
@@ -47,26 +56,34 @@ export default function ResourcePricingTemplate({ resource }) {
 
         {/* Pricing table */}
         {resource.pricingData?.length > 0 && (
-          <section className="pt40 pb60">
+          <section className="pt-10 pb-16">
             <div className="container">
-              <h2 className="fz28 fw700 mb30 text-center">Pricing Plans</h2>
-              <div className="row g-4 justify-center">
+              <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center">
+                Pricing Plans
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
                 {resource.pricingData.map((plan, i) => (
-                  <div key={i} className="col-md-4">
-                    <div className="bdr1 bdrs12 p30 h-full text-center hover-box-shadow">
-                      <h3 className="fz20 fw700 mb10">{plan.tier}</h3>
-                      <div className="fz32 fw700 text-thm mb5">{plan.price}</div>
-                      {plan.billingPeriod && <p className="fz13 text-muted mb20">{plan.billingPeriod}</p>}
-                      <ul className="text-left ps-0" style={{ listStyle: "none" }}>
-                        {plan.features?.map((f, j) => (
-                          <li key={j} className="flex gap-2 mb8 fz14">
-                            <i className="fas fa-check text-success mt-1" />
-                            {f}
+                  <Card key={i} className="h-full">
+                    <CardContent className="p-8 text-center">
+                      <h3 className="text-xl font-bold mb-3">{plan.tier}</h3>
+                      <div className="text-4xl font-bold text-primary mb-1">
+                        {plan.price}
+                      </div>
+                      {plan.billingPeriod && (
+                        <p className="text-xs text-[var(--text-secondary)] mb-5">
+                          {plan.billingPeriod}
+                        </p>
+                      )}
+                      <ul className="text-left space-y-2 mt-6">
+                        {plan.features?.map((feature, j) => (
+                          <li key={j} className="flex gap-2 text-sm">
+                            <Check className="h-4 w-4 text-success mt-0.5 flex-shrink-0" />
+                            <span>{feature}</span>
                           </li>
                         ))}
                       </ul>
-                    </div>
-                  </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             </div>
@@ -74,13 +91,13 @@ export default function ResourcePricingTemplate({ resource }) {
         )}
 
         {/* Sections */}
-        <section className="pt40 pb60">
+        <section className="pt-10 pb-16">
           <div className="container">
-            <div className="col-lg-8 mx-auto">
+            <div className="max-w-3xl mx-auto">
               {resource.sections?.map((section, i) => (
-                <div key={i} className="mb40">
-                  <h2 className="fz24 fw700 mb15">{section.heading}</h2>
-                  <div className="fz16 text-dark lh-lg" style={{ whiteSpace: "pre-wrap" }}>
+                <div key={i} className="mb-10">
+                  <h2 className="text-2xl font-bold mb-4">{section.heading}</h2>
+                  <div className="text-base text-foreground leading-relaxed whitespace-pre-wrap">
                     {section.body}
                   </div>
                 </div>

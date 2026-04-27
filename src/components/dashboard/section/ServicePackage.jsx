@@ -1,213 +1,109 @@
+"use client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ArrowRight, Pencil } from "lucide-react";
+
+const TIERS = [
+  { id: "basic", name: "Basic", description: "I will redesign your current landing page or create one for you (upto 4 sections)" },
+  { id: "standard", name: "Standard", description: "4 High Quality Desktop Pages." },
+  { id: "premium", name: "Premium", description: "4 High Quality Desktop and Mobile Pages." },
+];
+
+const ROWS = [
+  { feature: "Source file", values: { basic: { type: "check", checked: false }, standard: { type: "check", checked: true }, premium: { type: "check", checked: true } } },
+  { feature: "Prototype", values: { basic: { type: "check", checked: false }, standard: { type: "check", checked: true }, premium: { type: "check", checked: true } } },
+  { feature: "Responsive design", values: { basic: { type: "check", checked: false }, standard: { type: "check", checked: true }, premium: { type: "check", checked: true } } },
+  { feature: "Number of pages", values: { basic: { type: "value", text: "2" }, standard: { type: "value", text: "4" }, premium: { type: "value", text: "6" } } },
+  { feature: "Revisions", values: { basic: { type: "value", text: "1" }, standard: { type: "value", text: "3" }, premium: { type: "value", text: "5" } } },
+  { feature: "Delivery Time", values: { basic: { type: "value", text: "2 Days" }, standard: { type: "value", text: "3 Days" }, premium: { type: "value", text: "4 Days" } } },
+  { feature: "Total", values: { basic: { type: "value", text: "$29" }, standard: { type: "value", text: "$49" }, premium: { type: "value", text: "$89" } } },
+];
+
+function CellEdit({ children }) {
+  return (
+    <span className="flex items-center justify-between gap-2">
+      {children}
+      <button
+        type="button"
+        aria-label="Edit"
+        className="text-[var(--text-tertiary)] hover:text-foreground"
+      >
+        <Pencil className="h-4 w-4" />
+      </button>
+    </span>
+  );
+}
+
 export default function ServicePackage() {
   return (
-    <>
-      <div className="ps-widget bgc-white bdrs12 p30 mb30 overflow-hidden relative">
-        <div className="bdrb1 pb15 mb30">
-          <h5 className="list-title">Packages</h5>
-        </div>
-        <div className="col-xl-8">
-          <div className="table-style2 table-responsive bdr1 mb30">
-            <table className="table table-borderless mb-0">
-              <thead className="t-head">
+    <Card className="mb-6 overflow-hidden">
+      <CardHeader className="border-b border-[var(--border-subtle)] pb-4">
+        <CardTitle className="text-lg font-semibold">Packages</CardTitle>
+      </CardHeader>
+      <CardContent className="pt-6">
+        <div className="max-w-5xl">
+          <div className="rounded-md border border-[var(--border-subtle)] mb-6 overflow-x-auto">
+            <table className="w-full">
+              <thead className="border-b border-[var(--border-subtle)]">
                 <tr>
-                  <th className="col" scope="col" />
-                  <th className="col" scope="col">
-                    <span className="h4 mb15">
-                      Basic
-                      <span className="text-thm2 flaticon-pencil fz16 float-end mt10 me-2" />
-                    </span>
-                    <br />
-                    <span className="text">
-                      I will redesign your current
-                      <br className="hidden lg:block" />
-                      landing page or create one for
-                      <br className="hidden lg:block" />
-                      you (upto 4 sections)
-                    </span>
-                  </th>
-                  <th className="col" scope="col">
-                    <span className="h4 mb15">
-                      Standard
-                      <span className="text-thm2 flaticon-pencil fz16 float-end mt10 me-2" />
-                    </span>
-                    <br />
-                    <span className="text">
-                      4 High Quality Desktop
-                      <br className="hidden lg:block" />
-                      Pages.
-                    </span>
-                  </th>
-                  <th className="col" scope="col">
-                    <span className="h4 mb15">
-                      Premium
-                      <span className="text-thm2 flaticon-pencil fz16 float-end mt10 me-2" />
-                    </span>
-                    <br />
-                    <span className="text">
-                      4 High Quality Desktop and
-                      <br className="hidden lg:block" />
-                      Mobile Pages.
-                    </span>
-                  </th>
+                  <th className="p-4 text-left" />
+                  {TIERS.map((tier) => (
+                    <th key={tier.id} scope="col" className="p-4 text-left min-w-[180px]">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-lg font-semibold">{tier.name}</span>
+                        <button
+                          type="button"
+                          aria-label={`Edit ${tier.name}`}
+                          className="text-[var(--text-tertiary)] hover:text-foreground"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                      </div>
+                      <p className="text-sm font-normal text-[var(--text-secondary)]">
+                        {tier.description}
+                      </p>
+                    </th>
+                  ))}
                 </tr>
               </thead>
-              <tbody className="t-body">
-                <tr className="bgc-thm3">
-                  <th scope="row">Source file</th>
-                  <td>
-                    <label className="custom_checkbox">
-                      <input type="checkbox" />
-                      <span className="checkmark" />
-                    </label>
-                  </td>
-                  <td>
-                    <label className="custom_checkbox">
-                      <input type="checkbox" defaultChecked />
-                      <span className="checkmark" />
-                    </label>
-                  </td>
-                  <td>
-                    <label className="custom_checkbox">
-                      <input type="checkbox" defaultChecked />
-                      <span className="checkmark" />
-                    </label>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">Prototype</th>
-                  <td>
-                    <label className="custom_checkbox">
-                      <input type="checkbox" />
-                      <span className="checkmark" />
-                    </label>
-                  </td>
-                  <td>
-                    <label className="custom_checkbox">
-                      <input type="checkbox" defaultChecked />
-                      <span className="checkmark" />
-                    </label>
-                  </td>
-                  <td>
-                    <label className="custom_checkbox">
-                      <input type="checkbox" defaultChecked />
-                      <span className="checkmark" />
-                    </label>
-                  </td>
-                </tr>
-                <tr className="bgc-thm3">
-                  <th scope="row">Responsive design</th>
-                  <td>
-                    <label className="custom_checkbox">
-                      <input type="checkbox" />
-                      <span className="checkmark" />
-                    </label>
-                  </td>
-                  <td>
-                    <label className="custom_checkbox">
-                      <input type="checkbox" defaultChecked />
-                      <span className="checkmark" />
-                    </label>
-                  </td>
-                  <td>
-                    <label className="custom_checkbox">
-                      <input type="checkbox" defaultChecked />
-                      <span className="checkmark" />
-                    </label>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">Number of pages</th>
-                  <td>
-                    2
-                    <a>
-                      <span className="text-thm2 flaticon-pencil fz16 float-end me-3" />
-                    </a>
-                  </td>
-                  <td>
-                    4
-                    <a>
-                      <span className="text-thm2 flaticon-pencil fz16 float-end me-3" />
-                    </a>
-                  </td>
-                  <td>
-                    6
-                    <a>
-                      <span className="text-thm2 flaticon-pencil fz16 float-end me-3" />
-                    </a>
-                  </td>
-                </tr>
-                <tr className="bgc-thm3">
-                  <th scope="row">Revisions</th>
-                  <td>
-                    1
-                    <a>
-                      <span className="text-thm2 flaticon-pencil fz16 float-end me-3" />
-                    </a>
-                  </td>
-                  <td>
-                    3
-                    <a>
-                      <span className="text-thm2 flaticon-pencil fz16 float-end me-3" />
-                    </a>
-                  </td>
-                  <td>
-                    5
-                    <a>
-                      <span className="text-thm2 flaticon-pencil fz16 float-end me-3" />
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">Delivery Time </th>
-                  <td>
-                    2 Days
-                    <a>
-                      <span className="text-thm2 flaticon-pencil fz16 float-end me-3" />
-                    </a>
-                  </td>
-                  <td>
-                    3 Days
-                    <a>
-                      <span className="text-thm2 flaticon-pencil fz16 float-end me-3" />
-                    </a>
-                  </td>
-                  <td>
-                    4 Days
-                    <a>
-                      <span className="text-thm2 flaticon-pencil fz16 float-end me-3" />
-                    </a>
-                  </td>
-                </tr>
-                <tr className="bgc-thm3">
-                  <th scope="row">Total</th>
-                  <td>
-                    $29
-                    <a>
-                      <span className="text-thm2 flaticon-pencil fz16 float-end me-3" />
-                    </a>
-                  </td>
-                  <td>
-                    $49
-                    <a>
-                      <span className="text-thm2 flaticon-pencil fz16 float-end me-3" />
-                    </a>
-                  </td>
-                  <td>
-                    $89
-                    <a>
-                      <span className="text-thm2 flaticon-pencil fz16 float-end me-3" />
-                    </a>
-                  </td>
-                </tr>
+              <tbody>
+                {ROWS.map((row, idx) => (
+                  <tr
+                    key={row.feature}
+                    className={
+                      idx % 2 === 0 ? "bg-[var(--surface-2)]/50" : ""
+                    }
+                  >
+                    <th
+                      scope="row"
+                      className="p-4 text-left font-medium text-sm whitespace-nowrap"
+                    >
+                      {row.feature}
+                    </th>
+                    {TIERS.map((tier) => {
+                      const cell = row.values[tier.id];
+                      return (
+                        <td key={tier.id} className="p-4 text-sm">
+                          {cell.type === "check" ? (
+                            <Checkbox defaultChecked={cell.checked} />
+                          ) : (
+                            <CellEdit>{cell.text}</CellEdit>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
-          <a className="ud-btn btn-thm">
+          <Button>
             Save
-            <i className="fal fa-arrow-right-long" />
-          </a>
+            <ArrowRight className="ml-1 h-4 w-4" />
+          </Button>
         </div>
-      </div>
-    </>
+      </CardContent>
+    </Card>
   );
 }

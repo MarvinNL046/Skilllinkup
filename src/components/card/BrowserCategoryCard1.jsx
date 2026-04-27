@@ -15,8 +15,8 @@ export default function BrowserCategoryCard1({ data }) {
         <div className="icon">
           <span className={data.icon} />
         </div>
-        <div className="details mt20">
-          <p className="text mb5">{data.skill} skills</p>
+        <div className="details mt-5">
+          <p className="text mb-1">{data.skill} skills</p>
           <h4 className="title">
             <Link href="/services">{data.title}</Link>
           </h4>

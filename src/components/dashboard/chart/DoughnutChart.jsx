@@ -46,6 +46,8 @@ export default function DoughnutChart({ userId }) {
   };
 
   const options = {
+    responsive: true,
+    maintainAspectRatio: false,
     cutout: "70%",
     plugins: {
       legend: {
@@ -59,8 +61,8 @@ export default function DoughnutChart({ userId }) {
 
   return (
     <>
-      <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
-        <div className="bdrb1 pb15 mb30">
+      <div className="ps-widget bgc-white bdrs4 p-8 mb-8 overflow-hidden relative">
+        <div className="bdrb1 pb-4 mb-8">
           <h5 className="title">Order Status</h5>
         </div>
         {isLoading ? (
@@ -74,7 +76,9 @@ export default function DoughnutChart({ userId }) {
             <p className="text mb-0">No orders yet</p>
           </div>
         ) : (
-          <Doughnut data={data} options={options} />
+          <div style={{ position: "relative", height: 280 }}>
+            <Doughnut data={data} options={options} />
+          </div>
         )}
       </div>
     </>

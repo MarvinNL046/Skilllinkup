@@ -7,16 +7,29 @@ import ReviewForm from "@/components/element/ReviewForm";
 import OpenDisputeModal from "@/components/dispute/OpenDisputeModal";
 import useConvexUser from "@/hook/useConvexUser";
 import { toast } from "sonner";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
+import {
+  Receipt,
+  User,
+  Calendar,
+  ArrowRight,
+  Check,
+  AlertTriangle,
+} from "lucide-react";
 
 function getCurrencySymbol(currency) {
-  if (currency === "EUR") return "\u20AC";
+  if (currency === "EUR") return "€";
   if (currency === "USD") return "$";
-  if (currency === "GBP") return "\u00A3";
-  return currency ?? "\u20AC";
+  if (currency === "GBP") return "£";
+  return currency ?? "€";
 }
 
 function formatDate(timestamp) {
-  if (!timestamp) return "\u2014";
+  if (!timestamp) return "—";
   return new Date(timestamp).toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "short",
@@ -24,8 +37,18 @@ function formatDate(timestamp) {
   });
 }
 
+const STATUS_VARIANTS = {
+  pending: "warning",
+  in_progress: "info",
+  delivered: "success",
+  completed: "success",
+  revision_requested: "warning",
+  cancelled: "destructive",
+};
+
 export default function OrderCard({ order, role }) {
   const t = useTranslations("orders");
+  const tDispute = useTranslations("disputes");
   const [actionLoading, setActionLoading] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [showRevisionForm, setShowRevisionForm] = useState(false);
@@ -43,19 +66,18 @@ export default function OrderCard({ order, role }) {
     order.status === "completed" && order._id ? { orderId: order._id } : "skip"
   );
 
-  const STATUS_CONFIG = {
-    pending: { label: t("statusPending"), className: "pending-style" },
-    in_progress: { label: t("statusInProgress"), className: "pending-style style1" },
-    delivered: { label: t("statusDelivered"), className: "pending-style style2" },
-    completed: { label: t("statusCompleted"), className: "pending-style style3" },
-    revision_requested: { label: t("statusRevisionRequested"), className: "pending-style" },
-    cancelled: { label: t("statusCancelled"), className: "pending-style style4" },
+  const STATUS_LABELS = {
+    pending: t("statusPending"),
+    in_progress: t("statusInProgress"),
+    delivered: t("statusDelivered"),
+    completed: t("statusCompleted"),
+    revision_requested: t("statusRevisionRequested"),
+    cancelled: t("statusCancelled"),
   };
 
-  const statusConfig = STATUS_CONFIG[order.status] ?? {
-    label: order.status.replace(/_/g, " "),
-    className: "pending-style",
-  };
+  const statusVariant = STATUS_VARIANTS[order.status] ?? "muted";
+  const statusLabel =
+    STATUS_LABELS[order.status] ?? order.status.replace(/_/g, " ");
 
   const currencySymbol = getCurrencySymbol(order.currency);
   const displayAmount =
@@ -89,7 +111,10 @@ export default function OrderCard({ order, role }) {
     if (!revisionMessage.trim()) return;
     setActionLoading(true);
     try {
-      await requestRevision({ orderId: order._id, message: revisionMessage.trim() });
+      await requestRevision({
+        orderId: order._id,
+        message: revisionMessage.trim(),
+      });
       toast.success(t("revisionRequested"));
       setShowRevisionForm(false);
       setRevisionMessage("");
@@ -109,8 +134,6 @@ export default function OrderCard({ order, role }) {
     order.escrowStatus !== "released" &&
     order.escrowStatus !== "refunded";
 
-  const tDispute = useTranslations("disputes");
-
   const alreadyReviewed =
     orderReviews !== undefined &&
     convexUser?._id &&
@@ -122,187 +145,195 @@ export default function OrderCard({ order, role }) {
       : order.clientId ?? null;
 
   return (
-    <div className="freelancer-style1 bdr1 hover-box-shadow ms-0 mb20">
-      <div className="row lg:items-center">
-        {/* Left section: order info */}
-        <div className="col-lg-8 ps-0">
-          <div className="lg:flex bdrr1 bdrn-xl pr15 pr0-lg items-start">
-            <div className="thumb w60 relative mb15-md flex items-center justify-center bgc-thm-light bdrs4">
-              <i className="flaticon-receipt fz30 text-thm" />
+    <Card>
+      <CardContent className="p-5">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-5 lg:items-center">
+          {/* Left section: order info */}
+          <div className="lg:pr-5 lg:border-r lg:border-[var(--border-subtle)] flex flex-col lg:flex-row gap-4 items-start">
+            <div className="flex-shrink-0 flex h-14 w-14 items-center justify-center rounded-md bg-primary/10 text-primary">
+              <Receipt className="h-6 w-6" />
             </div>
-
-            <div className="details ml15 ml0-md mb15-md">
-              <h5 className="title mb5 fz16">{order.title}</h5>
-              <p className="mb-0 fz13 text">
-                <span className="fw500 dark-color">{order.orderNumber}</span>
+            <div className="min-w-0 flex-grow">
+              <h5 className="text-base font-semibold mb-1">{order.title}</h5>
+              <p className="text-xs text-[var(--text-secondary)] mb-2">
+                <span className="font-medium text-foreground">
+                  {order.orderNumber}
+                </span>
               </p>
-
-              <div className="flex flex-wrap items-center gap-3 mt10">
-                <p className="mb-0 fz14">
-                  <i className="flaticon-user fz14 vam text-thm2 me-1" />
+              <div className="flex flex-wrap items-center gap-3 text-sm text-[var(--text-secondary)]">
+                <span className="inline-flex items-center gap-1">
+                  <User className="h-3.5 w-3.5 text-primary" />
                   {role === "client"
-                    ? order.freelancerName ?? "\u2014"
-                    : order.clientName ?? "\u2014"}
-                </p>
-
-                <p className="mb-0 fz14">
-                  <i className="flaticon-30-days fz14 vam text-thm2 me-1" />
+                    ? order.freelancerName ?? "—"
+                    : order.clientName ?? "—"}
+                </span>
+                <span className="inline-flex items-center gap-1">
+                  <Calendar className="h-3.5 w-3.5 text-primary" />
                   {formatDate(order.createdAt)}
-                </p>
+                </span>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Right section: amount, status, actions */}
-        <div className="col-lg-4 ps-0 ps-xl-3 pe-0">
-          <div className="details">
-            <div className="text-lg-end mb10">
-              <h5 className="mb-0">
+          {/* Right section: amount, status, actions */}
+          <div className="lg:text-right">
+            <div className="mb-2">
+              <h5 className="text-lg font-semibold mb-0">
                 {currencySymbol}
                 {(displayAmount ?? 0).toFixed(2)}
               </h5>
               {role === "freelancer" && order.freelancerEarnings != null && (
-                <span className="fz12 text">{t("afterPlatformFee")}</span>
+                <span className="text-xs text-[var(--text-secondary)]">
+                  {t("afterPlatformFee")}
+                </span>
               )}
             </div>
-
-            <div className="text-lg-end mb10">
-              <span className={statusConfig.className}>{statusConfig.label}</span>
+            <div className="mb-3">
+              <Badge variant={statusVariant}>{statusLabel}</Badge>
             </div>
 
-            <div className="grid gap-2 mt10">
+            <div className="flex flex-col gap-2">
               {showDeliverButton && (
-                <button
-                  className="ud-btn btn-thm fz14"
+                <Button
+                  size="sm"
                   disabled={actionLoading}
                   onClick={handleDeliver}
                 >
                   {actionLoading ? (
-                    <span className="spinner-border spinner-border-sm" role="status" />
+                    <span
+                      role="status"
+                      aria-label="Loading"
+                      className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+                    />
                   ) : (
                     <>
                       {t("markAsDelivered")}
-                      <i className="fal fa-arrow-right-long" />
+                      <ArrowRight className="ml-1 h-4 w-4" />
                     </>
                   )}
-                </button>
+                </Button>
               )}
 
               {showClientButtons && (
                 <>
-                  <button
-                    className="ud-btn btn-thm fz14"
+                  <Button
+                    size="sm"
                     disabled={actionLoading}
                     onClick={handleApprove}
                   >
                     {actionLoading ? (
-                      <span className="spinner-border spinner-border-sm" role="status" />
+                      <span
+                        role="status"
+                        aria-label="Loading"
+                        className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+                      />
                     ) : (
                       <>
                         {t("approveReleasePayment")}
-                        <i className="fal fa-arrow-right-long" />
+                        <ArrowRight className="ml-1 h-4 w-4" />
                       </>
                     )}
-                  </button>
-                  <button
-                    className="ud-btn btn-white fz14"
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
                     disabled={actionLoading}
                     onClick={() => setShowRevisionForm((prev) => !prev)}
                   >
                     {showRevisionForm ? t("cancel") : t("requestRevision")}
-                    <i className="fal fa-arrow-right-long" />
-                  </button>
+                    <ArrowRight className="ml-1 h-4 w-4" />
+                  </Button>
                 </>
               )}
 
               {isCompleted && revieweeId && (
-                <button
-                  className={`ud-btn fz14 ${alreadyReviewed ? "btn-white" : "btn-thm2"}`}
+                <Button
+                  size="sm"
+                  variant={alreadyReviewed ? "outline" : "secondary"}
                   onClick={() => setShowReviewForm((prev) => !prev)}
                 >
                   {alreadyReviewed ? (
                     <>
-                      <i className="fas fa-check me-1" />
+                      <Check className="mr-1 h-4 w-4" />
                       {t("reviewSubmitted")}
                     </>
                   ) : (
                     <>
                       {showReviewForm ? t("hideReviewForm") : t("leaveReview")}
-                      <i className="fal fa-arrow-right-long" />
+                      <ArrowRight className="ml-1 h-4 w-4" />
                     </>
                   )}
-                </button>
+                </Button>
               )}
 
               {canOpenDispute && (
-                <button
-                  className="ud-btn btn-white fz14"
+                <Button
+                  size="sm"
+                  variant="outline"
                   type="button"
                   onClick={() => setShowDisputeModal(true)}
                   disabled={actionLoading}
-                  style={{
-                    borderColor: "var(--danger-200, #fecaca)",
-                    color: "var(--danger-600, #dc2626)",
-                  }}
+                  className="border-destructive/30 text-destructive hover:bg-destructive/5"
                 >
                   {tDispute("openDispute")}
-                  <i className="fal fa-exclamation-triangle" />
-                </button>
+                  <AlertTriangle className="ml-1 h-4 w-4" />
+                </Button>
               )}
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Inline revision form */}
-      {showRevisionForm && (
-        <div className="row mt15">
-          <div className="col-12">
-            <div className="bdrb1 mb15" />
-            <div className="bgc-thm4 bdrs4 p20">
-              <p className="fz14 fw500 mb10">{t("revisionPrompt")}</p>
-              <textarea
-                className="form-control mb10"
+        {/* Inline revision form */}
+        {showRevisionForm && (
+          <>
+            <Separator className="my-4" />
+            <div className="rounded-md bg-[var(--surface-2)] p-5">
+              <p className="text-sm font-medium mb-3">{t("revisionPrompt")}</p>
+              <Textarea
                 rows={3}
                 value={revisionMessage}
                 onChange={(e) => setRevisionMessage(e.target.value)}
                 placeholder={t("revisionPlaceholder")}
+                className="mb-3"
               />
-              <button
-                className="ud-btn btn-thm btn-sm fz14"
+              <Button
+                size="sm"
                 disabled={!revisionMessage.trim() || actionLoading}
                 onClick={handleRevision}
               >
                 {actionLoading ? (
-                  <span className="spinner-border spinner-border-sm" role="status" />
-                ) : t("submitRevisionRequest")}
-              </button>
+                  <span
+                    role="status"
+                    aria-label="Loading"
+                    className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+                  />
+                ) : (
+                  t("submitRevisionRequest")
+                )}
+              </Button>
             </div>
-          </div>
-        </div>
-      )}
+          </>
+        )}
 
-      {/* Inline review form for completed orders */}
-      {isCompleted && showReviewForm && revieweeId && !alreadyReviewed && (
-        <div className="row mt15">
-          <div className="col-12">
-            <div className="bdrb1 mb15" />
+        {/* Inline review form for completed orders */}
+        {isCompleted && showReviewForm && revieweeId && !alreadyReviewed && (
+          <>
+            <Separator className="my-4" />
             <ReviewForm
               orderId={order._id}
               revieweeId={revieweeId}
               reviewerRole={role}
             />
-          </div>
-        </div>
-      )}
+          </>
+        )}
 
-      {showDisputeModal && (
-        <OpenDisputeModal
-          orderId={order._id}
-          onClose={() => setShowDisputeModal(false)}
-        />
-      )}
-    </div>
+        {showDisputeModal && (
+          <OpenDisputeModal
+            orderId={order._id}
+            onClose={() => setShowDisputeModal(false)}
+          />
+        )}
+      </CardContent>
+    </Card>
   );
 }

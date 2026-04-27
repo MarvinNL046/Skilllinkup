@@ -86,7 +86,7 @@ export default function OrdersInfo() {
   return (
     <>
       <div className="dashboard__content hover-bgc-color">
-      <div className="row pb40">
+      <div className="row pb-10">
         <div className="col-lg-12">
           <DashboardNavigation />
         </div>
@@ -112,13 +112,13 @@ export default function OrdersInfo() {
 
       <div className="row">
         <div className="col-xl-12">
-          <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
+          <div className="ps-widget bgc-white bdrs4 p-8 mb-8 overflow-hidden relative">
             {/* Revision message inline form */}
             {revisionOrderId && (
-              <div className="bgc-thm4 bdrs4 p20 mb20">
-                <p className="fz14 fw500 mb10">{t("revisionPrompt")}</p>
+              <div className="bgc-thm4 bdrs4 p-5 mb-5">
+                <p className="text-sm font-medium mb-2.5">{t("revisionPrompt")}</p>
                 <textarea
-                  className="form-control mb10"
+                  className="form-control mb-2.5"
                   rows={3}
                   value={revisionMessage}
                   onChange={(e) => setRevisionMessage(e.target.value)}
@@ -126,7 +126,7 @@ export default function OrdersInfo() {
                 />
                 <div className="flex gap-2">
                   <button
-                    className="ud-btn btn-thm btn-sm fz14"
+                    className="ud-btn btn-thm btn-sm text-sm"
                     disabled={!revisionMessage.trim() || actionLoading === revisionOrderId}
                     onClick={submitRevision}
                   >
@@ -135,7 +135,7 @@ export default function OrdersInfo() {
                     ) : t("submitRevision")}
                   </button>
                   <button
-                    className="ud-btn btn-white btn-sm fz14"
+                    className="ud-btn btn-white btn-sm text-sm"
                     onClick={() => { setRevisionOrderId(null); setRevisionMessage(""); }}
                   >
                     {t("cancel")}
@@ -177,7 +177,7 @@ export default function OrdersInfo() {
             {/* Empty state */}
             {orders !== undefined && orders.length === 0 && (
               <div className="text-center py-5">
-                <i className="flaticon-receipt fz40 text mb20" />
+                <i className="flaticon-receipt text-4xl text mb-5" />
                 <p className="text mb-0">
                   {t("noOrdersYetRole", { role: role === "client" ? t("asBuyer").toLowerCase() : t("asSeller").toLowerCase() })}
                 </p>
@@ -203,41 +203,41 @@ export default function OrdersInfo() {
                   <tbody className="t-body">
                     {orders.map((order) => (
                       <tr key={order._id}>
-                        <td>
-                          <span className="fz14">{order.orderNumber}</span>
+                        <td data-label={t("columnOrderNumber")}>
+                          <span className="text-sm">{order.orderNumber}</span>
                         </td>
-                        <td className="vam">
-                          <span className="fz15 fw500">{order.title}</span>
+                        <td data-label={t("columnTitle")} className="vam">
+                          <span className="text-base font-medium">{order.title}</span>
                         </td>
-                        <td>
-                          <span className="fz15">
+                        <td data-label={role === "client" ? t("columnFreelancer") : t("columnClient")}>
+                          <span className="text-base">
                             {role === "client"
                               ? order.freelancerName ?? "\u2014"
                               : order.clientName ?? "\u2014"}
                           </span>
                         </td>
-                        <td>
-                          <span className="fz15 fw500">
+                        <td data-label={t("columnAmount")}>
+                          <span className="text-base font-medium">
                             {getCurrencySymbol(order.currency)}
                             {role === "freelancer"
                               ? (order.freelancerEarnings ?? order.amount ?? 0).toFixed(2)
                               : (order.amount ?? 0).toFixed(2)}
                           </span>
                           {role === "freelancer" && order.freelancerEarnings !== null && order.freelancerEarnings !== undefined && (
-                            <span className="fz12 text block">{t("afterFee")}</span>
+                            <span className="text-xs text block">{t("afterFee")}</span>
                           )}
                         </td>
-                        <td>
+                        <td data-label={t("columnStatus")}>
                           <span
                             className={`pending-style ${STATUS_COLORS[order.status] ?? ""}`}
                           >
                             {STATUS_LABELS[order.status] ?? order.status.replace(/_/g, " ")}
                           </span>
                         </td>
-                        <td>
+                        <td data-label={t("columnActions")}>
                           {role === "freelancer" && order.status === "in_progress" && (
                             <button
-                              className="ud-btn btn-thm btn-sm fz14"
+                              className="ud-btn btn-thm btn-sm text-sm"
                               disabled={actionLoading === order._id}
                               onClick={() => handleAction("deliver", order._id)}
                             >
@@ -255,7 +255,7 @@ export default function OrdersInfo() {
                           {role === "client" && order.status === "delivered" && (
                             <div className="flex gap-2">
                               <button
-                                className="ud-btn btn-thm btn-sm fz14"
+                                className="ud-btn btn-thm btn-sm text-sm"
                                 disabled={actionLoading === order._id}
                                 onClick={() => handleAction("approve", order._id)}
                               >
@@ -269,7 +269,7 @@ export default function OrdersInfo() {
                                 )}
                               </button>
                               <button
-                                className="ud-btn btn-white btn-sm fz14"
+                                className="ud-btn btn-white btn-sm text-sm"
                                 disabled={actionLoading === order._id}
                                 onClick={() => handleRevision(order._id)}
                               >
@@ -282,7 +282,7 @@ export default function OrdersInfo() {
                             (role === "freelancer" && order.status === "in_progress") ||
                             (role === "client" && order.status === "delivered")
                           ) && (
-                            <span className="fz14 text">{"\u2014"}</span>
+                            <span className="text-sm text">{"\u2014"}</span>
                           )}
                         </td>
                       </tr>

@@ -2,6 +2,8 @@
 
 import listingStore from "@/store/listingStore";
 import priceStore from "@/store/priceStore";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 
 export default function ClearButton() {
   // set handlers
@@ -67,16 +69,11 @@ export default function ClearButton() {
       getEnglishLevel?.length !== 0 ||
       getJobType?.length !== 0 ||
       getNoOfEmployee?.length !== 0 ? (
-        <button
-          onClick={clearHandler}
-          className="ud-btn btn-thm ui-clear-btn w-full"
-        >
+        <Button onClick={clearHandler} className="w-full mt-4">
           Clear
-          <i className="fal fa-arrow-right-long"></i>
-        </button>
-      ) : (
-        ""
-      )}
+          <ArrowRight className="ml-1 h-4 w-4" />
+        </Button>
+      ) : null}
     </>
   );
 }

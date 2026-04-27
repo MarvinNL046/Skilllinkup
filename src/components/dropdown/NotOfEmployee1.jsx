@@ -2,6 +2,9 @@
 import { noOfEmployee } from "@/data/listing";
 import listingStore from "@/store/listingStore";
 import { useEffect, useState } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 
 export default function NotOfEmployee1() {
   const [getNoOfEmployee, setNoOfEmployee] = useState([]);
@@ -9,7 +12,6 @@ export default function NotOfEmployee1() {
   const setNoOfEmployeeState = listingStore((state) => state.setNoOfEmployee);
   const getNoOfEmployeeState = listingStore((state) => state.getNoOfEmployee);
 
-  // handler
   const noOfEmployeeHandler = (data) => {
     if (!getNoOfEmployee.includes(data)) {
       return setNoOfEmployee([...getNoOfEmployee, data]);
@@ -31,29 +33,27 @@ export default function NotOfEmployee1() {
 
   return (
     <>
-      <div className="widget-wrapper pb25 mb0">
-        <div className="checkbox-style1">
-          {noOfEmployee.map((item,i) => (
-            <label key={ i } className="custom_checkbox">
-              {item.totalEmployee}
-              <input
-                type="checkbox"
-                onChange={() => noOfEmployeeHandler(item.totalEmployee)}
-                checked={getNoOfEmployee.includes(item.totalEmployee)}
-              />
-              <span className="checkmark" />
-              <span className="right-tags">({item.total})</span>
-            </label>
-          ))}
-        </div>
+      <div className="px-5 pb-6 space-y-2">
+        {noOfEmployee.map((item, i) => (
+          <label
+            key={i}
+            className="flex items-center gap-2 cursor-pointer text-sm"
+          >
+            <Checkbox
+              checked={getNoOfEmployee.includes(item.totalEmployee)}
+              onCheckedChange={() => noOfEmployeeHandler(item.totalEmployee)}
+            />
+            <span className="flex-1">{item.totalEmployee}</span>
+            <span className="text-xs text-[var(--text-tertiary)]">
+              ({item.total})
+            </span>
+          </label>
+        ))}
       </div>
-      <button
-        onClick={noOfEmployeeSumitHandler}
-        className="done-btn ud-btn btn-thm dropdown-toggle"
-      >
+      <Button onClick={noOfEmployeeSumitHandler}>
         Apply
-        <i className="fal fa-arrow-right-long" />
-      </button>
+        <ArrowRight className="ml-1 h-4 w-4" />
+      </Button>
     </>
   );
 }

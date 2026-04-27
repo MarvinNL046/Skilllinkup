@@ -2,6 +2,14 @@
 import { Tooltip } from "react-tooltip";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { Badge } from "@/components/ui/badge";
+import { FileText, Pencil, Trash2 } from "lucide-react";
+
+const STATUS_VARIANTS = {
+  open: "success",
+  closed: "muted",
+  filled: "info",
+};
 
 export default function ManageJobCard({ job, onEdit, onDelete }) {
   const t = useTranslations("manageJobs");
@@ -16,15 +24,16 @@ export default function ManageJobCard({ job, onEdit, onDelete }) {
   const expiresAt = job?.expiresAt;
 
   const STATUS_LABELS = {
-    open: { label: t("statusOpen"), className: "text-success" },
-    closed: { label: t("statusClosed"), className: "text-secondary" },
-    filled: { label: t("statusFilled"), className: "text-primary" },
+    open: t("statusOpen"),
+    closed: t("statusClosed"),
+    filled: t("statusFilled"),
   };
 
-  const statusInfo = STATUS_LABELS[status] ?? { label: status, className: "text-secondary" };
+  const statusLabel = STATUS_LABELS[status] ?? status;
+  const statusVariant = STATUS_VARIANTS[status] ?? "muted";
 
   const formatDate = (ts) => {
-    if (!ts) return "\u2014";
+    if (!ts) return "—";
     return new Date(ts).toLocaleDateString("en-GB", {
       day: "2-digit",
       month: "short",
@@ -32,76 +41,71 @@ export default function ManageJobCard({ job, onEdit, onDelete }) {
     });
   };
 
-  const tooltipViewId = `job-view-${job?._id ?? Math.random()}`;
-  const tooltipEditId = `job-edit-${job?._id ?? Math.random()}`;
-  const tooltipDeleteId = `job-delete-${job?._id ?? Math.random()}`;
+  const idSuffix = job?._id ?? Math.random();
+  const tooltipViewId = `job-view-${idSuffix}`;
+  const tooltipEditId = `job-edit-${idSuffix}`;
+  const tooltipDeleteId = `job-delete-${idSuffix}`;
 
   return (
     <tr>
-      <th scope="row">
-        <div className="freelancer-style1 box-shadow-none row m-0 p-0">
-          <div className="lg:flex px-0">
-            <div className="details mb15-md-md">
-              <h5 className="title mb5">{title}</h5>
-              {company && (
-                <p className="mb-0 fz14 text-muted">{company}</p>
-              )}
-              <p className="mb-0 fz13 mt5">
-                <span className="text-muted">{categoryName}</span>
-              </p>
-            </div>
-          </div>
-        </div>
-      </th>
-      <td className="vam">
-        <span className="fz15 fw400">{applicationCount}</span>
+      <td data-label={t("columnTitle")} className="align-top">
+        <h5 className="text-base font-semibold mb-1">{title}</h5>
+        {company && <p className="text-sm text-[var(--text-secondary)]">{company}</p>}
+        <p className="text-xs text-[var(--text-tertiary)] mt-1">{categoryName}</p>
       </td>
-      <td className="vam">
-        <span className="fz14">{formatDate(createdAt)}</span>
-        <br />
-        <span className="fz13 text-muted">
+      <td data-label={t("columnApplications")} className="align-top">
+        <span className="text-base">{applicationCount}</span>
+      </td>
+      <td data-label={t("columnCreatedExpired")} className="align-top">
+        <div className="text-sm">{formatDate(createdAt)}</div>
+        <div className="text-xs text-[var(--text-tertiary)]">
           {expiresAt ? `${t("expiresPrefix")}${formatDate(expiresAt)}` : t("noExpiry")}
-        </span>
+        </div>
       </td>
-      <td className="vam">
-        <span className={`fz13 fw500 ${statusInfo.className}`}>{statusInfo.label}</span>
+      <td data-label={t("columnStatus")} className="align-top">
+        <Badge variant={statusVariant}>{statusLabel}</Badge>
       </td>
-      <td>
-        <div className="flex items-center">
+      <td data-label={t("columnAction")} className="align-top">
+        <div className="flex items-center gap-2">
           {slug && (
-            <Link
-              href={`/jobs/${slug}`}
-              className="icon me-2"
-              id={tooltipViewId}
-            >
-              <Tooltip anchorSelect={`#${tooltipViewId}`} className="ui-tooltip" place="top">
+            <>
+              <Link
+                href={`/jobs/${slug}`}
+                id={tooltipViewId}
+                aria-label={t("viewJob")}
+                className="text-[var(--text-tertiary)] hover:text-foreground"
+              >
+                <FileText className="h-4 w-4" />
+              </Link>
+              <Tooltip anchorSelect={`#${tooltipViewId}`} place="top">
                 {t("viewJob")}
               </Tooltip>
-              <span className="flaticon-document" />
-            </Link>
+            </>
           )}
-          <a
-            className="icon me-2"
+          <button
+            type="button"
             id={tooltipEditId}
             onClick={() => onEdit?.(job)}
-            style={{ cursor: "pointer" }}
+            aria-label={t("edit")}
+            className="text-[var(--text-tertiary)] hover:text-foreground"
           >
-            <Tooltip anchorSelect={`#${tooltipEditId}`} className="ui-tooltip" place="top">
-              {t("edit")}
-            </Tooltip>
-            <span className="flaticon-pencil" />
-          </a>
-          <a
-            className="icon"
+            <Pencil className="h-4 w-4" />
+          </button>
+          <Tooltip anchorSelect={`#${tooltipEditId}`} place="top">
+            {t("edit")}
+          </Tooltip>
+          <button
+            type="button"
             id={tooltipDeleteId}
             onClick={() => onDelete?.(job)}
-            style={{ cursor: "pointer" }}
+            aria-label={t("delete")}
+            className="text-[var(--text-tertiary)] hover:text-destructive"
           >
-            <Tooltip anchorSelect={`#${tooltipDeleteId}`} className="ui-tooltip" place="top">
-              {t("delete")}
-            </Tooltip>
-            <span className="flaticon-delete" />
-          </a>
+            <Trash2 className="h-4 w-4" />
+          </button>
+          <Tooltip anchorSelect={`#${tooltipDeleteId}`} place="top">
+            {t("delete")}
+          </Tooltip>
         </div>
       </td>
     </tr>

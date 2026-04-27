@@ -1,7 +1,7 @@
 export default function Input2() {
   return (
     <>
-      <div className="ui-content mt15">
+      <div className="ui-content mt-4">
         <div className="popup-search-field search_area">
           <input
             type="text"

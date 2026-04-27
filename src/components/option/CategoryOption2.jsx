@@ -13,7 +13,7 @@ export default function CategoryOption2() {
 
   return (
     <>
-      <div className="checkbox-style1 mb15">
+      <div className="checkbox-style1 mb-4">
         {categor2.map((item,i) => (
           <label key={ i } className="custom_checkbox">
             {item.title}

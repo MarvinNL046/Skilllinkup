@@ -2,15 +2,14 @@
 import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Pencil, Trash2, Plus } from "lucide-react";
 
 const MAX_FILE_SIZE_MB = 5;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 const MAX_FILES = 8;
-const ACCEPTED_TYPES = [
-  "image/png",
-  "image/jpeg",
-  "image/webp",
-];
+const ACCEPTED_TYPES = ["image/png", "image/jpeg", "image/webp"];
 
 export default function ServiceGallery() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -42,84 +41,78 @@ export default function ServiceGallery() {
     if (accepted.length > 0) {
       setUploadedFiles((prev) => [...prev, ...accepted]);
     }
-    // Reset input so re-selecting the same file works
     event.target.value = "";
   };
 
-  // delete handler
   const handleFileDelete = (fileName) => {
-    setUploadedFiles((prevFiles) =>
-      prevFiles.filter((file) => file.name !== fileName),
-    );
+    setUploadedFiles((prev) => prev.filter((f) => f.name !== fileName));
   };
+
   return (
-    <>
-      <div className="ps-widget bgc-white bdrs12 p30 mb30 overflow-hidden relative">
-        <div className="bdrb1 pb15 mb30">
-          <h5 className="list-title">Gallery</h5>
-        </div>
-        <div className="col-xl-9">
-          <div className="flex mb30 flex-wrap gap-3">
+    <Card className="mb-6 overflow-hidden">
+      <CardHeader className="border-b border-[var(--border-subtle)] pb-4">
+        <CardTitle className="text-lg font-semibold">Gallery</CardTitle>
+      </CardHeader>
+      <CardContent className="pt-6">
+        <div className="max-w-4xl">
+          <div className="flex flex-wrap gap-3 mb-6">
             {uploadedFiles.map((item, i) => (
               <div
                 key={i}
-                className="gallery-item bdrs4 overflow-hidden relative"
+                className="relative h-40 w-48 overflow-hidden rounded-md border border-[var(--border-subtle)] group"
               >
                 <Image
-                  height={119}
-                  width={136}
-                  className="object-fit-cover"
+                  fill
                   src={URL.createObjectURL(item)}
-                  style={{ height: "166px", width: " 190px" }}
                   alt="gallery"
+                  className="object-cover"
                 />
-                <div className="del-edit">
-                  <div className="flex justify-center">
-                    <a className="icon me-2">
-                      <span className="flaticon-pencil" />
-                    </a>
-                    <a
-                      className="icon"
-                      onClick={() => handleFileDelete(item.name)}
-                    >
-                      <span className="flaticon-delete" />
-                    </a>
-                  </div>
+                <div className="absolute right-2 top-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    type="button"
+                    aria-label="Edit"
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-[var(--bg-elevated)]/90 text-foreground hover:bg-[var(--bg-elevated)]"
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Delete"
+                    onClick={() => handleFileDelete(item.name)}
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-destructive/90 text-destructive-foreground hover:bg-destructive"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
                 </div>
               </div>
             ))}
 
-            <div className="gallery-item bdrs4 overflow-hidden">
-              <label>
-                <a>
-                  <Image
-                    height={119}
-                    width={136}
-                    className="w-full h-auto"
-                    src="/images/gallery/g-1.png"
-                    alt="gallery"
-                  />
-                  <input
-                    type="file"
-                    accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
-                    className="hidden"
-                    onChange={handleFileUpload}
-                    multiple
-                  />
-                </a>
+            {uploadedFiles.length < MAX_FILES && (
+              <label className="flex h-40 w-48 cursor-pointer items-center justify-center rounded-md border border-dashed border-[var(--border-default)] text-[var(--text-tertiary)] hover:bg-[var(--surface-2)] hover:text-foreground">
+                <div className="text-center">
+                  <Plus className="h-6 w-6 mx-auto mb-1" />
+                  <span className="text-xs">Add image</span>
+                </div>
+                <input
+                  type="file"
+                  accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
+                  className="hidden"
+                  onChange={handleFileUpload}
+                  multiple
+                />
               </label>
-            </div>
+            )}
           </div>
-          <p className="text">
-            Up to {MAX_FILES} images. Max file size {MAX_FILE_SIZE_MB}MB.
-            Supported formats: .jpg, .png, .webp.
+          <p className="text-sm text-[var(--text-secondary)] mb-5">
+            Up to {MAX_FILES} images. Max file size {MAX_FILE_SIZE_MB}MB. Supported
+            formats: .jpg, .png, .webp.
           </p>
-          <a className="ud-btn btn-thm mt-2">
+          <Button>
             Save
-            <i className="fal fa-arrow-right-long" />
-          </a>
+            <ArrowRight className="ml-1 h-4 w-4" />
+          </Button>
         </div>
-      </div>
-    </>
+      </CardContent>
+    </Card>
   );
 }

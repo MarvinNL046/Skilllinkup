@@ -46,7 +46,7 @@ export default function UiElement() {
 
   return (
     <>
-      <section className="pb-0 pb50">
+      <section className="pb-0 pb-12">
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
@@ -61,7 +61,7 @@ export default function UiElement() {
           </div>
         </div>
       </section>
-      <section className="pt0 pb90 our-ui-elements">
+      <section className="pt-0 pb-24 our-ui-elements">
         <div className="container">
           <div className="row">
             <div className="col-lg-6">
@@ -85,22 +85,22 @@ export default function UiElement() {
           </div>
           <div className="row">
             <div className="col-lg-12">
-              <div className="ui-content mt10">
+              <div className="ui-content mt-2.5">
                 <h5 className="title">Form</h5>
               </div>
             </div>
             <div className="col-lg-6 col-xl-5">
-              <div className="ui-content mb40">
+              <div className="ui-content mb-10">
                 <Input1 lebel="Input" placeholder="Your Name" />
               </div>
             </div>
             <div className="col-lg-6 col-xl-5 offset-xl-1">
-              <div className="ui-content mb40">
+              <div className="ui-content mb-10">
                 <Input1 lebel="Input Focus" placeholder="Your Name" />
               </div>
             </div>
             <div className="col-lg-6 col-xl-5">
-              <div className="ui-content mb40">
+              <div className="ui-content mb-10">
                 <Option1
                   lebel="Search Select boxes, Hover"
                   data={options}
@@ -110,7 +110,7 @@ export default function UiElement() {
               </div>
             </div>
             <div className="col-lg-6 col-xl-5 offset-xl-1">
-              <div className="ui-content mb40">
+              <div className="ui-content mb-10">
                 <Option2
                   lebel="Search Select boxes, Hover"
                   data={options}
@@ -128,7 +128,7 @@ export default function UiElement() {
               <div className="row">
                 <div className="col-auto">
                   <div className="ui-content">
-                    <h5 className="title fz15 mb20 mt50">Radiobox</h5>
+                    <h5 className="title text-base mb-5 mt-12">Radiobox</h5>
                     <div className="radiobox-style1">
                       <div className="radio-element">
                         {Array(4)
@@ -142,7 +142,7 @@ export default function UiElement() {
                 </div>
                 <div className="col-auto">
                   <div className="ui-content">
-                    <h5 className="title fz15 mb20 mt50">Checkbox</h5>
+                    <h5 className="title text-base mb-5 mt-12">Checkbox</h5>
                     <div className="checkbox-style1">
                       {Array(4)
                         .fill(4)
@@ -154,7 +154,7 @@ export default function UiElement() {
                 </div>
                 <div className="col-auto">
                   <div className="ui-content">
-                    <h5 className="title fz15 mb20 mt50">Switch</h5>
+                    <h5 className="title text-base mb-5 mt-12">Switch</h5>
                     {Array(2)
                       .fill(2)
                       .map((_, i) => (
@@ -187,17 +187,17 @@ export default function UiElement() {
             <div className="col-lg-8">
               <div className="ui-content">
                 <h5 className="title">Typography</h5>
-                <h5 className="mb20">
+                <h5 className="mb-5">
                   Bringing the culture of sharing to everyone
                 </h5>
-                <p className="mb25 ff-heading text">
+                <p className="mb-6  text">
                   Aliquam hendrerit sollicitudin purus, quis rutrum mi accumsan
                   nec. Quisque bibendum orci ac nibh facilisis, at malesuada
                   orci congue. Nullam tempus sollicitudin cursus. Ut et
                   adipiscing erat. Curabitur this is a text link libero tempus
                   congue.
                 </p>
-                <p className="ff-heading text mb60">
+                <p className=" text mb-14">
                   Duis mattis laoreet neque, et ornare neque sollicitudin at.
                   Proin sagittis dolor sed mi elementum pretium. Donec et justo
                   ante. Vivamus egestas sodales est, eu rhoncus urna semper eu.
@@ -213,7 +213,7 @@ export default function UiElement() {
             <div className="col-lg-8">
               <div className="blockquote-style1 mb-4 mb-lg-5">
                 <blockquote className="blockquote">
-                  <p className="fst-italic fz15 fw500 ff-heading dark-color">
+                  <p className="fst-italic text-base font-medium  dark-color">
                     Aliquam hendrerit sollicitudin purus, quis rutrum mi
                     accumsan nec. Quisque bibendum orci ac nibh facilisis, at
                     malesuada orci congue.
@@ -225,7 +225,7 @@ export default function UiElement() {
           </div>
           <div className="row">
             <div className="col-xl-8">
-              <div className="ui-content mt15">
+              <div className="ui-content mt-4">
                 <h5 className="title">What you'll learn</h5>
               </div>
               <div className="row">

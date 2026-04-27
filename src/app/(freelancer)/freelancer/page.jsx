@@ -15,7 +15,7 @@ export default function page() {
     return (
         <>
             <Header20 />
-            <section className="pt60 pb90">
+            <section className="pt-14 pb-24">
                 <div className="container">
                     <EmptyState
                         icon="👤"

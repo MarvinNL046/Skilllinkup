@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
 import DashboardNavigation from "../header/DashboardNavigation";
 import DashboardTabs from "../element/DashboardTabs";
@@ -11,6 +10,18 @@ import ProposalModal1 from "../modal/ProposalModal1";
 import DeleteModal from "../modal/DeleteModal";
 import useConvexUser from "@/hook/useConvexUser";
 import { toast } from "sonner";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+
+function PageShell({ children }) {
+  return (
+    <div className="dashboard__content hover-bgc-color">
+      <DashboardNavigation />
+      {children}
+    </div>
+  );
+}
 
 export default function ManageJobInfo() {
   const t = useTranslations("manageJobs");
@@ -67,168 +78,133 @@ export default function ManageJobInfo() {
 
   if (isAuthenticated && convexUser === undefined) {
     return (
-      <div className="dashboard__content hover-bgc-color">
-        <div className="row pb40">
-          <div className="col-lg-12">
-            <DashboardNavigation />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
-              <div className="text-center py-4">
-                <div className="spinner-border spinner-border-sm text-success" role="status" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PageShell>
+        <Card>
+          <CardContent className="p-8 flex justify-center">
+            <div
+              role="status"
+              aria-label="Loading"
+              className="h-6 w-6 animate-spin rounded-full border-3 border-[var(--border-subtle)] border-t-primary"
+            />
+          </CardContent>
+        </Card>
+      </PageShell>
     );
   }
 
   if (isAuthenticated && convexUser === null) {
     return (
-      <div className="dashboard__content hover-bgc-color">
-        <div className="row pb40">
-          <div className="col-lg-12">
-            <DashboardNavigation />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
-              <div className="text-center py-4">
-                <p className="text mb-0">{t("settingUpAccount")}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PageShell>
+        <Card>
+          <CardContent className="p-8 text-center">
+            <p className="text-[var(--text-secondary)]">{t("settingUpAccount")}</p>
+          </CardContent>
+        </Card>
+      </PageShell>
     );
   }
 
   if (isLoaded && !isAuthenticated) {
     return (
-      <div className="dashboard__content hover-bgc-color">
-        <div className="row pb40">
-          <div className="col-lg-12">
-            <DashboardNavigation />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
-              <div className="text-center py30">
-                <p className="fz15 text-muted">{t("signInPrompt")}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PageShell>
+        <Card>
+          <CardContent className="p-12 text-center">
+            <p className="text-[var(--text-secondary)]">{t("signInPrompt")}</p>
+          </CardContent>
+        </Card>
+      </PageShell>
     );
   }
 
   return (
     <>
       <div className="dashboard__content hover-bgc-color">
-        <div className="row pb40">
-          <div className="col-lg-12">
-            <DashboardNavigation />
+        <DashboardNavigation />
+        <div className="dashboard_title_area mb-6">
+          <div>
+            <h2>{t("title")}</h2>
+            <p className="text-[var(--text-secondary)]">{t("pageDescription")}</p>
           </div>
-          <div className="col-lg-9">
-            <div className="dashboard_title_area">
-              <h2>{t("title")}</h2>
-              <p className="text">{t("pageDescription")}</p>
-            </div>
-          </div>
-          <div className="col-lg-3">
-            <div className="text-lg-end">
-              <span
-                className="ud-btn btn-thm default-box-shadow2"
-                style={{ opacity: 0.5, cursor: "not-allowed" }}
-                title={t("comingSoon")}
-              >
-                {t("postAJob")}
-                <i className="fal fa-arrow-right-long" />
-              </span>
-            </div>
-          </div>
+          <Button disabled title={t("comingSoon")}>
+            {t("postAJob")}
+            <ArrowRight className="ml-1 h-4 w-4" />
+          </Button>
         </div>
-        <div className="row">
-          <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden relative">
-              <div className="navtab-style1">
-                <div style={{ marginBottom: "var(--space-5)" }}>
-                  <DashboardTabs
-                    value={selectedTab}
-                    onChange={setSelectedTab}
-                    ariaLabel={t("title")}
-                    options={tabs.map((tab, i) => ({
-                      value: i,
-                      label: tab.label,
-                      count: jobs
-                        ? tab.status === null
-                          ? jobs.length
-                          : jobs.filter((j) => j.status === tab.status).length
-                        : undefined,
-                    }))}
-                  />
-                </div>
+        <Card className="overflow-hidden">
+          <CardContent className="p-6">
+            <div className="mb-5">
+              <DashboardTabs
+                value={selectedTab}
+                onChange={setSelectedTab}
+                ariaLabel={t("title")}
+                options={tabs.map((tab, i) => ({
+                  value: i,
+                  label: tab.label,
+                  count: jobs
+                    ? tab.status === null
+                      ? jobs.length
+                      : jobs.filter((j) => j.status === tab.status).length
+                    : undefined,
+                }))}
+              />
+            </div>
 
-                <div className="packages_table table-responsive">
-                  {isLoading ? (
-                    <div className="text-center py30">
-                      <div className="spinner-border text-primary" role="status">
-                        <span className="visually-hidden">{t("loading")}</span>
-                      </div>
-                      <p className="mt10 fz14 text-muted">{t("loadingJobs")}</p>
-                    </div>
-                  ) : filteredJobs.length === 0 ? (
-                    <div className="text-center py30">
-                      <p className="fz15 text-muted">
-                        {activeStatus
-                          ? t("noJobsStatus", { status: activeStatus })
-                          : t("noJobsYet")}
-                      </p>
-                      {!activeStatus && (
-                        <span
-                          className="ud-btn btn-thm mt10"
-                          style={{ opacity: 0.5, cursor: "not-allowed" }}
-                          title={t("comingSoon")}
-                        >
-                          {t("postFirstJob")}
-                          <i className="fal fa-arrow-right-long" />
-                        </span>
-                      )}
-                    </div>
-                  ) : (
-                    <table className="table-style3 table at-savesearch">
-                      <thead className="t-head">
-                        <tr>
-                          <th scope="col">{t("columnTitle")}</th>
-                          <th scope="col">{t("columnApplications")}</th>
-                          <th scope="col">{t("columnCreatedExpired")}</th>
-                          <th scope="col">{t("columnStatus")}</th>
-                          <th scope="col">{t("columnAction")}</th>
-                        </tr>
-                      </thead>
-                      <tbody className="t-body">
-                        {filteredJobs.map((job) => (
-                          <ManageJobCard
-                            key={job._id}
-                            job={job}
-                            onEdit={(j) => { setSelectedJob(j); setEditOpen(true); }}
-                            onDelete={(j) => { setSelectedJob(j); setDeleteOpen(true); }}
-                          />
-                        ))}
-                      </tbody>
-                    </table>
+            <div className="packages_table table-responsive">
+              {isLoading ? (
+                <div className="text-center py-12">
+                  <div
+                    role="status"
+                    aria-label={t("loading")}
+                    className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--border-subtle)] border-t-primary mx-auto"
+                  />
+                  <p className="mt-3 text-sm text-[var(--text-secondary)]">{t("loadingJobs")}</p>
+                </div>
+              ) : filteredJobs.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-[var(--text-secondary)] mb-5">
+                    {activeStatus
+                      ? t("noJobsStatus", { status: activeStatus })
+                      : t("noJobsYet")}
+                  </p>
+                  {!activeStatus && (
+                    <Button disabled title={t("comingSoon")}>
+                      {t("postFirstJob")}
+                      <ArrowRight className="ml-1 h-4 w-4" />
+                    </Button>
                   )}
                 </div>
-              </div>
+              ) : (
+                <table className="table-style3 table at-savesearch">
+                  <thead className="t-head">
+                    <tr>
+                      <th scope="col">{t("columnTitle")}</th>
+                      <th scope="col">{t("columnApplications")}</th>
+                      <th scope="col">{t("columnCreatedExpired")}</th>
+                      <th scope="col">{t("columnStatus")}</th>
+                      <th scope="col">{t("columnAction")}</th>
+                    </tr>
+                  </thead>
+                  <tbody className="t-body">
+                    {filteredJobs.map((job) => (
+                      <ManageJobCard
+                        key={job._id}
+                        job={job}
+                        onEdit={(j) => {
+                          setSelectedJob(j);
+                          setEditOpen(true);
+                        }}
+                        onDelete={(j) => {
+                          setSelectedJob(j);
+                          setDeleteOpen(true);
+                        }}
+                      />
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
       <ProposalModal1
         isOpen={editOpen}

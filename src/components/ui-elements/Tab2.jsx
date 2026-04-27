@@ -8,14 +8,14 @@ export default function Tab2() {
   return (
     <>
       <div className="ui-content">
-        <div className="navtab-style1 mb-4 mb-lg-5 mt50">
+        <div className="navtab-style1 mb-4 mb-lg-5 mt-12">
           <nav>
-            <div className="nav nav-tabs mb20">
+            <div className="nav nav-tabs mb-5">
               {tab.map((item, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrentTab(i)}
-                  className={`nav-link fw600 ${
+                  className={`nav-link font-semibold ${
                     currentTab === i ? "active" : ""
                   }`}
                 >
@@ -26,7 +26,7 @@ export default function Tab2() {
           </nav>
           <div className="tab-content">
             <div
-              className={`tab-pane fade fz15 text ${
+              className={`tab-pane fade text-base text ${
                 currentTab === 0 ? "show active" : ""
               }`}
             >
@@ -37,7 +37,7 @@ export default function Tab2() {
               proin quis tortor non risus.
             </div>
             <div
-              className={`tab-pane fade fz15 text ${
+              className={`tab-pane fade text-base text ${
                 currentTab === 1 ? "show active" : ""
               }`}
             >
@@ -48,7 +48,7 @@ export default function Tab2() {
               proin quis tortor non risus.
             </div>
             <div
-              className={`tab-pane fade fz15 text ${
+              className={`tab-pane fade text-base text ${
                 currentTab === 2 ? "show active" : ""
               }`}
             >

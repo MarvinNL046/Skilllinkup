@@ -4,7 +4,7 @@ export default function PaymentOption1() {
       <div className="payment_widget default-box-shadow1">
         <h4 className="title">Payment</h4>
         <div className="radio-element">
-          <div className="form-check flex items-center mb15">
+          <div className="form-check flex items-center mb-4">
             <input
               className="form-check-input"
               type="radio"
@@ -17,13 +17,13 @@ export default function PaymentOption1() {
             </label>
           </div>
           <div className="pw-details">
-            <p className="fz13 mb30">
+            <p className="text-sm mb-8">
               Make your payment directly into our bank account. Please use your
               Order ID as the payment reference.Your order will not be shipped
               until the funds have cleared in our account.
             </p>
           </div>
-          <div className="form-check flex items-center mb15">
+          <div className="form-check flex items-center mb-4">
             <input
               className="form-check-input"
               type="radio"
@@ -34,7 +34,7 @@ export default function PaymentOption1() {
               Check payments
             </label>
           </div>
-          <div className="form-check flex items-center mb15">
+          <div className="form-check flex items-center mb-4">
             <input
               className="form-check-input"
               type="radio"

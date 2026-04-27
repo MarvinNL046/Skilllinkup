@@ -39,7 +39,7 @@ export default async function AdminDisputesPage() {
     <>
       <DashboardLayout maxWidth="wide">
         <div className="dashboard__content hover-bgc-color">
-          <div className="row pb40">
+          <div className="row pb-10">
             <div className="col-lg-12">
               <DashboardNavigation />
             </div>

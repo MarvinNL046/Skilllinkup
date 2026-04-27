@@ -260,7 +260,7 @@ export default function SearchBarWithDropdown({
               }}
             >
               <span className="flaticon-loupe" style={{ fontSize: 12, color: "#aaa" }} />
-              Search for <strong className="ml5">"{debouncedQuery.trim()}"</strong>
+              Search for <strong className="ml-1">"{debouncedQuery.trim()}"</strong>
             </button>
           ) : null}
         </div>

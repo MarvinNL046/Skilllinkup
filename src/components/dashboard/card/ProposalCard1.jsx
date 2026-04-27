@@ -2,32 +2,37 @@
 import Link from "next/link";
 import { Tooltip } from "react-tooltip";
 import { useTranslations } from "next-intl";
+import { Badge } from "@/components/ui/badge";
+import { Calendar, MapPin, FileText, Pencil, Trash2 } from "lucide-react";
+
+const STATUS_VARIANTS = {
+  pending: "warning",
+  accepted: "success",
+  rejected: "destructive",
+};
 
 export default function ProposalCard1({ data, bid }) {
   const t = useTranslations("proposals");
-
-  const BID_STATUS_CONFIG = {
-    pending: { label: t("statusPending"), badgeClass: "bg-warning text-dark" },
-    accepted: { label: t("statusAccepted"), badgeClass: "bg-success text-white" },
-    rejected: { label: t("statusRejected"), badgeClass: "bg-danger text-white" },
-  };
-
-  // Support both legacy static `data` prop and new Convex `bid` prop
   const isConvexBid = !!bid;
 
-  const title = isConvexBid ? bid.projectTitle : (data?.title ?? t("untitledProject"));
+  const title = isConvexBid ? bid.projectTitle : data?.title ?? t("untitledProject");
   const projectSlug = isConvexBid ? bid.projectSlug : null;
   const amount = isConvexBid ? bid.amount : null;
-  const currency = isConvexBid ? (bid.projectCurrency ?? "EUR") : null;
+  const currency = isConvexBid ? bid.projectCurrency ?? "EUR" : null;
   const deliveryDays = isConvexBid ? bid.deliveryDays : null;
-  const bidStatus = isConvexBid ? (bid.status ?? "pending") : null;
+  const bidStatus = isConvexBid ? bid.status ?? "pending" : null;
   const createdAt = isConvexBid ? bid.createdAt : null;
 
-  // Legacy static data fields
   const legacyPriceMin = data?.price?.min;
   const legacyPriceMax = data?.price?.max;
 
-  const statusConfig = bidStatus ? (BID_STATUS_CONFIG[bidStatus] ?? BID_STATUS_CONFIG.pending) : null;
+  const STATUS_LABELS = {
+    pending: t("statusPending"),
+    accepted: t("statusAccepted"),
+    rejected: t("statusRejected"),
+  };
+  const statusVariant = bidStatus ? STATUS_VARIANTS[bidStatus] ?? "muted" : null;
+  const statusLabel = bidStatus ? STATUS_LABELS[bidStatus] ?? bidStatus : null;
 
   const submittedDate = createdAt
     ? new Date(createdAt).toLocaleDateString("en-GB", {
@@ -37,101 +42,94 @@ export default function ProposalCard1({ data, bid }) {
       })
     : "April 01, 2023";
 
-  const tooltipEditId = `proposal-edit-${bid?._id ?? data?.id ?? Math.random()}`;
-  const tooltipDeleteId = `proposal-delete-${bid?._id ?? data?.id ?? Math.random()}`;
+  const idSuffix = bid?._id ?? data?.id ?? Math.random();
+  const tooltipEditId = `proposal-edit-${idSuffix}`;
+  const tooltipDeleteId = `proposal-delete-${idSuffix}`;
 
   return (
-    <>
-      <tr>
-        <th className="ps-0" scope="row">
-          <div className="freelancer-style1 p-0 mb-0 box-shadow-none">
-            <div className="lg:flex lg:items-center">
-              <div className="details ml15 ml0-md mb15-md">
-                <h5 className="title mb-2">
-                  {projectSlug ? (
-                    <Link href={`/en/projects/${projectSlug}`} className="text-dark">
-                      {title}
-                    </Link>
-                  ) : (
-                    title
-                  )}
-                </h5>
-                {isConvexBid ? (
-                  <>
-                    <p className="mb-0 fz14 list-inline-item mb5-sm pe-1">
-                      <i className="flaticon-30-days fz16 vam text-thm2 me-1" />{" "}
-                      {t("submitted", { date: submittedDate })}
-                    </p>
-                    {deliveryDays && (
-                      <p className="mb-0 fz14 list-inline-item mb5-sm pe-1">
-                        <i className="flaticon-contract fz16 vam text-thm2 me-1 bdrl1 pl15 pl0-xs bdrn-xs" />{" "}
-                        {deliveryDays !== 1
-                          ? t("daysDelivery", { count: deliveryDays })
-                          : t("dayDelivery")}
-                      </p>
-                    )}
-                    {statusConfig && (
-                      <span className={`badge ${statusConfig.badgeClass} fz12 mt5`}>
-                        {statusConfig.label}
-                      </span>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <p className="mb-0 fz14 list-inline-item mb5-sm pe-1">
-                      <i className="flaticon-place fz16 vam text-thm2 me-1" />{" "}
-                      London, UK
-                    </p>
-                    <p className="mb-0 fz14 list-inline-item mb5-sm pe-1">
-                      <i className="flaticon-30-days fz16 vam text-thm2 me-1 bdrl1 pl15 pl0-xs bdrn-xs" />{" "}
-                      April 01, 2023
-                    </p>
-                    <p className="mb-0 fz14 list-inline-item mb5-sm">
-                      <i className="flaticon-contract fz16 vam text-thm2 me-1 bdrl1 pl15 pl0-xs bdrn-xs" />{" "}
-                      1 Received
-                    </p>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        </th>
-        <td className="vam">
-          {isConvexBid ? (
-            <h5 className="mb-0">
-              {currency} {amount?.toFixed(2)}{" "}
-              <span className="fz14 fw400">/ {t("days", { count: deliveryDays })}</span>
-            </h5>
+    <tr>
+      <td data-label={t("columnProject")} className="align-top">
+        <h5 className="text-base font-semibold mb-2">
+          {projectSlug ? (
+            <Link href={`/en/projects/${projectSlug}`} className="hover:text-primary">
+              {title}
+            </Link>
           ) : (
-            <h5 className="mb-0">
-              ${legacyPriceMin} - ${legacyPriceMax}{" "}
-              <span className="fz14 fw400">Hourly Rate</span>
-            </h5>
+            title
           )}
-        </td>
-        <td>
-          <div className="flex">
-            <a
-              className="icon me-2"
-              id={tooltipEditId}
-            >
-              <Tooltip anchorSelect={`#${tooltipEditId}`} className="ui-tooltip">
-                {t("edit")}
-              </Tooltip>
-              <span className="flaticon-pencil" />
-            </a>
-            <a
-              className="icon"
-              id={tooltipDeleteId}
-            >
-              <Tooltip anchorSelect={`#${tooltipDeleteId}`} className="ui-tooltip">
-                {t("delete")}
-              </Tooltip>
-              <span className="flaticon-delete" />
-            </a>
+        </h5>
+        {isConvexBid ? (
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--text-secondary)] mb-2">
+            <span className="inline-flex items-center gap-1">
+              <Calendar className="h-3.5 w-3.5 text-primary" />
+              {t("submitted", { date: submittedDate })}
+            </span>
+            {deliveryDays && (
+              <span className="inline-flex items-center gap-1">
+                <FileText className="h-3.5 w-3.5 text-primary" />
+                {deliveryDays !== 1
+                  ? t("daysDelivery", { count: deliveryDays })
+                  : t("dayDelivery")}
+              </span>
+            )}
           </div>
-        </td>
-      </tr>
-    </>
+        ) : (
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--text-secondary)]">
+            <span className="inline-flex items-center gap-1">
+              <MapPin className="h-3.5 w-3.5 text-primary" />
+              London, UK
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <Calendar className="h-3.5 w-3.5 text-primary" />
+              April 01, 2023
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <FileText className="h-3.5 w-3.5 text-primary" />
+              1 Received
+            </span>
+          </div>
+        )}
+        {statusLabel && <Badge variant={statusVariant}>{statusLabel}</Badge>}
+      </td>
+      <td data-label={t("columnBidAmount")} className="align-top">
+        {isConvexBid ? (
+          <h5 className="text-base font-semibold">
+            {currency} {amount?.toFixed(2)}{" "}
+            <span className="text-sm font-normal text-[var(--text-secondary)]">
+              / {t("days", { count: deliveryDays })}
+            </span>
+          </h5>
+        ) : (
+          <h5 className="text-base font-semibold">
+            ${legacyPriceMin} - ${legacyPriceMax}{" "}
+            <span className="text-sm font-normal text-[var(--text-secondary)]">
+              Hourly Rate
+            </span>
+          </h5>
+        )}
+      </td>
+      <td data-label={t("columnAction")} className="align-top">
+        <div className="flex gap-2">
+          <button
+            type="button"
+            id={tooltipEditId}
+            aria-label={t("edit")}
+            className="text-[var(--text-tertiary)] hover:text-foreground"
+          >
+            <Pencil className="h-4 w-4" />
+          </button>
+          <Tooltip anchorSelect={`#${tooltipEditId}`}>{t("edit")}</Tooltip>
+          <button
+            type="button"
+            id={tooltipDeleteId}
+            aria-label={t("delete")}
+            className="text-[var(--text-tertiary)] hover:text-destructive"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+          <Tooltip anchorSelect={`#${tooltipDeleteId}`}>{t("delete")}</Tooltip>
+        </div>
+      </td>
+    </tr>
   );
 }

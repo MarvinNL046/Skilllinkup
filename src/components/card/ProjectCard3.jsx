@@ -1,5 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, MapPin, Clock, FileText } from "lucide-react";
 
 function timeAgo(timestamp) {
   if (!timestamp) return "Recently";
@@ -15,67 +19,69 @@ function timeAgo(timestamp) {
 
 export default function ProjectCard3({ data }) {
   return (
-    <>
-      <div  className="freelancer-style1 bdr1 bdrs12 hover-box-shadow row ms-0 lg:items-center">
-        <div  className="col-lg-8 ps-0 bdrr1 bdrn-xl">
-          <div  className="lg:flex">
-            <div  className="thumb w60 relative rounded-circle mb15-md">
-              <Image
-                height={60}
-                width={60}
-                className="rounded-circle mx-auto"
-                src={data.img}
-                alt="rounded-circle"
-              />
-              <span  className="online-badge2"></span>
+    <Card className="hover:shadow-md transition-shadow">
+      <CardContent className="p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 lg:items-center">
+          <div className="lg:pr-6 lg:border-r lg:border-[var(--border-subtle)]">
+            <div className="flex flex-col lg:flex-row gap-4 mb-3">
+              <div className="relative flex-shrink-0">
+                <Image
+                  height={60}
+                  width={60}
+                  className="rounded-full"
+                  src={data.img}
+                  alt={data.title}
+                />
+                <span
+                  className="absolute right-0 bottom-0 h-3 w-3 rounded-full bg-success border-2 border-[var(--bg-elevated)]"
+                  aria-label="Online"
+                />
+              </div>
+              <div className="min-w-0">
+                <h5 className="text-lg font-semibold mb-3">{data.title}</h5>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--text-secondary)]">
+                  <span className="inline-flex items-center gap-1">
+                    <MapPin className="h-3.5 w-3.5 text-primary" />
+                    {data.location}
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <Clock className="h-3.5 w-3.5 text-primary" />
+                    {timeAgo(data.createdAt)}
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <FileText className="h-3.5 w-3.5 text-primary" />
+                    {data.bidCount ?? 0} Received
+                  </span>
+                </div>
+              </div>
             </div>
-            <div  className="details ml15 ml0-md mb15-md">
-              <h5  className="title mb-3">{data.title}</h5>
-              <p  className="mb-0 fz14 list-inline-item mb5-sm pe-1">
-                <i  className="flaticon-place fz16 vam text-thm2 me-1"></i>{" "}
-                {data.location}
-              </p>
-              <p  className="mb-0 fz14 list-inline-item mb5-sm pe-1">
-                <i  className="flaticon-30-days fz16 vam text-thm2 me-1 bdrl1 pl15 pl0-xs bdrn-xs"></i>{" "}
-                {timeAgo(data.createdAt)}
-              </p>
-              <p  className="mb-0 fz14 list-inline-item mb5-sm">
-                <i  className="flaticon-contract fz16 vam text-thm2 me-1 bdrl1 pl15 pl0-xs bdrn-xs"></i>{" "}
-                {data.bidCount ?? 0} Received
-              </p>
-            </div>
+            {data.brief && (
+              <p className="text-sm text-[var(--text-secondary)] mb-3">{data.brief}</p>
+            )}
+            {data.tags?.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {data.tags.map((item, i) => (
+                  <Badge key={i} variant="muted">
+                    {item}
+                  </Badge>
+                ))}
+              </div>
+            )}
           </div>
-          <p  className="text mt10">
-            {data.brief || ""}{" "}
-          </p>
-          <div  className="skill-tags flex items-center justify-start mb20-md">
-            {data.tags.map((item, i) => (
-              <span key={i} className={`tag ${i === 1 ? "mx10" : ""}`}>
-                {item}
-              </span>
-            ))}
-          </div>
-        </div>
-        <div  className="col-lg-4 ps-0 ps-xl-3 pe-0">
-          <div  className="details">
-            <div  className="text-lg-end">
-              <h4>
-                ${data.price.min} - ${data.price.max}
-              </h4>
-              <p  className="text">Hourly Rate</p>
-            </div>
-            <div  className="grid mt15">
-              <Link
-                href={`/project/${data.slug || data.id}`}
-                className="ud-btn btn-thm-border bdrs12 hover-default-box-shadow1"
-              >
+          <div className="lg:text-right">
+            <h4 className="text-lg font-semibold">
+              ${data.price.min} - ${data.price.max}
+            </h4>
+            <p className="text-sm text-[var(--text-secondary)] mb-4">Hourly Rate</p>
+            <Button asChild variant="outline" className="w-full">
+              <Link href={`/project/${data.slug || data.id}`}>
                 Send Proposal
-                <i className="fal fa-arrow-right-long" />
+                <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
-            </div>
+            </Button>
           </div>
         </div>
-      </div>
-    </>
+      </CardContent>
+    </Card>
   );
 }

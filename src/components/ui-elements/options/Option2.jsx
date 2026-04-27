@@ -19,12 +19,11 @@ export default function Option2({ lebel, data, selected, handler }) {
   return (
     <>
       <div className="form-style1">
-        <label className="form-label fw500 fz16 dark-color">{lebel}</label>
+        <label className="form-label font-medium text-base dark-color">{lebel}</label>
         <div className="bootselect-multiselect">
           <div className="dropdown bootstrap-select show-tick">
             <button
               className="btn dropdown-toggle btn-light"
-              data-bs-toggle="dropdown"
             >
               <div className="filter-option">
                 <div className="filter-option-inner">

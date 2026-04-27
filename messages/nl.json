@@ -939,7 +939,9 @@
     "columnAmount": "Bedrag",
     "tierBronze": "Bronze",
     "tierSilver": "Silver",
-    "tierGold": "Gold"
+    "tierGold": "Gold",
+    "signInPrompt": "Log in om je beloningen te bekijken.",
+    "settingUpAccount": "Je account wordt ingesteld... Ververs over een moment."
   },
   "feedback": {
     "title": "Feedback",
@@ -1256,7 +1258,8 @@
     "deliveryDays": "Levertijd (dagen)",
     "deliveryDaysPlaceholder": "bijv. 3",
     "revisions": "Revisies",
-    "revisionsPlaceholder": "bijv. 2"
+    "revisionsPlaceholder": "bijv. 2",
+    "switchToFreelancerLink": "Schakel over naar freelancer modus"
   },
   "manageServices": {
     "title": "Diensten beheren",
@@ -1309,6 +1312,7 @@
     "onSite": "Op locatie",
     "hybrid": "Hybride",
     "deadline": "Deadline",
+    "deadlineHint": "Formaat: JJJJ-MM-DD",
     "requiredSkills": "Vereiste skills (komma-gescheiden)",
     "requiredSkillsPlaceholder": "bijv. React, TypeScript, Node.js",
     "projectDescription": "Projectbeschrijving",

@@ -10,13 +10,13 @@ export default function Tab1() {
     <>
       <div className="ui-content">
         <h5 className="title">Tabs</h5>
-        <div className="navpill-style1 mb70">
-          <ul className="nav nav-pills mb30">
+        <div className="navpill-style1 mb-16">
+          <ul className="nav nav-pills mb-8">
             {tab.map((item, i) => (
               <li key={i} className="nav-item">
                 <button
                   onClick={() => setCurrentTab(i)}
-                  className={`nav-link fw500 dark-color ${
+                  className={`nav-link font-medium dark-color ${
                     currentTab === i ? "active" : ""
                   }`}
                 >
@@ -27,7 +27,7 @@ export default function Tab1() {
           </ul>
           <div className="tab-content">
             <div
-              className={`tab-pane fade fz15 text ${
+              className={`tab-pane fade text-base text ${
                 currentTab === 0 ? "show active" : ""
               }`}
             >
@@ -38,7 +38,7 @@ export default function Tab1() {
               proin quis tortor non risus.
             </div>
             <div
-              className={`tab-pane fade fz15 text ${
+              className={`tab-pane fade text-base text ${
                 currentTab === 1 ? "show active" : ""
               }`}
             >
@@ -49,7 +49,7 @@ export default function Tab1() {
               proin quis tortor non risus.
             </div>
             <div
-              className={`tab-pane fade fz15 text ${
+              className={`tab-pane fade text-base text ${
                 currentTab === 2 ? "show active" : ""
               }`}
             >

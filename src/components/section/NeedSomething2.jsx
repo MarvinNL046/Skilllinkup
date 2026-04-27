@@ -1,15 +1,10 @@
 "use client";
 import { useTranslations } from "next-intl";
 import { UserCheck, Handshake, Rocket } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
-/**
- * "How it works" band — replaces the old AllTimeSelling mock grid.
- * Pre-launch appropriate: explains the model instead of faking
- * marketplace activity we don't have yet. Redesigned against the
- * SkillLinkup Design System 2026-04-24.
- */
-
-const steps = [
+const STEPS = [
   {
     Icon: UserCheck,
     titleKey: "step1Title",
@@ -43,34 +38,16 @@ export default function NeedSomething2() {
   const t = useTranslations("howItWorks");
 
   return (
-    <section style={{ padding: "var(--space-24) 0" }}>
-      <div
-        className="container"
-        style={{ maxWidth: "var(--container-xl)" }}
-      >
-        <div className="text-center" style={{ marginBottom: "var(--space-12)" }}>
-          <span className="overline" style={{ display: "inline-block", color: "var(--primary-600)", marginBottom: "var(--space-3)" }}>
+    <section className="py-24">
+      <div className="container max-w-screen-xl mx-auto">
+        <div className="text-center mb-12">
+          <span className="inline-block text-xs uppercase tracking-wider font-semibold text-primary mb-3">
             {t("eyebrow", { default: "How it works" })}
           </span>
-          <h2
-            className="display-lg"
-            style={{
-              margin: 0,
-              maxWidth: 720,
-              marginLeft: "auto",
-              marginRight: "auto",
-            }}
-          >
+          <h2 className="text-4xl md:text-5xl font-medium tracking-tight max-w-3xl mx-auto">
             {t("title", { default: "A platform built network-first." })}
           </h2>
-          <p
-            className="body-lg"
-            style={{
-              color: "var(--text-secondary)",
-              maxWidth: 560,
-              margin: "var(--space-4) auto 0",
-            }}
-          >
+          <p className="text-lg text-[var(--text-secondary)] max-w-xl mx-auto mt-4">
             {t("subtitle", {
               default:
                 "We're not pretending to be live yet. Here's what happens between now and launch.",
@@ -78,72 +55,39 @@ export default function NeedSomething2() {
           </p>
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gap: "var(--space-4)",
-            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-          }}
-        >
-          {steps.map((step, i) => {
-            const tone = step.tone === "primary"
-              ? { bg: "var(--primary-50)", fg: "var(--primary-700)" }
-              : { bg: "var(--secondary-50)", fg: "var(--secondary-700)" };
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {STEPS.map((step, i) => {
+            const toneClass =
+              step.tone === "primary"
+                ? "bg-primary/10 text-primary"
+                : "bg-secondary/20 text-secondary-700";
             return (
-              <div
-                key={i}
-                className="card"
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "var(--space-4)",
-                }}
-              >
-                <div
-                  className="flex items-center justify-between"
-                  style={{ marginBottom: "var(--space-2)" }}
-                >
-                  <div
-                    className="inline-flex items-center justify-center"
-                    style={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: "var(--radius-md)",
-                      background: tone.bg,
-                      color: tone.fg,
-                    }}
-                  >
-                    <step.Icon size={22} strokeWidth={2} />
+              <Card key={i}>
+                <CardContent className="p-6 flex flex-col gap-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div
+                      className={cn(
+                        "inline-flex items-center justify-center h-12 w-12 rounded-md",
+                        toneClass
+                      )}
+                    >
+                      <step.Icon className="h-5 w-5" strokeWidth={2} />
+                    </div>
+                    <span
+                      className="text-3xl font-semibold leading-none text-[var(--text-tertiary)]"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      0{i + 1}
+                    </span>
                   </div>
-                  <span
-                    style={{
-                      fontFamily: "var(--font-display)",
-                      fontSize: "var(--text-h3)",
-                      fontWeight: 600,
-                      color: "var(--text-tertiary)",
-                      lineHeight: 1,
-                    }}
-                  >
-                    0{i + 1}
-                  </span>
-                </div>
-                <h3
-                  className="h4"
-                  style={{ margin: 0, letterSpacing: "-0.015em" }}
-                >
-                  {t(step.titleKey, { default: step.fallbackTitle })}
-                </h3>
-                <p
-                  className="body-sm"
-                  style={{
-                    color: "var(--text-secondary)",
-                    margin: 0,
-                    lineHeight: "var(--leading-relaxed)",
-                  }}
-                >
-                  {t(step.descKey, { default: step.fallbackDesc })}
-                </p>
-              </div>
+                  <h3 className="text-xl font-medium tracking-tight m-0">
+                    {t(step.titleKey, { default: step.fallbackTitle })}
+                  </h3>
+                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed m-0">
+                    {t(step.descKey, { default: step.fallbackDesc })}
+                  </p>
+                </CardContent>
+              </Card>
             );
           })}
         </div>

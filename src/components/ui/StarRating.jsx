@@ -9,7 +9,7 @@
  *   size      {string}   "sm" | "md" (default: "md")
  */
 export default function StarRating({ value = 0, onChange, readOnly = false, size = "md" }) {
-  const sizeCls = size === "sm" ? "fz12" : "fz18";
+  const sizeCls = size === "sm" ? "text-xs" : "text-lg";
 
   return (
     <div className="flex items-center gap-1">

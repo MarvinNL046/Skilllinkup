@@ -5,20 +5,16 @@ import { useTranslations } from "next-intl";
 import { api } from "../../../convex/_generated/api";
 import StarRating from "@/components/ui/StarRating";
 import useConvexUser from "@/hook/useConvexUser";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ArrowRight, CheckCircle2, EyeOff } from "lucide-react";
 
-/**
- * ReviewForm - Submit a review for a completed order.
- *
- * Props:
- *   orderId      {string}  Convex ID of the order
- *   revieweeId   {string}  Convex user ID of the person being reviewed
- *   reviewerRole {string}  "client" or "freelancer"
- */
 export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
   const t = useTranslations("reviews");
   const { convexUser } = useConvexUser();
 
-  // Fetch existing reviews for this order to check if user already reviewed
   const orderReviews = useQuery(
     api.marketplace.reviews.getByOrder,
     orderId ? { orderId } : "skip"
@@ -37,13 +33,11 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
 
-  // Check if the current user already reviewed this order
   const alreadyReviewed =
     orderReviews !== undefined &&
     convexUser?._id &&
     orderReviews.some((r) => r.reviewerId === convexUser._id);
 
-  // Loading state while queries resolve
   const isLoading = orderReviews === undefined || !convexUser;
 
   const handleSubmit = async (e) => {
@@ -78,25 +72,23 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
 
   if (isLoading) {
     return (
-      <div className="bsp_reveiw_wrt mt20">
-        <p className="text fz14">{t("loadingReviewForm")}</p>
+      <div className="mt-5">
+        <p className="text-sm text-[var(--text-secondary)]">{t("loadingReviewForm")}</p>
       </div>
     );
   }
 
   if (submitted || alreadyReviewed) {
     return (
-      <div className="bsp_reveiw_wrt mt20">
-        <div className="flex items-center gap-2 mb10">
-          <i className="fas fa-check-circle text-success fz18" />
-          <h6 className="fz16 mb-0">
-            {alreadyReviewed && !submitted
-              ? t("alreadyReviewed")
-              : t("thankYou")}
+      <div className="mt-5">
+        <div className="flex items-center gap-2 mb-2">
+          <CheckCircle2 className="h-5 w-5 text-success" />
+          <h6 className="text-base font-semibold mb-0">
+            {alreadyReviewed && !submitted ? t("alreadyReviewed") : t("thankYou")}
           </h6>
         </div>
-        <p className="text fz13 mb-0">
-          <i className="fas fa-eye-slash me-1" />
+        <p className="flex items-center gap-1 text-xs text-[var(--text-secondary)] mb-0">
+          <EyeOff className="h-3 w-3" />
           {t("blindVisibilityNote")}
         </p>
       </div>
@@ -104,93 +96,88 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
   }
 
   return (
-    <div className="bsp_reveiw_wrt mt20">
-      <h6 className="fz17 mb5">{t("leaveReview")}</h6>
-      <p className="text fz13 mb20">
-        <i className="fas fa-eye-slash me-1" />
+    <div className="mt-5">
+      <h6 className="text-lg font-semibold mb-1">{t("leaveReview")}</h6>
+      <p className="flex items-center gap-1 text-xs text-[var(--text-secondary)] mb-5">
+        <EyeOff className="h-3 w-3" />
         {t("reviewBlindNote")}
       </p>
 
-      <form className="comments_form" onSubmit={handleSubmit}>
-        <div className="row">
-          {/* Overall rating - required */}
-          <div className="col-md-12 mb20">
-            <label className="fw500 ff-heading dark-color mb-2 block">
-              {t("overallRating")} <span className="text-danger">*</span>
-            </label>
-            <StarRating value={overallRating} onChange={setOverallRating} />
-          </div>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div>
+          <Label className="block mb-2">
+            {t("overallRating")} <span className="text-destructive">*</span>
+          </Label>
+          <StarRating value={overallRating} onChange={setOverallRating} />
+        </div>
 
-          {/* Sub-ratings */}
-          <div className="col-sm-6 col-xl-3 mb20">
-            <label className="fw500 ff-heading dark-color mb-2 block fz14">
-              {t("communication")}
-            </label>
-            <StarRating value={communicationRating} onChange={setCommunicationRating} size="sm" />
-          </div>
-
-          <div className="col-sm-6 col-xl-3 mb20">
-            <label className="fw500 ff-heading dark-color mb-2 block fz14">
-              {t("quality")}
-            </label>
-            <StarRating value={qualityRating} onChange={setQualityRating} size="sm" />
-          </div>
-
-          <div className="col-sm-6 col-xl-3 mb20">
-            <label className="fw500 ff-heading dark-color mb-2 block fz14">
-              {t("timeliness")}
-            </label>
-            <StarRating value={timelinessRating} onChange={setTimelinessRating} size="sm" />
-          </div>
-
-          <div className="col-sm-6 col-xl-3 mb20">
-            <label className="fw500 ff-heading dark-color mb-2 block fz14">
-              {t("value")}
-            </label>
-            <StarRating value={valueRating} onChange={setValueRating} size="sm" />
-          </div>
-
-          {/* Written review */}
-          <div className="col-md-12 mb20">
-            <label className="fw500 ff-heading dark-color mb-2 block">
-              {t("writtenReview")} <span className="text fz13">{t("optional")}</span>
-            </label>
-            <textarea
-              className="pt15"
-              rows={4}
-              placeholder={t("reviewPlaceholder")}
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+          <div>
+            <Label className="block mb-2 text-sm">{t("communication")}</Label>
+            <StarRating
+              value={communicationRating}
+              onChange={setCommunicationRating}
+              size="sm"
             />
           </div>
-
-          {/* Error message */}
-          {error && (
-            <div className="col-md-12 mb15">
-              <div className="alert alert-danger fz14 py-2 px-3">{error}</div>
-            </div>
-          )}
-
-          {/* Submit */}
-          <div className="col-md-12">
-            <button
-              type="submit"
-              className="ud-btn btn-thm fz14"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <>
-                  <span className="spinner-border spinner-border-sm me-2" role="status" />
-                  {t("submitting")}
-                </>
-              ) : (
-                <>
-                  {t("submitReview")}
-                  <i className="fal fa-arrow-right-long" />
-                </>
-              )}
-            </button>
+          <div>
+            <Label className="block mb-2 text-sm">{t("quality")}</Label>
+            <StarRating value={qualityRating} onChange={setQualityRating} size="sm" />
           </div>
+          <div>
+            <Label className="block mb-2 text-sm">{t("timeliness")}</Label>
+            <StarRating
+              value={timelinessRating}
+              onChange={setTimelinessRating}
+              size="sm"
+            />
+          </div>
+          <div>
+            <Label className="block mb-2 text-sm">{t("value")}</Label>
+            <StarRating value={valueRating} onChange={setValueRating} size="sm" />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="review-content">
+            {t("writtenReview")}{" "}
+            <span className="text-xs text-[var(--text-tertiary)] font-normal">
+              {t("optional")}
+            </span>
+          </Label>
+          <Textarea
+            id="review-content"
+            rows={4}
+            placeholder={t("reviewPlaceholder")}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+        </div>
+
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
+        <div>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <span
+                  role="status"
+                  aria-label={t("submitting")}
+                  className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2"
+                />
+                {t("submitting")}
+              </>
+            ) : (
+              <>
+                {t("submitReview")}
+                <ArrowRight className="ml-1 h-4 w-4" />
+              </>
+            )}
+          </Button>
         </div>
       </form>
     </div>

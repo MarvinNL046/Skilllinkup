@@ -13,6 +13,8 @@ import { api } from "../../../convex/_generated/api";
 import useConvexFreelancerDetail from "@/hook/useConvexFreelancerDetail";
 import ContactButton from "@/components/ui/ContactButton";
 import StarRating from "@/components/ui/StarRating";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 
 function formatReviewDate(timestamp) {
   if (!timestamp) return "";
@@ -254,10 +256,10 @@ function GigPackageTable({ gig, recipientUserId }) {
   if (!packages || packages.length === 0) return null;
 
   return (
-    <div className="mb30">
-      <h5 className="mb5">{gig.title}</h5>
+    <div className="mb-8">
+      <h5 className="mb-1">{gig.title}</h5>
       {gig.description && (
-        <p className="text fz14 mb15" style={{ maxWidth: 680 }}>
+        <p className="text text-sm mb-4" style={{ maxWidth: 680 }}>
           {gig.description.length > 200 ? gig.description.slice(0, 200) + "…" : gig.description}
         </p>
       )}
@@ -266,7 +268,7 @@ function GigPackageTable({ gig, recipientUserId }) {
           <thead style={{ background: "var(--primary-50)" }}>
             <tr>
               {packages.map((pkg) => (
-                <th key={pkg._id} scope="col" className="fz15 fw600 p20">
+                <th key={pkg._id} scope="col" className="text-base font-semibold p-5">
                   {TIER_LABELS[pkg.tier] || pkg.tier}
                 </th>
               ))}
@@ -276,13 +278,13 @@ function GigPackageTable({ gig, recipientUserId }) {
             {/* Package title */}
             <tr>
               {packages.map((pkg) => (
-                <td key={pkg._id} className="fz14 fw500 p15">{pkg.title}</td>
+                <td key={pkg._id} className="text-sm font-medium p-4">{pkg.title}</td>
               ))}
             </tr>
             {/* Price */}
             <tr style={{ background: "var(--surface-2)" }}>
               {packages.map((pkg) => (
-                <td key={pkg._id} className="fz20 fw700 p15 dark-color">
+                <td key={pkg._id} className="text-xl font-bold p-4 dark-color">
                   {(Number(pkg.price) || 0).toLocaleString("nl-NL", {
                     style: "currency",
                     currency: pkg.currency || "EUR",
@@ -294,7 +296,7 @@ function GigPackageTable({ gig, recipientUserId }) {
             {/* Delivery */}
             <tr>
               {packages.map((pkg) => (
-                <td key={pkg._id} className="fz13 text p15">
+                <td key={pkg._id} className="text-sm text p-4">
                   <i className="flaticon-clock me-1" />
                   {pkg.deliveryDays} {pkg.deliveryDays === 1 ? t("day") : t("days")} {t("delivery")}
                 </td>
@@ -304,7 +306,7 @@ function GigPackageTable({ gig, recipientUserId }) {
             {packages.some((p) => p.revisionCount != null) && (
               <tr>
                 {packages.map((pkg) => (
-                  <td key={pkg._id} className="fz13 text p15">
+                  <td key={pkg._id} className="text-sm text p-4">
                     <i className="flaticon-cycle me-1" />
                     {pkg.revisionCount != null ? `${pkg.revisionCount} ${pkg.revisionCount !== 1 ? t("revisions") : t("revision")}` : "—"}
                   </td>
@@ -315,10 +317,10 @@ function GigPackageTable({ gig, recipientUserId }) {
             {packages.some((p) => p.features && p.features.length > 0) && (
               <tr>
                 {packages.map((pkg) => (
-                  <td key={pkg._id} className="fz13 text p15" style={{ verticalAlign: "top" }}>
+                  <td key={pkg._id} className="text-sm text p-4" style={{ verticalAlign: "top" }}>
                     {(pkg.features || []).map((f, i) => (
-                      <div key={`${pkg._id}-f${i}`} className="flex items-center justify-center gap-1 mb5">
-                        <i className="flaticon-check text-success fz12" />
+                      <div key={`${pkg._id}-f${i}`} className="flex items-center justify-center gap-1 mb-1">
+                        <i className="flaticon-check text-success text-xs" />
                         <span>{String(f)}</span>
                       </div>
                     ))}
@@ -334,17 +336,19 @@ function GigPackageTable({ gig, recipientUserId }) {
                   ? `/message?recipientId=${recipientUserId}&subject=${subject}`
                   : null;
                 return (
-                  <td key={pkg._id} className="p15">
+                  <td key={pkg._id} className="p-4">
                     {href ? (
-                      <Link href={href} className="ud-btn btn-thm btn-sm w-full" onClick={handleContactClick}>
-                        {t("contact")}
-                        <i className="fal fa-arrow-right-long ms-1" />
-                      </Link>
+                      <Button asChild size="sm" className="w-full">
+                        <Link href={href} onClick={handleContactClick}>
+                          {t("contact")}
+                          <ArrowRight className="ml-1 h-4 w-4" />
+                        </Link>
+                      </Button>
                     ) : (
-                      <button className="ud-btn btn-thm btn-sm w-full" disabled>
+                      <Button size="sm" className="w-full" disabled>
                         {t("contact")}
-                        <i className="fal fa-arrow-right-long ms-1" />
-                      </button>
+                        <ArrowRight className="ml-1 h-4 w-4" />
+                      </Button>
                     )}
                   </td>
                 );
@@ -368,7 +372,7 @@ function GigsSection({ freelancerProfileId, recipientUserId }) {
     return (
       <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("services")}</h2>
-        <p className="text fz14">{t("loadingServices")}</p>
+        <p className="text text-sm">{t("loadingServices")}</p>
       </div>
     );
   }
@@ -377,7 +381,7 @@ function GigsSection({ freelancerProfileId, recipientUserId }) {
     return (
       <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("services")}</h2>
-        <p className="text fz14">{t("noServices")}</p>
+        <p className="text text-sm">{t("noServices")}</p>
       </div>
     );
   }
@@ -408,7 +412,7 @@ function ProjectsSection({ userId }) {
     return (
       <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("projects")}</h2>
-        <p className="text fz14">{t("loadingProjects")}</p>
+        <p className="text text-sm">{t("loadingProjects")}</p>
       </div>
     );
   }
@@ -417,7 +421,7 @@ function ProjectsSection({ userId }) {
     return (
       <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("projects")}</h2>
-        <p className="text fz14">{t("noProjects")}</p>
+        <p className="text text-sm">{t("noProjects")}</p>
       </div>
     );
   }
@@ -427,15 +431,15 @@ function ProjectsSection({ userId }) {
       <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("projects")}</h2>
       <div className="row">
         {projects.map((project) => (
-          <div key={project._id} className="col-sm-6 mb20">
+          <div key={project._id} className="col-sm-6 mb-5">
             <div style={{ padding: "var(--space-5)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-lg)", height: "100%" }}>
-              <h6 className="mb10">{project.title}</h6>
-              <div className="flex flex-wrap gap-2 mb10">
+              <h6 className="mb-2.5">{project.title}</h6>
+              <div className="flex flex-wrap gap-2 mb-2.5">
                 {project.categoryName && (
                   <span className="tag">{project.categoryName}</span>
                 )}
                 {(project.budgetMin || project.budgetMax) && (
-                  <span className="fz13 text">
+                  <span className="text-sm text">
                     <i className="flaticon-dollar me-1" />
                     {project.budgetMin && project.budgetMax
                       ? `€${project.budgetMin} – €${project.budgetMax}`
@@ -446,12 +450,12 @@ function ProjectsSection({ userId }) {
                 )}
               </div>
               {project.deadline && (
-                <p className="fz13 text mb5">
+                <p className="text-sm text mb-1">
                   <i className="flaticon-clock me-1" />
                   {t("deadline")}: {new Date(project.deadline).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
                 </p>
               )}
-              <p className="fz13 text mb-0">
+              <p className="text-sm text mb-0">
                 <i className="flaticon-contract me-1" />
                 {project.bidCount} {project.bidCount === 1 ? t("bid") : t("bids")}
               </p>
@@ -476,7 +480,7 @@ function PortfolioSection({ userId }) {
     return (
       <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("portfolio")}</h2>
-        <p className="text fz14">{t("loadingPortfolio")}</p>
+        <p className="text text-sm">{t("loadingPortfolio")}</p>
       </div>
     );
   }
@@ -485,7 +489,7 @@ function PortfolioSection({ userId }) {
     return (
       <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("portfolio")}</h2>
-        <p className="text fz14">{t("noPortfolio")}</p>
+        <p className="text text-sm">{t("noPortfolio")}</p>
       </div>
     );
   }
@@ -495,7 +499,7 @@ function PortfolioSection({ userId }) {
       <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("portfolio")}</h2>
       <div className="row">
         {portfolioItems.map((item) => (
-          <div key={item._id} className="col-sm-6 col-lg-4 mb20">
+          <div key={item._id} className="col-sm-6 col-lg-4 mb-5">
             <div style={{ border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-lg)", overflow: "hidden", height: "100%" }}>
               <div
                 style={{
@@ -506,13 +510,13 @@ function PortfolioSection({ userId }) {
                   justifyContent: "center",
                 }}
               >
-                <span className="flaticon-photo fz30 text-muted" />
+                <span className="flaticon-photo text-3xl text-muted" />
               </div>
-              <div className="p15">
-                <h6 className="mb5">{item.title}</h6>
+              <div className="p-4">
+                <h6 className="mb-1">{item.title}</h6>
                 {item.description && (
                   <p
-                    className="fz13 text mb10"
+                    className="text-sm text mb-2.5"
                     style={{
                       WebkitLineClamp: 2,
                       overflow: "hidden",
@@ -524,7 +528,7 @@ function PortfolioSection({ userId }) {
                   </p>
                 )}
                 {(item.tags || []).length > 0 && (
-                  <div className="flex flex-wrap gap-1 mb10">
+                  <div className="flex flex-wrap gap-1 mb-2.5">
                     {item.tags.map((tag, i) => (
                       <span key={i} className="tag">{tag}</span>
                     ))}
@@ -535,7 +539,7 @@ function PortfolioSection({ userId }) {
                     href={item.externalUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="fz13 text-thm"
+                    className="text-sm text-thm"
                   >
                     {t("viewProject")} ↗
                   </a>
@@ -578,16 +582,16 @@ function ExperienceSection({ userId }) {
 
       {hasWork && (
         <>
-          <h5 className="fz16 mb15">{t("workExperience")}</h5>
+          <h5 className="text-base mb-4">{t("workExperience")}</h5>
           {workExp.map((item) => (
-            <div key={item._id} className="bdrb1 pb15 mb15">
+            <div key={item._id} className="bdrb1 pb-4 mb-4">
               <h6 className="mb2">{item.title}</h6>
-              <p className="fz14 text mb2 fw500">{item.company}</p>
-              <p className="fz13 text-muted mb5">
+              <p className="text-sm text mb2 font-medium">{item.company}</p>
+              <p className="text-sm text-muted mb-1">
                 {formatMonthYear(item.startDate)} —{" "}
                 {item.isCurrent ? t("present") : formatMonthYear(item.endDate, t("present"))}
               </p>
-              {item.description && <p className="fz13 text mb-0">{item.description}</p>}
+              {item.description && <p className="text-sm text mb-0">{item.description}</p>}
             </div>
           ))}
         </>
@@ -595,17 +599,17 @@ function ExperienceSection({ userId }) {
 
       {hasEdu && (
         <>
-          <h5 className="fz16 mb15 mt20">{t("education")}</h5>
+          <h5 className="text-base mb-4 mt-5">{t("education")}</h5>
           {education.map((item) => (
-            <div key={item._id} className="bdrb1 pb15 mb15">
+            <div key={item._id} className="bdrb1 pb-4 mb-4">
               <h6 className="mb2">{item.school}</h6>
               {item.degree && (
-                <p className="fz14 text mb2">
+                <p className="text-sm text mb2">
                   {item.degree}{item.field ? `, ${item.field}` : ""}
                 </p>
               )}
               {(item.startYear || item.endYear) && (
-                <p className="fz13 text-muted mb-0">
+                <p className="text-sm text-muted mb-0">
                   {item.startYear || ""}{item.endYear ? ` — ${item.endYear}` : ""}
                 </p>
               )}
@@ -616,17 +620,17 @@ function ExperienceSection({ userId }) {
 
       {hasCerts && (
         <>
-          <h5 className="fz16 mb15 mt20">{t("certifications")}</h5>
+          <h5 className="text-base mb-4 mt-5">{t("certifications")}</h5>
           {certs.map((item) => (
-            <div key={item._id} className="bdrb1 pb15 mb15">
+            <div key={item._id} className="bdrb1 pb-4 mb-4">
               <h6 className="mb2">{item.name}</h6>
               {item.issuer && (
-                <p className="fz14 text mb2">
+                <p className="text-sm text mb2">
                   {item.issuer}{item.year ? ` · ${item.year}` : ""}
                 </p>
               )}
               {item.url && (
-                <a href={item.url} target="_blank" rel="noopener noreferrer" className="fz13 text-thm">
+                <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-sm text-thm">
                   {t("viewCertificate")} ↗
                 </a>
               )}
@@ -651,7 +655,7 @@ function FreelancerReviews({ freelancerId }) {
     return (
       <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("reviews")}</h2>
-        <p className="text fz14">{t("loadingReviews")}</p>
+        <p className="text text-sm">{t("loadingReviews")}</p>
       </div>
     );
   }
@@ -660,7 +664,7 @@ function FreelancerReviews({ freelancerId }) {
     return (
       <div className="card" style={{ padding: "var(--space-8)", marginBottom: "var(--space-8)" }}>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: 500, letterSpacing: "-0.01em", marginBottom: "var(--space-5)" }}>{t("reviews")}</h2>
-        <p className="text fz14">{t("noReviews")}</p>
+        <p className="text text-sm">{t("noReviews")}</p>
       </div>
     );
   }

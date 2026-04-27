@@ -14,7 +14,7 @@ export default function SpeakOption1() {
   return (
     <>
       <div className="card-body card-body px-0 pt-0">
-        <div className="checkbox-style1 mb15">
+        <div className="checkbox-style1 mb-4">
           {speaks.map((item,i) => (
             <label key={ i } className="custom_checkbox">
               {item.title}

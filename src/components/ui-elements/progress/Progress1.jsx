@@ -9,13 +9,13 @@ export default function Progress1() {
             <span>90%</span>
           </div>
         </div>
-        <div className="progressbar-style1 mt50">
+        <div className="progressbar-style1 mt-12">
           <div className="progressbar-bg" />
           <div className="progressd-bar" style={{ width: "50%" }}>
             <span>50%</span>
           </div>
         </div>
-        <div className="progressbar-style1 mt50">
+        <div className="progressbar-style1 mt-12">
           <div className="progressbar-bg" />
           <div className="progressd-bar" style={{ width: "40%" }}>
             <span>40%</span>

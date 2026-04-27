@@ -7,13 +7,13 @@ export default function Table1() {
           <table className="table table-borderless">
             <thead className="thead-light">
               <tr>
-                <th className="fz15 fw500" scope="col">
+                <th className="text-base font-medium" scope="col">
                   Description
                 </th>
-                <th className="fz15 fw500" scope="col">
+                <th className="text-base font-medium" scope="col">
                   Hour
                 </th>
-                <th className="fz15 fw500" scope="col">
+                <th className="text-base font-medium" scope="col">
                   Quantity
                 </th>
               </tr>

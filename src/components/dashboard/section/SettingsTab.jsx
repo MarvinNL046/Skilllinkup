@@ -6,6 +6,20 @@ import useConvexUser from "@/hook/useConvexUser";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Switch from "@/components/ui/Switch";
+import { Lock } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const ACCOUNT_TYPES = [
   { key: "client", label: "Client" },
@@ -22,6 +36,13 @@ const CONTACT_OPTIONS = [
   { value: "everyone", label: "Everyone" },
   { value: "clients_only", label: "Clients & employers only" },
   { value: "nobody", label: "Nobody" },
+];
+
+const NOTIFICATIONS = [
+  { key: "newMessage", label: "New message received" },
+  { key: "orderUpdate", label: "Order status update" },
+  { key: "reviewReceived", label: "Review received" },
+  { key: "marketingEmails", label: "Marketing & tips from SkillLinkup" },
 ];
 
 export default function SettingsTab() {
@@ -121,22 +142,30 @@ export default function SettingsTab() {
 
   if (!isLoaded) {
     return (
-      <div className="ps-widget bgc-white bdrs4 p30 mb30">
-        <div className="spinner-border text-thm" role="status" />
-      </div>
+      <Card>
+        <CardContent className="p-8 flex justify-center">
+          <div
+            role="status"
+            aria-label="Loading"
+            className="h-6 w-6 animate-spin rounded-full border-3 border-[var(--border-subtle)] border-t-primary"
+          />
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <>
+    <div className="space-y-5 max-w-3xl">
       {/* Account */}
-      <div className="ps-widget bgc-white bdrs4 p30 mb20">
-        <h5 className="list-title bdrb1 pb15 mb20">Account</h5>
-        <div className="row">
-          <div className="col-sm-6 mb20">
-            <label className="heading-color ff-heading fw500 mb10">Email</label>
-            <input
-              className="form-control"
+      <Card className="overflow-hidden">
+        <CardHeader className="border-b border-[var(--border-subtle)] pb-4">
+          <CardTitle className="text-lg font-semibold">Account</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6 space-y-4">
+          <div className="space-y-2 max-w-md">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
               value={
                 clerkUser?.primaryEmailAddress?.emailAddress ||
                 convexUser?.email ||
@@ -144,130 +173,126 @@ export default function SettingsTab() {
               }
               disabled
             />
-            <small className="text-muted">To change your email, contact support.</small>
+            <p className="text-xs text-[var(--text-tertiary)]">
+              To change your email, contact support.
+            </p>
           </div>
-        </div>
-        <button
-          className="ud-btn btn-white"
-          onClick={() =>
-            clerkUser?.openUserProfile?.() ||
-            window.open("https://accounts.clerk.dev/user", "_blank")
-          }
-        >
-          <i className="flaticon-security me-2" /> Change Password
-        </button>
-      </div>
+          <Button
+            variant="outline"
+            onClick={() =>
+              clerkUser?.openUserProfile?.() ||
+              window.open("https://accounts.clerk.dev/user", "_blank")
+            }
+          >
+            <Lock className="mr-2 h-4 w-4" />
+            Change Password
+          </Button>
+        </CardContent>
+      </Card>
 
       {/* Account Type */}
-      <div className="ps-widget bgc-white bdrs4 p30 mb20">
-        <h5 className="list-title bdrb1 pb15 mb20">Account Type</h5>
-        <p className="text fz14 mb15">
-          Your account type determines which features and dashboard sections are
-          available to you.
-        </p>
-        <div className="flex gap-2 mb20 flex-wrap">
-          {ACCOUNT_TYPES.map((t) => (
-            <button
-              key={t.key}
-              className={`ud-btn ${accountType === t.key ? "btn-thm" : "btn-white"}`}
-              onClick={() => setAccountType(t.key)}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-        <button
-          className="ud-btn btn-thm"
-          onClick={handleSaveType}
-          disabled={savingType}
-        >
-          {savingType ? "Saving..." : "Save Account Type"}
-        </button>
-      </div>
+      <Card className="overflow-hidden">
+        <CardHeader className="border-b border-[var(--border-subtle)] pb-4">
+          <CardTitle className="text-lg font-semibold">Account Type</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6 space-y-4">
+          <p className="text-sm text-[var(--text-secondary)]">
+            Your account type determines which features and dashboard sections are
+            available to you.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {ACCOUNT_TYPES.map((tier) => (
+              <Button
+                key={tier.key}
+                variant={accountType === tier.key ? "default" : "outline"}
+                onClick={() => setAccountType(tier.key)}
+              >
+                {tier.label}
+              </Button>
+            ))}
+          </div>
+          <Button onClick={handleSaveType} disabled={savingType}>
+            {savingType ? "Saving..." : "Save Account Type"}
+          </Button>
+        </CardContent>
+      </Card>
 
       {/* Notifications */}
-      <div className="ps-widget bgc-white bdrs4 p30 mb20">
-        <h5 className="list-title bdrb1 pb15 mb20">Notification Preferences</h5>
-        {[
-          { key: "newMessage", label: "New message received" },
-          { key: "orderUpdate", label: "Order status update" },
-          { key: "reviewReceived", label: "Review received" },
-          { key: "marketingEmails", label: "Marketing & tips from SkillLinkup" },
-        ].map(({ key, label }) => (
-          <div
-            key={key}
-            className="flex justify-between items-center bdrb1 pb15 mb15"
-          >
-            <span className="fz15">{label}</span>
-            <div className="form-check form-switch mb-0">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                checked={notifs[key]}
-                onChange={(e) =>
-                  setNotifs((prev) => ({ ...prev, [key]: e.target.checked }))
-                }
-              />
-            </div>
+      <Card className="overflow-hidden">
+        <CardHeader className="border-b border-[var(--border-subtle)] pb-4">
+          <CardTitle className="text-lg font-semibold">Notification Preferences</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="divide-y divide-[var(--border-subtle)]">
+            {NOTIFICATIONS.map(({ key, label }) => (
+              <div key={key} className="flex justify-between items-center py-4">
+                <span className="text-sm font-medium">{label}</span>
+                <Switch
+                  checked={notifs[key]}
+                  onChange={(checked) =>
+                    setNotifs((prev) => ({ ...prev, [key]: checked }))
+                  }
+                  aria-label={label}
+                />
+              </div>
+            ))}
           </div>
-        ))}
-        <button
-          className="ud-btn btn-thm mt10"
-          onClick={handleSaveNotifs}
-          disabled={savingNotifs}
-        >
-          {savingNotifs ? "Saving..." : "Save Preferences"}
-        </button>
-      </div>
+          <Button
+            onClick={handleSaveNotifs}
+            disabled={savingNotifs}
+            className={cn("mt-4")}
+          >
+            {savingNotifs ? "Saving..." : "Save Preferences"}
+          </Button>
+        </CardContent>
+      </Card>
 
       {/* Privacy */}
-      <div className="ps-widget bgc-white bdrs4 p30 mb20">
-        <h5 className="list-title bdrb1 pb15 mb20">Privacy</h5>
-        <div className="mb20">
-          <label className="heading-color ff-heading fw500 mb10">
-            Profile Visibility
-          </label>
-          <select
-            className="form-control"
-            value={visibility}
-            onChange={(e) => setVisibility(e.target.value)}
-          >
-            {VISIBILITY_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>
-                {o.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="mb20">
-          <label className="heading-color ff-heading fw500 mb10">
-            Who can contact me
-          </label>
-          <select
-            className="form-control"
-            value={contactPermission}
-            onChange={(e) => setContactPermission(e.target.value)}
-          >
-            {CONTACT_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>
-                {o.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        {!profile && (
-          <p className="fz13 text-muted mb15">
-            Privacy settings are available for freelancer profiles.
-          </p>
-        )}
-        <button
-          className="ud-btn btn-thm"
-          onClick={handleSavePrivacy}
-          disabled={savingPrivacy || !profile}
-        >
-          {savingPrivacy ? "Saving..." : "Save Privacy Settings"}
-        </button>
-      </div>
-    </>
+      <Card className="overflow-hidden">
+        <CardHeader className="border-b border-[var(--border-subtle)] pb-4">
+          <CardTitle className="text-lg font-semibold">Privacy</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6 space-y-4">
+          <div className="space-y-2 max-w-md">
+            <Label htmlFor="visibility">Profile Visibility</Label>
+            <Select value={visibility} onValueChange={setVisibility}>
+              <SelectTrigger id="visibility">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {VISIBILITY_OPTIONS.map((o) => (
+                  <SelectItem key={o.value} value={o.value}>
+                    {o.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2 max-w-md">
+            <Label htmlFor="contact-permission">Who can contact me</Label>
+            <Select value={contactPermission} onValueChange={setContactPermission}>
+              <SelectTrigger id="contact-permission">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {CONTACT_OPTIONS.map((o) => (
+                  <SelectItem key={o.value} value={o.value}>
+                    {o.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          {!profile && (
+            <p className="text-xs text-[var(--text-tertiary)]">
+              Privacy settings are available for freelancer profiles.
+            </p>
+          )}
+          <Button onClick={handleSavePrivacy} disabled={savingPrivacy || !profile}>
+            {savingPrivacy ? "Saving..." : "Save Privacy Settings"}
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

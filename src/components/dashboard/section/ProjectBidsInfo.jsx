@@ -6,6 +6,19 @@ import useConvexUser from "@/hook/useConvexUser";
 import DashboardNavigation from "../header/DashboardNavigation";
 import BidList from "@/components/element/BidList";
 import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, ExternalLink, FolderOpen, Wallet } from "lucide-react";
+
+function PageShell({ children }) {
+  return (
+    <div className="dashboard__content hover-bgc-color">
+      <DashboardNavigation />
+      {children}
+    </div>
+  );
+}
 
 export default function ProjectBidsInfo({ projectId }) {
   const t = useTranslations("projectBids");
@@ -20,51 +33,48 @@ export default function ProjectBidsInfo({ projectId }) {
 
   if (!isLoaded) {
     return (
-      <div className="dashboard__content hover-bgc-color">
-        <div className="row pb40">
-          <div className="col-lg-12"><DashboardNavigation /></div>
-        </div>
-        <div className="row">
-          <div className="col-lg-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 text-center py-5">
-              <div className="spinner-border spinner-border-sm text-thm" role="status" />
-            </div>
-          </div>
-        </div>
-      </div>
+      <PageShell>
+        <Card>
+          <CardContent className="p-12 flex justify-center">
+            <div
+              role="status"
+              aria-label="Loading"
+              className="h-6 w-6 animate-spin rounded-full border-3 border-[var(--border-subtle)] border-t-primary"
+            />
+          </CardContent>
+        </Card>
+      </PageShell>
     );
   }
 
   if (project === null) {
     return (
-      <div className="dashboard__content hover-bgc-color">
-        <div className="row pb40">
-          <div className="col-lg-12"><DashboardNavigation /></div>
-        </div>
-        <div className="row">
-          <div className="col-lg-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 text-center">
-              <p className="text mb10">{t("projectNotFound")}</p>
-              <Link href="/manage-projects" className="ud-btn btn-thm-border btn-sm">
-                {t("backToMyProjects")} <i className="fal fa-arrow-left ms-1" />
+      <PageShell>
+        <Card>
+          <CardContent className="p-12 text-center">
+            <p className="text-[var(--text-secondary)] mb-4">{t("projectNotFound")}</p>
+            <Button asChild variant="outline" size="sm">
+              <Link href="/manage-projects">
+                <ArrowLeft className="mr-1 h-4 w-4" />
+                {t("backToMyProjects")}
               </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+            </Button>
+          </CardContent>
+        </Card>
+      </PageShell>
     );
   }
 
-  const STATUS_LABELS = {
-    open: { label: t("statusOpen"), className: "text-success" },
-    in_progress: { label: t("statusInProgress"), className: "text-warning" },
-    completed: { label: t("statusCompleted"), className: "text-primary" },
-    cancelled: { label: t("statusCancelled"), className: "text-danger" },
-    closed: { label: t("statusClosed"), className: "text-secondary" },
+  const STATUS_BADGES = {
+    open: { variant: "success", label: t("statusOpen") },
+    in_progress: { variant: "warning", label: t("statusInProgress") },
+    completed: { variant: "info", label: t("statusCompleted") },
+    cancelled: { variant: "destructive", label: t("statusCancelled") },
+    closed: { variant: "muted", label: t("statusClosed") },
   };
 
   const status = project?.status ?? "open";
-  const statusInfo = STATUS_LABELS[status] ?? { label: status, className: "text-secondary" };
+  const statusInfo = STATUS_BADGES[status] ?? { variant: "muted", label: status };
   const budgetMin = project?.budgetMin;
   const budgetMax = project?.budgetMax;
   const currency = project?.currency ?? "EUR";
@@ -76,85 +86,76 @@ export default function ProjectBidsInfo({ projectId }) {
       : t("budgetTBD");
 
   return (
-    <div className="dashboard__content hover-bgc-color">
-      <div className="row pb40">
-        <div className="col-lg-12">
-          <DashboardNavigation />
-        </div>
-        <div className="col-lg-12">
-          <div className="dashboard_title_area">
-            <h2>{t("title")}</h2>
-            <p className="text">
-              {t("pageDescription")}
-            </p>
-          </div>
-        </div>
+    <PageShell>
+      <div className="dashboard_title_area mb-6">
+        <h2>{t("title")}</h2>
+        <p className="text-[var(--text-secondary)]">{t("pageDescription")}</p>
       </div>
 
       {project === undefined ? (
-        <div className="row">
-          <div className="col-lg-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 text-center py-5">
-              <div className="spinner-border spinner-border-sm text-thm" role="status" />
-              <p className="text mt-2 mb-0">{t("loadingProject")}</p>
-            </div>
-          </div>
-        </div>
+        <Card>
+          <CardContent className="p-12 text-center">
+            <div
+              role="status"
+              aria-label={t("loadingProject")}
+              className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--border-subtle)] border-t-primary mx-auto"
+            />
+            <p className="mt-3 text-sm text-[var(--text-secondary)]">{t("loadingProject")}</p>
+          </CardContent>
+        </Card>
       ) : (
-        <div className="row">
-          <div className="col-lg-12">
-            {/* Project summary header */}
-            <div className="ps-widget bgc-white bdrs4 p30 mb30">
-              <div className="flex justify-between items-start flex-wrap gap-3 bdrb1 pb20 mb20">
-                <div>
-                  <h4 className="title mb5">{project.title}</h4>
-                  <p className="text fz14 mb-0">
+        <>
+          <Card className="mb-6">
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start flex-wrap gap-3 pb-5 mb-5 border-b border-[var(--border-subtle)]">
+                <div className="min-w-0">
+                  <h4 className="text-xl font-semibold mb-2">{project.title}</h4>
+                  <div className="flex flex-wrap items-center gap-3 text-sm text-[var(--text-secondary)]">
                     {project.categoryName && (
-                      <span className="me-3">
-                        <i className="flaticon-menu fz14 vam text-thm2 me-1" />
+                      <span className="inline-flex items-center gap-1">
+                        <FolderOpen className="h-4 w-4 text-primary" />
                         {project.categoryName}
                       </span>
                     )}
-                    <span className="me-3">
-                      <i className="flaticon-dollar fz14 vam text-thm2 me-1" />
+                    <span className="inline-flex items-center gap-1">
+                      <Wallet className="h-4 w-4 text-primary" />
                       {budgetDisplay}
                     </span>
-                    <span className={statusInfo.className}>
-                      <i className="fas fa-circle fz8 vam me-1" />
-                      {statusInfo.label}
-                    </span>
-                  </p>
+                    <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
+                  </div>
                 </div>
                 <div className="text-right">
-                  <span className="fz20 fw600 dark-color">{project.bidCount ?? 0}</span>
-                  <p className="text fz13 mb-0">{(project.bidCount ?? 0) !== 1 ? t("bidsReceivedPlural") : t("bidsReceived")}</p>
+                  <div className="text-2xl font-semibold">{project.bidCount ?? 0}</div>
+                  <p className="text-xs text-[var(--text-secondary)] mb-0">
+                    {(project.bidCount ?? 0) !== 1
+                      ? t("bidsReceivedPlural")
+                      : t("bidsReceived")}
+                  </p>
                 </div>
               </div>
 
-              {/* Bid list */}
               <BidList projectId={projectId} isOwner={isOwner} />
-            </div>
+            </CardContent>
+          </Card>
 
-            {/* Action links */}
-            <div className="flex gap-3 flex-wrap">
-              <Link href="/manage-projects" className="ud-btn btn-thm-border btn-sm">
-                <i className="fal fa-arrow-left me-1" />
+          <div className="flex gap-3 flex-wrap">
+            <Button asChild variant="outline" size="sm">
+              <Link href="/manage-projects">
+                <ArrowLeft className="mr-1 h-4 w-4" />
                 {t("backToMyProjects")}
               </Link>
-              {project.slug && (
-                <Link
-                  href={`/project/${project.slug}`}
-                  className="ud-btn btn-light-thm btn-sm"
-                  target="_blank"
-                >
+            </Button>
+            {project.slug && (
+              <Button asChild variant="ghost" size="sm">
+                <Link href={`/project/${project.slug}`} target="_blank">
                   {t("viewPublicPage")}
-                  <i className="fal fa-external-link ms-1" />
+                  <ExternalLink className="ml-1 h-4 w-4" />
                 </Link>
-              )}
-            </div>
+              </Button>
+            )}
           </div>
-        </div>
+        </>
       )}
-    </div>
+    </PageShell>
   );
 }

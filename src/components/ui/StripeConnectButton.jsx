@@ -71,7 +71,7 @@ export default function StripeConnectButton({ className = "" }) {
             <i className="fal fa-check-circle me-2" />
             {t("paymentsConnected")}
           </span>
-          <span className="text fz13 text-muted">
+          <span className="text text-sm text-muted">
             {t("payoutsViaStripe")}
           </span>
         </div>
@@ -101,7 +101,7 @@ export default function StripeConnectButton({ className = "" }) {
               </>
             )}
           </button>
-          <p className="text fz12 mt-2 mb-0">
+          <p className="text text-xs mt-2 mb-0">
             {t("pendingNote")}
           </p>
         </div>
@@ -131,14 +131,14 @@ export default function StripeConnectButton({ className = "" }) {
               </>
             )}
           </button>
-          <p className="text fz12 mt-2 mb-0">
+          <p className="text text-xs mt-2 mb-0">
             {t("setupNote")}
           </p>
         </div>
       )}
 
       {error && (
-        <div className="alert alert-danger mt-2 mb-0 py-2 px-3 fz13">
+        <div className="alert alert-danger mt-2 mb-0 py-2 px-3 text-sm">
           <i className="fal fa-exclamation-triangle me-2" />
           {error}
         </div>

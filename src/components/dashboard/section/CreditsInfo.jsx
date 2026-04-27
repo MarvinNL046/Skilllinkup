@@ -4,6 +4,9 @@ import { useTranslations } from "next-intl";
 import { api } from "../../../../convex/_generated/api";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 // Credit packages — must match convex/marketplace/leadPricing.ts
 const CREDIT_PACKAGES = [
@@ -37,7 +40,7 @@ export default function CreditsInfo() {
         toast.error(data.error || t("failedCheckout"));
         setPurchasing(null);
       }
-    } catch (err) {
+    } catch {
       toast.error(t("somethingWrong"));
       setPurchasing(null);
     }
@@ -45,107 +48,126 @@ export default function CreditsInfo() {
 
   if (credits === undefined) {
     return (
-      <div className="text-center py-5">
-        <div className="spinner-border text-thm" role="status" />
+      <div className="flex justify-center py-12">
+        <div
+          role="status"
+          aria-label="Loading"
+          className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--border-subtle)] border-t-primary"
+        />
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="space-y-8">
       {/* Balance */}
-      <div className="row mb30">
-        <div className="col-lg-4">
-          <div className="dashboard-style1 bdrs8 p30 text-center">
-            <h2 className="title mb-1" style={{ fontSize: "3rem", color: "var(--primary-600)" }}>
-              {credits?.balance ?? 0}
-            </h2>
-            <p className="body-color">{t("creditsAvailable")}</p>
-          </div>
-        </div>
-      </div>
+      <Card className="max-w-sm">
+        <CardContent className="p-8 text-center">
+          <h2 className="text-5xl font-semibold text-primary mb-2">{credits?.balance ?? 0}</h2>
+          <p className="text-[var(--text-secondary)]">{t("creditsAvailable")}</p>
+        </CardContent>
+      </Card>
 
       {/* Packages */}
-      <h4 className="mb20">{t("buyCredits")}</h4>
-      <div className="row mb40">
-        {CREDIT_PACKAGES.map((pkg) => (
-          <div key={pkg.id} className="col-sm-6 col-lg-4 mb20">
-            <div className="dashboard-style1 bdrs8 p30 text-center relative">
-              {pkg.id === "popular" && (
-                <span
-                  className="absolute top-0 end-0 badge bg-thm m10"
-                  style={{ fontSize: "0.7rem" }}
+      <div>
+        <h4 className="text-xl font-semibold mb-5">{t("buyCredits")}</h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {CREDIT_PACKAGES.map((pkg) => (
+            <Card key={pkg.id} className="relative">
+              <CardContent className="p-8 text-center">
+                {pkg.id === "popular" && (
+                  <Badge variant="warning" className="absolute right-3 top-3">
+                    {t("mostPopular")}
+                  </Badge>
+                )}
+                <h3 className="text-3xl font-semibold mb-1">{pkg.credits}</h3>
+                <p className="text-sm text-[var(--text-secondary)] mb-3">{t("credits")}</p>
+                <h4 className="text-xl font-bold mb-1">€{pkg.priceEur}</h4>
+                <p className="text-xs text-[var(--text-secondary)] mb-4">
+                  €{(pkg.priceEur / pkg.credits).toFixed(2)} {t("perCredit")}
+                </p>
+                <Button
+                  className="w-full"
+                  onClick={() => handleBuy(pkg.id)}
+                  disabled={purchasing !== null}
                 >
-                  {t("mostPopular")}
-                </span>
-              )}
-              <h3 className="title mb-1">{pkg.credits}</h3>
-              <p className="body-color fz14 mb10">{t("credits")}</p>
-              <h4 className="mb5">&euro;{pkg.priceEur}</h4>
-              <p className="body-color fz13 mb15">
-                &euro;{(pkg.priceEur / pkg.credits).toFixed(2)} {t("perCredit")}
-              </p>
-              <button
-                className="ud-btn btn-thm bdrs4 w-full"
-                onClick={() => handleBuy(pkg.id)}
-                disabled={purchasing !== null}
-              >
-                {purchasing === pkg.id ? t("redirecting") : t("buyNCredits", { count: pkg.credits })}
-              </button>
-            </div>
-          </div>
-        ))}
+                  {purchasing === pkg.id
+                    ? t("redirecting")
+                    : t("buyNCredits", { count: pkg.credits })}
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
 
       {/* Transaction History */}
-      <h4 className="mb20">{t("transactionHistory")}</h4>
-      {transactions === undefined ? (
-        <div className="spinner-border text-thm" role="status" />
-      ) : transactions.length === 0 ? (
-        <p className="body-color">{t("noTransactions")}</p>
-      ) : (
-        <div className="table-responsive">
-          <table className="table table-hover">
-            <thead>
-              <tr>
-                <th>{t("date")}</th>
-                <th>{t("type")}</th>
-                <th>{t("description")}</th>
-                <th className="text-right">{t("creditsColumn")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.map((txn) => (
-                <tr key={txn._id}>
-                  <td className="fz14">{new Date(txn.createdAt).toLocaleDateString()}</td>
-                  <td>
-                    <span
-                      className={`badge ${
-                        txn.type === "purchase"
-                          ? "bg-success"
-                          : txn.type === "spend"
-                          ? "bg-warning"
-                          : "bg-info"
-                      }`}
-                    >
-                      {txn.type}
-                    </span>
-                  </td>
-                  <td className="fz14">{txn.description}</td>
-                  <td
-                    className={`text-right fw-bold ${
-                      txn.amount > 0 ? "text-success" : "text-danger"
-                    }`}
-                  >
-                    {txn.amount > 0 ? "+" : ""}
-                    {txn.amount}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <div>
+        <h4 className="text-xl font-semibold mb-5">{t("transactionHistory")}</h4>
+        {transactions === undefined ? (
+          <div className="flex justify-center py-8">
+            <div
+              role="status"
+              className="h-6 w-6 animate-spin rounded-full border-3 border-[var(--border-subtle)] border-t-primary"
+            />
+          </div>
+        ) : transactions.length === 0 ? (
+          <p className="text-[var(--text-secondary)]">{t("noTransactions")}</p>
+        ) : (
+          <Card className="overflow-hidden">
+            <CardContent className="p-0">
+              <div className="packages_table table-responsive">
+                <table className="table-style3 table at-savesearch w-full">
+                  <thead className="t-head">
+                    <tr>
+                      <th scope="col">{t("date")}</th>
+                      <th scope="col">{t("type")}</th>
+                      <th scope="col">{t("description")}</th>
+                      <th scope="col" className="text-right">
+                        {t("creditsColumn")}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="t-body">
+                    {transactions.map((txn) => (
+                      <tr key={txn._id}>
+                        <td data-label={t("date")} className="text-sm">
+                          {new Date(txn.createdAt).toLocaleDateString()}
+                        </td>
+                        <td data-label={t("type")}>
+                          <Badge
+                            variant={
+                              txn.type === "purchase"
+                                ? "success"
+                                : txn.type === "spend"
+                                ? "warning"
+                                : "info"
+                            }
+                          >
+                            {txn.type}
+                          </Badge>
+                        </td>
+                        <td data-label={t("description")} className="text-sm">
+                          {txn.description}
+                        </td>
+                        <td
+                          data-label={t("creditsColumn")}
+                          className={`text-right font-semibold ${
+                            txn.amount > 0 ? "text-[var(--success-600)]" : "text-destructive"
+                          }`}
+                        >
+                          {txn.amount > 0 ? "+" : ""}
+                          {txn.amount}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
     </div>
   );
 }

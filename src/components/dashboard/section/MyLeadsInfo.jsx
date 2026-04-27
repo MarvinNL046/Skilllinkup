@@ -3,6 +3,10 @@ import { useQuery } from "convex/react";
 import { useTranslations } from "next-intl";
 import { api } from "../../../../convex/_generated/api";
 import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, MapPin, User, Mail, Phone } from "lucide-react";
 
 export default function MyLeadsInfo() {
   const t = useTranslations("myLeads");
@@ -10,50 +14,55 @@ export default function MyLeadsInfo() {
 
   if (claims === undefined) {
     return (
-      <div className="text-center py-5">
-        <div className="spinner-border text-thm" role="status" />
+      <div className="flex justify-center py-12">
+        <div
+          role="status"
+          aria-label="Loading"
+          className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--border-subtle)] border-t-primary"
+        />
       </div>
     );
   }
 
   if (claims.length === 0) {
     return (
-      <div className="text-center py-5">
-        <i className="flaticon-place fz40 text mb20 block" />
-        <h4>{t("noClaimsTitle")}</h4>
-        <p className="body-color mb20">
+      <div className="text-center py-12">
+        <MapPin className="h-10 w-10 text-[var(--text-tertiary)] mx-auto mb-4" />
+        <h4 className="text-lg font-semibold mb-2">{t("noClaimsTitle")}</h4>
+        <p className="text-[var(--text-secondary)] mb-5 max-w-md mx-auto">
           {t("noClaimsDescription")}
         </p>
-        <Link href="/local/quote-requests" className="ud-btn btn-thm bdrs4">
-          {t("browseQuoteRequests")} <i className="fal fa-arrow-right-long ms-1" />
-        </Link>
+        <Button asChild>
+          <Link href="/local/quote-requests">
+            {t("browseQuoteRequests")}
+            <ArrowRight className="ml-1 h-4 w-4" />
+          </Link>
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="row">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
       {claims.map((claim) => (
-        <div key={claim._id} className="col-lg-6 mb20">
-          <div className="dashboard-style1 bdrs8 p20">
-            <div className="flex justify-between items-start mb10">
-              <div>
-                <h5 className="list-title mb-1">
+        <Card key={claim._id} className="p-5">
+          <CardContent className="p-0">
+            <div className="flex justify-between items-start mb-3 gap-3">
+              <div className="min-w-0">
+                <h5 className="text-base font-semibold mb-1 truncate">
                   {claim.request?.title || t("quoteRequest")}
                 </h5>
-                <span className="fz13 body-color">{claim.categoryName || t("general")}</span>
+                <span className="text-xs text-[var(--text-secondary)]">
+                  {claim.categoryName || t("general")}
+                </span>
               </div>
-              <span
-                className={`badge ${
-                  claim.claimType === "exclusive" ? "bg-warning" : "bg-thm"
-                }`}
-              >
+              <Badge variant={claim.claimType === "exclusive" ? "warning" : "default"}>
                 {claim.claimType === "exclusive" ? t("exclusive") : t("shared")}
-              </span>
+              </Badge>
             </div>
 
             {claim.request?.description && (
-              <p className="body-color fz14 mb15">
+              <p className="text-sm text-[var(--text-secondary)] mb-4">
                 {claim.request.description.length > 200
                   ? claim.request.description.slice(0, 200) + "..."
                   : claim.request.description}
@@ -62,28 +71,34 @@ export default function MyLeadsInfo() {
 
             {/* Client details — only visible because they claimed this lead */}
             {claim.client && (
-              <div className="bgc-thm3 bdrs4 p15 mb15">
-                <p className="fz13 fw500 mb5">{t("clientContact")}</p>
-                <p className="fz14 mb-0">
-                  <i className="flaticon-user me-1" />
+              <div className="rounded-md bg-[var(--surface-2)] p-4 mb-4 space-y-1.5">
+                <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">
+                  {t("clientContact")}
+                </p>
+                <p className="flex items-center gap-2 text-sm">
+                  <User className="h-3.5 w-3.5 text-[var(--text-tertiary)]" />
                   {claim.client.name || "—"}
                 </p>
                 {claim.client.email && (
-                  <p className="fz14 mb-0">
-                    <i className="flaticon-mail me-1" />
-                    <a href={`mailto:${claim.client.email}`}>{claim.client.email}</a>
+                  <p className="flex items-center gap-2 text-sm">
+                    <Mail className="h-3.5 w-3.5 text-[var(--text-tertiary)]" />
+                    <a href={`mailto:${claim.client.email}`} className="text-primary hover:underline">
+                      {claim.client.email}
+                    </a>
                   </p>
                 )}
                 {claim.client.phone && (
-                  <p className="fz14 mb-0">
-                    <i className="flaticon-call me-1" />
-                    <a href={`tel:${claim.client.phone}`}>{claim.client.phone}</a>
+                  <p className="flex items-center gap-2 text-sm">
+                    <Phone className="h-3.5 w-3.5 text-[var(--text-tertiary)]" />
+                    <a href={`tel:${claim.client.phone}`} className="text-primary hover:underline">
+                      {claim.client.phone}
+                    </a>
                   </p>
                 )}
               </div>
             )}
 
-            <div className="flex justify-between fz13 body-color">
+            <div className="flex justify-between text-xs text-[var(--text-secondary)] gap-2 flex-wrap">
               <span>
                 {claim.request?.locationCity && `${claim.request.locationCity}`}
                 {claim.request?.budgetIndication && ` · ${claim.request.budgetIndication}`}
@@ -92,8 +107,8 @@ export default function MyLeadsInfo() {
                 {claim.creditsSpent} {t("credits")} · {new Date(claim.claimedAt).toLocaleDateString()}
               </span>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       ))}
     </div>
   );

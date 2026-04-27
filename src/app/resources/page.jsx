@@ -58,37 +58,37 @@ export default async function ResourcesPage() {
       <Header20 />
       <main>
         {/* Hero */}
-        <section className="pt80 pb60 bgc-thm3">
+        <section className="pt-20 pb-14 bgc-thm3">
           <div className="container text-center">
-            <h1 className="fz40 fw700 mb15">{t("heroTitle")}</h1>
-            <p className="fz17 text-muted col-lg-6 mx-auto">
+            <h1 className="text-4xl font-bold mb-4">{t("heroTitle")}</h1>
+            <p className="text-lg text-muted col-lg-6 mx-auto">
               {t("heroDescription")}
             </p>
           </div>
         </section>
 
         {/* Resource grid */}
-        <section className="pt60 pb80">
+        <section className="pt-14 pb-20">
           <div className="container">
             {Object.entries(byType).map(([type, items]) =>
               items.length > 0 ? (
-                <div key={type} className="mb60">
-                  <h2 className="fz24 fw700 mb30">
+                <div key={type} className="mb-14">
+                  <h2 className="text-2xl font-bold mb-8">
                     {sectionTitles[type]}
                   </h2>
                   <div className="row g-4">
                     {items.map((resource) => (
                       <div key={resource._id} className="col-md-6 col-lg-4">
                         <Link href={`/resources/${resource.slug}`} className="no-underline">
-                          <div className="bdr1 bdrs12 p30 h-full hover-box-shadow" style={{ transition: "box-shadow 0.2s" }}>
+                          <div className="bdr1 bdrs12 p-8 h-full hover-box-shadow" style={{ transition: "box-shadow 0.2s" }}>
                             <span
-                              className="badge px-3 py-2 bdrs8 fz12 mb15 inline-block text-white"
+                              className="badge px-3 py-2 bdrs8 text-xs mb-4 inline-block text-white"
                               style={{ background: TYPE_COLORS[resource.type] }}
                             >
                               {typeLabels[resource.type]}
                             </span>
-                            <h3 className="fz18 fw600 mb10 text-dark">{resource.metaTitle}</h3>
-                            <p className="fz14 text-muted mb-0 lh-lg">
+                            <h3 className="text-lg font-semibold mb-2.5 text-dark">{resource.metaTitle}</h3>
+                            <p className="text-sm text-muted mb-0 lh-lg">
                               {resource.metaDescription?.slice(0, 100)}…
                             </p>
                           </div>
@@ -101,7 +101,7 @@ export default async function ResourcesPage() {
             )}
 
             {resources.length === 0 && (
-              <p className="text-muted text-center pt40">{t("noResources")}</p>
+              <p className="text-muted text-center pt-10">{t("noResources")}</p>
             )}
           </div>
         </section>

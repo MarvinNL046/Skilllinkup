@@ -10,13 +10,14 @@
 @import "./../../public/css/slider.css";
 @import "./../../public/css/style.css";
 @import "./../../public/css/ud-custom-spacing.css";
-@import "./../../public/css/dashbord_navitaion.css";
+/* dashbord_navitaion.css removed — no JSX referenced its classes (.dashboard_navigationbar, .dropbtn) */
 @import "./../../public/css/responsive.css";
 @import "./dashboard-theme.css";
 
 /* --- New design system (loaded AFTER legacy so it wins on conflicts) --- */
 @import "../styles/tokens.css";
 @import "../styles/components.css";
+@import "../styles/legacy-shim.css";
 
 /* --- Tailwind (directives — utilities load last so they override component styles when needed) --- */
 @tailwind base;

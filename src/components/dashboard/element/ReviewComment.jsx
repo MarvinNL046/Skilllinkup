@@ -1,7 +1,8 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { Star, Flag } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function ReviewComment({ review, i, lenght }) {
   const t = useTranslations("reviews");
@@ -13,7 +14,6 @@ export default function ReviewComment({ review, i, lenght }) {
   const orderTitle = review?.orderTitle ?? null;
   const isLast = i + 1 === lenght;
 
-  // Format relative date
   const formatDate = (timestamp) => {
     if (!timestamp) return "";
     const diff = Date.now() - timestamp;
@@ -28,48 +28,51 @@ export default function ReviewComment({ review, i, lenght }) {
   };
 
   return (
-    <>
-      <div className={`pb20 ${!isLast ? "bdrb1" : ""}`}>
-        <div className="mbp_first relative sm:flex items-center justify-start mb30-sm mt30">
-          <Image
-            height={60}
-            width={60}
-            src={reviewerAvatar}
-            className="mr-3"
-            alt={reviewerName}
-            onError={(e) => {
-              e.currentTarget.src = "/images/blog/comments-2.png";
-            }}
-          />
-          <div className="ml20 ml0-xs mt20-xs">
-            <div className="del-edit">
-              <span className="flaticon-flag" />
+    <div
+      className={cn(
+        "pb-5",
+        !isLast && "border-b border-[var(--border-subtle)]"
+      )}
+    >
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 relative pt-4">
+        <Image
+          height={60}
+          width={60}
+          src={reviewerAvatar}
+          alt={reviewerName}
+          className="rounded-full flex-shrink-0"
+          onError={(e) => {
+            e.currentTarget.src = "/images/blog/comments-2.png";
+          }}
+        />
+        <div className="flex-1 min-w-0">
+          <button
+            type="button"
+            aria-label="Report review"
+            className="absolute right-0 top-4 text-[var(--text-tertiary)] hover:text-foreground"
+          >
+            <Flag className="h-4 w-4" />
+          </button>
+          <h6 className="text-base font-semibold mb-1">{reviewerName}</h6>
+          <div className="flex flex-wrap items-center gap-3 text-sm">
+            <div className="inline-flex items-center gap-1">
+              <Star className="h-3 w-3 fill-warning text-warning" aria-hidden="true" />
+              <span className="font-medium">{rating.toFixed(1)}</span>
             </div>
-            <h6 className="mt-0 mb-1">{reviewerName}</h6>
-            <div className="flex items-center">
-              <div>
-                <i className="fas fa-star vam fz10 review-color me-2" />
-                <span className="fz15 fw500">{rating.toFixed(1)}</span>
-              </div>
-              {review?.createdAt && (
-                <div className="ms-3">
-                  <span className="fz14 text">
-                    {formatDate(review.createdAt)}
-                  </span>
-                </div>
-              )}
-              {orderTitle && (
-                <div className="ms-3">
-                  <span className="fz14 text fst-italic">{orderTitle}</span>
-                </div>
-              )}
-            </div>
+            {review?.createdAt && (
+              <span className="text-[var(--text-secondary)]">
+                {formatDate(review.createdAt)}
+              </span>
+            )}
+            {orderTitle && (
+              <span className="text-[var(--text-secondary)] italic">{orderTitle}</span>
+            )}
           </div>
         </div>
-        {content && (
-          <p className="text mt20 mb20">{content}</p>
-        )}
       </div>
-    </>
+      {content && (
+        <p className="text-sm text-[var(--text-secondary)] mt-4 mb-4">{content}</p>
+      )}
+    </div>
   );
 }

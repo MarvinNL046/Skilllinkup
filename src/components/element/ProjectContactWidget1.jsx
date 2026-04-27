@@ -8,8 +8,8 @@ export default function ProjectContactWidget1({ clientName, clientAvatar, locati
     <>
       <div className="freelancer-style1 service-single mb-0 bdrs8">
         <h4>{t("aboutBuyer")}</h4>
-        <div className="wrapper flex items-center mt20">
-          <div className="thumb relative mb25">
+        <div className="wrapper flex items-center mt-5">
+          <div className="thumb relative mb-6">
             <Image
               height={60}
               width={60}
@@ -18,7 +18,7 @@ export default function ProjectContactWidget1({ clientName, clientAvatar, locati
               alt={clientName || t("aboutBuyer")}
             />
           </div>
-          <div className="ml20">
+          <div className="ml-5">
             <h5 className="title mb-1">{clientName || t("anonymousBuyer")}</h5>
             {categoryName && <p className="mb-0">{categoryName}</p>}
           </div>
@@ -27,10 +27,10 @@ export default function ProjectContactWidget1({ clientName, clientAvatar, locati
         {location && (
           <div className="details">
             <div className="fl-meta flex items-center">
-              <span className="meta fw500 text-left">
+              <span className="meta font-medium text-left">
                 {t("location")}
                 <br />
-                <span className="fz14 fw400">{location}</span>
+                <span className="text-sm font-normal">{location}</span>
               </span>
             </div>
           </div>

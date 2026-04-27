@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useWorld } from "@/context/WorldContext";
 import worldNavigation from "@/data/worldNavigation";
+import { cn } from "@/lib/utils";
 
 export default function WorldNavigation() {
   const world = useWorld();
@@ -11,33 +12,29 @@ export default function WorldNavigation() {
   const worldItems = worldNavigation[world] || [];
   const sharedItems = worldNavigation.shared;
 
-  const activeStyle = {
-    fontWeight: 600,
-    borderBottom: "2px solid currentColor",
-    paddingBottom: "2px",
-  };
+  const renderLink = (item, isActive) => (
+    <Link
+      href={item.path}
+      className={cn(
+        "inline-flex items-center px-3 py-2 text-sm transition-colors hover:text-primary",
+        isActive
+          ? "text-primary font-semibold border-b-2 border-current pb-1"
+          : "text-[var(--text-secondary)] font-medium"
+      )}
+    >
+      {item.name}
+    </Link>
+  );
 
   return (
-    <ul className="ace-responsive-menu" style={{ display: "flex", gap: 0, listStyle: "none", margin: 0, padding: 0 }}>
+    <ul className="flex gap-0 list-none m-0 p-0">
       {worldItems.map((item) => {
         const isActive = path.startsWith(item.path);
-        return (
-          <li key={item.id} className={isActive ? "ui-active" : ""}>
-            <Link className="list-item" href={item.path} style={isActive ? activeStyle : undefined}>
-              <span className="title">{item.name}</span>
-            </Link>
-          </li>
-        );
+        return <li key={item.id}>{renderLink(item, isActive)}</li>;
       })}
       {sharedItems.map((item) => {
         const isActive = path === item.path;
-        return (
-          <li key={item.id} className={isActive ? "ui-active" : ""}>
-            <Link className="list-item" href={item.path} style={isActive ? activeStyle : undefined}>
-              <span className="title">{item.name}</span>
-            </Link>
-          </li>
-        );
+        return <li key={item.id}>{renderLink(item, isActive)}</li>;
       })}
     </ul>
   );

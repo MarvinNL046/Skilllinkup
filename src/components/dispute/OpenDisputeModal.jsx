@@ -5,6 +5,24 @@ import { useMutation } from "convex/react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { api } from "../../../convex/_generated/api";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const REASONS = [
   { value: "not_delivered", labelKey: "disputeReasonNotDelivered" },
@@ -21,7 +39,9 @@ export default function OpenDisputeModal({ orderId, onClose }) {
   const [submitting, setSubmitting] = useState(false);
 
   const isValid =
-    reason && description.trim().length >= 30 && description.trim().length <= 1000;
+    reason &&
+    description.trim().length >= 30 &&
+    description.trim().length <= 1000;
 
   async function handleSubmit() {
     if (!isValid || submitting) return;
@@ -40,115 +60,73 @@ export default function OpenDisputeModal({ orderId, onClose }) {
     }
   }
 
+  const handleOpenChange = (next) => {
+    if (!next && !submitting) onClose();
+  };
+
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.5)",
-        display: "grid",
-        placeItems: "center",
-        zIndex: 1000,
-      }}
-      onClick={onClose}
-    >
-      <div
-        className="card"
-        style={{
-          maxWidth: 520,
-          width: "calc(100% - 32px)",
-          padding: "var(--space-6)",
-          background: "var(--bg-elevated, white)",
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <h3
-          style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "var(--text-h4)",
-            margin: 0,
-            marginBottom: "var(--space-4)",
-          }}
-        >
-          {t("openDisputeTitle")}
-        </h3>
-
-        <p
-          className="body-sm"
-          style={{
-            color: "var(--text-secondary)",
-            marginBottom: "var(--space-5)",
-          }}
-        >
-          {t("openDisputeDescription")}
-        </p>
-
-        <label
-          style={{
-            display: "block",
-            marginBottom: "var(--space-2)",
-            fontWeight: 500,
-          }}
-        >
-          {t("reasonLabel")}
-        </label>
-        <select
-          className="form-control mb15"
-          value={reason}
-          onChange={(e) => setReason(e.target.value)}
-          style={{ width: "100%", marginBottom: "var(--space-4)" }}
-        >
-          {REASONS.map((r) => (
-            <option key={r.value} value={r.value}>
-              {t(r.labelKey)}
-            </option>
-          ))}
-        </select>
-
-        <label
-          style={{
-            display: "block",
-            marginBottom: "var(--space-2)",
-            fontWeight: 500,
-          }}
-        >
-          {t("descriptionLabel")} ({description.trim().length}/1000)
-        </label>
-        <textarea
-          className="form-control"
-          rows={5}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder={t("descriptionPlaceholder")}
-          maxLength={1000}
-          style={{ width: "100%", marginBottom: "var(--space-5)" }}
-        />
-
-        <div style={{ display: "flex", gap: "var(--space-3)", justifyContent: "flex-end" }}>
-          <button
+    <Dialog open onOpenChange={handleOpenChange}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>{t("openDisputeTitle")}</DialogTitle>
+          <DialogDescription>{t("openDisputeDescription")}</DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="dispute-reason">{t("reasonLabel")}</Label>
+            <Select value={reason} onValueChange={setReason}>
+              <SelectTrigger id="dispute-reason">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {REASONS.map((r) => (
+                  <SelectItem key={r.value} value={r.value}>
+                    {t(r.labelKey)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="dispute-description">
+              {t("descriptionLabel")} ({description.trim().length}/1000)
+            </Label>
+            <Textarea
+              id="dispute-description"
+              rows={5}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder={t("descriptionPlaceholder")}
+              maxLength={1000}
+            />
+          </div>
+        </div>
+        <DialogFooter className="gap-2">
+          <Button
             type="button"
-            className="ud-btn btn-white fz14"
+            variant="outline"
             onClick={onClose}
             disabled={submitting}
           >
             {t("cancel")}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className="ud-btn btn-thm fz14"
             disabled={!isValid || submitting}
             onClick={handleSubmit}
           >
             {submitting ? (
-              <span className="spinner-border spinner-border-sm" role="status" />
+              <span
+                role="status"
+                aria-label="Submitting"
+                className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+              />
             ) : (
               t("submitDispute")
             )}
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

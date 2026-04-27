@@ -1,106 +1,74 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, ThumbsUp, ThumbsDown } from "lucide-react";
+
+const COMMENTS = [
+  {
+    name: "Bessie Cooper",
+    date: "12 March 2022",
+    avatar: "/images/blog/comments-2.png",
+    body: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.",
+  },
+  {
+    name: "Darrell Steward",
+    date: "12 March 2022",
+    avatar: "/images/blog/comments-2.png",
+    body: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.",
+  },
+];
 
 export default function Comment1() {
-  const path = usePathname();
-
   return (
-    <>
-      <div className="product_single_content mb50">
-        <div className="mbp_pagination_comments">
-          <div className="row">
-            <div className="col-lg-12">
-              <div
-                className={`total_review flex items-center justify-between mb20  ${
-                  path !== "/shop-single" ? "mt60" : ""
-                }`}
+    <div className="mb-12">
+      <h4 className="text-xl font-semibold mb-5">80 Reviews</h4>
+      <div className="space-y-8">
+        {COMMENTS.map((comment, i) => (
+          <div key={i}>
+            <div className="flex items-center gap-3 mb-4">
+              <Image
+                height={60}
+                width={60}
+                src={comment.avatar}
+                alt={comment.name}
+                className="rounded-full object-contain h-[60px] w-[60px]"
+              />
+              <div>
+                <h6 className="text-base font-semibold mb-0">{comment.name}</h6>
+                <span className="text-sm text-[var(--text-secondary)]">
+                  {comment.date}
+                </span>
+              </div>
+            </div>
+            <p className="text-base text-[var(--text-secondary)] mb-4">{comment.body}</p>
+            <div className="flex gap-4">
+              <button
+                type="button"
+                className="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-foreground"
               >
-                <h4 className="mb15">80 Reviews</h4>
-              </div>
-            </div>
-            <div className="col-md-12">
-              <div className="mbp_first relative flex items-center justify-start mb30-sm">
-                <Image
-                  height={60}
-                  width={60}
-                  src="/images/blog/comments-2.png"
-                  className="mr-3 object-fit-contain"
-                  alt="comments-2.png"
-                />
-                <div className="ml20">
-                  <h6 className="mt-0 mb-0">Bessie Cooper</h6>
-                  <div>
-                    <span className="fz14">12 March 2022</span>
-                  </div>
-                </div>
-              </div>
-              <p className="text mt20 mb20">
-                There are many variations of passages of Lorem Ipsum available,
-                but the majority have suffered alteration in some form, by
-                injected humour, or randomised words which don't look even
-                slightly believable. If you are going to use a passage of Lorem
-                Ipsum, you need to be sure there isn't anything embarrassing
-                hidden in the middle of text.
-              </p>
-              <div className="review_cansel_btns flex">
-                <a>
-                  <i className="fas fa-thumbs-up" />
-                  Helpful
-                </a>
-                <a>
-                  <i className="fas fa-thumbs-down" />
-                  Not helpful
-                </a>
-              </div>
-            </div>
-            <div className="col-md-12">
-              <div className="mbp_first relative flex items-center justify-start mt30 mb30-sm">
-                <Image
-                  height={60}
-                  width={60}
-                  src="/images/blog/comments-2.png"
-                  className="mr-3 object-fit-contain"
-                  alt="comments-2.png"
-                />
-                <div className="ml20">
-                  <h6 className="mt-0 mb-0">Darrell Steward</h6>
-                  <div>
-                    <span className="fz14">12 March 2022</span>
-                  </div>
-                </div>
-              </div>
-              <p className="text mt20 mb20">
-                There are many variations of passages of Lorem Ipsum available,
-                but the majority have suffered alteration in some form, by
-                injected humour, or randomised words which don't look even
-                slightly believable. If you are going to use a passage of Lorem
-                Ipsum, you need to be sure there isn't anything embarrassing
-                hidden in the middle of text.
-              </p>
-              <div className="review_cansel_btns flex pb30">
-                <a>
-                  <i className="fas fa-thumbs-up" />
-                  Helpful
-                </a>
-                <a>
-                  <i className="fas fa-thumbs-down" />
-                  Not helpful
-                </a>
-              </div>
-            </div>
-            <div className="col-md-12">
-              <div className="relative bdrb1 pb50">
-                <Link href="/services" className="ud-btn btn-light-thm">
-                  See More
-                  <i className="fal fa-arrow-right-long" />
-                </Link>
-              </div>
+                <ThumbsUp className="h-4 w-4" />
+                Helpful
+              </button>
+              <button
+                type="button"
+                className="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-foreground"
+              >
+                <ThumbsDown className="h-4 w-4" />
+                Not helpful
+              </button>
             </div>
           </div>
-        </div>
+        ))}
       </div>
-    </>
+      <div className="border-b border-[var(--border-subtle)] pb-12 mt-8">
+        <Button asChild variant="outline">
+          <Link href="/services">
+            See More
+            <ArrowRight className="ml-1 h-4 w-4" />
+          </Link>
+        </Button>
+      </div>
+    </div>
   );
 }

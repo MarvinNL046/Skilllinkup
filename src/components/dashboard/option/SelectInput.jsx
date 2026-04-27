@@ -7,13 +7,12 @@ export default function SelectInput({
   return (
     <>
       <div className="form-style1">
-        <label className="heading-color ff-heading fw500 mb10">{label}</label>
+        <label className="heading-color  font-medium mb-2.5">{label}</label>
         <div className="bootselect-multiselect">
           <div className="dropdown bootstrap-select">
             <button
               type="button"
               className="btn dropdown-toggle btn-light"
-              data-bs-toggle="dropdown"
             >
               <div className="filter-option">
                 <div className="filter-option-inner">

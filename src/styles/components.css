@@ -90,6 +90,15 @@
 /* icon-only */
 .btn--icon { width: var(--btn-h); padding: 0; }
 
+/* Touch targets — sticky header icon buttons need to clear the WCAG 2.5.5
+   minimum (44x44) on mobile, where btn--sm renders at 34px by default. */
+@media (max-width: 768px) {
+  .nav .btn--icon.btn--sm,
+  .nav .btn--sm.btn--icon {
+    --btn-h: 44px;
+  }
+}
+
 /* ============================================================
    INPUT & SEARCH
    ============================================================ */

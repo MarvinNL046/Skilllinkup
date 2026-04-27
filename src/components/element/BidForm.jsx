@@ -4,6 +4,12 @@ import { useMutation } from "convex/react";
 import { useTranslations } from "next-intl";
 import { api } from "../../../convex/_generated/api";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ArrowRight, CheckCircle2, AlertCircle } from "lucide-react";
 
 export default function BidForm({ projectId, onSuccess }) {
   const t = useTranslations("projectDetail");
@@ -29,7 +35,9 @@ export default function BidForm({ projectId, onSuccess }) {
       await submitBid({
         projectId,
         amount: Number.isFinite(parseFloat(amount)) ? parseFloat(amount) : 0,
-        deliveryDays: Number.isFinite(parseInt(deliveryDays, 10)) ? parseInt(deliveryDays, 10) : 1,
+        deliveryDays: Number.isFinite(parseInt(deliveryDays, 10))
+          ? parseInt(deliveryDays, 10)
+          : 1,
         pitch,
       });
       toast.success(t("bidSubmitted"));
@@ -45,83 +53,65 @@ export default function BidForm({ projectId, onSuccess }) {
 
   if (success) {
     return (
-      <div className="alert alert-success mt20 mb20 bdrs8 p20">
-        <i className="fas fa-check-circle me-2"></i>
-        {t("bidSubmittedSuccess")}
-      </div>
+      <Alert variant="success" className="mt-5">
+        <CheckCircle2 className="h-4 w-4" />
+        <AlertDescription>{t("bidSubmittedSuccess")}</AlertDescription>
+      </Alert>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt10">
-      <h4 className="mb20">{t("submitBid")}</h4>
+    <form onSubmit={handleSubmit} className="mt-3 space-y-4">
+      <h4 className="text-lg font-semibold mb-5">{t("submitBid")}</h4>
       {error && (
-        <div className="alert alert-danger mb20 bdrs8 p15">
-          <i className="fas fa-exclamation-circle me-2"></i>
-          {error}
-        </div>
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
-      <div className="row">
-        <div className="col-md-6">
-          <div className="mb20">
-            <label className="fw500 ff-heading dark-color mb-2">
-              {t("yourPrice")}
-            </label>
-            <input
-              type="number"
-              className="form-control"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              min="1"
-              step="0.01"
-              placeholder="e.g. 500"
-              required
-            />
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="bid-amount">{t("yourPrice")}</Label>
+          <Input
+            id="bid-amount"
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            min="1"
+            step="0.01"
+            placeholder="e.g. 500"
+            required
+          />
         </div>
-        <div className="col-md-6">
-          <div className="mb20">
-            <label className="fw500 ff-heading dark-color mb-2">
-              {t("deliveryDays")}
-            </label>
-            <input
-              type="number"
-              className="form-control"
-              value={deliveryDays}
-              onChange={(e) => setDeliveryDays(e.target.value)}
-              min="1"
-              placeholder="e.g. 7"
-              required
-            />
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="bid-days">{t("deliveryDays")}</Label>
+          <Input
+            id="bid-days"
+            type="number"
+            value={deliveryDays}
+            onChange={(e) => setDeliveryDays(e.target.value)}
+            min="1"
+            placeholder="e.g. 7"
+            required
+          />
         </div>
-        <div className="col-md-12">
-          <div className="mb20">
-            <label className="fw500 fz16 ff-heading dark-color mb-2">
-              {t("yourProposal")}
-            </label>
-            <textarea
-              className="pt15 form-control"
-              rows={6}
-              value={pitch}
-              onChange={(e) => setPitch(e.target.value)}
-              placeholder={t("proposalPlaceholder")}
-              required
-            />
-          </div>
-        </div>
-        <div className="col-md-12">
-          <div className="grid">
-            <button
-              type="submit"
-              className="ud-btn btn-thm"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? t("submitting") : t("submitBidBtn")}
-              <i className="fal fa-arrow-right-long" />
-            </button>
-          </div>
-        </div>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="bid-pitch">{t("yourProposal")}</Label>
+        <Textarea
+          id="bid-pitch"
+          rows={6}
+          value={pitch}
+          onChange={(e) => setPitch(e.target.value)}
+          placeholder={t("proposalPlaceholder")}
+          required
+        />
+      </div>
+      <div>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? t("submitting") : t("submitBidBtn")}
+          <ArrowRight className="ml-1 h-4 w-4" />
+        </Button>
       </div>
     </form>
   );

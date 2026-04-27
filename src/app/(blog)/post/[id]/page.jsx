@@ -33,7 +33,7 @@ function PostContent({ slug }) {
   // Loading
   if (post === undefined) {
     return (
-      <section className="pt60 pb90">
+      <section className="pt-14 pb-24">
         <div className="container">
           <div className="text-center py-5">
             <div className="spinner-border text-thm" role="status">
@@ -49,7 +49,7 @@ function PostContent({ slug }) {
   // Not found
   if (post === null) {
     return (
-      <section className="pt60 pb90">
+      <section className="pt-14 pb-24">
         <div className="container">
           <EmptyState
             icon="📝"
@@ -75,38 +75,38 @@ function PostContent({ slug }) {
   const categoryName = post.category?.name || t("general");
 
   return (
-    <section className="our-blog pt40 pb90">
+    <section className="our-blog pt-10 pb-24">
       <div className="container">
         {/* Breadcrumb */}
-        <nav className="mb20">
-          <Link href="/" className="body-color fz14">{t("home")}</Link>
-          <span className="body-color fz14 mx-1">/</span>
-          <Link href="/blog" className="body-color fz14">{t("blog")}</Link>
-          <span className="body-color fz14 mx-1">/</span>
-          <span className="dark-color fz14 fw500">{post.title}</span>
+        <nav className="mb-5">
+          <Link href="/" className="body-color text-sm">{t("home")}</Link>
+          <span className="body-color text-sm mx-1">/</span>
+          <Link href="/blog" className="body-color text-sm">{t("blog")}</Link>
+          <span className="body-color text-sm mx-1">/</span>
+          <span className="dark-color text-sm font-medium">{post.title}</span>
         </nav>
 
         {/* Title & Meta */}
         <div className="row wow fadeInUp" data-wow-delay="100ms">
           <div className="col-lg-12">
-            <h1 className="blog-title mb15" style={{ fontSize: "2rem" }}>
+            <h1 className="blog-title mb-4" style={{ fontSize: "2rem" }}>
               {post.title}
             </h1>
-            <div className="blog-single-meta mb30">
+            <div className="blog-single-meta mb-8">
               <div className="post-author sm:flex items-center">
                 <Image
                   height={40}
                   width={40}
-                  className="mr10 object-fit-contain rounded-circle"
+                  className="mr-2.5 object-fit-contain rounded-circle"
                   src={avatarSrc}
                   alt={authorName}
                   onError={() => setAvatarSrc(FALLBACK_AVATAR)}
                 />
-                <span className="pr15 body-light-color">{authorName}</span>
-                <span className="ml15 pr15 body-light-color">{categoryName}</span>
-                <span className="ml15 body-light-color">{date}</span>
+                <span className="pr-4 body-light-color">{authorName}</span>
+                <span className="ml-4 pr-4 body-light-color">{categoryName}</span>
+                <span className="ml-4 body-light-color">{date}</span>
                 {post.readTime && (
-                  <span className="ml15 body-light-color">
+                  <span className="ml-4 body-light-color">
                     {t("minRead", { minutes: post.readTime })}
                   </span>
                 )}
@@ -116,7 +116,7 @@ function PostContent({ slug }) {
         </div>
 
         {/* Feature Image */}
-        <div className="row mb30">
+        <div className="row mb-8">
           <div className="col-lg-12">
             <Image
               height={530}
@@ -136,7 +136,7 @@ function PostContent({ slug }) {
             <div className="ui-content">
               {post.content && (
                 <div
-                  className="blog-post-content fz15 body-color lh-lg"
+                  className="blog-post-content text-base body-color lh-lg"
                   dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
                 />
               )}
@@ -144,8 +144,8 @@ function PostContent({ slug }) {
 
             {/* Tags */}
             {post.tags && post.tags.length > 0 && (
-              <div className="bdrt1 mt40 pt30 flex items-center flex-wrap gap-2">
-                <span className="dark-color fw500 me-2">{t("tags")}</span>
+              <div className="bdrt1 mt-10 pt-8 flex items-center flex-wrap gap-2">
+                <span className="dark-color font-medium me-2">{t("tags")}</span>
                 {post.tags.map((tag, i) => (
                   <span
                     key={i}
@@ -165,7 +165,7 @@ function PostContent({ slug }) {
             )}
 
             {/* Back to blog */}
-            <div className="mt40 pt20 bdrt1">
+            <div className="mt-10 pt-5 bdrt1">
               <Link href="/blog" className="ud-btn btn-light-thm">
                 <i className="fal fa-arrow-left-long me-2" />
                 {t("backToBlog")}

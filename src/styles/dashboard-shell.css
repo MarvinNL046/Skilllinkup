@@ -89,6 +89,140 @@
   }
 }
 
+/* Charts that span 2 grid columns on desktop must collapse to a single
+   column on tablet/mobile so they don't push the donut off-screen. */
+@media (max-width: 1023px) {
+  .chart-span-2 {
+    grid-column: span 1 !important;
+  }
+}
+
+/* Dashboard tables — explicit horizontal scroll on mobile, with a
+   minimum table width so columns don't squish into unreadability. */
+.packages_table {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.packages_table > table {
+  min-width: 640px;
+}
+
+/* Below 640px: switch from horizontal-scroll to a stacked card
+   representation. Cells render as label/value rows using the data-label
+   attribute we set on each <td>. The table tag itself stays semantic
+   for screen readers. */
+@media (max-width: 639.98px) {
+  .packages_table {
+    overflow-x: visible;
+  }
+  .packages_table > table,
+  .packages_table > table > thead,
+  .packages_table > table > tbody,
+  .packages_table > table tr,
+  .packages_table > table td {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+  .packages_table > table > thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .packages_table > table tr {
+    margin-bottom: var(--space-4);
+    padding: var(--space-4);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-elevated);
+  }
+  .packages_table > table td {
+    padding: var(--space-2) 0;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-3);
+    text-align: right;
+  }
+  .packages_table > table td[data-label]::before {
+    content: attr(data-label);
+    font-size: var(--text-body-sm);
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-align: left;
+    flex: 0 0 auto;
+  }
+  .packages_table > table td:first-child {
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: var(--space-3);
+    margin-bottom: var(--space-2);
+  }
+}
+
+/* Messages — 2-pane fallback. The component swaps grid-template-columns
+   via JS once useIsMobile() hydrates, but SSR/no-JS would render desktop
+   layout in a 375px viewport. This CSS rule wins until JS catches up. */
+@media (max-width: 768px) {
+  .messages-2pane {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* iOS Safari auto-zooms whenever a focused input has font-size < 16px.
+   Force 16px on dashboard form fields under 768px to prevent that. The
+   rule only kicks in on mobile so desktop layouts can still use the
+   compact 14/15px legacy styles where they look good. */
+@media (max-width: 768px) {
+  .app-shell__content input,
+  .app-shell__content select,
+  .app-shell__content textarea,
+  .app-shell__content .form-control {
+    font-size: 16px;
+  }
+}
+
+/* Legacy override — many dashboard sections still wrap their JSX in
+   `<div className="dashboard__content hover-bgc-color">` for backward
+   compat. The legacy stylesheet (public/css/style.css) gives that class
+   60px padding + a fixed sidebar offset, which double-stacks on top of
+   .app-shell__content's own padding and breaks tablet breakpoints
+   (legacy uses 991.98px, app-shell uses 1023px). Neutralize when nested
+   so app-shell is the single source of truth for dashboard layout. */
+.app-shell__content .dashboard__content {
+  padding: 0;
+  border-radius: 0;
+}
+
+/* CTAs inside dashboard page headers should never wrap mid-word
+   ("Project / aanmaken"). Below the small breakpoint we also stack
+   the heading and action vertically so the button can take full width. */
+.dashboard_title_area .btn--primary,
+.dashboard_title_area .btn--accent,
+.dashboard_title_area .ud-btn {
+  white-space: nowrap;
+}
+@media (max-width: 575.98px) {
+  .dashboard_title_area {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+  .dashboard_title_area .btn--primary,
+  .dashboard_title_area .btn--accent,
+  .dashboard_title_area .ud-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 /* Skeleton pulse animation used by dashboard loading states */
 @keyframes skl-pulse {
   0%, 100% { opacity: 1; }

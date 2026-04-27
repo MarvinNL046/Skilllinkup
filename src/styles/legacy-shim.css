@@ -1,0 +1,66 @@
+/* ============================================================
+   SkillLinkup — Legacy class shim
+   Maps remaining Freeio-template utility classes to design-system
+   tokens. Authored to enable removing public/css/style.css once
+   the remaining structural template classes (mega-menu, detail
+   pages) are migrated.
+
+   This file replaces ~50% of the 172 legacy classes still in JSX
+   (verified via inventory at end of migration session 2026-04-27).
+   See docs/MIGRATION_STATUS.md for the path forward.
+
+   Loaded AFTER tokens.css so var()s resolve, BEFORE Tailwind
+   utilities so Tailwind wins on any conflict.
+   ============================================================ */
+
+/* --- Borders --- */
+.bdr1   { border: 1px solid var(--border-subtle); }
+.bdrb1  { border-bottom: 1px solid var(--border-subtle); }
+.bdrt1  { border-top: 1px solid var(--border-subtle); }
+.bdrl1  { border-left: 1px solid var(--border-subtle); }
+.bdrr1  { border-right: 1px solid var(--border-subtle); }
+
+/* --- Border radius --- */
+.bdrs4  { border-radius: 4px; }
+.bdrs8  { border-radius: 8px; }
+.bdrs12 { border-radius: 12px; }
+.bdrs16 { border-radius: 16px; }
+.bdrs20 { border-radius: 20px; }
+.bdrs60 { border-radius: 60px; }
+
+/* --- Background colors (template tints) --- */
+.bgc-white       { background-color: var(--bg-elevated); }
+.bgc-thm3        { background-color: var(--surface-2); }
+.bgc-thm3-light  { background-color: var(--surface-2); }
+.bgc-thm4        { background-color: var(--primary-50); }
+.bgc-thm-light   { background-color: var(--primary-50); }
+
+/* --- Text colors (semantic aliases) --- */
+.text-thm         { color: var(--primary-600); }
+.text-thm2        { color: var(--secondary-600, var(--primary-600)); }
+.text-thm3        { color: var(--primary-700); }
+.text-thm6        { color: var(--primary-600); }
+.text-white       { color: var(--neutral-0); }
+.dark-color       { color: var(--text-primary); }
+.heading-color    { color: var(--text-primary); }
+.body-light-color { color: var(--text-secondary); }
+.review-color     { color: var(--warning-500); }
+
+/* --- Layout/utility helpers --- */
+.vam              { vertical-align: middle; }
+.wa               { width: auto; }
+.ovh              { overflow: hidden; }
+.maxw1700         { max-width: 1700px; }
+.ff-heading       { font-family: var(--font-display); }
+.before-none::before { display: none !important; }
+
+/* --- Shadows --- */
+.default-box-shadow1     { box-shadow: var(--shadow-1, 0 1px 2px rgba(0,0,0,0.05)); }
+.default-box-shadow2     { box-shadow: var(--shadow-2, 0 4px 6px -1px rgba(0,0,0,0.1)); }
+.hover-box-shadow:hover  { box-shadow: var(--shadow-3, 0 10px 15px -3px rgba(0,0,0,0.1)); }
+.hover-bgc-color:hover   { background-color: var(--surface-2); }
+
+/* --- Color helpers used in dashboard timeline --- */
+.color3 { color: var(--primary-600); }
+.color4 { color: var(--success-600); }
+.color5 { color: var(--secondary-600, var(--primary-600)); }

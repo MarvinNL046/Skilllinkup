@@ -57,7 +57,7 @@ export default function HeroSearch1() {
                   }
             }
           >
-            <h6 className="fz14 ml30 mt25 mb-3">Popular Search</h6>
+            <h6 className="text-sm ml30 mt-6 mb-3">Popular Search</h6>
             <div className="box-suggestions">
               <ul className="px-0 m-0 pb-4">
                 {searchResult.map((item, index) => (

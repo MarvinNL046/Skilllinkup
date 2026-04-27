@@ -3,6 +3,9 @@ import { jobType } from "@/data/listing";
 import listingStore from "@/store/listingStore";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import Switch from "@/components/ui/Switch";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 
 export default function JobTypeDropdown1() {
   const t = useTranslations("jobsHub");
@@ -11,7 +14,6 @@ export default function JobTypeDropdown1() {
   const setJobTypeState = listingStore((state) => state.setJobType);
   const getJobTypeState = listingStore((state) => state.getJobType);
 
-  // handler
   const setJobTypeHandler = (data) => {
     if (!getJobType.includes(data)) {
       return setJobType([...getJobType, data]);
@@ -33,34 +35,28 @@ export default function JobTypeDropdown1() {
 
   return (
     <>
-      <div className="widget-wrapper pr20">
-        {jobType.map((item,i) => (
-          <div key={ i } className="switch-style1">
-            <div className="form-check form-switch mb20">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                id={`flexSwitchCheckDefault1${item.id}`}
-                checked={getJobType.includes(item.title)}
-                onChange={() => setJobTypeHandler(item.title)}
-              />
-              <label
-                className="form-check-label"
-                htmlFor={`flexSwitchCheckDefault1${item.id}`}
-              >
-                {item.title}
-              </label>
-            </div>
+      <div className="px-5 pb-6 space-y-3">
+        {jobType.map((item, i) => (
+          <div key={i} className="flex items-center justify-between gap-3">
+            <label
+              htmlFor={`job-type-${item.id}`}
+              className="text-sm cursor-pointer"
+            >
+              {item.title}
+            </label>
+            <Switch
+              id={`job-type-${item.id}`}
+              checked={getJobType.includes(item.title)}
+              onChange={() => setJobTypeHandler(item.title)}
+              aria-label={item.title}
+            />
           </div>
         ))}
       </div>
-      <button
-        onClick={jobTypeSumitHandler}
-        className="done-btn ud-btn btn-thm drop_btn4"
-      >
+      <Button onClick={jobTypeSumitHandler}>
         {t("apply")}
-        <i className="fal fa-arrow-right-long" />
-      </button>
+        <ArrowRight className="ml-1 h-4 w-4" />
+      </Button>
     </>
   );
 }

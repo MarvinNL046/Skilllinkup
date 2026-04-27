@@ -27,11 +27,11 @@ export default function JobInvision1() {
 
   return (
     <>
-      <section className="pt-0 pb90 pb30-md">
+      <section className="pt-0 pb-24 pb-8-md">
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
-              <div className="mb30">
+              <div className="mb-8">
                 <h2>{t("jobsAtCompany", { count: companyJobs.length, company: company.server })}</h2>
                 <p className="text">
                   {t("browseLatestRoles")}

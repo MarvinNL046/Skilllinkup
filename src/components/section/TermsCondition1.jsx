@@ -2,89 +2,55 @@
 
 import { useTranslations } from "next-intl";
 
+const SECTIONS = [
+  { n: 1, type: "two" },
+  { n: 2, type: "two" },
+  { n: 3, type: "two" },
+  { n: 4, type: "two" },
+  { n: 5, type: "two" },
+  { n: 6, type: "one" },
+  { n: 7, type: "two" },
+  { n: 8, type: "one" },
+  { n: 9, type: "one" },
+  { n: 10, type: "email" },
+];
+
 export default function TermsCondition1() {
   const t = useTranslations("terms");
 
   const emailLink = (
-    <a href="mailto:info@skilllinkup.com" className="text-thm">
+    <a href="mailto:info@skilllinkup.com" className="text-primary hover:underline">
       info@skilllinkup.com
     </a>
   );
 
   return (
-    <section className="our-terms pb90">
+    <section className="py-14">
       <div className="container">
-        <div className="row">
-          <div className="col-lg-8">
-            <div className="main-title mb40">
-              <h2>{t("title")}</h2>
-              <p className="text">{t("lastUpdated")}</p>
-            </div>
+        <div className="max-w-3xl">
+          <div className="mb-10">
+            <h2 className="text-3xl md:text-4xl font-bold mb-3">{t("title")}</h2>
+            <p className="text-sm text-[var(--text-secondary)]">{t("lastUpdated")}</p>
           </div>
         </div>
-        <div className="row">
-          <div className="col-xl-10">
-            <div className="terms_condition_grid text-left">
-              <div className="grids mb50">
-                <h4 className="title mb15">{t("section1Title")}</h4>
-                <p className="text fz15 mb15">{t("section1p1")}</p>
-                <p className="text fz15">{t("section1p2")}</p>
-              </div>
-
-              <div className="grids mb50">
-                <h4 className="title mb15">{t("section2Title")}</h4>
-                <p className="text fz15 mb15">{t("section2p1")}</p>
-                <p className="text fz15">{t("section2p2")}</p>
-              </div>
-
-              <div className="grids mb50">
-                <h4 className="title mb15">{t("section3Title")}</h4>
-                <p className="text fz15 mb15">{t("section3p1")}</p>
-                <p className="text fz15">{t("section3p2")}</p>
-              </div>
-
-              <div className="grids mb50">
-                <h4 className="title mb15">{t("section4Title")}</h4>
-                <p className="text fz15 mb15">{t("section4p1")}</p>
-                <p className="text fz15">{t("section4p2")}</p>
-              </div>
-
-              <div className="grids mb50">
-                <h4 className="title mb15">{t("section5Title")}</h4>
-                <p className="text fz15 mb15">{t("section5p1")}</p>
-                <p className="text fz15">{t("section5p2")}</p>
-              </div>
-
-              <div className="grids mb50">
-                <h4 className="title mb15">{t("section6Title")}</h4>
-                <p className="text fz15">{t("section6Text")}</p>
-              </div>
-
-              <div className="grids mb50">
-                <h4 className="title mb15">{t("section7Title")}</h4>
-                <p className="text fz15 mb15">{t("section7p1")}</p>
-                <p className="text fz15">{t("section7p2")}</p>
-              </div>
-
-              <div className="grids mb50">
-                <h4 className="title mb15">{t("section8Title")}</h4>
-                <p className="text fz15">{t("section8Text")}</p>
-              </div>
-
-              <div className="grids mb50">
-                <h4 className="title mb15">{t("section9Title")}</h4>
-                <p className="text fz15">{t("section9Text")}</p>
-              </div>
-
-              <div className="grids">
-                <h4 className="title mb15">{t("section10Title")}</h4>
-                <p className="text fz15">
-                  {t("section10Text")}{" "}
-                  {emailLink}.
+        <div className="max-w-4xl space-y-12 text-base text-foreground leading-relaxed">
+          {SECTIONS.map(({ n, type }) => (
+            <div key={n}>
+              <h4 className="text-xl font-bold mb-4">{t(`section${n}Title`)}</h4>
+              {type === "two" && (
+                <>
+                  <p className="mb-4">{t(`section${n}p1`)}</p>
+                  <p>{t(`section${n}p2`)}</p>
+                </>
+              )}
+              {type === "one" && <p>{t(`section${n}Text`)}</p>}
+              {type === "email" && (
+                <p>
+                  {t(`section${n}Text`)} {emailLink}.
                 </p>
-              </div>
+              )}
             </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>

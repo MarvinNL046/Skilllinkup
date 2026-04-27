@@ -37,7 +37,7 @@ function CategoryContent({ slug }) {
   // Loading
   if (result === undefined) {
     return (
-      <section className="pt30 pb90">
+      <section className="pt-8 pb-24">
         <div className="container">
           <div className="text-center py-5">
             <div className="spinner-border text-thm" role="status">
@@ -54,7 +54,7 @@ function CategoryContent({ slug }) {
   // Category not found
   if (!category) {
     return (
-      <section className="pt30 pb90">
+      <section className="pt-8 pb-24">
         <div className="container">
           <EmptyState
             icon="🔍"
@@ -72,22 +72,22 @@ function CategoryContent({ slug }) {
   const hasChildren = category.children && category.children.length > 0;
 
   return (
-    <section className="pt30 pb90">
+    <section className="pt-8 pb-24">
       <div className="container">
         {/* Breadcrumb */}
-        <nav className="mb20">
-          <Link href="/" className="body-color fz14">Home</Link>
-          <span className="body-color fz14 mx-1">/</span>
-          <Link href="/online/services" className="body-color fz14">Services</Link>
-          <span className="body-color fz14 mx-1">/</span>
-          <span className="dark-color fz14 fw500">{category.name}</span>
+        <nav className="mb-5">
+          <Link href="/" className="body-color text-sm">Home</Link>
+          <span className="body-color text-sm mx-1">/</span>
+          <Link href="/online/services" className="body-color text-sm">Services</Link>
+          <span className="body-color text-sm mx-1">/</span>
+          <span className="dark-color text-sm font-medium">{category.name}</span>
         </nav>
 
         {/* Title */}
-        <div className="row mb30">
+        <div className="row mb-8">
           <div className="col-12">
-            <h1 className="title mb5" style={{ fontSize: "1.8rem" }}>
-              {category.icon && <span className={`${category.icon} mr10`} />}
+            <h1 className="title mb-1" style={{ fontSize: "1.8rem" }}>
+              {category.icon && <span className={`${category.icon} mr-2.5`} />}
               {category.name}
             </h1>
             {category.description && (
@@ -98,14 +98,14 @@ function CategoryContent({ slug }) {
 
         {/* Subcategories */}
         {hasChildren && (
-          <div className="row mb30">
+          <div className="row mb-8">
             <div className="col-12">
               <div className="flex flex-wrap gap-2">
                 {category.children.map((child) => (
                   <Link
                     key={child._id}
                     href={`/online/services/${child.slug}`}
-                    className="ud-btn btn-light-thm bdrs60 fz14"
+                    className="ud-btn btn-light-thm bdrs60 text-sm"
                     style={{ padding: "8px 20px" }}
                   >
                     {child.name}
@@ -127,7 +127,7 @@ function CategoryContent({ slug }) {
           />
         ) : (
           <>
-            <p className="body-color mb20">
+            <p className="body-color mb-5">
               {products.length} service{products.length !== 1 ? "s" : ""} found
             </p>
             <div className="row">

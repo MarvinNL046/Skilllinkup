@@ -5,79 +5,51 @@ import toggleStore from "@/store/toggleStore";
 import CategoryOption1 from "../option/CategoryOption1";
 import ClearButton from "../button/ClearButton";
 import NoOfEmployeeOption1 from "../option/NoOfEmployeeOption1";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 
 export default function ListingSidebarModal4() {
   const t = useTranslations("filterModals");
   const listingToggle = toggleStore((state) => state.listingToggleHandler);
+
+  const filters = [
+    { value: "category", label: t("category"), content: <CategoryOption1 /> },
+    { value: "noOfEmployees", label: t("noOfEmployees"), content: <NoOfEmployeeOption1 /> },
+  ];
 
   return (
     <>
       <div className="lefttside-hidden-bar">
         <div className="hsidebar-header bdrb1">
           <h4 className="list-title">{t("allFilters")}</h4>
-          <div className="sidebar-close-icon" onClick={listingToggle}>
+          <button
+            type="button"
+            onClick={listingToggle}
+            className="sidebar-close-icon"
+            aria-label="Close filters"
+          >
             <span className="far fa-times" />
-          </div>
+          </button>
         </div>
         <div className="hsidebar-content">
           <div className="widget-wrapper">
-            <div className="sidebar-accordion">
-              <div className="accordion" id="accordionExample2">
-                <div className="card mb20 pb10">
-                  <div className="card-header" id="headingZero">
-                    <h4>
-                      <button
-                        className="btn btn-link ps-0 collapsed"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#collapseZero"
-                        aria-expanded="false"
-                        aria-controls="collapseZero"
-                      >
-                        {t("category")}
-                      </button>
-                    </h4>
-                  </div>
-                  <div
-                    id="collapseZero"
-                    className="collapse show"
-                    aria-labelledby="headingZero"
-                    data-parent="#accordionExample"
-                  >
-                    <div className="card-body card-body px-0 pt-0">
-                      <CategoryOption1 />
-                    </div>
-                  </div>
-                </div>
-                <div className="card mb20 pb5">
-                  <div className="card-header" id="headingThrees">
-                    <h4>
-                      <button
-                        className="btn btn-link ps-0"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#collapseThrees"
-                        aria-expanded="true"
-                        aria-controls="collapseThrees"
-                      >
-                        {t("noOfEmployees")}
-                      </button>
-                    </h4>
-                  </div>
-                  <div
-                    id="collapseThrees"
-                    className="collapse show"
-                    aria-labelledby="headingThrees"
-                    data-parent="#accordionExample"
-                  >
-                    <div className="card-body card-body px-0 pt-0">
-                      <NoOfEmployeeOption1 />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <ClearButton />
-            </div>
+            <Accordion
+              type="multiple"
+              defaultValue={filters.map((f) => f.value)}
+              className="w-full"
+            >
+              {filters.map(({ value, label, content }) => (
+                <AccordionItem key={value} value={value}>
+                  <AccordionTrigger className="text-base font-medium">{label}</AccordionTrigger>
+                  <AccordionContent>{content}</AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+            <ClearButton />
           </div>
         </div>
       </div>

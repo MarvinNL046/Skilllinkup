@@ -15,10 +15,10 @@ export default function JobTypeOption1() {
 
   return (
     <>
-      <div className="widget-wrapper pr20">
+      <div className="widget-wrapper pr-5">
         {jobType.map((item,i) => (
           <div key={ i } className="switch-style1">
-            <div className="form-check form-switch mb20">
+            <div className="form-check form-switch mb-5">
               <input
                 className="form-check-input"
                 type="checkbox"

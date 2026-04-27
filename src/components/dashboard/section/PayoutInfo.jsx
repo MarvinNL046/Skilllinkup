@@ -7,6 +7,47 @@ import Link from "next/link";
 import DashboardNavigation from "../header/DashboardNavigation";
 import PaymentMethod from "./PaymentMethod";
 import StripeConnectButton from "@/components/ui/StripeConnectButton";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ArrowRight, TrendingUp, Clock, Wallet } from "lucide-react";
+
+function StatCard({ Icon, label, value, sublabel, isLoading }) {
+  return (
+    <Card>
+      <CardContent className="p-5 flex items-center justify-between">
+        <div className="min-w-0">
+          <div className="text-sm text-[var(--text-secondary)]">{label}</div>
+          <div className="text-2xl font-semibold mt-1">
+            {isLoading ? (
+              <span className="text-[var(--text-tertiary)] text-xl">...</span>
+            ) : (
+              value
+            )}
+          </div>
+          <div className="text-xs text-[var(--text-secondary)] mt-1">{sublabel}</div>
+        </div>
+        <div className="flex h-12 w-12 items-center justify-center rounded-md bg-primary/10 text-primary flex-shrink-0">
+          <Icon className="h-5 w-5" />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function getStatusBadge(status) {
+  switch (status) {
+    case "completed":
+      return <Badge variant="success">{status}</Badge>;
+    case "in_progress":
+    case "active":
+      return <Badge variant="info">{status?.replace(/_/g, " ")}</Badge>;
+    case "pending":
+      return <Badge variant="warning">{status}</Badge>;
+    default:
+      return <Badge variant="muted">{status?.replace(/_/g, " ")}</Badge>;
+  }
+}
 
 export default function PayoutInfo() {
   const t = useTranslations("payouts");
@@ -18,23 +59,20 @@ export default function PayoutInfo() {
     userId ? { userId, role: "freelancer" } : "skip"
   );
 
-  const isLoading = isAuthenticated && (convexUser === undefined || (userId && freelancerOrders === undefined));
+  const isLoading =
+    isAuthenticated &&
+    (convexUser === undefined || (userId && freelancerOrders === undefined));
   const notAuthenticated = isLoaded && !isAuthenticated;
   const noConvexProfile = isAuthenticated && convexUser === null;
 
-  const completedOrders = (freelancerOrders || []).filter(
-    (o) => o.status === "completed"
-  );
-
+  const completedOrders = (freelancerOrders || []).filter((o) => o.status === "completed");
   const totalEarnings = completedOrders.reduce(
     (sum, o) => sum + (o.freelancerEarnings ?? 0),
     0
   );
-
   const pendingOrders = (freelancerOrders || []).filter((o) =>
     ["pending", "in_progress", "active", "delivered", "revision_requested"].includes(o.status)
   );
-
   const pendingEarnings = pendingOrders.reduce(
     (sum, o) => sum + (o.freelancerEarnings ?? 0),
     0
@@ -57,159 +95,120 @@ export default function PayoutInfo() {
     });
   }
 
-  function getStatusClass(status) {
-    switch (status) {
-      case "completed":
-        return "pending-style style1";
-      case "in_progress":
-      case "active":
-        return "pending-style style2";
-      case "pending":
-        return "pending-style style3";
-      default:
-        return "pending-style";
-    }
-  }
-
   return (
-    <>
-      <div className="dashboard__content hover-bgc-color">
-        <div className="row pb40">
-          <div className="col-lg-12">
-            <DashboardNavigation />
-          </div>
+    <div className="dashboard__content hover-bgc-color">
+      <DashboardNavigation />
+      <div className="dashboard_title_area mb-6">
+        <div>
+          <h2>{t("title")}</h2>
+          <p className="text-[var(--text-secondary)]">{t("pageDescription")}</p>
         </div>
-        <div className="row items-center justify-between pb40">
-          <div className="col-lg-6">
-            <div className="dashboard_title_area">
-              <h2>{t("title")}</h2>
-              <p className="text">{t("pageDescription")}</p>
-            </div>
-          </div>
-          <div className="col-lg-6">
-            <div className="text-lg-end">
-              <Link
-                href="/my-profile"
-                className="ud-btn btn-thm default-box-shadow2"
-              >
-                {t("manageProfile")}
-                <i className="fal fa-arrow-right-long" />
+        <Button asChild>
+          <Link href="/my-profile">
+            {t("manageProfile")}
+            <ArrowRight className="ml-1 h-4 w-4" />
+          </Link>
+        </Button>
+      </div>
+
+      {notAuthenticated && (
+        <Card>
+          <CardContent className="p-8 text-center">
+            <p className="text-[var(--text-secondary)]">{t("signInPrompt")}</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {isAuthenticated && convexUser === undefined && (
+        <Card>
+          <CardContent className="p-8 flex justify-center">
+            <div
+              role="status"
+              aria-label="Loading"
+              className="h-6 w-6 animate-spin rounded-full border-3 border-[var(--border-subtle)] border-t-primary"
+            />
+          </CardContent>
+        </Card>
+      )}
+
+      {noConvexProfile && (
+        <Card>
+          <CardContent className="p-8 text-center">
+            <p className="text-[var(--text-secondary)]">
+              {t("noProfileFound", { link: "" })}
+              <Link href="/onboarding" className="text-primary hover:underline ml-1">
+                {t("onboarding")}
               </Link>
-            </div>
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
+      {!notAuthenticated && !noConvexProfile && (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-6">
+            <StatCard
+              Icon={TrendingUp}
+              label={t("totalEarned")}
+              value={formatCurrency(totalEarnings)}
+              sublabel={
+                <>
+                  <span className="text-primary font-medium">
+                    {isLoading ? "..." : completedOrders.length}
+                  </span>{" "}
+                  {t("completedOrders")}
+                </>
+              }
+              isLoading={isLoading}
+            />
+            <StatCard
+              Icon={Clock}
+              label={t("pendingEarnings")}
+              value={formatCurrency(pendingEarnings)}
+              sublabel={
+                <>
+                  <span className="text-primary font-medium">
+                    {isLoading ? "..." : pendingOrders.length}
+                  </span>{" "}
+                  {t("ordersInProgress")}
+                </>
+              }
+              isLoading={isLoading}
+            />
+            <StatCard
+              Icon={Wallet}
+              label={t("availableForWithdrawal")}
+              value={formatCurrency(totalEarnings)}
+              sublabel={
+                <>
+                  <span className="text-primary font-medium">Stripe</span>{" "}
+                  {t("stripeConnectRequired")}
+                </>
+              }
+              isLoading={isLoading}
+            />
           </div>
-        </div>
 
-        {notAuthenticated && (
-          <div className="row"><div className="col-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30">
-              <p className="text text-center mb-0">{t("signInPrompt")}</p>
-            </div>
-          </div></div>
-        )}
-
-        {isAuthenticated && convexUser === undefined && (
-          <div className="row"><div className="col-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30">
-              <div className="text-center py-4">
-                <div className="spinner-border spinner-border-sm text-success" role="status" />
-              </div>
-            </div>
-          </div></div>
-        )}
-
-        {noConvexProfile && (
-          <div className="row"><div className="col-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb30">
-              <p className="text text-center mb-0">
-                {t("noProfileFound", { link: "" })}
-                <Link href="/onboarding" className="text-thm">{t("onboarding")}</Link>
-              </p>
-            </div>
-          </div></div>
-        )}
-
-        {!notAuthenticated && !noConvexProfile && (<>
-        <div className="row mb30">
-          <div className="col-sm-6 col-lg-4">
-            <div className="flex items-center justify-between statistics_funfact">
-              <div className="details">
-                <div className="fz15">{t("totalEarned")}</div>
-                <div className="title">
-                  {isLoading ? (
-                    <span className="text-muted fz20">...</span>
-                  ) : (
-                    formatCurrency(totalEarnings)
-                  )}
-                </div>
-                <div className="text fz14">
-                  <span className="text-thm">{isLoading ? "..." : completedOrders.length}</span> {t("completedOrders")}
-                </div>
-              </div>
-              <div className="icon text-center">
-                <i className="flaticon-income" />
-              </div>
-            </div>
-          </div>
-          <div className="col-sm-6 col-lg-4">
-            <div className="flex items-center justify-between statistics_funfact">
-              <div className="details">
-                <div className="fz15">{t("pendingEarnings")}</div>
-                <div className="title">
-                  {isLoading ? (
-                    <span className="text-muted fz20">...</span>
-                  ) : (
-                    formatCurrency(pendingEarnings)
-                  )}
-                </div>
-                <div className="text fz14">
-                  <span className="text-thm">{isLoading ? "..." : pendingOrders.length}</span> {t("ordersInProgress")}
-                </div>
-              </div>
-              <div className="icon text-center">
-                <i className="flaticon-review" />
-              </div>
-            </div>
-          </div>
-          <div className="col-sm-6 col-lg-4">
-            <div className="flex items-center justify-between statistics_funfact">
-              <div className="details">
-                <div className="fz15">{t("availableForWithdrawal")}</div>
-                <div className="title">
-                  {isLoading ? (
-                    <span className="text-muted fz20">...</span>
-                  ) : (
-                    formatCurrency(totalEarnings)
-                  )}
-                </div>
-                <div className="text fz14">
-                  <span className="text-thm">Stripe</span> {t("stripeConnectRequired")}
-                </div>
-              </div>
-              <div className="icon text-center">
-                <i className="flaticon-dollar" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p30 mb60 overflow-hidden relative">
-              <div className="flex justify-between bdrb1 pb15 mb20">
-                <h5 className="title">{t("earningsHistory")}</h5>
-              </div>
-
+          <Card className="mb-8 overflow-hidden">
+            <CardHeader className="border-b border-[var(--border-subtle)] pb-4">
+              <CardTitle>{t("earningsHistory")}</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
               {isLoading ? (
-                <div className="text-center py-4">
-                  <div className="spinner-border spinner-border-sm text-thm" role="status">
-                    <span className="visually-hidden">{t("loading")}</span>
-                  </div>
-                  <p className="text mt-2 mb-0">{t("loadingEarnings")}</p>
+                <div className="text-center py-12">
+                  <div
+                    role="status"
+                    aria-label={t("loading")}
+                    className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--border-subtle)] border-t-primary mx-auto"
+                  />
+                  <p className="mt-3 text-sm text-[var(--text-secondary)]">
+                    {t("loadingEarnings")}
+                  </p>
                 </div>
               ) : !freelancerOrders || freelancerOrders.length === 0 ? (
-                <div className="text-center py-4">
-                  <p className="text mb-0">{t("noOrdersYet")}</p>
-                </div>
+                <p className="text-center text-[var(--text-secondary)] py-12">
+                  {t("noOrdersYet")}
+                </p>
               ) : (
                 <div className="packages_table table-responsive">
                   <table className="table-style3 table at-savesearch">
@@ -224,16 +223,20 @@ export default function PayoutInfo() {
                     <tbody className="t-body">
                       {freelancerOrders.map((order) => (
                         <tr key={order._id}>
-                          <th scope="row">{formatCurrency(order.freelancerEarnings ?? 0)}</th>
-                          <td className="vam">
-                            <div className="fz14">{order.title}</div>
-                            <div className="fz12 text">{order.orderNumber}</div>
+                          <td data-label={t("columnAmount")} className="font-medium">
+                            {formatCurrency(order.freelancerEarnings ?? 0)}
                           </td>
-                          <td className="vam">{formatDate(order.createdAt)}</td>
-                          <td className="vam">
-                            <span className={getStatusClass(order.status)}>
-                              {order.status?.replace(/_/g, " ")}
-                            </span>
+                          <td data-label={t("columnOrder")} className="vam">
+                            <div className="text-sm">{order.title}</div>
+                            <div className="text-xs text-[var(--text-secondary)]">
+                              {order.orderNumber}
+                            </div>
+                          </td>
+                          <td data-label={t("columnDate")} className="vam">
+                            {formatDate(order.createdAt)}
+                          </td>
+                          <td data-label={t("columnPaymentStatus")} className="vam">
+                            {getStatusBadge(order.status)}
                           </td>
                         </tr>
                       ))}
@@ -241,27 +244,28 @@ export default function PayoutInfo() {
                   </table>
                 </div>
               )}
-            </div>
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 relative">
-              <div className="bdrb1 pb15 mb25">
-                <h5 className="list-title">{t("stripePayoutSetup")}</h5>
-                <p className="text fz14 mb-0">
-                  {t("stripePayoutDescription")}
-                </p>
-              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="mb-6">
+            <CardHeader className="border-b border-[var(--border-subtle)] pb-4">
+              <CardTitle>{t("stripePayoutSetup")}</CardTitle>
+              <p className="text-sm text-[var(--text-secondary)]">
+                {t("stripePayoutDescription")}
+              </p>
+            </CardHeader>
+            <CardContent className="pt-6">
               <StripeConnectButton />
-            </div>
-            <div className="ps-widget bgc-white bdrs4 p30 mb30 relative">
-              <div className="row">
-                <div className="col-lg-9">
-                  <PaymentMethod />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        </>)}
-      </div>
-    </>
+            </CardContent>
+          </Card>
+
+          <Card className="mb-6">
+            <CardContent className="p-6 max-w-3xl">
+              <PaymentMethod />
+            </CardContent>
+          </Card>
+        </>
+      )}
+    </div>
   );
 }

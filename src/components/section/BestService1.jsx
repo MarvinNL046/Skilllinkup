@@ -10,7 +10,7 @@ import PopularServiceCard1 from "../card/PopularServiceCard1";
 export default function BestService1() {
   return (
     <>
-      <div className="row mb10 relative">
+      <div className="row mb-2.5 relative">
         <div className="col-lg-9">
           <div className="main-title mb35">
             <h2>Best Services</h2>
@@ -61,7 +61,7 @@ export default function BestService1() {
             ))}
           </Swiper>
 
-          <div className="row ui-best-slider mt20">
+          <div className="row ui-best-slider mt-5">
             <div className="col-auto">
               <button className="swiper__btn btn__prev__019">
                 <i className="far fa-arrow-left-long" />

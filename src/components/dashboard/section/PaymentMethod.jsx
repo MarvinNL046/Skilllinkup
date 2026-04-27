@@ -2,79 +2,81 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import PayoutForm from "../element/PayoutForm";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
-const method = ["Paypal", "Bank Transfer", "Payoneer"];
+const METHODS = ["Paypal", "Bank Transfer", "Payoneer"];
 
 export default function PaymentMethod() {
   const t = useTranslations("payouts");
   const [methodSelect, setMethodSelect] = useState("Paypal");
 
-  const methodHandler = (data) => {
-    setMethodSelect(data);
-  };
   return (
-    <>
-      <div className="bdrb1 pb15">
-        <h5 className="list-title">{t("payoutMethods")}</h5>
+    <div className="space-y-6">
+      <div>
+        <h5 className="text-lg font-semibold pb-4 border-b border-[var(--border-subtle)]">
+          {t("payoutMethods")}
+        </h5>
       </div>
-      <div className="widget-wrapper mt35">
-        <h6 className="list-title mb10">{t("selectDefaultMethod")}</h6>
-        <div className="bootselect-multiselect">
-          <div className="dropdown bootstrap-select">
-            <button
-              type="button"
-              className="btn dropdown-toggle btn-light"
-              data-bs-toggle="dropdown"
-            >
-              <div className="filter-option">
-                <div className="filter-option-inner">
-                  <div className="filter-option-inner-inner">
-                    {methodSelect}
-                  </div>
-                </div>{" "}
-              </div>
-            </button>
-            <div className="dropdown-menu ">
-              <div className="inner show">
-                <ul className="dropdown-menu inner show">
-                  {method.map((item, i) => (
-                    <li key={i} className="selected active">
-                      <a
-                        className={`dropdown-item ${
-                          methodSelect === item ? "selected active" : ""
-                        }`}
-                        onClick={() => methodHandler(item)}
-                      >
-                        <span className="text">{item}</span>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
+
+      <div className="space-y-2 max-w-md">
+        <Label htmlFor="payout-method">{t("selectDefaultMethod")}</Label>
+        <Select value={methodSelect} onValueChange={setMethodSelect}>
+          <SelectTrigger id="payout-method">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {METHODS.map((item) => (
+              <SelectItem key={item} value={item}>
+                {item}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
-      <h5 className="mb15">{t("payoutDetails")}</h5>
-      <div className="navpill-style1 payout-style">
-        <ul className="nav nav-pills items-center justify-center mb30">
-          {method.map((item, i) => (
-            <li key={i} className="nav-item">
+
+      <Separator />
+
+      <div>
+        <h5 className="text-lg font-semibold mb-4">{t("payoutDetails")}</h5>
+        <div
+          role="tablist"
+          aria-label={t("payoutDetails")}
+          className="flex flex-wrap gap-1 mb-6 border-b border-[var(--border-subtle)]"
+        >
+          {METHODS.map((item) => {
+            const active = methodSelect === item;
+            return (
               <button
-                className={`nav-link fw500 dark-color ${
-                  methodSelect === item ? "active" : ""
-                }`}
-                onClick={() => methodHandler(item)}
+                key={item}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                onClick={() => setMethodSelect(item)}
+                className={cn(
+                  "px-4 py-3 text-sm font-medium border-b-2 transition-colors min-h-[44px]",
+                  active
+                    ? "border-primary text-primary"
+                    : "border-transparent text-[var(--text-secondary)] hover:text-foreground"
+                )}
               >
                 {item}
               </button>
-            </li>
-          ))}
-        </ul>
-        {methodSelect === "Paypal" && <PayoutForm />}
-        {methodSelect === "Bank Transfer" && <PayoutForm />}
-        {methodSelect === "Payoneer" && <PayoutForm />}
+            );
+          })}
+        </div>
+        {(methodSelect === "Paypal" ||
+          methodSelect === "Bank Transfer" ||
+          methodSelect === "Payoneer") && <PayoutForm />}
       </div>
-    </>
+    </div>
   );
 }

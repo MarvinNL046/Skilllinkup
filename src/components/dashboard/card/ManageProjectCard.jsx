@@ -2,6 +2,16 @@
 import Link from "next/link";
 import { Tooltip } from "react-tooltip";
 import { useTranslations } from "next-intl";
+import { Badge } from "@/components/ui/badge";
+import { MapPin, Clock, FileText, Pencil, Trash2 } from "lucide-react";
+
+const STATUS_VARIANTS = {
+  open: "success",
+  in_progress: "warning",
+  completed: "info",
+  cancelled: "destructive",
+  closed: "muted",
+};
 
 export default function ManageProjectCard({ project, onEdit, onDelete }) {
   const t = useTranslations("manageProjects");
@@ -17,14 +27,15 @@ export default function ManageProjectCard({ project, onEdit, onDelete }) {
   const createdAt = project?.createdAt;
 
   const STATUS_LABELS = {
-    open: { label: t("open"), className: "text-success" },
-    in_progress: { label: t("inProgress"), className: "text-warning" },
-    completed: { label: t("completed"), className: "text-primary" },
-    cancelled: { label: t("cancelled"), className: "text-danger" },
-    closed: { label: t("closed"), className: "text-secondary" },
+    open: t("open"),
+    in_progress: t("inProgress"),
+    completed: t("completed"),
+    cancelled: t("cancelled"),
+    closed: t("closed"),
   };
 
-  const statusInfo = STATUS_LABELS[status] ?? { label: status, className: "text-secondary" };
+  const statusLabel = STATUS_LABELS[status] ?? status;
+  const statusVariant = STATUS_VARIANTS[status] ?? "muted";
 
   const budgetDisplay =
     budgetMin != null && budgetMax != null
@@ -49,91 +60,89 @@ export default function ManageProjectCard({ project, onEdit, onDelete }) {
       })()
     : t("recently");
 
-  const bidsText = bidCount !== 1
-    ? t("bidsReceivedPlural", { count: bidCount })
-    : t("bidsReceived", { count: bidCount });
+  const bidsText =
+    bidCount !== 1
+      ? t("bidsReceivedPlural", { count: bidCount })
+      : t("bidsReceived", { count: bidCount });
 
-  const tooltipViewId = `view-${project?._id ?? Math.random()}`;
-  const tooltipEditId = `edit-${project?._id ?? Math.random()}`;
-  const tooltipDeleteId = `delete-${project?._id ?? Math.random()}`;
+  const idSuffix = project?._id ?? Math.random();
+  const tooltipViewId = `view-${idSuffix}`;
+  const tooltipEditId = `edit-${idSuffix}`;
+  const tooltipDeleteId = `delete-${idSuffix}`;
 
   return (
     <tr data-testid="manage-project-row">
-      <th scope="row">
-        <div className="freelancer-style1 box-shadow-none row m-0 p-0 lg:items-end">
-          <div className="lg:flex px-0">
-            <div className="details mb15-md-md">
-              <h5 className="title mb10">{title}</h5>
-              <p className="mb-0 fz14 list-inline-item mb5-sm pe-1">
-                <i className="flaticon-place fz16 vam text-thm2 me-1" />{" "}
-                {workType.charAt(0).toUpperCase() + workType.slice(1)}
-              </p>
-              <p className="mb-0 fz14 list-inline-item mb5-sm pe-1">
-                <i className="flaticon-30-days fz16 vam text-thm2 me-1 bdrl1 pl15 pl0-xs bdrn-xs" />{" "}
-                {timeAgo}
-              </p>
-              <p className="mb-0 fz14 list-inline-item mb5-sm text-thm">
-                <i className="flaticon-contract fz16 vam me-1 bdrl1 pl15 pl0-xs bdrn-xs" />{" "}
-                {bidsText}
-              </p>
-            </div>
+      <td data-label={t("columnTitle")} className="align-top">
+        <h5 className="text-base font-semibold mb-2">{title}</h5>
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--text-secondary)]">
+          <span className="inline-flex items-center gap-1">
+            <MapPin className="h-3.5 w-3.5 text-primary" />
+            {workType.charAt(0).toUpperCase() + workType.slice(1)}
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <Clock className="h-3.5 w-3.5 text-primary" />
+            {timeAgo}
+          </span>
+          <span className="inline-flex items-center gap-1 text-primary">
+            <FileText className="h-3.5 w-3.5" />
+            {bidsText}
+          </span>
+        </div>
+      </td>
+      <td data-label={t("columnCategory")} className="align-top">
+        <span className="text-base">{categoryName}</span>
+      </td>
+      <td data-label={t("columnBudgetStatus")} className="align-top">
+        <div className="space-y-1">
+          <div className="text-sm">
+            {budgetDisplay} / {t("fixed")}
           </div>
-        </div>
-      </th>
-      <td className="vam">
-        <span className="fz15 fw400">{categoryName}</span>
-      </td>
-      <td className="vam">
-        <div>
-          <span className="fz14 fw400">{budgetDisplay} / {t("fixed")}</span>
-          <br />
-          <span className={`fz13 fw500 ${statusInfo.className}`}>{statusInfo.label}</span>
+          <Badge variant={statusVariant}>{statusLabel}</Badge>
         </div>
       </td>
-      <td>
-        <div className="flex items-center">
+      <td data-label={t("columnActions")} className="align-top">
+        <div className="flex items-center gap-2">
           {project?._id && (
-            <Link
-              href={`/projects/${project._id}`}
-              className="icon me-2"
-              id={tooltipViewId}
-            >
-              <Tooltip anchorSelect={`#${tooltipViewId}`} className="ui-tooltip" place="top">
+            <>
+              <Link
+                href={`/projects/${project._id}`}
+                id={tooltipViewId}
+                aria-label={t("viewBids")}
+                className="text-[var(--text-tertiary)] hover:text-foreground"
+              >
+                <FileText className="h-4 w-4" />
+              </Link>
+              <Tooltip anchorSelect={`#${tooltipViewId}`} place="top">
                 {t("viewBids")}
               </Tooltip>
-              <span className="flaticon-document" />
-            </Link>
+            </>
           )}
           <button
             type="button"
-            className="icon me-2"
             id={tooltipEditId}
             onClick={() => onEdit?.(project)}
-            style={{ cursor: "pointer", border: "none", background: "transparent", padding: 0 }}
             data-testid="manage-project-edit"
+            aria-label={t("edit")}
+            className="text-[var(--text-tertiary)] hover:text-foreground"
           >
-            <Tooltip anchorSelect={`#${tooltipEditId}`} className="ui-tooltip" place="top">
-              {t("edit")}
-            </Tooltip>
-            <span className="flaticon-pencil" />
+            <Pencil className="h-4 w-4" />
           </button>
+          <Tooltip anchorSelect={`#${tooltipEditId}`} place="top">
+            {t("edit")}
+          </Tooltip>
           <button
             type="button"
-            className="icon"
             id={tooltipDeleteId}
             onClick={() => onDelete?.(project)}
-            style={{ cursor: "pointer", border: "none", background: "transparent", padding: 0 }}
             data-testid="manage-project-delete"
+            aria-label={t("delete")}
+            className="text-[var(--text-tertiary)] hover:text-destructive"
           >
-            <Tooltip
-              anchorSelect={`#${tooltipDeleteId}`}
-              place="top"
-              className="ui-tooltip"
-            >
-              {t("delete")}
-            </Tooltip>
-            <span className="flaticon-delete" />
+            <Trash2 className="h-4 w-4" />
           </button>
+          <Tooltip anchorSelect={`#${tooltipDeleteId}`} place="top">
+            {t("delete")}
+          </Tooltip>
         </div>
       </td>
     </tr>
