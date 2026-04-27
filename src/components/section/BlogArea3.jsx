@@ -4,6 +4,7 @@ import BlogCard4 from "../card/BlogCard4";
 import EmptyState from "@/components/ui/EmptyState";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { FileText } from "lucide-react";
 
 export default function BlogArea3() {
   const t = useTranslations("blogListing");
@@ -32,7 +33,7 @@ export default function BlogArea3() {
       <section className="our-blog pt-10 pb-24">
         <div className="container">
           <EmptyState
-            icon="📝"
+            Icon={FileText}
             title={t("noPosts")}
             description={t("noPostsDescription")}
             actionLabel={t("browsePlatforms")}

@@ -12,6 +12,7 @@ import FreelancerCard2 from "../card/FreelancerCard2";
 import FreelancerCardList from "../card/FreelancerCardList";
 import ListingSidebarModal5 from "../modal/ListingSidebarModal5";
 import EmptyState from "@/components/ui/EmptyState";
+import { User } from "lucide-react";
 
 export default function Listing14() {
   const t = useTranslations("listing");
@@ -153,7 +154,7 @@ export default function Listing14() {
               <ListingOption2 itemLength={filtered.length} itemLabel={t("freelancers")} />
               {filtered.length === 0 ? (
                 <EmptyState
-                  icon="👤"
+                  Icon={User}
                   title={t("noFreelancersTitle")}
                   description={t("noFreelancersDescription")}
                   actionLabel={t("noFreelancersAction")}

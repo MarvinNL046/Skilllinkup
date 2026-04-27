@@ -120,9 +120,9 @@ export default function ProposalModal1({ isOpen, onClose, project, onUpdate }) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="remote">{t("workTypeRemote")}</SelectItem>
-                <SelectItem value="onsite">{t("workTypeOnsite")}</SelectItem>
-                <SelectItem value="hybrid">{t("workTypeHybrid")}</SelectItem>
+                <SelectItem value="remote">{t("remote")}</SelectItem>
+                <SelectItem value="onsite">{t("onSite")}</SelectItem>
+                <SelectItem value="hybrid">{t("hybrid")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -136,7 +136,7 @@ export default function ProposalModal1({ isOpen, onClose, project, onUpdate }) {
               {t("cancel")}
             </Button>
             <Button type="submit" disabled={isUpdating}>
-              {isUpdating ? t("saving") : t("save")}
+              {isUpdating ? t("updating") : t("update")}
             </Button>
           </DialogFooter>
         </form>

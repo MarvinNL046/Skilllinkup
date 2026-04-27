@@ -11,7 +11,7 @@ import DeleteModal from "../modal/DeleteModal";
 import useConvexMyGigs from "@/hook/useConvexMyGigs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Plus } from "lucide-react";
+import { ArrowRight, Plus, Briefcase } from "lucide-react";
 
 const STATUS_MAP = {
   0: "active",
@@ -38,7 +38,7 @@ function GigTable({ gigs, removeGig, t }) {
   if (gigs.length === 0) {
     return (
       <div className="text-center py-12">
-        <div className="text-4xl mb-3" aria-hidden="true">🎯</div>
+        <Briefcase className="h-10 w-10 text-[var(--text-tertiary)] mx-auto mb-3" />
         <p className="font-medium mb-1">{t("noServicesYet")}</p>
         <p className="text-sm text-[var(--text-secondary)] mb-5">{t("noServicesHint")}</p>
         <Button asChild>

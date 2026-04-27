@@ -74,7 +74,7 @@ export default async function CompaniesPage() {
         <div className="container">
           <div style={{ maxWidth: 720, margin: "0 auto" }}>
             <EmptyState
-              icon="🏢"
+              Icon={Building2}
               title={t("companiesComingSoon")}
               description={t("companiesComingSoonText")}
               actionLabel={t("browseJobs")}

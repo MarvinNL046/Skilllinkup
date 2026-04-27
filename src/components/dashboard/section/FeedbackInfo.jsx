@@ -5,10 +5,18 @@ import { useMutation, useQuery } from "convex/react";
 import { useTranslations } from "next-intl";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ArrowRight, Star, AlertCircle, CheckCircle2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 function StarRating({ value, onChange }) {
   return (
-    <div role="radiogroup" aria-label="Rating" className="flex gap-1 mb-3">
+    <div role="radiogroup" aria-label="Rating" className="flex flex-wrap gap-1">
       {[1, 2, 3, 4, 5].map((star) => (
         <button
           key={star}
@@ -17,20 +25,15 @@ function StarRating({ value, onChange }) {
           aria-checked={star === value}
           aria-label={`${star} ${star === 1 ? "star" : "stars"}`}
           onClick={() => onChange(star)}
-          style={{
-            width: 44,
-            height: 44,
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            border: "none",
-            background: "transparent",
-            padding: 0,
-            cursor: "pointer",
-          }}
+          className="inline-flex h-11 w-11 items-center justify-center rounded-md border-none bg-transparent p-0 cursor-pointer hover:bg-[var(--surface-2)] transition-colors"
         >
-          <i
-            className={`fas fa-star text-2xl ${star <= value ? "text-warning" : "text-muted"}`}
+          <Star
+            className={cn(
+              "h-6 w-6",
+              star <= value
+                ? "fill-warning text-warning"
+                : "text-[var(--text-tertiary)]"
+            )}
             aria-hidden="true"
           />
         </button>
@@ -38,6 +41,12 @@ function StarRating({ value, onChange }) {
     </div>
   );
 }
+
+const STATUS_VARIANTS = {
+  new: "warning",
+  reviewed: "info",
+  resolved: "success",
+};
 
 export default function FeedbackInfo() {
   const t = useTranslations("feedback");
@@ -48,16 +57,16 @@ export default function FeedbackInfo() {
     convexUser ? {} : "skip"
   );
 
-  const STATUS_CONFIG = {
-    new:      { label: t("statusOpen"),       className: "bg-warning text-dark" },
-    reviewed: { label: t("statusInProgress"), className: "bg-info text-white" },
-    resolved: { label: t("statusResolved"),   className: "bg-success text-white" },
+  const STATUS_LABELS = {
+    new: t("statusOpen"),
+    reviewed: t("statusInProgress"),
+    resolved: t("statusResolved"),
   };
 
-  const TYPE_CONFIG = {
-    feedback: { label: t("typeFeedback"), icon: "flaticon-star" },
-    bug:      { label: t("typeBug"),      icon: "flaticon-warning" },
-    feature:  { label: t("typeFeature"),  icon: "flaticon-settings" },
+  const TYPE_LABELS = {
+    feedback: t("typeFeedback"),
+    bug: t("typeBug"),
+    feature: t("typeFeature"),
   };
 
   const [type, setType] = useState("feedback");
@@ -102,118 +111,168 @@ export default function FeedbackInfo() {
   }
 
   return (
-    <div className="row">
-      <div className="col-12 mb-4">
-        <h4 className="title text-lg mb-0">{t("title")}</h4>
-      </div>
+    <div className="space-y-6">
+      <h4 className="text-xl font-semibold">{t("title")}</h4>
 
-      {/* Submit form */}
-      <div className="col-lg-5 mb-4">
-        <div className="ps-widget bdrs8 p-8 bdr1">
-          <h6 className="mb-5">{t("sendFeedback")}</h6>
-          <form onSubmit={handleSubmit}>
-            {/* Type tabs */}
-            <div className="flex gap-2 mb-5">
-              {["feedback", "bug", "feature"].map((item) => (
-                <button
-                  key={item}
-                  type="button"
-                  className={`ud-btn btn-sm ${type === item ? "btn-thm" : "btn-white"}`}
-                  onClick={() => setType(item)}
-                >
-                  {TYPE_CONFIG[item].label}
-                </button>
-              ))}
-            </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        {/* Submit form */}
+        <Card className="lg:col-span-5">
+          <CardHeader className="border-b border-[var(--border-subtle)] pb-4">
+            <CardTitle className="text-base font-semibold">
+              {t("sendFeedback")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Type tabs — wrap + min-touch on mobile */}
+              <div
+                role="tablist"
+                aria-label={t("sendFeedback")}
+                className="flex flex-wrap gap-2"
+              >
+                {["feedback", "bug", "feature"].map((item) => (
+                  <Button
+                    key={item}
+                    type="button"
+                    role="tab"
+                    aria-selected={type === item}
+                    variant={type === item ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setType(item)}
+                    className="flex-1 sm:flex-initial min-w-[90px]"
+                  >
+                    {TYPE_LABELS[item]}
+                  </Button>
+                ))}
+              </div>
 
-            {/* Star rating — only for feedback type */}
-            {type === "feedback" && (
-              <div className="mb-2">
-                <label className="form-label text-sm font-medium">{t("ratingLabel")}</label>
-                <StarRating value={rating} onChange={setRating} />
+              {/* Star rating — only for feedback type */}
+              {type === "feedback" && (
+                <div className="space-y-2">
+                  <Label>{t("ratingLabel")}</Label>
+                  <StarRating value={rating} onChange={setRating} />
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <Label htmlFor="feedback-message">
+                  {type === "feedback" && t("promptFeedback")}
+                  {type === "bug" && t("promptBug")}
+                  {type === "feature" && t("promptFeature")}
+                </Label>
+                <Textarea
+                  id="feedback-message"
+                  rows={5}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder={t("placeholder")}
+                  required
+                />
+              </div>
+
+              {error && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+              {success && (
+                <Alert variant="success">
+                  <CheckCircle2 className="h-4 w-4" />
+                  <AlertDescription>{t("successMessage")}</AlertDescription>
+                </Alert>
+              )}
+
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={loading || !message.trim()}
+              >
+                {loading ? t("submitting") : t("submit")}
+                <ArrowRight className="ml-1 h-4 w-4" />
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        {/* Feedback history */}
+        <Card className="lg:col-span-7">
+          <CardHeader className="border-b border-[var(--border-subtle)] pb-4">
+            <CardTitle className="text-base font-semibold">
+              {t("yourFeedback")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-6">
+            {feedbackList === undefined && (
+              <div className="flex justify-center py-8">
+                <div
+                  role="status"
+                  aria-label="Loading"
+                  className="h-6 w-6 animate-spin rounded-full border-3 border-[var(--border-subtle)] border-t-primary"
+                />
               </div>
             )}
 
-            <div className="mb-5">
-              <label className="form-label text-sm font-medium">
-                {type === "feedback" && t("promptFeedback")}
-                {type === "bug" && t("promptBug")}
-                {type === "feature" && t("promptFeature")}
-              </label>
-              <textarea
-                className="form-control"
-                rows={5}
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder={t("placeholder")}
-                required
-              />
-            </div>
-
-            {error && <p className="text-danger text-sm mb-2.5">{error}</p>}
-            {success && (
-              <p className="text-success text-sm mb-2.5">
-                {t("successMessage")}
+            {feedbackList?.length === 0 && (
+              <p className="text-sm text-[var(--text-secondary)]">
+                {t("noFeedbackYet")}
               </p>
             )}
 
-            <button
-              type="submit"
-              className="ud-btn btn-thm w-full"
-              disabled={loading || !message.trim()}
-            >
-              {loading ? t("submitting") : t("submit")}
-              <i className="fal fa-arrow-right-long" />
-            </button>
-          </form>
-        </div>
-      </div>
-
-      {/* Feedback history */}
-      <div className="col-lg-7 mb-4">
-        <div className="ps-widget bdrs8 p-8 bdr1">
-          <h6 className="mb-5">{t("yourFeedback")}</h6>
-
-          {feedbackList === undefined && (
-            <div className="text-center py-4">
-              <div className="spinner-border text-primary" />
-            </div>
-          )}
-
-          {feedbackList?.length === 0 && (
-            <p className="text-muted text-sm">{t("noFeedbackYet")}</p>
-          )}
-
-          {feedbackList && feedbackList.length > 0 && (
-            <div className="flex flex-col gap-3">
-              {feedbackList.map((item) => (
-                <div key={item._id} className="bdr1 bdrs8 p-5">
-                  <div className="flex items-center justify-between mb-2.5">
-                    <div className="flex items-center gap-2">
-                      <span className="badge bg-light text-dark text-xs font-medium px-2 py-1" style={{ borderRadius: 8 }}>
-                        {TYPE_CONFIG[item.type]?.label || item.type}
-                      </span>
-                      {item.rating > 0 && (
-                        <span className="text-xs text-warning">
-                          {"★".repeat(item.rating)}{"☆".repeat(5 - item.rating)}
-                        </span>
-                      )}
+            {feedbackList && feedbackList.length > 0 && (
+              <div className="flex flex-col gap-3">
+                {feedbackList.map((item) => {
+                  const statusVariant =
+                    STATUS_VARIANTS[item.status] ?? STATUS_VARIANTS.new;
+                  const statusLabel =
+                    STATUS_LABELS[item.status] ?? STATUS_LABELS.new;
+                  return (
+                    <div
+                      key={item._id}
+                      className="rounded-lg border border-[var(--border-subtle)] p-4"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Badge variant="muted">
+                            {TYPE_LABELS[item.type] || item.type}
+                          </Badge>
+                          {item.rating > 0 && (
+                            <span
+                              className="inline-flex items-center gap-0.5 text-xs"
+                              aria-label={`${item.rating} stars`}
+                            >
+                              {[1, 2, 3, 4, 5].map((s) => (
+                                <Star
+                                  key={s}
+                                  className={cn(
+                                    "h-3 w-3",
+                                    s <= item.rating
+                                      ? "fill-warning text-warning"
+                                      : "text-[var(--text-tertiary)]"
+                                  )}
+                                  aria-hidden="true"
+                                />
+                              ))}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Badge variant={statusVariant}>{statusLabel}</Badge>
+                          <span className="text-xs text-[var(--text-tertiary)]">
+                            {timeAgo(item.createdAt)}
+                          </span>
+                        </div>
+                      </div>
+                      <p className="text-sm whitespace-pre-wrap mb-0">
+                        {item.message}
+                      </p>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className={`badge px-2 py-1 text-xs font-medium ${(STATUS_CONFIG[item.status] || STATUS_CONFIG.new).className}`} style={{ borderRadius: 8 }}>
-                        {(STATUS_CONFIG[item.status] || STATUS_CONFIG.new).label}
-                      </span>
-                      <span className="text-xs text-muted">{timeAgo(item.createdAt)}</span>
-                    </div>
-                  </div>
-                  <p className="text-sm mb-0 text-dark" style={{ whiteSpace: "pre-wrap" }}>
-                    {item.message}
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+                  );
+                })}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

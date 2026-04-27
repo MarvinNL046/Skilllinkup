@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { Cookie } from "lucide-react";
 
 const STORAGE_KEY = "cookie_consent";
 
@@ -102,12 +103,10 @@ export default function CookieConsent() {
               minWidth: "220px",
             }}
           >
-            <span
-              style={{ fontSize: "22px", lineHeight: 1, flexShrink: 0 }}
+            <Cookie
+              className="h-6 w-6 flex-shrink-0 text-primary"
               aria-hidden="true"
-            >
-              🍪
-            </span>
+            />
             <p
               style={{
                 margin: 0,

@@ -8,6 +8,7 @@ import ListingSidebarModal4 from "../modal/ListingSidebarModal4";
 import useConvexClients from "@/hook/useConvexClients";
 import EmptyState from "@/components/ui/EmptyState";
 import { useTranslations } from "next-intl";
+import { Building2 } from "lucide-react";
 
 export default function Listing12() {
   const t = useTranslations("common");
@@ -65,7 +66,7 @@ export default function Listing12() {
               <div className="row">
                 {content.length === 0 ? (
                   <EmptyState
-                    icon="🏢"
+                    Icon={Building2}
                     title="No clients yet"
                     description="Be the first to sign up as a client and post a project"
                     actionLabel="Get Started"

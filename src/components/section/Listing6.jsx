@@ -13,6 +13,7 @@ import PopularServiceSlideCard1 from "../card/PopularServiceSlideCard1";
 import TrendingServiceCard1 from "../card/TrendingServiceCard1";
 import EmptyState from "@/components/ui/EmptyState";
 import CategoryPills from "@/components/ui/CategoryPills";
+import { Palette, Search as SearchIcon } from "lucide-react";
 
 export default function Listing6() {
   const t = useTranslations("services");
@@ -117,7 +118,7 @@ export default function Listing6() {
               <ListingOption2 itemLength={filtered.length} />
               {product1.length === 0 ? (
                 <EmptyState
-                  icon="🎨"
+                  Icon={Palette}
                   title={t("noServicesTitle")}
                   description={t("noServicesDescription")}
                   actionLabel={t("noServicesAction")}
@@ -125,7 +126,7 @@ export default function Listing6() {
                 />
               ) : filtered.length === 0 ? (
                 <EmptyState
-                  icon="🔍"
+                  Icon={SearchIcon}
                   title={t("noMatchTitle")}
                   description={t("noMatchDescription")}
                 />

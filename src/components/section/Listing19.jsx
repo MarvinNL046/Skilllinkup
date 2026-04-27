@@ -11,6 +11,7 @@ import ListingSidebarModal2 from "../modal/ListingSidebarModal2";
 import ProjectCard3 from "../card/ProjectCard3";
 import ListingSidebar6 from "../sidebar/ListingSidebar6";
 import EmptyState from "@/components/ui/EmptyState";
+import { ClipboardList } from "lucide-react";
 
 export default function Listing19() {
   const t = useTranslations("projects");
@@ -140,7 +141,7 @@ export default function Listing19() {
               <ListingOption2 itemLength={filtered.length} itemLabel={t("itemLabel")} />
               {filtered.length === 0 ? (
                 <EmptyState
-                  icon="📋"
+                  Icon={ClipboardList}
                   title={t("noProjectsTitle")}
                   description={t("noProjectsDescription")}
                   actionLabel={t("noProjectsAction")}

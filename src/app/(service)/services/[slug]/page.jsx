@@ -9,6 +9,7 @@ import TrendingServiceCard1 from "@/components/card/TrendingServiceCard1";
 import EmptyState from "@/components/ui/EmptyState";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { Search as SearchIcon, Rocket } from "lucide-react";
 
 function mapGigToProduct(gig, index) {
   return {
@@ -59,7 +60,7 @@ function CategoryContent({ slug }) {
       <section className="pt-8 pb-24">
         <div className="container">
           <EmptyState
-            icon="🔍"
+            Icon={SearchIcon}
             title="Category not found"
             description="This category doesn't exist."
             actionLabel="Browse All Services"
@@ -121,7 +122,7 @@ function CategoryContent({ slug }) {
         {/* Gigs listing */}
         {products.length === 0 ? (
           <EmptyState
-            icon="🚀"
+            Icon={Rocket}
             title={`No services in ${category.name} yet`}
             description="Be the first to offer your services in this category"
             actionLabel="Become a Seller"

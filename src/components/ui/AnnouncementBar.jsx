@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, Rocket } from "lucide-react";
 
 const STORAGE_KEY = "announcementBar_dismissed_v1";
 
@@ -48,7 +48,8 @@ export default function AnnouncementBar() {
         }}
         className="announcement-text"
       >
-        🚀 <strong>SkillLinkup is in pre-launch.</strong> We&apos;re building
+        <Rocket className="inline-block h-4 w-4 mr-1.5 align-text-bottom" aria-hidden="true" />
+        <strong>SkillLinkup is in pre-launch.</strong> We&apos;re building
         the best platform for freelancers and clients — we can&apos;t wait
         to welcome you!
       </span>

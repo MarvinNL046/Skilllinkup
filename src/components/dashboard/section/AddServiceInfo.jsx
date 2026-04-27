@@ -11,6 +11,20 @@ import ServiceGallery from "./ServiceGallery";
 import useConvexProfile from "@/hook/useConvexProfile";
 import useConvexCategories from "@/hook/useConvexCategories";
 import { flattenLeafMarketplaceCategories } from "@/lib/marketplaceCategories";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ArrowRight, AlertCircle, CheckCircle2, Info, AlertTriangle } from "lucide-react";
 
 function slugify(text) {
   return text
@@ -29,7 +43,7 @@ const EMPTY_PACKAGE = {
 
 function worldToServiceType(world) {
   if (world === "local") return "local";
-  return "digital"; // online, jobs, default
+  return "digital";
 }
 
 export default function AddServiceInfo() {
@@ -42,7 +56,6 @@ export default function AddServiceInfo() {
   const createGig = useMutation(api.marketplace.gigs.create);
   const createPackage = useMutation(api.marketplace.gigs.createPackage);
 
-  // Basic info state
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState("");
@@ -51,24 +64,24 @@ export default function AddServiceInfo() {
   const [locationCountry, setLocationCountry] = useState("");
   const [locationCity, setLocationCity] = useState("");
 
-  // Package state: three tiers
   const [basicPkg, setBasicPkg] = useState({ ...EMPTY_PACKAGE });
   const [standardPkg, setStandardPkg] = useState({ ...EMPTY_PACKAGE });
   const [premiumPkg, setPremiumPkg] = useState({ ...EMPTY_PACKAGE });
 
-  // UI state
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  // Helper to update a package field
   const updatePkg = (setter, field, value) => {
     setter((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Check if a package tier has enough data to submit
   const isPkgFilled = (pkg) =>
-    pkg.title.trim() && pkg.price && !isNaN(Number(pkg.price)) && pkg.deliveryDays && !isNaN(Number(pkg.deliveryDays));
+    pkg.title.trim() &&
+    pkg.price &&
+    !isNaN(Number(pkg.price)) &&
+    pkg.deliveryDays &&
+    !isNaN(Number(pkg.deliveryDays));
 
   const handleSaveAndPublish = async () => {
     if (!profile?._id || !convexUser) {
@@ -94,7 +107,6 @@ export default function AddServiceInfo() {
     try {
       const slug = slugify(title) + "-" + Date.now();
 
-      // Create the gig
       const gigId = await createGig({
         tenantId: convexUser.tenantId,
         freelancerId: profile._id,
@@ -109,7 +121,6 @@ export default function AddServiceInfo() {
         locale: "en",
       });
 
-      // Create packages for each filled tier
       const tiers = [
         { tier: "basic", pkg: basicPkg },
         { tier: "standard", pkg: standardPkg },
@@ -126,7 +137,9 @@ export default function AddServiceInfo() {
             price: Number(pkg.price),
             currency: "EUR",
             deliveryDays: Number(pkg.deliveryDays),
-            revisionCount: pkg.revisionCount ? Number(pkg.revisionCount) : undefined,
+            revisionCount: pkg.revisionCount
+              ? Number(pkg.revisionCount)
+              : undefined,
           });
         }
       }
@@ -147,355 +160,267 @@ export default function AddServiceInfo() {
     ? flattenLeafMarketplaceCategories(categories)
     : [];
 
+  const SaveButton = () => (
+    <Button
+      onClick={handleSaveAndPublish}
+      disabled={saving || !profile}
+      className="whitespace-nowrap"
+    >
+      {saving ? t("saving") : t("saveAndPublish")}
+      <ArrowRight className="ml-1 h-4 w-4" />
+    </Button>
+  );
+
   return (
-    <>
-      <div className="dashboard__content hover-bgc-color">
-        <div className="row pb-10">
-          <div className="col-lg-12">
-            <DashboardNavigation />
-          </div>
-          <div className="col-lg-9">
-            <div className="dashboard_title_area">
-              <h2>{t("pageTitle")}</h2>
-              <p className="text">{t("pageDescription")}</p>
-            </div>
-          </div>
-          <div className="col-lg-3">
-            <div className="text-lg-end">
-              <button
-                className="ud-btn btn-thm default-box-shadow2"
-                onClick={handleSaveAndPublish}
-                disabled={saving || !profile}
-                style={{ whiteSpace: "nowrap", minWidth: 200 }}
-              >
-                {saving ? t("saving") : t("saveAndPublish")}
-                <i className="fal fa-arrow-right-long" />
-              </button>
-            </div>
-          </div>
+    <div className="dashboard__content hover-bgc-color">
+      <DashboardNavigation />
+
+      <div className="dashboard_title_area mb-6">
+        <div>
+          <h2>{t("pageTitle")}</h2>
+          <p className="text-[var(--text-secondary)]">{t("pageDescription")}</p>
         </div>
+        <SaveButton />
+      </div>
 
-        <div className="row mb-5">
-          <div className="col-xl-12">
-            <div className="flex items-center gap-2 px-3 py-2 bdrs4" style={{ background: "#f0f9ff", border: "1px solid #bae6fd" }}>
-              <i className="flaticon-content text-base" style={{ color: "#0284c7" }} />
-              <span className="text-sm" style={{ color: "#0369a1" }}>
-                {t("lookingToHire")}{" "}
-                <Link href="/create-projects" className="font-medium" style={{ color: "#0284c7", textDecoration: "underline" }}>
-                  {t("createProject")}
-                </Link>{" "}
-                {t("createProjectHint")}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {saveError && (
-          <div className="row mb-5">
-            <div className="col-xl-12">
-              <div className="alert alert-danger" role="alert">
-                {saveError}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {saveSuccess && (
-          <div className="row mb-5">
-            <div className="col-xl-12">
-              <div className="alert alert-success" role="alert">
-                {t("successMessage")}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {!profile && (
-          <div
-            role="alert"
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              gap: "var(--space-4)",
-              padding: "var(--space-5)",
-              marginBottom: "var(--space-6)",
-              background: "var(--warning-50, oklch(97% 0.035 85))",
-              border: "1px solid var(--warning-500, oklch(75% 0.155 82))",
-              borderRadius: "var(--radius-lg)",
-              color: "var(--text-primary)",
-            }}
+      <Alert variant="info" className="mb-5">
+        <Info className="h-4 w-4" />
+        <AlertDescription>
+          {t("lookingToHire")}{" "}
+          <Link
+            href="/create-projects"
+            className="font-medium text-primary hover:underline"
           >
-            <span
-              aria-hidden="true"
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: "999px",
-                background: "var(--warning-500, oklch(75% 0.155 82))",
-                color: "var(--neutral-900)",
-                display: "grid",
-                placeItems: "center",
-                flexShrink: 0,
-                fontSize: 18,
-                fontWeight: 700,
-                lineHeight: 1,
-              }}
-            >
-              !
-            </span>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: "var(--text-h5)",
-                  fontWeight: 500,
-                  marginBottom: "var(--space-2)",
-                }}
-              >
-                {t("noProfileError")}
-              </div>
-              <Link
-                href="/onboarding?role=freelancer"
-                className="btn btn--primary btn--sm"
-                style={{ marginTop: "var(--space-2)" }}
-              >
+            {t("createProject")}
+          </Link>{" "}
+          {t("createProjectHint")}
+        </AlertDescription>
+      </Alert>
+
+      {saveError && (
+        <Alert variant="destructive" className="mb-5">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{saveError}</AlertDescription>
+        </Alert>
+      )}
+
+      {saveSuccess && (
+        <Alert variant="success" className="mb-5">
+          <CheckCircle2 className="h-4 w-4" />
+          <AlertDescription>{t("successMessage")}</AlertDescription>
+        </Alert>
+      )}
+
+      {!profile && (
+        <Alert variant="warning" className="mb-6">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            <div className="font-semibold mb-1">{t("noProfileError")}</div>
+            <Button asChild size="sm" className="mt-2">
+              <Link href="/onboarding?role=freelancer">
                 {t("switchToFreelancerLink")}
               </Link>
-            </div>
-          </div>
-        )}
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
 
-        <div className="row">
-          <div className="col-xl-12">
-            {/* Basic Information */}
-            <div className="ps-widget bgc-white bdrs4 p-8 mb-8 overflow-hidden relative">
-              <div className="bdrb1 pb-4 mb-6">
-                <h5 className="list-title">{t("basicInfo")}</h5>
-              </div>
-              <div className="col-xl-8">
-                <div className="form-style1">
-                  <div className="row">
-                    <div className="col-sm-6">
-                      <div className="mb-5">
-                        <label className="heading-color  font-medium mb-2.5">
-                          {t("serviceTitle")}
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder={t("serviceTitlePlaceholder")}
-                          value={title}
-                          onChange={(e) => setTitle(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-sm-6">
-                      <div className="mb-5">
-                        <label className="heading-color  font-medium mb-2.5">
-                          {t("category")}
-                        </label>
-                        <select
-                          className="form-control"
-                          value={categoryId}
-                          onChange={(e) => setCategoryId(e.target.value)}
-                        >
-                          <option value="">{t("selectCategory")}</option>
-                          {flatCategories.map((cat) => (
-                            <option key={cat._id} value={cat._id}>
-                              {cat.label}
-                            </option>
-                          ))}
-                          {categories === undefined && (
-                            <option disabled>{t("loadingCategories")}</option>
-                          )}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="col-sm-6">
-                      <div className="mb-5">
-                        <label className="heading-color  font-medium mb-2.5">
-                          {t("tags")}
-                        </label>
-                        <TagsInput
-                          value={tags}
-                          onChange={setTags}
-                          placeholder={t("tagsPlaceholder")}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-sm-6">
-                      <div className="mb-5">
-                        <label className="heading-color  font-medium mb-2.5">
-                          {t("workType")}
-                        </label>
-                        <select
-                          className="form-control"
-                          value={workType}
-                          onChange={(e) => setWorkType(e.target.value)}
-                        >
-                          <option value="remote">{t("remote")}</option>
-                          <option value="local">{t("localOnsite")}</option>
-                          <option value="hybrid">{t("hybrid")}</option>
-                        </select>
-                      </div>
-                    </div>
-                    {(workType === "local" || workType === "hybrid") && (
-                      <>
-                        <div className="col-sm-6">
-                          <div className="mb-5">
-                            <label className="heading-color  font-medium mb-2.5">
-                              {t("country")}
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              placeholder={t("countryPlaceholder")}
-                              value={locationCountry}
-                              onChange={(e) => setLocationCountry(e.target.value)}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-sm-6">
-                          <div className="mb-5">
-                            <label className="heading-color  font-medium mb-2.5">
-                              {t("city")}
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              placeholder={t("cityPlaceholder")}
-                              value={locationCity}
-                              onChange={(e) => setLocationCity(e.target.value)}
-                            />
-                          </div>
-                        </div>
-                      </>
-                    )}
-                    <div className="col-md-12">
-                      <div className="mb-2.5">
-                        <label className="heading-color  font-medium mb-2.5">
-                          {t("serviceDescription")}
-                        </label>
-                        <textarea
-                          cols={30}
-                          rows={6}
-                          placeholder={t("serviceDescriptionPlaceholder")}
-                          value={description}
-                          onChange={(e) => setDescription(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                  </div>
+      {/* Basic Information */}
+      <Card className="mb-6 overflow-hidden">
+        <CardHeader className="border-b border-[var(--border-subtle)] pb-4">
+          <CardTitle className="text-lg font-semibold">{t("basicInfo")}</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-4xl">
+            <div className="space-y-2">
+              <Label htmlFor="gig-title">{t("serviceTitle")}</Label>
+              <Input
+                id="gig-title"
+                placeholder={t("serviceTitlePlaceholder")}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="gig-category">{t("category")}</Label>
+              <Select value={categoryId} onValueChange={setCategoryId}>
+                <SelectTrigger id="gig-category">
+                  <SelectValue
+                    placeholder={
+                      categories === undefined
+                        ? t("loadingCategories")
+                        : t("selectCategory")
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {flatCategories.map((cat) => (
+                    <SelectItem key={cat._id} value={cat._id}>
+                      {cat.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="gig-tags">{t("tags")}</Label>
+              <TagsInput
+                value={tags}
+                onChange={setTags}
+                placeholder={t("tagsPlaceholder")}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="gig-work-type">{t("workType")}</Label>
+              <Select value={workType} onValueChange={setWorkType}>
+                <SelectTrigger id="gig-work-type">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="remote">{t("remote")}</SelectItem>
+                  <SelectItem value="local">{t("localOnsite")}</SelectItem>
+                  <SelectItem value="hybrid">{t("hybrid")}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {(workType === "local" || workType === "hybrid") && (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="gig-country">{t("country")}</Label>
+                  <Input
+                    id="gig-country"
+                    placeholder={t("countryPlaceholder")}
+                    value={locationCountry}
+                    onChange={(e) => setLocationCountry(e.target.value)}
+                  />
                 </div>
-              </div>
-            </div>
-
-            {/* Packages */}
-            <div className="ps-widget bgc-white bdrs4 p-8 mb-8 overflow-hidden relative">
-              <div className="bdrb1 pb-4 mb-6">
-                <h5 className="list-title">{t("packages")}</h5>
-                <p className="text text-sm mt-1">
-                  {t("packagesDescription")}
-                </p>
-              </div>
-              <div className="row">
-                {[
-                  { label: t("basic"), pkg: basicPkg, setter: setBasicPkg, required: true },
-                  { label: t("standard"), pkg: standardPkg, setter: setStandardPkg, required: false },
-                  { label: t("premium"), pkg: premiumPkg, setter: setPremiumPkg, required: false },
-                ].map(({ label, pkg, setter, required }) => (
-                  <div className="col-lg-4" key={label}>
-                    <div className="package-tier-card bdr1 bdrs4 p-5 mb-5">
-                      <h6 className="heading-color  font-semibold mb-4">
-                        {label}
-                        {required && <span className="text-danger ms-1">*</span>}
-                      </h6>
-                      <div className="mb-4">
-                        <label className="heading-color  font-medium mb8 text-sm">
-                          {t("packageName")}
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder={t("packageNamePlaceholder", { tier: label })}
-                          value={pkg.title}
-                          onChange={(e) => updatePkg(setter, "title", e.target.value)}
-                        />
-                      </div>
-                      <div className="mb-4">
-                        <label className="heading-color  font-medium mb8 text-sm">
-                          {t("description")}
-                        </label>
-                        <textarea
-                          rows={3}
-                          className="form-control"
-                          placeholder={t("whatIsIncluded")}
-                          value={pkg.description}
-                          onChange={(e) => updatePkg(setter, "description", e.target.value)}
-                        />
-                      </div>
-                      <div className="mb-4">
-                        <label className="heading-color  font-medium mb8 text-sm">
-                          {t("priceEur")}
-                        </label>
-                        <input
-                          type="number"
-                          className="form-control"
-                          placeholder={t("pricePlaceholder")}
-                          min="0"
-                          value={pkg.price}
-                          onChange={(e) => updatePkg(setter, "price", e.target.value)}
-                        />
-                      </div>
-                      <div className="mb-4">
-                        <label className="heading-color  font-medium mb8 text-sm">
-                          {t("deliveryDays")}
-                        </label>
-                        <input
-                          type="number"
-                          className="form-control"
-                          placeholder={t("deliveryDaysPlaceholder")}
-                          min="1"
-                          value={pkg.deliveryDays}
-                          onChange={(e) => updatePkg(setter, "deliveryDays", e.target.value)}
-                        />
-                      </div>
-                      <div className="mb-2.5">
-                        <label className="heading-color  font-medium mb8 text-sm">
-                          {t("revisions")}
-                        </label>
-                        <input
-                          type="number"
-                          className="form-control"
-                          placeholder={t("revisionsPlaceholder")}
-                          min="0"
-                          value={pkg.revisionCount}
-                          onChange={(e) => updatePkg(setter, "revisionCount", e.target.value)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <ServiceGallery />
-
-            {/* Bottom submit button */}
-            <div className="col-xl-12 text-right mb-8">
-              <button
-                className="ud-btn btn-thm default-box-shadow2"
-                onClick={handleSaveAndPublish}
-                disabled={saving || !profile}
-                style={{ whiteSpace: "nowrap", minWidth: 200 }}
-              >
-                {saving ? t("saving") : t("saveAndPublish")}
-                <i className="fal fa-arrow-right-long" />
-              </button>
+                <div className="space-y-2">
+                  <Label htmlFor="gig-city">{t("city")}</Label>
+                  <Input
+                    id="gig-city"
+                    placeholder={t("cityPlaceholder")}
+                    value={locationCity}
+                    onChange={(e) => setLocationCity(e.target.value)}
+                  />
+                </div>
+              </>
+            )}
+            <div className="sm:col-span-2 space-y-2">
+              <Label htmlFor="gig-description">{t("serviceDescription")}</Label>
+              <Textarea
+                id="gig-description"
+                rows={6}
+                placeholder={t("serviceDescriptionPlaceholder")}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
             </div>
           </div>
-        </div>
+        </CardContent>
+      </Card>
+
+      {/* Packages */}
+      <Card className="mb-6 overflow-hidden">
+        <CardHeader className="border-b border-[var(--border-subtle)] pb-4">
+          <CardTitle className="text-lg font-semibold">{t("packages")}</CardTitle>
+          <p className="text-sm text-[var(--text-secondary)]">
+            {t("packagesDescription")}
+          </p>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            {[
+              { label: t("basic"), pkg: basicPkg, setter: setBasicPkg, required: true },
+              { label: t("standard"), pkg: standardPkg, setter: setStandardPkg, required: false },
+              { label: t("premium"), pkg: premiumPkg, setter: setPremiumPkg, required: false },
+            ].map(({ label, pkg, setter, required }) => (
+              <Card key={label}>
+                <CardContent className="p-5 space-y-4">
+                  <h6 className="text-base font-semibold">
+                    {label}
+                    {required && <span className="text-destructive ml-1">*</span>}
+                  </h6>
+                  <div className="space-y-2">
+                    <Label htmlFor={`pkg-name-${label}`} className="text-sm">
+                      {t("packageName")}
+                    </Label>
+                    <Input
+                      id={`pkg-name-${label}`}
+                      placeholder={t("packageNamePlaceholder", { tier: label })}
+                      value={pkg.title}
+                      onChange={(e) => updatePkg(setter, "title", e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor={`pkg-desc-${label}`} className="text-sm">
+                      {t("description")}
+                    </Label>
+                    <Textarea
+                      id={`pkg-desc-${label}`}
+                      rows={3}
+                      placeholder={t("whatIsIncluded")}
+                      value={pkg.description}
+                      onChange={(e) =>
+                        updatePkg(setter, "description", e.target.value)
+                      }
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor={`pkg-price-${label}`} className="text-sm">
+                      {t("priceEur")}
+                    </Label>
+                    <Input
+                      id={`pkg-price-${label}`}
+                      type="number"
+                      placeholder={t("pricePlaceholder")}
+                      min="0"
+                      value={pkg.price}
+                      onChange={(e) => updatePkg(setter, "price", e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor={`pkg-days-${label}`} className="text-sm">
+                      {t("deliveryDays")}
+                    </Label>
+                    <Input
+                      id={`pkg-days-${label}`}
+                      type="number"
+                      placeholder={t("deliveryDaysPlaceholder")}
+                      min="1"
+                      value={pkg.deliveryDays}
+                      onChange={(e) =>
+                        updatePkg(setter, "deliveryDays", e.target.value)
+                      }
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor={`pkg-rev-${label}`} className="text-sm">
+                      {t("revisions")}
+                    </Label>
+                    <Input
+                      id={`pkg-rev-${label}`}
+                      type="number"
+                      placeholder={t("revisionsPlaceholder")}
+                      min="0"
+                      value={pkg.revisionCount}
+                      onChange={(e) =>
+                        updatePkg(setter, "revisionCount", e.target.value)
+                      }
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <ServiceGallery />
+
+      {/* Bottom submit button */}
+      <div className="flex justify-end mb-8">
+        <SaveButton />
       </div>
-    </>
+    </div>
   );
 }

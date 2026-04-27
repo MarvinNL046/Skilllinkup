@@ -10,6 +10,20 @@ import useConvexUser from "@/hook/useConvexUser";
 import { flattenLeafMarketplaceCategories } from "@/lib/marketplaceCategories";
 import TagsInput from "@/components/ui/TagsInput";
 import { toast } from "sonner";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ArrowRight, Info, AlertCircle, CheckCircle2 } from "lucide-react";
 
 function generateSlug(title) {
   return title
@@ -23,7 +37,16 @@ function generateSlug(title) {
 
 function worldToServiceType(world) {
   if (world === "local") return "local";
-  return "digital"; // online, jobs, default
+  return "digital";
+}
+
+function PageShell({ children }) {
+  return (
+    <div className="dashboard__content hover-bgc-color">
+      <DashboardNavigation />
+      {children}
+    </div>
+  );
 }
 
 export default function CreateProjectInfo() {
@@ -33,7 +56,6 @@ export default function CreateProjectInfo() {
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const createProject = useMutation(api.marketplace.projects.create);
 
-  // Fetch marketplace categories filtered by user's preferred world
   const serviceType = worldToServiceType(convexUser?.preferredWorld);
   const categoryArgs = { locale: "en" };
   if (serviceType) categoryArgs.serviceType = serviceType;
@@ -53,16 +75,22 @@ export default function CreateProjectInfo() {
     workType: "remote",
   });
 
-  const [status, setStatus] = useState({ loading: false, error: null, success: false });
+  const [status, setStatus] = useState({
+    loading: false,
+    error: null,
+    success: false,
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-
-    // Clear error when user starts typing
     if (status.error) {
       setStatus((prev) => ({ ...prev, error: null }));
     }
+  };
+
+  const setField = (name) => (value) => {
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -72,18 +100,19 @@ export default function CreateProjectInfo() {
       setStatus({ loading: false, error: t("errorMustBeLoggedIn"), success: false });
       return;
     }
-
     if (!form.title.trim()) {
       setStatus({ loading: false, error: t("errorTitleRequired"), success: false });
       return;
     }
-
     if (!form.description.trim()) {
-      setStatus({ loading: false, error: t("errorDescriptionRequired"), success: false });
+      setStatus({
+        loading: false,
+        error: t("errorDescriptionRequired"),
+        success: false,
+      });
       return;
     }
 
-    // Budget validation
     const parsedMin = form.budgetMin ? parseFloat(form.budgetMin) : NaN;
     const parsedMax = form.budgetMax ? parseFloat(form.budgetMax) : NaN;
 
@@ -91,24 +120,29 @@ export default function CreateProjectInfo() {
       setStatus({ loading: false, error: t("errorBudgetMinNegative"), success: false });
       return;
     }
-
     if (Number.isFinite(parsedMax) && parsedMax < 0) {
       setStatus({ loading: false, error: t("errorBudgetMaxNegative"), success: false });
       return;
     }
-
-    if (Number.isFinite(parsedMin) && Number.isFinite(parsedMax) && parsedMin > parsedMax) {
+    if (
+      Number.isFinite(parsedMin) &&
+      Number.isFinite(parsedMax) &&
+      parsedMin > parsedMax
+    ) {
       setStatus({ loading: false, error: t("errorBudgetMinMax"), success: false });
       return;
     }
 
-    // Deadline validation — must be in the future
     if (form.deadline) {
       const deadlineDate = new Date(form.deadline);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       if (deadlineDate < today) {
-        setStatus({ loading: false, error: t("errorDeadlineFuture"), success: false });
+        setStatus({
+          loading: false,
+          error: t("errorDeadlineFuture"),
+          success: false,
+        });
         return;
       }
     }
@@ -117,12 +151,13 @@ export default function CreateProjectInfo() {
 
     try {
       const slug = generateSlug(form.title) + "-" + Date.now();
-
-      const skillsArray = form.requiredSkills.length > 0 ? form.requiredSkills : undefined;
-
+      const skillsArray =
+        form.requiredSkills.length > 0 ? form.requiredSkills : undefined;
       const budgetMin = Number.isFinite(parsedMin) ? parsedMin : undefined;
       const budgetMax = Number.isFinite(parsedMax) ? parsedMax : undefined;
-      const deadlineMs = form.deadline ? new Date(form.deadline).getTime() : undefined;
+      const deadlineMs = form.deadline
+        ? new Date(form.deadline).getTime()
+        : undefined;
 
       await createProject({
         title: form.title.trim(),
@@ -141,7 +176,6 @@ export default function CreateProjectInfo() {
       setStatus({ loading: false, error: null, success: true });
       toast.success(t("projectCreated"));
 
-      // Reset form
       setForm({
         title: "",
         description: "",
@@ -153,7 +187,6 @@ export default function CreateProjectInfo() {
         workType: "remote",
       });
 
-      // Redirect after short delay so user sees success message
       setTimeout(() => {
         router.push("/manage-projects");
       }, 1500);
@@ -166,318 +199,267 @@ export default function CreateProjectInfo() {
 
   if (isAuthenticated && convexUser === undefined) {
     return (
-      <div className="dashboard__content hover-bgc-color">
-        <div className="row pb-10">
-          <div className="col-lg-12">
-            <DashboardNavigation />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p-8 mb-8 text-center">
-              <div className="spinner-border spinner-border-sm text-success" role="status" />
-            </div>
-          </div>
-        </div>
-      </div>
+      <PageShell>
+        <Card>
+          <CardContent className="p-8 flex justify-center">
+            <div
+              role="status"
+              aria-label="Loading"
+              className="h-6 w-6 animate-spin rounded-full border-3 border-[var(--border-subtle)] border-t-primary"
+            />
+          </CardContent>
+        </Card>
+      </PageShell>
     );
   }
 
   if (isAuthenticated && convexUser === null) {
     return (
-      <div className="dashboard__content hover-bgc-color">
-        <div className="row pb-10">
-          <div className="col-lg-12">
-            <DashboardNavigation />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p-8 mb-8 text-center">
-              <p className="text-muted mb0">{t("settingUpAccount")}</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PageShell>
+        <Card>
+          <CardContent className="p-8 text-center">
+            <p className="text-[var(--text-secondary)]">{t("settingUpAccount")}</p>
+          </CardContent>
+        </Card>
+      </PageShell>
     );
   }
 
   if (isLoaded && !isAuthenticated) {
     return (
-      <div className="dashboard__content hover-bgc-color">
-        <div className="row pb-10">
-          <div className="col-lg-12">
-            <DashboardNavigation />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p-8 mb-8 text-center">
-              <h4 className="mb-4">{t("signInRequired")}</h4>
-              <p className="text-muted mb-5">{t("signInRequiredDesc")}</p>
-              <button
-                onClick={() => router.push("/login")}
-                className="ud-btn btn-thm"
-              >
-                {t("signIn")}
-                <i className="fal fa-arrow-right-long" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PageShell>
+        <Card>
+          <CardContent className="p-8 text-center">
+            <h4 className="text-xl font-semibold mb-3">{t("signInRequired")}</h4>
+            <p className="text-[var(--text-secondary)] mb-5">
+              {t("signInRequiredDesc")}
+            </p>
+            <Button onClick={() => router.push("/login")}>
+              {t("signIn")}
+              <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+      </PageShell>
     );
   }
 
+  const SaveButton = ({ withSpinner = false }) => (
+    <Button
+      type="submit"
+      form="create-project-form"
+      disabled={status.loading || !isLoaded}
+      data-testid={withSpinner ? "create-project-submit" : undefined}
+      className="whitespace-nowrap"
+    >
+      {status.loading ? (
+        <>
+          {withSpinner && (
+            <span
+              role="status"
+              aria-label={t("saving")}
+              className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2"
+            />
+          )}
+          {t("saving")}
+        </>
+      ) : (
+        <>
+          {t("saveAndPublish")}
+          <ArrowRight className="ml-1 h-4 w-4" />
+        </>
+      )}
+    </Button>
+  );
+
   return (
-    <>
-      <div className="dashboard__content hover-bgc-color">
-        <div className="row pb-10">
-          <div className="col-lg-12">
-            <DashboardNavigation />
-          </div>
-          <div className="col-lg-9">
-            <div className="dashboard_title_area">
-              <h2>{t("title")}</h2>
-              <p className="text">{t("pageDescription")}</p>
-            </div>
-          </div>
-          <div className="col-lg-3">
-            <div className="text-lg-end">
-              <button
-                type="submit"
-                form="create-project-form"
-                className="ud-btn btn-thm default-box-shadow2"
-                disabled={status.loading || !isLoaded}
-              >
-                {status.loading ? t("saving") : t("saveAndPublish")}
-                <i className="fal fa-arrow-right-long" />
-              </button>
-            </div>
-          </div>
+    <PageShell>
+      <div className="dashboard_title_area mb-6">
+        <div>
+          <h2>{t("title")}</h2>
+          <p className="text-[var(--text-secondary)]">{t("pageDescription")}</p>
         </div>
-
-        <div className="row mb-5">
-          <div className="col-xl-12">
-            <div className="flex items-center gap-2 px-3 py-2 bdrs4" style={{ background: "#f0f9ff", border: "1px solid #bae6fd" }}>
-              <i className="flaticon-document text-base" style={{ color: "#0284c7" }} />
-              <span className="text-sm" style={{ color: "#0369a1" }}>
-                {t("offerServicesInstead")}{" "}
-                <Link href="/add-services" className="font-medium" style={{ color: "#0284c7", textDecoration: "underline" }}>
-                  {t("addAService")}
-                </Link>{" "}
-                {t("addAServiceHint")}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-xl-12">
-            <div className="ps-widget bgc-white bdrs4 p-8 mb-8 overflow-hidden relative">
-              <div className="bdrb1 pb-4 mb-6">
-                <h5 className="list-title">{t("projectDetails")}</h5>
-              </div>
-
-              {status.error && (
-                <div className="alert alert-danger mb-5" role="alert">
-                  {status.error}
-                </div>
-              )}
-              {status.success && (
-                <div className="alert alert-success mb-5" role="alert">
-                  {t("successMessage")}
-                </div>
-              )}
-
-              <div className="col-xl-8">
-                <form
-                  id="create-project-form"
-                  className="form-style1"
-                  onSubmit={handleSubmit}
-                  data-testid="create-project-form"
-                >
-                  <div className="row">
-                    <div className="col-sm-12">
-                      <div className="mb-5">
-                        <label className="heading-color  font-medium mb-2.5">
-                          {t("projectTitle")} <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          name="title"
-                          className="form-control"
-                          placeholder={t("projectTitlePlaceholder")}
-                          value={form.title}
-                          onChange={handleChange}
-                          required
-                          data-testid="create-project-title"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-sm-12">
-                      <div className="mb-5">
-                        <label className="heading-color  font-medium mb-2.5">
-                          {t("category")}
-                        </label>
-                        <select
-                          name="categoryId"
-                          className="form-control"
-                          value={form.categoryId}
-                          onChange={handleChange}
-                        >
-                          <option value="">{t("selectCategory")}</option>
-                          {categories === undefined && (
-                            <option disabled>{t("loadingCategories")}</option>
-                          )}
-                          {leafCategories.map((category) => (
-                            <option key={category._id} value={category._id}>
-                              {category.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="col-sm-6">
-                      <div className="mb-5">
-                        <label className="heading-color  font-medium mb-2.5">
-                          {t("budgetMin")}
-                        </label>
-                        <input
-                          type="number"
-                          name="budgetMin"
-                          className="form-control"
-                          placeholder={t("budgetMinPlaceholder")}
-                          min="0"
-                          value={form.budgetMin}
-                          onChange={handleChange}
-                          data-testid="create-project-budget-min"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-sm-6">
-                      <div className="mb-5">
-                        <label className="heading-color  font-medium mb-2.5">
-                          {t("budgetMax")}
-                        </label>
-                        <input
-                          type="number"
-                          name="budgetMax"
-                          className="form-control"
-                          placeholder={t("budgetMaxPlaceholder")}
-                          min="0"
-                          value={form.budgetMax}
-                          onChange={handleChange}
-                          data-testid="create-project-budget-max"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-sm-6">
-                      <div className="mb-5">
-                        <label className="heading-color  font-medium mb-2.5">
-                          {t("workType")}
-                        </label>
-                        <select
-                          name="workType"
-                          className="form-control"
-                          value={form.workType}
-                          onChange={handleChange}
-                        >
-                          <option value="remote">{t("remote")}</option>
-                          <option value="local">{t("onSite")}</option>
-                          <option value="hybrid">{t("hybrid")}</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="col-sm-6">
-                      <div className="mb-5">
-                        <label className="heading-color  font-medium mb-2.5">
-                          {t("deadline")}
-                        </label>
-                        <input
-                          type="date"
-                          name="deadline"
-                          lang={locale}
-                          className="form-control"
-                          value={form.deadline}
-                          onChange={handleChange}
-                          min={new Date().toISOString().split("T")[0]}
-                          data-testid="create-project-deadline"
-                        />
-                        <p className="body-sm" style={{ color: "var(--text-tertiary)", marginTop: 6, marginBottom: 0 }}>
-                          {t("deadlineHint")}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="col-sm-12">
-                      <div className="mb-5">
-                        <label className="heading-color  font-medium mb-2.5">
-                          {t("requiredSkills")}
-                        </label>
-                        <TagsInput
-                          value={form.requiredSkills}
-                          onChange={(arr) =>
-                            setForm((prev) => ({ ...prev, requiredSkills: arr }))
-                          }
-                          placeholder={t("requiredSkillsPlaceholder")}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-md-12">
-                      <div className="mb-5">
-                        <label className="heading-color  font-medium mb-2.5">
-                          {t("projectDescription")} <span className="text-danger">*</span>
-                        </label>
-                        <textarea
-                          name="description"
-                          cols={30}
-                          rows={6}
-                          className="form-control"
-                          placeholder={t("projectDescriptionPlaceholder")}
-                          value={form.description}
-                          onChange={handleChange}
-                          required
-                          data-testid="create-project-description"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-md-12">
-                      <div className="text-left">
-                        <button
-                          type="submit"
-                          className="ud-btn btn-thm"
-                          disabled={status.loading || !isLoaded}
-                          data-testid="create-project-submit"
-                        >
-                          {status.loading ? (
-                            <>
-                              <span className="spinner-border spinner-border-sm me-2" role="status" />
-                              {t("saving")}
-                            </>
-                          ) : (
-                            <>
-                              {t("saveAndPublish")}
-                              <i className="fal fa-arrow-right-long" />
-                            </>
-                          )}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
+        <SaveButton />
       </div>
-    </>
+
+      <Alert variant="info" className="mb-5">
+        <Info className="h-4 w-4" />
+        <AlertDescription>
+          {t("offerServicesInstead")}{" "}
+          <Link
+            href="/add-services"
+            className="font-medium text-primary hover:underline"
+          >
+            {t("addAService")}
+          </Link>{" "}
+          {t("addAServiceHint")}
+        </AlertDescription>
+      </Alert>
+
+      <Card className="overflow-hidden">
+        <CardHeader className="border-b border-[var(--border-subtle)] pb-4">
+          <CardTitle className="text-lg font-semibold">
+            {t("projectDetails")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6">
+          {status.error && (
+            <Alert variant="destructive" className="mb-5">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{status.error}</AlertDescription>
+            </Alert>
+          )}
+          {status.success && (
+            <Alert variant="success" className="mb-5">
+              <CheckCircle2 className="h-4 w-4" />
+              <AlertDescription>{t("successMessage")}</AlertDescription>
+            </Alert>
+          )}
+
+          <form
+            id="create-project-form"
+            onSubmit={handleSubmit}
+            data-testid="create-project-form"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-4xl"
+          >
+            <div className="sm:col-span-2 space-y-2">
+              <Label htmlFor="project-title">
+                {t("projectTitle")}{" "}
+                <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="project-title"
+                type="text"
+                name="title"
+                placeholder={t("projectTitlePlaceholder")}
+                value={form.title}
+                onChange={handleChange}
+                required
+                data-testid="create-project-title"
+              />
+            </div>
+
+            <div className="sm:col-span-2 space-y-2">
+              <Label htmlFor="project-category">{t("category")}</Label>
+              <Select
+                value={form.categoryId}
+                onValueChange={setField("categoryId")}
+              >
+                <SelectTrigger id="project-category">
+                  <SelectValue
+                    placeholder={
+                      categories === undefined
+                        ? t("loadingCategories")
+                        : t("selectCategory")
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {leafCategories.map((category) => (
+                    <SelectItem key={category._id} value={category._id}>
+                      {category.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="project-budget-min">{t("budgetMin")}</Label>
+              <Input
+                id="project-budget-min"
+                type="number"
+                name="budgetMin"
+                placeholder={t("budgetMinPlaceholder")}
+                min="0"
+                value={form.budgetMin}
+                onChange={handleChange}
+                data-testid="create-project-budget-min"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="project-budget-max">{t("budgetMax")}</Label>
+              <Input
+                id="project-budget-max"
+                type="number"
+                name="budgetMax"
+                placeholder={t("budgetMaxPlaceholder")}
+                min="0"
+                value={form.budgetMax}
+                onChange={handleChange}
+                data-testid="create-project-budget-max"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="project-work-type">{t("workType")}</Label>
+              <Select
+                value={form.workType}
+                onValueChange={setField("workType")}
+              >
+                <SelectTrigger id="project-work-type">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="remote">{t("remote")}</SelectItem>
+                  <SelectItem value="local">{t("onSite")}</SelectItem>
+                  <SelectItem value="hybrid">{t("hybrid")}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="project-deadline">{t("deadline")}</Label>
+              <Input
+                id="project-deadline"
+                type="date"
+                name="deadline"
+                lang={locale}
+                value={form.deadline}
+                onChange={handleChange}
+                min={new Date().toISOString().split("T")[0]}
+                data-testid="create-project-deadline"
+              />
+              <p className="text-xs text-[var(--text-tertiary)]">
+                {t("deadlineHint")}
+              </p>
+            </div>
+
+            <div className="sm:col-span-2 space-y-2">
+              <Label htmlFor="project-skills">{t("requiredSkills")}</Label>
+              <TagsInput
+                value={form.requiredSkills}
+                onChange={(arr) =>
+                  setForm((prev) => ({ ...prev, requiredSkills: arr }))
+                }
+                placeholder={t("requiredSkillsPlaceholder")}
+              />
+            </div>
+
+            <div className="sm:col-span-2 space-y-2">
+              <Label htmlFor="project-description">
+                {t("projectDescription")}{" "}
+                <span className="text-destructive">*</span>
+              </Label>
+              <Textarea
+                id="project-description"
+                name="description"
+                rows={6}
+                placeholder={t("projectDescriptionPlaceholder")}
+                value={form.description}
+                onChange={handleChange}
+                required
+                data-testid="create-project-description"
+              />
+            </div>
+
+            <div className="sm:col-span-2">
+              <SaveButton withSpinner />
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </PageShell>
   );
 }

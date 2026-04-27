@@ -8,6 +8,7 @@ import Footer14 from "@/components/footer/Footer14";
 import useConvexPost from "@/hook/useConvexPost";
 import EmptyState from "@/components/ui/EmptyState";
 import { useTranslations } from "next-intl";
+import { FileText } from "lucide-react";
 
 const FALLBACK_IMG = "/images/blog/default-blog-feature.jpg";
 const FALLBACK_AVATAR = "/images/blog/default-avatar.png";
@@ -52,7 +53,7 @@ function PostContent({ slug }) {
       <section className="pt-14 pb-24">
         <div className="container">
           <EmptyState
-            icon="📝"
+            Icon={FileText}
             title={t("postNotFound")}
             description={t("postNotFoundDescription")}
             actionLabel={t("backToBlog")}

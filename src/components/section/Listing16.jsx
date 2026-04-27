@@ -11,6 +11,7 @@ import priceStore from "@/store/priceStore";
 import ListingSidebarModal3 from "../modal/ListingSidebarModal3";
 import JobCard4 from "../card/JobCard4";
 import EmptyState from "@/components/ui/EmptyState";
+import { Briefcase } from "lucide-react";
 
 export default function Listing16() {
   const t = useTranslations("jobsHub");
@@ -96,7 +97,7 @@ export default function Listing16() {
               <ListingOption2 itemLength={content?.length} itemLabel="jobs" />
               {content.length === 0 ? (
                 <EmptyState
-                  icon="💼"
+                  Icon={Briefcase}
                   title={t("noJobsTitle")}
                   description={t("noJobsDescription")}
                   actionLabel={t("postAJob")}

@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
 import EmptyState from "@/components/ui/EmptyState";
+import { User } from "lucide-react";
 
 export async function generateMetadata() {
     const t = await getTranslations("pageMeta.freelancerProfile");
@@ -18,7 +19,7 @@ export default function page() {
             <section className="pt-14 pb-24">
                 <div className="container">
                     <EmptyState
-                        icon="👤"
+                        Icon={User}
                         title="Freelancer not found"
                         description="This profile doesn't exist or has been removed."
                         actionLabel="Browse Freelancers"
