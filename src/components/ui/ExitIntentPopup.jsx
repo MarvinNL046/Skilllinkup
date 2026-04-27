@@ -104,15 +104,15 @@ export default function ExitIntentPopup() {
           background-color: var(--primary-700) !important;
         }
         .exit-register-btn:hover {
-          background-color: #ef2b70 !important;
+          background-color: #f06635 !important;
           color: #fff !important;
-          border-color: #ef2b70 !important;
+          border-color: #f06635 !important;
         }
         .exit-no-thanks:hover {
-          color: #ef2b70 !important;
+          color: #f06635 !important;
         }
         .exit-close-btn:hover {
-          color: #ef2b70 !important;
+          color: #f06635 !important;
         }
       `}</style>
 
@@ -139,7 +139,7 @@ export default function ExitIntentPopup() {
             right: 0,
             height: "4px",
             borderRadius: "16px 16px 0 0",
-            background: "linear-gradient(90deg, #ef2b70, #1e1541)",
+            background: "linear-gradient(90deg, #f06635, #1e1541)",
           }}
         />
 
@@ -210,7 +210,7 @@ export default function ExitIntentPopup() {
             color: "#1e1541",
             transition: "border-color 0.2s",
           }}
-          onFocus={(e) => (e.target.style.borderColor = "#ef2b70")}
+          onFocus={(e) => (e.target.style.borderColor = "#f06635")}
           onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
         />
 

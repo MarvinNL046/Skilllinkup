@@ -17,7 +17,7 @@ export default function BecomeSeller() {
   const waysToEarn = [
     {
       id: "online",
-      color: "#ef2b70",
+      color: "#f06635",
       bgLight: "rgba(239, 43, 112, 0.08)",
       icon: "flaticon-web",
       world: t("onlineWorld"),
@@ -324,7 +324,7 @@ export default function BecomeSeller() {
                       width: "44px",
                       height: "44px",
                       borderRadius: "50%",
-                      background: "#ef2b70",
+                      background: "#f06635",
                       color: "#fff",
                       display: "flex",
                       alignItems: "center",
@@ -388,7 +388,7 @@ export default function BecomeSeller() {
                       marginRight: "16px",
                     }}
                   >
-                    <span className={benefit.icon} style={{ color: "#ef2b70", fontSize: "22px" }} />
+                    <span className={benefit.icon} style={{ color: "#f06635", fontSize: "22px" }} />
                   </div>
                   <div>
                     <h5 className="mb-2.5" style={{ fontWeight: 700, fontSize: "1rem" }}>{benefit.title}</h5>

@@ -23,7 +23,7 @@ function TierBadge({ tier, label }) {
   );
 }
 
-function ProgressBar({ value, color = "#ef2b70", label }) {
+function ProgressBar({ value, color = "#f06635", label }) {
   return (
     <div className="mb-4">
       {label && (
@@ -142,7 +142,7 @@ export default function RewardsInfo() {
 
           <div className="mb-5">
             <p className="text-sm text-muted mb-1">{t("creditBalance")}</p>
-            <h3 className="mb0" style={{ color: "#ef2b70" }}>&euro;{balanceEuros}</h3>
+            <h3 className="mb0" style={{ color: "#f06635" }}>&euro;{balanceEuros}</h3>
           </div>
 
           <div className="mb-5">

@@ -43,7 +43,7 @@ function ProgressBar({ step, totalSteps, t }) {
           style={{
             height: "100%",
             width: `${pct}%`,
-            background: "#ef2b70",
+            background: "#f06635",
             borderRadius: 2,
             transition: "width 0.3s ease",
           }}
@@ -289,7 +289,7 @@ function OnboardingContent() {
                               className="flex items-center justify-center mx-auto mb-4 rounded-circle"
                               style={{ width: 80, height: 80, background: "#f5f5f5" }}
                             >
-                              <i className={`${icon} text-3xl`} style={{ color: "#ef2b70" }} />
+                              <i className={`${icon} text-3xl`} style={{ color: "#f06635" }} />
                             </div>
                             <h4 className="title mb-2">{label}</h4>
                             <p className="text-sm text-muted mb-0">{desc}</p>
@@ -329,7 +329,7 @@ function OnboardingContent() {
                               className="flex items-center justify-center mx-auto mb-3 rounded-circle"
                               style={{ width: 64, height: 64, background: "#f5f5f5" }}
                             >
-                              <i className={`${w.icon} text-2xl`} style={{ color: "#ef2b70" }} />
+                              <i className={`${w.icon} text-2xl`} style={{ color: "#f06635" }} />
                             </div>
                             <h5 className="title mb-1">{w.title}</h5>
                             <p className="text-sm text-muted mb-0">{t(w.descKey)}</p>
@@ -353,7 +353,7 @@ function OnboardingContent() {
                   )}
                   {saving && (
                     <div className="text-center mt-3">
-                      <div className="spinner-border spinner-border-sm me-2" style={{ color: "#ef2b70" }} role="status" />
+                      <div className="spinner-border spinner-border-sm me-2" style={{ color: "#f06635" }} role="status" />
                       <span className="text-sm text-muted">{t("saving")}</span>
                     </div>
                   )}
@@ -384,9 +384,9 @@ function OnboardingContent() {
                           onClick={() => toggleSkill(skill)}
                           className="btn btn-sm bdrs20 px-3 py-2"
                           style={{
-                            border: `1.5px solid ${active ? "#ef2b70" : "#e5e7eb"}`,
+                            border: `1.5px solid ${active ? "#f06635" : "#e5e7eb"}`,
                             background: active ? "#fdf0f4" : "#fff",
-                            color: active ? "#ef2b70" : "#374151",
+                            color: active ? "#f06635" : "#374151",
                             fontWeight: active ? 600 : 400,
                             transition: "all 0.15s ease",
                           }}
@@ -424,7 +424,7 @@ function OnboardingContent() {
                         type="button"
                         onClick={handleSkillsNext}
                         className="btn btn-sm bdrs8 text-white"
-                        style={{ background: "#ef2b70", minWidth: 100 }}
+                        style={{ background: "#f06635", minWidth: 100 }}
                         disabled={selectedSkills.length === 0}
                       >
                         {t("continue")} →
@@ -510,7 +510,7 @@ function OnboardingContent() {
                         type="button"
                         onClick={handleProfileSave}
                         className="btn btn-sm bdrs8 text-white"
-                        style={{ background: "#ef2b70", minWidth: 120 }}
+                        style={{ background: "#f06635", minWidth: 120 }}
                         disabled={saving || (!bio && !tagline && !hourlyRate)}
                       >
                         {saving ? (

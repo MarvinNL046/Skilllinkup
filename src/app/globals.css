@@ -222,8 +222,8 @@ a.btn-thm {
 .bgc-thm,
 .bgc-thm2 { background: var(--primary-600) !important; }
 
-/* Template pink accent (#ef2b70) → design-system primary */
-[style*="#ef2b70"] { color: inherit; }
+/* Template pink accent (#f06635) → design-system primary */
+[style*="#f06635"] { color: inherit; }
 .hero-title,
 .breadcumb-title {
   font-family: var(--font-sans);

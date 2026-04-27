@@ -3,20 +3,23 @@
    ============================================================ */
 
 :root {
-  /* ---------- PRIMARY — Deep Indigo-Aubergine ----------
-     Gekozen omdat het vertrouwen (blauw-familie) koppelt aan 
-     warmte/menselijkheid (paarse ondertoon). Onderscheidend
-     van Fiverr-groen, Upwork-groen, LinkedIn-blauw.         */
-  --primary-50:  oklch(97% 0.015 295);
-  --primary-100: oklch(94% 0.030 295);
-  --primary-200: oklch(87% 0.060 293);
-  --primary-300: oklch(77% 0.100 290);
-  --primary-400: oklch(65% 0.140 288);
-  --primary-500: oklch(54% 0.170 285);  /* brand default */
-  --primary-600: oklch(46% 0.170 284);
-  --primary-700: oklch(38% 0.150 283);
-  --primary-800: oklch(30% 0.120 283);
-  --primary-900: oklch(22% 0.085 284);
+  /* ---------- PRIMARY — Warm CTA Orange (Staycool quatt-orange) ----------
+     Exact gematcht op staycoolairco.nl ("Plan adviesgesprek" CTA):
+       500 = #f06635  (default — RGB 240,102,53)
+       600 = #d95528  (hover/active state)
+     Beide hard hex omdat de OKLCH-conversie 1-2 RGB units kan
+     afwijken; rest van schaal is OKLCH voor perceptueel nette
+     stappen tussen tinten.                                          */
+  --primary-50:  oklch(97% 0.020 45);
+  --primary-100: oklch(94% 0.040 43);
+  --primary-200: oklch(88% 0.080 42);
+  --primary-300: oklch(80% 0.130 41);
+  --primary-400: oklch(73% 0.165 41);
+  --primary-500: #f06635;              /* brand default — exact match */
+  --primary-600: #d95528;              /* hover/active — exact match */
+  --primary-700: oklch(46% 0.155 38);
+  --primary-800: oklch(36% 0.125 36);
+  --primary-900: oklch(26% 0.085 35);
 
   /* ---------- SECONDARY — Warm Terracotta-Amber ----------
      De menselijke tegenhanger. Gebruikt voor CTA-accents,
@@ -246,8 +249,8 @@
   --border-default: oklch(32% 0.020 285 / 1);
   --border-strong:  oklch(46% 0.020 285 / 1);
 
-  --primary-500: oklch(68% 0.170 288);  /* iets lichter in dark */
-  --primary-600: oklch(60% 0.175 287);
+  --primary-500: oklch(72% 0.175 40);  /* iets lichter in dark */
+  --primary-600: oklch(64% 0.180 39);
 
   --shadow-1: 0 1px 2px oklch(0% 0 0 / 0.30),
               0 1px 1px oklch(0% 0 0 / 0.20);
