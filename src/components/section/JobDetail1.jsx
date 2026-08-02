@@ -24,7 +24,7 @@ export default function JobDetail1() {
           location: convexData.locationCity
             ? `${convexData.locationCity}, ${convexData.locationCountry || ""}`
             : convexData.workType === "remote"
-            ? t("remote")
+            ? `${t("remote")}${convexData.locationCountry ? ` · ${convexData.locationCountry}` : ""}`
             : null,
           postedAt: convexData.createdAt
             ? (() => {
@@ -218,7 +218,9 @@ export default function JobDetail1() {
 
         {data?._id ? (
           <>
-            <JobApplicationPanel jobId={data._id} ownerId={data.ownerId} />
+            <div id="job-application">
+              <JobApplicationPanel jobId={data._id} ownerId={data.ownerId} />
+            </div>
             <div style={{ marginTop: "var(--space-5)" }}>
               <ReportButton targetType="job" targetId={data._id} targetLabel={data.title} />
             </div>

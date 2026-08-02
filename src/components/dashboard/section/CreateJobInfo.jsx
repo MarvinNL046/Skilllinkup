@@ -44,6 +44,14 @@ export default function CreateJobInfo() {
       toast.error("Add a clear title and a description of at least 80 characters.");
       return;
     }
+    if (!form.company.trim() || !form.locationCountry.trim()) {
+      toast.error("Add the hiring company and applicant country.");
+      return;
+    }
+    if (form.workType !== "remote" && !form.locationCity.trim()) {
+      toast.error("Add the city for hybrid and on-site vacancies.");
+      return;
+    }
     setBusy(true);
     try {
       const jobId = await createJob({
@@ -79,7 +87,7 @@ export default function CreateJobInfo() {
       <form className={styles.form} onSubmit={submit}>
         <section><div className={styles.sectionHead}><i><BriefcaseBusiness /></i><div><h2>Role basics</h2><p>Start with the information candidates scan first.</p></div></div><div className={styles.fields}>
           <Field label="Job title"><input value={form.title} onChange={(e) => set("title", e.target.value)} placeholder="Senior Product Designer" minLength={8} maxLength={120} required /></Field>
-          <Field label="Company"><input value={form.company} onChange={(e) => set("company", e.target.value)} placeholder={convexUser?.name || "Company name"} /></Field>
+          <Field label="Company"><input value={form.company} onChange={(e) => set("company", e.target.value)} placeholder={convexUser?.name || "Company name"} required /></Field>
           <Field label="Category"><select value={form.categoryId} onChange={(e) => set("categoryId", e.target.value)}><option value="">Choose a category</option>{categoryOptions.map((item) => <option key={item._id} value={item._id}>{item.label}</option>)}</select></Field>
           <Field label="Employment type"><select value={form.jobType} onChange={(e) => set("jobType", e.target.value)}>{jobTypes.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></Field>
           <Field full label="Role description" hint={`${form.description.length}/10,000`}><textarea value={form.description} onChange={(e) => set("description", e.target.value)} rows={9} minLength={80} maxLength={10000} placeholder="Describe the mission, responsibilities, team and what success looks like…" required /></Field>
@@ -88,8 +96,8 @@ export default function CreateJobInfo() {
         <section><div className={styles.sectionHead}><i><Globe2 /></i><div><h2>Work setup & compensation</h2><p>Transparent details lead to stronger applications.</p></div></div><div className={styles.fields}>
           <Field label="Work setup"><select value={form.workType} onChange={(e) => set("workType", e.target.value)}><option value="remote">Remote</option><option value="hybrid">Hybrid</option><option value="local">On-site</option></select></Field>
           <Field label="Experience"><select value={form.experienceLevel} onChange={(e) => set("experienceLevel", e.target.value)}><option value="junior">Junior</option><option value="mid">Mid-level</option><option value="senior">Senior</option><option value="lead">Lead</option></select></Field>
-          <Field label="City"><input value={form.locationCity} onChange={(e) => set("locationCity", e.target.value)} placeholder="Rotterdam or Remote" /></Field>
-          <Field label="Country"><input value={form.locationCountry} onChange={(e) => set("locationCountry", e.target.value)} /></Field>
+          <Field label="City"><input value={form.locationCity} onChange={(e) => set("locationCity", e.target.value)} placeholder="Rotterdam" required={form.workType !== "remote"} /></Field>
+          <Field label={form.workType === "remote" ? "Applicant country" : "Country"}><input value={form.locationCountry} onChange={(e) => set("locationCountry", e.target.value)} required /></Field>
           <Field label="Salary from"><input type="number" min="0" value={form.salaryMin} onChange={(e) => set("salaryMin", e.target.value)} placeholder="55000" /></Field>
           <Field label="Salary to"><input type="number" min="0" value={form.salaryMax} onChange={(e) => set("salaryMax", e.target.value)} placeholder="75000" /></Field>
           <Field label="Currency"><select value={form.currency} onChange={(e) => set("currency", e.target.value)}><option>EUR</option><option>USD</option><option>GBP</option></select></Field>

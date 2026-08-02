@@ -38,7 +38,8 @@ jobs:
         run: |
           for attempt in 1 2 3; do
             echo "Production verification attempt ${attempt}/3 for ${MONITOR_BASE_URL}"
-            if node scripts/verify-hosted-release.mjs --base-url="${MONITOR_BASE_URL}"; then
+            if node scripts/verify-hosted-release.mjs --base-url="${MONITOR_BASE_URL}" \
+              && node scripts/verify-hosted-seo.mjs --base-url="${MONITOR_BASE_URL}" --max-jobs=5; then
               exit 0
             fi
 

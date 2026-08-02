@@ -53,7 +53,11 @@ jobs:
         run: npm run env:verify -- --environment=${{ inputs.target_environment }}
       - run: npm run lint
       - run: npx tsc --noEmit
+      - run: npm run seo:verify-contract
       - run: npm run build
       - name: Verify deployed release
         if: ${{ inputs.hosted_base_url != '' }}
         run: npm run release:verify-hosted -- --base-url=${{ inputs.hosted_base_url }}
+      - name: Verify deployed SEO contract
+        if: ${{ inputs.hosted_base_url != '' }}
+        run: npm run seo:verify-hosted -- --base-url=${{ inputs.hosted_base_url }} --canonical-origin=https://skilllinkup.com --environment=${{ inputs.target_environment }} --max-jobs=25

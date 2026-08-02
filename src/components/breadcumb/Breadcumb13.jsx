@@ -20,6 +20,10 @@ export default function Breadcumb13() {
   const salaryMax = job?.salaryMax;
   const currency = job?.currency || "EUR";
   const workType = job?.workType || "Remote";
+  const workTypeLabel =
+    workType.toLowerCase() === "remote" && job?.locationCountry
+      ? `Remote · ${job.locationCountry}`
+      : workType;
   const jobType = job?.jobType || "";
 
   const salaryLabel =
@@ -77,12 +81,12 @@ export default function Breadcumb13() {
                       </>
                     )}
                     <span className="text-[var(--text-tertiary)]">·</span>
-                    <span>{workType}</span>
+                    <span>{workTypeLabel}</span>
                   </div>
                 </div>
               </div>
               <Button asChild variant="secondary">
-                <Link href="/contact">
+                <Link href="#job-application">
                   Apply For Job
                   <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>

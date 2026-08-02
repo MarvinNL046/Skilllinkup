@@ -5,6 +5,9 @@ import TabSection1 from "@/components/section/TabSection1";
 import Breadcumb10 from "@/components/breadcumb/Breadcumb10";
 import Breadcumb13 from "@/components/breadcumb/Breadcumb13";
 import JobDetail1 from "@/components/section/JobDetail1";
+import { buildJobPosting } from "@/lib/seo/jobPosting.mjs";
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://skilllinkup.com";
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
@@ -61,63 +64,8 @@ export default async function page({ params }) {
 
   const isOpen =
     job?.status === "open" && (!job.expiresAt || job.expiresAt > Date.now());
-  const employmentType =
-    {
-      full_time: "FULL_TIME",
-      part_time: "PART_TIME",
-      contract: "CONTRACTOR",
-      temporary: "TEMPORARY",
-      internship: "INTERN",
-    }[job?.jobType] || "OTHER";
   const jobPosting = isOpen
-    ? {
-        "@context": "https://schema.org",
-        "@type": "JobPosting",
-        title: job.title,
-        description: job.description,
-        datePosted: new Date(job.publishedAt || job.createdAt).toISOString(),
-        ...(job.expiresAt
-          ? { validThrough: new Date(job.expiresAt).toISOString() }
-          : {}),
-        employmentType,
-        hiringOrganization: {
-          "@type": "Organization",
-          name: job.company || job.clientName || "Skilllinkup employer",
-          ...(job.companyLogo ? { logo: job.companyLogo } : {}),
-        },
-        ...(job.workType === "remote"
-          ? { jobLocationType: "TELECOMMUTE" }
-          : job.locationCity || job.locationCountry
-            ? {
-                jobLocation: {
-                  "@type": "Place",
-                  address: {
-                    "@type": "PostalAddress",
-                    ...(job.locationCity
-                      ? { addressLocality: job.locationCity }
-                      : {}),
-                    ...(job.locationCountry
-                      ? { addressCountry: job.locationCountry }
-                      : {}),
-                  },
-                },
-              }
-            : {}),
-        ...(job.salaryMin || job.salaryMax
-          ? {
-              baseSalary: {
-                "@type": "MonetaryAmount",
-                currency: job.currency || "EUR",
-                value: {
-                  "@type": "QuantitativeValue",
-                  ...(job.salaryMin ? { minValue: job.salaryMin } : {}),
-                  ...(job.salaryMax ? { maxValue: job.salaryMax } : {}),
-                  unitText: "YEAR",
-                },
-              },
-            }
-          : {}),
-      }
+    ? buildJobPosting(job, { baseUrl: BASE_URL })
     : null;
 
   return (
