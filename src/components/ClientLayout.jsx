@@ -32,6 +32,9 @@ export default function ClientLayout({ children }) {
   useEffect(() => {
     let cleanups = [];
     let cancelled = false;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) return undefined;
+
     (async () => {
       try {
         const { animate } = await import("motion");
@@ -68,7 +71,7 @@ export default function ClientLayout({ children }) {
       <a href="#main-content" className="skip-nav">
         Skip to content
       </a>
-      <div id="main-content">{children}</div>
+      <div id="main-content" tabIndex={-1}>{children}</div>
 
       <BottomToTop />
 

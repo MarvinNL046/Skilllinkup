@@ -1,12 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import { useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
-import { X, ArrowRight, Check, Sparkles } from "lucide-react";
+import { ArrowRight, Check, Sparkles } from "lucide-react";
 import { api } from "../../../convex/_generated/api";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const PIONEER_THRESHOLD = 25;
 
@@ -18,6 +25,7 @@ const PIONEER_THRESHOLD = 25;
 export default function WaitlistButton({
   className = "btn btn--primary",
   label,
+  style,
 }) {
   const t = useTranslations("waitlist");
   const locale = useLocale();
@@ -92,55 +100,30 @@ export default function WaitlistButton({
     return t("counterPlural", { count });
   };
 
-  // Lock body scroll + bind ESC while modal is open
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e) => e.key === "Escape" && handleClose();
-    document.addEventListener("keydown", onKey);
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prev;
-    };
-  }, [open]);
-
-  // Portal target — body — so the modal escapes any flex/stacking
-  // context on <main> or any ancestor with transform/filter set.
-  const portalTarget = typeof window !== "undefined" ? document.body : null;
+  function handleOpenChange(nextOpen) {
+    if (nextOpen) {
+      setOpen(true);
+      return;
+    }
+    handleClose();
+  }
 
   return (
-    <>
-      <button type="button" className={className} onClick={() => setOpen(true)}>
-        {label ?? t("joinWaitlist")}
-      </button>
-      {open && portalTarget && createPortal(
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="waitlist-title"
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 9999,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "var(--space-4)",
-            background: "oklch(22% 0.02 60 / 0.45)",
-            backdropFilter: "blur(4px)",
-            WebkitBackdropFilter: "blur(4px)",
-          }}
-          onClick={handleClose}
-        >
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogTrigger asChild>
+        <button type="button" className={className} style={style}>
+          {label ?? t("joinWaitlist")}
+        </button>
+      </DialogTrigger>
+      {open ? (
+        <DialogContent className="max-w-[480px] gap-0 overflow-hidden p-0">
           <div
             className="modal"
             style={{ maxWidth: 480, width: "100%" }}
-            onClick={(e) => e.stopPropagation()}
           >
             {!done ? (
               <>
-                <div className="modal__header">
+                <DialogHeader className="modal__header">
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <div
@@ -156,25 +139,19 @@ export default function WaitlistButton({
                         <Sparkles size={13} strokeWidth={2.2} />
                         <span>{counterLabel()}</span>
                       </div>
-                      <h2 id="waitlist-title" className="h3" style={{ margin: 0 }}>
+                      <DialogTitle className="h3" style={{ margin: 0 }}>
                         {t("headline")}
-                      </h2>
+                      </DialogTitle>
                     </div>
-                    <button
-                      type="button"
-                      className="btn btn--ghost btn--icon btn--sm"
-                      onClick={handleClose}
-                      aria-label="Close"
-                    >
-                      <X size={18} />
-                    </button>
                   </div>
-                </div>
+                </DialogHeader>
 
                 <div className="modal__body">
-                  <p className="body-sm" style={{ color: "var(--text-secondary)", marginBottom: 20 }}>
-                    {t("description")}
-                  </p>
+                  <DialogDescription asChild>
+                    <p className="body-sm" style={{ color: "var(--text-secondary)", marginBottom: 20 }}>
+                      {t("description")}
+                    </p>
+                  </DialogDescription>
 
                   <form onSubmit={handleSubmit} autoComplete="off">
                     {/* Honeypot — visually hidden, not tabbable */}
@@ -202,8 +179,10 @@ export default function WaitlistButton({
 
                     <div className="field" style={{ marginBottom: 12 }}>
                       <input
+                        id="waitlist-email"
                         type="email"
                         className="input"
+                        aria-label={t("placeholder")}
                         placeholder={t("placeholder")}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -216,8 +195,9 @@ export default function WaitlistButton({
                     </div>
 
                     <div className="field" style={{ marginBottom: 12 }}>
-                      <label className="field__label">{t("userTypeLabel")}</label>
+                      <label className="field__label" htmlFor="waitlist-user-type">{t("userTypeLabel")}</label>
                       <select
+                        id="waitlist-user-type"
                         className="input"
                         value={userType}
                         onChange={(e) => setUserType(e.target.value)}
@@ -230,8 +210,9 @@ export default function WaitlistButton({
                     </div>
 
                     <div className="field" style={{ marginBottom: 16 }}>
-                      <label className="field__label">{t("skillLabel")}</label>
+                      <label className="field__label" htmlFor="waitlist-skill">{t("skillLabel")}</label>
                       <input
+                        id="waitlist-skill"
                         type="text"
                         className="input"
                         placeholder={t("skillPlaceholder")}
@@ -304,12 +285,12 @@ export default function WaitlistButton({
                 >
                   <Check size={28} strokeWidth={2.4} />
                 </div>
-                <h2 id="waitlist-title" className="h3" style={{ margin: "0 0 8px" }}>
+                <DialogTitle className="h3" style={{ margin: "0 0 8px" }}>
                   {alreadyJoined ? t("successAlreadyTitle") : t("successTitle")}
-                </h2>
-                <p className="body-sm" style={{ color: "var(--text-secondary)", marginBottom: 16 }}>
+                </DialogTitle>
+                <DialogDescription className="body-sm" style={{ color: "var(--text-secondary)", marginBottom: 16 }}>
                   {alreadyJoined ? t("successAlreadyDescription") : t("successDescription")}
-                </p>
+                </DialogDescription>
                 {!alreadyJoined && (
                   <p
                     className="body-sm"
@@ -328,9 +309,8 @@ export default function WaitlistButton({
               </div>
             )}
           </div>
-        </div>,
-        portalTarget
-      )}
-    </>
+        </DialogContent>
+      ) : null}
+    </Dialog>
   );
 }

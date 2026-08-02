@@ -6,7 +6,7 @@ import styles from "./WorldwideHome.module.css";
 const steps = [
   { number: "1", title: "Tell us what you need", text: "Post a project, find local help, or explore real company jobs." },
   { number: "2", title: "Compare professionals", text: "Review profiles, ratings, experience, location, and availability." },
-  { number: "3", title: "Work safely together", text: "Set clear terms, pay securely, and stay connected from start to finish." },
+  { number: "3", title: "Work safely together", text: "Set clear terms, record approvals, and stay connected from start to finish." },
 ];
 
 export default function ProcessWorkspace() {

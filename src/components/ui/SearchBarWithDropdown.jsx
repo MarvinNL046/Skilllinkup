@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useId, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useQuery } from "convex/react";
 import { Search } from "lucide-react";
@@ -43,6 +43,7 @@ export default function SearchBarWithDropdown({
   const pathname = usePathname();
   const serviceType = pathToServiceType(pathname);
   const wrapperRef = useRef(null);
+  const suggestionsId = useId();
 
   // 250ms debounce
   useEffect(() => {
@@ -119,6 +120,11 @@ export default function SearchBarWithDropdown({
       >
         <input
           type="text"
+          role="combobox"
+          aria-label="Search services"
+          aria-autocomplete="list"
+          aria-controls={suggestionsId}
+          aria-expanded={isOpen}
           className="form-control border-0"
           placeholder={placeholder}
           value={query}
@@ -164,6 +170,9 @@ export default function SearchBarWithDropdown({
 
       {isOpen && (
         <div
+          id={suggestionsId}
+          aria-label="Search suggestions"
+          role="region"
           style={{
             position: "absolute",
             top: "calc(100% + 4px)",

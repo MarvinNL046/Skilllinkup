@@ -92,7 +92,7 @@ export default function OrdersInfo() {
         </div>
         <div className="col-lg-12">
           <div className="dashboard_title_area">
-            <h2>{t("title")}</h2>
+            <h1>{t("title")}</h1>
             <p className="text">{t("pageDescription")}</p>
           </div>
         </div>

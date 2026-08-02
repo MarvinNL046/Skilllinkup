@@ -92,7 +92,9 @@ No box may be inferred from a green build alone. Attach the concrete test, scree
 - [ ] Focus states, dialog labels, form errors and loading states are perceivable.
 - [ ] Body text meets the agreed readable size and colour contrast target.
 - [ ] Images have useful alt text or empty alt text when decorative.
-- [ ] Reduced-motion preference is respected.
+- [x] Reduced-motion preference is respected globally; the browser regression also proves that the shared card-lift behavior is not bound when the operating system requests reduced motion.
+
+Automated public-scope evidence: `e2e/accessibility.spec.ts` exercises Home, Services, Projects, Online freelancers, Local, Jobs, login and registration. It requires one main landmark and one visible `h1`, labelled visible form controls, complete image `alt` attributes, unique IDs, a working keyboard skip-link and the reduced-motion contract. It also proves that mobile navigation and the nested waitlist dialog trap and restore keyboard focus correctly. Authenticated smoke coverage requires one visible page `h1` across Dashboard, Manage Projects, Proposals, Orders, Messages, Create Project and Profile, including labelled collapsed-sidebar actions. Deep transaction workspaces remain part of the unchecked keyboard-only gate above.
 
 ## 6. SEO and analytics
 

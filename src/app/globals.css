@@ -469,6 +469,23 @@ a {
   top: 0;
 }
 
+/* Respect the operating-system motion preference across both the modern
+   design system and the remaining template components. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* Legacy template uses --primary-color throughout style.css; alias it to
    the DS primary so the green Uideck accent never appears. */
 :root {

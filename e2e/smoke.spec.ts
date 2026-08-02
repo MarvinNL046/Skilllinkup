@@ -234,12 +234,43 @@ test("dashboard renders when signed in", async ({ page, baseURL }) => {
   await expect(page).toHaveURL(/\/dashboard/, { timeout: 15_000 });
   await expect(
     page
-      .getByRole("heading", { name: /Good (morning|afternoon|evening),/ })
+      .getByRole("heading", { level: 1, name: /Good (morning|afternoon|evening),/ })
       .first(),
   ).toBeVisible({ timeout: 15_000 });
   await expect(
     page.getByText("Here is an overview of your projects and recent activity."),
   ).toBeVisible();
+});
+
+test("protected workspace indexes expose one labelled page heading", async ({
+  page,
+  baseURL,
+}) => {
+  await signInToDashboardUser(page, baseURL);
+
+  for (const route of [
+    "/dashboard",
+    "/manage-projects",
+    "/proposal",
+    "/orders",
+    "/message",
+    "/create-projects",
+    "/my-profile",
+  ]) {
+    await page.goto(new URL(route, baseURL).toString(), {
+      waitUntil: "domcontentloaded",
+    });
+    await expect(page.locator("h1:visible")).toHaveCount(1, {
+      timeout: 20_000,
+    });
+  }
+
+  await page.evaluate(() => {
+    window.localStorage.setItem("dashboard-sidebar-collapsed", "true");
+  });
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await expect(page.getByRole("link", { name: "Dashboard" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Log out" })).toBeVisible();
 });
 
 test("candidate application pipeline renders for the signed-in fixture", async ({

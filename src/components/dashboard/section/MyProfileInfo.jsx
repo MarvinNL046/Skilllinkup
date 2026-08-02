@@ -37,7 +37,7 @@ export default function MyProfileInfo() {
       <DashboardNavigation />
       <div className="dashboard_title_area mb-6">
         <div>
-          <h2>{t("title")}</h2>
+          <h1>{t("title")}</h1>
           <p className="text-[var(--text-secondary)]">{t("manageProfile")}</p>
         </div>
         {profile?._id && (

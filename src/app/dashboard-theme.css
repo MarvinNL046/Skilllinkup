@@ -157,6 +157,7 @@
 }
 
 /* ---- Dashboard page title ---- */
+.dashboard_title_area h1,
 .dashboard_title_area h2 {
   font-size: 1.5rem !important;
   font-weight: 700 !important;
@@ -411,7 +412,8 @@
 
 .message_input .form-control:focus {
   background: #ebebec !important;
-  outline: none !important;
+  outline: 3px solid rgb(255 75 43 / 24%) !important;
+  outline-offset: 2px !important;
 }
 
 .message_input .ud-btn.btn-thm {
@@ -493,6 +495,7 @@
   .dashboard__content {
     padding: 16px !important;
   }
+  .dashboard_title_area h1,
   .dashboard_title_area h2 {
     font-size: 1.25rem !important;
   }

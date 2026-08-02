@@ -103,12 +103,12 @@ export default function MessageInfo() {
             )}
           >
             <div className="p-4 px-5 border-b border-[var(--border-subtle)] bg-[var(--bg-elevated)]">
-              <h2
+              <h1
                 className="text-xl font-medium tracking-tight mb-3"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 {t("title")}
-              </h2>
+              </h1>
               <form onSubmit={(e) => e.preventDefault()} className="relative">
                 <Search
                   size={15}

@@ -36,7 +36,7 @@ const ICONS = {
 
 function NavItem({ item, active, collapsed, onNavigate }) {
   const Icon = ICONS[item.icon] || ClipboardList;
-  return <Link href={item.path} onClick={onNavigate} className={`${styles.navItem} ${active ? styles.active : ""}`} title={collapsed ? item.name : undefined}><Icon size={19} />{collapsed ? null : <span>{item.name}</span>}</Link>;
+  return <Link href={item.path} onClick={onNavigate} className={`${styles.navItem} ${active ? styles.active : ""}`} title={collapsed ? item.name : undefined} aria-label={collapsed ? item.name : undefined}><Icon size={19} />{collapsed ? null : <span>{item.name}</span>}</Link>;
 }
 
 export default function DashboardSidebar() {
@@ -86,7 +86,7 @@ export default function DashboardSidebar() {
           <div className={styles.help}><CircleHelp size={25} /><div><strong>Need help?</strong><span>Our support team is here for you.</span></div><Link href="/help">Visit help center</Link></div>
           <div className={styles.trust}><ShieldCheck size={25} /><div><strong>Safe &amp; trusted</strong><span>Verified talent<br />Clear workspaces</span></div></div>
         </>}
-        <button type="button" className={styles.logout} onClick={() => signOut({ redirectUrl: "/" })}><LogOut size={18} />{collapsed ? null : <span>Log out</span>}</button>
+        <button type="button" className={styles.logout} aria-label={collapsed ? "Log out" : undefined} onClick={() => signOut({ redirectUrl: "/" })}><LogOut size={18} />{collapsed ? null : <span>Log out</span>}</button>
       </div>
     </div>
   );

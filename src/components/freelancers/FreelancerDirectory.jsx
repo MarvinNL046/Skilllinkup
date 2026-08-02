@@ -165,7 +165,7 @@ export default function FreelancerDirectory() {
 
             <div className={styles.filterGroup}>
               <div className={styles.filterLabel}><span>Hourly rate</span><strong>Up to €{maxRate}</strong></div>
-              <input className={styles.range} type="range" min="20" max="150" value={maxRate} onChange={(event) => setMaxRate(Number(event.target.value))} />
+              <input className={styles.range} type="range" min="20" max="150" value={maxRate} onChange={(event) => setMaxRate(Number(event.target.value))} aria-label="Maximum hourly rate" aria-valuetext={`Up to €${maxRate} per hour`} />
               <div className={styles.rangeValues}><span>€20</span><span>€150+</span></div>
             </div>
 

@@ -3,11 +3,19 @@
 import { useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
-import { Flag, X } from "lucide-react";
+import { Flag } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { api } from "../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const REASONS = [
   ["spam", "Spam or duplicate content"],
@@ -60,7 +68,7 @@ export default function ReportButton({ targetType, targetId, targetLabel, classN
   }
 
   return (
-    <>
+    <Dialog open={open} onOpenChange={(nextOpen) => !submitting && setOpen(nextOpen)}>
       <button
         type="button"
         onClick={openReport}
@@ -82,54 +90,31 @@ export default function ReportButton({ targetType, targetId, targetLabel, classN
       </button>
 
       {open ? (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="report-title"
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) setOpen(false);
-          }}
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 1000,
-            display: "grid",
-            placeItems: "center",
-            padding: 20,
-            background: "rgba(4, 22, 48, .48)",
-          }}
-        >
-          <form
-            onSubmit={submit}
-            className="card"
-            style={{ width: "min(100%, 540px)", padding: "var(--space-7)", boxShadow: "var(--shadow-4)" }}
-          >
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
-              <div>
-                <h2 id="report-title" style={{ fontSize: "var(--text-h3)", marginBottom: 6 }}>Report to Trust & Safety</h2>
-                <p className="body-sm" style={{ color: "var(--text-secondary)", margin: 0 }}>
-                  Reports are private. Describe the specific problem so the team can investigate it fairly.
-                </p>
-              </div>
-              <button type="button" onClick={() => setOpen(false)} aria-label="Close report form" className="btn btn--ghost btn--icon btn--sm"><X size={18} /></button>
-            </div>
-            <label style={{ display: "grid", gap: 8, marginTop: 24, fontWeight: 600 }}>
+        <DialogContent className="max-w-[540px]">
+          <form onSubmit={submit} style={{ display: "grid", gap: 18 }}>
+            <DialogHeader>
+              <DialogTitle>Report to Trust &amp; Safety</DialogTitle>
+              <DialogDescription>
+                Reports are private. Describe the specific problem so the team can investigate it fairly.
+              </DialogDescription>
+            </DialogHeader>
+            <label style={{ display: "grid", gap: 8, fontWeight: 600 }}>
               Reason
               <select className="h-12 rounded-lg border border-[var(--border-default)] bg-white px-3 font-normal" value={reason} onChange={(event) => setReason(event.target.value)}>
                 {REASONS.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
               </select>
             </label>
-            <label style={{ display: "grid", gap: 8, marginTop: 18, fontWeight: 600 }}>
+            <label style={{ display: "grid", gap: 8, fontWeight: 600 }}>
               What happened?
               <textarea className="min-h-36 rounded-lg border border-[var(--border-default)] p-3 font-normal leading-6" minLength={20} maxLength={3000} value={details} onChange={(event) => setDetails(event.target.value)} required />
             </label>
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 22 }}>
+            <DialogFooter className="gap-2">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
               <Button type="submit" disabled={submitting}>{submitting ? "Sending…" : "Submit report"}</Button>
-            </div>
+            </DialogFooter>
           </form>
-        </div>
+        </DialogContent>
       ) : null}
-    </>
+    </Dialog>
   );
 }
