@@ -86,6 +86,23 @@ try {
     failures.push(
       "Health response reports an invalid hosted environment contract.",
     );
+  if (!health.version || health.version === "unknown")
+    failures.push("Health response does not expose an application version.");
+  const hostedEnvironment = ["preview", "production"].includes(health.environment);
+  if (hostedEnvironment) {
+    if (health.checks?.releaseTraceable !== true)
+      failures.push("Health response cannot identify the deployed release.");
+    if (!/^[a-f0-9]{40}$/i.test(health.release?.commit ?? ""))
+      failures.push("Health response does not expose a full Git commit SHA.");
+    if (!/^[a-z0-9-]+\.vercel\.app$/i.test(health.release?.deployment ?? ""))
+      failures.push("Health response does not expose a Vercel deployment URL.");
+    if (
+      health.release?.commit
+      && response.headers.get("x-skilllinkup-release") !== health.release.commit.slice(0, 12)
+    ) {
+      failures.push("Health response header and release commit do not match.");
+    }
+  }
 } catch (error) {
   failures.push(
     `/api/health failed: ${error instanceof Error ? error.message : String(error)}`,
@@ -152,6 +169,6 @@ if (failures.length) {
 } else {
   console.log(`Hosted release verification passed for ${baseUrl.origin}.`);
   console.log(
-    "Public routes, health, payment quarantine and internal secret boundaries are healthy.",
+    "Public routes, release-traceable health, payment quarantine and internal secret boundaries are healthy.",
   );
 }

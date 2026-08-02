@@ -22,6 +22,7 @@ Copy this file for every preview candidate and production promotion. A release i
 - `npx tsc --noEmit`:
 - `npm run build`:
 - `npm run release:verify-hosted -- --base-url=<url>`:
+- `/api/health` version, full commit SHA and immutable `*.vercel.app` deployment URL match this candidate:
 - Authenticated 37-scenario acceptance run, or approved reason for using the latest unchanged backend evidence:
 - Vercel runtime error scan:
 - Convex error scan:
