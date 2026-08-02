@@ -22,6 +22,7 @@ import type * as lib_marketplaceState from "../lib/marketplaceState.js";
 import type * as lib_notifications from "../lib/notifications.js";
 import type * as lib_publicData from "../lib/publicData.js";
 import type * as lib_rateLimits from "../lib/rateLimits.js";
+import type * as lib_storageState from "../lib/storageState.js";
 import type * as lib_storageValidation from "../lib/storageValidation.js";
 import type * as lib_trustState from "../lib/trustState.js";
 import type * as marketplace_accountPrivacy from "../marketplace/accountPrivacy.js";
@@ -82,6 +83,7 @@ declare const fullApi: ApiFromModules<{
   "lib/notifications": typeof lib_notifications;
   "lib/publicData": typeof lib_publicData;
   "lib/rateLimits": typeof lib_rateLimits;
+  "lib/storageState": typeof lib_storageState;
   "lib/storageValidation": typeof lib_storageValidation;
   "lib/trustState": typeof lib_trustState;
   "marketplace/accountPrivacy": typeof marketplace_accountPrivacy;

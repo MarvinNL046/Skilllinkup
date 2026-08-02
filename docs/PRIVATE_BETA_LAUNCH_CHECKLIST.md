@@ -27,6 +27,7 @@ No box may be inferred from a green build alone. Attach the concrete test, scree
 - Combined Clerk/Convex and integration acceptance completed against the development environment: all 37 scenarios passed. Coverage includes signed-out protection, all marketplace roles, distinct Online client/freelancer, Local client/professional and Jobs candidate/company identities, a separate admin identity, full lifecycle transitions, company vacancy publishing, private workspaces/messages, project CRUD, fail-closed internal endpoints, payment quarantine and direct Clerk-JWT authorization checks.
 - The smoke dataset is removed through the secret-protected cleanup mutation after verification. Its server-side post-cleanup audit proves zero fixture records, child messages, deliverables, reviews, lifecycle notifications and generated Playwright records, plus restoration of the admin role; the development smoke secret is rotated afterwards.
 - The admin-only 30-day marketplace-health snapshot is source-backed by Convex and exposes demand, response coverage, committed matches, completion/cancellation, median first response and open trust queues. Direct JWT tests prove outsider denial and admin access; the admin browser surface is asserted separately.
+- Upload security is enforced from authoritative Convex storage metadata. A real multi-account storage test proves cross-account storage-ID replay is rejected, disallowed resume MIME types and files over 10 MB are rejected, and owner deletion removes both the storage object and its ownership record. Post-test cleanup reports zero smoke fixtures and an empty `fileAssets` table.
 
 ## 1. Environment and deployment
 
@@ -70,7 +71,7 @@ No box may be inferred from a green build alone. Attach the concrete test, scree
 - [x] Direct Clerk-JWT tests prove cross-account denial for project update/cancel, order reads, applicant pipelines, order conversations/messages, deliverable upload URLs, support-ticket order links, Local appointment reads/rescheduling/status, quote acceptance/submission and lead claims.
 - [x] Active-role switching cannot grant a role that is absent from `accountRoles`; this is verified directly against Convex with the outsider identity.
 - [x] The Trust & Safety admin surface denies a normal account and loads its protected Convex queues only for the separate temporary admin QA identity.
-- [ ] Upload size, ownership and content-type rules are verified.
+- [x] Upload size, ownership and content-type rules are verified for avatars, covers, portfolio images, resumes and deliverables. Legacy arbitrary chat-file URLs fail closed until chat uses the protected storage flow.
 - [x] Stripe creation/webhook routes remain quarantined with `503 PRIVATE_BETA_FREE`; email, cron, pipeline and secret-protected Convex maintenance endpoints reject missing, `undefined` and forged credentials.
 - [x] Rate limits exist for waitlist joins, applications, proposals, Local requests/quotes, reports, tickets and chat messages.
 

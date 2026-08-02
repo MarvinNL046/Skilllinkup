@@ -1,7 +1,13 @@
 import { v } from "convex/values";
 import { mutation, query } from "../_generated/server";
+import type { MutationCtx } from "../_generated/server";
+import type { Id } from "../_generated/dataModel";
 import { requireAuthUser } from "../lib/authHelpers";
-import { IMAGE_CONTENT_TYPES, requireStoredFile } from "../lib/storageValidation";
+import {
+  claimStoredFile,
+  IMAGE_CONTENT_TYPES,
+  setStoredFilePublicUrl,
+} from "../lib/storageValidation";
 
 const portfolioProjectValidator = v.object({
   _id: v.id("portfolioProjects"),
@@ -25,7 +31,10 @@ function validateFields(fields: {
   tags?: string[];
   externalUrl?: string;
 }) {
-  if (fields.title !== undefined && (fields.title.trim().length < 3 || fields.title.length > 160)) {
+  if (
+    fields.title !== undefined &&
+    (fields.title.trim().length < 3 || fields.title.length > 160)
+  ) {
     throw new Error("Portfolio title must be between 3 and 160 characters.");
   }
   if (fields.description !== undefined && fields.description.length > 3000) {
@@ -35,14 +44,41 @@ function validateFields(fields: {
     throw new Error("Portfolio projects support up to 20 images and 20 tags.");
   }
   for (const imageUrl of fields.imageUrls ?? []) {
-    const isLocalAsset = /^\/images\/[a-zA-Z0-9/_-]+\.(?:jpe?g|png|webp)$/i.test(imageUrl);
-    const isConvexStorageUrl = /^https:\/\/[^/]+\.convex\.(?:cloud|site)\/api\/storage\//i.test(imageUrl);
+    const isLocalAsset =
+      /^\/images\/[a-zA-Z0-9/_-]+\.(?:jpe?g|png|webp)$/i.test(imageUrl);
+    const isConvexStorageUrl =
+      /^https:\/\/[^/]+\.convex\.(?:cloud|site)\/api\/storage\//i.test(
+        imageUrl,
+      );
     if (!isLocalAsset && !isConvexStorageUrl) {
       throw new Error("Portfolio images must be uploaded through Skilllinkup.");
     }
   }
   if (fields.externalUrl && fields.externalUrl.length > 500) {
     throw new Error("Portfolio URL is too long.");
+  }
+}
+
+async function requireOwnedPortfolioImages(
+  ctx: MutationCtx,
+  userId: Id<"users">,
+  imageUrls?: string[],
+) {
+  for (const imageUrl of imageUrls ?? []) {
+    if (imageUrl.startsWith("/images/")) continue;
+    const asset = await ctx.db
+      .query("fileAssets")
+      .withIndex("by_publicUrl", (q) => q.eq("publicUrl", imageUrl))
+      .unique();
+    if (
+      !asset ||
+      asset.ownerId !== userId ||
+      asset.purpose !== "portfolio_image"
+    ) {
+      throw new Error(
+        "Portfolio images must belong to your Skilllinkup account.",
+      );
+    }
   }
 }
 
@@ -69,6 +105,7 @@ export const create = mutation({
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
     validateFields(args);
+    await requireOwnedPortfolioImages(ctx, user._id, args.imageUrls);
     const now = Date.now();
     return ctx.db.insert("portfolioProjects", {
       userId: user._id,
@@ -102,14 +139,24 @@ export const update = mutation({
     const project = await ctx.db.get(projectId);
     if (!project) throw new Error("Project not found.");
     if (project.userId !== user._id) throw new Error("Unauthorized.");
+    await requireOwnedPortfolioImages(
+      ctx,
+      user._id,
+      fields.imageUrls?.filter(
+        (imageUrl) => !project.imageUrls?.includes(imageUrl),
+      ),
+    );
     const patch: Record<string, string | string[] | number | undefined> = {
       updatedAt: Date.now(),
     };
     if (fields.title !== undefined) patch.title = fields.title.trim();
-    if (fields.description !== undefined) patch.description = fields.description.trim();
+    if (fields.description !== undefined)
+      patch.description = fields.description.trim();
     if (fields.imageUrls !== undefined) patch.imageUrls = fields.imageUrls;
-    if (fields.tags !== undefined) patch.tags = fields.tags.map((tag) => tag.trim()).filter(Boolean);
-    if (fields.externalUrl !== undefined) patch.externalUrl = fields.externalUrl.trim();
+    if (fields.tags !== undefined)
+      patch.tags = fields.tags.map((tag) => tag.trim()).filter(Boolean);
+    if (fields.externalUrl !== undefined)
+      patch.externalUrl = fields.externalUrl.trim();
     await ctx.db.patch(projectId, patch);
     return projectId;
   },
@@ -141,14 +188,21 @@ export const resolveImageUpload = mutation({
   args: { storageId: v.id("_storage") },
   returns: v.string(),
   handler: async (ctx, args) => {
-    await requireAuthUser(ctx);
-    await requireStoredFile(ctx, args.storageId, {
-      maxBytes: 8 * 1024 * 1024,
-      allowedContentTypes: IMAGE_CONTENT_TYPES,
-      typeError: "Upload a JPG, PNG or WebP portfolio image.",
-    });
+    const user = await requireAuthUser(ctx);
+    const { assetId } = await claimStoredFile(
+      ctx,
+      user._id,
+      args.storageId,
+      "portfolio_image",
+      {
+        maxBytes: 8 * 1024 * 1024,
+        allowedContentTypes: IMAGE_CONTENT_TYPES,
+        typeError: "Upload a JPG, PNG or WebP portfolio image.",
+      },
+    );
     const url = await ctx.storage.getUrl(args.storageId);
     if (!url) throw new Error("The portfolio image could not be resolved.");
+    await setStoredFilePublicUrl(ctx, assetId, url);
     return url;
   },
 });

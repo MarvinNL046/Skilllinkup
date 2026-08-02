@@ -1,12 +1,21 @@
 import { v } from "convex/values";
 import { query, mutation, internalQuery } from "../_generated/server";
 import type { QueryCtx } from "../_generated/server";
-import { requireAdmin, requireAuthUser, requireOwner, requireServerSecret } from "../lib/authHelpers";
+import {
+  requireAdmin,
+  requireAuthUser,
+  requireOwner,
+  requireServerSecret,
+} from "../lib/authHelpers";
 import {
   isPublicFreelancerProfile,
   toPublicFreelancerProfile,
 } from "../lib/publicData";
-import { IMAGE_CONTENT_TYPES, requireStoredFile } from "../lib/storageValidation";
+import {
+  claimStoredFile,
+  IMAGE_CONTENT_TYPES,
+  setStoredFilePublicUrl,
+} from "../lib/storageValidation";
 
 /**
  * Generate a URL-friendly slug from a display name.
@@ -15,13 +24,13 @@ import { IMAGE_CONTENT_TYPES, requireStoredFile } from "../lib/storageValidation
 async function generateSlug(
   db: QueryCtx["db"],
   displayName: string,
-  excludeId?: string
+  excludeId?: string,
 ): Promise<string> {
-  const base = displayName
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    || "freelancer";
+  const base =
+    displayName
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "freelancer";
 
   // Check if base slug is available
   const existing = await db
@@ -55,7 +64,7 @@ export const list = query({
       profiles = await ctx.db
         .query("freelancerProfiles")
         .withIndex("by_status_locale", (q) =>
-          q.eq("status", "active").eq("locale", args.locale)
+          q.eq("status", "active").eq("locale", args.locale),
         )
         .take(candidateLimit);
     } else {
@@ -142,7 +151,7 @@ export const search = query({
     const results = await ctx.db
       .query("freelancerProfiles")
       .withSearchIndex("search_freelancers", (q) =>
-        q.search("bio", args.query).eq("status", "active")
+        q.search("bio", args.query).eq("status", "active"),
       )
       .take(50);
 
@@ -219,6 +228,7 @@ export const updateProfile = mutation({
  */
 export const generateAvatarUploadUrl = mutation({
   args: {},
+  returns: v.string(),
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Authentication required");
@@ -235,6 +245,7 @@ export const saveAvatarStorageId = mutation({
     profileId: v.id("freelancerProfiles"),
     storageId: v.id("_storage"),
   },
+  returns: v.string(),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
 
@@ -243,14 +254,21 @@ export const saveAvatarStorageId = mutation({
     if (!profile) throw new Error("Profile not found.");
     if (profile.userId !== user._id) throw new Error("Unauthorized.");
 
-    await requireStoredFile(ctx, args.storageId, {
-      maxBytes: 5 * 1024 * 1024,
-      allowedContentTypes: IMAGE_CONTENT_TYPES,
-      typeError: "Upload a JPG, PNG or WebP profile image.",
-    });
+    const { assetId } = await claimStoredFile(
+      ctx,
+      user._id,
+      args.storageId,
+      "avatar",
+      {
+        maxBytes: 5 * 1024 * 1024,
+        allowedContentTypes: IMAGE_CONTENT_TYPES,
+        typeError: "Upload a JPG, PNG or WebP profile image.",
+      },
+    );
 
     const url = await ctx.storage.getUrl(args.storageId);
     if (!url) throw new Error("Failed to get storage URL");
+    await setStoredFilePublicUrl(ctx, assetId, url);
 
     await ctx.db.patch(args.profileId, {
       avatarUrl: url,
@@ -266,6 +284,7 @@ export const saveAvatarStorageId = mutation({
  */
 export const generateCoverUploadUrl = mutation({
   args: {},
+  returns: v.string(),
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Authentication required");
@@ -281,6 +300,7 @@ export const saveCoverStorageId = mutation({
     profileId: v.id("freelancerProfiles"),
     storageId: v.id("_storage"),
   },
+  returns: v.string(),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
 
@@ -289,15 +309,25 @@ export const saveCoverStorageId = mutation({
     if (!profile) throw new Error("Profile not found.");
     if (profile.userId !== user._id) throw new Error("Unauthorized.");
 
-    await requireStoredFile(ctx, args.storageId, {
-      maxBytes: 10 * 1024 * 1024,
-      allowedContentTypes: IMAGE_CONTENT_TYPES,
-      typeError: "Upload a JPG, PNG or WebP cover image.",
-    });
+    const { assetId } = await claimStoredFile(
+      ctx,
+      user._id,
+      args.storageId,
+      "cover",
+      {
+        maxBytes: 10 * 1024 * 1024,
+        allowedContentTypes: IMAGE_CONTENT_TYPES,
+        typeError: "Upload a JPG, PNG or WebP cover image.",
+      },
+    );
 
     const url = await ctx.storage.getUrl(args.storageId);
     if (!url) throw new Error("Failed to get storage URL");
-    await ctx.db.patch(args.profileId, { coverImageUrl: url, updatedAt: Date.now() });
+    await setStoredFilePublicUrl(ctx, assetId, url);
+    await ctx.db.patch(args.profileId, {
+      coverImageUrl: url,
+      updatedAt: Date.now(),
+    });
     return url;
   },
 });
@@ -402,7 +432,7 @@ export const getReviews = query({
           reviewerName: reviewer?.name ?? null,
           reviewerAvatar: reviewer?.avatar ?? null,
         };
-      })
+      }),
     );
 
     return enriched;
@@ -435,6 +465,10 @@ export const backfillSlugs = mutation({
       updated++;
     }
 
-    return { updated, scanned: profiles.length, hasMore: profiles.length === 250 };
+    return {
+      updated,
+      scanned: profiles.length,
+      hasMore: profiles.length === 250,
+    };
   },
 });

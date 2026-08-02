@@ -630,6 +630,103 @@ test("Convex rejects direct cross-account reads and mutations", async ({
   ).rejects.toThrow(/Add the local professional role/);
 });
 
+test("stored uploads enforce authoritative MIME, size and account ownership", async ({
+  browser,
+  baseURL,
+}) => {
+  const manifest = readManifest();
+  expect(freelancerUserEmail).not.toBe(dashboardUserEmail);
+  const freelancer = await createIsolatedAuthenticatedConvexClient(
+    browser,
+    baseURL,
+    freelancerUserEmail,
+  );
+  const client = await createIsolatedAuthenticatedConvexClient(
+    browser,
+    baseURL,
+    dashboardUserEmail,
+  );
+  const outsider = await createIsolatedAuthenticatedConvexClient(
+    browser,
+    baseURL,
+    outsiderUserEmail,
+  );
+
+  async function upload(contentType: string, body: Blob) {
+    const uploadUrl = await freelancer.mutation(
+      api.marketplace.deliverables.generateUploadUrl,
+      { orderId: manifest.ids.orderId },
+    );
+    const response = await fetch(uploadUrl, {
+      method: "POST",
+      headers: { "Content-Type": contentType },
+      body,
+    });
+    expect(response.ok).toBeTruthy();
+    return ((await response.json()) as { storageId: string })
+      .storageId as never;
+  }
+
+  const textStorageId = await upload(
+    "text/plain",
+    new Blob(["private beta upload ownership test"]),
+  );
+  const textDeliverableId = await freelancer.mutation(
+    api.marketplace.deliverables.add,
+    {
+      orderId: manifest.ids.orderId,
+      storageId: textStorageId,
+      fileName: "ownership-test.txt",
+    },
+  );
+
+  await expect(
+    client.mutation(api.marketplace.deliverables.add, {
+      orderId: manifest.ids.orderId,
+      storageId: textStorageId,
+      fileName: "replayed.txt",
+    }),
+  ).rejects.toThrow(/belongs to another account/);
+
+  await expect(
+    outsider.mutation(api.marketplace.jobApplications.submit, {
+      jobId: manifest.ids.jobId,
+      coverLetter:
+        "I am submitting this deliberately invalid attachment to verify that server-side MIME validation rejects it safely.",
+      resumeStorageId: textStorageId,
+    }),
+  ).rejects.toThrow(/PDF, DOC or DOCX/);
+
+  const largePdfStorageId = await upload(
+    "application/pdf",
+    new Blob([new ArrayBuffer(10 * 1024 * 1024 + 1)]),
+  );
+  const largeDeliverableId = await freelancer.mutation(
+    api.marketplace.deliverables.add,
+    {
+      orderId: manifest.ids.orderId,
+      storageId: largePdfStorageId,
+      fileName: "oversize-resume-test.pdf",
+    },
+  );
+
+  await expect(
+    outsider.mutation(api.marketplace.jobApplications.submit, {
+      jobId: manifest.ids.jobId,
+      coverLetter:
+        "I am submitting this deliberately oversized attachment to verify that authoritative storage metadata is enforced.",
+      resumeStorageId: largePdfStorageId,
+    }),
+  ).rejects.toThrow(/smaller than 10 MB/);
+
+  await freelancer.mutation(api.marketplace.deliverables.remove, {
+    deliverableId: textDeliverableId,
+  });
+  await freelancer.mutation(api.marketplace.deliverables.remove, {
+    deliverableId: largeDeliverableId,
+  });
+});
+
 test("Convex grants the dedicated admin account its protected query", async ({
   page,
   baseURL,

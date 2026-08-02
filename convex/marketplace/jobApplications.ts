@@ -8,7 +8,10 @@ import {
   jobApplicationTransitions,
 } from "../lib/marketplaceState";
 import { rateLimiter } from "../lib/rateLimits";
-import { DOCUMENT_CONTENT_TYPES, requireStoredFile } from "../lib/storageValidation";
+import {
+  claimStoredFile,
+  DOCUMENT_CONTENT_TYPES,
+} from "../lib/storageValidation";
 
 const applicationValidator = v.object({
   _id: v.id("jobApplications"),
@@ -73,7 +76,7 @@ export const getMineForJob = query({
     const application = await ctx.db
       .query("jobApplications")
       .withIndex("by_job_candidate", (q) =>
-        q.eq("jobId", args.jobId).eq("candidateId", user._id)
+        q.eq("jobId", args.jobId).eq("candidateId", user._id),
       )
       .unique();
 
@@ -102,7 +105,7 @@ export const listMine = query({
         locationCity: v.union(v.string(), v.null()),
         status: v.string(),
       }),
-    })
+    }),
   ),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
@@ -113,7 +116,9 @@ export const listMine = query({
       .order("desc")
       .take(limit);
 
-    const jobs = await Promise.all(applications.map((item) => ctx.db.get(item.jobId)));
+    const jobs = await Promise.all(
+      applications.map((item) => ctx.db.get(item.jobId)),
+    );
     return applications.flatMap((application, index) => {
       const job = jobs[index];
       if (!job) return [];
@@ -123,18 +128,20 @@ export const listMine = query({
         tenantId: _tenantId,
         ...safe
       } = application;
-      return [{
-        application: safe,
-        job: {
-          id: job._id,
-          slug: job.slug,
-          title: job.title,
-          company: job.company ?? null,
-          workType: job.workType ?? null,
-          locationCity: job.locationCity ?? null,
-          status: job.status,
+      return [
+        {
+          application: safe,
+          job: {
+            id: job._id,
+            slug: job.slug,
+            title: job.title,
+            company: job.company ?? null,
+            workType: job.workType ?? null,
+            locationCity: job.locationCity ?? null,
+            status: job.status,
+          },
         },
-      }];
+      ];
     });
   },
 });
@@ -156,7 +163,7 @@ export const listForJob = query({
       ? await ctx.db
           .query("jobApplications")
           .withIndex("by_job_status", (q) =>
-            q.eq("jobId", args.jobId).eq("status", args.status!)
+            q.eq("jobId", args.jobId).eq("status", args.status!),
           )
           .order("desc")
           .take(limit)
@@ -169,7 +176,8 @@ export const listForJob = query({
     return await Promise.all(
       applications.map(async (application) => {
         const candidate = await ctx.db.get(application.candidateId);
-        if (!candidate) throw new Error("Application candidate no longer exists.");
+        if (!candidate)
+          throw new Error("Application candidate no longer exists.");
         const resumeUrl = application.resumeStorageId
           ? await ctx.storage.getUrl(application.resumeStorageId)
           : null;
@@ -183,7 +191,7 @@ export const listForJob = query({
           },
           resumeUrl,
         };
-      })
+      }),
     );
   },
 });
@@ -209,7 +217,8 @@ export const submit = mutation({
     const candidate = await requireAuthUser(ctx);
     const job = await ctx.db.get(args.jobId);
     if (!job) throw new Error("Job not found.");
-    if (job.status !== "open") throw new Error("This job is not accepting applications.");
+    if (job.status !== "open")
+      throw new Error("This job is not accepting applications.");
     if (job.expiresAt && job.expiresAt < Date.now()) {
       throw new Error("This job has expired.");
     }
@@ -219,26 +228,37 @@ export const submit = mutation({
 
     const coverLetter = args.coverLetter.trim();
     if (coverLetter.length < 80 || coverLetter.length > 5000) {
-      throw new Error("Your application message must be between 80 and 5,000 characters.");
+      throw new Error(
+        "Your application message must be between 80 and 5,000 characters.",
+      );
     }
     validatePortfolioUrl(args.portfolioUrl);
-    if (args.resumeStorageId) {
-      await requireStoredFile(ctx, args.resumeStorageId, {
-        maxBytes: 10 * 1024 * 1024,
-        allowedContentTypes: DOCUMENT_CONTENT_TYPES,
-        typeError: "Upload a PDF, DOC or DOCX resume.",
-      });
-    }
-
     const existing = await ctx.db
       .query("jobApplications")
       .withIndex("by_job_candidate", (q) =>
-        q.eq("jobId", args.jobId).eq("candidateId", candidate._id)
+        q.eq("jobId", args.jobId).eq("candidateId", candidate._id),
       )
       .unique();
     if (existing) throw new Error("You have already applied for this job.");
 
-    await rateLimiter.limit(ctx, "jobApplication", { key: candidate._id, throws: true });
+    await rateLimiter.limit(ctx, "jobApplication", {
+      key: candidate._id,
+      throws: true,
+    });
+
+    if (args.resumeStorageId) {
+      await claimStoredFile(
+        ctx,
+        candidate._id,
+        args.resumeStorageId,
+        "resume",
+        {
+          maxBytes: 10 * 1024 * 1024,
+          allowedContentTypes: DOCUMENT_CONTENT_TYPES,
+          typeError: "Upload a PDF, DOC or DOCX resume.",
+        },
+      );
+    }
 
     const now = Date.now();
     const applicationId = await ctx.db.insert("jobApplications", {
@@ -287,9 +307,14 @@ export const withdraw = mutation({
     const candidate = await requireAuthUser(ctx);
     const application = await ctx.db.get(args.applicationId);
     if (!application) throw new Error("Application not found.");
-    if (application.candidateId !== candidate._id) throw new Error("Unauthorized.");
+    if (application.candidateId !== candidate._id)
+      throw new Error("Unauthorized.");
 
-    assertTransition(jobApplicationTransitions, application.status, "withdrawn");
+    assertTransition(
+      jobApplicationTransitions,
+      application.status,
+      "withdrawn",
+    );
     const now = Date.now();
     await ctx.db.patch(application._id, {
       status: "withdrawn",
@@ -317,7 +342,11 @@ export const updateStatus = mutation({
     if (["draft", "submitted", "withdrawn"].includes(args.status)) {
       throw new Error("Employers cannot move an application to that status.");
     }
-    assertTransition(jobApplicationTransitions, application.status, args.status);
+    assertTransition(
+      jobApplicationTransitions,
+      application.status,
+      args.status,
+    );
 
     const employerNote = args.employerNote?.trim();
     if (employerNote && employerNote.length > 3000) {
@@ -336,7 +365,11 @@ export const updateStatus = mutation({
       title: "Application updated",
       body: `${job.title} moved to ${args.status.replaceAll("_", " ")}.`,
       link: "/dashboard/applications",
-      metadata: { jobId: job._id, applicationId: application._id, status: args.status },
+      metadata: {
+        jobId: job._id,
+        applicationId: application._id,
+        status: args.status,
+      },
     });
     return application._id;
   },

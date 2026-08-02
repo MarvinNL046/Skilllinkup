@@ -28,6 +28,7 @@ import {
   supportPriorityValidator,
   supportStatusValidator,
 } from "./lib/trustState";
+import { uploadPurposeValidator } from "./lib/storageState";
 
 export default defineSchema({
   // ============================================================
@@ -71,8 +72,8 @@ export default defineSchema({
     lastActiveAt: v.optional(v.number()),
     deletionRequestedAt: v.optional(v.number()),
     clientCreditBalance: v.optional(v.number()), // cents, default 0
-    clientTier: v.optional(v.string()),           // "bronze" | "silver" | "gold"
-    clientYearlySpend: v.optional(v.number()),    // cents, cumulative this calendar year
+    clientTier: v.optional(v.string()), // "bronze" | "silver" | "gold"
+    clientYearlySpend: v.optional(v.number()), // cents, cumulative this calendar year
     createdAt: v.number(),
     updatedAt: v.number(),
   })
@@ -152,6 +153,21 @@ export default defineSchema({
     uploadedBy: v.optional(v.id("users")),
     createdAt: v.number(),
   }).index("by_tenant", ["tenantId"]),
+
+  fileAssets: defineTable({
+    storageId: v.id("_storage"),
+    ownerId: v.id("users"),
+    purpose: uploadPurposeValidator,
+    contentType: v.string(),
+    fileSize: v.number(),
+    publicUrl: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_storageId", ["storageId"])
+    .index("by_owner", ["ownerId"])
+    .index("by_owner_and_purpose", ["ownerId", "purpose"])
+    .index("by_publicUrl", ["publicUrl"]),
 
   comments: defineTable({
     tenantId: v.id("tenants"),
@@ -893,9 +909,9 @@ export default defineSchema({
     preferredDate: v.optional(v.number()),
     status: quoteRequestStatusValidator,
     quoteCount: v.optional(v.number()),
-    maxSlots: v.optional(v.number()),      // default 3
-    claimedSlots: v.optional(v.number()),  // default 0
-    isExclusive: v.optional(v.boolean()),  // default false
+    maxSlots: v.optional(v.number()), // default 3
+    claimedSlots: v.optional(v.number()), // default 0
+    isExclusive: v.optional(v.boolean()), // default false
     createdAt: v.number(),
     updatedAt: v.number(),
   })
@@ -963,12 +979,15 @@ export default defineSchema({
   creditTransactions: defineTable({
     freelancerId: v.id("users"),
     amount: v.number(), // positive = purchase, negative = spend
-    type: v.union(v.literal("purchase"), v.literal("spend"), v.literal("refund")),
+    type: v.union(
+      v.literal("purchase"),
+      v.literal("spend"),
+      v.literal("refund"),
+    ),
     description: v.string(),
     referenceId: v.optional(v.string()), // Stripe session ID or leadClaim ID
     createdAt: v.number(),
-  })
-    .index("by_freelancer", ["freelancerId"]),
+  }).index("by_freelancer", ["freelancerId"]),
 
   // ============================================================
   // SAVED ITEMS / FAVORITES
@@ -1078,13 +1097,13 @@ export default defineSchema({
   // ============================================================
 
   feedback: defineTable({
-    type: v.string(),                    // "feedback" | "bug" | "feature"
+    type: v.string(), // "feedback" | "bug" | "feature"
     message: v.string(),
-    rating: v.optional(v.number()),      // 1–5, only for type "feedback"
-    pageUrl: v.optional(v.string()),     // page where feedback was submitted
-    userId: v.optional(v.id("users")),   // null for anonymous
-    email: v.optional(v.string()),       // if user left email
-    status: v.string(),                  // "new" | "reviewed" | "resolved"
+    rating: v.optional(v.number()), // 1–5, only for type "feedback"
+    pageUrl: v.optional(v.string()), // page where feedback was submitted
+    userId: v.optional(v.id("users")), // null for anonymous
+    email: v.optional(v.string()), // if user left email
+    status: v.string(), // "new" | "reviewed" | "resolved"
     createdAt: v.number(),
   })
     .index("by_type", ["type"])
@@ -1131,9 +1150,9 @@ export default defineSchema({
 
   resources: defineTable({
     slug: v.string(),
-    locale: v.string(),                        // "en" | "nl"
-    type: v.string(),                          // "pricing" | "comparison" | "guide"
-    status: v.string(),                        // "draft" | "published"
+    locale: v.string(), // "en" | "nl"
+    type: v.string(), // "pricing" | "comparison" | "guide"
+    status: v.string(), // "draft" | "published"
 
     // SEO
     metaTitle: v.string(),
@@ -1141,16 +1160,20 @@ export default defineSchema({
 
     // Content
     intro: v.string(),
-    sections: v.array(v.object({
-      heading: v.string(),
-      body: v.string(),
-    })),
-    pricingData: v.optional(v.any()),          // [{tier, price, features[]}]
-    comparisonData: v.optional(v.any()),       // [{category, a, b}]
-    faqItems: v.array(v.object({
-      question: v.string(),
-      answer: v.string(),
-    })),
+    sections: v.array(
+      v.object({
+        heading: v.string(),
+        body: v.string(),
+      }),
+    ),
+    pricingData: v.optional(v.any()), // [{tier, price, features[]}]
+    comparisonData: v.optional(v.any()), // [{category, a, b}]
+    faqItems: v.array(
+      v.object({
+        question: v.string(),
+        answer: v.string(),
+      }),
+    ),
     keyTakeaways: v.optional(v.array(v.string())),
 
     publishedAt: v.optional(v.number()),
