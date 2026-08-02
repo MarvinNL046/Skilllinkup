@@ -12,12 +12,15 @@ if (!rawBaseUrl)
 
 const baseUrl = new URL(rawBaseUrl);
 const protectionBypass = process.env.VERCEL_AUTOMATION_BYPASS_SECRET?.trim();
+const shareToken = process.env.VERCEL_SHARE_TOKEN?.trim();
+let shareCookie;
 if (!allowHttp && baseUrl.protocol !== "https:")
   throw new Error("Hosted release verification requires HTTPS.");
 const failures = [];
 
 async function request(pathname, options = {}) {
-  const response = await fetch(new URL(pathname, baseUrl), {
+  const requestUrl = new URL(pathname, baseUrl);
+  const response = await fetch(requestUrl, {
     redirect: "manual",
     signal: AbortSignal.timeout(15_000),
     ...options,
@@ -25,10 +28,20 @@ async function request(pathname, options = {}) {
       ...(protectionBypass
         ? { "x-vercel-protection-bypass": protectionBypass }
         : {}),
+      ...(shareCookie ? { cookie: shareCookie } : {}),
       ...options.headers,
     },
   });
   return response;
+}
+
+if (shareToken) {
+  const accessUrl = new URL(baseUrl);
+  accessUrl.searchParams.set("_vercel_share", shareToken);
+  const accessResponse = await fetch(accessUrl, { redirect: "manual" });
+  shareCookie = accessResponse.headers.get("set-cookie")?.split(";", 1)[0];
+  if (!shareCookie)
+    throw new Error("Vercel share token did not produce an access cookie.");
 }
 
 for (const pathname of [
