@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { dashboardNavigation } from "@/data/dashboard";
 import useConvexUser from "@/hook/useConvexUser";
-import dashboardSidebarStore from "@/store/dashboardSidebarStore";
+import dashboardSidebarStore, { useHydratedSidebarCollapsed } from "@/store/dashboardSidebarStore";
 import AccountContextSwitcher from "@/components/dashboard/AccountContextSwitcher";
 import styles from "./DashboardSidebar.module.css";
 
@@ -43,7 +43,7 @@ export default function DashboardSidebar() {
   const path = usePathname();
   const { signOut } = useClerk();
   const { convexUser } = useConvexUser();
-  const collapsed = dashboardSidebarStore((state) => state.collapsed);
+  const collapsed = useHydratedSidebarCollapsed();
   const toggleCollapsed = dashboardSidebarStore((state) => state.toggleCollapsed);
   const closeMobile = dashboardSidebarStore((state) => state.closeMobile);
   const role = convexUser?.activeRole || (convexUser?.userType === "freelancer" ? "freelancer" : "client");
@@ -72,7 +72,15 @@ export default function DashboardSidebar() {
             priority
           />
         </Link>
-        <button type="button" className={styles.collapse} onClick={toggleCollapsed} aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}>{collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}</button>
+        <button
+          type="button"
+          className={styles.collapse}
+          onClick={toggleCollapsed}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+        </button>
       </div>
 
       {collapsed ? null : <div className={styles.context}><AccountContextSwitcher dark /></div>}

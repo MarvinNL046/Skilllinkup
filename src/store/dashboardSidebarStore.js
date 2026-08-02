@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import { create } from "zustand";
 
 /**
@@ -25,5 +26,25 @@ const dashboardSidebarStore = create((set) => ({
   closeMobile: () => set({ mobileOpen: false }),
   toggleMobile: () => set((s) => ({ mobileOpen: !s.mobileOpen })),
 }));
+
+/**
+ * Keep the server render and the browser's hydration render identical.
+ *
+ * In development, Zustand's module can survive a Fast Refresh with the
+ * sidebar already collapsed while the server starts from the expanded
+ * default. Rendering the stored value only after mount prevents React from
+ * hydrating two different sidebar trees. The value still updates normally
+ * after hydration and across client-side navigation.
+ */
+export function useHydratedSidebarCollapsed() {
+  const collapsed = dashboardSidebarStore((state) => state.collapsed);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  return hydrated ? collapsed : false;
+}
 
 export default dashboardSidebarStore;
