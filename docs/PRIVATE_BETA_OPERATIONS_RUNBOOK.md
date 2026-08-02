@@ -56,7 +56,7 @@ Never request passwords, Clerk session tokens, full payment details or identity 
 
 1. Authenticate the local CLI once with `npx vercel@50.5.0 login`, confirm the account with `npx vercel@50.5.0 whoami`, then link only the Skilllinkup project.
 2. Keep Preview on isolated Clerk development and Convex development deployments. Production must use Clerk live keys and a Convex `prod:` deployment. Never point Preview at production data.
-3. Configure the variables documented in `.env.example` with Vercel environment scoping. Store server secrets as sensitive values; never place them in `NEXT_PUBLIC_*` variables.
+3. Configure the variables documented in `.env.example` with Vercel environment scoping. The complete Preview contract must exist at the general Preview scope so every release branch inherits it; branch-specific values may override it but must never be the only copy. Store server secrets as sensitive values; never place them in `NEXT_PUBLIC_*` variables.
 4. Run `npm run env:verify -- --environment=preview` before building. The check must fail if URLs, key modes, backend modes or server secrets are inconsistent.
 5. Deploy a Preview candidate, record its URL and deployment ID in a copy of `docs/RELEASE_RECORD_TEMPLATE.md`, then run `npm run release:verify-hosted -- --base-url=<preview-url>`.
 6. Run authenticated acceptance against the isolated Preview identities. Do not seed production.
