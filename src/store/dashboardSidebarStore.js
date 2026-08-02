@@ -3,7 +3,7 @@ import { create } from "zustand";
 
 const STORAGE_KEY = "dashboard-sidebar-collapsed";
 
-function readInitial() {
+function readPersisted() {
   if (typeof window === "undefined") return false;
   try {
     return window.localStorage.getItem(STORAGE_KEY) === "true";
@@ -29,8 +29,12 @@ function persist(value) {
  * collapsed persists to localStorage; mobileOpen is ephemeral.
  */
 const dashboardSidebarStore = create((set) => ({
-  collapsed: readInitial(),
+  // Keep the server and the browser's first render identical. The persisted
+  // preference is restored by DashboardLayout after hydration.
+  collapsed: false,
   mobileOpen: false,
+
+  hydrateCollapsed: () => set({ collapsed: readPersisted() }),
 
   toggleCollapsed: () =>
     set((state) => {
