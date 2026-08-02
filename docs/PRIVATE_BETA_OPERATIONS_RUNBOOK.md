@@ -10,6 +10,7 @@ Companion operating artifacts:
 - `PRIVATE_BETA_COHORT_PLAN.md` defines the supply-first cohort and invitation waves.
 - `BETA_OPERATIONS_LOG_TEMPLATE.md` is the required privacy-safe daily record.
 - `SUPPORT_RESPONSE_TEMPLATES.md` contains approved draft language; replace every bracketed field and assign the ownership roster before use.
+- `PRODUCTION_MONITORING_RUNBOOK.md` defines the scheduled synthetic monitor, notification rehearsal and production triage path.
 - `/admin/trust` exposes the authenticated 30-day product-health snapshot and trust queues to administrators only.
 
 ## Ownership roster
@@ -28,7 +29,7 @@ Fill names and contact methods before invitations are sent. One person may hold 
 ## Daily opening checks
 
 1. Verify `/api/health` returns HTTP 200 and `status: ok`, then match its version, full commit SHA and immutable Vercel deployment URL to the current release record.
-2. Review deployment and Convex errors without copying personal data into incident notes.
+2. Confirm the latest scheduled `Production monitor` run passed, then review deployment and Convex errors without copying personal data into incident notes.
 3. Review open Trust & Safety reports, disputes and support tickets oldest-first.
 4. Review unmatched Online projects, unclaimed Local requests and Jobs without candidate activity.
 5. Check stalled accepted work: no message, delivery, appointment update or employer action within the agreed target.

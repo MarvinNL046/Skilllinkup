@@ -1,0 +1,63 @@
+name: Production monitor
+
+on:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: HTTPS target; use an invalid URL only for an alert-delivery rehearsal
+        required: false
+        type: string
+        default: https://skilllinkup.com
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-monitor
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify public production contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      MONITOR_BASE_URL: ${{ inputs.base_url || 'https://skilllinkup.com' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Run release verification with bounded retries
+        shell: bash
+        run: |
+          for attempt in 1 2 3; do
+            echo "Production verification attempt ${attempt}/3 for ${MONITOR_BASE_URL}"
+            if node scripts/verify-hosted-release.mjs --base-url="${MONITOR_BASE_URL}"; then
+              exit 0
+            fi
+
+            if [ "${attempt}" -lt 3 ]; then
+              sleep 20
+            fi
+          done
+
+          echo "Production verification failed after three attempts."
+          exit 1
+
+      - name: Record monitor outcome
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Skilllinkup production monitor"
+            echo "- Target: ${MONITOR_BASE_URL}"
+            echo "- Result: ${{ job.status }}"
+            echo "- Workflow run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo "- Checked at: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          } >> "${GITHUB_STEP_SUMMARY}"
