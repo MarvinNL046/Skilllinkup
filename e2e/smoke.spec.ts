@@ -265,12 +265,36 @@ test("protected workspace indexes expose one labelled page heading", async ({
     });
   }
 
+  const hydrationErrors: string[] = [];
+  page.on("console", (message) => {
+    if (
+      message.type() === "error" &&
+      /hydration failed|hydrated.*didn't match/i.test(message.text())
+    ) {
+      hydrationErrors.push(message.text());
+    }
+  });
+
   await page.evaluate(() => {
     window.localStorage.setItem("dashboard-sidebar-collapsed", "true");
   });
   await page.reload({ waitUntil: "domcontentloaded" });
   await expect(page.getByRole("link", { name: "Dashboard" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Log out" })).toBeVisible();
+  const expandSidebar = page.getByRole("button", { name: "Expand sidebar" });
+  await expect(expandSidebar).toBeVisible();
+  await expandSidebar.click();
+  await expect(
+    page.getByRole("button", { name: "Collapse sidebar" }),
+  ).toBeVisible();
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        window.localStorage.getItem("dashboard-sidebar-collapsed"),
+      ),
+    )
+    .toBe("false");
+  expect(hydrationErrors).toEqual([]);
 });
 
 test("candidate application pipeline renders for the signed-in fixture", async ({

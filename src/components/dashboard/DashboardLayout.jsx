@@ -28,6 +28,11 @@ export default function DashboardLayout({ children, maxWidth = "full" }) {
   const collapsed = dashboardSidebarStore((s) => s.collapsed);
   const mobileOpen = dashboardSidebarStore((s) => s.mobileOpen);
   const closeMobile = dashboardSidebarStore((s) => s.closeMobile);
+  const hydrateCollapsed = dashboardSidebarStore((s) => s.hydrateCollapsed);
+
+  useEffect(() => {
+    hydrateCollapsed();
+  }, [hydrateCollapsed]);
 
   useEffect(() => {
     if (isLoaded && !isClerkSignedIn) {
