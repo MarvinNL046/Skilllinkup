@@ -322,7 +322,7 @@ Completed and verified:
 Operational gates still open:
 
 - Keep the verified Preview/Production separation and artifact-specific hosted smoke run green for every release; the engineering Preview rollback rehearsal has passed, while a named release owner/back-up and an approved production rollback rehearsal remain required.
-- Configure Search Console and validate the production sitemap and eligible JobPosting output.
+- The production sitemap, robots, canonicals and Jobs structured-data contract are now continuously verified; configure Search Console and validate the first genuine eligible vacancy before enabling the strict live-inventory gate. See `docs/SEO_RELEASE_GATE.md`.
 - Connect a hosted error-monitoring/alerting provider to the existing health and error surfaces; local readiness does not replace production alert delivery.
 - Keep the scheduled public production monitor green and complete its failure-notification rehearsal with a named owner and backup; synthetic availability does not replace exception monitoring.
 - Confirm the Local launch region (current hypothesis: Rotterdam–The Hague) and first supply cohort.

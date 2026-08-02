@@ -160,9 +160,19 @@ export const create = mutation({
     salaryMin: v.optional(v.number()),
     salaryMax: v.optional(v.number()),
     currency: v.optional(v.string()),
-    jobType: v.string(),
+    jobType: v.union(
+      v.literal("full-time"),
+      v.literal("part-time"),
+      v.literal("contract"),
+      v.literal("freelance"),
+      v.literal("internship"),
+    ),
     experienceLevel: v.optional(v.string()),
-    workType: v.optional(v.string()),
+    workType: v.union(
+      v.literal("remote"),
+      v.literal("hybrid"),
+      v.literal("local"),
+    ),
     locationCity: v.optional(v.string()),
     locationCountry: v.optional(v.string()),
     benefits: v.optional(v.array(v.string())),
@@ -177,10 +187,20 @@ export const create = mutation({
     const title = args.title.trim();
     const description = args.description.trim();
     const slug = args.slug.trim().toLowerCase();
+    const company = args.company?.trim();
+    const locationCity = args.locationCity?.trim();
+    const locationCountry = args.locationCountry?.trim();
     if (title.length < 8 || title.length > 120)
       throw new Error("Use a title between 8 and 120 characters.");
     if (description.length < 80 || description.length > 10_000)
       throw new Error("Use a description between 80 and 10,000 characters.");
+    if (!company) throw new Error("Add the hiring organization's name.");
+    if (!locationCountry || locationCountry.length > 80)
+      throw new Error("Add a valid applicant country.");
+    if (args.workType !== "remote" && !locationCity)
+      throw new Error("Add the city for hybrid and on-site vacancies.");
+    if (locationCity && locationCity.length > 100)
+      throw new Error("Use a city name of at most 100 characters.");
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))
       throw new Error("Invalid job slug.");
     const existing = await ctx.db
@@ -201,6 +221,8 @@ export const create = mutation({
     ) {
       throw new Error("Minimum salary cannot exceed maximum salary.");
     }
+    if (args.expiresAt !== undefined && args.expiresAt <= now)
+      throw new Error("The application deadline must be in the future.");
 
     const jobId = await ctx.db.insert("jobs", {
       tenantId: user.tenantId,
@@ -209,7 +231,7 @@ export const create = mutation({
       slug,
       description,
       categoryId: args.categoryId,
-      company: args.company,
+      company,
       companyLogo: args.companyLogo,
       requiredSkills: args.requiredSkills,
       salaryMin: args.salaryMin,
@@ -218,8 +240,8 @@ export const create = mutation({
       jobType: args.jobType,
       experienceLevel: args.experienceLevel,
       workType: args.workType,
-      locationCity: args.locationCity,
-      locationCountry: args.locationCountry,
+      locationCity,
+      locationCountry,
       benefits: args.benefits,
       expiresAt: args.expiresAt,
       applicationCount: 0,

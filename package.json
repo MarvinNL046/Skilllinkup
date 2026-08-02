@@ -11,6 +11,8 @@
     "env:verify": "node scripts/verify-environment.mjs",
     "beta:verify-copy": "node scripts/check-private-beta-copy.mjs",
     "release:verify-hosted": "node scripts/verify-hosted-release.mjs",
+    "seo:verify-contract": "node scripts/check-job-posting-contract.mjs",
+    "seo:verify-hosted": "node scripts/verify-hosted-seo.mjs",
     "auth:ensure-clerk-convex": "node scripts/ensure-clerk-convex-template.mjs",
     "categories:fiverr:print": "node scripts/seed-fiverr-marketplace-categories.mjs --dry-run",
     "categories:fiverr:print:nl": "node scripts/seed-fiverr-marketplace-categories.mjs --dry-run --locale=nl",
