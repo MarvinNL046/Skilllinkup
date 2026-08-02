@@ -29,6 +29,7 @@
 .sidebar[data-collapsed="true"] { padding-inline: 10px; }
 .sidebar[data-collapsed="true"] .brandRow { padding: 0; }
 .sidebar[data-collapsed="true"] .brand { width: 44px; min-height: 42px; flex: 0 0 42px; padding: 8px 7px; }
+.sidebar[data-collapsed="true"] .collapse { right: 10px; }
 .sidebar[data-collapsed="true"] .fullLogo { display: none; }
 .sidebar[data-collapsed="true"] .markLogo { display: block !important; width: 158px; transform: translateX(0); }
 .sidebar[data-collapsed="true"] .navItem { justify-content: center; padding: 0; }

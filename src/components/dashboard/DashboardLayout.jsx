@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import useConvexUser from "@/hook/useConvexUser";
 import DashboardHeader from "./header/DashboardHeader";
 import DashboardSidebar from "./sidebar/DashboardSidebar";
-import dashboardSidebarStore from "@/store/dashboardSidebarStore";
+import dashboardSidebarStore, { useHydratedSidebarCollapsed } from "@/store/dashboardSidebarStore";
 
 /**
  * Dashboard app-shell — full-width layout, NOT a centered marketing
@@ -25,7 +25,7 @@ export default function DashboardLayout({ children, maxWidth = "full" }) {
   const router = useRouter();
   const pathname = usePathname();
   const { convexUser, isLoaded, isClerkSignedIn } = useConvexUser();
-  const collapsed = dashboardSidebarStore((s) => s.collapsed);
+  const collapsed = useHydratedSidebarCollapsed();
   const mobileOpen = dashboardSidebarStore((s) => s.mobileOpen);
   const closeMobile = dashboardSidebarStore((s) => s.closeMobile);
   useEffect(() => {
