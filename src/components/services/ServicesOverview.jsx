@@ -74,14 +74,14 @@ const trending = [
 ];
 
 const faqs = [
-  ["What does it cost to request a service?", "Requesting a service is free. You only pay when you hire a professional and agree on the scope."],
+  ["What does it cost to request a service?", "Requesting a service is free during beta. Skilllinkup does not collect, hold or release payment."],
   ["Can I compare several professionals?", "Yes. Save profiles, review offers and compare experience, ratings and pricing before deciding."],
   ["How do payments work during beta?", "Skilllinkup does not collect or hold payments during the free private beta. Listings still show prices to help agree scope."],
   ["What if I am not satisfied with the result?", "Start with the agreed revision process. If needed, Skilllinkup support can help both parties find a fair solution."],
   ["Can I cancel a service?", "Cancellation terms depend on the stage of the work and the agreement made with the professional."],
   ["How do chat and communication work?", "Keep project messages, files and agreements together in your Skilllinkup workspace."],
   ["How do I know a professional is trustworthy?", "Look for verified profiles, completed work, recent reviews and transparent service terms."],
-  ["Can my company receive an invoice?", "Yes. Business accounts receive clear payment records and invoices for completed services."],
+  ["Can my company receive an invoice?", "Not from Skilllinkup during the free private beta because the platform does not process payments. Invoice policy will be published before payments are enabled."],
 ];
 
 function SectionHeader({ title, href, link }) {
@@ -98,9 +98,9 @@ function ProfessionalCard({ professional, compact = false }) {
     <Link className={compact ? styles.compactProfessional : styles.professionalCard} href={compact ? "/online/freelancers" : "/local"}>
       <Image src={professional.image} alt="" width={compact ? 58 : 180} height={compact ? 58 : 128} />
       <span>
-        <strong>{professional.name}<BadgeCheck size={14} /></strong>
+        <strong>{professional.name}</strong>
         <small>{professional.role}</small>
-        <em><Star size={12} fill="currentColor" /> {professional.rating}</em>
+        <em>Illustrative profile</em>
         {!compact ? <small><MapPin size={12} /> {professional.city}</small> : null}
         <b>from {professional.price}</b>
       </span>
@@ -122,7 +122,7 @@ export default function ServicesOverview() {
               <p>From web design and marketing to trusted help at home. Discover skilled professionals for every kind of project.</p>
             </div>
             <div className={styles.heroProof}>
-              <article><UsersRound size={27} /><strong>25,000+</strong><span>Active professionals</span></article>
+              <article><UsersRound size={27} /><strong>3 products</strong><span>Online · Local · Jobs</span></article>
               <article><ShieldCheck size={27} /><strong>Clear agreements</strong><span>Scope & approvals recorded</span></article>
               <article><MessageCircleMore size={27} /><strong>Clear agreements</strong><span>Everything in one place</span></article>
             </div>
@@ -141,26 +141,26 @@ export default function ServicesOverview() {
       </section>
 
       <section className={styles.section}>
-        <SectionHeader title="Popular services" href="/online/services" link="View all services" />
-        <div className={styles.serviceGrid}>{popularServices.map((service) => <Link className={styles.serviceCard} href={service.href} key={service.title}><span className={`${styles.serviceImage} ${styles[service.image]}`} /><strong>{service.title}</strong><small>from {service.price}</small><em><Star size={13} fill="currentColor" /> {service.rating} <span>({service.reviews})</span></em></Link>)}</div>
+        <SectionHeader title="Illustrative service examples" href="/online/services" link="View approved services" />
+        <div className={styles.serviceGrid}>{popularServices.map((service) => <Link className={styles.serviceCard} href={service.href} key={service.title}><span className={`${styles.serviceImage} ${styles[service.image]}`} /><strong>{service.title}</strong><small>example scope from {service.price}</small><em>Product preview</em></Link>)}</div>
       </section>
 
       <section className={styles.section}>
-        <SectionHeader title="Featured near you" href="/local" link="View local professionals" />
+        <SectionHeader title="Example profiles near you" href="/local" link="View approved professionals" />
         <div className={styles.cityTabs}><Link className={styles.cityActive} href="/local">All cities</Link>{["Amsterdam","Rotterdam","Utrecht","Eindhoven","The Hague"].map((city) => <Link href={`/local?city=${encodeURIComponent(city)}`} key={city}>{city}</Link>)}</div>
         <div className={styles.professionalGrid}>{localProfessionals.map((professional) => <ProfessionalCard professional={professional} key={professional.name} />)}</div>
       </section>
 
       <section className={styles.section}>
-        <SectionHeader title="Online professionals" href="/online/freelancers" link="View online professionals" />
+        <SectionHeader title="Example online profiles" href="/online/freelancers" link="View approved professionals" />
         <div className={styles.onlineGrid}>{onlineProfessionals.map((professional) => <ProfessionalCard professional={professional} compact key={professional.name} />)}</div>
       </section>
 
       <section className={`${styles.section} ${styles.processSection}`}>
         <div className={styles.centerTitle}><span className={styles.eyebrow}>Simple from start to finish</span><h2>Choose the right professional</h2></div>
         <div className={styles.processWrap}>
-          <Image src="/images/skilllinkup-home/how-skilllinkup-works-v1.png" alt="Post your request, compare professionals and work securely together" width={1536} height={648} />
-          <div className={styles.processSteps}><article><b>1</b><strong>Post your request</strong><p>Tell us what you need and receive relevant matches.</p></article><article><b>2</b><strong>Compare & choose</strong><p>Review profiles, offers, experience and ratings.</p></article><article><b>3</b><strong>Work securely</strong><p>Agree on the details, pay safely and keep everything together.</p></article></div>
+          <Image src="/images/skilllinkup-home/how-skilllinkup-works-v1.png" alt="Post your request, compare professionals and record the collaboration" width={1536} height={648} />
+          <div className={styles.processSteps}><article><b>1</b><strong>Post your request</strong><p>Tell us what you need and receive relevant matches.</p></article><article><b>2</b><strong>Compare & choose</strong><p>Review profiles, offers, experience and ratings.</p></article><article><b>3</b><strong>Work with clarity</strong><p>Agree the scope and keep messages, files and approval together.</p></article></div>
         </div>
       </section>
 

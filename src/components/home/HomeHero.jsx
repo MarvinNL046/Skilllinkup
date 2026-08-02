@@ -19,10 +19,10 @@ const trustItems = [
 ];
 
 const stats = [
-  { Icon: Users, value: "70,000+", label: "Online & local professionals" },
-  { Icon: BriefcaseBusiness, value: "150,000+", label: "Projects and real jobs" },
-  { Icon: Star, value: "4.8 / 5", label: "Average marketplace rating" },
-  { Icon: Globe2, value: "Worldwide", label: "Remote and near you" },
+  { Icon: Users, value: "One account", label: "Multiple professional roles" },
+  { Icon: BriefcaseBusiness, value: "3 products", label: "Online · Local · Jobs" },
+  { Icon: ShieldCheck, value: "Free beta", label: "No platform payments" },
+  { Icon: Globe2, value: "English-first", label: "Online launches worldwide" },
 ];
 
 export default function HomeHero() {
@@ -99,7 +99,7 @@ export default function HomeHero() {
       <section className={styles.stats} aria-label="Marketplace statistics">
         {stats.map(({ Icon, value, label }) => (
           <div className={styles.statItem} key={value}>
-            <Icon fill={value === "4.8 / 5" ? "currentColor" : "none"} />
+            <Icon />
             <span>
               <strong>{value}</strong>
               <small>{label}</small>

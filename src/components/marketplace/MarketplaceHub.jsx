@@ -123,7 +123,7 @@ export default function MarketplaceHub({ config }) {
 
       <section className={`${styles.container} ${styles.section}`}>
         <header className={styles.sectionHeader}>
-          <div><span className={styles.eyebrow}>{config.highlightEyebrow}</span><h2>{config.highlightTitle}</h2></div>
+          <div><span className={styles.eyebrow}>{config.highlightEyebrow}</span><h2>{config.highlightTitle}</h2><p>Illustrative product examples — availability and inventory appear only when approved listings are live.</p></div>
         </header>
         <div className={styles.highlightGrid}>
           {config.highlights.map((item) => (
@@ -180,15 +180,14 @@ export default function MarketplaceHub({ config }) {
       <section className={styles.storySection}>
         <div className={styles.container}>
           <header className={styles.centerHeader}>
-            <span className={styles.eyebrow}>Trusted by people doing real work</span>
+            <span className={styles.eyebrow}>Illustrative product scenarios</span>
             <h2>{config.testimonialTitle}</h2>
           </header>
           <div className={styles.testimonials}>
             {config.testimonials.map((item) => (
               <article key={item.name}>
-                <div className={styles.stars}>{[1,2,3,4,5].map((star) => <Star key={star} />)}</div>
-                <blockquote>“{item.quote}”</blockquote>
-                <footer><span>{item.initials}</span><strong>{item.name}<small>{item.role}</small></strong></footer>
+                <blockquote>{item.quote}</blockquote>
+                <footer><span>{item.initials}</span><strong>{item.role}<small>Example journey · not a testimonial</small></strong></footer>
               </article>
             ))}
           </div>

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, BriefcaseBusiness, Globe2, Heart, MapPin, Star, Wrench } from "lucide-react";
+import { ArrowRight, BriefcaseBusiness, Globe2, MapPin, Wrench } from "lucide-react";
 import PopularServices from "./PopularServices";
 import styles from "./WorldwideHome.module.css";
 
@@ -11,10 +11,10 @@ const products = [
 ];
 
 const professionals = [
-  { name: "Adaeze Okafor", role: "Social media strategist", place: "Online", image: "/images/skilllinkup-home/professional-adaeze-v1.png", rating: "5.0", reviews: 56 },
-  { name: "Yuki Tanaka", role: "Full-stack developer", place: "Tokyo, Japan", image: "/images/skilllinkup-home/professional-yuki-v1.png", rating: "4.9", reviews: 38 },
-  { name: "Lucas Ferreira", role: "Product designer", place: "São Paulo, Brazil", image: "/images/skilllinkup-home/professional-lucas-v1.png", rating: "5.0", reviews: 46 },
-  { name: "Sarah Johnson", role: "Brand copywriter", place: "Online", image: "/images/skilllinkup-home/professional-sarah-v1.png", rating: "4.9", reviews: 29 },
+  { name: "Adaeze", role: "Social media strategist", place: "Online", image: "/images/skilllinkup-home/professional-adaeze-v1.png" },
+  { name: "Yuki", role: "Full-stack developer", place: "Tokyo, Japan", image: "/images/skilllinkup-home/professional-yuki-v1.png" },
+  { name: "Lucas", role: "Product designer", place: "São Paulo, Brazil", image: "/images/skilllinkup-home/professional-lucas-v1.png" },
+  { name: "Sarah", role: "Brand copywriter", place: "Online", image: "/images/skilllinkup-home/professional-sarah-v1.png" },
 ];
 
 export default function MarketplaceShowcase() {
@@ -35,13 +35,12 @@ export default function MarketplaceShowcase() {
       <PopularServices />
 
       <section className={`${styles.section} ${styles.talentSection}`}>
-        <header className={styles.sectionHeading}><div><span className={styles.eyebrow}>Trusted by clients worldwide</span><h2>Top-rated professionals</h2></div><Link href="/online/freelancers">View all professionals <ArrowRight size={16} /></Link></header>
+        <header className={styles.sectionHeading}><div><span className={styles.eyebrow}>Illustrative product preview</span><h2>Professionals you could discover</h2></div><Link href="/online/freelancers">View live professionals <ArrowRight size={16} /></Link></header>
         <div className={styles.professionalGrid}>
           {professionals.map((person) => (
             <article className={styles.professionalCard} key={person.name}>
               <Image src={person.image} alt={person.name} width={66} height={66} unoptimized />
-              <div className={styles.professionalInfo}><h3>{person.name}<BadgeCheck size={14} aria-label="Verified professional" /></h3><p>{person.role}</p><div><span><Star size={12} fill="currentColor" />{person.rating} <small>({person.reviews})</small></span><span><MapPin size={12} />{person.place}</span></div></div>
-              <button type="button" aria-label={`Save ${person.name}`}><Heart size={18} /></button>
+              <div className={styles.professionalInfo}><h3>{person.name}</h3><p>{person.role}</p><div><span>Example profile</span><span><MapPin size={12} />{person.place}</span></div></div>
             </article>
           ))}
         </div>

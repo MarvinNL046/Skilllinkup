@@ -36,6 +36,7 @@ const demoProfessionals = [
 const ratingOptions = [5, 4, 3];
 
 function normalizeProfessional(person, index) {
+  const isPreview = person.id?.toString().startsWith("demo-") || false;
   return {
     ...person,
     id: person._id || person.id || `professional-${index}`,
@@ -49,8 +50,9 @@ function normalizeProfessional(person, index) {
     language: person.language || "English",
     tags: person.tags || [],
     img: person.img || "/images/team/default-avatar.svg",
-    verified: person.level === "top-rated" || person.level === "pro" || Boolean(person.isVerified),
-    profileHref: person.id?.toString().startsWith("demo-") ? "/freelancer" : `/online/freelancer/${person.slug || person._id || person.id}`,
+    isPreview,
+    verified: !isPreview && Boolean(person.isVerified),
+    profileHref: isPreview ? "/online/freelancer/demo" : `/online/freelancer/${person.slug || person._id || person.id}`,
   };
 }
 
@@ -83,6 +85,7 @@ export default function FreelancerDirectory() {
   }, [convexProfessionals]);
 
   const isLoading = convexProfessionals === undefined && !showDevelopmentProfiles;
+  const isDevelopmentPreview = process.env.NODE_ENV === "development" && showDevelopmentProfiles && !convexProfessionals?.length;
   const professionals = useMemo(() => {
     const source = convexProfessionals !== undefined && convexProfessionals.length > 0
       ? convexProfessionals
@@ -186,7 +189,7 @@ export default function FreelancerDirectory() {
 
           <div className={styles.resultsMain}>
             <div className={styles.resultsToolbar}>
-              <div><button type="button" className={styles.mobileFilterButton} onClick={() => setFiltersOpen(true)}><Filter size={17} />Filters</button><h2>{isLoading ? "Finding professionals…" : `${filtered.length} professionals found`}</h2><p>Profiles matched to your search and filters.</p></div>
+              <div><button type="button" className={styles.mobileFilterButton} onClick={() => setFiltersOpen(true)}><Filter size={17} />Filters</button><h2>{isLoading ? "Finding professionals…" : `${filtered.length} professionals found`}</h2><p>{isDevelopmentPreview ? "Illustrative development profiles — not live professionals." : "Live profiles matched to your search and filters."}</p></div>
               <div className={styles.toolbarActions}>
                 <label className={styles.sortSelect}><span className="sr-only">Sort results</span><select value={sort} onChange={(event) => setSort(event.target.value)}><option value="best-match">Best match</option><option value="most-reviewed">Most reviewed</option><option value="rate-low">Rate: low to high</option><option value="rate-high">Rate: high to low</option></select><ChevronDown size={15} /></label>
                 <div className={styles.viewToggle}><button type="button" className={view === "grid" ? styles.viewActive : ""} onClick={() => setView("grid")} aria-label="Grid view"><Grid2X2 size={17} /></button><button type="button" className={view === "list" ? styles.viewActive : ""} onClick={() => setView("list")} aria-label="List view"><List size={18} /></button></div>
@@ -229,7 +232,7 @@ function SwitchRow({ label, checked, onChange }) {
 function ProfessionalCard({ person, saved, onSave }) {
   return (
     <article className={`${styles.professionalCard} ${person.featured ? styles.featuredCard : ""}`}>
-      {person.featured && <span className={styles.featuredBadge}>Featured</span>}
+      {person.isPreview ? <span className={styles.featuredBadge}>Example profile</span> : person.featured && <span className={styles.featuredBadge}>Featured</span>}
       <div className={styles.portrait}><Image src={person.img} alt={person.name} fill unoptimized sizes="(max-width: 760px) 100vw, 180px" /></div>
       <div className={styles.cardContent}>
         <div className={styles.cardTop}><div>{person.verified && <span className={styles.verified}><BadgeCheck size={13} />Verified</span>}<h3>{person.name}</h3><span className={styles.profession}>{person.profession}</span></div><button type="button" className={saved ? styles.saved : ""} onClick={onSave} aria-label={saved ? `Remove ${person.name} from saved` : `Save ${person.name}`}><Heart size={20} fill={saved ? "currentColor" : "none"} /></button></div>

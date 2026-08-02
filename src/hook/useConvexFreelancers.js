@@ -16,6 +16,7 @@ function mapConvexFreelancer(fl, index) {
     price: fl.hourlyRate || 0,
     location: fl.locationCountry?.toLowerCase() || "remote",
     level: fl.isVerified ? "top-rated" : "new",
+    isVerified: fl.isVerified === true,
     language: fl.languages?.[0] || "",
     sort: "best-seller",
     title: fl.bio ? fl.bio.substring(0, 80) : "",

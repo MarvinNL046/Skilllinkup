@@ -17,7 +17,7 @@
   z-index: 55;
   align-self: start;
   height: 100dvh;
-  overflow: hidden;
+  overflow: visible;
   background: #062554;
 }
 .app-shell__workspace { display: flex; min-width: 0; min-height: 100dvh; flex-direction: column; }

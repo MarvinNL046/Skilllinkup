@@ -18,7 +18,7 @@ import { api } from "../../../../../../convex/_generated/api";
 //   2. If fully onboarded (charges_enabled), mark the profile in Convex as
 //      onboarding-complete and redirect to the dashboard with success=true.
 //   3. If onboarding is not yet complete, redirect back to the dashboard so
-//      the freelancer can restart it via the StripeConnectButton.
+//      the freelancer could restart it after the future payment-policy gate opens.
 // ---------------------------------------------------------------------------
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL);
@@ -113,7 +113,7 @@ export async function GET(request) {
       );
     } else {
       // Onboarding was started but not completed (user exited early).
-      // Redirect to payouts page where the StripeConnectButton lets them retry.
+      // Redirect to the payouts policy page; Connect stays disabled during beta.
       return NextResponse.redirect(
         `${baseUrl}/payouts?stripe_pending=true`
       );

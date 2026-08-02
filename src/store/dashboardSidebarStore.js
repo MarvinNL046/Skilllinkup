@@ -1,53 +1,25 @@
 "use client";
 import { create } from "zustand";
 
-const STORAGE_KEY = "dashboard-sidebar-collapsed";
-
-function readPersisted() {
-  if (typeof window === "undefined") return false;
-  try {
-    return window.localStorage.getItem(STORAGE_KEY) === "true";
-  } catch {
-    return false;
-  }
-}
-
-function persist(value) {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.setItem(STORAGE_KEY, value ? "true" : "false");
-  } catch {
-    /* ignore */
-  }
-}
-
 /**
  * Dashboard app-shell sidebar state. Two flags:
  *   collapsed  — desktop ≥1280px, user manually folded it to icon rail
  *   mobileOpen — <1024px drawer state
  *
- * collapsed persists to localStorage; mobileOpen is ephemeral.
+ * Both values are session-only. A deterministic initial value prevents the
+ * server and browser from rendering different dashboard trees during
+ * hydration. The collapse choice still survives client-side navigation.
  */
 const dashboardSidebarStore = create((set) => ({
-  // Keep the server and the browser's first render identical. The persisted
-  // preference is restored by DashboardLayout after hydration.
+  // Keep the server and the browser's first render identical.
   collapsed: false,
   mobileOpen: false,
 
-  hydrateCollapsed: () => set({ collapsed: readPersisted() }),
-
   toggleCollapsed: () =>
-    set((state) => {
-      const next = !state.collapsed;
-      persist(next);
-      return { collapsed: next };
-    }),
+    set((state) => ({ collapsed: !state.collapsed })),
 
   setCollapsed: (value) =>
-    set(() => {
-      persist(value);
-      return { collapsed: !!value };
-    }),
+    set({ collapsed: !!value }),
 
   openMobile:  () => set({ mobileOpen: true }),
   closeMobile: () => set({ mobileOpen: false }),

@@ -46,7 +46,7 @@ export default function CandidateApplications() {
           {applications.map(({ application, job }) => (
             <article key={application._id}>
               <div className={styles.companyIcon}><Building2 /></div>
-              <div className={styles.details}><span className={styles.status} data-status={application.status}>{labels[application.status] || application.status}</span><h2><Link href={`/jobs/job/${job.slug}`}>{job.title}</Link></h2><p>{job.company || "Verified company"}</p><div><span><MapPin />{job.workType === "remote" ? "Remote" : job.locationCity || job.workType || "Flexible"}</span><span><CalendarDays />Updated {new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(application.statusUpdatedAt)}</span></div></div>
+              <div className={styles.details}><span className={styles.status} data-status={application.status}>{labels[application.status] || application.status}</span><h2><Link href={`/jobs/job/${job.slug}`}>{job.title}</Link></h2><p>{job.company || "Company not provided"}</p><div><span><MapPin />{job.workType === "remote" ? "Remote" : job.locationCity || job.workType || "Flexible"}</span><span><CalendarDays />Updated {new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(application.statusUpdatedAt)}</span></div></div>
               <div className={styles.actions}><Link href={`/jobs/job/${job.slug}`}>View vacancy</Link>{withdrawable.has(application.status) ? <button type="button" onClick={() => handleWithdraw(application._id)}>Withdraw</button> : null}</div>
             </article>
           ))}

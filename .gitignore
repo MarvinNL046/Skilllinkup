@@ -61,6 +61,7 @@ scripts/test-*.js
 scripts/test-*.ts
 scripts/check-*.mjs
 scripts/verify-*.mjs
+!scripts/check-private-beta-copy.mjs
 !scripts/verify-environment.mjs
 !scripts/verify-hosted-release.mjs
 
