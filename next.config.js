@@ -1,5 +1,6 @@
 const createNextIntlPlugin = require("next-intl/plugin");
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
+const { version: appVersion } = require("./package.json");
 
 /** @type {import('next').NextConfig} */
 
@@ -46,6 +47,15 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
+  // Freeze non-secret release metadata into the artifact at build time. Vercel
+  // exposes its Git SHA and deployment URL during the build; inlining them
+  // keeps /api/health useful even if a runtime is later moved or restored.
+  env: {
+    SKILLLINKUP_APP_VERSION: appVersion,
+    SKILLLINKUP_RELEASE_SHA:
+      process.env.VERCEL_GIT_COMMIT_SHA || process.env.GITHUB_SHA || "",
+    SKILLLINKUP_DEPLOYMENT_URL: process.env.VERCEL_URL || "",
+  },
   images: {
     remotePatterns: [
       {

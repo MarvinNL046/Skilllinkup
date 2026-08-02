@@ -27,7 +27,7 @@ Fill names and contact methods before invitations are sent. One person may hold 
 
 ## Daily opening checks
 
-1. Verify `/api/health` returns HTTP 200 and `status: ok`.
+1. Verify `/api/health` returns HTTP 200 and `status: ok`, then match its version, full commit SHA and immutable Vercel deployment URL to the current release record.
 2. Review deployment and Convex errors without copying personal data into incident notes.
 3. Review open Trust & Safety reports, disputes and support tickets oldest-first.
 4. Review unmatched Online projects, unclaimed Local requests and Jobs without candidate activity.
@@ -49,7 +49,7 @@ Never request passwords, Clerk session tokens, full payment details or identity 
 2. Confirm whether the failure is frontend deployment, Clerk, Convex or an external integration.
 3. If a new deployment caused the issue, promote the recorded last-known-good deployment.
 4. Do not roll back the Convex schema independently when newer data may already exist; deploy a forward-compatible repair.
-5. Run anonymous route checks, `/api/health`, authentication and one workflow smoke before reopening.
+5. Run anonymous route checks, confirm `/api/health` identifies the promoted or restored artifact, then run authentication and one workflow smoke before reopening.
 6. Record cause, affected users, remediation and follow-up owner.
 
 ### Preview and promotion procedure
