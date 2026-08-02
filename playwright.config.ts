@@ -8,6 +8,9 @@ export default defineConfig({
   timeout: 30_000,
   use: {
     baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:3000",
+    ...(process.env.PLAYWRIGHT_CHANNEL
+      ? { channel: process.env.PLAYWRIGHT_CHANNEL }
+      : {}),
     trace: "on-first-retry",
   },
   globalSetup: "./e2e/global.setup.ts",

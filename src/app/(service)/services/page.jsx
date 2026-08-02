@@ -1,8 +1,7 @@
-import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import Footer14 from "@/components/footer/Footer14";
 import Header20 from "@/components/header/Header20";
-import Listing6 from "@/components/section/Listing6";
+import ServicesOverview from "@/components/services/ServicesOverview";
 
 export async function generateMetadata() {
     const t = await getTranslations("pageMeta.services");
@@ -13,6 +12,7 @@ export async function generateMetadata() {
             title: t("title"),
             description: t("description"),
         },
+        alternates: { canonical: "/services" },
     };
 }
 
@@ -20,9 +20,7 @@ export default function page() {
     return (
         <>
             <Header20 />
-            <Suspense>
-                <Listing6 />
-            </Suspense>
+            <ServicesOverview />
             <Footer14 />
         </>
     );

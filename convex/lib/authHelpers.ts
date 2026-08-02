@@ -13,16 +13,25 @@ export async function requireAuthUser(
   const identity = await ctx.auth.getUserIdentity();
   if (!identity) throw new Error("Authentication required.");
 
-  const email = identity.email;
-  if (!email) throw new Error("Authentication required: no email in identity.");
-
   const user = await ctx.db
     .query("users")
-    .withIndex("by_email", (q) => q.eq("email", email))
+    .withIndex("by_stackAuthId", (q) => q.eq("stackAuthId", identity.subject))
     .first();
 
-  if (!user) throw new Error("User not found.");
+  if (!user) throw new Error("User not found. Complete account synchronization first.");
   return user;
+}
+
+/** Resolve the caller when present, while keeping public queries anonymous-safe. */
+export async function getOptionalAuthUser(
+  ctx: QueryCtx | MutationCtx
+): Promise<Doc<"users"> | null> {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) return null;
+  return await ctx.db
+    .query("users")
+    .withIndex("by_stackAuthId", (q) => q.eq("stackAuthId", identity.subject))
+    .first();
 }
 
 /**

@@ -1,34 +1,104 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Skilllinkup
 
-## Getting Started
+Skilllinkup is an English-first marketplace with three connected products:
 
-First, run the development server:
+- **Online** — hire freelancers worldwide, buy scoped services or publish projects.
+- **Local** — request quotes from nearby professionals, initially focused on Rotterdam–The Hague.
+- **Jobs** — publish and discover Dutch and remote European company vacancies.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+The application uses Next.js App Router, Clerk identity and Convex as the marketplace source of truth. The private beta is free: paid Checkout, credit purchases and real escrow movement are intentionally feature-gated.
+
+## Local setup
+
+Requirements: Node.js 20+, npm and access to the Skilllinkup Clerk and Convex development instances.
+
+1. Copy `.env.example` to `.env.local` and add development credentials.
+2. Install dependencies with `npm install`.
+3. Validate and push Convex functions with:
+
+   ```powershell
+   $env:CONVEX_AGENT_MODE='anonymous'
+   npx convex dev --once
+   ```
+
+4. Start the shared development server:
+
+   ```powershell
+   npm run dev -- -p 3010
+   ```
+
+5. Open [http://localhost:3010](http://localhost:3010).
+
+Never commit `.env.local`, Clerk secrets, Convex deployment credentials or generated smoke fixture IDs.
+
+## Verification
+
+Run the same foundation gates before handing work over:
+
+```powershell
+npx tsc --noEmit
+$env:CONVEX_AGENT_MODE='anonymous'; npx convex dev --once
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Authenticated end-to-end tests require dedicated Clerk test accounts and `INTERNAL_EMAIL_SECRET`:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```powershell
+npm run e2e:provision
+npm run e2e:seed
+npm run e2e:smoke
+npm run e2e:cleanup
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+`e2e:provision` refuses non-development Clerk keys and creates five isolated marketplace, Local-client, Jobs-company, admin and outsider QA identities. Seed and cleanup must always be paired. The scripts fail closed when the internal server secret is missing; cleanup restores temporary admin state, removes seeded and Playwright-generated records, and runs a server-side zero-residue verification before deleting the manifest.
 
-## Learn More
+Before a hosted release, validate the environment separation and then the deployed candidate:
 
-To learn more about Next.js, take a look at the following resources:
+```powershell
+npm run env:verify -- --environment=preview
+npm run release:verify-hosted -- --base-url=https://your-preview-url.vercel.app
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Production requires Clerk live keys and a Convex `prod:` deployment; Preview requires isolated Clerk test keys and a Convex `dev:` deployment. The hosted verifier also proves that private-beta payment routes remain quarantined and internal endpoints reject forged credentials.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Canonical product routes
 
-## Deploy on Vercel
+- `/online`, `/services`, `/online/freelancers`, `/projects`
+- `/local`, `/local/craftsmen`, `/local/quote-requests`, `/local/request-quote`
+- `/jobs`, `/jobs/browse`, `/jobs/companies`
+- `/dashboard` plus role-aware workflow routes
+- `/admin/disputes` and `/admin/trust` for recovery operations
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The complete alias and redirect policy is in `docs/CANONICAL_ROUTE_MAP.md`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Private-beta rules
+
+- Online service packages and accepted proposals create `beta_no_payment` workspaces.
+- Local leads cost zero credits and accepted quotes create appointment workspaces.
+- Jobs applications never require payment.
+- `/api/stripe/checkout` and `/api/stripe/credits` return `503 PRIVATE_BETA_FREE`.
+- Listed prices are scope references used to validate future pricing.
+
+Do not enable live Stripe flows until commission, protected-payment structure, refunds, VAT/tax, merchant responsibility, dispute responsibility and country scope are approved.
+
+## Project documentation
+
+- `docs/MASTER_PROJECT_PLAN.md` — product strategy and phased delivery plan.
+- `docs/TECHNICAL_AUDIT.md` — verified state, resolved risks and remaining engineering work.
+- `docs/product-page-inventory-and-seo-roadmap.md` — page inventory and SEO sequence.
+- `docs/PRIVATE_BETA_LAUNCH_CHECKLIST.md` — operational release gates.
+- `docs/PRIVATE_BETA_KPI_CONTRACT.md` — metric definitions, targets and stop conditions.
+- `docs/PRIVATE_BETA_COHORT_PLAN.md` — phased supply-first cohort design.
+- `docs/PRIVATE_BETA_OPERATIONS_RUNBOOK.md` — daily operation, incident and rollback procedure.
+- `docs/BETA_OPERATIONS_LOG_TEMPLATE.md` — privacy-safe daily and weekly operating record.
+- `docs/SUPPORT_RESPONSE_TEMPLATES.md` — English-first support and safety responses.
+- `docs/MASTER_PLAN_COMPLETION_AUDIT.md` — requirement-by-requirement completion evidence and open gates.
+
+## Architecture guardrails
+
+- Clerk identifies users; Convex stores roles, permissions and product state.
+- Authorize by Clerk subject/Convex user ID, never by a client-provided email.
+- Use indexed and bounded Convex reads; growing directories must paginate.
+- Every product mutation validates ownership and a server-side status transition.
+- Store new files as Convex storage IDs and resolve URLs at read time.
+- Preserve the shared premium light-theme design system and reusable components.

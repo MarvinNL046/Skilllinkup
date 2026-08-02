@@ -31,13 +31,6 @@ export default async function PricingPage() {
     { title: t("step3Title"), desc: t("step3Desc") },
   ];
 
-  const compare = [
-    { name: "SkillLinkup", seller: "3.5%", buyer: "3.5%", highlight: true },
-    { name: "Fiverr",        seller: "20%",  buyer: "5.5%" },
-    { name: "Upwork",        seller: "10%",  buyer: "5%" },
-    { name: "Freelancer.com", seller: "10%", buyer: "3%" },
-  ];
-
   return (
     <div style={{ background: "var(--bg)" }}>
       <Header20 />
@@ -105,7 +98,7 @@ export default async function PricingPage() {
                 marginBottom: "var(--space-3)",
               }}
             >
-              3.5% + 3.5%
+              Free beta
             </div>
             <p
               className="body-md"
@@ -183,110 +176,6 @@ export default async function PricingPage() {
                   </p>
                 </div>
               ))}
-            </div>
-          </div>
-
-          {/* Comparison */}
-          <div style={{ maxWidth: 760, margin: "0 auto var(--space-14)" }}>
-            <h2
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "var(--text-h3)",
-                fontWeight: 500,
-                letterSpacing: "-0.01em",
-                textAlign: "center",
-                marginBottom: "var(--space-8)",
-              }}
-            >
-              {t("compareTitle")}
-            </h2>
-            <div
-              className="card"
-              style={{ padding: 0, overflow: "hidden" }}
-            >
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead>
-                  <tr style={{ background: "var(--surface-2)" }}>
-                    <th
-                      style={{
-                        textAlign: "left",
-                        padding: "var(--space-4) var(--space-5)",
-                        fontSize: "var(--text-body-sm)",
-                        fontWeight: 600,
-                        color: "var(--text-primary)",
-                      }}
-                    >
-                      {t("platform")}
-                    </th>
-                    <th
-                      style={{
-                        padding: "var(--space-4) var(--space-5)",
-                        fontSize: "var(--text-body-sm)",
-                        fontWeight: 600,
-                        color: "var(--text-primary)",
-                      }}
-                    >
-                      {t("sellerFee")}
-                    </th>
-                    <th
-                      style={{
-                        padding: "var(--space-4) var(--space-5)",
-                        fontSize: "var(--text-body-sm)",
-                        fontWeight: 600,
-                        color: "var(--text-primary)",
-                      }}
-                    >
-                      {t("buyerFee")}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {compare.map((row) => (
-                    <tr
-                      key={row.name}
-                      style={{
-                        background: row.highlight ? "var(--success-50)" : "transparent",
-                        borderTop: "1px solid var(--border-subtle)",
-                      }}
-                    >
-                      <td
-                        style={{
-                          textAlign: "left",
-                          padding: "var(--space-4) var(--space-5)",
-                          fontWeight: row.highlight ? 600 : 500,
-                          color: "var(--text-primary)",
-                        }}
-                      >
-                        {row.name}
-                      </td>
-                      <td
-                        style={{
-                          padding: "var(--space-4) var(--space-5)",
-                          textAlign: "center",
-                          fontWeight: 500,
-                          color: row.highlight
-                            ? "var(--success-700)"
-                            : "var(--text-secondary)",
-                        }}
-                      >
-                        {row.seller}
-                      </td>
-                      <td
-                        style={{
-                          padding: "var(--space-4) var(--space-5)",
-                          textAlign: "center",
-                          fontWeight: 500,
-                          color: row.highlight
-                            ? "var(--success-700)"
-                            : "var(--text-secondary)",
-                        }}
-                      >
-                        {row.buyer}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
             </div>
           </div>
 

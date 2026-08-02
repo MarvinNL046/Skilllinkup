@@ -10,10 +10,15 @@ export const CREDIT_PACKAGES = [
 
 export type CreditPackageId = (typeof CREDIT_PACKAGES)[number]["id"];
 
+// Commercial policy for the current launch phase. Keep one backend source of
+// truth so UI copy, lead claims and Stripe activation cannot drift apart.
+export const PRIVATE_BETA_FREE = true;
+
 export function getLeadCreditCost(
   budgetIndication: string | undefined,
   claimType: "shared" | "exclusive"
 ): number {
+  if (PRIVATE_BETA_FREE) return 0;
   let baseCost: number;
 
   if (!budgetIndication) {

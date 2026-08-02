@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Receipt } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const ACTIVE_STATUSES = ["pending", "in_progress", "revision_requested"];
+const ACTIVE_STATUSES = ["pending", "active", "in_progress", "revision_requested"];
 
 function filterOrders(orders, tab) {
   if (!orders) return [];

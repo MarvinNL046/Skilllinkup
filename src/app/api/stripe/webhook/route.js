@@ -34,15 +34,16 @@ import { api } from "../../../../../convex/_generated/api";
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL);
 const SERVER_SECRET = process.env.INTERNAL_EMAIL_SECRET;
 
-// Next.js App Router requires raw body access for signature verification.
-// This config disables the automatic body parser so we can read raw bytes.
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export async function POST(request) {
+  return NextResponse.json(
+    {
+      error: "Stripe webhooks are disabled during the free private beta.",
+      code: "PRIVATE_BETA_FREE",
+    },
+    { status: 503 }
+  );
+
+  /* Live webhook processing is deliberately quarantined until the payment policy gate opens.
   // Guard: Stripe not configured yet.
   if (!stripe) {
     console.error("[stripe/webhook] Stripe not configured.");
@@ -121,6 +122,7 @@ export async function POST(request) {
       { status: 500 }
     );
   }
+  */
 }
 
 // ---------------------------------------------------------------------------

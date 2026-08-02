@@ -9,7 +9,6 @@ import { useUser, useClerk } from "@clerk/nextjs";
 import WaitlistButton from "@/components/ui/WaitlistButton";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import SearchBarWithDropdown from "@/components/ui/SearchBarWithDropdown";
-import ThemeToggle from "@/components/ui/ThemeToggle";
 import { useTranslations } from "next-intl";
 import { LogOut } from "lucide-react";
 
@@ -46,7 +45,7 @@ export default function Header20() {
             <Image
               width={156}
               height={36}
-              src="/images/logo/skilllinkup-transparant-rozepunt.webp"
+              src="/images/logo/skilllinkup-template-logo-v2.png"
               alt="SkillLinkup"
               priority
             />
@@ -65,8 +64,6 @@ export default function Header20() {
           <span className="hidden md:inline-flex">
             <LanguageSwitcher />
           </span>
-          <ThemeToggle />
-
           {isSignedIn ? (
             <>
               <Link

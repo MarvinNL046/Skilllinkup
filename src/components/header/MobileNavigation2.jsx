@@ -39,16 +39,17 @@ export default function MobileNavigation2() {
           gap: "var(--space-3)",
         }}
       >
-        <Link href="/" aria-label="SkillLinkup home" style={{ flexShrink: 0 }}>
+        <Link href="/" aria-label="SkillLinkup home" className="mobile-nav-brand" style={{ flexShrink: 0 }}>
           <Image
             height={32}
             width={140}
-            src="/images/logo/skilllinkup-transparant-rozepunt.webp"
+            src="/images/logo/skilllinkup-template-logo-v2.png"
             alt="SkillLinkup"
+            style={{ width: 140, height: "auto" }}
           />
         </Link>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+        <div className="mobile-nav-actions" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
           <LanguageSwitcher />
           {isSignedIn ? (
             <Link href="/dashboard" className="avatar" aria-label={t("dashboard")}>
@@ -64,7 +65,7 @@ export default function MobileNavigation2() {
               )}
             </Link>
           ) : (
-            <WaitlistButton className="btn btn--primary btn--sm" />
+            <WaitlistButton className="btn btn--primary btn--sm mobile-nav-signup" />
           )}
           <button
             type="button"

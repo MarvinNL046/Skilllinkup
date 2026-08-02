@@ -22,6 +22,11 @@ const _saved        = { id: 18, name: "Saved",            icon: "flaticon-like",
 const _quoteReqs    = { id: 19, name: "My Quote Requests", icon: "flaticon-document",    path: "/dashboard/quote-requests" };
 const _rewards      = { id: 20, name: "Rewards",           icon: "flaticon-star",         path: "/dashboard/rewards" };
 const _feedback     = { id: 21, name: "Feedback",          icon: "flaticon-chat-1",       path: "/dashboard/feedback" };
+const _applications = { id: 22, name: "My Applications",   icon: "flaticon-briefcase",    path: "/dashboard/applications" };
+const _createJob    = { id: 23, name: "Post a Job",         icon: "flaticon-document",     path: "/create-job", subtitle: "Publish a verified company vacancy" };
+const _requestLocal = { id: 24, name: "Request Local Quotes", icon: "flaticon-place",       path: "/local/request-quote", subtitle: "Describe a local job once" };
+const _support      = { id: 25, name: "Help & Support",      icon: "flaticon-chat-1",      path: "/dashboard/support", subtitle: "Track questions and safety issues" };
+const _privacy      = { id: 26, name: "Data & Privacy",      icon: "flaticon-document",    path: "/dashboard/privacy", subtitle: "Export data or request deletion" };
 
 // ============================================================
 // World-specific navigation: dashboardNavigation[role][world]
@@ -32,34 +37,55 @@ export const dashboardNavigation = {
     online: {
       start:    [_dashboard, _manageServ, _addServ, _myProjects, _createProj, _proposals, _orders],
       organize: [_message, _reviews, _payouts, _statements, _invoice],
-      account:  [_profile, _feedback],
+      account:  [_profile, _privacy, _support, _feedback],
     },
     local: {
       start:    [_dashboard, _leads, _credits, _orders],
       organize: [_message, _reviews, _payouts],
-      account:  [_profile, _feedback],
+      account:  [_profile, _privacy, _support, _feedback],
     },
     jobs: {
       start:    [_dashboard, _manageJobs, _proposals, _orders],
       organize: [_message, _reviews, _payouts],
-      account:  [_profile, _feedback],
+      account:  [_profile, _privacy, _support, _feedback],
     },
   },
   client: {
     online: {
       start:    [_dashboard, _myProjects, _createProj, _manageServ, _addServ, _orders, _saved],
       organize: [_message, _reviews, _rewards],
-      account:  [_profile, _feedback],
+      account:  [_profile, _privacy, _support, _feedback],
     },
     local: {
-      start:    [_dashboard, _orders, _saved],
+      start:    [_dashboard, _requestLocal, _orders, _saved],
       organize: [_message, _reviews, _rewards],
-      account:  [_profile, _feedback],
+      account:  [_profile, _privacy, _support, _feedback],
     },
     jobs: {
       start:    [_dashboard, _myProjects, _createProj, _orders, _saved],
       organize: [_message, _reviews, _rewards],
-      account:  [_profile, _feedback],
+      account:  [_profile, _privacy, _support, _feedback],
+    },
+  },
+  local_professional: {
+    local: {
+      start:    [_dashboard, _leads, _credits, _orders],
+      organize: [_message, _reviews, _payouts],
+      account:  [_profile, _privacy, _support, _feedback],
+    },
+  },
+  candidate: {
+    jobs: {
+      start:    [_dashboard, _applications, _saved],
+      organize: [_message],
+      account:  [_profile, _privacy, _support, _feedback],
+    },
+  },
+  company: {
+    jobs: {
+      start:    [_dashboard, _manageJobs, _createJob],
+      organize: [_message],
+      account:  [_profile, _privacy, _support, _feedback],
     },
   },
 };
@@ -80,7 +106,7 @@ export const clientNavigation = [
 export const dasboardNavigation = [
   _dashboard, _proposals, _orders, _saved, _message, _reviews,
   _invoice, _payouts, _statements, _manageServ, _manageJobs,
-  _myProjects, _addServ, _createProj, _profile, _logout,
+  _myProjects, _addServ, _createProj, _createJob, _profile, _logout,
 ];
 
 export const invoice = [

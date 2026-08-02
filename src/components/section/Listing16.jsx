@@ -65,7 +65,7 @@ export default function Listing16() {
     return (
       <div className="text-center py-5">
         <div className="spinner-border text-thm" role="status">
-          <span className="visually-hidden">{t("loading")}</span>
+          <span className="visually-hidden">Loading jobs</span>
         </div>
       </div>
     );

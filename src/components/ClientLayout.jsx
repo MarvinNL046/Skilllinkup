@@ -5,8 +5,8 @@ import BottomToTop from "@/components/button/BottomToTop";
 import NavSidebar from "@/components/sidebar/NavSidebar";
 import Providers from "@/components/Providers";
 import ExitIntentPopup from "@/components/ui/ExitIntentPopup";
-import AnnouncementBar from "@/components/ui/AnnouncementBar";
 import CookieConsent from "@/components/ui/CookieConsent";
+import RouteProgress from "@/components/ui/RouteProgress";
 import { Toaster } from "sonner";
 
 export default function ClientLayout({ children }) {
@@ -64,11 +64,11 @@ export default function ClientLayout({ children }) {
 
   return (
     <Providers>
+      <RouteProgress />
       <a href="#main-content" className="skip-nav">
         Skip to content
       </a>
-      <AnnouncementBar />
-      <main id="main-content">{children}</main>
+      <div id="main-content">{children}</div>
 
       <BottomToTop />
 

@@ -13,9 +13,8 @@ export const list = query({
 
     return await ctx.db
       .query("skills")
-      .withIndex("by_slug_locale", (q) => q)
-      .filter((q) => q.eq(q.field("locale"), locale))
-      .collect();
+      .withIndex("by_locale", (q) => q.eq("locale", locale))
+      .take(500);
   },
 });
 

@@ -1,24 +1,21 @@
 "use client";
-import React from "react";
+
 import Image from "next/image";
 import Link from "next/link";
-import MobileNavigation2 from "./MobileNavigation2";
-import NotificationBell from "./NotificationBell";
-import { useUser, useClerk } from "@clerk/nextjs";
-import WaitlistButton from "@/components/ui/WaitlistButton";
-import SearchBarWithDropdown from "@/components/ui/SearchBarWithDropdown";
+import { useClerk, useUser } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
-import Navigation from "./Navigation";
-import ThemeToggle from "@/components/ui/ThemeToggle";
 import { LogOut } from "lucide-react";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import SearchBarWithDropdown from "@/components/ui/SearchBarWithDropdown";
+import MobileNavigation2 from "./MobileNavigation2";
 
-/**
- * Header — redesigned 2026-04-24 against the SkillLinkup Design System.
- * Uses the `.nav` component class (warm neutral bg with backdrop blur,
- * subtle border, token-driven spacing). Keeps Clerk sign-in logic for
- * admin/existing users; public visitors see a single WaitlistButton CTA.
- */
+const NAV_ITEMS = [
+  { label: "Online Services", href: "/services" },
+  { label: "Local Services", href: "/local" },
+  { label: "Jobs", href: "/jobs" },
+  { label: "For businesses", href: "/jobs/companies" },
+];
+
 export default function Header19() {
   const { user, isSignedIn } = useUser();
   const { signOut } = useClerk();
@@ -27,90 +24,117 @@ export default function Header19() {
   return (
     <>
       <header
-        className="nav hidden xl:flex"
+        className="hidden xl:flex"
         style={{
           position: "sticky",
           top: 0,
           zIndex: 50,
-          padding: "var(--space-3) var(--space-6)",
-          gap: "var(--space-6)",
+          height: 72,
+          alignItems: "center",
+          background: "rgba(255,255,255,.96)",
+          borderBottom: "1px solid #eef0f2",
+          backdropFilter: "blur(14px)",
+          fontFamily: "var(--font-inter), system-ui, sans-serif",
         }}
       >
-        {/* Brand + primary nav */}
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-6)", minWidth: 0 }}>
-          <Link
-            href="/"
-            className="nav__brand"
-            style={{ flexShrink: 0 }}
-            aria-label="SkillLinkup home"
-          >
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 1472,
+            margin: "0 auto",
+            padding: "0 40px",
+            display: "grid",
+            gridTemplateColumns: "190px minmax(390px, 1fr) auto",
+            alignItems: "center",
+            gap: 24,
+          }}
+        >
+          <Link href="/" aria-label="Skilllinkup home" style={{ display: "inline-flex", width: 174 }}>
             <Image
-              width={156}
-              height={36}
-              src="/images/logo/skilllinkup-transparant-rozepunt.webp"
-              alt="SkillLinkup"
+              width={736}
+              height={168}
+              src="/images/logo/skilllinkup-template-logo-v2.png"
+              alt="Skilllinkup"
               priority
+              style={{ width: 174, height: "auto" }}
             />
           </Link>
 
-          <div className="hidden xl:block" style={{ minWidth: 0 }}>
-            <Navigation />
-          </div>
-        </div>
-
-        {/* Right side: search + language + CTA */}
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", flexShrink: 0 }}>
-          <div className="hidden lg:block" style={{ width: 280 }}>
-            <SearchBarWithDropdown placeholder={t("searchPlaceholder")} />
-          </div>
-
-          <span className="hidden md:inline-flex">
-            <LanguageSwitcher />
-          </span>
-          <ThemeToggle />
-
-          {isSignedIn ? (
-            <>
+          <nav aria-label="Primary navigation" style={{ display: "flex", justifyContent: "center", gap: "clamp(22px, 2.4vw, 40px)" }}>
+            {NAV_ITEMS.map((item) => (
               <Link
-                href="/dashboard"
-                className="btn btn--ghost btn--sm hidden md:inline-flex"
+                key={item.href}
+                href={item.href}
+                style={{
+                  color: "#10213f",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  textDecoration: "none",
+                  whiteSpace: "nowrap",
+                }}
               >
-                {t("dashboard")}
+                {item.label}
               </Link>
-              <span className="inline-flex items-center relative">
-                <NotificationBell />
-              </span>
-              <Link
-                href="/dashboard"
-                className="avatar"
-                style={{ flexShrink: 0 }}
-                aria-label={user?.fullName || "Dashboard"}
-              >
-                {user?.imageUrl ? (
-                  <Image
-                    width={36}
-                    height={36}
-                    src={user.imageUrl}
-                    alt={user.fullName || "User"}
-                  />
-                ) : (
-                  <span>{(user?.firstName || "U").slice(0, 1)}</span>
-                )}
-              </Link>
-              <button
-                type="button"
-                className="btn btn--secondary btn--icon btn--sm"
-                onClick={() => signOut({ redirectUrl: "/" })}
-                aria-label={t("logout")}
-                title={t("logout")}
-              >
-                <LogOut size={16} />
-              </button>
-            </>
-          ) : (
-            // Pre-launch: single CTA — Clerk routes still reachable via URL.
-            <WaitlistButton className="btn btn--primary" />
-          )}
+            ))}
+          </nav>
+
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 14 }}>
+            <div style={{ width: 300 }}>
+              <SearchBarWithDropdown placeholder={t("searchPlaceholder")} navbar />
+            </div>
+            <LanguageSwitcher navbar />
+            {isSignedIn ? (
+              <>
+                <Link href="/dashboard" style={{ color: "#10213f", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
+                  Dashboard
+                </Link>
+                <Link href="/dashboard" aria-label={user?.fullName || "Account"} style={{ display: "inline-flex" }}>
+                  {user?.imageUrl ? (
+                    <Image width={38} height={38} src={user.imageUrl} alt={user.fullName || "Account"} style={{ borderRadius: "50%" }} />
+                  ) : (
+                    <span className="avatar">{(user?.firstName || "U").slice(0, 1)}</span>
+                  )}
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => signOut({ redirectUrl: "/" })}
+                  aria-label="Log out"
+                  style={{ border: 0, background: "transparent", color: "#10213f", cursor: "pointer", padding: 6 }}
+                >
+                  <LogOut size={18} />
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href="/login" style={{ color: "#10213f", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
+                  Log in
+                </Link>
+                <Link
+                  href="/register"
+                  style={{
+                    minWidth: 126,
+                    height: 44,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 9,
+                    backgroundColor: "#ff4f2e",
+                    backgroundImage: "url('/images/skilllinkup-patterns/coral-tiger-print-v1.png')",
+                    backgroundPosition: "center",
+                    backgroundSize: "165px 93px",
+                    color: "#fff",
+                    fontSize: 14,
+                    fontWeight: 700,
+                    textDecoration: "none",
+                    border: "1px solid #e9482b",
+                    boxShadow: "inset 0 1px 0 rgba(255,255,255,.36), 0 9px 20px rgba(255,75,43,.22)",
+                  }}
+                >
+                  Sign up
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </header>
       <MobileNavigation2 />

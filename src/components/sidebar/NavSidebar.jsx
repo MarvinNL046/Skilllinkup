@@ -193,7 +193,7 @@ export default function NavSidebar() {
               alt="SkillLinkup"
               width={148}
               height={34}
-              src="/images/logo/skilllinkup-transparant-rozepunt.webp"
+              src="/images/logo/skilllinkup-template-logo-v2.png"
             />
           </Link>
           <button

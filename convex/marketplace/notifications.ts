@@ -2,6 +2,18 @@ import { v } from "convex/values";
 import { query, internalMutation, mutation } from "../_generated/server";
 import { requireAuthUser, requireOwner } from "../lib/authHelpers";
 
+const notificationListItemValidator = v.object({
+  _id: v.id("notifications"),
+  _creationTime: v.number(),
+  userId: v.id("users"),
+  type: v.string(),
+  title: v.string(),
+  body: v.optional(v.string()),
+  link: v.optional(v.string()),
+  isRead: v.boolean(),
+  createdAt: v.number(),
+});
+
 /**
  * Get notifications for a user, sorted by most recent first.
  */
@@ -10,10 +22,11 @@ export const list = query({
     userId: v.id("users"),
     limit: v.optional(v.number()),
   },
+  returns: v.array(notificationListItemValidator),
   handler: async (ctx, args) => {
     await requireOwner(ctx, args.userId);
 
-    const limit = args.limit ?? 20;
+    const limit = Math.max(1, Math.min(args.limit ?? 20, 50));
 
     const notifications = await ctx.db
       .query("notifications")
@@ -21,7 +34,7 @@ export const list = query({
       .order("desc")
       .take(limit);
 
-    return notifications;
+    return notifications.map(({ metadata: _metadata, ...notification }) => notification);
   },
 });
 
@@ -32,6 +45,7 @@ export const getUnreadCount = query({
   args: {
     userId: v.id("users"),
   },
+  returns: v.number(),
   handler: async (ctx, args) => {
     await requireOwner(ctx, args.userId);
 
@@ -40,7 +54,7 @@ export const getUnreadCount = query({
       .withIndex("by_user_read", (q) =>
         q.eq("userId", args.userId).eq("isRead", false)
       )
-      .collect();
+      .take(10);
 
     return unread.length;
   },
@@ -59,6 +73,7 @@ export const create = internalMutation({
     link: v.optional(v.string()),
     metadata: v.optional(v.any()),
   },
+  returns: v.id("notifications"),
   handler: async (ctx, args) => {
     const notificationId = await ctx.db.insert("notifications", {
       userId: args.userId,
@@ -82,6 +97,7 @@ export const markRead = mutation({
   args: {
     notificationId: v.id("notifications"),
   },
+  returns: v.object({ success: v.boolean() }),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
     const notification = await ctx.db.get(args.notificationId);
@@ -101,6 +117,7 @@ export const markAllRead = mutation({
   args: {
     userId: v.id("users"),
   },
+  returns: v.object({ success: v.boolean(), markedCount: v.number() }),
   handler: async (ctx, args) => {
     await requireOwner(ctx, args.userId);
 
@@ -109,7 +126,7 @@ export const markAllRead = mutation({
       .withIndex("by_user_read", (q) =>
         q.eq("userId", args.userId).eq("isRead", false)
       )
-      .collect();
+      .take(500);
 
     await Promise.all(
       unread.map((notification) =>

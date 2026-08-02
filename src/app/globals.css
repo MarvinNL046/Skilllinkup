@@ -8,10 +8,7 @@
 @import "./../../public/css/fontawesome.css";
 @import "./../../public/css/flaticon.css";
 @import "./../../public/css/slider.css";
-@import "./../../public/css/style.css";
-@import "./../../public/css/ud-custom-spacing.css";
 /* dashbord_navitaion.css removed — no JSX referenced its classes (.dashboard_navigationbar, .dropbtn) */
-@import "./../../public/css/responsive.css";
 @import "./dashboard-theme.css";
 
 /* --- New design system (loaded AFTER legacy so it wins on conflicts) --- */
@@ -23,6 +20,30 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* App-wide typography: Inter for UI/body, Fraunces for true headings. */
+html body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-sans) !important;
+}
+
+/* App-wide readability floor: compact metadata may be small, but never tiny. */
+#main-content :where(p, li, label, button, a, small, span, em, select, input) {
+  font-size: max(12px, 1em);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-display {
+  font-family: var(--font-display) !important;
+}
 
 /* ============================================================
    LEGACY → DESIGN SYSTEM BRIDGE
@@ -803,6 +824,26 @@ a {
 /* Header nav - prevent auth buttons from wrapping to second row */
 header.nav-innerpage-style .row {
   flex-wrap: nowrap;
+}
+
+/* Keep the shared mobile navbar inside narrow viewports. */
+@media (max-width: 420px) {
+  .mobile-nav-brand img {
+    width: 112px !important;
+    height: auto !important;
+  }
+  .mobile-nav-actions {
+    gap: 4px !important;
+  }
+  .mobile-nav-signup {
+    padding-inline: 10px !important;
+  }
+}
+
+@media (max-width: 340px) {
+  .mobile-nav-signup {
+    display: none !important;
+  }
 }
 
 /* Mega menu dropdown - hidden by default, shown on hover */

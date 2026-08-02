@@ -1,19 +1,32 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
-import { requireAuthUser } from "../lib/authHelpers";
+import { getOptionalAuthUser, requireAuthUser } from "../lib/authHelpers";
+
+const savedItemValidator = v.object({
+  _id: v.id("savedItems"),
+  _creationTime: v.number(),
+  userId: v.id("users"),
+  itemType: v.string(),
+  itemId: v.string(),
+  itemTitle: v.optional(v.string()),
+  itemImage: v.optional(v.string()),
+  itemUrl: v.optional(v.string()),
+  createdAt: v.number(),
+});
 
 /**
  * List all saved items for the authenticated user.
  */
 export const list = query({
   args: {},
+  returns: v.array(savedItemValidator),
   handler: async (ctx) => {
     const user = await requireAuthUser(ctx);
     const items = await ctx.db
       .query("savedItems")
       .withIndex("by_user", (q) => q.eq("userId", user._id))
       .order("desc")
-      .collect();
+      .take(500);
 
     return items;
   },
@@ -27,15 +40,9 @@ export const isSaved = query({
   args: {
     itemId: v.string(),
   },
+  returns: v.boolean(),
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return false;
-    const email = identity.email;
-    if (!email) return false;
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", email))
-      .first();
+    const user = await getOptionalAuthUser(ctx);
     if (!user) return false;
     const existing = await ctx.db
       .query("savedItems")
@@ -59,14 +66,20 @@ export const save = mutation({
     itemImage: v.optional(v.string()),
     itemUrl: v.optional(v.string()),
   },
+  returns: v.id("savedItems"),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
     const userId = user._id;
 
+    const itemType = args.itemType.trim();
+    const itemId = args.itemId.trim();
+    if (itemType.length < 2 || itemType.length > 40 || itemId.length < 1 || itemId.length > 200) {
+      throw new Error("Invalid saved item.");
+    }
     const existing = await ctx.db
       .query("savedItems")
       .withIndex("by_user_item", (q) =>
-        q.eq("userId", userId).eq("itemId", args.itemId)
+        q.eq("userId", userId).eq("itemId", itemId)
       )
       .first();
 
@@ -74,8 +87,8 @@ export const save = mutation({
 
     const id = await ctx.db.insert("savedItems", {
       userId,
-      itemType: args.itemType,
-      itemId: args.itemId,
+      itemType,
+      itemId,
       itemTitle: args.itemTitle,
       itemImage: args.itemImage,
       itemUrl: args.itemUrl,
@@ -93,6 +106,7 @@ export const remove = mutation({
   args: {
     itemId: v.string(),
   },
+  returns: v.null(),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
     const existing = await ctx.db
@@ -105,5 +119,6 @@ export const remove = mutation({
     if (existing) {
       await ctx.db.delete(existing._id);
     }
+    return null;
   },
 });

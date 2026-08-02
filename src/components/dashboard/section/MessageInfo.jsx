@@ -145,7 +145,7 @@ export default function MessageInfo() {
                     {t("noConversationsYet")}
                   </p>
                   <Button asChild variant="outline" size="sm">
-                    <Link href="/online/projects">Find clients</Link>
+                    <Link href="/projects">Find clients</Link>
                   </Button>
                 </div>
               ) : filteredConversations.length === 0 ? (

@@ -1,10 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Calendar, MapPin, Clock, Wallet, Check, ArrowRight } from "lucide-react";
+import { Calendar, MapPin, Clock, Wallet, Check } from "lucide-react";
 import useConvexJobDetail from "@/hook/useConvexJobDetail";
+import JobApplicationPanel from "@/components/jobs/JobApplicationPanel";
+import ReportButton from "@/components/trust/ReportButton";
 
 export default function JobDetail1() {
   const t = useTranslations("jobsHub");
@@ -17,6 +18,7 @@ export default function JobDetail1() {
     ? convexData
       ? {
           _id: convexData._id,
+          ownerId: convexData.clientId,
           title: convexData.title,
           description: convexData.description || null,
           location: convexData.locationCity
@@ -214,14 +216,14 @@ export default function JobDetail1() {
           </div>
         )}
 
-        <Link
-          href="/contact"
-          className="btn btn--primary btn--lg"
-          style={{ width: "100%", justifyContent: "center" }}
-        >
-          {t("applyForJob")}
-          <ArrowRight size={18} />
-        </Link>
+        {data?._id ? (
+          <>
+            <JobApplicationPanel jobId={data._id} ownerId={data.ownerId} />
+            <div style={{ marginTop: "var(--space-5)" }}>
+              <ReportButton targetType="job" targetId={data._id} targetLabel={data.title} />
+            </div>
+          </>
+        ) : null}
       </div>
     </section>
   );

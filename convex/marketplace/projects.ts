@@ -2,6 +2,32 @@ import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
 import { internal } from "../_generated/api";
 import { requireAuthUser, requireOwner } from "../lib/authHelpers";
+import { notifyUser } from "../lib/notifications";
+import {
+  assertTransition,
+  bidTransitions,
+  projectTransitions,
+} from "../lib/marketplaceState";
+import { rateLimiter } from "../lib/rateLimits";
+
+function requireClientRole(user: Awaited<ReturnType<typeof requireAuthUser>>) {
+  const roles = user.accountRoles ?? [];
+  if (roles.length && !roles.includes("client") && user.role !== "admin") {
+    throw new Error("Add the client role before posting a project.");
+  }
+}
+
+function requireFreelancerRole(user: Awaited<ReturnType<typeof requireAuthUser>>) {
+  const roles = user.accountRoles ?? [];
+  if (roles.length && !roles.includes("freelancer") && user.role !== "admin") {
+    throw new Error("Add the online freelancer role before submitting a proposal.");
+  }
+}
+
+function betaOrderNumber() {
+  const date = new Date().toISOString().slice(0, 10).replaceAll("-", "");
+  return `BETA-${date}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+}
 
 /**
  * Count of currently-open projects. Used by the /online/projects hero
@@ -14,7 +40,7 @@ export const getOpenCount = query({
     const open = await ctx.db
       .query("projects")
       .withIndex("by_status", (q) => q.eq("status", "open"))
-      .collect();
+      .take(10_000);
     return open.length;
   },
 });
@@ -150,7 +176,7 @@ export const getBids = query({
     const bids = await ctx.db
       .query("bids")
       .withIndex("by_project", (q) => q.eq("projectId", args.projectId))
-      .collect();
+      .take(500);
 
     // Batch load unique freelancer profiles
     const profileIds = [...new Set(bids.map((b) => b.freelancerId).filter(Boolean))];
@@ -289,15 +315,17 @@ export const create = mutation({
     workType: v.optional(v.string()),
     locale: v.string(),
   },
+  returns: v.id("projects"),
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-    if (!user) throw new Error("User not found");
+    const user = await requireAuthUser(ctx);
+    requireClientRole(user);
+    const title = args.title.trim();
+    const description = args.description.trim();
+    if (title.length < 10 || title.length > 120) throw new Error("Project titles must be between 10 and 120 characters.");
+    if (description.length < 80 || description.length > 10_000) throw new Error("Project descriptions must be between 80 and 10,000 characters.");
+    if (args.budgetMin !== undefined && args.budgetMin < 0) throw new Error("Minimum budget cannot be negative.");
+    if (args.budgetMax !== undefined && args.budgetMax < 0) throw new Error("Maximum budget cannot be negative.");
+    if (args.budgetMin !== undefined && args.budgetMax !== undefined && args.budgetMin > args.budgetMax) throw new Error("Minimum budget cannot exceed maximum budget.");
 
     // Get the default tenant
     const tenant = await ctx.db.query("tenants").first();
@@ -308,9 +336,9 @@ export const create = mutation({
     const projectId = await ctx.db.insert("projects", {
       tenantId: tenant._id,
       clientId: user._id,
-      title: args.title,
+      title,
       slug: args.slug,
-      description: args.description,
+      description,
       categoryId: args.categoryId,
       requiredSkills: args.requiredSkills,
       budgetMin: args.budgetMin,
@@ -342,15 +370,14 @@ export const submitBid = mutation({
     deliveryDays: v.number(),
     pitch: v.string(),
   },
+  returns: v.id("bids"),
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-    if (!user) throw new Error("User not found");
+    const user = await requireAuthUser(ctx);
+    requireFreelancerRole(user);
+    if (!Number.isFinite(args.amount) || args.amount <= 0) throw new Error("Enter a valid proposal amount.");
+    if (!Number.isInteger(args.deliveryDays) || args.deliveryDays < 1 || args.deliveryDays > 365) throw new Error("Delivery time must be between 1 and 365 days.");
+    const pitch = args.pitch.trim();
+    if (pitch.length < 80 || pitch.length > 5000) throw new Error("Your proposal must be between 80 and 5,000 characters.");
 
     // Retrieve the freelancer profile for this user
     const profile = await ctx.db
@@ -362,9 +389,10 @@ export const submitBid = mutation({
     // Ensure this freelancer hasn't already bid on the project
     const existingBid = await ctx.db
       .query("bids")
-      .withIndex("by_freelancer", (q) => q.eq("freelancerId", profile._id))
-      .filter((q) => q.eq(q.field("projectId"), args.projectId))
-      .first();
+      .withIndex("by_project_freelancer", (q) =>
+        q.eq("projectId", args.projectId).eq("freelancerId", profile._id)
+      )
+      .unique();
 
     if (existingBid) {
       throw new Error("You have already submitted a bid for this project");
@@ -379,6 +407,8 @@ export const submitBid = mutation({
       throw new Error("You cannot bid on your own project.");
     }
 
+    await rateLimiter.limit(ctx, "projectProposal", { key: user._id, throws: true });
+
     const now = Date.now();
 
     const bidId = await ctx.db.insert("bids", {
@@ -387,7 +417,7 @@ export const submitBid = mutation({
       amount: args.amount,
       currency: project.currency ?? "EUR",
       deliveryDays: args.deliveryDays,
-      pitch: args.pitch,
+      pitch,
       status: "pending",
       createdAt: now,
       updatedAt: now,
@@ -418,6 +448,15 @@ export const submitBid = mutation({
         projectId: args.projectId,
       });
     }
+
+    await notifyUser(ctx, {
+      userId: project.clientId,
+      type: "proposal_received",
+      title: "New proposal received",
+      body: `${freelancerProfile?.displayName || user.name} sent a proposal for ${project.title}.`,
+      link: `/online/project/${project.slug}`,
+      metadata: { projectId: project._id, bidId },
+    });
 
     return bidId;
   },
@@ -473,22 +512,12 @@ export const remove = mutation({
   args: {
     projectId: v.id("projects"),
   },
+  returns: v.id("projects"),
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Authentication required");
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-    if (!user) throw new Error("User not found");
-
     const project = await ctx.db.get(args.projectId);
     if (!project) throw new Error("Project not found");
-
-    if (project.clientId !== user._id) {
-      throw new Error("Access denied: only the project owner can delete this project");
-    }
+    await requireOwner(ctx, project.clientId);
+    if (project.status !== "cancelled") assertTransition(projectTransitions, project.status, "cancelled");
 
     await ctx.db.patch(args.projectId, {
       status: "cancelled",
@@ -512,24 +541,21 @@ export const update = mutation({
     budgetMax: v.optional(v.number()),
     deadline: v.optional(v.number()),
     workType: v.optional(v.string()),
-    status: v.optional(v.string()),
+    status: v.optional(
+      v.union(
+        v.literal("draft"),
+        v.literal("open"),
+        v.literal("cancelled"),
+        v.literal("closed")
+      )
+    ),
   },
+  returns: v.id("projects"),
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Authentication required");
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-    if (!user) throw new Error("User not found");
-
     const project = await ctx.db.get(args.projectId);
     if (!project) throw new Error("Project not found");
-
-    if (project.clientId !== user._id) {
-      throw new Error("Access denied: only the project owner can update this project");
-    }
+    await requireOwner(ctx, project.clientId);
+    if (args.status) assertTransition(projectTransitions, project.status, args.status);
 
     const { projectId, ...fields } = args;
 
@@ -556,25 +582,29 @@ export const acceptBid = mutation({
   args: {
     bidId: v.id("bids"),
   },
+  returns: v.object({ success: v.boolean(), orderId: v.id("orders") }),
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-    if (!user) throw new Error("User not found");
-
     const bid = await ctx.db.get(args.bidId);
     if (!bid) throw new Error("Bid not found");
 
     const project = await ctx.db.get(bid.projectId);
     if (!project) throw new Error("Project not found");
 
-    if (project.clientId !== user._id) {
-      throw new Error("Access denied: only the project client can accept a bid");
-    }
+    await requireOwner(ctx, project.clientId);
+    if (project.status !== "open") throw new Error("This project is no longer accepting proposals.");
+    assertTransition(bidTransitions, bid.status, "accepted");
+    assertTransition(projectTransitions, project.status, "in_progress");
+
+    const existingOrder = await ctx.db
+      .query("orders")
+      .withIndex("by_bid", (q) => q.eq("bidId", bid._id))
+      .unique();
+    if (existingOrder) return { success: true, orderId: existingOrder._id };
+
+    const freelancerProfile = await ctx.db.get(bid.freelancerId);
+    if (!freelancerProfile) throw new Error("Freelancer profile not found.");
+    const freelancerUser = await ctx.db.get(freelancerProfile.userId);
+    if (!freelancerUser) throw new Error("Freelancer account not found.");
 
     const now = Date.now();
 
@@ -591,10 +621,62 @@ export const acceptBid = mutation({
       updatedAt: now,
     });
 
-    // Send bid accepted notification to freelancer
-    const freelancerProfile = await ctx.db.get(bid.freelancerId);
-    const freelancerUser = freelancerProfile ? await ctx.db.get(freelancerProfile.userId) : null;
+    const otherBids = await ctx.db
+      .query("bids")
+      .withIndex("by_project_status", (q) =>
+        q.eq("projectId", project._id).eq("status", "pending")
+      )
+      .take(500);
+    await Promise.all(
+      otherBids
+        .filter((item) => item._id !== bid._id)
+        .map((item) => ctx.db.patch(item._id, { status: "rejected", updatedAt: now }))
+    );
 
+    // Private beta: create the workspace immediately without charging either party.
+    // The agreed amount remains on the order; fee and escrow activation stay disabled
+    // until the commercial and legal payment model is approved.
+    const orderId = await ctx.db.insert("orders", {
+      tenantId: project.tenantId,
+      orderNumber: betaOrderNumber(),
+      orderType: "project",
+      clientId: project.clientId,
+      freelancerId: bid.freelancerId,
+      projectId: project._id,
+      bidId: bid._id,
+      title: project.title,
+      description: project.description,
+      amount: bid.amount,
+      platformFee: 0,
+      freelancerEarnings: bid.amount,
+      currency: bid.currency ?? project.currency ?? "EUR",
+      deliveryDeadline: now + bid.deliveryDays * 24 * 60 * 60 * 1000,
+      revisionsUsed: 0,
+      status: "active",
+      escrowStatus: "beta_no_payment",
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    const existingConversation = await ctx.db
+      .query("conversations")
+      .withIndex("by_order", (q) => q.eq("orderId", orderId))
+      .unique();
+    if (!existingConversation) {
+      await ctx.db.insert("conversations", {
+        tenantId: project.tenantId,
+        orderId,
+        projectId: project._id,
+        participant1: project.clientId,
+        participant2: freelancerUser._id,
+        unreadCount1: 0,
+        unreadCount2: 0,
+        status: "active",
+        createdAt: now,
+        updatedAt: now,
+      });
+    }
+    // Send bid accepted notification to freelancer
     if (freelancerUser?.email) {
       await ctx.scheduler.runAfter(0, internal.lib.email.sendBidAccepted, {
         freelancerEmail: freelancerUser.email,
@@ -604,7 +686,14 @@ export const acceptBid = mutation({
         currency: project.currency ?? "EUR",
       });
     }
-
-    return { success: true };
+    await notifyUser(ctx, {
+      userId: freelancerUser._id,
+      type: "proposal_accepted",
+      title: "Your proposal was accepted",
+      body: `${project.title} is ready in your private workspace.`,
+      link: `/orders/${orderId}`,
+      metadata: { projectId: project._id, orderId },
+    });
+    return { success: true, orderId };
   },
 });

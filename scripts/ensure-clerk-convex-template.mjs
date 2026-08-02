@@ -45,25 +45,25 @@ async function clerkFetch(url, init = {}) {
 }
 
 const templates = await clerkFetch(`${apiUrl}?limit=100`);
-const existing = templates?.data?.find((template) => template.name === "convex");
+const templateList = Array.isArray(templates) ? templates : templates?.data ?? [];
+const existing = templateList.find((template) => template.name === "convex");
 
 if (existing) {
   console.log(`Clerk JWT template 'convex' already exists: ${existing.id}`);
   console.log(JSON.stringify(existing.claims, null, 2));
-  process.exit(0);
+} else {
+  const created = await clerkFetch(apiUrl, {
+    method: "POST",
+    body: JSON.stringify({
+      name: "convex",
+      claims: {
+        aud: "convex",
+        email: "{{user.primary_email_address}}",
+        name: "{{user.full_name}}",
+      },
+    }),
+  });
+
+  console.log(`Created Clerk JWT template 'convex': ${created.id}`);
+  console.log(JSON.stringify(created.claims, null, 2));
 }
-
-const created = await clerkFetch(apiUrl, {
-  method: "POST",
-  body: JSON.stringify({
-    name: "convex",
-    claims: {
-      aud: "convex",
-      email: "{{user.primary_email_address}}",
-      name: "{{user.full_name}}",
-    },
-  }),
-});
-
-console.log(`Created Clerk JWT template 'convex': ${created.id}`);
-console.log(JSON.stringify(created.claims, null, 2));

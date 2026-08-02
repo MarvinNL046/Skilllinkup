@@ -1,13 +1,11 @@
-import { getTranslations } from "next-intl/server";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import DashboardNavigation from "@/components/dashboard/header/DashboardNavigation";
 import CreditsInfo from "@/components/dashboard/section/CreditsInfo";
 import CreditsPageHeader from "@/components/dashboard/section/CreditsPageHeader";
 
 export async function generateMetadata() {
-  const t = await getTranslations("creditsInfo");
   return {
-    title: t("title"),
+    title: "Local beta access",
   };
 }
 

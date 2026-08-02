@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { useMutation, useQuery } from "convex/react";
 import { useTranslations } from "next-intl";
 import { api } from "../../../convex/_generated/api";
@@ -39,6 +40,7 @@ function formatDate(timestamp) {
 
 const STATUS_VARIANTS = {
   pending: "warning",
+  active: "info",
   in_progress: "info",
   delivered: "success",
   completed: "success",
@@ -57,7 +59,6 @@ export default function OrderCard({ order, role }) {
 
   const { convexUser } = useConvexUser();
 
-  const deliverOrder = useMutation(api.marketplace.orders.deliver);
   const approveOrder = useMutation(api.marketplace.orders.approve);
   const requestRevision = useMutation(api.marketplace.orders.requestRevision);
 
@@ -68,6 +69,7 @@ export default function OrderCard({ order, role }) {
 
   const STATUS_LABELS = {
     pending: t("statusPending"),
+    active: t("statusInProgress"),
     in_progress: t("statusInProgress"),
     delivered: t("statusDelivered"),
     completed: t("statusCompleted"),
@@ -84,17 +86,6 @@ export default function OrderCard({ order, role }) {
     role === "freelancer" && order.freelancerEarnings != null
       ? order.freelancerEarnings
       : order.amount;
-
-  const handleDeliver = async () => {
-    setActionLoading(true);
-    try {
-      await deliverOrder({ orderId: order._id });
-      toast.success(t("orderDelivered"));
-    } catch (err) {
-      toast.error(err.message || t("orderDeliverFailed"));
-    }
-    setActionLoading(false);
-  };
 
   const handleApprove = async () => {
     setActionLoading(true);
@@ -124,12 +115,11 @@ export default function OrderCard({ order, role }) {
     setActionLoading(false);
   };
 
-  const showDeliverButton = role === "freelancer" && order.status === "in_progress";
   const showClientButtons = role === "client" && order.status === "delivered";
   const isCompleted = order.status === "completed";
 
   const canOpenDispute =
-    ["in_progress", "delivered", "revision_requested"].includes(order.status) &&
+    ["active", "in_progress", "delivered", "revision_requested"].includes(order.status) &&
     order.escrowStatus !== "disputed" &&
     order.escrowStatus !== "released" &&
     order.escrowStatus !== "refunded";
@@ -193,27 +183,9 @@ export default function OrderCard({ order, role }) {
             </div>
 
             <div className="flex flex-col gap-2">
-              {showDeliverButton && (
-                <Button
-                  size="sm"
-                  disabled={actionLoading}
-                  onClick={handleDeliver}
-                >
-                  {actionLoading ? (
-                    <span
-                      role="status"
-                      aria-label="Loading"
-                      className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
-                    />
-                  ) : (
-                    <>
-                      {t("markAsDelivered")}
-                      <ArrowRight className="ml-1 h-4 w-4" />
-                    </>
-                  )}
-                </Button>
-              )}
-
+              <Button size="sm" variant="outline" asChild>
+                <Link href={`/orders/${order._id}`}>Open workspace<ArrowRight className="ml-1 h-4 w-4" /></Link>
+              </Button>
               {showClientButtons && (
                 <>
                   <Button
@@ -229,7 +201,9 @@ export default function OrderCard({ order, role }) {
                       />
                     ) : (
                       <>
-                        {t("approveReleasePayment")}
+                        {order.escrowStatus === "beta_no_payment"
+                          ? "Approve delivery"
+                          : t("approveReleasePayment")}
                         <ArrowRight className="ml-1 h-4 w-4" />
                       </>
                     )}

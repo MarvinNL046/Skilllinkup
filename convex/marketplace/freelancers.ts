@@ -1,11 +1,12 @@
 import { v } from "convex/values";
 import { query, mutation, internalQuery } from "../_generated/server";
 import type { QueryCtx } from "../_generated/server";
-import { requireAuthUser, requireOwner, requireServerSecret } from "../lib/authHelpers";
+import { requireAdmin, requireAuthUser, requireOwner, requireServerSecret } from "../lib/authHelpers";
 import {
   isPublicFreelancerProfile,
   toPublicFreelancerProfile,
 } from "../lib/publicData";
+import { IMAGE_CONTENT_TYPES, requireStoredFile } from "../lib/storageValidation";
 
 /**
  * Generate a URL-friendly slug from a display name.
@@ -45,7 +46,8 @@ export const list = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const limit = args.limit ?? 20;
+    const limit = Math.min(Math.max(args.limit ?? 20, 1), 100);
+    const candidateLimit = Math.min(limit * 5, 500);
 
     let profiles;
     if (args.locale) {
@@ -55,12 +57,12 @@ export const list = query({
         .withIndex("by_status_locale", (q) =>
           q.eq("status", "active").eq("locale", args.locale)
         )
-        .collect();
+        .take(candidateLimit);
     } else {
       profiles = await ctx.db
         .query("freelancerProfiles")
         .withIndex("by_status", (q) => q.eq("status", "active"))
-        .collect();
+        .take(candidateLimit);
     }
 
     // Sort by isVerified DESC, ratingAverage DESC
@@ -142,7 +144,7 @@ export const search = query({
       .withSearchIndex("search_freelancers", (q) =>
         q.search("bio", args.query).eq("status", "active")
       )
-      .collect();
+      .take(50);
 
     return results
       .filter(isPublicFreelancerProfile)
@@ -241,6 +243,12 @@ export const saveAvatarStorageId = mutation({
     if (!profile) throw new Error("Profile not found.");
     if (profile.userId !== user._id) throw new Error("Unauthorized.");
 
+    await requireStoredFile(ctx, args.storageId, {
+      maxBytes: 5 * 1024 * 1024,
+      allowedContentTypes: IMAGE_CONTENT_TYPES,
+      typeError: "Upload a JPG, PNG or WebP profile image.",
+    });
+
     const url = await ctx.storage.getUrl(args.storageId);
     if (!url) throw new Error("Failed to get storage URL");
 
@@ -280,6 +288,12 @@ export const saveCoverStorageId = mutation({
     const profile = await ctx.db.get(args.profileId);
     if (!profile) throw new Error("Profile not found.");
     if (profile.userId !== user._id) throw new Error("Unauthorized.");
+
+    await requireStoredFile(ctx, args.storageId, {
+      maxBytes: 10 * 1024 * 1024,
+      allowedContentTypes: IMAGE_CONTENT_TYPES,
+      typeError: "Upload a JPG, PNG or WebP cover image.",
+    });
 
     const url = await ctx.storage.getUrl(args.storageId);
     if (!url) throw new Error("Failed to get storage URL");
@@ -409,9 +423,9 @@ export const backfillSlugs = mutation({
   args: { serverSecret: v.optional(v.string()) },
   handler: async (ctx, args) => {
     if (args.serverSecret) requireServerSecret(args.serverSecret);
-    else await requireAuthUser(ctx);
+    else await requireAdmin(ctx);
 
-    const profiles = await ctx.db.query("freelancerProfiles").collect();
+    const profiles = await ctx.db.query("freelancerProfiles").take(250);
     let updated = 0;
 
     for (const profile of profiles) {
@@ -421,6 +435,6 @@ export const backfillSlugs = mutation({
       updated++;
     }
 
-    return { updated, total: profiles.length };
+    return { updated, scanned: profiles.length, hasMore: profiles.length === 250 };
   },
 });

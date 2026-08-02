@@ -18,7 +18,7 @@ const valueProps = [
 const bullets = [
   { key: "b1", fallback: "Built network-first — day one with real demand" },
   { key: "b2", fallback: "One place for online, local, and jobs" },
-  { key: "b3", fallback: "Honest pricing, transparent escrow" },
+  { key: "b3", fallback: "Free beta, transparent launch policy" },
   { key: "b4", fallback: "No spam between now and launch" },
 ];
 

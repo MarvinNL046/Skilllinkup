@@ -1,4 +1,4 @@
-import { DM_Sans, Poppins, Inter, Space_Grotesk } from "next/font/google";
+import { DM_Sans, Fraunces, Inter } from "next/font/google";
 import "./globals.css";
 import "react-tooltip/dist/react-tooltip.css";
 import "rc-slider/assets/index.css";
@@ -17,22 +17,16 @@ const dmSans = DM_Sans({
 // Poppins: primary sans (fris, tech/creative, rounded geometric personality).
 // Inter: UI/body companion (optimised for small text and dense layouts).
 // Space Grotesk: display + numerics (super-geometric, energetic headlines).
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-poppins",
-  display: "swap",
-});
 const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-inter",
   display: "swap",
 });
-const spaceGrotesk = Space_Grotesk({
+const fraunces = Fraunces({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-space-grotesk",
+  variable: "--font-fraunces",
   display: "swap",
 });
 
@@ -84,22 +78,11 @@ export default async function RootLayout({ children }) {
   return (
     <html
       lang={locale}
-      className={`${poppins.variable} ${inter.variable} ${spaceGrotesk.variable} ${dmSans.variable}`}
+      data-theme="light"
+      className={`${inter.variable} ${fraunces.variable} ${dmSans.variable}`}
     >
-      <head>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-BRER9FEMTE" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-BRER9FEMTE');
-            `,
-          }}
-        />
-      </head>
-      <body className={poppins.className}>
+      <head />
+      <body className={inter.className} suppressHydrationWarning>
         <NextIntlClientProvider messages={messages}>
           <ClientLayout>{children}</ClientLayout>
         </NextIntlClientProvider>

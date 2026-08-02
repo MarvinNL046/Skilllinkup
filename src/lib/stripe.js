@@ -10,13 +10,6 @@ import Stripe from "stripe";
 //   STRIPE_WEBHOOK_SECRET=whsec_...        (from Stripe webhook dashboard)
 // -----------------------------------------------------------------------
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  console.warn(
-    "[SkillLinkup] STRIPE_SECRET_KEY is not set – payments will not work. " +
-    "Add it to your .env.local file."
-  );
-}
-
 export const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY, {
       // Pin the API version so upgrades are intentional and never silent.

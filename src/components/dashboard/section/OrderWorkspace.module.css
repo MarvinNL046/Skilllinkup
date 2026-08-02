@@ -1,0 +1,73 @@
+.page { display: grid; gap: 1.4rem; }
+.header { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; }
+.header a { display: inline-flex; align-items: center; gap: .3rem; color: var(--primary-700); font-size: .82rem; font-weight: 700; text-decoration: none; }
+.header p { margin: .65rem 0 .2rem; color: var(--text-tertiary); font-size: .75rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+.header h1 { margin: 0; font-family: var(--font-display); font-size: clamp(1.65rem, 3vw, 2.4rem); }
+.header > div > span { color: var(--text-secondary); }
+.orderMeta { display: grid; justify-items: end; gap: .3rem; }
+.orderMeta > span { padding: .3rem .65rem; border-radius: 999px; background: #edf4ff; color: #245f9d; font-size: .72rem; font-weight: 800; }
+.orderMeta > span[data-status="completed"] { background: #e5f7ef; color: #147253; }
+.orderMeta strong { font-size: 1.3rem; }
+.orderMeta small { display: inline-flex; align-items: center; gap: .3rem; color: var(--text-tertiary); }
+.orderMeta svg { width: .9rem; }
+.betaNotice { display: flex; align-items: center; gap: .65rem; padding: .8rem 1rem; border: 1px solid #f1d9ba; border-radius: var(--radius-lg); background: #fff8ef; color: #77501f; }
+.betaNotice svg { flex: 0 0 auto; color: #bd6a1d; }
+.betaNotice div { display: flex; flex-wrap: wrap; gap: .3rem .6rem; align-items: baseline; }
+.betaNotice strong { font-size: .82rem; }
+.betaNotice span { font-size: .78rem; }
+.grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(20rem, .75fr); gap: 1rem; align-items: start; }
+.workCard, .chatCard { display: grid; gap: 1.15rem; padding: 1.25rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); background: white; box-shadow: var(--shadow-xs); }
+.chatCard { position: sticky; top: 1rem; }
+.sectionTitle { display: flex; align-items: center; gap: .75rem; }
+.sectionTitle > i { display: grid; width: 2.7rem; height: 2.7rem; place-items: center; border-radius: .85rem; background: var(--primary-50); color: var(--primary-700); }
+.sectionTitle > div { flex: 1; }
+.sectionTitle h2, .sectionTitle p { margin: 0; }
+.sectionTitle h2 { font-size: 1.08rem; }
+.sectionTitle p { color: var(--text-secondary); font-size: .84rem; }
+.sectionTitle > img, .avatar { width: 2.5rem; height: 2.5rem; border-radius: 50%; object-fit: cover; }
+.appointmentCard { display: grid; gap: .9rem; padding: 1rem; border: 1px solid #bfe6d8; border-radius: var(--radius-lg); background: #f4fbf8; }
+.appointmentCard .sectionTitle > span { padding: .28rem .58rem; border-radius: 999px; background: white; color: #147253; font-size: .72rem; font-weight: 800; text-transform: capitalize; }
+.appointmentFacts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem; }
+.appointmentFacts p { display: flex; align-items: center; gap: .45rem; margin: 0; padding: .7rem; border-radius: var(--radius-md); background: white; color: var(--text-secondary); }
+.appointmentFacts svg { width: 1rem; flex: 0 0 auto; color: #168461; }
+.appointmentForm { display: flex; gap: .55rem; }
+.appointmentForm input { min-width: 0; flex: 1; border: 1px solid var(--border-default); border-radius: var(--radius-md); background: white; padding: .65rem .75rem; color: var(--text-primary); font: inherit; }
+.appointmentForm button, .appointmentActions button { min-height: 2.55rem; border: 1px solid #168461; border-radius: var(--radius-md); background: #168461; padding: .55rem .85rem; color: white; font: inherit; font-size: .8rem; font-weight: 750; cursor: pointer; }
+.appointmentActions { display: flex; flex-wrap: wrap; gap: .55rem; }
+.appointmentActions .secondaryAction { border-color: var(--border-strong); background: white; color: var(--text-secondary); }
+.avatar { display: grid; place-items: center; background: var(--surface-2); color: var(--text-tertiary); }
+.files { display: grid; gap: .55rem; }
+.files article { display: grid; grid-template-columns: auto 1fr auto; gap: .7rem; align-items: start; padding: .8rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); }
+.files article > i { display: grid; width: 2.2rem; height: 2.2rem; place-items: center; border-radius: .65rem; background: var(--surface-2); color: var(--primary-700); }
+.files article > div { display: grid; min-width: 0; }
+.files article span { color: var(--text-tertiary); font-size: .75rem; }
+.files article p { margin: .35rem 0 0; color: var(--text-secondary); line-height: 1.55; white-space: pre-wrap; }
+.files article > div:last-child { display: flex; align-items: center; gap: .5rem; }
+.files a, .files button { border: 0; background: transparent; color: var(--primary-700); font: inherit; font-size: .75rem; cursor: pointer; text-decoration: none; }
+.files a svg { width: 1.05rem; }
+.noFiles, .noMessages { display: grid; justify-items: center; gap: .35rem; padding: 1.5rem; border-radius: var(--radius-lg); background: var(--surface-2); color: var(--text-tertiary); text-align: center; }
+.noFiles p, .noMessages p { margin: 0; }
+.deliveryForm { display: grid; grid-template-columns: 1fr 1.4fr; gap: .75rem; padding: 1rem; border-radius: var(--radius-lg); background: #fffaf7; }
+.deliveryForm label { display: grid; gap: .35rem; font-size: .84rem; font-weight: 700; }
+.deliveryForm em { color: var(--text-tertiary); font-style: normal; font-weight: 500; }
+.deliveryForm input, .deliveryForm textarea, .messageForm textarea, .reviewActions textarea { width: 100%; border: 1px solid var(--border-default); border-radius: var(--radius-md); background: white; color: var(--text-primary); font: inherit; padding: .65rem .75rem; resize: vertical; }
+.deliveryForm button, .messageForm button, .primaryAction, .reviewActions > button, .reviewActions form button { display: inline-flex; min-height: 2.65rem; align-items: center; justify-content: center; gap: .4rem; border: 1px solid var(--primary-600); border-radius: var(--radius-md); background: var(--primary-600); color: white; font: inherit; font-size: .84rem; font-weight: 750; cursor: pointer; }
+.deliveryForm button { grid-column: 1 / -1; justify-self: end; padding: .55rem .9rem; }
+.deliveryForm button svg, .messageForm button svg { width: 1rem; }
+.primaryAction { width: 100%; }
+.reviewActions { display: grid; gap: .75rem; padding: 1rem; border-radius: var(--radius-lg); background: #f4fbf8; }
+.reviewActions form { display: grid; gap: .5rem; }
+.reviewActions form button { justify-self: end; padding-inline: .8rem; border-color: var(--border-strong); background: white; color: var(--text-primary); }
+.messages { display: flex; min-height: 17rem; max-height: 30rem; flex-direction: column; gap: .65rem; overflow-y: auto; padding: .8rem; border-radius: var(--radius-lg); background: var(--surface-2); }
+.messages article { align-self: flex-start; max-width: 88%; padding: .65rem .75rem; border-radius: .8rem .8rem .8rem .2rem; background: white; box-shadow: var(--shadow-xs); }
+.messages article[data-mine="true"] { align-self: flex-end; border-radius: .8rem .8rem .2rem .8rem; background: #fff0eb; }
+.messages strong, .messages small { color: var(--text-tertiary); font-size: .68rem; }
+.messages p { margin: .15rem 0; color: var(--text-primary); line-height: 1.5; white-space: pre-wrap; }
+.messageForm { display: grid; gap: .55rem; }
+.messageForm button { justify-self: end; padding-inline: 1rem; }
+.noConversation { color: var(--text-secondary); font-size: .84rem; }
+.loading, .empty { display: flex; min-height: 25rem; align-items: center; justify-content: center; gap: .6rem; color: var(--text-secondary); }
+.loading svg, .spinner { animation: spin 800ms linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 980px) { .grid { grid-template-columns: 1fr; } .chatCard { position: static; } }
+@media (max-width: 680px) { .header { align-items: stretch; flex-direction: column; } .orderMeta { justify-items: start; } .appointmentFacts { grid-template-columns: 1fr; } .appointmentForm { flex-direction: column; } .deliveryForm { grid-template-columns: 1fr; } .files article { grid-template-columns: auto 1fr; } .files article > div:last-child { grid-column: 2; } }

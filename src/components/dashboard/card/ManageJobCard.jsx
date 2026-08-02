@@ -3,7 +3,7 @@ import { Tooltip } from "react-tooltip";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Pencil, Trash2 } from "lucide-react";
+import { FileText, Pencil, Trash2, UsersRound } from "lucide-react";
 
 const STATUS_VARIANTS = {
   open: "success",
@@ -70,7 +70,7 @@ export default function ManageJobCard({ job, onEdit, onDelete }) {
           {slug && (
             <>
               <Link
-                href={`/jobs/${slug}`}
+                href={`/jobs/job/${slug}`}
                 id={tooltipViewId}
                 aria-label={t("viewJob")}
                 className="text-[var(--text-tertiary)] hover:text-foreground"
@@ -82,6 +82,7 @@ export default function ManageJobCard({ job, onEdit, onDelete }) {
               </Tooltip>
             </>
           )}
+          <Link href={`/manage-jobs/${job._id}/applications`} aria-label="View applicants" className="text-[var(--text-tertiary)] hover:text-foreground"><UsersRound className="h-4 w-4" /></Link>
           <button
             type="button"
             id={tooltipEditId}

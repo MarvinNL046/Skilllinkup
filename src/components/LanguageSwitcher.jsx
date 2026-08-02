@@ -3,6 +3,7 @@
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
+import { Check, ChevronDown, Globe2 } from "lucide-react";
 
 const locales = [
   { code: "en", label: "English", flag: "🇬🇧" },
@@ -15,7 +16,7 @@ const locales = [
   { code: "pl", label: "Polski", flag: "🇵🇱" },
 ];
 
-export default function LanguageSwitcher() {
+export default function LanguageSwitcher({ navbar = false }) {
   const locale = useLocale();
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -47,21 +48,24 @@ export default function LanguageSwitcher() {
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "6px",
-          padding: "6px 10px",
-          border: "1px solid #e2e8f0",
-          borderRadius: "8px",
-          background: "transparent",
+          justifyContent: "center",
+          gap: navbar ? 7 : 6,
+          height: navbar ? 42 : undefined,
+          padding: navbar ? "0 11px" : "6px 10px",
+          border: "1px solid #e2e7ee",
+          borderRadius: navbar ? 12 : 8,
+          background: navbar ? "#fff" : "transparent",
           cursor: "pointer",
-          fontSize: "14px",
-          color: "inherit",
+          fontSize: navbar ? 13 : 14,
+          fontWeight: navbar ? 600 : 400,
+          color: navbar ? "#10213f" : "inherit",
+          transition: "border-color .2s ease, box-shadow .2s ease",
+          fontFamily: navbar ? "var(--font-inter), system-ui, sans-serif" : undefined,
         }}
       >
-        <span style={{ fontSize: "18px" }}>{current.flag}</span>
+        {navbar ? <Globe2 size={17} strokeWidth={1.9} /> : <span style={{ fontSize: "18px" }}>{current.flag}</span>}
         <span>{current.code.toUpperCase()}</span>
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ opacity: 0.5 }}>
-          <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <ChevronDown size={13} strokeWidth={2} style={{ opacity: 0.55, transform: open ? "rotate(180deg)" : "none", transition: "transform .2s ease" }} />
       </button>
 
       {open && (
@@ -100,11 +104,7 @@ export default function LanguageSwitcher() {
             >
               <span style={{ fontSize: "18px" }}>{l.flag}</span>
               <span>{l.label}</span>
-              {l.code === locale && (
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ marginLeft: "auto" }}>
-                  <path d="M3 7L6 10L11 4" stroke="var(--primary-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              )}
+              {l.code === locale && <Check size={14} strokeWidth={2.2} style={{ marginLeft: "auto", color: "#ff4b2b" }} />}
             </button>
           ))}
         </div>

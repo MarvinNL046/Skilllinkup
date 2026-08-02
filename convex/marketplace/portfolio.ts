@@ -1,16 +1,60 @@
 import { v } from "convex/values";
-import { query, mutation } from "../_generated/server";
+import { mutation, query } from "../_generated/server";
 import { requireAuthUser } from "../lib/authHelpers";
+import { IMAGE_CONTENT_TYPES, requireStoredFile } from "../lib/storageValidation";
+
+const portfolioProjectValidator = v.object({
+  _id: v.id("portfolioProjects"),
+  _creationTime: v.number(),
+  userId: v.id("users"),
+  tenantId: v.id("tenants"),
+  title: v.string(),
+  description: v.optional(v.string()),
+  imageUrls: v.optional(v.array(v.string())),
+  tags: v.optional(v.array(v.string())),
+  externalUrl: v.optional(v.string()),
+  sortOrder: v.optional(v.number()),
+  createdAt: v.number(),
+  updatedAt: v.number(),
+});
+
+function validateFields(fields: {
+  title?: string;
+  description?: string;
+  imageUrls?: string[];
+  tags?: string[];
+  externalUrl?: string;
+}) {
+  if (fields.title !== undefined && (fields.title.trim().length < 3 || fields.title.length > 160)) {
+    throw new Error("Portfolio title must be between 3 and 160 characters.");
+  }
+  if (fields.description !== undefined && fields.description.length > 3000) {
+    throw new Error("Portfolio description is too long.");
+  }
+  if ((fields.imageUrls?.length ?? 0) > 20 || (fields.tags?.length ?? 0) > 20) {
+    throw new Error("Portfolio projects support up to 20 images and 20 tags.");
+  }
+  for (const imageUrl of fields.imageUrls ?? []) {
+    const isLocalAsset = /^\/images\/[a-zA-Z0-9/_-]+\.(?:jpe?g|png|webp)$/i.test(imageUrl);
+    const isConvexStorageUrl = /^https:\/\/[^/]+\.convex\.(?:cloud|site)\/api\/storage\//i.test(imageUrl);
+    if (!isLocalAsset && !isConvexStorageUrl) {
+      throw new Error("Portfolio images must be uploaded through Skilllinkup.");
+    }
+  }
+  if (fields.externalUrl && fields.externalUrl.length > 500) {
+    throw new Error("Portfolio URL is too long.");
+  }
+}
 
 export const getByUser = query({
   args: { userId: v.id("users") },
-  handler: async (ctx, args) => {
-    return await ctx.db
+  returns: v.array(portfolioProjectValidator),
+  handler: async (ctx, args) =>
+    ctx.db
       .query("portfolioProjects")
       .withIndex("by_user", (q) => q.eq("userId", args.userId))
       .order("asc")
-      .collect();
-  },
+      .take(100),
 });
 
 export const create = mutation({
@@ -21,25 +65,19 @@ export const create = mutation({
     tags: v.optional(v.array(v.string())),
     externalUrl: v.optional(v.string()),
   },
+  returns: v.id("portfolioProjects"),
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Authentication required");
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-    if (!user) throw new Error("User not found");
-    const tenant = await ctx.db.query("tenants").first();
-    if (!tenant) throw new Error("No tenant found");
+    const user = await requireAuthUser(ctx);
+    validateFields(args);
     const now = Date.now();
-    return await ctx.db.insert("portfolioProjects", {
+    return ctx.db.insert("portfolioProjects", {
       userId: user._id,
-      tenantId: tenant._id,
-      title: args.title,
-      description: args.description,
+      tenantId: user.tenantId,
+      title: args.title.trim(),
+      description: args.description?.trim(),
       imageUrls: args.imageUrls,
-      tags: args.tags,
-      externalUrl: args.externalUrl,
+      tags: args.tags?.map((tag) => tag.trim()).filter(Boolean),
+      externalUrl: args.externalUrl?.trim(),
       sortOrder: now,
       createdAt: now,
       updatedAt: now,
@@ -56,16 +94,22 @@ export const update = mutation({
     tags: v.optional(v.array(v.string())),
     externalUrl: v.optional(v.string()),
   },
+  returns: v.id("portfolioProjects"),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
     const { projectId, ...fields } = args;
+    validateFields(fields);
     const project = await ctx.db.get(projectId);
-    if (!project) throw new Error("Project not found");
+    if (!project) throw new Error("Project not found.");
     if (project.userId !== user._id) throw new Error("Unauthorized.");
-    const patch: Record<string, unknown> = { updatedAt: Date.now() };
-    for (const [k, val] of Object.entries(fields)) {
-      if (val !== undefined) patch[k] = val;
-    }
+    const patch: Record<string, string | string[] | number | undefined> = {
+      updatedAt: Date.now(),
+    };
+    if (fields.title !== undefined) patch.title = fields.title.trim();
+    if (fields.description !== undefined) patch.description = fields.description.trim();
+    if (fields.imageUrls !== undefined) patch.imageUrls = fields.imageUrls;
+    if (fields.tags !== undefined) patch.tags = fields.tags.map((tag) => tag.trim()).filter(Boolean);
+    if (fields.externalUrl !== undefined) patch.externalUrl = fields.externalUrl.trim();
     await ctx.db.patch(projectId, patch);
     return projectId;
   },
@@ -73,10 +117,11 @@ export const update = mutation({
 
 export const remove = mutation({
   args: { projectId: v.id("portfolioProjects") },
+  returns: v.id("portfolioProjects"),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
     const project = await ctx.db.get(args.projectId);
-    if (!project) throw new Error("Project not found");
+    if (!project) throw new Error("Project not found.");
     if (project.userId !== user._id) throw new Error("Unauthorized.");
     await ctx.db.delete(args.projectId);
     return args.projectId;
@@ -85,9 +130,25 @@ export const remove = mutation({
 
 export const generateImageUploadUrl = mutation({
   args: {},
+  returns: v.string(),
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Authentication required");
-    return await ctx.storage.generateUploadUrl();
+    await requireAuthUser(ctx);
+    return ctx.storage.generateUploadUrl();
+  },
+});
+
+export const resolveImageUpload = mutation({
+  args: { storageId: v.id("_storage") },
+  returns: v.string(),
+  handler: async (ctx, args) => {
+    await requireAuthUser(ctx);
+    await requireStoredFile(ctx, args.storageId, {
+      maxBytes: 8 * 1024 * 1024,
+      allowedContentTypes: IMAGE_CONTENT_TYPES,
+      typeError: "Upload a JPG, PNG or WebP portfolio image.",
+    });
+    const url = await ctx.storage.getUrl(args.storageId);
+    if (!url) throw new Error("The portfolio image could not be resolved.");
+    return url;
   },
 });

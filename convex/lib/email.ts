@@ -2,15 +2,16 @@
 import { internalAction } from "../_generated/server";
 import { v } from "convex/values";
 
-const EMAIL_API_URL = process.env.NEXT_PUBLIC_SITE_URL
-  ? `${process.env.NEXT_PUBLIC_SITE_URL}/api/email/send`
-  : "http://localhost:3000/api/email/send";
-
-const INTERNAL_EMAIL_SECRET = process.env.INTERNAL_EMAIL_SECRET || "dev-secret";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
+const INTERNAL_EMAIL_SECRET = process.env.INTERNAL_EMAIL_SECRET;
 
 async function sendEmail(template: string, to: string, subject: string, props: Record<string, any>) {
+  if (!SITE_URL || !INTERNAL_EMAIL_SECRET) {
+    console.error(`Email send skipped (${template}): server URL or internal secret is not configured.`);
+    return;
+  }
   try {
-    const response = await fetch(EMAIL_API_URL, {
+    const response = await fetch(new URL("/api/email/send", SITE_URL), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -41,6 +42,7 @@ export const sendOrderConfirmation = internalAction({
     orderId: v.string(),
     locale: v.optional(v.string()),
   },
+  returns: v.null(),
   handler: async (ctx, args) => {
     await sendEmail("orderConfirmation", args.clientEmail, `Order Confirmed: ${args.orderTitle}`, {
       clientName: args.clientName,
@@ -52,6 +54,7 @@ export const sendOrderConfirmation = internalAction({
       orderId: args.orderId,
       locale: args.locale || "en",
     });
+    return null;
   },
 });
 
@@ -67,6 +70,7 @@ export const sendNewOrderNotification = internalAction({
     orderId: v.string(),
     locale: v.optional(v.string()),
   },
+  returns: v.null(),
   handler: async (ctx, args) => {
     await sendEmail("newOrder", args.freelancerEmail, `New Order: ${args.orderTitle}`, {
       freelancerName: args.freelancerName,
@@ -78,6 +82,7 @@ export const sendNewOrderNotification = internalAction({
       orderId: args.orderId,
       locale: args.locale || "en",
     });
+    return null;
   },
 });
 
@@ -90,6 +95,7 @@ export const sendOrderDelivered = internalAction({
     orderId: v.string(),
     locale: v.optional(v.string()),
   },
+  returns: v.null(),
   handler: async (ctx, args) => {
     await sendEmail("orderDelivered", args.clientEmail, `Delivery Received: ${args.orderTitle}`, {
       clientName: args.clientName,
@@ -98,6 +104,7 @@ export const sendOrderDelivered = internalAction({
       orderId: args.orderId,
       locale: args.locale || "en",
     });
+    return null;
   },
 });
 
@@ -112,6 +119,7 @@ export const sendOrderCompleted = internalAction({
     orderId: v.string(),
     locale: v.optional(v.string()),
   },
+  returns: v.null(),
   handler: async (ctx, args) => {
     await sendEmail("orderCompleted", args.freelancerEmail, `Payment Released: ${args.orderTitle}`, {
       freelancerName: args.freelancerName,
@@ -122,6 +130,7 @@ export const sendOrderCompleted = internalAction({
       orderId: args.orderId,
       locale: args.locale || "en",
     });
+    return null;
   },
 });
 
@@ -137,6 +146,7 @@ export const sendNewBid = internalAction({
     projectId: v.string(),
     locale: v.optional(v.string()),
   },
+  returns: v.null(),
   handler: async (ctx, args) => {
     await sendEmail("newBid", args.clientEmail, `New Bid on ${args.projectTitle}`, {
       clientName: args.clientName,
@@ -148,6 +158,7 @@ export const sendNewBid = internalAction({
       projectId: args.projectId,
       locale: args.locale || "en",
     });
+    return null;
   },
 });
 
@@ -161,6 +172,7 @@ export const sendBidAccepted = internalAction({
     orderId: v.optional(v.string()),
     locale: v.optional(v.string()),
   },
+  returns: v.null(),
   handler: async (ctx, args) => {
     await sendEmail("bidAccepted", args.freelancerEmail, `Bid Accepted: ${args.projectTitle}`, {
       freelancerName: args.freelancerName,
@@ -170,6 +182,7 @@ export const sendBidAccepted = internalAction({
       orderId: args.orderId,
       locale: args.locale || "en",
     });
+    return null;
   },
 });
 
@@ -180,12 +193,14 @@ export const sendBidRejected = internalAction({
     projectTitle: v.string(),
     locale: v.optional(v.string()),
   },
+  returns: v.null(),
   handler: async (ctx, args) => {
     await sendEmail("bidRejected", args.freelancerEmail, `Bid Update: ${args.projectTitle}`, {
       freelancerName: args.freelancerName,
       projectTitle: args.projectTitle,
       locale: args.locale || "en",
     });
+    return null;
   },
 });
 
@@ -198,6 +213,7 @@ export const sendNewMessage = internalAction({
     conversationId: v.string(),
     locale: v.optional(v.string()),
   },
+  returns: v.null(),
   handler: async (ctx, args) => {
     await sendEmail("newMessage", args.recipientEmail, `New message from ${args.senderName}`, {
       recipientName: args.recipientName,
@@ -206,6 +222,7 @@ export const sendNewMessage = internalAction({
       conversationId: args.conversationId,
       locale: args.locale || "en",
     });
+    return null;
   },
 });
 
@@ -218,6 +235,7 @@ export const sendReviewReceived = internalAction({
     orderId: v.string(),
     locale: v.optional(v.string()),
   },
+  returns: v.null(),
   handler: async (ctx, args) => {
     await sendEmail("reviewReceived", args.userEmail, "New Review Received", {
       userName: args.userName,
@@ -226,6 +244,7 @@ export const sendReviewReceived = internalAction({
       orderId: args.orderId,
       locale: args.locale || "en",
     });
+    return null;
   },
 });
 
@@ -241,6 +260,7 @@ export const sendWaitlistWelcome = internalAction({
     userType: v.optional(v.string()),
     locale: v.optional(v.string()),
   },
+  returns: v.null(),
   handler: async (ctx, args) => {
     const locale = args.locale === "nl" ? "nl" : "en";
     const subject =
@@ -253,5 +273,6 @@ export const sendWaitlistWelcome = internalAction({
       userType: args.userType,
       locale,
     });
+    return null;
   },
 });

@@ -25,9 +25,9 @@ import {
 } from "@/components/ui/select";
 
 const REASONS = [
-  { value: "not_delivered", labelKey: "disputeReasonNotDelivered" },
-  { value: "quality_issues", labelKey: "disputeReasonQualityIssues" },
-  { value: "communication", labelKey: "disputeReasonCommunication" },
+  { value: "non_delivery", labelKey: "disputeReasonNotDelivered" },
+  { value: "quality_issue", labelKey: "disputeReasonQualityIssues" },
+  { value: "scope_creep", labelKey: "disputeReasonCommunication" },
   { value: "other", labelKey: "disputeReasonOther" },
 ];
 

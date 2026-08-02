@@ -1,8 +1,7 @@
 import { fetchQuery } from "convex/nextjs";
 import { notFound } from "next/navigation";
 import { api } from "../../../../../../convex/_generated/api";
-import Breadcumb10 from "@/components/breadcumb/Breadcumb10";
-import FreelancerDetail3 from "@/components/section/FreelancerDetails3";
+import FreelancerProfile from "@/components/freelancers/FreelancerProfile";
 
 // Accept both Convex IDs (alphanumeric) and URL slugs (with hyphens)
 function isValidParam(id) {
@@ -22,7 +21,7 @@ export async function generateMetadata({ params }) {
       : await fetchQuery(api.marketplace.freelancers.getBySlug, { slug: id });
     if (profile) {
       const name = profile.displayName || "Freelancer";
-      const title = profile.title || "";
+      const title = profile.tagline || "";
       return {
         title: title ? `${name} — ${title}` : name,
         description: profile.bio
@@ -31,7 +30,7 @@ export async function generateMetadata({ params }) {
         openGraph: {
           title: name,
           description: profile.bio?.slice(0, 155) || `Freelancer on SkillLinkup`,
-          images: profile.avatar ? [{ url: profile.avatar }] : [],
+          images: profile.avatarUrl ? [{ url: profile.avatarUrl }] : [],
         },
       };
     }
@@ -51,9 +50,6 @@ export default async function page({ params }) {
   }
 
   return (
-    <div className="bgc-thm3">
-      <Breadcumb10 path={["Home", "Freelancers"]} />
-      <FreelancerDetail3 />
-    </div>
+    <FreelancerProfile />
   );
 }

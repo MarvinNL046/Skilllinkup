@@ -37,12 +37,12 @@ export const list = query({
             q.eq("status", status).eq("locale", args.locale!)
           )
           .order("desc")
-          .collect()
+          .take(Math.min(args.limit ?? 100, 500))
       : await ctx.db
           .query("resources")
           .withIndex("by_status", (q) => q.eq("status", status))
           .order("desc")
-          .collect();
+          .take(Math.min(args.limit ?? 100, 500));
     return results.slice(0, Math.min(args.limit ?? 100, 500));
   },
 });

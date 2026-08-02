@@ -101,6 +101,7 @@ export default function ProposalModal1({ isOpen, onClose, project, onUpdate }) {
                 type="number"
                 value={budgetMin}
                 onChange={(e) => setBudgetMin(e.target.value)}
+                data-testid="manage-project-edit-budget-min"
               />
             </div>
             <div className="space-y-2">
@@ -110,13 +111,14 @@ export default function ProposalModal1({ isOpen, onClose, project, onUpdate }) {
                 type="number"
                 value={budgetMax}
                 onChange={(e) => setBudgetMax(e.target.value)}
+                data-testid="manage-project-edit-budget-max"
               />
             </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="proposal-work-type">{t("labelWorkType")}</Label>
             <Select value={workType} onValueChange={setWorkType}>
-              <SelectTrigger id="proposal-work-type">
+              <SelectTrigger id="proposal-work-type" data-testid="manage-project-edit-work-type">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -135,7 +137,7 @@ export default function ProposalModal1({ isOpen, onClose, project, onUpdate }) {
             >
               {t("cancel")}
             </Button>
-            <Button type="submit" disabled={isUpdating}>
+            <Button type="submit" disabled={isUpdating} data-testid="manage-project-edit-submit">
               {isUpdating ? t("updating") : t("update")}
             </Button>
           </DialogFooter>

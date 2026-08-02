@@ -47,7 +47,7 @@ export const getByUser = query({
       .query("feedback")
       .withIndex("by_user", (q) => q.eq("userId", user._id))
       .order("desc")
-      .collect();
+      .take(250);
   },
 });
 
@@ -60,7 +60,7 @@ export const list = query({
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
     let q = ctx.db.query("feedback").withIndex("by_createdAt").order("desc");
-    const results = await q.collect();
+    const results = await q.take(500);
 
     return results.filter((f) => {
       if (args.status && f.status !== args.status) return false;

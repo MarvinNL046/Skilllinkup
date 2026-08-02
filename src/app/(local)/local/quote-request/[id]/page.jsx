@@ -3,7 +3,10 @@ import QuoteRequestDetail from "@/components/section/QuoteRequestDetail";
 
 export async function generateMetadata() {
   const t = await getTranslations("localHub");
-  return { title: t("quoteRequestDetailTitle") };
+  return {
+    title: t("quoteRequestDetailTitle"),
+    robots: { index: false, follow: false, nocache: true },
+  };
 }
 
 export default async function QuoteRequestDetailPage({ params }) {

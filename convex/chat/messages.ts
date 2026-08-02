@@ -4,6 +4,8 @@ import { internal } from "../_generated/api";
 import { Id } from "../_generated/dataModel";
 import { MutationCtx, QueryCtx } from "../_generated/server";
 import { requireAuthUser } from "../lib/authHelpers";
+import { notifyUser } from "../lib/notifications";
+import { rateLimiter } from "../lib/rateLimits";
 
 const CONTACT_PATTERNS = [
   /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/,
@@ -112,17 +114,26 @@ export const send = mutation({
 
     const now = Date.now();
     const messageType = args.messageType ?? "text";
+    const content = args.content?.trim();
+    if (!["text", "file"].includes(messageType)) throw new Error("Unsupported message type.");
+    if (!content && !args.fileUrl) throw new Error("Write a message or attach a file.");
+    if (content && content.length > 3000) throw new Error("Messages cannot exceed 3,000 characters.");
+    if (args.fileSize !== undefined && (args.fileSize < 1 || args.fileSize > 25 * 1024 * 1024)) {
+      throw new Error("Files must be smaller than 25 MB.");
+    }
 
     // Block messages containing contact info (anti-bypass)
-    if (args.content && containsContactInfo(args.content)) {
+    if (content && containsContactInfo(content)) {
       throw new ConvexError("Contactgegevens mogen niet gedeeld worden via de chat. Gebruik het platform voor verdere afspraken.");
     }
+
+    await rateLimiter.limit(ctx, "sendMessage", { key: currentUser._id, throws: true });
 
     // Insert the message
     const messageId = await ctx.db.insert("messages", {
       conversationId: args.conversationId,
       senderId: currentUser._id,
-      content: args.content,
+      content,
       messageType,
       fileUrl: args.fileUrl,
       fileName: args.fileName,
@@ -132,7 +143,7 @@ export const send = mutation({
     });
 
     // Build the preview text for the conversation
-    let preview = args.content ?? "";
+    let preview = content ?? "";
     if (!preview && args.fileName) {
       preview = `[File] ${args.fileName}`;
     }
@@ -158,11 +169,20 @@ export const send = mutation({
 
     await ctx.db.patch(args.conversationId, conversationPatch);
 
+    const recipientId = isParticipant1
+      ? conversation.participant2
+      : conversation.participant1;
+    await notifyUser(ctx, {
+      userId: recipientId,
+      type: "message_received",
+      title: `New message from ${currentUser.name}`,
+      body: preview.slice(0, 140),
+      link: conversation.orderId ? `/orders/${conversation.orderId}` : "/message",
+      metadata: { conversationId: conversation._id },
+    });
+
     // Send new message email notification (only for non-system messages)
     if (messageType !== "system" && messageType !== "order_update") {
-      const recipientId = isParticipant1
-        ? conversation.participant2
-        : conversation.participant1;
       const recipient = await ctx.db.get(recipientId);
 
       if (recipient?.email) {
@@ -170,7 +190,7 @@ export const send = mutation({
           recipientEmail: recipient.email,
           recipientName: recipient.name || "User",
           senderName: currentUser.name || "User",
-          messagePreview: (args.content || "").slice(0, 200),
+          messagePreview: (content || "").slice(0, 200),
           conversationId: args.conversationId,
         });
       }
