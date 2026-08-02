@@ -120,3 +120,32 @@ test("mobile navigation and waitlist dialogs manage keyboard focus", async ({ pa
   await expect(waitlistDialog).toHaveCount(0);
   await expect(waitlistTrigger).toBeFocused();
 });
+
+test("mobile professional filters trap and restore keyboard focus", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/online/freelancers", { waitUntil: "networkidle" });
+
+  const trigger = page.getByRole("button", { name: "Filters", exact: true });
+  await trigger.click();
+
+  const dialog = page.getByRole("dialog", { name: "Filter professionals" });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole("button", { name: "Close filters" })).toBeFocused();
+
+  const available = dialog.getByRole("checkbox", { name: "Available now" });
+  await available.focus();
+  await page.keyboard.press("Space");
+  await expect(available).toBeChecked();
+
+  for (let press = 0; press < 14; press += 1) {
+    await page.keyboard.press("Tab");
+    const focusInsideDialog = await page.evaluate(() =>
+      Boolean(document.activeElement?.closest("[role='dialog']")),
+    );
+    expect(focusInsideDialog).toBe(true);
+  }
+
+  await page.keyboard.press("Escape");
+  await expect(dialog).toHaveCount(0);
+  await expect(trigger).toBeFocused();
+});

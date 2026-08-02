@@ -1486,9 +1486,24 @@ test("authenticated project crud flow works", async ({ page, baseURL }) => {
   await expect(createdRow).toContainText("EUR 900 - 1200");
   await expect(createdRow).toContainText("Open");
 
-  await createdRow.getByTestId("manage-project-edit").click({ force: true });
+  const editTrigger = createdRow.getByTestId("manage-project-edit");
+  await editTrigger.click();
 
   const editModal = page.getByTestId("manage-project-edit-modal");
+  await expect(editModal).toBeVisible();
+  await expect(editModal.getByTestId("manage-project-edit-title")).toBeFocused();
+  for (let press = 0; press < 12; press += 1) {
+    await page.keyboard.press("Tab");
+    const focusInsideDialog = await page.evaluate(() =>
+      Boolean(document.activeElement?.closest("[role='dialog']")),
+    );
+    expect(focusInsideDialog).toBe(true);
+  }
+  await page.keyboard.press("Escape");
+  await expect(editModal).toHaveCount(0);
+  await expect(editTrigger).toBeFocused();
+
+  await editTrigger.click();
   await expect(editModal).toBeVisible();
   await editModal.getByTestId("manage-project-edit-title").fill(updatedTitle);
   await editModal

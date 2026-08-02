@@ -21,6 +21,13 @@ import {
   X,
 } from "lucide-react";
 import useConvexFreelancers from "@/hook/useConvexFreelancers";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import styles from "./FreelancerDirectory.module.css";
 
 const demoProfessionals = [
@@ -140,6 +147,26 @@ export default function FreelancerDirectory() {
     });
   };
 
+  const filterPanelProps = {
+    category,
+    setCategory,
+    categories,
+    level,
+    setLevel,
+    language,
+    setLanguage,
+    languages,
+    maxRate,
+    setMaxRate,
+    minimumRating,
+    setMinimumRating,
+    availableOnly,
+    setAvailableOnly,
+    verifiedOnly,
+    setVerifiedOnly,
+    clearFilters,
+  };
+
   return (
     <main className={styles.page}>
       <section className={styles.intro}>
@@ -159,37 +186,13 @@ export default function FreelancerDirectory() {
 
       <section className={styles.resultsSection}>
         <div className={`${styles.container} ${styles.resultsLayout}`}>
-          <aside className={`${styles.filters} ${filtersOpen ? styles.filtersOpen : ""}`}>
-            <div className={styles.filtersTitle}><div><SlidersHorizontal size={19} /><h2>Filters</h2></div><button type="button" className={styles.mobileFilterClose} onClick={() => setFiltersOpen(false)} aria-label="Close filters"><X size={19} /></button></div>
-
-            <FilterSelect label="Service" value={category} onChange={setCategory} options={categories} />
-            <FilterSelect label="Experience level" value={level} onChange={setLevel} options={["All levels", "top-rated", "pro", "rising", "new"]} />
-            <FilterSelect label="Language" value={language} onChange={setLanguage} options={languages} />
-
-            <div className={styles.filterGroup}>
-              <div className={styles.filterLabel}><span>Hourly rate</span><strong>Up to €{maxRate}</strong></div>
-              <input className={styles.range} type="range" min="20" max="150" value={maxRate} onChange={(event) => setMaxRate(Number(event.target.value))} aria-label="Maximum hourly rate" aria-valuetext={`Up to €${maxRate} per hour`} />
-              <div className={styles.rangeValues}><span>€20</span><span>€150+</span></div>
-            </div>
-
-            <div className={styles.filterGroup}>
-              <span className={styles.filterHeading}>Minimum rating</span>
-              <div className={styles.ratingFilters}>
-                {ratingOptions.map((rating) => <button type="button" className={minimumRating === rating ? styles.ratingActive : ""} onClick={() => setMinimumRating(minimumRating === rating ? 0 : rating)} key={rating}><Star size={14} fill="currentColor" />{rating}.0 & up</button>)}
-              </div>
-            </div>
-
-            <div className={styles.switchRows}>
-              <SwitchRow label="Available now" checked={availableOnly} onChange={setAvailableOnly} />
-              <SwitchRow label="Verified profiles" checked={verifiedOnly} onChange={setVerifiedOnly} />
-            </div>
-
-            <button className={styles.clearButton} type="button" onClick={clearFilters}>Clear all filters</button>
+          <aside className={styles.filters} aria-label="Professional filters">
+            <FilterPanel {...filterPanelProps} />
           </aside>
 
           <div className={styles.resultsMain}>
             <div className={styles.resultsToolbar}>
-              <div><button type="button" className={styles.mobileFilterButton} onClick={() => setFiltersOpen(true)}><Filter size={17} />Filters</button><h2>{isLoading ? "Finding professionals…" : `${filtered.length} professionals found`}</h2><p>{isDevelopmentPreview ? "Illustrative development profiles — not live professionals." : "Live profiles matched to your search and filters."}</p></div>
+              <div><Dialog open={filtersOpen} onOpenChange={setFiltersOpen}><DialogTrigger asChild><button type="button" className={styles.mobileFilterButton}><Filter size={17} />Filters</button></DialogTrigger><DialogContent className={styles.mobileFilterDialog} showCloseButton={false}><DialogTitle className="sr-only">Filter professionals</DialogTitle><FilterPanel {...filterPanelProps} mobile /></DialogContent></Dialog><h2>{isLoading ? "Finding professionals…" : `${filtered.length} professionals found`}</h2><p>{isDevelopmentPreview ? "Illustrative development profiles — not live professionals." : "Live profiles matched to your search and filters."}</p></div>
               <div className={styles.toolbarActions}>
                 <label className={styles.sortSelect}><span className="sr-only">Sort results</span><select value={sort} onChange={(event) => setSort(event.target.value)}><option value="best-match">Best match</option><option value="most-reviewed">Most reviewed</option><option value="rate-low">Rate: low to high</option><option value="rate-high">Rate: high to low</option></select><ChevronDown size={15} /></label>
                 <div className={styles.viewToggle}><button type="button" className={view === "grid" ? styles.viewActive : ""} onClick={() => setView("grid")} aria-label="Grid view"><Grid2X2 size={17} /></button><button type="button" className={view === "list" ? styles.viewActive : ""} onClick={() => setView("list")} aria-label="List view"><List size={18} /></button></div>
@@ -219,6 +222,50 @@ export default function FreelancerDirectory() {
       </section>
     </main>
   );
+}
+
+function FilterPanel({
+  category,
+  setCategory,
+  categories,
+  level,
+  setLevel,
+  language,
+  setLanguage,
+  languages,
+  maxRate,
+  setMaxRate,
+  minimumRating,
+  setMinimumRating,
+  availableOnly,
+  setAvailableOnly,
+  verifiedOnly,
+  setVerifiedOnly,
+  clearFilters,
+  mobile = false,
+}) {
+  return <div className={styles.filterPanel}>
+    <div className={styles.filtersTitle}><div><SlidersHorizontal size={19} /><h2>Filters</h2></div>{mobile ? <DialogClose asChild><button type="button" className={styles.mobileFilterClose} aria-label="Close filters"><X size={19} /></button></DialogClose> : null}</div>
+    <FilterSelect label="Service" value={category} onChange={setCategory} options={categories} />
+    <FilterSelect label="Experience level" value={level} onChange={setLevel} options={["All levels", "top-rated", "pro", "rising", "new"]} />
+    <FilterSelect label="Language" value={language} onChange={setLanguage} options={languages} />
+    <div className={styles.filterGroup}>
+      <div className={styles.filterLabel}><span>Hourly rate</span><strong>Up to €{maxRate}</strong></div>
+      <input className={styles.range} type="range" min="20" max="150" value={maxRate} onChange={(event) => setMaxRate(Number(event.target.value))} aria-label="Maximum hourly rate" aria-valuetext={`Up to €${maxRate} per hour`} />
+      <div className={styles.rangeValues}><span>€20</span><span>€150+</span></div>
+    </div>
+    <div className={styles.filterGroup}>
+      <span className={styles.filterHeading}>Minimum rating</span>
+      <div className={styles.ratingFilters}>
+        {ratingOptions.map((rating) => <button type="button" className={minimumRating === rating ? styles.ratingActive : ""} onClick={() => setMinimumRating(minimumRating === rating ? 0 : rating)} key={rating}><Star size={14} fill="currentColor" />{rating}.0 &amp; up</button>)}
+      </div>
+    </div>
+    <div className={styles.switchRows}>
+      <SwitchRow label="Available now" checked={availableOnly} onChange={setAvailableOnly} />
+      <SwitchRow label="Verified profiles" checked={verifiedOnly} onChange={setVerifiedOnly} />
+    </div>
+    <button className={styles.clearButton} type="button" onClick={clearFilters}>Clear all filters</button>
+  </div>;
 }
 
 function FilterSelect({ label, value, onChange, options }) {
