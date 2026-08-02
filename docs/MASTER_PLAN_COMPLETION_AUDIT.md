@@ -8,9 +8,9 @@ Decision rule: implemented code is not called launch-ready without the relevant 
 
 ## Executive status
 
-The technical private-beta foundation is implemented and locally verified. Online, Local and Jobs each have a permission-checked end-to-end lifecycle, shared roles/onboarding, Trust & Safety, privacy controls, free-beta payment quarantine, release validation and cross-product operations metrics. The repository is ready to become a hosted Preview candidate.
+The technical private-beta foundation is implemented and verified locally and on a protected Vercel Preview. Online, Local and Jobs each have a permission-checked end-to-end lifecycle, shared roles/onboarding, Trust & Safety, privacy controls, free-beta payment quarantine, release validation and cross-product operations metrics. Preview candidate `dpl_7zPMbERgWe9WN2AZh7W3d3L5KLNr` at commit `1e79188` passed the hosted release verifier.
 
-The project is not yet approved for invitations or public production. Remaining gates require external configuration or accountable human decisions: Vercel Preview/Production setup, hosted monitoring evidence, named operations owners, legal review, cohort approval and the payment/legal model. Payments correctly remain disabled.
+The project is not yet approved for invitations or public production. The Preview deployment and environment contract are complete; remaining gates require accountable human decisions and operational evidence: named operations owners, legal review, cohort approval, verified initial supply, a monitoring response destination and the payment/legal model. Payments correctly remain disabled.
 
 ## Evidence classes
 
@@ -31,7 +31,7 @@ The project is not yet approved for invitations or public production. Remaining 
 | Dashboard and messaging     | Proven locally                                     | role-aware dashboards, private workspaces, messages, deliverables, applications and operations snapshot                      | hosted usability and monitoring evidence                                               |
 | Trust, privacy and support  | Proven for code scope                              | report/ticket/dispute admin queues, audit events, notifications, account export/deletion request, rate limits                | named safety/support/privacy owners and legal retention process                        |
 | Payments                    | Deferred by policy                                 | Checkout, credits and Connect return `503 PRIVATE_BETA_FREE`; workspaces use beta-no-payment state                           | commission, protected funds, refunds, VAT/tax, KYC, countries and legal responsibility |
-| Release engineering         | Implemented; hosted proof required                 | environment verifier, hosted verifier, GitHub Environment workflow, Vercel config, release record and rollback runbook       | authenticate/link Vercel, configure isolated environments, deploy and record evidence  |
+| Release engineering         | Proven for Preview                                 | protected Vercel Preview, branch-scoped development Clerk/Convex variables, successful build and hosted release record        | preserve exact-artifact verification before promotion; Production remains unchanged    |
 | Responsive/UI quality       | Proven on core public scope                        | Chromium matrices at 375, 768, 1280 and 1440; loading/error states and shared design system                                  | complete keyboard/accessibility audit on reference page types                          |
 | SEO                         | Implemented in repository; external proof required | canonical routes, robots, sitemap, protected-route noindex and eligible-only JobPosting output                               | Search Console verification, sitemap submission and hosted rich-result validation      |
 | Analytics and KPIs          | Partially proven                                   | KPI contract and admin source-backed 30-day snapshot                                                                         | name owner; approve consent/provider; instrument event funnel only after approval      |
@@ -47,20 +47,20 @@ The project is not yet approved for invitations or public production. Remaining 
 
 ## True external blockers
 
-1. **Vercel:** no Skilllinkup project is linked locally and the CLI has no authenticated account. A one-time owner login plus project/environment selection is required before Preview can exist.
-2. **Environment separation:** isolated Preview and Production Clerk/Convex instances and scoped Vercel variables must be configured and verified by the executable environment contract.
-3. **Monitoring:** a hosted error/alert provider and response destination must be configured, then tested without personal data in alerts.
-4. **Ownership:** release/rollback, urgent safety, support, privacy, matching and legal/payment roles still show `TBD` in the runbook.
-5. **Legal and product:** terms/privacy/cookies/marketplace responsibilities, free-beta wording, Local region/categories and cohort invitations require explicit approval.
-6. **Search:** domain verification, sitemap submission and hosted structured-data validation require access to the final domain/Search Console.
+1. **Monitoring:** Vercel logs are available and the Preview produced no runtime error groups, but an alert destination and accountable responder must still be configured and tested without personal data.
+2. **Ownership:** release/rollback, urgent safety, support, privacy, matching and legal/payment roles still require named humans and backups.
+3. **Legal and product:** terms/privacy/cookies/marketplace responsibilities, free-beta wording, Local region/categories and cohort invitations require explicit approval.
+4. **Supply:** the initial Online, Local and Jobs cohorts must be manually verified before demand invitations are sent.
+5. **Search:** domain verification, sitemap submission and hosted structured-data validation require the final production domain and Search Console.
+6. **Production promotion:** rerun the environment contract, hosted verifier, authenticated smoke and monitoring checks on the exact Production artifact after a go decision.
 
 ## Recommended next executable sequence
 
-1. Owner authenticates Vercel CLI and links a new or existing Skilllinkup project without changing another project.
-2. Configure isolated Preview variables, run `npm run env:verify -- --environment=preview`, deploy and complete a release record.
-3. Run anonymous hosted verification plus the signed-in cross-role smoke against Preview; inspect Vercel and Convex logs.
-4. Assign every operations owner, verify initial supply and schedule the daily/weekly cadence.
-5. Obtain product/legal free-beta go/no-go, keeping payment routes quarantined.
-6. Promote the exact verified artifact, rerun Production environment and hosted checks, then invite Wave 0 only.
+1. Assign every operations owner and backup, including urgent safety, support, privacy, release/rollback and matching.
+2. Verify initial supply in the proposed Rotterdam–The Hague Local region and selected launch categories; schedule the daily and weekly operating cadence.
+3. Complete legal review and approve the free-beta wording while payment routes remain quarantined.
+4. Run the signed-in cross-role smoke against the protected Preview and record the artifact-specific result.
+5. Obtain the product/legal/operations go decision.
+6. Promote the exact verified artifact, rerun Production environment, hosted, authenticated and monitoring checks, then invite Wave 0 only.
 
 This audit is the authoritative boundary between completed engineering and launch claims. A green local build cannot close an external or human gate.
