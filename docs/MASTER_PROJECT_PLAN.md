@@ -315,14 +315,14 @@ Completed and verified:
 - A dedicated development QA identity was connected to Clerk and Convex without weakening production authorization boundaries.
 - The combined Playwright matrix completed with all 37 scenarios passing. Real Clerk JWTs prove cross-account denials and distinct Online client/freelancer, Local client/professional and Jobs candidate/company lifecycles through cancellation, completion, blind review and terminal-state enforcement. Expired/closed vacancies reject applications, internal HTTP and Convex maintenance boundaries fail closed, payment endpoints remain quarantined, and the dedicated admin JWT positively verifies its protected query. Post-cleanup verification proves all fixtures, child records, reviews, lifecycle notifications and generated records are gone before the smoke secret is rotated.
 - Clerk/Next authentication was verified from signed-out redirect through signed-in dashboard, and Convex user synchronization now authorizes by Clerk subject even when the deployment JWT intentionally omits email.
-- Preview and production now have an executable environment contract, hosted smoke runner, environment-scoped GitHub release gate, release-record template and exact promotion/rollback procedure. Actual Vercel project linking and hosted evidence remain open until the one-time CLI authentication is available.
+- Preview and production have an executable environment contract, hosted smoke runner, environment-scoped GitHub release gate, release-record template and exact promotion/rollback procedure. The Vercel project is linked, the general Preview scope inherits an isolated development Clerk/Convex contract, and `/api/health` now identifies the exact version, commit and immutable deployment artifact.
 - A source-backed admin operations snapshot now reports 30-day demand, response coverage, committed matches, completion, cancellation, median first response and open trust queues across all three products. Its admin authorization and fixture-backed calculations are covered by direct Clerk-JWT acceptance.
 - The private-beta KPI contract, segmented cohort plan, daily operations log and English-first support-response library are documented. Human ownership and scheduled cohort activity remain explicit launch gates.
 
 Operational gates still open:
 
-- Configure and verify the separate preview environment, monitoring, rollback and hosted smoke run.
-- Configure preview/production environment separation, monitoring, rollback and Search Console.
+- Keep the verified Preview/Production separation and artifact-specific hosted smoke run green for every release; perform and record a rollback rehearsal with the named release owner.
+- Configure Search Console and validate the production sitemap and eligible JobPosting output.
 - Connect a hosted error-monitoring/alerting provider to the existing health and error surfaces; local readiness does not replace production alert delivery.
 - Confirm the Local launch region (current hypothesis: Rotterdam–The Hague) and first supply cohort.
 - Name the human owners for support, urgent safety incidents, moderation and daily marketplace operations.
