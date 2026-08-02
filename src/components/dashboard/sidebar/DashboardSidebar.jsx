@@ -54,7 +54,7 @@ export default function DashboardSidebar() {
   return (
     <div className={styles.sidebar} data-collapsed={collapsed ? "true" : "false"}>
       <div className={styles.brandRow}>
-        <Link href="/" className={styles.brand} aria-label="Skilllinkup home"><Image src="/images/logo/skilllinkup-link-logo-light.png" alt="Skilllinkup" width={736} height={168} priority /></Link>
+        <Link href="/" className={styles.brand} aria-label="Skilllinkup home"><Image src="/images/logo/skilllinkup-template-logo-v2.png" alt="Skilllinkup" width={736} height={168} priority /></Link>
         <button type="button" className={styles.collapse} onClick={toggleCollapsed} aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}>{collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}</button>
       </div>
 
