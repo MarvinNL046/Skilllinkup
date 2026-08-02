@@ -66,6 +66,12 @@
 .messageForm { display: grid; gap: .55rem; }
 .messageForm button { justify-self: end; padding-inline: 1rem; }
 .noConversation { color: var(--text-secondary); font-size: .84rem; }
+.page :is(a, button, input, textarea):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--primary-600) 62%, white);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 1px white;
+}
+.page :is(button, input, textarea):disabled { cursor: not-allowed; opacity: .62; }
 .loading, .empty { display: flex; min-height: 25rem; align-items: center; justify-content: center; gap: .6rem; color: var(--text-secondary); }
 .loading svg, .spinner { animation: spin 800ms linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }

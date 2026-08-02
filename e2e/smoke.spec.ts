@@ -94,6 +94,26 @@ async function signInToDashboardUser(
   });
 }
 
+async function tabToControl(
+  page: import("@playwright/test").Page,
+  target: import("@playwright/test").Locator,
+  maxTabs = 80,
+) {
+  for (let index = 0; index < maxTabs; index += 1) {
+    await page.keyboard.press("Tab");
+    if (await target.evaluate((element) => element === document.activeElement)) {
+      const focusStyle = await target.evaluate((element) => {
+        const style = window.getComputedStyle(element);
+        return { outlineStyle: style.outlineStyle, outlineWidth: style.outlineWidth };
+      });
+      expect(focusStyle.outlineStyle).not.toBe("none");
+      expect(Number.parseFloat(focusStyle.outlineWidth)).toBeGreaterThanOrEqual(2);
+      return;
+    }
+  }
+  throw new Error(`Keyboard focus did not reach ${await target.getAttribute("aria-label") || await target.textContent() || "the requested control"}.`);
+}
+
 async function createAuthenticatedConvexClient(
   page,
   baseURL,
@@ -482,6 +502,32 @@ test("local client can open the appointment without professional controls", asyn
   await expect(
     page.getByRole("button", { name: "Propose new time" }),
   ).toBeVisible();
+});
+
+test("deep Online and Local workspaces expose visible keyboard focus", async ({
+  page,
+  baseURL,
+}) => {
+  test.setTimeout(60_000);
+  const manifest = readManifest();
+  await signInToDashboardUser(page, baseURL, freelancerUserEmail);
+
+  await page.goto(new URL(manifest.routes.order, baseURL).toString(), {
+    waitUntil: "domcontentloaded",
+  });
+  await expect(page.getByTestId("order-workspace")).toBeVisible({ timeout: 20_000 });
+  await page.locator("body").focus();
+  await tabToControl(page, page.getByRole("button", { name: "Submit work for review" }));
+  await tabToControl(page, page.getByRole("textbox", { name: "Project message" }));
+
+  await page.goto(new URL(manifest.routes.localOrder, baseURL).toString(), {
+    waitUntil: "domcontentloaded",
+  });
+  await expect(page.getByTestId("local-appointment")).toBeVisible({ timeout: 20_000 });
+  await page.locator("body").focus();
+  await tabToControl(page, page.getByRole("textbox", { name: "Propose a new appointment time" }));
+  await tabToControl(page, page.getByRole("button", { name: "Confirm appointment" }));
+  await tabToControl(page, page.getByRole("button", { name: "Cancel appointment" }));
 });
 
 const roleSmokeCases = [
