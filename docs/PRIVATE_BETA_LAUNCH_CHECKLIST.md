@@ -90,13 +90,13 @@ No box may be inferred from a green build alone. Attach the concrete test, scree
 ## 5. Responsive and accessibility QA
 
 - [ ] Reference page types are checked at 375, 768, 1280 and 1440 pixels.
-- [ ] Navigation, forms, tables, modals, filters and workspaces remain usable with keyboard only.
+- [x] Navigation, forms, tables, modals, filters and workspaces remain usable with keyboard only across the representative private-beta flows.
 - [ ] Focus states, dialog labels, form errors and loading states are perceivable.
 - [ ] Body text meets the agreed readable size and colour contrast target.
 - [ ] Images have useful alt text or empty alt text when decorative.
 - [x] Reduced-motion preference is respected globally; the browser regression also proves that the shared card-lift behavior is not bound when the operating system requests reduced motion.
 
-Automated public-scope evidence: `e2e/accessibility.spec.ts` exercises Home, Services, Projects, Online freelancers, Local, Jobs, login and registration. It requires one main landmark and one visible `h1`, labelled visible form controls, complete image `alt` attributes, unique IDs, a working keyboard skip-link and the reduced-motion contract. It also proves that mobile navigation and the nested waitlist dialog trap and restore keyboard focus correctly. Authenticated smoke coverage requires one visible page `h1` across Dashboard, Manage Projects, Proposals, Orders, Messages, Create Project and Profile, including labelled collapsed-sidebar actions. The deep-workspace extension traverses Online delivery/messaging and Local appointment controls with the keyboard and asserts a visible focus ring. Remaining manual keyboard scope is concentrated in data tables, edit modals and complex filters, so the overall gate stays open.
+Automated public-scope evidence: `e2e/accessibility.spec.ts` exercises Home, Services, Projects, Online freelancers, Local, Jobs, login and registration. It requires one main landmark and one visible `h1`, labelled visible form controls, complete image `alt` attributes, unique IDs, a working keyboard skip-link and the reduced-motion contract. It proves that mobile navigation, the nested waitlist dialog and the professional-filter drawer trap and restore focus correctly. Authenticated smoke coverage requires one visible page `h1` across Dashboard, Manage Projects, Proposals, Orders, Messages, Create Project and Profile, including labelled collapsed-sidebar actions. The deep-workspace extension traverses Online delivery/messaging and Local appointment controls with visible focus. The project-table CRUD flow additionally proves initial edit-modal focus, cyclic tab containment, Escape dismissal and return to the originating row action.
 
 ## 6. SEO and analytics
 

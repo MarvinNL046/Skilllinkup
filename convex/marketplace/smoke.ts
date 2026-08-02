@@ -11,6 +11,10 @@ type SeedLookup = {
   freelancerProfileId: Id<"freelancerProfiles">;
 };
 
+function isDedicatedQaEmail(email: string) {
+  return /^skilllinkup\.qa\+(?:clerk_test|local-client_clerk_test|company_clerk_test)@skilllinkup\.com$/i.test(email);
+}
+
 async function getSeedLookup(
   ctx: MutationCtx,
   {
@@ -1025,9 +1029,14 @@ export const cleanup = mutation({
       }
     }
 
-    if (args.qaUserId) {
-      const qaUser = await ctx.db.get(args.qaUserId);
-      if (qaUser?.email.startsWith("skilllinkup.qa+clerk_test")) {
+    const qaActorIds = [...new Set(
+      [args.qaUserId, args.localClientId, args.companyUserId].filter(
+        (id): id is Id<"users"> => id !== undefined
+      )
+    )];
+    for (const qaActorId of qaActorIds) {
+      const qaUser = await ctx.db.get(qaActorId);
+      if (qaUser && isDedicatedQaEmail(qaUser.email)) {
         const qaJobs = await ctx.db
           .query("jobs")
           .withIndex("by_client", (q) => q.eq("clientId", qaUser._id))
@@ -1308,15 +1317,27 @@ export const verifyCleanup = query({
       }).length;
     }
 
-    const qaUser = args.qaUserId ? await ctx.db.get(args.qaUserId) : null;
-    const qaJobs = qaUser
-      ? await ctx.db.query("jobs").withIndex("by_client", (q) => q.eq("clientId", qaUser._id)).take(200)
-      : [];
-    const qaProjects = qaUser
-      ? await ctx.db.query("projects").withIndex("by_client", (q) => q.eq("clientId", qaUser._id)).take(200)
-      : [];
-    const generatedJobs = qaJobs.filter((job) => job.title.startsWith("Playwright Product Designer")).length;
-    const generatedProjects = qaProjects.filter((project) => project.title.startsWith("Playwright CRUD Project")).length;
+    let generatedJobs = 0;
+    let generatedProjects = 0;
+    const qaActorIds = [...new Set(
+      [args.qaUserId, args.localClientId, args.companyUserId].filter(
+        (id): id is Id<"users"> => id !== undefined
+      )
+    )];
+    for (const qaActorId of qaActorIds) {
+      const qaUser = await ctx.db.get(qaActorId);
+      if (!qaUser || !isDedicatedQaEmail(qaUser.email)) continue;
+      const qaJobs = await ctx.db
+        .query("jobs")
+        .withIndex("by_client", (q) => q.eq("clientId", qaUser._id))
+        .take(200);
+      const qaProjects = await ctx.db
+        .query("projects")
+        .withIndex("by_client", (q) => q.eq("clientId", qaUser._id))
+        .take(200);
+      generatedJobs += qaJobs.filter((job) => job.title.startsWith("Playwright Product Designer")).length;
+      generatedProjects += qaProjects.filter((project) => project.title.startsWith("Playwright CRUD Project")).length;
+    }
     const admin = args.adminUserId ? await ctx.db.get(args.adminUserId) : null;
     const adminRole = admin?.role ?? null;
     const ok =

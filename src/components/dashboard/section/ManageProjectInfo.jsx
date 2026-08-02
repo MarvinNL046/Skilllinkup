@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import DashboardNavigation from "../header/DashboardNavigation";
 import DashboardTabs from "../element/DashboardTabs";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import ManageProjectCard from "../card/ManageProjectCard";
@@ -30,6 +30,7 @@ export default function ManageProjectInfo() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const returnFocusRef = useRef(null);
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
 
   const updateProject = useMutation(api.marketplace.projects.update);
@@ -77,6 +78,11 @@ export default function ManageProjectInfo() {
       toast.error(err.message || t("projectUpdateFailed"));
       throw err;
     }
+  };
+
+  const closeAndRestoreFocus = (setOpen) => {
+    setOpen(false);
+    window.requestAnimationFrame(() => returnFocusRef.current?.focus());
   };
 
   if (isAuthenticated && convexUser === undefined) {
@@ -195,11 +201,13 @@ export default function ManageProjectInfo() {
                       <ManageProjectCard
                         key={project._id}
                         project={project}
-                        onEdit={(p) => {
+                        onEdit={(p, trigger) => {
+                          returnFocusRef.current = trigger;
                           setSelectedProject(p);
                           setEditOpen(true);
                         }}
-                        onDelete={(p) => {
+                        onDelete={(p, trigger) => {
+                          returnFocusRef.current = trigger;
                           setSelectedProject(p);
                           setDeleteOpen(true);
                         }}
@@ -214,13 +222,13 @@ export default function ManageProjectInfo() {
       </div>
       <ProposalModal1
         isOpen={editOpen}
-        onClose={() => setEditOpen(false)}
+        onClose={() => closeAndRestoreFocus(setEditOpen)}
         project={selectedProject}
         onUpdate={handleUpdate}
       />
       <DeleteModal
         isOpen={deleteOpen}
-        onClose={() => setDeleteOpen(false)}
+        onClose={() => closeAndRestoreFocus(setDeleteOpen)}
         projectId={selectedProject?._id}
         projectTitle={selectedProject?.title}
         onDelete={handleDelete}

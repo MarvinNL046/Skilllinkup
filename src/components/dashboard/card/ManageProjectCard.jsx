@@ -65,7 +65,7 @@ export default function ManageProjectCard({ project, onEdit, onDelete }) {
       ? t("bidsReceivedPlural", { count: bidCount })
       : t("bidsReceived", { count: bidCount });
 
-  const idSuffix = project?._id ?? Math.random();
+  const idSuffix = project?._id ?? (title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "project");
   const tooltipViewId = `view-${idSuffix}`;
   const tooltipEditId = `edit-${idSuffix}`;
   const tooltipDeleteId = `delete-${idSuffix}`;
@@ -120,7 +120,7 @@ export default function ManageProjectCard({ project, onEdit, onDelete }) {
           <button
             type="button"
             id={tooltipEditId}
-            onClick={() => onEdit?.(project)}
+            onClick={(event) => onEdit?.(project, event.currentTarget)}
             data-testid="manage-project-edit"
             aria-label={t("edit")}
             className="text-[var(--text-tertiary)] hover:text-foreground"
@@ -133,7 +133,7 @@ export default function ManageProjectCard({ project, onEdit, onDelete }) {
           <button
             type="button"
             id={tooltipDeleteId}
-            onClick={() => onDelete?.(project)}
+            onClick={(event) => onDelete?.(project, event.currentTarget)}
             data-testid="manage-project-delete"
             aria-label={t("delete")}
             className="text-[var(--text-tertiary)] hover:text-destructive"
