@@ -1,19 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, Check, Globe2, Headphones, ShieldCheck, Star, WalletCards } from "lucide-react";
+import { ArrowRight, BadgeCheck, Check, Globe2, Headphones, ShieldCheck, WalletCards } from "lucide-react";
 import styles from "./WorldwideHome.module.css";
 
 const benefits = [
   { Icon: BadgeCheck, title: "Verified professionals", text: "Clear profiles, experience, and identity signals help you know who you are working with.", proof: "Profile and identity checks" },
   { Icon: WalletCards, title: "Clear agreements", text: "Keep scope, milestones and approvals in one place, with a clear record from start to finish.", proof: "Private beta: no payments" },
   { Icon: Globe2, title: "Local and worldwide", text: "Find nearby hands-on help or work with specialists across borders from one marketplace.", proof: "One trusted global network" },
-  { Icon: Headphones, title: "Human support", text: "Get practical help when a project, payment, service, or application needs attention.", proof: "Support when it matters" },
+  { Icon: Headphones, title: "Human support", text: "Get practical help when a project, service, quote, or application needs attention.", proof: "Support when it matters" },
 ];
 
 const stories = [
-  { quote: "We found a designer in Lisbon on Monday and launched our new brand three weeks later.", name: "Maya Collins", role: "Founder, Northstar Studio", image: "/images/skilllinkup-home/testimonial-maya-v2.png" },
-  { quote: "The technician was verified, nearby, and had our air conditioning running that same afternoon.", name: "Daniel Weber", role: "Homeowner, Berlin", image: "/images/skilllinkup-home/testimonial-daniel-v2.png" },
-  { quote: "I came for freelance projects and discovered a remote role that became my full-time career.", name: "Amara Mensah", role: "Product marketer, Accra", image: "/images/skilllinkup-home/testimonial-amara-v2.png" },
+  { quote: "Hire a specialist worldwide for a defined service or project, then keep scope and delivery in one workspace.", name: "Online", role: "Global freelance work", image: "/images/skilllinkup-home/testimonial-maya-v2.png" },
+  { quote: "Request quotes from nearby professionals without publishing your full address to the public marketplace.", name: "Local", role: "Rotterdam–The Hague beta", image: "/images/skilllinkup-home/testimonial-daniel-v2.png" },
+  { quote: "Discover a verified company vacancy and track every application step from one candidate dashboard.", name: "Jobs", role: "Dutch and remote European roles", image: "/images/skilllinkup-home/testimonial-amara-v2.png" },
 ];
 
 export default function TrustStories() {
@@ -24,7 +24,7 @@ export default function TrustStories() {
           <div className={styles.whyIntro}>
             <span className={styles.eyebrow}>Built around trust</span>
             <h2>Why people choose Skilllinkup</h2>
-            <p>Good work starts with confidence. Skilllinkup brings the people, agreements, payments, and support around every collaboration into one clear experience.</p>
+            <p>Good work starts with confidence. Skilllinkup brings people, agreements, progress and support around every collaboration into one clear experience.</p>
 
             <div className={styles.trustPromise}>
               <span><ShieldCheck size={28} strokeWidth={1.8} /></span>
@@ -55,16 +55,13 @@ export default function TrustStories() {
       </section>
 
       <section className={`${styles.section} ${styles.testimonialSection}`}>
-        <header className={styles.centerHeading}><span className={styles.eyebrow}>Real connections</span><h2>What our community says</h2></header>
+        <header className={styles.centerHeading}><span className={styles.eyebrow}>One connected marketplace</span><h2>Three ways to find the right fit</h2></header>
         <div className={styles.storyGrid}>
           {stories.map((story) => (
-            <blockquote className={styles.storyCard} key={story.name}>
-              <div className={styles.stars} aria-label="Five out of five stars">
-                {Array.from({ length: 5 }, (_, index) => <Star size={13} fill="currentColor" key={index} />)}
-              </div>
-              <p>&ldquo;{story.quote}&rdquo;</p>
+            <article className={styles.storyCard} key={story.name}>
+              <p>{story.quote}</p>
               <footer><Image src={story.image} alt={story.name} width={48} height={48} unoptimized /><span><strong>{story.name}</strong><small>{story.role}</small></span></footer>
-            </blockquote>
+            </article>
           ))}
         </div>
       </section>

@@ -59,8 +59,8 @@ const demoProject = {
     "Prototyping",
   ],
   bidCount: 12,
-  deadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * 18).getTime(),
-  createdAt: Date.now() - 1000 * 60 * 60 * 2,
+  deadline: new Date("2026-08-31T23:59:00Z").getTime(),
+  createdAt: new Date("2026-07-01T10:00:00Z").getTime(),
   categoryName: "Interior & Design",
   clientName: "Greenhaus Living",
   clientAvatar: "/images/logo/skilllinkup-link-logo-light.png",
@@ -181,6 +181,7 @@ export default function ProjectDetail() {
   const project =
     liveProject ||
     ((showDemo || liveProject === null) && isDemoRoute ? demoProject : null);
+  const isDemoProject = project?._id === "demo-project";
   const similarProjects = useQuery(api.marketplace.projects.list, {
     locale: "en",
     limit: 5,
@@ -194,8 +195,8 @@ export default function ProjectDetail() {
       similarProjects
         ?.filter((item) => item._id !== project?._id)
         .slice(0, 4) || [];
-    if (real.length === 4) return real;
-    return [
+    if (real.length) return real;
+    return isDemoProject ? [
       {
         _id: "s1",
         title: "Web design for a wellness platform",
@@ -231,8 +232,8 @@ export default function ProjectDetail() {
         workType: "remote",
         bidCount: 7,
       },
-    ];
-  }, [similarProjects, project?._id]);
+    ] : [];
+  }, [similarProjects, project?._id, isDemoProject]);
 
   const scrollToProposal = useCallback(
     () =>
@@ -266,10 +267,8 @@ export default function ProjectDetail() {
       .filter(Boolean)
       .join(", ") || "Online";
   const currency = project.currency || "EUR";
-  const skills = project.requiredSkills?.length
-    ? project.requiredSkills
-    : demoProject.requiredSkills;
-  const description = project.description || demoProject.description;
+  const skills = project.requiredSkills || [];
+  const description = project.description || "No project description has been published.";
 
   return (
     <main className={styles.page}>
@@ -285,6 +284,7 @@ export default function ProjectDetail() {
           <ArrowLeft size={16} />
           Back to all projects
         </Link>
+        {isDemoProject && <aside className={styles.previewNotice}><strong>Illustrative project preview</strong><span>This brief, company, budget and response activity demonstrate the intended experience; they are not live marketplace records.</span></aside>}
 
         <div className={styles.layout}>
           <div className={styles.content}>
@@ -542,13 +542,13 @@ export default function ProjectDetail() {
               <div className={styles.trustList}>
                 <TrustRow
                   icon={ShieldCheck}
-                  title="Protected payment"
-                  text="Your payment is secured"
+                  title="Clear beta agreement"
+                  text="Record scope, milestones and delivery"
                 />
                 <TrustRow
                   icon={WalletCards}
-                  title="Pay after delivery"
-                  text="Release funds when satisfied"
+                  title="Approval history"
+                  text="Keep feedback and approval in one workspace"
                 />
                 <TrustRow
                   icon={Headphones}
@@ -575,41 +575,33 @@ export default function ProjectDetail() {
                 </div>
                 <span>
                   <strong>
-                    {project.clientName || "Verified client"}
-                    <BadgeCheck size={16} />
+                    {project.clientName || "Skilllinkup client"}
+                    {project.clientVerified ? <BadgeCheck size={16} /> : null}
                   </strong>
-                  <small>
-                    <BadgeCheck size={14} />
-                    Verified company
-                  </small>
+                  <small>{isDemoProject ? "Illustrative company" : project.clientVerified ? "Email verified" : "Private-beta client"}</small>
                 </span>
-              </div>
-              <div className={styles.clientRating}>
-                <Star size={17} fill="currentColor" />
-                <strong>4.8 / 5</strong>
-                <span>32 reviews</span>
               </div>
               <dl>
                 <div>
                   <dt>
                     <CalendarDays size={16} />
-                    Member since
+                    Project status
                   </dt>
-                  <dd>March 2022</dd>
+                  <dd>{isDemoProject ? "Preview" : project.status}</dd>
                 </div>
                 <div>
                   <dt>
                     <BriefcaseBusiness size={16} />
-                    Projects posted
+                    Responses
                   </dt>
-                  <dd>8</dd>
+                  <dd>{project.bidCount || 0}</dd>
                 </div>
                 <div>
                   <dt>
                     <Clock3 size={16} />
-                    Average response
+                    Published
                   </dt>
-                  <dd>2 hours</dd>
+                  <dd>{new Date(project.publishedAt || project.createdAt).toLocaleDateString("en-GB")}</dd>
                 </div>
                 <div>
                   <dt>
@@ -624,10 +616,10 @@ export default function ProjectDetail() {
         </div>
       </div>
 
-      <section className={styles.similarSection}>
+      {similar.length > 0 && <section className={styles.similarSection}>
         <div className={styles.shell}>
           <div className={styles.sectionTitle}>
-            <h2>Similar projects</h2>
+            <h2>{isDemoProject ? "Illustrative related projects" : "Similar projects"}</h2>
             <Link href="/projects">
               View all projects <ArrowRight size={16} />
             </Link>
@@ -664,7 +656,7 @@ export default function ProjectDetail() {
             ))}
           </div>
         </div>
-      </section>
+      </section>}
 
       <div className={styles.shell}>
         <section className={styles.projectAlert}>
@@ -694,8 +686,8 @@ export default function ProjectDetail() {
           />
           <TrustRow
             icon={BadgeCheck}
-            title="Verified companies"
-            text="Clients are manually reviewed"
+            title="Visible trust signals"
+            text="Email and profile status are shown clearly"
           />
           <TrustRow
             icon={MessageSquare}

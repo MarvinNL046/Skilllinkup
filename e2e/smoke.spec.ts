@@ -187,6 +187,48 @@ test("project detail renders", async ({ page, baseURL }) => {
   ).toBeVisible();
 });
 
+test("public project inventory and demo routes are labelled honestly", async ({
+  page,
+  baseURL,
+}) => {
+  await page.goto(new URL("/projects", baseURL).toString(), {
+    waitUntil: "networkidle",
+  });
+
+  await expect(page.getByText("Live private-beta inventory")).toBeVisible();
+  await expect(page.locator('a[href^="/online/project/"]').first()).toBeVisible();
+  await expect(page.getByText("342 projects found")).toHaveCount(0);
+  await expect(page.getByText("Studio Bright")).toHaveCount(0);
+
+  await page.goto(new URL("/online/freelancer/demo", baseURL).toString(), {
+    waitUntil: "networkidle",
+  });
+  await expect(page.getByText("Illustrative profile preview")).toBeVisible();
+
+  await page.goto(new URL("/online/project/demo", baseURL).toString(), {
+    waitUntil: "networkidle",
+  });
+  await expect(page.getByText("Illustrative project preview")).toBeVisible();
+});
+
+test("project inventory and profile preview fit a mobile viewport", async ({
+  page,
+  baseURL,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+
+  for (const route of ["/projects", "/online/freelancer/demo"]) {
+    await page.goto(new URL(route, baseURL).toString(), {
+      waitUntil: "networkidle",
+    });
+    await expect(page.locator("h1:visible")).toHaveCount(1);
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - window.innerWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(1);
+  }
+});
+
 test("quote request detail renders", async ({ page, baseURL }) => {
   const manifest = readManifest();
   await page.goto(new URL(manifest.routes.quoteRequest, baseURL).toString(), {
@@ -280,21 +322,40 @@ test("protected workspace indexes expose one labelled page heading", async ({
   });
   await page.reload({ waitUntil: "domcontentloaded" });
   await expect(page.getByRole("link", { name: "Dashboard" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Log out" })).toBeVisible();
+  const collapseSidebar = page.getByRole("button", { name: "Collapse sidebar" });
+  await expect(collapseSidebar).toBeVisible();
+  await collapseSidebar.click();
   const expandSidebar = page.getByRole("button", { name: "Expand sidebar" });
   await expect(expandSidebar).toBeVisible();
   await expandSidebar.click();
   await expect(
     page.getByRole("button", { name: "Collapse sidebar" }),
   ).toBeVisible();
-  await expect
-    .poll(() =>
-      page.evaluate(() =>
-        window.localStorage.getItem("dashboard-sidebar-collapsed"),
-      ),
-    )
-    .toBe("false");
+  await expect(page.getByRole("button", { name: "Log out" })).toBeVisible();
   expect(hydrationErrors).toEqual([]);
+});
+
+test("private-beta finance routes explain that payments are disabled", async ({
+  page,
+  baseURL,
+}) => {
+  test.setTimeout(45_000);
+  await signInToDashboardUser(page, baseURL);
+
+  for (const route of ["/payouts", "/invoice", "/statements"]) {
+    await page.goto(new URL(route, baseURL).toString(), {
+      waitUntil: "domcontentloaded",
+    });
+    await expect(page.locator("h1:visible")).toHaveCount(1, {
+      timeout: 15_000,
+    });
+    await expect(
+      page.getByRole("heading", {
+        level: 2,
+        name: "No payment, escrow or transfer is created",
+      }),
+    ).toBeVisible();
+  }
 });
 
 test("candidate application pipeline renders for the signed-in fixture", async ({

@@ -1,21 +1,15 @@
-import { getTranslations } from "next-intl/server";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import InvoiceInfo from "@/components/dashboard/section/InvoiceInfo";
+import PrivateBetaFinanceInfo from "@/components/dashboard/section/PrivateBetaFinanceInfo";
 
 
-export async function generateMetadata() {
-  const t = await getTranslations("invoice");
-  return {
-    title: t("title"),
-  };
-}
+export const metadata = { title: "Invoice policy" };
 
 export default function page() {
   return (
     <>
 
       <DashboardLayout maxWidth="wide">
-        <InvoiceInfo />
+        <PrivateBetaFinanceInfo kind="invoices" />
       </DashboardLayout>
     </>
   );

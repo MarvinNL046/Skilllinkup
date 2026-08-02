@@ -54,20 +54,19 @@ export const list = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const limit = args.limit ?? 20;
+    const limit = Math.min(100, Math.max(1, args.limit ?? 20));
 
     const projects = await ctx.db
       .query("projects")
-      .withIndex("by_status", (q) => q.eq("status", "open"))
+      .withIndex("by_status_locale", (q) =>
+        q.eq("status", "open").eq("locale", args.locale)
+      )
       .order("desc")
       .take(limit);
 
-    // Filter by locale in memory (no composite index for status+locale)
-    const filtered = projects.filter((p) => p.locale === args.locale);
-
     // Batch load unique clients and categories
-    const clientIds = [...new Set(filtered.map((p) => p.clientId).filter(Boolean))];
-    const categoryIds = [...new Set(filtered.map((p) => p.categoryId).filter(Boolean))] as typeof filtered[number]["categoryId"][];
+    const clientIds = [...new Set(projects.map((p) => p.clientId).filter(Boolean))];
+    const categoryIds = [...new Set(projects.map((p) => p.categoryId).filter(Boolean))] as typeof projects[number]["categoryId"][];
 
     const [clients, categories] = await Promise.all([
       Promise.all(clientIds.map((id) => ctx.db.get(id))),
@@ -77,7 +76,7 @@ export const list = query({
     const clientMap = new Map(clients.filter(Boolean).map((c) => [c!._id, c!]));
     const categoryMap = new Map(categories.filter(Boolean).map((c) => [c!._id, c!]));
 
-    const enriched = filtered.map((project) => {
+    const enriched = projects.map((project) => {
       const client = clientMap.get(project.clientId);
       const category = project.categoryId ? categoryMap.get(project.categoryId) : null;
 
@@ -85,6 +84,7 @@ export const list = query({
         ...project,
         clientName: client?.name ?? null,
         clientAvatar: client?.avatar ?? (client as any)?.image ?? null,
+        clientVerified: client?.emailVerified === true,
         categoryName: category?.name ?? null,
         // Use the stored bidCount field — kept in sync by submitBid mutation
         bidCount: project.bidCount ?? 0,
@@ -122,6 +122,7 @@ export const getBySlug = query({
       ...project,
       clientName: client?.name ?? null,
       clientAvatar: client?.avatar ?? (client as any)?.image ?? null,
+      clientVerified: client?.emailVerified === true,
       categoryName: category?.name ?? null,
       // Use the stored bidCount field — kept in sync by submitBid mutation
       bidCount: project.bidCount ?? 0,

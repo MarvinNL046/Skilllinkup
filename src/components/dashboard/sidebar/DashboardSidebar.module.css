@@ -1,10 +1,12 @@
-.sidebar { display: flex; height: 100%; min-height: 0; flex-direction: column; padding: 20px 14px 16px; color: #fff; background-color: #062554; }
+.sidebar { position: relative; display: flex; height: 100%; min-height: 0; flex-direction: column; padding: 20px 14px 16px; color: #fff; background-color: #062554; }
 .brandRow { display: flex; align-items: center; gap: 10px; min-height: 43px; margin-bottom: 19px; padding: 0 5px; }
 .brand { display: flex; min-width: 0; min-height: 42px; flex: 1; align-items: center; overflow: hidden; padding: 7px 10px; border: 1px solid rgb(255 255 255 / 15%); border-radius: 10px; background: #fff; box-shadow: 0 8px 22px rgb(0 15 43 / 18%); }
 .brand img { display: block; max-width: none; height: auto; }
 .fullLogo { width: 158px; }
 .markLogo { display: none !important; width: 158px; }
-.collapse { display: grid; place-items: center; flex: 0 0 auto; width: 28px; height: 28px; border: 1px solid rgb(255 255 255 / 15%); border-radius: 7px; background: rgb(255 255 255 / 7%); color: #d5e3f5; cursor: pointer; }
+.collapse { position: absolute; z-index: 5; top: 72px; right: -15px; display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid #d8e0ea; border-radius: 999px; background: #fff; color: #062554; box-shadow: 0 5px 16px rgb(0 15 43 / 18%); cursor: pointer; transition: color 150ms ease, border-color 150ms ease, transform 150ms ease; }
+.collapse:hover { transform: scale(1.06); border-color: #ff4b2b; color: #ff4b2b; }
+.collapse:focus-visible { outline: 3px solid rgb(255 75 43 / 28%); outline-offset: 2px; }
 .worlds { display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; margin-bottom: 16px; padding: 4px; border: 1px solid rgb(255 255 255 / 11%); border-radius: 9px; background: rgb(0 0 0 / 10%); }
 .worlds button { display: flex; align-items: center; justify-content: center; gap: 4px; min-height: 34px; border: 0; border-radius: 6px; background: transparent; color: #9eb3ce; font: inherit; font-size: 12px; cursor: pointer; }
 .worlds .worldActive { background: rgb(255 255 255 / 12%); color: #fff; box-shadow: inset 0 1px 0 rgb(255 255 255 / 9%); }
@@ -25,10 +27,9 @@
 .logout { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 41px; border: 0; border-radius: 8px; background: transparent; color: #b8c8dc; font: inherit; font-size: 13px; cursor: pointer; }
 .logout:hover { background: rgb(255 255 255 / 7%); color: #fff; }
 .sidebar[data-collapsed="true"] { padding-inline: 10px; }
-.sidebar[data-collapsed="true"] .brandRow { flex-direction: column; padding: 0; }
+.sidebar[data-collapsed="true"] .brandRow { padding: 0; }
 .sidebar[data-collapsed="true"] .brand { width: 44px; min-height: 42px; flex: 0 0 42px; padding: 8px 7px; }
 .sidebar[data-collapsed="true"] .fullLogo { display: none; }
 .sidebar[data-collapsed="true"] .markLogo { display: block !important; width: 158px; transform: translateX(0); }
-.sidebar[data-collapsed="true"] .collapse { display: grid; }
 .sidebar[data-collapsed="true"] .navItem { justify-content: center; padding: 0; }
 @media (max-width:1023px) { .collapse { display:none; } }

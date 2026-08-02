@@ -55,7 +55,7 @@ export default function ProcessWorkspace() {
           <div className={styles.workspaceMock} aria-label="Example Skilllinkup project workspace">
             <Image
               src="/images/skilllinkup-home/project-workspace-v1.png"
-              alt="Skilllinkup project dashboard with project progress, protected payment, messages, and shared files"
+              alt="Skilllinkup project dashboard with project progress, agreement status, messages, and shared files"
               width={1536}
               height={1024}
               sizes="(max-width: 1050px) 100vw, 760px"

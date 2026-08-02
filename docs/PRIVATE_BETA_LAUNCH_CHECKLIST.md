@@ -28,6 +28,8 @@ No box may be inferred from a green build alone. Attach the concrete test, scree
 - The smoke dataset is removed through the secret-protected cleanup mutation after verification. Its server-side post-cleanup audit proves zero fixture records, child messages, deliverables, reviews, lifecycle notifications and generated Playwright records, plus restoration of the admin role; the development smoke secret is rotated afterwards.
 - The admin-only 30-day marketplace-health snapshot is source-backed by Convex and exposes demand, response coverage, committed matches, completion/cancellation, median first response and open trust queues. Direct JWT tests prove outsider denial and admin access; the admin browser surface is asserted separately.
 - Upload security is enforced from authoritative Convex storage metadata. A real multi-account storage test proves cross-account storage-ID replay is rejected, disallowed resume MIME types and files over 10 MB are rejected, and owner deletion removes both the storage object and its ownership record. Post-test cleanup reports zero smoke fixtures and an empty `fileAssets` table.
+- Public inventory integrity is guarded by `npm run beta:verify-copy` across 16 launch surfaces. `/projects` now renders only published Convex records and real counts; explicit demo profile/project routes are labelled as illustrative and never supplement a live profile with fabricated services, work history or reviews.
+- Four focused browser checks pass after the integrity work: live project inventory plus labelled demo routes, mobile width at 390 px, safe finance routes, and dashboard collapse/expand without hydration errors.
 
 ## 1. Environment and deployment
 
@@ -47,7 +49,7 @@ No box may be inferred from a green build alone. Attach the concrete test, scree
 - [ ] Client publishes a project; freelancer submits one proposal; client accepts it.
 - [ ] Service-package CTA creates a free beta order without Stripe.
 - [x] Authenticated project create/edit/cancel and private workspace messaging/deliverable rendering pass automated browser acceptance. Distinct client and freelancer JWTs prove delivery, revision, redelivery, approval, terminal-state rejection and two-sided blind reviews.
-- [ ] Neither party sees a misleading payment, payout or escrow promise.
+- [x] Neither party sees a misleading payment, payout or escrow promise. Sixteen launch surfaces pass the copy guard; Payouts, Invoice and Statements render the free-beta policy and explicitly state that no payment, escrow or transfer exists.
 
 ### Local
 
@@ -55,7 +57,7 @@ No box may be inferred from a green build alone. Attach the concrete test, scree
 - [ ] Matching professional claims it for zero credits and submits a quote.
 - [x] The accepted-quote appointment workspace renders for distinct authenticated Local client and professional identities, with role-appropriate controls.
 - [x] Client rescheduling and cancellation plus professional confirmation, start and completion are permission tested, including synchronized request/order state, terminal-state rejection and two-sided blind reviews after completion.
-- [ ] Initial categories are limited to plumbing, heating/boiler, air conditioning, electrical and carpentry.
+- [x] Initial public Local categories are limited to plumbing, heating/boiler, air conditioning, electrical and carpentry; the launch region remains the Rotterdamâ€“The Hague hypothesis pending product approval.
 
 ### Jobs
 

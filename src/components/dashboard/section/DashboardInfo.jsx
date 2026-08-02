@@ -72,7 +72,7 @@ function CalendarCard({ deadlines }) {
     return { month: new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" }).format(now), today: now.getDate(), offset, days: Array.from({ length: daysInMonth }, (_, index) => index + 1), deadlineDays };
   }, [deadlines]);
 
-  return <section className={`${styles.card} ${styles.calendarCard}`}><div className={styles.calendarHead}><strong>{calendar.month}</strong><span><button type="button" aria-label="Previous month"><ChevronLeft size={14} /></button><button type="button" aria-label="Next month"><ChevronRight size={14} /></button></span></div><div className={styles.weekdays}>{["Mo","Tu","We","Th","Fr","Sa","Su"].map((day) => <span key={day}>{day}</span>)}</div><div className={styles.days}>{Array.from({ length: calendar.offset }, (_, index) => <i key={`blank-${index}`} />)}{calendar.days.map((day) => <span key={day} className={`${day === calendar.today ? styles.today : ""} ${calendar.deadlineDays.has(day) ? styles.deadlineDay : ""}`}>{day}</span>)}</div><div className={styles.calendarLegend}><span><i /> Deadline</span><span><i /> Payment</span><Link href="/orders">View calendar<ArrowRight size={13} /></Link></div></section>;
+  return <section className={`${styles.card} ${styles.calendarCard}`}><div className={styles.calendarHead}><strong>{calendar.month}</strong><span><button type="button" aria-label="Previous month"><ChevronLeft size={14} /></button><button type="button" aria-label="Next month"><ChevronRight size={14} /></button></span></div><div className={styles.weekdays}>{["Mo","Tu","We","Th","Fr","Sa","Su"].map((day) => <span key={day}>{day}</span>)}</div><div className={styles.days}>{Array.from({ length: calendar.offset }, (_, index) => <i key={`blank-${index}`} />)}{calendar.days.map((day) => <span key={day} className={`${day === calendar.today ? styles.today : ""} ${calendar.deadlineDays.has(day) ? styles.deadlineDay : ""}`}>{day}</span>)}</div><div className={styles.calendarLegend}><span><i /> Deadline</span><span><i /> Workspace</span><Link href="/orders">View calendar<ArrowRight size={13} /></Link></div></section>;
 }
 
 export default function DashboardInfo() {
@@ -82,7 +82,7 @@ export default function DashboardInfo() {
   const [accepting, setAccepting] = useState(null);
 
   if (!isLoaded || (isAuthenticated && overview === undefined)) return <DashboardSkeleton />;
-  if (!isAuthenticated) return <EmptyState icon={LockKeyhole} title="Sign in to open your dashboard" text="Your projects, messages and payments are kept private." href="/login" action="Sign in" />;
+  if (!isAuthenticated) return <EmptyState icon={LockKeyhole} title="Sign in to open your dashboard" text="Your projects, messages and private workspaces stay protected." href="/login" action="Sign in" />;
   if (!overview) return null;
 
   const firstName = overview.user.name.split(" ")[0] || "there";
@@ -91,7 +91,7 @@ export default function DashboardInfo() {
     { label: "Active projects", value: overview.stats.activeProjects, link: "/manage-projects", hint: "View projects", icon: BriefcaseBusiness },
     { label: isFreelancer ? "Active proposals" : "New proposals", value: overview.stats.newProposals, link: "/proposal", hint: "View proposals", icon: UserRoundPlus },
     { label: "Unread messages", value: overview.stats.unreadMessages, link: "/message", hint: "Open messages", icon: MessageSquare },
-    { label: isFreelancer ? "Expected earnings" : "Outstanding amount", value: money(overview.stats.outstandingAmount, overview.stats.currency), link: isFreelancer ? "/payouts" : "/orders", hint: "View payments", icon: CircleDollarSign },
+    { label: "Agreed scope value", value: money(overview.stats.outstandingAmount, overview.stats.currency), link: "/orders", hint: "View workspaces", icon: CircleDollarSign },
   ];
   const paymentTotal = overview.paymentMonths.reduce((sum, month) => sum + month.amount, 0);
   const chartMax = Math.max(1, ...overview.paymentMonths.map((month) => month.amount));
@@ -124,7 +124,7 @@ export default function DashboardInfo() {
       </div>
 
       <div className={styles.bottomGrid}>
-        <section className={`${styles.card} ${styles.paymentsCard}`}><SectionHead title="Payment overview" href="/orders" link="View all payments" /><div className={styles.paymentContent}><div className={styles.chart}><span>Last 6 months</span><strong>{money(paymentTotal)}</strong><div className={styles.bars}>{overview.paymentMonths.map((month) => <i key={month.month}><em style={{ height: `${Math.max(8, (month.amount / chartMax) * 100)}%` }} /><small>{month.month}</small></i>)}</div></div><div className={styles.transactions}><strong>Recent payments</strong>{overview.recentPayments.length ? overview.recentPayments.map((payment) => <Link href="/orders" key={payment.id}><span><strong>{payment.title}</strong><small>{shortDate(payment.date)}</small></span><b>{money(payment.amount, payment.currency)}<small>{payment.status}</small></b></Link>) : <p>No payments recorded yet.</p>}</div></div></section>
+        <section className={`${styles.card} ${styles.paymentsCard}`}><SectionHead title="Scope value overview" href="/orders" link="View all workspaces" /><div className={styles.paymentContent}><div className={styles.chart}><span>Informational amounts · no beta payments</span><strong>{money(paymentTotal)}</strong><div className={styles.bars}>{overview.paymentMonths.map((month) => <i key={month.month}><em style={{ height: `${Math.max(8, (month.amount / chartMax) * 100)}%` }} /><small>{month.month}</small></i>)}</div></div><div className={styles.transactions}><strong>Recent agreements</strong>{overview.recentPayments.length ? overview.recentPayments.map((agreement) => <Link href="/orders" key={agreement.id}><span><strong>{agreement.title}</strong><small>{shortDate(agreement.date)}</small></span><b>{money(agreement.amount, agreement.currency)}<small>{agreement.status}</small></b></Link>) : <p>No agreed scope values recorded yet.</p>}</div></div></section>
 
         <section className={`${styles.card} ${styles.favoritesCard}`}><SectionHead title="Saved professionals" href="/saved" link="View all saved" />{overview.favorites.length ? <div className={styles.favoriteGrid}>{overview.favorites.slice(0,3).map((favorite, index) => <Link href={favorite.url} key={favorite.id}><Avatar src={favorite.image} name={favorite.title} index={index + 1} size={74} /><strong>{favorite.title}</strong><span>{favorite.subtitle}</span><em><Heart size={13} fill="currentColor" /> Saved</em></Link>)}</div> : <EmptyState icon={Heart} title="No saved professionals" text="Save strong profiles and compare them here later." href="/online/freelancers" action="Find professionals" />}</section>
 

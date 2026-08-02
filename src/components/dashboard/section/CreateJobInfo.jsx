@@ -51,7 +51,7 @@ export default function CreateJobInfo() {
         slug: slugify(form.title),
         description: form.description.trim(),
         categoryId: form.categoryId || undefined,
-        company: form.company.trim() || convexUser?.name || "Verified company",
+        company: form.company.trim() || convexUser?.name || "Private-beta company",
         requiredSkills: form.requiredSkills.split(",").map((item) => item.trim()).filter(Boolean),
         salaryMin: form.salaryMin ? Number(form.salaryMin) : undefined,
         salaryMax: form.salaryMax ? Number(form.salaryMax) : undefined,
