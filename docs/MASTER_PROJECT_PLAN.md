@@ -324,6 +324,7 @@ Operational gates still open:
 - Keep the verified Preview/Production separation and artifact-specific hosted smoke run green for every release; perform and record a rollback rehearsal with the named release owner.
 - Configure Search Console and validate the production sitemap and eligible JobPosting output.
 - Connect a hosted error-monitoring/alerting provider to the existing health and error surfaces; local readiness does not replace production alert delivery.
+- Keep the scheduled public production monitor green and complete its failure-notification rehearsal with a named owner and backup; synthetic availability does not replace exception monitoring.
 - Confirm the Local launch region (current hypothesis: Rotterdam–The Hague) and first supply cohort.
 - Name the human owners for support, urgent safety incidents, moderation and daily marketplace operations.
 - Obtain legal review of terms, privacy, cookies and marketplace responsibility wording.
