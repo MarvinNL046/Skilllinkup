@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
-import { useMutation } from "convex/react";
 import { useTranslations } from "next-intl";
 import {
   Menu, ChevronDown, LayoutDashboard, FileText, ShoppingBag, MessageSquare,
@@ -12,7 +11,7 @@ import {
 } from "lucide-react";
 import { dashboardNavigation } from "@/data/dashboard";
 import useConvexUser from "@/hook/useConvexUser";
-import { api } from "../../../../convex/_generated/api";
+import AccountContextSwitcher from "@/components/dashboard/AccountContextSwitcher";
 
 const ICON_MAP = {
   "flaticon-home":         LayoutDashboard,
@@ -37,12 +36,6 @@ const ICON_MAP = {
 function iconFor(name) {
   return ICON_MAP[name] || ClipboardList;
 }
-
-const WORLDS = [
-  { key: "online", labelKey: "worldOnline", Icon: Globe },
-  { key: "local",  labelKey: "worldLocal",  Icon: MapPin },
-  { key: "jobs",   labelKey: "worldJobs",   Icon: Briefcase },
-];
 
 function MobileNavLink({ item, active, onNavigate }) {
   const Icon = iconFor(item.icon);
@@ -80,7 +73,6 @@ export default function DashboardNavigation() {
   const { signOut } = useClerk();
   const t = useTranslations("dashboard");
   const tn = useTranslations("nav");
-  const setPreferredWorld = useMutation(api.users.setPreferredWorld);
 
   const panelRef = useRef(null);
   useEffect(() => {
@@ -101,7 +93,7 @@ export default function DashboardNavigation() {
     };
   }, [open]);
 
-  const role = convexUser?.userType === "freelancer" ? "freelancer" : "client";
+  const role = convexUser?.activeRole || (convexUser?.userType === "freelancer" ? "freelancer" : "client");
   const world = convexUser?.preferredWorld || "online";
   const sections =
     dashboardNavigation[role]?.[world] ||
@@ -137,44 +129,8 @@ export default function DashboardNavigation() {
           className="card"
           style={{ padding: "var(--space-3) 0", marginTop: "var(--space-2)" }}
         >
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: 4,
-              padding: "0 var(--space-3) var(--space-3)",
-              borderBottom: "1px solid var(--border-subtle)",
-              marginBottom: "var(--space-2)",
-            }}
-          >
-            {WORLDS.map(({ key, labelKey, Icon }) => {
-              const active = world === key;
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => key !== world && setPreferredWorld({ preferredWorld: key })}
-                  aria-pressed={active}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 4,
-                    padding: "6px 8px",
-                    border: "none",
-                    borderRadius: "var(--radius-sm)",
-                    cursor: active ? "default" : "pointer",
-                    fontSize: 12,
-                    fontWeight: active ? 600 : 500,
-                    background: active ? "var(--primary-600)" : "var(--surface-2)",
-                    color: active ? "var(--neutral-0)" : "var(--text-secondary)",
-                  }}
-                >
-                  <Icon size={12} />
-                  {t(labelKey)}
-                </button>
-              );
-            })}
+          <div style={{ padding: "0 var(--space-3) var(--space-3)", borderBottom: "1px solid var(--border-subtle)", marginBottom: "var(--space-2)" }}>
+            <AccountContextSwitcher onSwitched={() => setOpen(false)} />
           </div>
 
           <div

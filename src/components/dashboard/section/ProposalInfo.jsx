@@ -35,7 +35,7 @@ export default function ProposalInfo() {
       <div className="dashboard__content hover-bgc-color">
         <DashboardNavigation />
         <div className="dashboard_title_area mb-6">
-          <h2>{t("title")}</h2>
+          <h1>{t("title")}</h1>
           <p className="text-[var(--text-secondary)]">{t("pageDescription")}</p>
         </div>
         <Card className="overflow-hidden">

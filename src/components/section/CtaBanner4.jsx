@@ -14,8 +14,8 @@ const STEPS = [
   },
   {
     icon: ShieldCheck,
-    title: "Get paid securely",
-    body: "Work with confidence. Our escrow system ensures you get paid for every completed project.",
+    title: "Deliver with clarity",
+    body: "Keep scope, milestones, files and approvals together during the free private beta.",
   },
 ];
 

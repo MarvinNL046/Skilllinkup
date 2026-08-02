@@ -32,6 +32,15 @@ const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL);
 const SERVER_SECRET = process.env.INTERNAL_EMAIL_SECRET;
 
 export async function POST(request) {
+  return NextResponse.json(
+    {
+      error: "Stripe onboarding is disabled during the free private beta.",
+      code: "PRIVATE_BETA_FREE",
+    },
+    { status: 503 }
+  );
+
+  /* Live onboarding is deliberately quarantined until the payment policy gate opens.
   // Guard: Stripe not configured yet.
   if (!stripe) {
     return NextResponse.json(
@@ -124,4 +133,5 @@ export async function POST(request) {
       { status: 500 }
     );
   }
+  */
 }

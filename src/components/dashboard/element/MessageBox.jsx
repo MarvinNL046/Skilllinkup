@@ -34,6 +34,7 @@ export default function MessageBox({
   const [sendError, setSendError] = useState(null);
   const chatBoxRef = useRef(null);
   const prevCountRef = useRef(0);
+  const messageCount = messages?.length ?? 0;
   const blockError =
     inputValue.trim() && containsContactInfo(inputValue) ? t("contactBlocked") : null;
 
@@ -48,14 +49,13 @@ export default function MessageBox({
   };
 
   useEffect(() => {
-    const count = messages?.length ?? 0;
-    if (count > prevCountRef.current) scrollToBottom();
-    prevCountRef.current = count;
-  }, [messages?.length]);
+    if (messageCount > prevCountRef.current) scrollToBottom();
+    prevCountRef.current = messageCount;
+  }, [messageCount]);
 
   useEffect(() => {
-    if (hasConversation && messages?.length > 0) scrollToBottom();
-  }, [hasConversation]);
+    if (hasConversation && messageCount > 0) scrollToBottom();
+  }, [hasConversation, messageCount]);
 
   async function handleSend(e) {
     e.preventDefault();

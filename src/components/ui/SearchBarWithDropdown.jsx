@@ -1,7 +1,8 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useId, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useQuery } from "convex/react";
+import { Search } from "lucide-react";
 import { api } from "../../../convex/_generated/api";
 
 function pathToServiceType(pathname) {
@@ -33,6 +34,7 @@ function BoldMatch({ text, query }) {
 export default function SearchBarWithDropdown({
   placeholder = "What service are you looking for today?",
   className = "",
+  navbar = false,
 }) {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
@@ -41,6 +43,7 @@ export default function SearchBarWithDropdown({
   const pathname = usePathname();
   const serviceType = pathToServiceType(pathname);
   const wrapperRef = useRef(null);
+  const suggestionsId = useId();
 
   // 250ms debounce
   useEffect(() => {
@@ -100,21 +103,28 @@ export default function SearchBarWithDropdown({
     <div
       ref={wrapperRef}
       className={`relative ${className}`}
-      style={{ minWidth: "min(300px, 100%)" }}
+      style={{ minWidth: navbar ? 260 : "min(300px, 100%)" }}
     >
       <form
         onSubmit={handleSubmit}
         style={{
           display: "flex",
           alignItems: "center",
-          background: "#f4f4f5",
-          borderRadius: 10,
-          border: "none",
+          height: navbar ? 42 : undefined,
+          background: navbar ? "#f8fafc" : "#f4f4f5",
+          borderRadius: navbar ? 12 : 10,
+          border: navbar ? "1px solid #e2e7ee" : "none",
           overflow: "hidden",
+          transition: "border-color .2s ease, box-shadow .2s ease, background .2s ease",
         }}
       >
         <input
           type="text"
+          role="combobox"
+          aria-label="Search services"
+          aria-autocomplete="list"
+          aria-controls={suggestionsId}
+          aria-expanded={isOpen}
           className="form-control border-0"
           placeholder={placeholder}
           value={query}
@@ -129,8 +139,11 @@ export default function SearchBarWithDropdown({
             minWidth: 0,
             width: "auto",
             background: "transparent",
-            fontSize: 14,
+            fontSize: navbar ? 13 : 14,
+            color: "#10213f",
+            paddingLeft: navbar ? 15 : undefined,
             boxShadow: "none",
+            fontFamily: navbar ? "var(--font-inter), system-ui, sans-serif" : undefined,
           }}
           autoComplete="off"
         />
@@ -145,18 +158,21 @@ export default function SearchBarWithDropdown({
             justifyContent: "center",
             background: "none",
             border: "none",
-            padding: "0 14px",
+            padding: navbar ? "0 13px" : "0 14px",
             cursor: "pointer",
             fontSize: 16,
-            color: "#555",
+            color: navbar ? "#ff4b2b" : "#555",
           }}
         >
-          <span className="flaticon-loupe" />
+          {navbar ? <Search size={17} strokeWidth={2.2} /> : <span className="flaticon-loupe" />}
         </button>
       </form>
 
       {isOpen && (
         <div
+          id={suggestionsId}
+          aria-label="Search suggestions"
+          role="region"
           style={{
             position: "absolute",
             top: "calc(100% + 4px)",

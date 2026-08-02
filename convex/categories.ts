@@ -11,8 +11,8 @@ export const list = query({
   handler: async (ctx, args) => {
     const categories = await ctx.db
       .query("categories")
-      .filter((q) => q.eq(q.field("locale"), args.locale))
-      .collect();
+      .withIndex("by_locale", (q) => q.eq("locale", args.locale))
+      .take(200);
 
     const enriched = await Promise.all(
       categories.map(async (cat) => {
@@ -20,7 +20,7 @@ export const list = query({
           .query("posts")
           .withIndex("by_category", (q) => q.eq("categoryId", cat._id))
           .filter((q) => q.eq(q.field("status"), "published"))
-          .collect();
+          .take(10_000);
         return { ...cat, postCount: posts.length };
       })
     );
@@ -55,7 +55,7 @@ export const getBySlug = query({
       .query("posts")
       .withIndex("by_category", (q) => q.eq("categoryId", category._id))
       .filter((q) => q.eq(q.field("status"), "published"))
-      .collect();
+      .take(10_000);
 
     return { ...category, postCount: posts.length };
   },

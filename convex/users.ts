@@ -5,6 +5,10 @@ import {
   requireServerSecret,
 } from "./lib/authHelpers";
 import { toSafeUser } from "./lib/publicData";
+import {
+  marketplaceRoleValidator,
+  marketplaceWorldValidator,
+} from "./lib/marketplaceState";
 
 /**
  * Sync a Clerk user to the Convex users table.
@@ -16,27 +20,36 @@ export const syncUser = mutation({
     name: v.string(),
     image: v.optional(v.string()),
     clerkId: v.string(),
-    userType: v.optional(v.string()),
+    userType: v.optional(v.union(v.literal("client"), v.literal("freelancer"))),
   },
+  returns: v.id("users"),
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       throw new Error("Authentication required.");
     }
 
-    const email = identity.email;
-    if (!email) {
-      throw new Error("Authentication required: no email in identity.");
-    }
-
-    if (args.email !== email) {
-      throw new Error("Unauthorized.");
-    }
-
     const clerkId = identity.subject;
     if (args.clerkId !== clerkId) {
       throw new Error("Unauthorized.");
     }
+
+    const suppliedEmail = args.email.trim().toLowerCase();
+    const identityEmail =
+      typeof identity.email === "string"
+        ? identity.email.trim().toLowerCase()
+        : undefined;
+    if (!suppliedEmail || !/^\S+@\S+\.\S+$/.test(suppliedEmail)) {
+      throw new Error("A valid email address is required.");
+    }
+    if (identityEmail && suppliedEmail !== identityEmail) {
+      throw new Error("Unauthorized.");
+    }
+
+    // The Clerk subject is the authorization key. Some Convex JWT templates do
+    // not include an email claim, so the signed-in Clerk client supplies the
+    // display/contact email while identity.subject prevents cross-user writes.
+    const email = identityEmail ?? suppliedEmail;
 
     // Check if user already exists by Clerk ID
     const existing = await ctx.db
@@ -56,22 +69,25 @@ export const syncUser = mutation({
       return existing._id;
     }
 
-    // Also check by email (for users migrated from old auth)
-    const existingByEmail = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", email))
-      .first();
+    // Only link a legacy email-only account when the signed JWT itself confirms
+    // that email. This prevents a client-supplied address from claiming another
+    // account when the deployment intentionally omits email from its JWT.
+    if (identityEmail) {
+      const existingByEmail = await ctx.db
+        .query("users")
+        .withIndex("by_email", (q) => q.eq("email", email))
+        .first();
 
-    if (existingByEmail) {
-      // Link existing user to Clerk
-      await ctx.db.patch(existingByEmail._id, {
-        stackAuthId: clerkId,
-        name: args.name,
-        image: args.image || existingByEmail.image,
-        lastLogin: Date.now(),
-        updatedAt: Date.now(),
-      });
-      return existingByEmail._id;
+      if (existingByEmail) {
+        await ctx.db.patch(existingByEmail._id, {
+          stackAuthId: clerkId,
+          name: args.name,
+          image: args.image || existingByEmail.image,
+          lastLogin: Date.now(),
+          updatedAt: Date.now(),
+        });
+        return existingByEmail._id;
+      }
     }
 
     // Get default tenant
@@ -109,12 +125,12 @@ export const getCurrentUser = query({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) return null;
 
-    const user = await ctx.db
+    const userBySubject = await ctx.db
       .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
+      .withIndex("by_stackAuthId", (q) => q.eq("stackAuthId", identity.subject))
       .first();
 
-    return toSafeUser(user);
+    return toSafeUser(userBySubject);
   },
 });
 
@@ -136,10 +152,11 @@ export const getByClerkId = query({
       }
     }
 
-    return await ctx.db
+    const result = await ctx.db
       .query("users")
       .withIndex("by_stackAuthId", (q) => q.eq("stackAuthId", args.clerkId))
       .first();
+    return toSafeUser(result);
   },
 });
 
@@ -186,10 +203,11 @@ export const getByEmail = query({
       }
     }
 
-    return await ctx.db
+    const result = await ctx.db
       .query("users")
       .withIndex("by_email", (q) => q.eq("email", args.email))
       .first();
+    return toSafeUser(result);
   },
 });
 
@@ -212,10 +230,11 @@ export const getByStackAuthId = query({
       }
     }
 
-    return await ctx.db
+    const result = await ctx.db
       .query("users")
       .withIndex("by_stackAuthId", (q) => q.eq("stackAuthId", args.stackAuthId))
       .first();
+    return toSafeUser(result);
   },
 });
 
@@ -224,9 +243,13 @@ export const getByStackAuthId = query({
  */
 export const setUserType = mutation({
   args: {
-    userType: v.string(),
-    preferredWorld: v.optional(v.string()),
+    userType: v.union(v.literal("client"), v.literal("freelancer")),
+    preferredWorld: v.optional(marketplaceWorldValidator),
   },
+  returns: v.object({
+    success: v.boolean(),
+    profileId: v.optional(v.id("freelancerProfiles")),
+  }),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
 
@@ -284,8 +307,9 @@ export const setUserType = mutation({
  */
 export const setPreferredWorld = mutation({
   args: {
-    preferredWorld: v.string(),
+    preferredWorld: marketplaceWorldValidator,
   },
+  returns: v.object({ success: v.boolean() }),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
 
@@ -305,6 +329,7 @@ export const updateBio = mutation({
   args: {
     bio: v.string(),
   },
+  returns: v.object({ success: v.boolean() }),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
     await ctx.db.patch(user._id, {
@@ -312,5 +337,121 @@ export const updateBio = mutation({
       updatedAt: Date.now(),
     });
     return { success: true };
+  },
+});
+
+/**
+ * Switch both the active marketplace role and its compatible product world.
+ * A role must already belong to the account; adding roles happens in onboarding.
+ */
+export const switchAccountContext = mutation({
+  args: {
+    activeRole: marketplaceRoleValidator,
+    preferredWorld: marketplaceWorldValidator,
+  },
+  returns: v.object({ success: v.boolean() }),
+  handler: async (ctx, args) => {
+    const user = await requireAuthUser(ctx);
+    const roles = user.accountRoles ?? [];
+    if (!roles.includes(args.activeRole)) {
+      throw new Error("Add this role to your account before switching to it.");
+    }
+
+    const allowedWorlds = {
+      client: ["online", "local"],
+      freelancer: ["online"],
+      local_professional: ["local"],
+      candidate: ["jobs"],
+      company: ["jobs"],
+    } as const;
+    if (!(allowedWorlds[args.activeRole] as readonly string[]).includes(args.preferredWorld)) {
+      throw new Error("This role is not available in the selected product world.");
+    }
+
+    await ctx.db.patch(user._id, {
+      activeRole: args.activeRole,
+      preferredWorld: args.preferredWorld,
+      userType:
+        args.activeRole === "freelancer" || args.activeRole === "local_professional"
+          ? "freelancer"
+          : "client",
+      updatedAt: Date.now(),
+    });
+    return { success: true };
+  },
+});
+
+/**
+ * Store the user's marketplace roles independently from CMS/admin permissions.
+ * This is the role model used by the three product worlds going forward.
+ */
+export const setAccountContext = mutation({
+  args: {
+    accountRoles: v.array(marketplaceRoleValidator),
+    activeRole: marketplaceRoleValidator,
+    preferredWorld: marketplaceWorldValidator,
+    onboardingVersion: v.number(),
+  },
+  returns: v.object({
+    success: v.boolean(),
+    profileId: v.optional(v.id("freelancerProfiles")),
+  }),
+  handler: async (ctx, args) => {
+    const user = await requireAuthUser(ctx);
+    const uniqueRoles = [...new Set(args.accountRoles)];
+
+    if (uniqueRoles.length === 0) {
+      throw new Error("Select at least one account role.");
+    }
+    if (!uniqueRoles.includes(args.activeRole)) {
+      throw new Error("The active role must be one of the account roles.");
+    }
+    if (!Number.isInteger(args.onboardingVersion) || args.onboardingVersion < 1) {
+      throw new Error("Invalid onboarding version.");
+    }
+
+    const professionalRole = args.activeRole === "freelancer" || args.activeRole === "local_professional";
+    const legacyUserType = professionalRole ? "freelancer" : "client";
+
+    await ctx.db.patch(user._id, {
+      accountRoles: uniqueRoles,
+      activeRole: args.activeRole,
+      preferredWorld: args.preferredWorld,
+      onboardingVersion: args.onboardingVersion,
+      userType: legacyUserType,
+      updatedAt: Date.now(),
+    });
+
+    let profileId;
+    if (professionalRole) {
+      const existingProfile = await ctx.db
+        .query("freelancerProfiles")
+        .withIndex("by_userId", (q) => q.eq("userId", user._id))
+        .first();
+      profileId = existingProfile?._id;
+      if (!profileId) {
+        const baseSlug = (user.name || "professional")
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "") || "professional";
+        const slugMatch = await ctx.db
+          .query("freelancerProfiles")
+          .withIndex("by_slug", (q) => q.eq("slug", baseSlug))
+          .first();
+        profileId = await ctx.db.insert("freelancerProfiles", {
+          userId: user._id,
+          tenantId: user.tenantId,
+          displayName: user.name,
+          slug: slugMatch ? `${baseSlug}-${user._id.slice(-5)}` : baseSlug,
+          workType: args.activeRole === "local_professional" ? "local" : "remote",
+          status: "active",
+          locale: "en",
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        });
+      }
+    }
+
+    return { success: true, profileId };
   },
 });

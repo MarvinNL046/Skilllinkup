@@ -12,7 +12,7 @@ const faqs = [
   {
     id: "Two",
     q: "How do payments work?",
-    a: "SkillLinkup uses a secure escrow system. When a client hires you, the payment is held in escrow until the work is completed and approved. Once the client confirms delivery, the funds are released to your account. This protects both freelancers and clients.",
+    a: "SkillLinkup does not collect, hold or release funds during the free private beta. The workspace records scope, delivery and approval; payment terms will be published before live payments are enabled.",
   },
   {
     id: "Three",

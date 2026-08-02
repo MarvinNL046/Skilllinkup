@@ -1,9 +1,5 @@
-import Footer14 from "@/components/footer/Footer14";
 import Header19 from "@/components/header/Header19";
-import HomepageHero from "@/components/hero/HomepageHero";
-import NeedSomething2 from "@/components/section/NeedSomething2";
-import CtaBanner18 from "@/components/section/CtaBanner18";
-import SocialProofStats from "@/components/section/SocialProofStats";
+import WorldwideHome from "@/components/home/WorldwideHome";
 import { getLocale, getTranslations } from "next-intl/server";
 
 export async function generateMetadata() {
@@ -27,12 +23,8 @@ export default function page() {
     <div className="wrapper ovh">
       <Header19 />
       <div className="body_content">
-        <HomepageHero />
-        <SocialProofStats />
-        <NeedSomething2 />
-        <CtaBanner18 />
+        <WorldwideHome />
       </div>
-      <Footer14 />
     </div>
   );
 }

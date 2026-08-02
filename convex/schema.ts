@@ -1,5 +1,34 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import {
+  jobApplicationStatusValidator,
+  jobStatusValidator,
+  marketplaceRoleValidator,
+  bidStatusValidator,
+  projectStatusValidator,
+  quoteRequestStatusValidator,
+  quoteStatusValidator,
+  localAppointmentStatusValidator,
+  gigStatusValidator,
+  orderStatusValidator,
+  orderTypeValidator,
+  escrowStatusValidator,
+  orderMilestoneStatusValidator,
+  transactionStatusValidator,
+  disputeReasonValidator,
+  disputeStatusValidator,
+  disputeResolutionValidator,
+  freelancerProfileStatusValidator,
+} from "./lib/marketplaceState";
+import {
+  reportReasonValidator,
+  reportStatusValidator,
+  reportTargetTypeValidator,
+  supportCategoryValidator,
+  supportPriorityValidator,
+  supportStatusValidator,
+} from "./lib/trustState";
+import { uploadPurposeValidator } from "./lib/storageState";
 
 export default defineSchema({
   // ============================================================
@@ -29,6 +58,9 @@ export default defineSchema({
     name: v.string(),
     passwordHash: v.optional(v.string()), // "stack-auth-managed" for Stack Auth users
     role: v.optional(v.string()), // admin, editor, author
+    accountRoles: v.optional(v.array(marketplaceRoleValidator)),
+    activeRole: v.optional(marketplaceRoleValidator),
+    onboardingVersion: v.optional(v.number()),
     avatar: v.optional(v.string()),
     image: v.optional(v.string()),
     bio: v.optional(v.string()),
@@ -38,14 +70,16 @@ export default defineSchema({
     stackAuthId: v.optional(v.string()), // Clerk user ID (field kept as-is for backward compat — stores Clerk IDs since migration from Stack Auth)
     lastLogin: v.optional(v.number()),
     lastActiveAt: v.optional(v.number()),
+    deletionRequestedAt: v.optional(v.number()),
     clientCreditBalance: v.optional(v.number()), // cents, default 0
-    clientTier: v.optional(v.string()),           // "bronze" | "silver" | "gold"
-    clientYearlySpend: v.optional(v.number()),    // cents, cumulative this calendar year
+    clientTier: v.optional(v.string()), // "bronze" | "silver" | "gold"
+    clientYearlySpend: v.optional(v.number()), // cents, cumulative this calendar year
     createdAt: v.number(),
     updatedAt: v.number(),
   })
     .index("by_email", ["email"])
     .index("by_stackAuthId", ["stackAuthId"])
+    .index("by_userType", ["userType"])
     .index("by_tenant", ["tenantId"]),
 
   // ============================================================
@@ -63,6 +97,7 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_slug_locale", ["slug", "locale"])
+    .index("by_locale", ["locale"])
     .index("by_tenant", ["tenantId"]),
 
   posts: defineTable({
@@ -119,6 +154,21 @@ export default defineSchema({
     createdAt: v.number(),
   }).index("by_tenant", ["tenantId"]),
 
+  fileAssets: defineTable({
+    storageId: v.id("_storage"),
+    ownerId: v.id("users"),
+    purpose: uploadPurposeValidator,
+    contentType: v.string(),
+    fileSize: v.number(),
+    publicUrl: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_storageId", ["storageId"])
+    .index("by_owner", ["ownerId"])
+    .index("by_owner_and_purpose", ["ownerId", "purpose"])
+    .index("by_publicUrl", ["publicUrl"]),
+
   comments: defineTable({
     tenantId: v.id("tenants"),
     postId: v.id("posts"),
@@ -132,6 +182,7 @@ export default defineSchema({
     createdAt: v.number(),
   })
     .index("by_post", ["postId"])
+    .index("by_post_status", ["postId", "status"])
     .index("by_status", ["status"]),
 
   analytics: defineTable({
@@ -220,6 +271,7 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_platform", ["platformId"])
+    .index("by_platform_status", ["platformId", "status"])
     .index("by_status", ["status"]),
 
   // ============================================================
@@ -246,6 +298,7 @@ export default defineSchema({
   })
     .index("by_slug_locale", ["slug", "locale"])
     .index("by_category", ["category"])
+    .index("by_status_locale", ["status", "locale"])
     .index("by_featured", ["featured", "status", "locale"]),
 
   // ============================================================
@@ -263,7 +316,9 @@ export default defineSchema({
     endDate: v.optional(v.number()),
     createdAt: v.number(),
     updatedAt: v.number(),
-  }).index("by_placement_active", ["placement", "isActive"]),
+  })
+    .index("by_placement_active", ["placement", "isActive"])
+    .index("by_tenant", ["tenantId"]),
 
   // ============================================================
   // SEO PAGES
@@ -360,7 +415,7 @@ export default defineSchema({
     featured: v.optional(v.boolean()),
     creditBalance: v.optional(v.number()), // pay-per-lead credits (default 0)
     level: v.optional(v.string()), // "new" | "rising" | "pro" | "top_rated"
-    status: v.string(), // pending, active, suspended
+    status: freelancerProfileStatusValidator,
     locale: v.optional(v.string()),
     createdAt: v.number(),
     updatedAt: v.number(),
@@ -392,6 +447,7 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_slug_locale", ["slug", "locale"])
+    .index("by_locale", ["locale"])
     .index("by_parent", ["parentId"]),
 
   skills: defineTable({
@@ -400,7 +456,9 @@ export default defineSchema({
     categoryId: v.optional(v.id("marketplaceCategories")),
     locale: v.string(),
     createdAt: v.number(),
-  }).index("by_slug_locale", ["slug", "locale"]),
+  })
+    .index("by_slug_locale", ["slug", "locale"])
+    .index("by_locale", ["locale"]),
 
   // ============================================================
   // MARKETPLACE: GIGS
@@ -423,7 +481,7 @@ export default defineSchema({
     ratingAverage: v.optional(v.number()),
     ratingCount: v.optional(v.number()),
     isFeatured: v.optional(v.boolean()),
-    status: v.string(), // pending, active, paused, rejected
+    status: gigStatusValidator,
     locale: v.string(),
     publishedAt: v.optional(v.number()),
     createdAt: v.number(),
@@ -489,7 +547,7 @@ export default defineSchema({
     attachments: v.optional(v.array(v.any())),
     bidCount: v.optional(v.number()),
     views: v.optional(v.number()),
-    status: v.string(), // open, in_progress, completed, cancelled, closed
+    status: projectStatusValidator,
     selectedFreelancerId: v.optional(v.id("freelancerProfiles")),
     locale: v.string(),
     publishedAt: v.optional(v.number()),
@@ -509,11 +567,13 @@ export default defineSchema({
     deliveryDays: v.number(),
     pitch: v.string(),
     attachments: v.optional(v.array(v.any())),
-    status: v.string(), // pending, accepted, rejected, withdrawn
+    status: bidStatusValidator,
     createdAt: v.number(),
     updatedAt: v.number(),
   })
     .index("by_project", ["projectId"])
+    .index("by_project_freelancer", ["projectId", "freelancerId"])
+    .index("by_project_status", ["projectId", "status"])
     .index("by_freelancer", ["freelancerId"])
     .index("by_freelancer_status", ["freelancerId", "status"]),
 
@@ -542,7 +602,7 @@ export default defineSchema({
     benefits: v.optional(v.array(v.string())),
     applicationCount: v.optional(v.number()),
     views: v.optional(v.number()),
-    status: v.string(), // open, closed, filled
+    status: jobStatusValidator,
     locale: v.string(),
     publishedAt: v.optional(v.number()),
     expiresAt: v.optional(v.number()),
@@ -555,6 +615,26 @@ export default defineSchema({
     .index("by_client", ["clientId"])
     .index("by_client_status", ["clientId", "status"]),
 
+  jobApplications: defineTable({
+    tenantId: v.id("tenants"),
+    jobId: v.id("jobs"),
+    candidateId: v.id("users"),
+    coverLetter: v.optional(v.string()),
+    resumeStorageId: v.optional(v.id("_storage")),
+    portfolioUrl: v.optional(v.string()),
+    status: jobApplicationStatusValidator,
+    employerNote: v.optional(v.string()),
+    submittedAt: v.optional(v.number()),
+    statusUpdatedAt: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_job", ["jobId"])
+    .index("by_candidate", ["candidateId"])
+    .index("by_job_candidate", ["jobId", "candidateId"])
+    .index("by_job_status", ["jobId", "status"])
+    .index("by_candidate_status", ["candidateId", "status"]),
+
   // ============================================================
   // MARKETPLACE: ORDERS & TRANSACTIONS
   // ============================================================
@@ -562,13 +642,15 @@ export default defineSchema({
   orders: defineTable({
     tenantId: v.id("tenants"),
     orderNumber: v.string(),
-    orderType: v.string(), // gig, project
+    orderType: orderTypeValidator,
     clientId: v.id("users"),
     freelancerId: v.optional(v.id("freelancerProfiles")),
     gigId: v.optional(v.id("gigs")),
     gigPackageId: v.optional(v.id("gigPackages")),
     projectId: v.optional(v.id("projects")),
     bidId: v.optional(v.id("bids")),
+    quoteRequestId: v.optional(v.id("quoteRequests")),
+    quoteId: v.optional(v.id("quotes")),
     title: v.string(),
     description: v.optional(v.string()),
     requirements: v.optional(v.string()),
@@ -579,10 +661,10 @@ export default defineSchema({
     deliveryDeadline: v.optional(v.number()),
     revisionCount: v.optional(v.number()),
     revisionsUsed: v.optional(v.number()),
-    status: v.string(), // pending, active, delivered, revision_requested, completed, cancelled, disputed
+    status: orderStatusValidator,
     stripePaymentIntentId: v.optional(v.string()),
     stripeTransferId: v.optional(v.string()),
-    escrowStatus: v.optional(v.string()), // held | released | refunded | disputed
+    escrowStatus: v.optional(escrowStatusValidator),
     autoReleaseJobId: v.optional(v.id("_scheduled_functions")),
     completedAt: v.optional(v.number()),
     cancelledAt: v.optional(v.number()),
@@ -593,6 +675,9 @@ export default defineSchema({
     .index("by_freelancer", ["freelancerId"])
     .index("by_status", ["status"])
     .index("by_orderNumber", ["orderNumber"])
+    .index("by_bid", ["bidId"])
+    .index("by_quote", ["quoteId"])
+    .index("by_quoteRequest", ["quoteRequestId"])
     .index("by_stripePaymentIntentId", ["stripePaymentIntentId"]),
 
   orderMilestones: defineTable({
@@ -602,7 +687,7 @@ export default defineSchema({
     amount: v.number(),
     currency: v.optional(v.string()),
     dueDate: v.optional(v.number()),
-    status: v.string(), // pending, in_progress, delivered, approved, disputed
+    status: orderMilestoneStatusValidator,
     stripePaymentIntentId: v.optional(v.string()),
     deliveredAt: v.optional(v.number()),
     approvedAt: v.optional(v.number()),
@@ -615,13 +700,16 @@ export default defineSchema({
     orderId: v.id("orders"),
     milestoneId: v.optional(v.id("orderMilestones")),
     uploadedBy: v.optional(v.id("users")),
-    fileUrl: v.string(),
-    fileName: v.string(),
+    storageId: v.optional(v.id("_storage")),
+    fileUrl: v.optional(v.string()),
+    fileName: v.optional(v.string()),
     fileSize: v.optional(v.number()),
     fileType: v.optional(v.string()),
     description: v.optional(v.string()),
     createdAt: v.number(),
-  }).index("by_order", ["orderId"]),
+  })
+    .index("by_order", ["orderId"])
+    .index("by_milestone", ["milestoneId"]),
 
   transactions: defineTable({
     tenantId: v.id("tenants"),
@@ -636,7 +724,7 @@ export default defineSchema({
     stripePaymentIntentId: v.optional(v.string()),
     stripeTransferId: v.optional(v.string()),
     stripeRefundId: v.optional(v.string()),
-    status: v.string(), // pending, completed, failed, refunded
+    status: transactionStatusValidator,
     description: v.optional(v.string()),
     createdAt: v.number(),
     updatedAt: v.number(),
@@ -653,7 +741,7 @@ export default defineSchema({
     orderId: v.optional(v.id("orders")),
     reviewerId: v.optional(v.id("users")),
     revieweeId: v.optional(v.id("users")),
-    reviewerRole: v.string(), // client, freelancer
+    reviewerRole: v.union(v.literal("client"), v.literal("freelancer")),
     overallRating: v.number(),
     communicationRating: v.optional(v.number()),
     qualityRating: v.optional(v.number()),
@@ -665,19 +753,20 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_reviewee", ["revieweeId"])
+    .index("by_reviewer", ["reviewerId"])
     .index("by_order", ["orderId"]),
 
   disputes: defineTable({
     tenantId: v.id("tenants"),
     orderId: v.optional(v.id("orders")),
     openedBy: v.optional(v.id("users")),
-    reason: v.string(), // non_delivery, quality_issue, scope_creep, payment_issue, other
+    reason: disputeReasonValidator,
     description: v.string(),
     evidence: v.optional(v.array(v.any())),
-    resolution: v.optional(v.string()),
+    resolution: v.optional(disputeResolutionValidator),
     resolutionNote: v.optional(v.string()),
     resolvedBy: v.optional(v.id("users")),
-    status: v.string(), // open, under_review, resolved, escalated, closed
+    status: disputeStatusValidator,
     openedAt: v.number(),
     resolvedAt: v.optional(v.number()),
     createdAt: v.number(),
@@ -707,6 +796,7 @@ export default defineSchema({
     .index("by_participant1", ["participant1"])
     .index("by_participant2", ["participant2"])
     .index("by_participants", ["participant1", "participant2"])
+    .index("by_order", ["orderId"])
     .index("by_lastMessage", ["lastMessageAt"]),
 
   messages: defineTable({
@@ -739,6 +829,67 @@ export default defineSchema({
     .index("by_user", ["userId"]),
 
   // ============================================================
+  // TRUST, MODERATION & SUPPORT
+  // ============================================================
+
+  moderationReports: defineTable({
+    tenantId: v.id("tenants"),
+    reporterId: v.id("users"),
+    targetType: reportTargetTypeValidator,
+    targetId: v.string(),
+    targetLabel: v.optional(v.string()),
+    targetUrl: v.optional(v.string()),
+    reason: reportReasonValidator,
+    details: v.string(),
+    status: reportStatusValidator,
+    resolutionNote: v.optional(v.string()),
+    assignedTo: v.optional(v.id("users")),
+    resolvedAt: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_status", ["status"])
+    .index("by_reporter", ["reporterId"])
+    .index("by_reporter_target", ["reporterId", "targetType", "targetId"])
+    .index("by_target", ["targetType", "targetId"]),
+
+  supportTickets: defineTable({
+    tenantId: v.id("tenants"),
+    userId: v.id("users"),
+    category: supportCategoryValidator,
+    subject: v.string(),
+    description: v.string(),
+    priority: supportPriorityValidator,
+    status: supportStatusValidator,
+    relatedUrl: v.optional(v.string()),
+    relatedOrderId: v.optional(v.id("orders")),
+    assignedTo: v.optional(v.id("users")),
+    adminNote: v.optional(v.string()),
+    resolvedAt: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_status", ["userId", "status"])
+    .index("by_status", ["status"])
+    .index("by_priority_status", ["priority", "status"]),
+
+  moderationAuditEvents: defineTable({
+    tenantId: v.id("tenants"),
+    actorId: v.id("users"),
+    action: v.string(),
+    targetType: v.string(),
+    targetId: v.string(),
+    fromStatus: v.optional(v.string()),
+    toStatus: v.optional(v.string()),
+    note: v.optional(v.string()),
+    createdAt: v.number(),
+  })
+    .index("by_actor", ["actorId"])
+    .index("by_target", ["targetType", "targetId"])
+    .index("by_createdAt", ["createdAt"]),
+
+  // ============================================================
   // LOCAL SERVICES: QUOTES
   // ============================================================
 
@@ -756,11 +907,11 @@ export default defineSchema({
     photos: v.optional(v.array(v.any())),
     budgetIndication: v.optional(v.string()),
     preferredDate: v.optional(v.number()),
-    status: v.string(), // open, closed
+    status: quoteRequestStatusValidator,
     quoteCount: v.optional(v.number()),
-    maxSlots: v.optional(v.number()),      // default 3
-    claimedSlots: v.optional(v.number()),  // default 0
-    isExclusive: v.optional(v.boolean()),  // default false
+    maxSlots: v.optional(v.number()), // default 3
+    claimedSlots: v.optional(v.number()), // default 0
+    isExclusive: v.optional(v.boolean()), // default false
     createdAt: v.number(),
     updatedAt: v.number(),
   })
@@ -776,12 +927,40 @@ export default defineSchema({
     description: v.string(),
     estimatedDays: v.optional(v.number()),
     validUntil: v.optional(v.number()),
-    status: v.string(), // pending, accepted, rejected
+    status: quoteStatusValidator,
     createdAt: v.number(),
     updatedAt: v.number(),
   })
     .index("by_quoteRequest", ["quoteRequestId"])
+    .index("by_quoteRequest_freelancer", ["quoteRequestId", "freelancerId"])
+    .index("by_quoteRequest_status", ["quoteRequestId", "status"])
     .index("by_freelancer", ["freelancerId"]),
+
+  localAppointments: defineTable({
+    tenantId: v.id("tenants"),
+    quoteRequestId: v.id("quoteRequests"),
+    quoteId: v.id("quotes"),
+    orderId: v.id("orders"),
+    clientId: v.id("users"),
+    professionalId: v.id("freelancerProfiles"),
+    scheduledStart: v.optional(v.number()),
+    scheduledEnd: v.optional(v.number()),
+    timezone: v.string(),
+    locationAddress: v.optional(v.string()),
+    clientNote: v.optional(v.string()),
+    professionalNote: v.optional(v.string()),
+    status: localAppointmentStatusValidator,
+    confirmedAt: v.optional(v.number()),
+    completedAt: v.optional(v.number()),
+    cancelledAt: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_order", ["orderId"])
+    .index("by_client", ["clientId"])
+    .index("by_professional", ["professionalId"])
+    .index("by_professional_status", ["professionalId", "status"])
+    .index("by_scheduledStart", ["scheduledStart"]),
 
   // ============================================================
   // LOCAL SERVICES: PAY-PER-LEAD
@@ -800,12 +979,15 @@ export default defineSchema({
   creditTransactions: defineTable({
     freelancerId: v.id("users"),
     amount: v.number(), // positive = purchase, negative = spend
-    type: v.union(v.literal("purchase"), v.literal("spend"), v.literal("refund")),
+    type: v.union(
+      v.literal("purchase"),
+      v.literal("spend"),
+      v.literal("refund"),
+    ),
     description: v.string(),
     referenceId: v.optional(v.string()), // Stripe session ID or leadClaim ID
     createdAt: v.number(),
-  })
-    .index("by_freelancer", ["freelancerId"]),
+  }).index("by_freelancer", ["freelancerId"]),
 
   // ============================================================
   // SAVED ITEMS / FAVORITES
@@ -915,13 +1097,13 @@ export default defineSchema({
   // ============================================================
 
   feedback: defineTable({
-    type: v.string(),                    // "feedback" | "bug" | "feature"
+    type: v.string(), // "feedback" | "bug" | "feature"
     message: v.string(),
-    rating: v.optional(v.number()),      // 1–5, only for type "feedback"
-    pageUrl: v.optional(v.string()),     // page where feedback was submitted
-    userId: v.optional(v.id("users")),   // null for anonymous
-    email: v.optional(v.string()),       // if user left email
-    status: v.string(),                  // "new" | "reviewed" | "resolved"
+    rating: v.optional(v.number()), // 1–5, only for type "feedback"
+    pageUrl: v.optional(v.string()), // page where feedback was submitted
+    userId: v.optional(v.id("users")), // null for anonymous
+    email: v.optional(v.string()), // if user left email
+    status: v.string(), // "new" | "reviewed" | "resolved"
     createdAt: v.number(),
   })
     .index("by_type", ["type"])
@@ -952,6 +1134,15 @@ export default defineSchema({
     .index("by_skill", ["skill"])
     .index("by_userType", ["userType"]),
 
+  waitlistCounters: defineTable({
+    key: v.string(),
+    label: v.optional(v.string()),
+    count: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_key", ["key"])
+    .index("by_count", ["count"]),
+
   // ============================================================
   // RESOURCES (SEO articles: pricing guides, comparisons, how-tos)
   // No tenantId: resources are platform-global, shared across all tenants (intentional)
@@ -959,9 +1150,9 @@ export default defineSchema({
 
   resources: defineTable({
     slug: v.string(),
-    locale: v.string(),                        // "en" | "nl"
-    type: v.string(),                          // "pricing" | "comparison" | "guide"
-    status: v.string(),                        // "draft" | "published"
+    locale: v.string(), // "en" | "nl"
+    type: v.string(), // "pricing" | "comparison" | "guide"
+    status: v.string(), // "draft" | "published"
 
     // SEO
     metaTitle: v.string(),
@@ -969,16 +1160,20 @@ export default defineSchema({
 
     // Content
     intro: v.string(),
-    sections: v.array(v.object({
-      heading: v.string(),
-      body: v.string(),
-    })),
-    pricingData: v.optional(v.any()),          // [{tier, price, features[]}]
-    comparisonData: v.optional(v.any()),       // [{category, a, b}]
-    faqItems: v.array(v.object({
-      question: v.string(),
-      answer: v.string(),
-    })),
+    sections: v.array(
+      v.object({
+        heading: v.string(),
+        body: v.string(),
+      }),
+    ),
+    pricingData: v.optional(v.any()), // [{tier, price, features[]}]
+    comparisonData: v.optional(v.any()), // [{category, a, b}]
+    faqItems: v.array(
+      v.object({
+        question: v.string(),
+        answer: v.string(),
+      }),
+    ),
     keyTakeaways: v.optional(v.array(v.string())),
 
     publishedAt: v.optional(v.number()),

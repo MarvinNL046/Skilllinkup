@@ -1,21 +1,91 @@
-import { mutation, query, internalMutation } from "./_generated/server";
 import { internal } from "./_generated/api";
+import { MutationCtx, internalMutation, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireAdmin } from "./lib/authHelpers";
+import { rateLimiter } from "./lib/rateLimits";
 
-/**
- * Public join mutation. Accepts required email plus optional signal fields
- * (skill / userType / name / source / locale). Idempotent on email: a
- * second submission with the same email returns alreadyJoined=true without
- * overwriting earlier data or re-triggering the welcome mail.
- *
- * On a fresh join we schedule the welcome email via the email-internal
- * action so the mutation stays fast and the email delivery is async /
- * best-effort (same pattern as orders, bids, etc.).
- *
- * Honeypot: the `trap` arg MUST be empty. Any value indicates a bot;
- * we silently accept + discard instead of throwing, so bots don't learn.
- */
+const waitlistEntryValidator = v.object({
+  _id: v.id("waitlist"),
+  _creationTime: v.number(),
+  email: v.string(),
+  name: v.optional(v.string()),
+  skill: v.optional(v.string()),
+  userType: v.optional(v.string()),
+  source: v.optional(v.string()),
+  locale: v.optional(v.string()),
+  notifiedAt: v.optional(v.number()),
+  createdAt: v.number(),
+});
+
+function normalizeSkill(skill?: string) {
+  const label = skill?.trim();
+  if (!label) return null;
+  return { key: `skill:${label.toLowerCase()}`, label };
+}
+
+async function ensureCounters(ctx: MutationCtx) {
+  const existingTotal = await ctx.db
+    .query("waitlistCounters")
+    .withIndex("by_key", (q) => q.eq("key", "total"))
+    .first();
+  if (existingTotal) return;
+
+  const existingEntries = await ctx.db.query("waitlist").take(10000);
+  if (existingEntries.length === 10000) {
+    throw new Error("Waitlist counter backfill requires a batched migration.");
+  }
+  const now = Date.now();
+  await ctx.db.insert("waitlistCounters", {
+    key: "total",
+    count: existingEntries.length,
+    updatedAt: now,
+  });
+
+  const skills = new Map<string, { label: string; count: number }>();
+  for (const entry of existingEntries) {
+    const normalized = normalizeSkill(entry.skill);
+    if (!normalized) continue;
+    const current = skills.get(normalized.key);
+    skills.set(normalized.key, {
+      label: current?.label ?? normalized.label,
+      count: (current?.count ?? 0) + 1,
+    });
+  }
+  for (const [key, value] of skills) {
+    await ctx.db.insert("waitlistCounters", {
+      key,
+      label: value.label,
+      count: value.count,
+      updatedAt: now,
+    });
+  }
+}
+
+async function changeCounter(ctx: MutationCtx, key: string, delta: number, label?: string) {
+  const existing = await ctx.db
+    .query("waitlistCounters")
+    .withIndex("by_key", (q) => q.eq("key", key))
+    .first();
+  const now = Date.now();
+  if (existing) {
+    await ctx.db.patch(existing._id, {
+      count: Math.max(0, existing.count + delta),
+      label: label ?? existing.label,
+      updatedAt: now,
+    });
+  } else if (delta > 0) {
+    await ctx.db.insert("waitlistCounters", { key, label, count: delta, updatedAt: now });
+  }
+}
+
+async function changeSignupCounters(ctx: MutationCtx, skill: string | undefined, delta: number) {
+  await changeCounter(ctx, "total", delta);
+  const normalized = normalizeSkill(skill);
+  if (normalized) {
+    await changeCounter(ctx, normalized.key, delta, normalized.label);
+  }
+}
+
 export const join = mutation({
   args: {
     email: v.string(),
@@ -24,35 +94,38 @@ export const join = mutation({
     userType: v.optional(v.string()),
     source: v.optional(v.string()),
     locale: v.optional(v.string()),
-    // Honeypot — hidden field in the form; humans never fill this.
     trap: v.optional(v.string()),
   },
+  returns: v.object({
+    success: v.boolean(),
+    alreadyJoined: v.boolean(),
+    bot: v.optional(v.boolean()),
+    error: v.optional(v.string()),
+  }),
   handler: async (ctx, args) => {
-    if (args.trap && args.trap.trim() !== "") {
-      // Pretend success so bots don't learn the honeypot exists.
+    if (args.trap?.trim()) {
       return { success: true, alreadyJoined: false, bot: true };
     }
-
     const email = args.email.toLowerCase().trim();
     if (!email.includes("@") || email.length > 254) {
       return { success: false, alreadyJoined: false, error: "invalid_email" };
     }
 
-    const skill = args.skill?.trim() || undefined;
-    const userType = args.userType?.trim() || undefined;
-    const name = args.name?.trim() || undefined;
-    const source = args.source?.trim() || undefined;
-    const locale = args.locale?.trim() || undefined;
-
     const existing = await ctx.db
       .query("waitlist")
       .withIndex("by_email", (q) => q.eq("email", email))
       .first();
+    if (existing) return { success: true, alreadyJoined: true };
 
-    if (existing) {
-      return { success: true, alreadyJoined: true };
-    }
+    await rateLimiter.limit(ctx, "waitlistPerEmail", { key: email, throws: true });
+    await rateLimiter.limit(ctx, "waitlistGlobal", { throws: true });
 
+    const skill = args.skill?.trim() || undefined;
+    const name = args.name?.trim() || undefined;
+    const userType = args.userType?.trim() || undefined;
+    const source = args.source?.trim() || undefined;
+    const locale = args.locale?.trim() || undefined;
+    await ensureCounters(ctx);
     await ctx.db.insert("waitlist", {
       email,
       name,
@@ -62,9 +135,8 @@ export const join = mutation({
       locale,
       createdAt: Date.now(),
     });
+    await changeSignupCounters(ctx, skill, 1);
 
-    // Fire-and-forget welcome email. Failure is logged inside the action
-    // but does not break the signup — the waitlist row is already saved.
     await ctx.scheduler.runAfter(0, internal.lib.email.sendWaitlistWelcome, {
       to: email,
       name,
@@ -72,129 +144,124 @@ export const join = mutation({
       userType,
       locale: locale || "en",
     });
-
     return { success: true, alreadyJoined: false };
   },
 });
 
-/**
- * Public count query. Used by the WaitlistButton to show a live counter
- * ("N freelancers joined") as social proof. No admin auth because this
- * number is an intentional marketing signal.
- */
 export const getCount = query({
   args: {},
+  returns: v.number(),
   handler: async (ctx) => {
-    const all = await ctx.db.query("waitlist").collect();
-    return all.length;
+    const counter = await ctx.db
+      .query("waitlistCounters")
+      .withIndex("by_key", (q) => q.eq("key", "total"))
+      .first();
+    if (counter) return counter.count;
+    return (await ctx.db.query("waitlist").take(10000)).length;
   },
 });
 
-/**
- * Public skill breakdown — only returns top skills to avoid leaking
- * individual signups while still showing useful diversity signal.
- */
 export const getSkillBreakdown = query({
   args: {},
+  returns: v.array(v.object({ skill: v.string(), count: v.number() })),
   handler: async (ctx) => {
-    const all = await ctx.db.query("waitlist").collect();
-    const counts = new Map<string, number>();
-    for (const entry of all) {
-      if (!entry.skill) continue;
-      const normalized = entry.skill.toLowerCase().trim();
-      if (!normalized) continue;
-      counts.set(normalized, (counts.get(normalized) || 0) + 1);
+    const counters = await ctx.db
+      .query("waitlistCounters")
+      .withIndex("by_count")
+      .order("desc")
+      .take(25);
+    if (counters.length > 0) {
+      return counters
+        .filter((counter) => counter.key.startsWith("skill:") && counter.label)
+        .slice(0, 10)
+        .map((counter) => ({ skill: counter.label!, count: counter.count }));
     }
-    const sorted = Array.from(counts.entries())
+
+    const entries = await ctx.db.query("waitlist").take(10000);
+    const counts = new Map<string, number>();
+    for (const entry of entries) {
+      const normalized = normalizeSkill(entry.skill);
+      if (!normalized) continue;
+      counts.set(normalized.label, (counts.get(normalized.label) ?? 0) + 1);
+    }
+    return [...counts.entries()]
       .map(([skill, count]) => ({ skill, count }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
-    return sorted;
   },
 });
 
-// Admin: list all waitlist entries (newest first)
 export const list = query({
-  args: {},
-  handler: async (ctx) => {
+  args: { limit: v.optional(v.number()) },
+  returns: v.array(waitlistEntryValidator),
+  handler: async (ctx, args) => {
     await requireAdmin(ctx);
-    return await ctx.db.query("waitlist").order("desc").collect();
+    return ctx.db
+      .query("waitlist")
+      .order("desc")
+      .take(Math.max(1, Math.min(args.limit ?? 100, 500)));
   },
 });
 
-// Admin: count (authenticated, exact number)
 export const count = query({
   args: {},
+  returns: v.number(),
   handler: async (ctx) => {
     await requireAdmin(ctx);
-    const all = await ctx.db.query("waitlist").collect();
-    return all.length;
+    const counter = await ctx.db
+      .query("waitlistCounters")
+      .withIndex("by_key", (q) => q.eq("key", "total"))
+      .first();
+    return counter?.count ?? (await ctx.db.query("waitlist").take(10000)).length;
   },
 });
 
-/**
- * Admin helper: mark a waitlist entry as notified (when we actually
- * send the launch announcement). Used by a future launch-blast job.
- */
 export const markNotified = internalMutation({
   args: { id: v.id("waitlist") },
+  returns: v.null(),
   handler: async (ctx, args) => {
     await ctx.db.patch(args.id, { notifiedAt: Date.now() });
+    return null;
   },
 });
 
-/**
- * Admin / debugging helper: delete waitlist entries by email.
- * Used to clean up test entries left behind by e2e runs.
- */
 export const deleteByEmails = internalMutation({
   args: { emails: v.array(v.string()) },
+  returns: v.object({ deleted: v.number(), total: v.number() }),
   handler: async (ctx, args) => {
+    await ensureCounters(ctx);
     let deleted = 0;
-    for (const raw of args.emails) {
-      const email = raw.toLowerCase().trim();
+    for (const raw of args.emails.slice(0, 500)) {
       const entry = await ctx.db
         .query("waitlist")
-        .withIndex("by_email", (q) => q.eq("email", email))
+        .withIndex("by_email", (q) => q.eq("email", raw.toLowerCase().trim()))
         .first();
-      if (entry) {
-        await ctx.db.delete(entry._id);
-        deleted++;
-      }
+      if (!entry) continue;
+      await ctx.db.delete(entry._id);
+      await changeSignupCounters(ctx, entry.skill, -1);
+      deleted += 1;
     }
     return { deleted, total: args.emails.length };
   },
 });
 
-/**
- * One-off bulk import used to migrate pre-waitlist signups into the
- * waitlist table as single source of truth for the launch blast.
- *
- * Does NOT trigger welcome emails — these people registered before the
- * waitlist system existed, so a sudden "you're on the waitlist" email
- * would feel weird. They'll get the actual launch email when that
- * moment comes.
- *
- * Dedupes on email. Safe to re-run.
- */
 export const bulkImport = internalMutation({
   args: {
     entries: v.array(
-      v.object({
-        email: v.string(),
-        name: v.optional(v.string()),
-        source: v.string(),
-      }),
+      v.object({ email: v.string(), name: v.optional(v.string()), source: v.string() })
     ),
   },
+  returns: v.object({ inserted: v.number(), skipped: v.number(), total: v.number() }),
   handler: async (ctx, args) => {
+    if (args.entries.length > 500) throw new Error("Import at most 500 entries per batch.");
+    await ensureCounters(ctx);
     let inserted = 0;
     let skipped = 0;
     const now = Date.now();
     for (const entry of args.entries) {
       const email = entry.email.toLowerCase().trim();
-      if (!email || !email.includes("@")) {
-        skipped++;
+      if (!email.includes("@")) {
+        skipped += 1;
         continue;
       }
       const existing = await ctx.db
@@ -202,7 +269,7 @@ export const bulkImport = internalMutation({
         .withIndex("by_email", (q) => q.eq("email", email))
         .first();
       if (existing) {
-        skipped++;
+        skipped += 1;
         continue;
       }
       await ctx.db.insert("waitlist", {
@@ -211,7 +278,8 @@ export const bulkImport = internalMutation({
         source: entry.source,
         createdAt: now,
       });
-      inserted++;
+      await changeSignupCounters(ctx, undefined, 1);
+      inserted += 1;
     }
     return { inserted, skipped, total: args.entries.length };
   },

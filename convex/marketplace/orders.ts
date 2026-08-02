@@ -2,7 +2,9 @@ import { v } from "convex/values";
 import { query, mutation, internalQuery, internalMutation } from "../_generated/server";
 import { internal } from "../_generated/api";
 import { Doc, Id } from "../_generated/dataModel";
-import { requireOwner, requireServerSecret } from "../lib/authHelpers";
+import { requireAuthUser, requireOwner, requireServerSecret } from "../lib/authHelpers";
+import { assertTransition, orderTransitions, orderTypeValidator } from "../lib/marketplaceState";
+import { notifyUser } from "../lib/notifications";
 
 /**
  * Calculate the platform fee based on the order amount.
@@ -35,7 +37,7 @@ function generateOrderNumber(): string {
  */
 export const create = mutation({
   args: {
-    orderType: v.string(),
+    orderType: orderTypeValidator,
     title: v.string(),
     amount: v.number(),
     currency: v.optional(v.string()),
@@ -190,6 +192,97 @@ export const create = mutation({
 });
 
 /**
+ * Start a service-package order during the free private beta.
+ * No charge, transfer, escrow hold or credit movement is created. The listed
+ * package amount remains on the order so both parties have a clear scope and
+ * price reference for beta feedback.
+ */
+export const createBetaGigOrder = mutation({
+  args: {
+    gigId: v.id("gigs"),
+    packageId: v.id("gigPackages"),
+  },
+  returns: v.object({ orderId: v.id("orders") }),
+  handler: async (ctx, args) => {
+    const client = await requireAuthUser(ctx);
+    const [gig, selectedPackage] = await Promise.all([
+      ctx.db.get(args.gigId),
+      ctx.db.get(args.packageId),
+    ]);
+
+    if (!gig || gig.status !== "active") {
+      throw new Error("This service is not available.");
+    }
+    if (!selectedPackage || selectedPackage.gigId !== gig._id) {
+      throw new Error("The selected package does not belong to this service.");
+    }
+
+    const freelancerProfile = await ctx.db.get(gig.freelancerId);
+    if (!freelancerProfile || freelancerProfile.status !== "active") {
+      throw new Error("The freelancer profile is not available.");
+    }
+    if (freelancerProfile.userId === client._id) {
+      throw new Error("You cannot order your own service.");
+    }
+
+    const now = Date.now();
+    const orderId = await ctx.db.insert("orders", {
+      tenantId: gig.tenantId,
+      orderNumber: generateOrderNumber(),
+      orderType: "gig",
+      clientId: client._id,
+      freelancerId: freelancerProfile._id,
+      gigId: gig._id,
+      gigPackageId: selectedPackage._id,
+      title: `${gig.title} - ${selectedPackage.title}`,
+      description: selectedPackage.description,
+      amount: selectedPackage.price,
+      platformFee: 0,
+      freelancerEarnings: selectedPackage.price,
+      currency: selectedPackage.currency ?? "EUR",
+      deliveryDeadline: now + selectedPackage.deliveryDays * 24 * 60 * 60 * 1000,
+      revisionCount: selectedPackage.revisionCount,
+      revisionsUsed: 0,
+      status: "active",
+      escrowStatus: "beta_no_payment",
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    const conversationId = await ctx.db.insert("conversations", {
+      tenantId: gig.tenantId,
+      orderId,
+      participant1: client._id,
+      participant2: freelancerProfile.userId,
+      status: "active",
+      unreadCount1: 0,
+      unreadCount2: 0,
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    await ctx.db.insert("messages", {
+      conversationId,
+      content: `Private beta order started: ${gig.title}`,
+      messageType: "system",
+      isRead: false,
+      createdAt: now,
+    });
+
+    await notifyUser(ctx, {
+      userId: freelancerProfile.userId,
+      type: "order_placed",
+      title: "New private beta order",
+      body: `${client.name} started ${selectedPackage.title} for ${gig.title}.`,
+      link: `/orders/${orderId}`,
+      metadata: { orderId, gigId: gig._id },
+    });
+
+    return { orderId };
+  },
+});
+
+/**
  * Get an order by its Stripe PaymentIntent ID.
  * Used for idempotency in the webhook handler.
  */
@@ -223,10 +316,23 @@ export const updateStripePayment = mutation({
   },
   handler: async (ctx, args) => {
     requireServerSecret(args.serverSecret);
+    const order = await ctx.db.get(args.orderId);
+    if (!order) throw new Error("Order not found.");
+    if (order.status !== "active") {
+      assertTransition(orderTransitions, order.status, "active");
+    }
+    await notifyUser(ctx, {
+      userId: order.clientId,
+      type: "order_delivered",
+      title: "Work submitted for review",
+      body: `${order.title} is ready for your review.`,
+      link: `/orders/${order._id}`,
+      metadata: { orderId: order._id },
+    });
     await ctx.db.patch(args.orderId, {
       stripePaymentIntentId: args.stripePaymentIntentId,
       escrowStatus: "held",
-      status: "in_progress",
+      status: "active",
       requirements: args.requirements,
       updatedAt: Date.now(),
     });
@@ -366,19 +472,11 @@ export const getById = query({
     orderId: v.id("orders"),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
     const order = await ctx.db.get(args.orderId);
     if (!order) return null;
 
     // Verify the requester is the client or freelancer on this order
-    const requestingUser = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-
-    if (!requestingUser) throw new Error("User not found");
+    const requestingUser = await requireAuthUser(ctx);
 
     const freelancerProfile = order.freelancerId
       ? await ctx.db.get(order.freelancerId)
@@ -413,18 +511,11 @@ export const deliver = mutation({
   args: {
     orderId: v.id("orders"),
   },
+  returns: v.object({ success: v.boolean() }),
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
     const order = await ctx.db.get(args.orderId);
     if (!order) throw new Error("Order not found");
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-    if (!user) throw new Error("User not found");
+    const user = await requireAuthUser(ctx);
 
     // Verify caller is the freelancer
     const freelancerProfile = order.freelancerId
@@ -433,6 +524,12 @@ export const deliver = mutation({
     if (!freelancerProfile || freelancerProfile.userId !== user._id) {
       throw new Error("Access denied: only the freelancer can deliver this order");
     }
+    assertTransition(orderTransitions, order.status, "delivered");
+    const deliverable = await ctx.db
+      .query("orderDeliverables")
+      .withIndex("by_order", (q) => q.eq("orderId", order._id))
+      .first();
+    if (!deliverable) throw new Error("Add at least one file or delivery note before submitting the work.");
 
     await ctx.db.patch(args.orderId, {
       status: "delivered",
@@ -440,14 +537,14 @@ export const deliver = mutation({
     });
 
     // Schedule automatic escrow release after 7 days if client takes no action
-    const releaseJobId = await ctx.scheduler.runAfter(
-      7 * 24 * 60 * 60 * 1000, // 7 days in ms
-      internal.marketplace.escrow.releaseToFreelancer,
-      { orderId: args.orderId }
-    );
-    await ctx.db.patch(args.orderId, {
-      autoReleaseJobId: releaseJobId,
-    });
+    if (order.escrowStatus === "held") {
+      const releaseJobId = await ctx.scheduler.runAfter(
+        7 * 24 * 60 * 60 * 1000,
+        internal.marketplace.escrow.releaseToFreelancer,
+        { orderId: args.orderId }
+      );
+      await ctx.db.patch(args.orderId, { autoReleaseJobId: releaseJobId });
+    }
 
     // Send delivery notification to client
     const client = await ctx.db.get(order.clientId);
@@ -474,22 +571,16 @@ export const approve = mutation({
   args: {
     orderId: v.id("orders"),
   },
+  returns: v.object({ success: v.boolean() }),
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
     const order = await ctx.db.get(args.orderId);
     if (!order) throw new Error("Order not found");
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-    if (!user) throw new Error("User not found");
+    const user = await requireAuthUser(ctx);
 
     if (order.clientId !== user._id) {
       throw new Error("Access denied: only the client can approve this order");
     }
+    assertTransition(orderTransitions, order.status, "completed");
 
     // Cancel the 7-day auto-release job — client approved before timeout
     if (order.autoReleaseJobId) {
@@ -506,19 +597,20 @@ export const approve = mutation({
     });
 
     // Trigger Stripe transfer — runs asynchronously after this mutation
-    await ctx.scheduler.runAfter(0, internal.marketplace.escrow.releaseToFreelancer, {
-      orderId: args.orderId,
-    });
-
-    // Schedule reward processing
-    await ctx.scheduler.runAfter(0, internal.marketplace.rewards.processOrderCashback, {
-      orderId: args.orderId,
-    });
-
-    if (order.freelancerId) {
-      await ctx.scheduler.runAfter(0, internal.marketplace.rewards.recalculateFreelancerLevel, {
-        freelancerProfileId: order.freelancerId,
+    if (order.escrowStatus === "held") {
+      await ctx.scheduler.runAfter(0, internal.marketplace.escrow.releaseToFreelancer, {
+        orderId: args.orderId,
       });
+
+      await ctx.scheduler.runAfter(0, internal.marketplace.rewards.processOrderCashback, {
+        orderId: args.orderId,
+      });
+
+      if (order.freelancerId) {
+        await ctx.scheduler.runAfter(0, internal.marketplace.rewards.recalculateFreelancerLevel, {
+          freelancerProfileId: order.freelancerId,
+        });
+      }
     }
 
     // Send completion notification to freelancer
@@ -533,6 +625,16 @@ export const approve = mutation({
         amount: order.freelancerEarnings ?? order.amount,
         currency: order.currency ?? "EUR",
         orderId: args.orderId,
+      });
+    }
+    if (freelancerUser) {
+      await notifyUser(ctx, {
+        userId: freelancerUser._id,
+        type: "order_completed",
+        title: "Order completed",
+        body: `${order.title} was approved by the client.`,
+        link: `/orders/${order._id}`,
+        metadata: { orderId: order._id },
       });
     }
 
@@ -550,21 +652,19 @@ export const requestRevision = mutation({
     orderId: v.id("orders"),
     message: v.string(),
   },
+  returns: v.object({ success: v.boolean(), revisionsUsed: v.number() }),
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
     const order = await ctx.db.get(args.orderId);
     if (!order) throw new Error("Order not found");
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-    if (!user) throw new Error("User not found");
+    const user = await requireAuthUser(ctx);
 
     if (order.clientId !== user._id) {
       throw new Error("Access denied: only the client can request a revision");
+    }
+    assertTransition(orderTransitions, order.status, "revision_requested");
+    const message = args.message.trim();
+    if (message.length < 10 || message.length > 3000) {
+      throw new Error("Revision feedback must be between 10 and 3,000 characters.");
     }
 
     const revisionsUsed = (order.revisionsUsed ?? 0) + 1;
@@ -574,6 +674,40 @@ export const requestRevision = mutation({
       revisionsUsed,
       updatedAt: Date.now(),
     });
+
+    const conversation = await ctx.db
+      .query("conversations")
+      .withIndex("by_order", (q) => q.eq("orderId", order._id))
+      .unique();
+    if (conversation) {
+      const now = Date.now();
+      await ctx.db.insert("messages", {
+        conversationId: conversation._id,
+        senderId: user._id,
+        content: message,
+        messageType: "order_update",
+        isRead: false,
+        createdAt: now,
+      });
+      await ctx.db.patch(conversation._id, {
+        lastMessageAt: now,
+        lastMessagePreview: message.slice(0, 140),
+        unreadCount2: (conversation.unreadCount2 ?? 0) + 1,
+        updatedAt: now,
+      });
+    }
+
+    const freelancerProfile = order.freelancerId ? await ctx.db.get(order.freelancerId) : null;
+    if (freelancerProfile) {
+      await notifyUser(ctx, {
+        userId: freelancerProfile.userId,
+        type: "revision_requested",
+        title: "Revision requested",
+        body: `${order.title}: ${message.slice(0, 120)}`,
+        link: `/orders/${order._id}`,
+        metadata: { orderId: order._id },
+      });
+    }
 
     return { success: true, revisionsUsed };
   },

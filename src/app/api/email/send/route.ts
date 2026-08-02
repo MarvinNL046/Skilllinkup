@@ -15,8 +15,6 @@ import { NewMessageEmail } from "../../../../../emails/new-message";
 import { ReviewReceivedEmail } from "../../../../../emails/review-received";
 import { WaitlistWelcomeEmail } from "../../../../../emails/waitlist-welcome";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 // Map template names to React components
 const templates: Record<string, (props: any) => React.ReactElement> = {
   orderConfirmation: (props) => OrderConfirmationEmail(props),
@@ -33,9 +31,22 @@ const templates: Record<string, (props: any) => React.ReactElement> = {
 };
 
 export async function POST(request: NextRequest) {
+  const internalSecret = process.env.INTERNAL_EMAIL_SECRET;
+  const resendApiKey = process.env.RESEND_API_KEY;
+
+  if (!internalSecret || !resendApiKey) {
+    console.error(
+      "[email/send] INTERNAL_EMAIL_SECRET or RESEND_API_KEY is not configured.",
+    );
+    return NextResponse.json(
+      { error: "Email service is not configured" },
+      { status: 503 },
+    );
+  }
+
   // Verify internal secret to prevent unauthorized access
   const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.INTERNAL_EMAIL_SECRET}`) {
+  if (authHeader !== `Bearer ${internalSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -49,6 +60,7 @@ export async function POST(request: NextRequest) {
 
     const emailComponent = templateFn(props);
     const html = await render(emailComponent);
+    const resend = new Resend(resendApiKey);
 
     const { error } = await resend.emails.send({
       from: "SkillLinkup <noreply@skilllinkup.com>",

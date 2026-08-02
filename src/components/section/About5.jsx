@@ -10,7 +10,7 @@ export default function About5() {
   const bullets = [
     "Compare 19+ freelance platforms side by side",
     "Find services from verified freelancers",
-    "Secure payments with built-in escrow protection",
+    "Clear workspaces with recorded milestones and approvals",
   ];
 
   return (

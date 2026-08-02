@@ -24,13 +24,13 @@ import dashboardSidebarStore from "@/store/dashboardSidebarStore";
 export default function DashboardLayout({ children, maxWidth = "full" }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
+  const { convexUser, isLoaded, isClerkSignedIn } = useConvexUser();
   const collapsed = dashboardSidebarStore((s) => s.collapsed);
   const mobileOpen = dashboardSidebarStore((s) => s.mobileOpen);
   const closeMobile = dashboardSidebarStore((s) => s.closeMobile);
 
   useEffect(() => {
-    if (isLoaded && !isAuthenticated) {
+    if (isLoaded && !isClerkSignedIn) {
       router.replace("/login");
       return;
     }
@@ -41,7 +41,7 @@ export default function DashboardLayout({ children, maxWidth = "full" }) {
     ) {
       router.replace("/onboarding");
     }
-  }, [convexUser, isLoaded, isAuthenticated, pathname, router]);
+  }, [convexUser, isLoaded, isClerkSignedIn, pathname, router]);
 
   // Close mobile drawer on route change so navigation away dismisses it
   useEffect(() => {
@@ -61,32 +61,28 @@ export default function DashboardLayout({ children, maxWidth = "full" }) {
 
   return (
     <div
+      className="app-shell"
+      data-sidebar={collapsed ? "collapsed" : "expanded"}
       style={{
-        background: "var(--bg)",
-        display: "flex",
-        flexDirection: "column",
         flex: "1 0 auto",
         minWidth: 0,
       }}
     >
-      <DashboardHeader />
-      <div
-        className="app-shell"
-        data-sidebar={collapsed ? "collapsed" : "expanded"}
+      <aside
+        className="app-shell__sidebar"
+        data-mobile-open={mobileOpen ? "true" : "false"}
       >
-        <aside
-          className="app-shell__sidebar"
-          data-mobile-open={mobileOpen ? "true" : "false"}
-        >
-          <DashboardSidebar />
-        </aside>
-        {mobileOpen && (
-          <div
-            className="app-shell__backdrop"
-            onClick={closeMobile}
-            aria-hidden="true"
-          />
-        )}
+        <DashboardSidebar />
+      </aside>
+      {mobileOpen && (
+        <div
+          className="app-shell__backdrop"
+          onClick={closeMobile}
+          aria-hidden="true"
+        />
+      )}
+      <section className="app-shell__workspace">
+        <DashboardHeader />
         <main
           className="app-shell__content"
           data-max-width={maxWidth}
@@ -94,7 +90,7 @@ export default function DashboardLayout({ children, maxWidth = "full" }) {
         >
           {children}
         </main>
-      </div>
+      </section>
     </div>
   );
 }

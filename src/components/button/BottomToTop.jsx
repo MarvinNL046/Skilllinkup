@@ -1,40 +1,31 @@
 "use client";
 import { useEffect, useState } from "react";
+import { ArrowUp } from "lucide-react";
+import styles from "./BottomToTop.module.css";
 
 export default function BottomToTop() {
-  const [isBottom, setBottom] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
-  // scroll from top
   useEffect(() => {
     const handleScroll = () => {
-      const scrollTop =
-        window.pageYOffset || document.documentElement.scrollTop;
-      setBottom(scrollTop > 200);
+      setIsVisible(window.scrollY > 500);
     };
 
-    if (typeof window !== "undefined") {
-      window.addEventListener("scroll", handleScroll);
-      return () => {
-        window.removeEventListener("scroll", handleScroll);
-      };
-    }
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // bottom to top handler
-  const bottomToTopHandler = () => {
-    if (typeof window !== "undefined") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  };
-
   return (
-    <>
-      <a
-        onClick={bottomToTopHandler}
-        className={`scrollToHome ${isBottom ? "show" : ""}`}
-      >
-        <i className="fas fa-angle-up" />
-      </a>
-    </>
+    <button
+      type="button"
+      className={`${styles.button} ${isVisible ? styles.visible : ""}`}
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      aria-label="Back to top"
+      title="Back to top"
+      tabIndex={isVisible ? 0 : -1}
+    >
+      <ArrowUp size={20} strokeWidth={2.2} aria-hidden="true" />
+    </button>
   );
 }

@@ -1,7 +1,6 @@
 import { getTranslations } from "next-intl/server";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import CreateProjectInfo from "@/components/dashboard/section/CreateProjectInfo";
-
+import AppFooter from "@/components/footer/AppFooter";
 
 export async function generateMetadata() {
   const t = await getTranslations("createProject");
@@ -12,11 +11,9 @@ export async function generateMetadata() {
 
 export default function page() {
   return (
-    <>
-
-      <DashboardLayout maxWidth="form">
-        <CreateProjectInfo />
-      </DashboardLayout>
-    </>
+    <div className="wrapper ovh">
+      <CreateProjectInfo />
+      <AppFooter />
+    </div>
   );
 }

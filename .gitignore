@@ -10,6 +10,8 @@
 
 # next.js
 /.next/
+/.next-*/
+/.next-*.log
 /out/
 
 # production
@@ -52,11 +54,18 @@ quick-*.mjs
 *-test-results.json
 test-results/
 playwright-report/
+.codex-runtime/
+work/edge-profile/
 e2e/.smoke-data.json
 scripts/test-*.js
 scripts/test-*.ts
 scripts/check-*.mjs
 scripts/verify-*.mjs
+!scripts/verify-environment.mjs
+!scripts/verify-hosted-release.mjs
 
 # Email previews (generated files)
 email-previews/
+
+# clerk configuration (can include secrets)
+/.clerk/

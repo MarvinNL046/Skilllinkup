@@ -111,6 +111,22 @@ export const create = mutation({
     if (args.participant1 === args.participant2) {
       throw new Error("Cannot create a conversation with yourself.");
     }
+    if (args.orderId) {
+      const order = await ctx.db.get(args.orderId);
+      if (!order) throw new Error("Order not found.");
+      const professional = order.freelancerId ? await ctx.db.get(order.freelancerId) : null;
+      const allowed = new Set([order.clientId, professional?.userId].filter(Boolean));
+      if (!allowed.has(args.participant1) || !allowed.has(args.participant2)) {
+        throw new Error("Order conversations are limited to the order parties.");
+      }
+    }
+    if (args.projectId && !args.orderId) {
+      const project = await ctx.db.get(args.projectId);
+      if (!project) throw new Error("Project not found.");
+      if (project.clientId !== user._id) {
+        throw new Error("Only the project owner can start a project conversation.");
+      }
+    }
 
     // Check if a conversation already exists between these two users (either order)
     const existing = await ctx.db
@@ -131,16 +147,10 @@ export const create = mutation({
 
     if (existingReverse) return existingReverse._id;
 
-    // Get tenantId from first tenant
-    const tenant = await ctx.db.query("tenants").first();
-    if (!tenant) {
-      throw new Error("No tenant found — run data migration first");
-    }
-
     const now = Date.now();
 
     const conversationId = await ctx.db.insert("conversations", {
-      tenantId: tenant._id,
+      tenantId: user.tenantId,
       participant1: args.participant1,
       participant2: args.participant2,
       orderId: args.orderId,
@@ -195,6 +205,34 @@ export const getById = query({
             image: participant2User.image ?? participant2User.avatar,
           }
         : null,
+    };
+  },
+});
+
+/** Resolve the private workspace conversation attached to an order. */
+export const getByOrder = query({
+  args: { orderId: v.id("orders") },
+  handler: async (ctx, args) => {
+    const user = await requireAuthUser(ctx);
+    const conversation = await ctx.db
+      .query("conversations")
+      .withIndex("by_order", (q) => q.eq("orderId", args.orderId))
+      .unique();
+    if (!conversation) return null;
+    if (conversation.participant1 !== user._id && conversation.participant2 !== user._id) {
+      throw new Error("Unauthorized.");
+    }
+    const otherId = conversation.participant1 === user._id
+      ? conversation.participant2
+      : conversation.participant1;
+    const other = await ctx.db.get(otherId);
+    return {
+      ...conversation,
+      otherParticipant: other ? {
+        _id: other._id,
+        name: other.name,
+        image: other.image ?? other.avatar ?? null,
+      } : null,
     };
   },
 });

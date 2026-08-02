@@ -4,8 +4,13 @@ export const maxDuration = 300;
 
 export async function GET(request: NextRequest) {
   // Verify Vercel cron secret
+  const cronSecret = process.env.CRON_SECRET;
+  const pipelineSecret = process.env.PIPELINE_SECRET;
+  if (!cronSecret || !pipelineSecret) {
+    return NextResponse.json({ error: "Cron service is not configured" }, { status: 503 });
+  }
   const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -15,7 +20,7 @@ export async function GET(request: NextRequest) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.PIPELINE_SECRET}`,
+        Authorization: `Bearer ${pipelineSecret}`,
       },
       body: JSON.stringify({ locale: "en" }),
     });

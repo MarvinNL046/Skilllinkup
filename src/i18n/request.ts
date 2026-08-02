@@ -1,5 +1,5 @@
 import { getRequestConfig } from "next-intl/server";
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import { routing } from "./routing";
 
 export default getRequestConfig(async () => {
@@ -13,15 +13,9 @@ export default getRequestConfig(async () => {
     };
   }
 
-  // 2. Check Accept-Language header
-  const headerStore = await headers();
-  const acceptLang = headerStore.get("accept-language") || "";
-  const browserLocale = acceptLang
-    .split(",")
-    .map((part) => part.split(";")[0].trim().substring(0, 2))
-    .find((code) => routing.locales.includes(code as any));
-
-  const locale = browserLocale || routing.defaultLocale;
+  // English-first: a browser language never changes the product silently.
+  // Visitors can opt into another supported language with the language switcher.
+  const locale = routing.defaultLocale;
 
   return {
     locale,

@@ -3,8 +3,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
+import { useMutation } from "convex/react";
 import { toast } from "sonner";
 import { Clock, RefreshCcw, Check, ArrowRight } from "lucide-react";
+import { api } from "../../../convex/_generated/api";
 
 /**
  * Gig pricing widget in the service-detail sidebar. Rebuilt on the
@@ -14,14 +16,13 @@ import { Clock, RefreshCcw, Check, ArrowRight } from "lucide-react";
 export default function ServiceDetailPrice1({
   packages = [],
   gigId,
-  gigTitle,
-  freelancerStripeAccountId,
 }) {
   const t = useTranslations("gigDetail");
   const [selectedTab, setSelectedTab] = useState(0);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const router = useRouter();
   const { isSignedIn } = useUser();
+  const createBetaOrder = useMutation(api.marketplace.orders.createBetaGigOrder);
 
   const hasPackages = packages && packages.length > 0;
   const displayPackages = packages;
@@ -47,27 +48,15 @@ export default function ServiceDetailPrice1({
 
     setIsCheckingOut(true);
     try {
-      const res = await fetch("/api/stripe/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          gigId,
-          packageId: activePackage._id,
-          gigTitle,
-          packageTitle: activePackage.title || activePackage.tier || "",
-          price: activePackage.price,
-          currency: (activePackage.currency || "eur").toLowerCase(),
-          freelancerStripeAccountId: freelancerStripeAccountId || "",
-        }),
+      const result = await createBetaOrder({
+        gigId,
+        packageId: activePackage._id,
       });
-      const json = await res.json();
-      if (!res.ok || !json.url) {
-        throw new Error(json.error || "Checkout failed to start");
-      }
-      window.location.href = json.url;
+      toast.success("Your private beta workspace is ready.");
+      router.push(`/orders/${result.orderId}`);
     } catch (err) {
-      console.error("[checkout] error:", err);
-      toast.error(err.message || "Could not start checkout");
+      console.error("[beta-order] error:", err);
+      toast.error(err.message || "Could not start the order");
       setIsCheckingOut(false);
     }
   }
@@ -260,8 +249,7 @@ export default function ServiceDetailPrice1({
           <span className="spinner-border spinner-border-sm" role="status" />
         ) : (
           <>
-            {t("continue")} ({currencySymbol}
-            {activePackage?.price})
+            Start free beta order
             <ArrowRight size={16} />
           </>
         )}

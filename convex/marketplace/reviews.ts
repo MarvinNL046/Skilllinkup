@@ -34,6 +34,27 @@ function canAccessOrderReviews(
   );
 }
 
+async function refreshFreelancerRating(ctx: MutationCtx, userId: Id<"users">) {
+  const profile = await ctx.db
+    .query("freelancerProfiles")
+    .withIndex("by_userId", (q) => q.eq("userId", userId))
+    .first();
+  if (!profile) return;
+  const publicReviews = await ctx.db
+    .query("marketplaceReviews")
+    .withIndex("by_reviewee", (q) => q.eq("revieweeId", userId))
+    .filter((q) => q.eq(q.field("isPublic"), true))
+    .take(1000);
+  const ratingAverage = publicReviews.length
+    ? publicReviews.reduce((total, review) => total + review.overallRating, 0) / publicReviews.length
+    : 0;
+  await ctx.db.patch(profile._id, {
+    ratingAverage: Math.round(ratingAverage * 10) / 10,
+    ratingCount: publicReviews.length,
+    updatedAt: Date.now(),
+  });
+}
+
 /**
  * Get public reviews for a freelancer (by their user ID in revieweeId).
  */
@@ -53,7 +74,7 @@ export const getByFreelancer = query({
       .query("marketplaceReviews")
       .withIndex("by_reviewee", (q) => q.eq("revieweeId", profile.userId))
       .filter((q) => q.eq(q.field("isPublic"), true))
-      .collect();
+      .take(Math.min(limit * 2, 200));
 
     // Sort by createdAt DESC and limit
     const sorted = reviews
@@ -108,7 +129,7 @@ export const getByUserId = query({
     const allReviews = await ctx.db
       .query("marketplaceReviews")
       .withIndex("by_reviewee", (q) => q.eq("revieweeId", args.userId))
-      .collect();
+      .take(Math.min(limit * 2, 200));
 
     const sorted = allReviews
       .sort((a, b) => b.createdAt - a.createdAt)
@@ -158,7 +179,7 @@ export const getByOrder = query({
     const reviews = await ctx.db
       .query("marketplaceReviews")
       .withIndex("by_order", (q) => q.eq("orderId", args.orderId))
-      .collect();
+      .take(10);
 
     if (user.role === "admin" || reviews.every((review) => review.isPublic !== false)) {
       return reviews;
@@ -178,7 +199,7 @@ export const create = mutation({
   args: {
     orderId: v.id("orders"),
     revieweeId: v.id("users"),
-    reviewerRole: v.string(),
+    reviewerRole: v.union(v.literal("client"), v.literal("freelancer")),
     overallRating: v.number(),
     communicationRating: v.optional(v.number()),
     qualityRating: v.optional(v.number()),
@@ -186,8 +207,23 @@ export const create = mutation({
     valueRating: v.optional(v.number()),
     content: v.optional(v.string()),
   },
+  returns: v.id("marketplaceReviews"),
   handler: async (ctx, args) => {
     const reviewer = await requireAuthUser(ctx);
+    const ratings = [
+      args.overallRating,
+      args.communicationRating,
+      args.qualityRating,
+      args.timelinessRating,
+      args.valueRating,
+    ].filter((rating): rating is number => rating !== undefined);
+    if (ratings.some((rating) => !Number.isInteger(rating) || rating < 1 || rating > 5)) {
+      throw new Error("Ratings must be whole numbers from 1 to 5.");
+    }
+    const content = args.content?.trim();
+    if (content && (content.length < 10 || content.length > 3000)) {
+      throw new Error("Written reviews must be between 10 and 3,000 characters.");
+    }
 
     // Check if reviewer already submitted a review for this order
     const existing = await ctx.db
@@ -238,7 +274,7 @@ export const create = mutation({
       qualityRating: args.qualityRating,
       timelinessRating: args.timelinessRating,
       valueRating: args.valueRating,
-      content: args.content,
+      content,
       isPublic,
       createdAt: Date.now(),
       updatedAt: Date.now(),
@@ -247,6 +283,10 @@ export const create = mutation({
     // If both have now reviewed, make the other review public too
     if (isPublic && otherReview) {
       await ctx.db.patch(otherReview._id, { isPublic: true });
+      await Promise.all([
+        refreshFreelancerRating(ctx, args.revieweeId),
+        otherReview.revieweeId ? refreshFreelancerRating(ctx, otherReview.revieweeId) : Promise.resolve(),
+      ]);
     }
 
     // Send review notification to reviewee

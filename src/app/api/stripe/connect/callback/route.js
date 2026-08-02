@@ -25,6 +25,15 @@ const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL);
 const SERVER_SECRET = process.env.INTERNAL_EMAIL_SECRET;
 
 export async function GET(request) {
+  return NextResponse.json(
+    {
+      error: "Stripe onboarding is disabled during the free private beta.",
+      code: "PRIVATE_BETA_FREE",
+    },
+    { status: 503 }
+  );
+
+  /* Live onboarding callback is deliberately quarantined until the payment policy gate opens.
   const { searchParams } = new URL(request.url);
   const accountId = searchParams.get("account_id");
   const isRefresh = searchParams.has("refresh");
@@ -115,4 +124,5 @@ export async function GET(request) {
       `${baseUrl}/payouts?stripe_error=verification_failed`
     );
   }
+  */
 }

@@ -137,13 +137,8 @@ export const recalculateFreelancerLevel = internalMutation({
 export const getClientRewards = query({
   args: { userId: v.id("users") },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthorized.");
-    const caller = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-    if (!caller || caller._id !== args.userId) throw new Error("Unauthorized.");
+    const caller = await requireAuthUser(ctx);
+    if (caller._id !== args.userId && caller.role !== "admin") throw new Error("Unauthorized.");
     const user = await ctx.db.get(args.userId);
     if (!user) return null;
 
@@ -204,13 +199,8 @@ export const getRewardHistory = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthorized.");
-    const caller = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-    if (!caller || caller._id !== args.userId) throw new Error("Unauthorized.");
+    const caller = await requireAuthUser(ctx);
+    if (caller._id !== args.userId && caller.role !== "admin") throw new Error("Unauthorized.");
     return await ctx.db
       .query("rewardTransactions")
       .withIndex("by_user_createdAt", (q) => q.eq("userId", args.userId))

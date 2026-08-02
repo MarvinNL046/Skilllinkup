@@ -1,0 +1,59 @@
+.page { min-height: 100vh; background: #fffaf7; color: var(--text-primary); }
+.header { display: flex; min-height: 5rem; align-items: center; justify-content: space-between; padding: 1rem clamp(1.25rem, 5vw, 4.5rem); border-bottom: 1px solid var(--border-subtle); background: rgb(255 255 255 / 88%); }
+.header img { width: auto; height: 2.5rem; object-fit: contain; }
+.header span, .footer { display: flex; align-items: center; gap: .45rem; color: var(--text-secondary); font-size: .88rem; }
+.shell { width: min(100% - 2rem, 70rem); margin: 0 auto; padding: clamp(2.5rem, 7vw, 5.5rem) 0; }
+.intro { max-width: 46rem; margin: 0 auto 2.25rem; text-align: center; }
+.eyebrow { margin: 0 0 .7rem; color: var(--primary-700); font-size: .78rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.intro h1 { margin: 0; font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3.4rem); line-height: 1.06; letter-spacing: -.035em; }
+.intro > p:not(.eyebrow) { max-width: 38rem; margin: 1rem auto; color: var(--text-secondary); font-size: 1.05rem; line-height: 1.65; }
+.progress { width: min(18rem, 80%); height: .32rem; margin: 1.5rem auto .55rem; overflow: hidden; border-radius: 999px; background: #eadfd8; }
+.progress span { display: block; height: 100%; border-radius: inherit; background: var(--primary-600); transition: width 240ms ease; }
+.intro small { color: var(--text-tertiary); }
+.roleGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; max-width: 58rem; margin: 0 auto; }
+.roleCard { display: grid; grid-template-columns: auto 1fr auto; gap: 1rem; align-items: center; min-height: 7.4rem; padding: 1.25rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); background: white; color: inherit; text-align: left; cursor: pointer; box-shadow: var(--shadow-xs); transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease; }
+.roleCard:last-child { grid-column: 1 / -1; width: calc(50% - .5rem); justify-self: center; }
+.roleCard:hover { border-color: #ffb4a4; box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.roleCard i, .selectedRole i { display: grid; width: 3.2rem; height: 3.2rem; place-items: center; border-radius: 1rem; background: var(--primary-50); color: var(--primary-700); }
+.roleCard span { display: grid; gap: .28rem; }
+.roleCard strong { font-size: 1.06rem; }
+.roleCard small { color: var(--text-secondary); line-height: 1.5; }
+.roleCard > svg { color: var(--text-tertiary); }
+.form { display: grid; gap: 1.35rem; max-width: 49rem; margin: 0 auto; padding: clamp(1.25rem, 4vw, 2.25rem); border: 1px solid var(--border-subtle); border-radius: 1.5rem; background: white; box-shadow: var(--shadow-md); }
+.selectedRole { display: flex; align-items: center; gap: .9rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border-subtle); }
+.selectedRole div { display: grid; flex: 1; }
+.selectedRole small { color: var(--text-tertiary); }
+.selectedRole button { border: 0; background: transparent; color: var(--primary-700); font-weight: 700; cursor: pointer; }
+.worldChoice, .options { display: grid; gap: .75rem; margin: 0; padding: 0; border: 0; }
+.worldChoice legend, .options legend, .field > span { margin-bottom: .2rem; color: var(--text-primary); font-weight: 750; }
+.worldChoice button { display: grid; grid-template-columns: auto 1fr auto; gap: .8rem; align-items: center; padding: 1rem; border: 1px solid var(--border-default); border-radius: var(--radius-lg); background: white; color: inherit; text-align: left; cursor: pointer; }
+.worldChoice button > svg:first-child { color: var(--primary-600); }
+.worldChoice button > svg:last-child { opacity: 0; color: var(--success-700); }
+.worldChoice button span { display: grid; }
+.worldChoice button small, .options p { color: var(--text-secondary); }
+.worldChoice .activeChoice { border-color: var(--success-600); background: #f4fbf8; }
+.worldChoice .activeChoice > svg:last-child { opacity: 1; }
+.field { display: grid; gap: .45rem; }
+.field em { color: var(--text-tertiary); font-style: normal; font-weight: 500; }
+.field input, .field textarea { width: 100%; border: 1px solid var(--border-default); border-radius: var(--radius-lg); background: white; color: var(--text-primary); font: inherit; padding: .82rem 1rem; outline: none; }
+.field textarea { resize: vertical; min-height: 7rem; }
+.field input:focus, .field textarea:focus { border-color: var(--primary-500); box-shadow: 0 0 0 3px rgb(255 74 38 / 10%); }
+.options p { margin: -.4rem 0 .2rem; font-size: .9rem; }
+.options > div { display: flex; flex-wrap: wrap; gap: .55rem; }
+.options button { display: inline-flex; align-items: center; gap: .3rem; padding: .55rem .8rem; border: 1px solid var(--border-default); border-radius: 999px; background: white; color: var(--text-secondary); font: inherit; font-size: .9rem; cursor: pointer; }
+.options .selectedOption { border-color: var(--success-600); background: #f4fbf8; color: var(--success-800); }
+.splitFields { display: grid; grid-template-columns: 1.7fr .8fr; gap: 1rem; align-items: start; }
+.moneyInput { display: grid; grid-template-columns: auto 1fr auto; align-items: center; border: 1px solid var(--border-default); border-radius: var(--radius-lg); overflow: hidden; }
+.moneyInput input { min-width: 0; border: 0; border-radius: 0; box-shadow: none !important; }
+.moneyInput b { padding: 0 .8rem; color: var(--text-secondary); font-size: .86rem; white-space: nowrap; }
+.error { margin: 0; padding: .85rem 1rem; border: 1px solid #f4b9ae; border-radius: var(--radius-md); background: #fff2ef; color: #9d2e19; }
+.actions { display: flex; justify-content: space-between; gap: 1rem; padding-top: .2rem; }
+.actions button { display: inline-flex; min-height: 3rem; align-items: center; justify-content: center; gap: .45rem; padding: .7rem 1rem; border: 1px solid var(--border-default); border-radius: var(--radius-lg); background: white; color: var(--text-primary); font: inherit; font-weight: 750; cursor: pointer; }
+.actions button:last-child { min-width: 12rem; border-color: var(--primary-600); background: var(--primary-600); color: white; }
+.actions button:disabled { cursor: wait; opacity: .65; }
+.spinner, .loading svg { animation: spin 800ms linear infinite; }
+.loading { display: flex; min-height: 100vh; align-items: center; justify-content: center; gap: .7rem; background: #fffaf7; color: var(--text-secondary); }
+.footer { justify-content: center; padding: 1.5rem; border-top: 1px solid var(--border-subtle); background: white; text-align: center; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 720px) { .header span { display: none; } .roleGrid { grid-template-columns: 1fr; } .roleCard:last-child { grid-column: auto; width: 100%; } .splitFields { grid-template-columns: 1fr; } .form { border-radius: var(--radius-xl); } }
+@media (max-width: 480px) { .shell { width: min(100% - 1rem, 70rem); padding-top: 2rem; } .roleCard { grid-template-columns: auto 1fr; } .roleCard > svg { display: none; } .actions { display: grid; } .actions button { width: 100%; } .actions button:last-child { grid-row: 1; } }

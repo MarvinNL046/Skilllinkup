@@ -1,31 +1,13 @@
-import { Suspense } from "react";
-import { getTranslations } from "next-intl/server";
-import Breadcumb18 from "@/components/breadcumb/Breadcumb18";
-import Breadcumb3 from "@/components/breadcumb/Breadcumb3";
 import Header20 from "@/components/header/Header20";
-import Listing19 from "@/components/section/Listing19";
+import Footer14 from "@/components/footer/Footer14";
+import ProjectsOverview from "@/components/projects/ProjectsOverview";
 
-export async function generateMetadata() {
-    const t = await getTranslations("pageMeta.projects");
-    return {
-        title: t("title"),
-        description: t("description"),
-        openGraph: {
-            title: t("title"),
-            description: t("description"),
-        },
-    };
-}
+export const metadata = {
+  title: "Find Freelance Projects",
+  description: "Browse verified online and local freelance projects from clients worldwide.",
+  alternates: { canonical: "/projects" },
+};
 
-export default function page() {
-    return (
-        <>
-            <Header20 />
-            <Breadcumb3 path={["Home", "Projects"]} />
-            <Suspense>
-                <Breadcumb18 />
-                <Listing19 />
-            </Suspense>
-        </>
-    );
+export default function ProjectsPage() {
+  return <><Header20 /><ProjectsOverview /><Footer14 /></>;
 }

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Receipt } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const ACTIVE_STATUSES = ["pending", "in_progress", "revision_requested"];
+const ACTIVE_STATUSES = ["pending", "active", "in_progress", "revision_requested"];
 
 function filterOrders(orders, tab) {
   if (!orders) return [];
@@ -38,7 +38,7 @@ export default function OrderList() {
   return (
     <>
       <div className="dashboard_title_area mb-6">
-        <h2>{t("title")}</h2>
+        <h1>{t("title")}</h1>
         <p className="text-[var(--text-secondary)]">{t("pageDescription")}</p>
       </div>
 

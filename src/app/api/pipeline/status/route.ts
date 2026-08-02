@@ -4,8 +4,12 @@ import * as path from "path";
 
 export async function GET(request: NextRequest) {
   // Auth check
+  const pipelineSecret = process.env.PIPELINE_SECRET;
+  if (!pipelineSecret) {
+    return NextResponse.json({ error: "Pipeline service is not configured" }, { status: 503 });
+  }
   const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.PIPELINE_SECRET}`) {
+  if (authHeader !== `Bearer ${pipelineSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

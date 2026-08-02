@@ -7,7 +7,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint . --max-warnings=0",
+    "env:verify": "node scripts/verify-environment.mjs",
+    "release:verify-hosted": "node scripts/verify-hosted-release.mjs",
     "auth:ensure-clerk-convex": "node scripts/ensure-clerk-convex-template.mjs",
     "categories:fiverr:print": "node scripts/seed-fiverr-marketplace-categories.mjs --dry-run",
     "categories:fiverr:print:nl": "node scripts/seed-fiverr-marketplace-categories.mjs --dry-run --locale=nl",
@@ -15,12 +17,13 @@
     "categories:fiverr:seed:nl": "node scripts/seed-fiverr-marketplace-categories.mjs --locale=nl",
     "e2e:seed": "node scripts/seed-smoke-marketplace.mjs",
     "e2e:cleanup": "node scripts/cleanup-smoke-marketplace.mjs",
+    "e2e:provision": "node scripts/provision-e2e-accounts.mjs",
     "e2e:smoke": "playwright test"
   },
   "dependencies": {
     "@babel/core": "^7.27.1",
-    "@clerk/nextjs": "^6.38.2",
-    "@iamtraction/google-translate": "^2.0.1",
+    "@clerk/nextjs": "^7.6.4",
+    "@convex-dev/rate-limiter": "^0.3.2",
     "@popperjs/core": "^2.11.8",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-checkbox": "^1.3.3",
@@ -44,7 +47,7 @@
     "motion": "^12.38.0",
     "next": "^16.2.4",
     "next-intl": "^4.8.3",
-    "posthog-js": "^1.356.1",
+    "prettier": "^3.9.6",
     "prop-types": "^15.8.1",
     "rc-slider": "^11.1.8",
     "react": "^19.2.5",
@@ -54,15 +57,17 @@
     "react-stickynode": "^5.0.2",
     "react-tooltip": "^5.28.1",
     "resend": "^6.9.2",
+    "sharp": "^0.35.3",
     "sonner": "^2.0.7",
     "stripe": "^20.4.0",
-    "swiper": "^11.2.7",
+    "swiper": "^14.0.7",
     "tailwind-merge": "^3.5.0",
     "wowjs": "^1.1.3",
     "zustand": "^5.0.5"
   },
   "devDependencies": {
-    "@clerk/testing": "^2.0.1",
+    "@clerk/testing": "^2.2.16",
+    "@iamtraction/google-translate": "^2.0.1",
     "@playwright/test": "^1.58.2",
     "@types/node": "^25.3.0",
     "@types/react": "^19.2.14",
@@ -72,5 +77,10 @@
     "tailwindcss": "^3.4.19",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "@iamtraction/google-translate": {
+      "undici": "^6.27.0"
+    }
   }
 }

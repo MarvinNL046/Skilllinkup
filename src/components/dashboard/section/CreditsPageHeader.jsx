@@ -1,13 +1,8 @@
-"use client";
-import { useTranslations } from "next-intl";
-
 export default function CreditsPageHeader() {
-  const t = useTranslations("creditsInfo");
-
   return (
     <div className="dashboard_title_area">
-      <h2>{t("title")}</h2>
-      <p className="text">{t("pageDescription")}</p>
+      <h2>Local beta access</h2>
+      <p className="text">Claim matching Local requests at no cost during the private beta.</p>
     </div>
   );
 }

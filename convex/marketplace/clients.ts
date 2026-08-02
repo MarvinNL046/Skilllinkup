@@ -14,13 +14,25 @@ export const list = query({
   handler: async (ctx, args) => {
     const limit = args.limit ?? 20;
 
-    const users = await ctx.db.query("users").collect();
-    const clients = users
-      .filter((u) => u.userType === "client")
-      .slice(0, limit);
+    const clients = await ctx.db
+      .query("users")
+      .withIndex("by_userType", (q) => q.eq("userType", "client"))
+      .take(Math.min(Math.max(limit, 1), 100));
 
     return clients.map((client) => toPublicClient(client));
   },
+  returns: v.array(
+    v.union(
+      v.null(),
+      v.object({
+        _id: v.id("users"),
+        name: v.string(),
+        avatar: v.union(v.string(), v.null()),
+        bio: v.union(v.string(), v.null()),
+        createdAt: v.number(),
+      })
+    )
+  ),
 });
 
 /**
@@ -29,20 +41,29 @@ export const list = query({
  */
 export const getMarketplaceStats = query({
   args: {},
+  returns: v.object({
+    freelancers: v.number(),
+    completedProjects: v.number(),
+    clients: v.number(),
+    countries: v.number(),
+  }),
   handler: async (ctx) => {
     const [freelancerProfiles, orders, users] = await Promise.all([
       ctx.db
         .query("freelancerProfiles")
         .withIndex("by_status", (q) => q.eq("status", "active"))
-        .collect(),
+        .take(10000),
       ctx.db
         .query("orders")
         .withIndex("by_status", (q) => q.eq("status", "completed"))
-        .collect(),
-      ctx.db.query("users").collect(),
+        .take(10000),
+      ctx.db
+        .query("users")
+        .withIndex("by_userType", (q) => q.eq("userType", "client"))
+        .take(10000),
     ]);
 
-    const clientCount = users.filter((u) => u.userType === "client").length;
+    const clientCount = users.length;
     const freelancerCount = freelancerProfiles.length;
     const completedOrders = orders.length;
 

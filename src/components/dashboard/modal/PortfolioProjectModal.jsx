@@ -21,6 +21,7 @@ export default function PortfolioProjectModal({ project, open, onOpenChange }) {
   const createProject = useMutation(api.marketplace.portfolio.create);
   const updateProject = useMutation(api.marketplace.portfolio.update);
   const generateUploadUrl = useMutation(api.marketplace.portfolio.generateImageUploadUrl);
+  const resolveImageUpload = useMutation(api.marketplace.portfolio.resolveImageUpload);
 
   const isEdit = !!project;
 
@@ -49,7 +50,9 @@ export default function PortfolioProjectModal({ project, open, onOpenChange }) {
   }, [project]);
 
   const handleImageUpload = async (e) => {
-    const files = Array.from(e.target.files).slice(0, 5 - imageUrls.length);
+    const files = Array.from(e.target.files)
+      .filter((file) => ["image/jpeg", "image/png", "image/webp"].includes(file.type) && file.size > 0 && file.size <= 8 * 1024 * 1024)
+      .slice(0, 5 - imageUrls.length);
     if (files.length === 0) return;
     setUploading(true);
     try {
@@ -63,7 +66,7 @@ export default function PortfolioProjectModal({ project, open, onOpenChange }) {
           });
           if (!res.ok) throw new Error("Upload failed");
           const { storageId } = await res.json();
-          return storageId;
+          return await resolveImageUpload({ storageId });
         })
       );
       setImageUrls((prev) => [...prev, ...storageIds].slice(0, 5));

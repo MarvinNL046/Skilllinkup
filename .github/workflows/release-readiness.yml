@@ -1,0 +1,59 @@
+name: Release readiness
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_environment:
+        description: GitHub Environment and Skilllinkup target
+        required: true
+        type: choice
+        options:
+          - preview
+          - production
+        default: preview
+      hosted_base_url:
+        description: Optional deployed URL for post-deploy verification
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-readiness-${{ inputs.target_environment }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.target_environment }}
+    timeout-minutes: 25
+    env:
+      NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+      NEXT_PUBLIC_CONVEX_URL: ${{ vars.NEXT_PUBLIC_CONVEX_URL }}
+      NEXT_PUBLIC_CONVEX_SITE_URL: ${{ vars.NEXT_PUBLIC_CONVEX_SITE_URL }}
+      CONVEX_DEPLOYMENT: ${{ vars.CONVEX_DEPLOYMENT }}
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ vars.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+      CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+      CLERK_JWT_ISSUER_DOMAIN: ${{ vars.CLERK_JWT_ISSUER_DOMAIN }}
+      INTERNAL_EMAIL_SECRET: ${{ secrets.INTERNAL_EMAIL_SECRET }}
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      PIPELINE_SECRET: ${{ secrets.PIPELINE_SECRET }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Verify environment separation
+        run: npm run env:verify -- --environment=${{ inputs.target_environment }}
+      - run: npm run lint
+      - run: npx tsc --noEmit
+      - run: npm run build
+      - name: Verify deployed release
+        if: ${{ inputs.hosted_base_url != '' }}
+        run: npm run release:verify-hosted -- --base-url=${{ inputs.hosted_base_url }}

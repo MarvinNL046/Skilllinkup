@@ -28,7 +28,7 @@ function readEnv(filePath) {
 }
 
 const env = readEnv(envFile);
-const serverSecret = env.INTERNAL_EMAIL_SECRET;
+const serverSecret = process.env.INTERNAL_EMAIL_SECRET || env.INTERNAL_EMAIL_SECRET;
 if (!serverSecret) {
   throw new Error("INTERNAL_EMAIL_SECRET is required in .env.local");
 }
@@ -47,6 +47,9 @@ const payload = {
     process.env.SMOKE_FREELANCER_EMAIL
     || process.env.SMOKE_CLIENT_EMAIL
     || "testonboarding@skilllinkup.com",
+  adminEmail: process.env.SMOKE_ADMIN_EMAIL,
+  localClientEmail: process.env.SMOKE_LOCAL_CLIENT_EMAIL,
+  companyEmail: process.env.SMOKE_COMPANY_EMAIL,
   categorySlug: process.env.SMOKE_CATEGORY_SLUG || "finance-accounting",
   locale: process.env.SMOKE_LOCALE || "en",
 };

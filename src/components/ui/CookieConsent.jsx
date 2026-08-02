@@ -5,6 +5,11 @@ import Link from "next/link";
 import { Cookie } from "lucide-react";
 
 const STORAGE_KEY = "cookie_consent";
+const CONSENT_EVENT = "skilllinkup:cookie-consent";
+
+function publishConsent(value) {
+  window.dispatchEvent(new CustomEvent(CONSENT_EVENT, { detail: value }));
+}
 
 export default function CookieConsent() {
   const [visible, setVisible] = useState(false);
@@ -20,20 +25,14 @@ export default function CookieConsent() {
 
   function handleAcceptAll() {
     localStorage.setItem(STORAGE_KEY, "all");
+    publishConsent("all");
     setVisible(false);
-    // PostHog opt-in: if PostHog is already loaded, opt the user back in
-    if (typeof window !== "undefined" && window.posthog) {
-      window.posthog.opt_in_capturing();
-    }
   }
 
   function handleNecessaryOnly() {
     localStorage.setItem(STORAGE_KEY, "necessary");
+    publishConsent("necessary");
     setVisible(false);
-    // PostHog opt-out: disable analytics cookies when only necessary is chosen
-    if (typeof window !== "undefined" && window.posthog) {
-      window.posthog.opt_out_capturing();
-    }
   }
 
   if (!mounted || !visible) return null;

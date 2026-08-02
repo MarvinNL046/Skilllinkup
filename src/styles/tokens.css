@@ -3,6 +3,15 @@
    ============================================================ */
 
 :root {
+  /* Skilllinkup core brand + page rhythm */
+  --brand-navy: #0b2041;
+  --brand-coral: #ff4f2e;
+  --brand-mint: #20aa80;
+  --layout-page-gutter: 32px;
+  --layout-content-max: 1200px;
+  --layout-section-space: 80px;
+  --layout-card-gap: 24px;
+
   /* ---------- PRIMARY — Warm CTA Orange (Staycool quatt-orange) ----------
      Exact gematcht op staycoolairco.nl ("Plan adviesgesprek" CTA):
        500 = #f06635  (default — RGB 240,102,53)
@@ -106,8 +115,8 @@
      Actual font files are loaded by Next.js font loader in src/app/layout.js.
      Stack: Poppins × Inter Modern (body/UI) + Space Grotesk (display).
      CSS vars below are populated at render time by next/font. */
-  --font-display: var(--font-space-grotesk), "Poppins", system-ui, sans-serif;
-  --font-sans:    var(--font-poppins), var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-sans:    var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-mono:    ui-monospace, "SF Mono", "JetBrains Mono", monospace;
 
   /* Type scale — fluid, modular ratio 1.2 (minor third) */
@@ -123,8 +132,8 @@
   --text-body-lg: 1.125rem;
   --text-body-md: 1rem;
   --text-body-sm: 0.875rem;
-  --text-caption: 0.75rem;
-  --text-overline: 0.6875rem;
+  --text-caption: 0.8125rem; /* 13px — readable supporting text */
+  --text-overline: 0.75rem;  /* 12px — minimum UI label size */
 
   --leading-tight:   1.1;
   --leading-snug:    1.25;

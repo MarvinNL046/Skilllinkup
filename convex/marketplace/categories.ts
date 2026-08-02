@@ -17,15 +17,15 @@ export const list = query({
 
     const allCategories = await ctx.db
       .query("marketplaceCategories")
-      .filter((q) => q.eq(q.field("locale"), locale))
-      .collect();
+      .withIndex("by_locale", (q) => q.eq("locale", locale))
+      .take(500);
 
     const activeGigs = await ctx.db
       .query("gigs")
       .withIndex("by_status_locale", (q) =>
         q.eq("status", "active").eq("locale", locale)
       )
-      .collect();
+      .take(5000);
 
     const gigCounts = new Map<string, number>();
     for (const gig of activeGigs) {
@@ -95,8 +95,8 @@ export const search = query({
 
     const all = await ctx.db
       .query("marketplaceCategories")
-      .filter((q2) => q2.eq(q2.field("locale"), locale))
-      .collect();
+      .withIndex("by_locale", (q2) => q2.eq("locale", locale))
+      .take(500);
 
     let filtered = all.filter((cat) => cat.name.toLowerCase().includes(q));
 

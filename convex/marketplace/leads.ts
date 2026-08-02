@@ -1,20 +1,14 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
 import { getLeadCreditCost, MAX_SHARED_SLOTS } from "./leadPricing";
-import { requireServerSecret } from "../lib/authHelpers";
+import { getOptionalAuthUser, requireAuthUser, requireServerSecret } from "../lib/authHelpers";
 import { Id } from "../_generated/dataModel";
 
 // Get credit balance for the current authenticated freelancer.
 export const getMyCredits = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return null;
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
+    const user = await getOptionalAuthUser(ctx);
     if (!user) return null;
 
     const profile = await ctx.db
@@ -34,22 +28,16 @@ export const getMyCredits = query({
 export const getMyTransactions = query({
   args: { limit: v.optional(v.number()) },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return [];
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
+    const user = await getOptionalAuthUser(ctx);
     if (!user) return [];
 
     const txns = await ctx.db
       .query("creditTransactions")
       .withIndex("by_freelancer", (q) => q.eq("freelancerId", user._id))
       .order("desc")
-      .collect();
+      .take(Math.min(Math.max(args.limit ?? 50, 1), 100));
 
-    return txns.slice(0, args.limit ?? 50);
+    return txns;
   },
 });
 
@@ -57,13 +45,7 @@ export const getMyTransactions = query({
 export const getMyClaims = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return [];
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
+    const user = await getOptionalAuthUser(ctx);
     if (!user) return [];
 
     const profile = await ctx.db
@@ -147,20 +129,15 @@ export const getLeadStatus = query({
       .withIndex("by_quoteRequest", (q) =>
         q.eq("quoteRequestId", args.quoteRequestId)
       )
-      .collect();
+      .take(MAX_SHARED_SLOTS);
 
     const maxSlots = request.isExclusive ? 1 : (request.maxSlots ?? MAX_SHARED_SLOTS);
     const claimedSlots = request.claimedSlots ?? 0;
     const slotsRemaining = Math.max(0, maxSlots - claimedSlots);
 
     let alreadyClaimed = false;
-    const identity = await ctx.auth.getUserIdentity();
-    if (identity) {
-      const user = await ctx.db
-        .query("users")
-        .withIndex("by_email", (q) => q.eq("email", identity.email!))
-        .first();
-      if (user) {
+    const user = await getOptionalAuthUser(ctx);
+    if (user) {
         const profile = await ctx.db
           .query("freelancerProfiles")
           .withIndex("by_userId", (q) => q.eq("userId", user._id))
@@ -168,7 +145,6 @@ export const getLeadStatus = query({
         if (profile) {
           alreadyClaimed = claims.some((c) => c.freelancerId === profile._id);
         }
-      }
     }
 
     const creditCost = getLeadCreditCost(request.budgetIndication, "shared");
@@ -194,14 +170,11 @@ export const claimLead = mutation({
     claimType: v.union(v.literal("shared"), v.literal("exclusive")),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Authentication required.");
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-    if (!user) throw new Error("User not found.");
+    const user = await requireAuthUser(ctx);
+    const roles = user.accountRoles ?? [];
+    if (roles.length && !roles.includes("local_professional") && user.role !== "admin") {
+      throw new Error("Add the local professional role before claiming leads.");
+    }
 
     const profile = await ctx.db
       .query("freelancerProfiles")
@@ -218,7 +191,7 @@ export const claimLead = mutation({
       .withIndex("by_quoteRequest", (q) =>
         q.eq("quoteRequestId", args.quoteRequestId)
       )
-      .collect();
+      .take(MAX_SHARED_SLOTS);
 
     if (existingClaims.some((c) => c.freelancerId === profile._id)) {
       throw new Error("You have already claimed this lead.");

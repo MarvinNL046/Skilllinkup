@@ -2,6 +2,11 @@ import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
 import { internal } from "../_generated/api";
 import { requireAdmin, requireAuthUser, requireServerSecret } from "../lib/authHelpers";
+import {
+  disputeReasonValidator,
+  disputeResolutionValidator,
+  disputeStatusValidator,
+} from "../lib/marketplaceState";
 
 /**
  * List disputes, optionally filtered by status.
@@ -9,7 +14,7 @@ import { requireAdmin, requireAuthUser, requireServerSecret } from "../lib/authH
  */
 export const list = query({
   args: {
-    status: v.optional(v.string()),
+    status: v.optional(disputeStatusValidator),
   },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
@@ -20,12 +25,12 @@ export const list = query({
         .query("disputes")
         .withIndex("by_status", (q) => q.eq("status", args.status!))
         .order("desc")
-        .collect();
+        .take(250);
     } else {
       disputes = await ctx.db
         .query("disputes")
         .order("desc")
-        .collect();
+        .take(250);
     }
 
     return disputes;
@@ -72,7 +77,7 @@ export const getByOrder = query({
 export const open = mutation({
   args: {
     orderId: v.id("orders"),
-    reason: v.string(),
+    reason: disputeReasonValidator,
     description: v.string(),
     evidence: v.optional(v.array(v.any())),
     serverSecret: v.optional(v.string()),
@@ -83,6 +88,13 @@ export const open = mutation({
     const order = await ctx.db.get(args.orderId);
     if (!order) {
       throw new Error("Order not found.");
+    }
+    if (!["active", "in_progress", "delivered", "revision_requested", "completed"].includes(order.status)) {
+      throw new Error("This order cannot be disputed in its current state.");
+    }
+    const description = args.description.trim();
+    if (description.length < 20 || description.length > 5000) {
+      throw new Error("Describe the issue in 20 to 5,000 characters.");
     }
 
     const freelancerProfile = order.freelancerId
@@ -133,7 +145,7 @@ export const open = mutation({
       orderId: args.orderId,
       openedBy,
       reason: args.reason,
-      description: args.description,
+      description,
       evidence: args.evidence,
       status: "open",
       openedAt: now,
@@ -166,7 +178,7 @@ export const open = mutation({
 export const resolve = mutation({
   args: {
     disputeId: v.id("disputes"),
-    resolution: v.string(),
+    resolution: disputeResolutionValidator,
     resolutionNote: v.string(),
   },
   handler: async (ctx, args) => {
@@ -183,18 +195,44 @@ export const resolve = mutation({
     }
 
     const now = Date.now();
+    const resolutionNote = args.resolutionNote.trim();
+    if (resolutionNote.length < 10 || resolutionNote.length > 5000) {
+      throw new Error("Add a resolution note between 10 and 5,000 characters.");
+    }
 
     await ctx.db.patch(args.disputeId, {
       resolution: args.resolution,
-      resolutionNote: args.resolutionNote,
+      resolutionNote,
       resolvedBy: currentUser._id,
       status: "resolved",
       resolvedAt: now,
       updatedAt: now,
     });
+    await ctx.db.insert("moderationAuditEvents", {
+      tenantId: dispute.tenantId,
+      actorId: currentUser._id,
+      action: "order_dispute_resolved",
+      targetType: "dispute",
+      targetId: dispute._id,
+      fromStatus: dispute.status,
+      toStatus: "resolved",
+      note: resolutionNote,
+      createdAt: now,
+    });
+    if (!dispute.orderId) throw new Error("The dispute is not linked to an order.");
+    const order = await ctx.db.get(dispute.orderId);
+    if (!order) throw new Error("Order not found.");
 
-    // Trigger Stripe action based on dispute resolution outcome
-    if (args.resolution === "freelancer_wins") {
+    // Private-beta orders have no money movement; only the collaboration status changes.
+    if (order.escrowStatus === "beta_no_payment") {
+      const status = args.resolution === "freelancer_wins" ? "completed" : "cancelled";
+      await ctx.db.patch(order._id, {
+        status,
+        escrowStatus: "beta_no_payment",
+        ...(status === "completed" ? { completedAt: now } : { cancelledAt: now }),
+        updatedAt: now,
+      });
+    } else if (args.resolution === "freelancer_wins") {
       await ctx.scheduler.runAfter(0, internal.marketplace.escrow.releaseToFreelancer, {
         orderId: dispute.orderId,
       });

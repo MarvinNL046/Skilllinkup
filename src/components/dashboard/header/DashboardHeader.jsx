@@ -1,225 +1,40 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useUser, useClerk } from "@clerk/nextjs";
-import { Menu, Search, MessageSquare, Bookmark, LogOut, User } from "lucide-react";
-import dashboardSidebarStore from "@/store/dashboardSidebarStore";
+import { useClerk, useUser } from "@clerk/nextjs";
+import { ChevronDown, CircleHelp, LogOut, Menu, Search, Settings, UserRound } from "lucide-react";
 import NotificationBell from "@/components/header/NotificationBell";
+import dashboardSidebarStore from "@/store/dashboardSidebarStore";
+import styles from "./DashboardHeader.module.css";
 
-/**
- * Dashboard header on the SkillLinkup Design System.
- *
- * Left: logo + sidebar toggle + desktop search (links to marketplace).
- * Right: NotificationBell (DS-native popover), messages link, saved link,
- * controlled avatar dropdown with outside-click + ESC dismiss. No
- * Bootstrap data-bs-* attributes — runs without Bootstrap JS.
- */
 export default function DashboardHeader() {
-  const toggleMobile = dashboardSidebarStore((s) => s.toggleMobile);
   const { user } = useUser();
   const { signOut } = useClerk();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  const toggleMobile = dashboardSidebarStore((state) => state.toggleMobile);
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef(null);
 
   useEffect(() => {
-    if (!dropdownOpen) return;
-    function onDoc(e) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setDropdownOpen(false);
-      }
-    }
-    function onKey(e) {
-      if (e.key === "Escape") setDropdownOpen(false);
-    }
-    document.addEventListener("mousedown", onDoc);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("mousedown", onDoc);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [dropdownOpen]);
+    if (!open) return undefined;
+    const closeOutside = (event) => { if (menuRef.current && !menuRef.current.contains(event.target)) setOpen(false); };
+    const closeEscape = (event) => { if (event.key === "Escape") setOpen(false); };
+    document.addEventListener("mousedown", closeOutside);
+    document.addEventListener("keydown", closeEscape);
+    return () => { document.removeEventListener("mousedown", closeOutside); document.removeEventListener("keydown", closeEscape); };
+  }, [open]);
 
   return (
-    <header
-      className="nav"
-      style={{
-        position: "sticky",
-        top: 0,
-        zIndex: 60,
-        height: "var(--dash-topbar-h, 64px)",
-        padding: "0 var(--space-6)",
-        gap: "var(--space-4)",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)", minWidth: 0 }}>
-        <Link
-          href="/"
-          className="nav__brand"
-          style={{ flexShrink: 0 }}
-          aria-label="SkillLinkup home"
-        >
-          <Image
-            height={32}
-            width={140}
-            src="/images/logo/skilllinkup-transparant-rozepunt.webp"
-            alt="SkillLinkup"
-            priority
-          />
-        </Link>
-
-        <button
-          type="button"
-          onClick={toggleMobile}
-          className="btn btn--ghost btn--icon btn--sm lg:hidden"
-          aria-label="Open navigation"
-          title="Open navigation"
-        >
-          <Menu size={18} />
-        </button>
-      </div>
-
-      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", flexShrink: 0 }}>
-        <Link
-          href="/online/services"
-          className="btn btn--ghost btn--icon btn--sm hidden md:inline-flex"
-          aria-label="Search marketplace"
-          title="Search"
-        >
-          <Search size={18} />
-        </Link>
-
-        <span className="hidden sm:inline-flex">
-          <NotificationBell />
-        </span>
-
-        <Link
-          href="/message"
-          className="btn btn--ghost btn--icon btn--sm hidden sm:inline-flex"
-          aria-label="Messages"
-          title="Messages"
-        >
-          <MessageSquare size={18} />
-        </Link>
-
-        <Link
-          href="/saved"
-          className="btn btn--ghost btn--icon btn--sm hidden sm:inline-flex"
-          aria-label="Saved"
-          title="Saved"
-        >
-          <Bookmark size={18} />
-        </Link>
-
-        <div ref={dropdownRef} style={{ position: "relative" }}>
-          <button
-            type="button"
-            onClick={() => setDropdownOpen((v) => !v)}
-            aria-expanded={dropdownOpen}
-            aria-haspopup="menu"
-            aria-label="Account menu"
-            className="avatar"
-            style={{ cursor: "pointer", border: "none", padding: 0, flexShrink: 0 }}
-          >
-            {user?.imageUrl ? (
-              <Image
-                height={36}
-                width={36}
-                src={user.imageUrl}
-                alt={user?.fullName || "User"}
-              />
-            ) : (
-              <span>{(user?.firstName || "U").slice(0, 1)}</span>
-            )}
-          </button>
-          {dropdownOpen && (
-            <div
-              role="menu"
-              style={{
-                position: "absolute",
-                top: "calc(100% + 8px)",
-                right: 0,
-                minWidth: 240,
-                background: "var(--bg-elevated)",
-                border: "1px solid var(--border-subtle)",
-                borderRadius: "var(--radius-lg)",
-                boxShadow: "var(--shadow-3)",
-                padding: "var(--space-2)",
-                zIndex: 60,
-              }}
-            >
-              <div
-                style={{
-                  padding: "var(--space-2) var(--space-3) var(--space-3)",
-                  borderBottom: "1px solid var(--border-subtle)",
-                  marginBottom: "var(--space-1)",
-                }}
-              >
-                <div
-                  className="body-sm"
-                  style={{
-                    fontWeight: 600,
-                    color: "var(--text-primary)",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  {user?.fullName || "Account"}
-                </div>
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "var(--text-tertiary)",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  {user?.primaryEmailAddress?.emailAddress}
-                </div>
-              </div>
-              <Link
-                href="/my-profile"
-                onClick={() => setDropdownOpen(false)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "var(--space-3)",
-                  padding: "var(--space-2) var(--space-3)",
-                  fontSize: "var(--text-body-sm)",
-                  color: "var(--text-primary)",
-                  borderRadius: "var(--radius-md)",
-                  textDecoration: "none",
-                }}
-              >
-                <User size={15} />
-                My Profile
-              </Link>
-              <button
-                type="button"
-                onClick={() => signOut({ redirectUrl: "/" })}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  width: "100%",
-                  gap: "var(--space-3)",
-                  padding: "var(--space-2) var(--space-3)",
-                  fontSize: "var(--text-body-sm)",
-                  color: "var(--error-700, oklch(42% 0.18 25))",
-                  background: "transparent",
-                  border: "none",
-                  borderRadius: "var(--radius-md)",
-                  cursor: "pointer",
-                  textAlign: "left",
-                  fontFamily: "inherit",
-                }}
-              >
-                <LogOut size={15} />
-                Logout
-              </button>
-            </div>
-          )}
+    <header className={styles.header}>
+      <div className={styles.mobileBrand}><button type="button" onClick={toggleMobile} aria-label="Open dashboard navigation"><Menu size={21} /></button><Link href="/"><Image src="/images/logo/skilllinkup-link-logo.png" alt="Skilllinkup" width={1000} height={200} priority /></Link></div>
+      <form className={styles.search} action="/online/services"><Search size={18} /><input name="q" aria-label="Search Skilllinkup" placeholder="Search services, professionals or skills…" /></form>
+      <div className={styles.actions}>
+        <NotificationBell />
+        <Link href="/help" className={styles.iconButton} aria-label="Help"><CircleHelp size={20} /></Link>
+        <div className={styles.account} ref={menuRef}>
+          <button type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-haspopup="menu"><span className={styles.avatar}>{user?.imageUrl ? <Image src={user.imageUrl} alt={user.fullName || "Your account"} width={42} height={42} unoptimized /> : <UserRound size={19} />}</span><strong>{user?.fullName || "Your account"}</strong><ChevronDown size={15} /></button>
+          {open ? <div className={styles.menu} role="menu"><div><strong>{user?.fullName || "Account"}</strong><span>{user?.primaryEmailAddress?.emailAddress}</span></div><Link href="/my-profile" onClick={() => setOpen(false)}><UserRound size={16} /> Profile</Link><Link href="/dashboard/settings" onClick={() => setOpen(false)}><Settings size={16} /> Settings</Link><button type="button" onClick={() => signOut({ redirectUrl: "/" })}><LogOut size={16} /> Log out</button></div> : null}
         </div>
       </div>
     </header>

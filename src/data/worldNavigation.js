@@ -1,8 +1,8 @@
 const worldNavigation = {
   online: [
-    { id: 1, name: "Services", path: "/online/services" },
+    { id: 1, name: "Services", path: "/services" },
     { id: 2, name: "Freelancers", path: "/online/freelancers" },
-    { id: 3, name: "Projects", path: "/online/projects" },
+    { id: 3, name: "Projects", path: "/projects" },
   ],
   local: [
     { id: 1, name: "Craftsmen", path: "/local/craftsmen" },

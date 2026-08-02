@@ -11,10 +11,13 @@ import ServiceDetailPrice1 from "../element/ServiceDetailPrice1";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import { useMutation } from "convex/react";
 import { useTranslations } from "next-intl";
 import { Star, Eye, ClipboardList, Clock, MapPin, ArrowRight } from "lucide-react";
 import useConvexGigDetail from "@/hook/useConvexGigDetail";
 import ContactButton from "@/components/ui/ContactButton";
+import { api } from "../../../convex/_generated/api";
+import ReportButton from "@/components/trust/ReportButton";
 
 export default function ServiceDetail3() {
   const t = useTranslations("gigDetail");
@@ -23,6 +26,7 @@ export default function ServiceDetail3() {
   const router = useRouter();
   const { isSignedIn } = useUser();
   const [orderingPackageId, setOrderingPackageId] = useState(null);
+  const createBetaOrder = useMutation(api.marketplace.orders.createBetaGigOrder);
 
   async function handleSelectPackage(pkg) {
     if (!pkg) return;
@@ -35,27 +39,15 @@ export default function ServiceDetail3() {
 
     setOrderingPackageId(pkg._id);
     try {
-      const res = await fetch("/api/stripe/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          gigId: data?.id,
-          packageId: pkg._id,
-          gigTitle: data?.title,
-          packageTitle: pkg.title || pkg.tier || "",
-          price: pkg.price,
-          currency: (pkg.currency || "eur").toLowerCase(),
-          freelancerStripeAccountId: data?.freelancer?.stripeAccountId || "",
-        }),
+      const result = await createBetaOrder({
+        gigId: data.id,
+        packageId: pkg._id,
       });
-      const json = await res.json();
-      if (!res.ok || !json.url) {
-        throw new Error(json.error || "Checkout failed to start");
-      }
-      window.location.href = json.url;
+      toast.success("Your private beta workspace is ready.");
+      router.push(`/orders/${result.orderId}`);
     } catch (err) {
-      console.error("[checkout] error:", err);
-      toast.error(err.message || "Could not start checkout");
+      console.error("[beta-order] error:", err);
+      toast.error(err.message || "Could not start the order");
       setOrderingPackageId(null);
     }
   }
@@ -400,7 +392,7 @@ export default function ServiceDetail3() {
                                       <span className="spinner-border spinner-border-sm" role="status" />
                                     ) : (
                                       <>
-                                        {t("select")}
+                                        Start free beta order
                                         <ArrowRight size={14} />
                                       </>
                                     )}
@@ -438,6 +430,7 @@ export default function ServiceDetail3() {
                             />
                           </div>
                         )}
+                        {data?.id ? <ReportButton targetType="gig" targetId={data.id} targetLabel={data.title} /> : null}
                       </div>
                     </div>
                   </Sticky>
@@ -461,6 +454,7 @@ export default function ServiceDetail3() {
                           />
                         </div>
                       )}
+                      {data?.id ? <ReportButton targetType="gig" targetId={data.id} targetLabel={data.title} /> : null}
                     </div>
                   </div>
                 )}

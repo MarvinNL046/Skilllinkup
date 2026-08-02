@@ -1,6 +1,32 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
-import { requireAuthUser } from "../lib/authHelpers";
+import { getOptionalAuthUser, requireAuthUser } from "../lib/authHelpers";
+import {
+  assertTransition,
+  quoteRequestTransitions,
+  quoteTransitions,
+} from "../lib/marketplaceState";
+import { notifyUser } from "../lib/notifications";
+import { rateLimiter } from "../lib/rateLimits";
+
+function requireClientRole(user: Awaited<ReturnType<typeof requireAuthUser>>) {
+  const roles = user.accountRoles ?? [];
+  if (roles.length && !roles.includes("client") && user.role !== "admin") {
+    throw new Error("Add the client role before requesting a local quote.");
+  }
+}
+
+function requireLocalProfessionalRole(user: Awaited<ReturnType<typeof requireAuthUser>>) {
+  const roles = user.accountRoles ?? [];
+  if (roles.length && !roles.includes("local_professional") && user.role !== "admin") {
+    throw new Error("Add the local professional role before submitting a quote.");
+  }
+}
+
+function betaLocalOrderNumber() {
+  const date = new Date().toISOString().slice(0, 10).replaceAll("-", "");
+  return `LOCAL-BETA-${date}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+}
 
 /**
  * List open quote requests.
@@ -15,14 +41,11 @@ export const listRequests = query({
   handler: async (ctx, args) => {
     const limit = args.limit ?? 20;
 
-    const allOpen = await ctx.db
+    const requests = await ctx.db
       .query("quoteRequests")
       .withIndex("by_status", (q) => q.eq("status", "open"))
       .order("desc")
-      .collect();
-
-    // Cap at limit
-    const requests = allOpen.slice(0, limit);
+      .take(Math.min(Math.max(limit, 1), 100));
 
     // Enrich with client name and category name
     const enriched = await Promise.all(
@@ -58,28 +81,21 @@ export const getRequestById = query({
     if (!request) return null;
 
     const category = await ctx.db.get(request.categoryId);
-    const identity = await ctx.auth.getUserIdentity();
-    let currentUserId = null;
+    const currentUser = await getOptionalAuthUser(ctx);
+    let currentUserId = currentUser?._id ?? null;
     let currentFreelancerProfileId = null;
-    if (identity?.email) {
-      const currentUser = await ctx.db
-        .query("users")
-        .withIndex("by_email", (q) => q.eq("email", identity.email!))
+    if (currentUser) {
+      const profile = await ctx.db
+        .query("freelancerProfiles")
+        .withIndex("by_userId", (q) => q.eq("userId", currentUser._id))
         .first();
-      if (currentUser) {
-        currentUserId = currentUser._id;
-        const profile = await ctx.db
-          .query("freelancerProfiles")
-          .withIndex("by_userId", (q) => q.eq("userId", currentUser._id))
-          .first();
-        currentFreelancerProfileId = profile?._id ?? null;
-      }
+      currentFreelancerProfileId = profile?._id ?? null;
     }
 
     const claims = await ctx.db
       .query("leadClaims")
       .withIndex("by_quoteRequest", (q) => q.eq("quoteRequestId", args.requestId))
-      .collect();
+      .take(10);
     const isOwner = currentUserId === request.clientId;
     const alreadyClaimed =
       !!currentFreelancerProfileId &&
@@ -93,7 +109,7 @@ export const getRequestById = query({
           .withIndex("by_quoteRequest", (q) =>
             q.eq("quoteRequestId", args.requestId)
           )
-          .collect()
+          .take(100)
           .then((quotesRaw) =>
             Promise.all(
               quotesRaw.map(async (quote) => {
@@ -158,20 +174,13 @@ export const createRequest = mutation({
     preferredDate: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Authentication required to create a quote request.");
-    }
-
-    // Resolve current user by email
-    const currentUser = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-
-    if (!currentUser) {
-      throw new Error("User not found in database.");
-    }
+    const currentUser = await requireAuthUser(ctx);
+    requireClientRole(currentUser);
+    await rateLimiter.limit(ctx, "localRequest", { key: currentUser._id, throws: true });
+    const title = args.title.trim();
+    const description = args.description.trim();
+    if (title.length < 8 || title.length > 120) throw new Error("Use a title between 8 and 120 characters.");
+    if (description.length < 40 || description.length > 5000) throw new Error("Use a description between 40 and 5,000 characters.");
 
     // Get tenantId from first tenant
     const tenant = await ctx.db.query("tenants").first();
@@ -185,8 +194,8 @@ export const createRequest = mutation({
       tenantId: tenant._id,
       clientId: currentUser._id,
       categoryId: args.categoryId,
-      title: args.title,
-      description: args.description,
+      title,
+      description,
       locationCity: args.locationCity,
       locationPostcode: args.locationPostcode,
       locationCountry: args.locationCountry,
@@ -219,6 +228,8 @@ export const submitQuote = mutation({
   },
   handler: async (ctx, args) => {
     const currentUser = await requireAuthUser(ctx);
+    requireLocalProfessionalRole(currentUser);
+    await rateLimiter.limit(ctx, "localQuote", { key: currentUser._id, throws: true });
 
     // Resolve freelancer profile for this user
     const freelancerProfile = await ctx.db
@@ -242,10 +253,25 @@ export const submitQuote = mutation({
       throw new Error("You cannot submit a quote to your own request.");
     }
 
+    if (!Number.isFinite(args.amount) || args.amount <= 0 || args.amount > 1_000_000) {
+      throw new Error("Enter a valid quote amount.");
+    }
+    const description = args.description.trim();
+    if (description.length < 20 || description.length > 5000) {
+      throw new Error("Use a quote description between 20 and 5,000 characters.");
+    }
+    const existingQuote = await ctx.db
+      .query("quotes")
+      .withIndex("by_quoteRequest_freelancer", (q) =>
+        q.eq("quoteRequestId", args.quoteRequestId).eq("freelancerId", freelancerProfile._id)
+      )
+      .unique();
+    if (existingQuote) throw new Error("You already submitted a quote for this request.");
+
     const leadClaim = await ctx.db
       .query("leadClaims")
       .withIndex("by_quoteRequest", (q) => q.eq("quoteRequestId", args.quoteRequestId))
-      .collect()
+      .take(10)
       .then((claims) => claims.find((claim) => claim.freelancerId === freelancerProfile._id));
     if (!leadClaim) {
       throw new Error("Claim this lead before submitting a quote.");
@@ -258,7 +284,7 @@ export const submitQuote = mutation({
       freelancerId: freelancerProfile._id,
       amount: args.amount,
       currency: args.currency,
-      description: args.description,
+      description,
       estimatedDays: args.estimatedDays,
       validUntil: args.validUntil,
       status: "pending",
@@ -270,6 +296,15 @@ export const submitQuote = mutation({
     await ctx.db.patch(args.quoteRequestId, {
       quoteCount: (quoteRequest.quoteCount ?? 0) + 1,
       updatedAt: now,
+    });
+
+    await notifyUser(ctx, {
+      userId: quoteRequest.clientId,
+      type: "local_quote_received",
+      title: "New local quote received",
+      body: `${freelancerProfile.displayName} sent a quote for ${quoteRequest.title}.`,
+      link: `/local/quote-request/${quoteRequest._id}`,
+      metadata: { quoteRequestId: quoteRequest._id, quoteId },
     });
 
     return quoteId;
@@ -285,20 +320,8 @@ export const acceptQuote = mutation({
     quoteId: v.id("quotes"),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Authentication required to accept a quote.");
-    }
-
-    // Resolve current user by email
-    const currentUser = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-
-    if (!currentUser) {
-      throw new Error("User not found in database.");
-    }
+    const currentUser = await requireAuthUser(ctx);
+    requireClientRole(currentUser);
 
     // Get the quote
     const quote = await ctx.db.get(args.quoteId);
@@ -315,6 +338,29 @@ export const acceptQuote = mutation({
       throw new Error("Only the client who created this request can accept quotes.");
     }
 
+    if (!['open', 'matched'].includes(quoteRequest.status)) {
+      throw new Error("This quote request can no longer be awarded.");
+    }
+    assertTransition(quoteTransitions, quote.status, "accepted");
+    assertTransition(quoteRequestTransitions, quoteRequest.status, "accepted");
+
+    const existingOrder = await ctx.db
+      .query("orders")
+      .withIndex("by_quote", (q) => q.eq("quoteId", quote._id))
+      .unique();
+    if (existingOrder) {
+      const appointment = await ctx.db
+        .query("localAppointments")
+        .withIndex("by_order", (q) => q.eq("orderId", existingOrder._id))
+        .unique();
+      return { success: true, quoteId: quote._id, orderId: existingOrder._id, appointmentId: appointment?._id ?? null };
+    }
+
+    const professional = await ctx.db.get(quote.freelancerId);
+    if (!professional) throw new Error("Local professional profile not found.");
+    const professionalUser = await ctx.db.get(professional.userId);
+    if (!professionalUser) throw new Error("Local professional account not found.");
+
     const now = Date.now();
 
     // Accept the selected quote
@@ -325,10 +371,78 @@ export const acceptQuote = mutation({
 
     // Close the quote request
     await ctx.db.patch(quote.quoteRequestId, {
-      status: "closed",
+      status: "accepted",
+      updatedAt: now,
+    });
+    const pendingQuotes = await ctx.db
+      .query("quotes")
+      .withIndex("by_quoteRequest_status", (q) =>
+        q.eq("quoteRequestId", quote.quoteRequestId).eq("status", "pending")
+      )
+      .take(100);
+    await Promise.all(
+      pendingQuotes
+        .filter((item) => item._id !== quote._id)
+        .map((item) => ctx.db.patch(item._id, { status: "rejected", updatedAt: now }))
+    );
+
+    const orderId = await ctx.db.insert("orders", {
+      tenantId: quoteRequest.tenantId,
+      orderNumber: betaLocalOrderNumber(),
+      orderType: "local_quote",
+      clientId: quoteRequest.clientId,
+      freelancerId: quote.freelancerId,
+      quoteRequestId: quoteRequest._id,
+      quoteId: quote._id,
+      title: quoteRequest.title,
+      description: quote.description,
+      amount: quote.amount,
+      platformFee: 0,
+      freelancerEarnings: quote.amount,
+      currency: quote.currency ?? "EUR",
+      revisionsUsed: 0,
+      status: "active",
+      escrowStatus: "beta_no_payment",
+      createdAt: now,
       updatedAt: now,
     });
 
-    return { success: true, quoteId: args.quoteId };
+    await ctx.db.insert("conversations", {
+      tenantId: quoteRequest.tenantId,
+      orderId,
+      participant1: quoteRequest.clientId,
+      participant2: professionalUser._id,
+      unreadCount1: 0,
+      unreadCount2: 0,
+      status: "active",
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    const appointmentId = await ctx.db.insert("localAppointments", {
+      tenantId: quoteRequest.tenantId,
+      quoteRequestId: quoteRequest._id,
+      quoteId: quote._id,
+      orderId,
+      clientId: quoteRequest.clientId,
+      professionalId: quote.freelancerId,
+      scheduledStart: quoteRequest.preferredDate,
+      timezone: "Europe/Amsterdam",
+      locationAddress: [quoteRequest.locationPostcode, quoteRequest.locationCity, quoteRequest.locationCountry].filter(Boolean).join(", ") || undefined,
+      status: "requested",
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    await notifyUser(ctx, {
+      userId: professionalUser._id,
+      type: "local_quote_accepted",
+      title: "Your local quote was accepted",
+      body: `${quoteRequest.title} is ready in your private workspace.`,
+      link: `/orders/${orderId}`,
+      metadata: { orderId, appointmentId },
+    });
+
+    return { success: true, quoteId: args.quoteId, orderId, appointmentId };
   },
 });

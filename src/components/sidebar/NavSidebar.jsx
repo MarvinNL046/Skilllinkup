@@ -115,7 +115,9 @@ export default function NavSidebar() {
   useEffect(() => {
     if (!isOpen) return;
     function onKey(e) {
-      if (e.key === "Escape") closeNav();
+      const nestedDialogOpen = e.target instanceof Element
+        && Boolean(e.target.closest('[role="dialog"][data-state="open"]'));
+      if (e.key === "Escape" && !e.defaultPrevented && !nestedDialogOpen) closeNav();
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -162,6 +164,8 @@ export default function NavSidebar() {
         role="dialog"
         aria-modal="true"
         aria-label="Mobile navigation"
+        aria-hidden={isOpen ? undefined : "true"}
+        inert={isOpen ? undefined : true}
         style={{
           position: "fixed",
           top: 0,
@@ -193,7 +197,7 @@ export default function NavSidebar() {
               alt="SkillLinkup"
               width={148}
               height={34}
-              src="/images/logo/skilllinkup-transparant-rozepunt.webp"
+              src="/images/logo/skilllinkup-template-logo-v2.png"
             />
           </Link>
           <button

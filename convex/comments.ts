@@ -12,8 +12,8 @@ export const getByPost = query({
   handler: async (ctx, args) => {
     const comments = await ctx.db
       .query("comments")
-      .withIndex("by_post", (q) => q.eq("postId", args.postId))
-      .collect();
+      .withIndex("by_post_status", (q) => q.eq("postId", args.postId).eq("status", "approved"))
+      .take(500);
 
     return comments
       .filter((c) => c.status === "approved")
@@ -84,7 +84,7 @@ export const getPendingCount = query({
     const pending = await ctx.db
       .query("comments")
       .withIndex("by_status", (q) => q.eq("status", "pending"))
-      .collect();
+      .take(10_000);
 
     return pending.length;
   },

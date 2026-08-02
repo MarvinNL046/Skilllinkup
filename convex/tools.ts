@@ -12,9 +12,12 @@ export const list = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const limit = args.limit ?? 50;
+    const limit = Math.min(Math.max(args.limit ?? 50, 1), 100);
 
-    const tools = await ctx.db.query("tools").collect();
+    const tools = await ctx.db
+      .query("tools")
+      .withIndex("by_status_locale", (q) => q.eq("status", "published").eq("locale", args.locale))
+      .take(Math.min(limit * 5, 500));
 
     return tools
       .filter(
@@ -68,7 +71,7 @@ export const getByCategory = query({
           q.eq(q.field("locale"), args.locale)
         )
       )
-      .collect();
+      .take(100);
 
     return tools;
   },
@@ -91,7 +94,7 @@ export const getFeatured = query({
           .eq("status", "published")
           .eq("locale", args.locale)
       )
-      .collect();
+      .take(100);
 
     return tools;
   },

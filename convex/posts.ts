@@ -165,7 +165,7 @@ export const getByCategory = query({
     const posts = await ctx.db
       .query("posts")
       .withIndex("by_category", (q) => q.eq("categoryId", category._id))
-      .collect();
+      .take(Math.min(Math.max(limit * 5, 50), 500));
 
     // Filter to published posts for the requested locale
     const filtered = posts
@@ -235,7 +235,7 @@ export const search = query({
           .eq("status", "published")
           .eq("locale", args.locale)
       )
-      .collect();
+      .take(50);
 
     const enriched = await Promise.all(
       results.map(async (post) => {

@@ -1,126 +1,21 @@
 "use client";
-import { Suspense } from "react";
+
+import { Suspense, useEffect } from "react";
+import { SignUp, useUser } from "@clerk/nextjs";
+import { useRouter, useSearchParams } from "next/navigation";
 import Footer14 from "@/components/footer/Footer14";
-import Header20 from "@/components/header/Header20";
-import { SignUp } from "@clerk/nextjs";
-import { useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
-import WaitlistButton from "@/components/ui/WaitlistButton";
+import AuthPageShell, { clerkAppearance, RoleChoice } from "@/components/auth/AuthPageShell";
 
 function RegisterContent() {
   const searchParams = useSearchParams();
-  const role = searchParams.get("role");
-  const afterSignUpUrl = role ? `/onboarding?role=${role}` : "/onboarding";
-
-  return (
-    <SignUp
-      routing="path"
-      path="/register"
-      fallbackRedirectUrl={afterSignUpUrl}
-      signInUrl="/login"
-      appearance={{
-        elements: {
-          rootBox: { width: "100%" },
-          card: {
-            background: "var(--bg-elevated)",
-            border: "1px solid var(--border-subtle)",
-            borderRadius: "var(--radius-xl)",
-            boxShadow: "var(--shadow-3)",
-          },
-          headerTitle: { fontFamily: "var(--font-display)", fontWeight: 500 },
-          formButtonPrimary: {
-            background: "var(--primary-600)",
-            borderRadius: "var(--radius-md)",
-            fontFamily: "var(--font-sans)",
-            fontWeight: 500,
-          },
-          formFieldInput: { borderRadius: "var(--radius-md)", borderColor: "var(--border-default)" },
-          socialButtonsBlockButton: { borderRadius: "var(--radius-md)", borderColor: "var(--border-default)" },
-          footerActionLink: { color: "var(--primary-600)" },
-        },
-        variables: {
-          colorPrimary: "var(--primary-600)",
-          colorText: "var(--text-primary)",
-          colorTextSecondary: "var(--text-secondary)",
-          colorBackground: "var(--bg-elevated)",
-          borderRadius: "var(--radius-md)",
-          fontFamily: "var(--font-sans)",
-        },
-      }}
-    />
-  );
+  const role = searchParams.get("role") || "client";
+  return <><RoleChoice role={role} /><SignUp routing="path" path="/register" fallbackRedirectUrl={`/onboarding?role=${role}`} signInUrl="/login" appearance={clerkAppearance} /></>;
 }
 
 export default function RegisterPage() {
-  const t = useTranslations("common");
-  return (
-    <div style={{ background: "var(--bg)" }}>
-      <Header20 />
-      <section
-        style={{
-          minHeight: "calc(100vh - 240px)",
-          padding: "var(--space-16) 0",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <div className="container" style={{ maxWidth: "var(--container-lg)" }}>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "var(--space-8)",
-            }}
-          >
-            <div className="text-center" style={{ maxWidth: 520 }}>
-              <span className="overline" style={{ color: "var(--primary-600)" }}>
-                Register
-              </span>
-              <h1
-                className="display-lg"
-                style={{ margin: "var(--space-3) 0", fontWeight: 500 }}
-              >
-                Create your account.
-              </h1>
-              <p className="body-md" style={{ color: "var(--text-secondary)", margin: 0 }}>
-                Public sign-ups are on hold while we're in pre-launch. If you
-                landed here looking to join, the waitlist is the way in.
-              </p>
-              <div style={{ marginTop: "var(--space-4)" }}>
-                <WaitlistButton className="btn btn--primary" />
-              </div>
-            </div>
-
-            <div style={{ width: "100%", maxWidth: 480, position: "relative" }}>
-              <div
-                style={{
-                  textAlign: "center",
-                  color: "var(--text-tertiary)",
-                  fontSize: "var(--text-caption)",
-                  textTransform: "uppercase",
-                  letterSpacing: "var(--tracking-wider)",
-                  fontWeight: 600,
-                  marginBottom: "var(--space-4)",
-                }}
-              >
-                Existing account? Continue below
-              </div>
-              <Suspense
-                fallback={
-                  <div className="text-center" style={{ padding: "var(--space-6) 0", color: "var(--text-secondary)" }}>
-                    {t("loading")}
-                  </div>
-                }
-              >
-                <RegisterContent />
-              </Suspense>
-            </div>
-          </div>
-        </div>
-      </section>
-      <Footer14 />
-    </div>
-  );
+  const router = useRouter();
+  const { isLoaded, isSignedIn } = useUser();
+  useEffect(() => { if (isLoaded && isSignedIn) router.replace("/dashboard"); }, [isLoaded, isSignedIn, router]);
+  if (!isLoaded || isSignedIn) return <div className="flex justify-center items-center min-h-screen" role="status" aria-label="Opening your account"><div className="spinner-border text-primary" /></div>;
+  return <div><AuthPageShell mode="register" title="Create your free account." subtitle="Join professionals and clients building great work worldwide."><Suspense fallback={<div role="status">Loading registration…</div>}><RegisterContent /></Suspense></AuthPageShell><Footer14 /></div>;
 }

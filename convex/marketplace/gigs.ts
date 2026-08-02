@@ -11,6 +11,7 @@ import {
   getMarketplaceCategoryBySlug,
   getMarketplaceDescendantIds,
 } from "../lib/marketplaceCategories";
+import { gigStatusValidator } from "../lib/marketplaceState";
 
 function asFreelancerProfile(
   doc: unknown
@@ -196,14 +197,14 @@ export const list = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const limit = args.limit ?? 20;
+    const limit = Math.min(Math.max(args.limit ?? 20, 1), 100);
 
     const gigs = await ctx.db
       .query("gigs")
       .withIndex("by_status_locale", (q) =>
         q.eq("status", "active").eq("locale", args.locale)
       )
-      .collect();
+      .take(Math.min(limit * 5, 500));
 
     // Sort by isFeatured DESC, ratingAverage DESC, then cap at limit
     const sorted = gigs
@@ -235,8 +236,8 @@ export const listByCategory = query({
 
     const allCategories = await ctx.db
       .query("marketplaceCategories")
-      .filter((q) => q.eq(q.field("locale"), args.locale))
-      .collect();
+      .withIndex("by_locale", (q) => q.eq("locale", args.locale))
+      .take(500);
     const category = getMarketplaceCategoryBySlug(
       allCategories as any,
       args.categorySlug
@@ -254,7 +255,7 @@ export const listByCategory = query({
         .withIndex("by_category_status_locale", (q) =>
           q.eq("categoryId", catId as Id<"marketplaceCategories">).eq("status", "active").eq("locale", args.locale)
         )
-        .collect();
+        .take(Math.min(limit, 100));
       allGigs.push(...gigs);
     }
 
@@ -308,14 +309,14 @@ export const getBySlug = query({
       .query("gigPackages")
       .withIndex("by_gig_price", (q) => q.eq("gigId", gig._id))
       .order("asc")
-      .collect();
+      .take(10);
 
     // Fetch all images sorted by sortOrder ASC via index
     const images = await ctx.db
       .query("gigImages")
       .withIndex("by_gig_sortOrder", (q) => q.eq("gigId", gig._id))
       .order("asc")
-      .collect();
+      .take(20);
 
     return {
       ...gig,
@@ -350,7 +351,7 @@ export const getByFreelancer = query({
           q.eq(q.field("locale"), args.locale)
         )
       )
-      .collect();
+      .take(100);
 
     return enrichGigsOwner(ctx, gigs);
   },
@@ -374,7 +375,7 @@ export const search = query({
           .eq("status", "active")
           .eq("locale", args.locale)
       )
-      .collect();
+      .take(50);
 
     return enrichGigsPublic(ctx, results);
   },
@@ -491,7 +492,7 @@ export const getAllByFreelancer = query({
       .query("gigs")
       .withIndex("by_freelancer", (q) => q.eq("freelancerId", args.freelancerId))
       .order("desc")
-      .collect();
+      .take(250);
 
     return enrichGigsOwner(ctx, gigs);
   },
@@ -535,7 +536,7 @@ export const createPackage = mutation({
     currency: v.optional(v.string()),
     deliveryDays: v.number(),
     revisionCount: v.optional(v.number()),
-    features: v.optional(v.array(v.any())),
+    features: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
@@ -580,8 +581,7 @@ export const update = mutation({
     locationCity: v.optional(v.string()),
     locationCountry: v.optional(v.string()),
     serviceRadiusKm: v.optional(v.number()),
-    isFeatured: v.optional(v.boolean()),
-    status: v.optional(v.string()),
+    status: v.optional(gigStatusValidator),
     locale: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
@@ -629,7 +629,7 @@ export const getByFreelancerWithPackages = query({
       .withIndex("by_freelancer_status", (q) =>
         q.eq("freelancerId", args.freelancerId).eq("status", "active")
       )
-      .collect();
+      .take(100);
 
     if (gigs.length === 0) return [];
 

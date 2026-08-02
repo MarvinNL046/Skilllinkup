@@ -4,6 +4,8 @@ import { internal } from "../_generated/api";
 import { Id } from "../_generated/dataModel";
 import { MutationCtx, QueryCtx } from "../_generated/server";
 import { requireAuthUser } from "../lib/authHelpers";
+import { notifyUser } from "../lib/notifications";
+import { rateLimiter } from "../lib/rateLimits";
 
 const CONTACT_PATTERNS = [
   /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/,
@@ -18,7 +20,7 @@ function containsContactInfo(text: string): boolean {
 
 async function requireConversationParticipant(
   ctx: QueryCtx | MutationCtx,
-  conversationId: Id<"conversations">
+  conversationId: Id<"conversations">,
 ) {
   const user = await requireAuthUser(ctx);
   const conversation = await ctx.db.get(conversationId);
@@ -55,7 +57,7 @@ export const getByConversation = query({
     const messages = await ctx.db
       .query("messages")
       .withIndex("by_conversation", (q) =>
-        q.eq("conversationId", args.conversationId)
+        q.eq("conversationId", args.conversationId),
       )
       .order("desc")
       .take(limit);
@@ -65,14 +67,16 @@ export const getByConversation = query({
 
     // Batch-load all unique senders in a single round of Promise.all
     // instead of one ctx.db.get per message (N+1 → 1 batch).
-    const senderIds = [...new Set(
-      messages.map((m) => m.senderId).filter(Boolean) as Id<"users">[]
-    )];
+    const senderIds = [
+      ...new Set(
+        messages.map((m) => m.senderId).filter(Boolean) as Id<"users">[],
+      ),
+    ];
     const senderDocs = await Promise.all(senderIds.map((id) => ctx.db.get(id)));
     const senderMap = new Map(
       senderDocs
         .filter((s): s is NonNullable<typeof s> => s !== null)
-        .map((s) => [s._id, s])
+        .map((s) => [s._id, s]),
     );
 
     const enriched = messages.map((msg) => ({
@@ -112,30 +116,41 @@ export const send = mutation({
 
     const now = Date.now();
     const messageType = args.messageType ?? "text";
+    const content = args.content?.trim();
+    if (messageType !== "text") throw new Error("Unsupported message type.");
+    if (args.fileUrl || args.fileName || args.fileSize !== undefined) {
+      throw new Error(
+        "Chat file attachments are unavailable until they use protected Skilllinkup storage.",
+      );
+    }
+    if (!content) throw new Error("Write a message.");
+    if (content && content.length > 3000)
+      throw new Error("Messages cannot exceed 3,000 characters.");
 
     // Block messages containing contact info (anti-bypass)
-    if (args.content && containsContactInfo(args.content)) {
-      throw new ConvexError("Contactgegevens mogen niet gedeeld worden via de chat. Gebruik het platform voor verdere afspraken.");
+    if (content && containsContactInfo(content)) {
+      throw new ConvexError(
+        "Contactgegevens mogen niet gedeeld worden via de chat. Gebruik het platform voor verdere afspraken.",
+      );
     }
+
+    await rateLimiter.limit(ctx, "sendMessage", {
+      key: currentUser._id,
+      throws: true,
+    });
 
     // Insert the message
     const messageId = await ctx.db.insert("messages", {
       conversationId: args.conversationId,
       senderId: currentUser._id,
-      content: args.content,
+      content,
       messageType,
-      fileUrl: args.fileUrl,
-      fileName: args.fileName,
-      fileSize: args.fileSize,
       isRead: false,
       createdAt: now,
     });
 
     // Build the preview text for the conversation
-    let preview = args.content ?? "";
-    if (!preview && args.fileName) {
-      preview = `[File] ${args.fileName}`;
-    }
+    const preview = content;
 
     // Determine which participant is the OTHER one and increment their unreadCount
     const isParticipant1 = conversation.participant1 === currentUser._id;
@@ -148,32 +163,37 @@ export const send = mutation({
 
     if (isParticipant1) {
       // Sender is participant1, increment participant2's unread count
-      conversationPatch.unreadCount2 =
-        (conversation.unreadCount2 ?? 0) + 1;
+      conversationPatch.unreadCount2 = (conversation.unreadCount2 ?? 0) + 1;
     } else {
       // Sender is participant2, increment participant1's unread count
-      conversationPatch.unreadCount1 =
-        (conversation.unreadCount1 ?? 0) + 1;
+      conversationPatch.unreadCount1 = (conversation.unreadCount1 ?? 0) + 1;
     }
 
     await ctx.db.patch(args.conversationId, conversationPatch);
 
-    // Send new message email notification (only for non-system messages)
-    if (messageType !== "system" && messageType !== "order_update") {
-      const recipientId = isParticipant1
-        ? conversation.participant2
-        : conversation.participant1;
-      const recipient = await ctx.db.get(recipientId);
+    const recipientId = isParticipant1
+      ? conversation.participant2
+      : conversation.participant1;
+    await notifyUser(ctx, {
+      userId: recipientId,
+      type: "message_received",
+      title: `New message from ${currentUser.name}`,
+      body: preview.slice(0, 140),
+      link: conversation.orderId
+        ? `/orders/${conversation.orderId}`
+        : "/message",
+      metadata: { conversationId: conversation._id },
+    });
 
-      if (recipient?.email) {
-        await ctx.scheduler.runAfter(0, internal.lib.email.sendNewMessage, {
-          recipientEmail: recipient.email,
-          recipientName: recipient.name || "User",
-          senderName: currentUser.name || "User",
-          messagePreview: (args.content || "").slice(0, 200),
-          conversationId: args.conversationId,
-        });
-      }
+    const recipient = await ctx.db.get(recipientId);
+    if (recipient?.email) {
+      await ctx.scheduler.runAfter(0, internal.lib.email.sendNewMessage, {
+        recipientEmail: recipient.email,
+        recipientName: recipient.name || "User",
+        senderName: currentUser.name || "User",
+        messagePreview: content.slice(0, 200),
+        conversationId: args.conversationId,
+      });
     }
 
     return messageId;
@@ -207,27 +227,25 @@ export const markRead = mutation({
     const recentMessages = await ctx.db
       .query("messages")
       .withIndex("by_conversation", (q) =>
-        q.eq("conversationId", args.conversationId)
+        q.eq("conversationId", args.conversationId),
       )
       .order("desc")
       .take(500);
 
     const toMark = recentMessages.filter(
-      (m) => m.senderId === otherParticipantId && m.isRead === false
+      (m) => m.senderId === otherParticipantId && m.isRead === false,
     );
 
     // Mark each as read
     await Promise.all(
-      toMark.map((message) => ctx.db.patch(message._id, { isRead: true }))
+      toMark.map((message) => ctx.db.patch(message._id, { isRead: true })),
     );
 
     // Reset the current user's unreadCount to 0
     const isParticipant1 = conversation.participant1 === currentUser._id;
 
     await ctx.db.patch(args.conversationId, {
-      ...(isParticipant1
-        ? { unreadCount1: 0 }
-        : { unreadCount2: 0 }),
+      ...(isParticipant1 ? { unreadCount1: 0 } : { unreadCount2: 0 }),
       updatedAt: Date.now(),
     });
 

@@ -18,7 +18,7 @@ export const getActive = query({
       .withIndex("by_placement_active", (q) =>
         q.eq("placement", args.placement).eq("isActive", true)
       )
-      .collect();
+      .take(50);
 
     return ads.filter((ad) => {
       const afterStart = ad.startDate == null || ad.startDate <= now;
@@ -39,8 +39,8 @@ export const getAll = query({
     await requireAdmin(ctx);
     return await ctx.db
       .query("ads")
-      .filter((q) => q.eq(q.field("tenantId"), args.tenantId))
-      .collect();
+      .withIndex("by_tenant", (q) => q.eq("tenantId", args.tenantId))
+      .take(500);
   },
 });
 

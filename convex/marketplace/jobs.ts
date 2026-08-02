@@ -1,6 +1,20 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
-import { requireOwner } from "../lib/authHelpers";
+import { requireAuthUser, requireOwner } from "../lib/authHelpers";
+import {
+  assertTransition,
+  jobStatusValidator,
+  jobTransitions,
+} from "../lib/marketplaceState";
+
+function requireHiringRole(user: Awaited<ReturnType<typeof requireAuthUser>>) {
+  const roles = user.accountRoles ?? [];
+  const hasHiringRole = roles.includes("company") || roles.includes("client");
+  const isLegacyClient = roles.length === 0 && user.userType === "client";
+  if (!hasHiringRole && !isLegacyClient && user.role !== "admin") {
+    throw new Error("A company or client account is required to manage jobs.");
+  }
+}
 
 /**
  * List open jobs with client info and category name.
@@ -16,13 +30,20 @@ export const list = query({
     const jobs = await ctx.db
       .query("jobs")
       .withIndex("by_status_locale", (q) =>
-        q.eq("status", "open").eq("locale", args.locale)
+        q.eq("status", "open").eq("locale", args.locale),
       )
       .order("desc")
       .take(limit);
 
+    // A vacancy can still have the persisted `open` status after its deadline.
+    // Public consumers (including the sitemap) must fail closed on that state.
+    const now = Date.now();
+    const eligibleJobs = jobs.filter(
+      (job) => !job.expiresAt || job.expiresAt > now,
+    );
+
     const enriched = await Promise.all(
-      jobs.map(async (job) => {
+      eligibleJobs.map(async (job) => {
         try {
           const client = await ctx.db.get(job.clientId);
           const category = job.categoryId
@@ -44,7 +65,7 @@ export const list = query({
             categoryName: null,
           };
         }
-      })
+      }),
     );
 
     return enriched;
@@ -63,7 +84,7 @@ export const getBySlug = query({
     const job = await ctx.db
       .query("jobs")
       .withIndex("by_slug_locale", (q) =>
-        q.eq("slug", args.slug).eq("locale", args.locale)
+        q.eq("slug", args.slug).eq("locale", args.locale),
       )
       .first();
 
@@ -73,9 +94,7 @@ export const getBySlug = query({
     let category = null;
     try {
       client = await ctx.db.get(job.clientId);
-      category = job.categoryId
-        ? await ctx.db.get(job.categoryId)
-        : null;
+      category = job.categoryId ? await ctx.db.get(job.categoryId) : null;
     } catch {
       // Silently handle missing references
     }
@@ -118,7 +137,7 @@ export const getByClient = query({
           ...job,
           categoryName: category?.name ?? null,
         };
-      })
+      }),
     );
 
     return enriched;
@@ -150,27 +169,45 @@ export const create = mutation({
     expiresAt: v.optional(v.number()),
     locale: v.string(),
   },
+  returns: v.id("jobs"),
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-    if (!user) throw new Error("User not found");
-
-    const tenant = await ctx.db.query("tenants").first();
-    if (!tenant) throw new Error("No tenant found");
-
+    const user = await requireAuthUser(ctx);
+    requireHiringRole(user);
     const now = Date.now();
+    const title = args.title.trim();
+    const description = args.description.trim();
+    const slug = args.slug.trim().toLowerCase();
+    if (title.length < 8 || title.length > 120)
+      throw new Error("Use a title between 8 and 120 characters.");
+    if (description.length < 80 || description.length > 10_000)
+      throw new Error("Use a description between 80 and 10,000 characters.");
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))
+      throw new Error("Invalid job slug.");
+    const existing = await ctx.db
+      .query("jobs")
+      .withIndex("by_slug_locale", (q) =>
+        q.eq("slug", slug).eq("locale", args.locale),
+      )
+      .first();
+    if (existing) throw new Error("A job with this URL already exists.");
+    if (args.salaryMin !== undefined && args.salaryMin < 0)
+      throw new Error("Minimum salary cannot be negative.");
+    if (args.salaryMax !== undefined && args.salaryMax < 0)
+      throw new Error("Maximum salary cannot be negative.");
+    if (
+      args.salaryMin !== undefined &&
+      args.salaryMax !== undefined &&
+      args.salaryMin > args.salaryMax
+    ) {
+      throw new Error("Minimum salary cannot exceed maximum salary.");
+    }
 
     const jobId = await ctx.db.insert("jobs", {
-      tenantId: tenant._id,
+      tenantId: user.tenantId,
       clientId: user._id,
-      title: args.title,
-      slug: args.slug,
-      description: args.description,
+      title,
+      slug,
+      description,
       categoryId: args.categoryId,
       company: args.company,
       companyLogo: args.companyLogo,
@@ -206,21 +243,14 @@ export const remove = mutation({
   args: {
     jobId: v.id("jobs"),
   },
+  returns: v.id("jobs"),
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Authentication required");
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-    if (!user) throw new Error("User not found");
-
     const job = await ctx.db.get(args.jobId);
     if (!job) throw new Error("Job not found");
-
-    if (job.clientId !== user._id) {
-      throw new Error("Access denied: only the job owner can delete this job");
+    const user = await requireOwner(ctx, job.clientId);
+    requireHiringRole(user);
+    if (job.status !== "closed") {
+      assertTransition(jobTransitions, job.status, "closed");
     }
 
     await ctx.db.patch(args.jobId, {
@@ -241,24 +271,18 @@ export const update = mutation({
     jobId: v.id("jobs"),
     title: v.optional(v.string()),
     description: v.optional(v.string()),
-    status: v.optional(v.string()),
+    status: v.optional(jobStatusValidator),
     expiresAt: v.optional(v.number()),
   },
+  returns: v.id("jobs"),
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Authentication required");
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .first();
-    if (!user) throw new Error("User not found");
-
     const job = await ctx.db.get(args.jobId);
     if (!job) throw new Error("Job not found");
+    const user = await requireOwner(ctx, job.clientId);
+    requireHiringRole(user);
 
-    if (job.clientId !== user._id) {
-      throw new Error("Access denied: only the job owner can update this job");
+    if (args.status) {
+      assertTransition(jobTransitions, job.status, args.status);
     }
 
     const { jobId, ...fields } = args;

@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 function PageShell({ children }) {
   return (
@@ -43,7 +44,6 @@ export default function ManageJobInfo() {
     { label: t("allJobs"), status: null },
     { label: t("open"), status: "open" },
     { label: t("closed"), status: "closed" },
-    { label: t("expired"), status: "expired" },
   ];
 
   const activeStatus = tabs[selectedTab].status;
@@ -125,10 +125,7 @@ export default function ManageJobInfo() {
             <h2>{t("title")}</h2>
             <p className="text-[var(--text-secondary)]">{t("pageDescription")}</p>
           </div>
-          <Button disabled title={t("comingSoon")}>
-            {t("postAJob")}
-            <ArrowRight className="ml-1 h-4 w-4" />
-          </Button>
+          <Button asChild><Link href="/create-job">{t("postAJob")}<ArrowRight className="ml-1 h-4 w-4" /></Link></Button>
         </div>
         <Card className="overflow-hidden">
           <CardContent className="p-6">
@@ -167,10 +164,7 @@ export default function ManageJobInfo() {
                       : t("noJobsYet")}
                   </p>
                   {!activeStatus && (
-                    <Button disabled title={t("comingSoon")}>
-                      {t("postFirstJob")}
-                      <ArrowRight className="ml-1 h-4 w-4" />
-                    </Button>
+                    <Button asChild><Link href="/create-job">{t("postFirstJob")}<ArrowRight className="ml-1 h-4 w-4" /></Link></Button>
                   )}
                 </div>
               ) : (

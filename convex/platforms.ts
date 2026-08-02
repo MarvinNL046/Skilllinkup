@@ -11,13 +11,13 @@ export const list = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const limit = args.limit ?? 50;
+    const limit = Math.min(Math.max(args.limit ?? 50, 1), 100);
     const platforms = await ctx.db
       .query("platforms")
       .withIndex("by_status_locale", (q) =>
         q.eq("status", "published").eq("locale", args.locale)
       )
-      .collect();
+      .take(Math.min(limit * 5, 500));
 
     // Sort: featured first, then by rating desc. Multi-field ordering done in JS.
     return platforms
@@ -80,13 +80,13 @@ export const getTopRated = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const limit = args.limit ?? 6;
+    const limit = Math.min(Math.max(args.limit ?? 6, 1), 100);
     const platforms = await ctx.db
       .query("platforms")
       .withIndex("by_status_locale", (q) =>
         q.eq("status", "published").eq("locale", args.locale)
       )
-      .collect();
+      .take(Math.min(limit * 5, 500));
 
     return platforms
       .sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0))
@@ -131,7 +131,7 @@ export const getCategories = query({
       .withIndex("by_status_locale", (q) =>
         q.eq("status", "published").eq("locale", args.locale)
       )
-      .collect();
+      .take(1000);
 
     // Group by category field and count occurrences.
     const counts: Record<string, number> = {};
@@ -166,7 +166,7 @@ export const search = query({
           .eq("status", "published")
           .eq("locale", args.locale)
       )
-      .collect();
+      .take(50);
 
     return results;
   },

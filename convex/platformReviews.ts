@@ -14,8 +14,8 @@ export const getByPlatform = query({
 
     const reviews = await ctx.db
       .query("reviews")
-      .withIndex("by_platform", (q) => q.eq("platformId", args.platformId))
-      .collect();
+      .withIndex("by_platform_status", (q) => q.eq("platformId", args.platformId).eq("status", "approved"))
+      .take(500);
 
     return reviews
       .filter((r) => r.status === "approved")
@@ -36,7 +36,7 @@ export const getApproved = query({
     const reviews = await ctx.db
       .query("reviews")
       .withIndex("by_status", (q) => q.eq("status", "approved"))
-      .collect();
+      .take(Math.min(Math.max(limit, 1), 100));
 
     const sliced = reviews.slice(0, limit);
 
