@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { create } from "zustand";
 
 /**
@@ -37,14 +37,11 @@ const dashboardSidebarStore = create((set) => ({
  * after hydration and across client-side navigation.
  */
 export function useHydratedSidebarCollapsed() {
-  const collapsed = dashboardSidebarStore((state) => state.collapsed);
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    setHydrated(true);
-  }, []);
-
-  return hydrated ? collapsed : false;
+  return useSyncExternalStore(
+    dashboardSidebarStore.subscribe,
+    () => dashboardSidebarStore.getState().collapsed,
+    () => false,
+  );
 }
 
 export default dashboardSidebarStore;
