@@ -321,7 +321,7 @@ Completed and verified:
 
 Operational gates still open:
 
-- Keep the verified Preview/Production separation and artifact-specific hosted smoke run green for every release; perform and record a rollback rehearsal with the named release owner.
+- Keep the verified Preview/Production separation and artifact-specific hosted smoke run green for every release; the engineering Preview rollback rehearsal has passed, while a named release owner/back-up and an approved production rollback rehearsal remain required.
 - Configure Search Console and validate the production sitemap and eligible JobPosting output.
 - Connect a hosted error-monitoring/alerting provider to the existing health and error surfaces; local readiness does not replace production alert delivery.
 - Keep the scheduled public production monitor green and complete its failure-notification rehearsal with a named owner and backup; synthetic availability does not replace exception monitoring.

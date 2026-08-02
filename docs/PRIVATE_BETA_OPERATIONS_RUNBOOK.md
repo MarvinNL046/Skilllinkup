@@ -11,6 +11,7 @@ Companion operating artifacts:
 - `BETA_OPERATIONS_LOG_TEMPLATE.md` is the required privacy-safe daily record.
 - `SUPPORT_RESPONSE_TEMPLATES.md` contains approved draft language; replace every bracketed field and assign the ownership roster before use.
 - `PRODUCTION_MONITORING_RUNBOOK.md` defines the scheduled synthetic monitor, notification rehearsal and production triage path.
+- `PREVIEW_ROLLBACK_REHEARSAL_2026-08-02.md` records the artifact-specific engineering rollback and restoration proof.
 - `/admin/trust` exposes the authenticated 30-day product-health snapshot and trust queues to administrators only.
 
 ## Ownership roster
@@ -70,6 +71,7 @@ Never request passwords, Clerk session tokens, full payment details or identity 
 - Promote a verified candidate with `npx vercel@50.5.0 promote <deployment-url>`.
 - Roll back the production alias with `npx vercel@50.5.0 rollback <last-known-good-deployment>`.
 - After any promotion or rollback, run the hosted verifier plus one signed-in workspace smoke before reopening traffic.
+- The engineering Preview rehearsal is proven, but a named release owner and backup must still observe or repeat it and approve the production rollback policy before Wave 0.
 
 ## Trust, support and privacy queues
 
