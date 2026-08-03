@@ -6,6 +6,7 @@ import {
 } from "./lib/authHelpers";
 import { toSafeUser } from "./lib/publicData";
 import {
+  assertMarketplaceContext,
   marketplaceRoleValidator,
   marketplaceWorldValidator,
 } from "./lib/marketplaceState";
@@ -357,16 +358,7 @@ export const switchAccountContext = mutation({
       throw new Error("Add this role to your account before switching to it.");
     }
 
-    const allowedWorlds = {
-      client: ["online", "local"],
-      freelancer: ["online"],
-      local_professional: ["local"],
-      candidate: ["jobs"],
-      company: ["jobs"],
-    } as const;
-    if (!(allowedWorlds[args.activeRole] as readonly string[]).includes(args.preferredWorld)) {
-      throw new Error("This role is not available in the selected product world.");
-    }
+    assertMarketplaceContext(args.activeRole, args.preferredWorld);
 
     await ctx.db.patch(user._id, {
       activeRole: args.activeRole,
@@ -406,6 +398,7 @@ export const setAccountContext = mutation({
     if (!uniqueRoles.includes(args.activeRole)) {
       throw new Error("The active role must be one of the account roles.");
     }
+    assertMarketplaceContext(args.activeRole, args.preferredWorld);
     if (!Number.isInteger(args.onboardingVersion) || args.onboardingVersion < 1) {
       throw new Error("Invalid onboarding version.");
     }

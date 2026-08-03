@@ -26,8 +26,8 @@ import styles from "./OnboardingExperience.module.css";
 const roles = [
   {
     id: "client",
-    title: "I want to hire",
-    description: "Find online talent or trusted professionals nearby.",
+    title: "Hire or book someone",
+    description: "Find online talent or a trusted professional nearby.",
     Icon: UserRoundSearch,
     world: "online",
   },

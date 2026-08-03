@@ -2,3 +2,5 @@
 @media(max-width:900px){.loginShell,.registerShell{grid-template-columns:1fr}.story{min-height:420px}.storyImage{inset:0 0 0 45%}.storyImage:after{display:none}.storyQuote{right:52%;bottom:38px}.stepsPanel{border-top:1px solid var(--line);border-left:0}.steps{display:grid;grid-template-columns:repeat(3,1fr)}.steps article{grid-template-columns:24px 1fr}.steps i{grid-column:2}.steps article:after{display:none}.memberProof{max-width:360px}}
 @media(max-width:620px){.topbar{width:min(100% - 36px,1440px);min-height:70px}.topbar>a:first-child{width:145px}.topbar>a:last-child{font-size:11px}.shell{width:min(100% - 28px,1400px);margin-bottom:30px;border-radius:13px}.story{display:none}.formPanel{padding:34px 22px}.formPanel h1{font-size:36px}.roles>div{grid-template-columns:1fr}.stepsPanel{padding:34px 22px}.steps{display:flex}.memberProof{max-width:none}}
 .storyImage:after{display:none}
+.roles a:last-child:nth-child(odd){grid-column:1/-1}
+@media(max-width:620px){.roles a:last-child:nth-child(odd){grid-column:auto}}

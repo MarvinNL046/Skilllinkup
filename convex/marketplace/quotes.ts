@@ -446,3 +446,48 @@ export const acceptQuote = mutation({
     return { success: true, quoteId: args.quoteId, orderId, appointmentId };
   },
 });
+
+/**
+ * Private customer overview for Local. Ownership comes from the authenticated
+ * identity, so callers can never request another customer's quote requests.
+ */
+export const listMyRequests = query({
+  args: {},
+  returns: v.array(v.object({
+    _id: v.id("quoteRequests"),
+    title: v.string(),
+    status: v.string(),
+    categoryName: v.union(v.string(), v.null()),
+    locationCity: v.union(v.string(), v.null()),
+    budgetIndication: v.union(v.string(), v.null()),
+    preferredDate: v.union(v.number(), v.null()),
+    quoteCount: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })),
+  handler: async (ctx) => {
+    const currentUser = await requireAuthUser(ctx);
+    requireClientRole(currentUser);
+    const requests = await ctx.db
+      .query("quoteRequests")
+      .withIndex("by_client", (q) => q.eq("clientId", currentUser._id))
+      .order("desc")
+      .take(100);
+    const categoryIds = [...new Set(requests.map((request) => request.categoryId))];
+    const categories = await Promise.all(categoryIds.map((categoryId) => ctx.db.get(categoryId)));
+    const categoryNames = new Map(categories.filter(Boolean).map((category) => [category!._id, category!.name]));
+
+    return requests.map((request) => ({
+      _id: request._id,
+      title: request.title,
+      status: request.status,
+      categoryName: categoryNames.get(request.categoryId) ?? null,
+      locationCity: request.locationCity ?? null,
+      budgetIndication: request.budgetIndication ?? null,
+      preferredDate: request.preferredDate ?? null,
+      quoteCount: request.quoteCount ?? 0,
+      createdAt: request.createdAt,
+      updatedAt: request.updatedAt,
+    }));
+  },
+});

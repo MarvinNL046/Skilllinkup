@@ -10,8 +10,8 @@ import styles from "./AccountContextSwitcher.module.css";
 
 const contexts = {
   client: [
-    { role: "client", world: "online", label: "Hire online" },
-    { role: "client", world: "local", label: "Hire locally" },
+    { role: "client", world: "online", label: "Customer · Online" },
+    { role: "client", world: "local", label: "Customer · Local" },
   ],
   freelancer: [{ role: "freelancer", world: "online", label: "Online freelancer" }],
   local_professional: [{ role: "local_professional", world: "local", label: "Local professional" }],
@@ -55,12 +55,12 @@ export default function AccountContextSwitcher({ dark = false, onSwitched }) {
   return (
     <div className={`${styles.switcher} ${dark ? styles.dark : ""}`}>
       <label>
-        <span>{switching ? <LoaderCircle className={styles.spinner} /> : null} Working as</span>
+        <span>{switching ? <LoaderCircle className={styles.spinner} /> : null} Account context</span>
         <select value={currentValue} onChange={handleChange} disabled={switching} aria-label="Switch account role and marketplace">
           {options.map((option) => <option key={`${option.role}:${option.world}`} value={`${option.role}:${option.world}`}>{option.label}</option>)}
         </select>
       </label>
-      {accountRoles.length ? <Link href="/onboarding?role=client" title="Add another role"><Plus size={14} /> Add role</Link> : null}
+      {accountRoles.length ? <Link href="/onboarding" title="Add another role"><Plus size={14} /> Add role</Link> : null}
     </div>
   );
 }

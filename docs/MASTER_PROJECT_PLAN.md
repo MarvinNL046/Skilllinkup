@@ -21,6 +21,31 @@ Skilllinkup becomes one account and one trusted marketplace with three products:
 
 The three products share identity, profiles, categories, search concepts, messaging, notifications, reviews, payments, and trust. Their transaction flows remain separate because hiring a web designer, booking a heating engineer, and applying for a permanent job are fundamentally different user journeys.
 
+### Account and dashboard model
+
+Skilllinkup uses one identity and one adaptive `/dashboard`; account type is not encoded in duplicate URLs such as `/dashboard/c/dashboard`. A person can hold more than one marketplace role and explicitly switch the active context without creating another login.
+
+| User-facing starting choice | Internal role | Product context | Primary demand or supply journey |
+| --- | --- | --- | --- |
+| Hire or book someone | `client` | Online or Local | Publish a project, buy a service, request local quotes, compare offers and manage work |
+| Offer online services | `freelancer` | Online | Publish services, submit proposals and deliver remote work |
+| Offer local services | `local_professional` | Local | Receive suitable local requests, quote, schedule and complete work |
+| Find a job | `candidate` | Jobs | Save vacancies, apply and track applications |
+| Hire for a company | `company` | Jobs | Publish verified vacancies and manage candidates |
+
+`client` is the demand-side consumer/customer role. It covers both private individuals and business buyers until organisation-specific collaboration or billing is needed. `company` is reserved for the employer workflow in Jobs; it is not the only role allowed to hire freelancers or local professionals.
+
+The dashboard context switcher exposes task-oriented labels such as `Customer · Online`, `Customer · Local`, `Online freelancer`, `Local professional`, `Job seeker`, and `Company hiring`. Routes describe resources or actions (`/create-projects`, `/local/request-quote`, `/dashboard/applications`) rather than user types. Server-side Convex authorization remains based on the authenticated user's stored roles, ownership and active product context, never on a URL prefix.
+
+Account-model implementation sequence:
+
+1. Make all five starting choices explicit before or during registration, with `Hire or book someone` as the default demand-side path.
+2. Keep `accountRoles`, `activeRole`, `preferredWorld` and versioned onboarding as the canonical model; retain legacy `userType` only as a migration bridge.
+3. Give `client` separate Online and Local onboarding questions and dashboard content while reusing the same shell.
+4. Make dashboard navigation and home widgets role-and-world aware; never show provider tools to a customer or customer actions to a provider.
+5. Allow users to add a role later, but require onboarding for that role before it becomes active.
+6. Test registration, switching and authorization for Online client/freelancer, Local customer/professional and Jobs candidate/company pairs.
+
 ## 2. Recommended launch scope
 
 ### Geographic scope

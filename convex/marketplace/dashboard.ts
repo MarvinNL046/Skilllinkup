@@ -422,7 +422,13 @@ export const getCombined = query({
 });
 
 const dashboardOverviewValidator = v.object({
-  user: v.object({ name: v.string(), userType: v.string(), image: v.union(v.string(), v.null()) }),
+  user: v.object({
+    name: v.string(),
+    userType: v.string(),
+    activeRole: v.string(),
+    preferredWorld: v.string(),
+    image: v.union(v.string(), v.null()),
+  }),
   stats: v.object({
     activeProjects: v.number(),
     newProposals: v.number(),
@@ -498,6 +504,10 @@ export const getOverview = query({
   returns: dashboardOverviewValidator,
   handler: async (ctx) => {
     const user = await requireAuthUser(ctx);
+    const activeRole = user.activeRole
+      ?? (user.userType === "freelancer" ? "freelancer" : "client");
+    const preferredWorld = user.preferredWorld ?? "online";
+    const isProviderContext = activeRole === "freelancer" || activeRole === "local_professional";
 
     const profile = await ctx.db
       .query("freelancerProfiles")
@@ -515,19 +525,13 @@ export const getOverview = query({
       ctx.db.query("savedItems").withIndex("by_user_createdAt", (q) => q.eq("userId", user._id)).order("desc").take(6),
     ]);
 
-    const orderIds = new Set<string>();
-    const allOrders = [...clientOrders, ...freelancerOrders]
-      .filter((order) => {
-        if (orderIds.has(order._id)) return false;
-        orderIds.add(order._id);
-        return true;
-      })
+    const allOrders = (isProviderContext ? freelancerOrders : clientOrders)
       .sort((a, b) => b.updatedAt - a.updatedAt);
 
     const activeStatuses = new Set(["pending", "active", "in_progress", "delivered", "revision_requested"]);
     const activeOrders = allOrders.filter((order) => activeStatuses.has(order.status));
 
-    const proposalDocs = profile
+    const proposalDocs = isProviderContext && profile
       ? await ctx.db.query("bids").withIndex("by_freelancer", (q) => q.eq("freelancerId", profile._id)).order("desc").take(8)
       : (await Promise.all(
           clientProjects.slice(0, 12).map((project) =>
@@ -637,7 +641,7 @@ export const getOverview = query({
         daysRemaining: Math.max(0, Math.ceil((item.deadline - now) / 86_400_000)),
       }));
 
-    const paymentSource = profile ? freelancerOrders : clientOrders;
+    const paymentSource = isProviderContext ? freelancerOrders : clientOrders;
     const monthStarts = Array.from({ length: 6 }, (_, index) => {
       const date = new Date();
       date.setDate(1);
@@ -649,7 +653,7 @@ export const getOverview = query({
       const end = index === monthStarts.length - 1 ? new Date(start.getFullYear(), start.getMonth() + 1, 1) : monthStarts[index + 1];
       const amount = paymentSource
         .filter((order) => order.createdAt >= start.getTime() && order.createdAt < end.getTime())
-        .reduce((sum, order) => sum + (profile ? order.freelancerEarnings : order.amount), 0);
+        .reduce((sum, order) => sum + (isProviderContext ? order.freelancerEarnings : order.amount), 0);
       return { month: start.toLocaleString("en-US", { month: "short" }), amount };
     });
 
@@ -659,18 +663,24 @@ export const getOverview = query({
       .map((order) => ({
         id: order._id as string,
         title: order.title,
-        amount: profile ? order.freelancerEarnings : order.amount,
+        amount: isProviderContext ? order.freelancerEarnings : order.amount,
         currency: order.currency ?? "EUR",
         date: order.completedAt ?? order.updatedAt,
         status: order.status === "completed" ? "Paid" : "Pending",
       }));
 
     const unreadMessages = messages.reduce((sum, message) => sum + message.unreadCount, 0);
-    const outstandingAmount = activeOrders.reduce((sum, order) => sum + (profile ? order.freelancerEarnings : order.amount), 0);
+    const outstandingAmount = activeOrders.reduce((sum, order) => sum + (isProviderContext ? order.freelancerEarnings : order.amount), 0);
     const pendingProposals = proposalDocs.filter((proposal) => proposal.status === "pending").length;
 
     return {
-      user: { name: user.name, userType: user.userType ?? "client", image: user.avatar ?? user.image ?? null },
+      user: {
+        name: user.name,
+        userType: isProviderContext ? "freelancer" : "client",
+        activeRole,
+        preferredWorld,
+        image: user.avatar ?? user.image ?? null,
+      },
       stats: {
         activeProjects: activeOrders.length,
         newProposals: pendingProposals,

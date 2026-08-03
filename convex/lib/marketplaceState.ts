@@ -14,6 +14,26 @@ export const marketplaceWorldValidator = v.union(
   v.literal("jobs")
 );
 
+export const marketplaceRoleWorlds = {
+  client: ["online", "local"],
+  freelancer: ["online"],
+  local_professional: ["local"],
+  candidate: ["jobs"],
+  company: ["jobs"],
+} as const;
+
+export type MarketplaceRole = keyof typeof marketplaceRoleWorlds;
+export type MarketplaceWorld = "online" | "local" | "jobs";
+
+export function assertMarketplaceContext(
+  role: MarketplaceRole,
+  world: MarketplaceWorld
+) {
+  if (!(marketplaceRoleWorlds[role] as readonly MarketplaceWorld[]).includes(world)) {
+    throw new Error("This role is not available in the selected product world.");
+  }
+}
+
 export const projectStatusValidator = v.union(
   v.literal("draft"),
   v.literal("open"),
