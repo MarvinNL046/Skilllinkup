@@ -20,7 +20,8 @@ Fill names and contact methods before invitations are sent. One person may hold 
 
 | Responsibility             | Named owner | Backup | Response target                     |
 | -------------------------- | ----------- | ------ | ----------------------------------- |
-| Release and rollback       | TBD         | TBD    | 30 minutes                          |
+| Release and rollback       | MarvinNL046 | TBD    | 30 minutes                          |
+| Production monitoring      | MarvinNL046 | TBD    | 30 minutes                          |
 | Trust and urgent safety    | TBD         | TBD    | acknowledge within 1 hour           |
 | Support and account access | TBD         | TBD    | one business day                    |
 | Privacy/export/deletion    | TBD         | TBD    | acknowledge within one business day |
