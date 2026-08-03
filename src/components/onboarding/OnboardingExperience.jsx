@@ -194,7 +194,7 @@ export default function OnboardingExperience() {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <Image src="/images/logo/skilllinkup-logo.png" alt="Skilllinkup" width={170} height={42} priority />
+        <Image src="/images/logo/skilllinkup-brand.png" alt="Skilllinkup" width={170} height={42} priority />
         <span><ShieldCheck size={17} /> Secure account setup</span>
       </header>
 

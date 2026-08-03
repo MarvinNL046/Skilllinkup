@@ -140,7 +140,7 @@ export const NewsletterEmail = ({
  <Row>
  <Column>
  <Img
- src={`${baseUrl}/images/logo/logo-black.png`}
+ src={`${baseUrl}/images/logo/skilllinkup-brand.png`}
  width="140"
  height="32"
  alt="SkillLinkup"
@@ -249,7 +249,7 @@ export const NewsletterEmail = ({
  {/* Footer */}
  <Section style={footer}>
  <Img
- src={`${baseUrl}/images/logo/logo-black.png`}
+ src={`${baseUrl}/images/logo/skilllinkup-brand.png`}
  width="100"
  height="24"
  alt="SkillLinkup"

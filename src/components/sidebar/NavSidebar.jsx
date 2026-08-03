@@ -197,7 +197,7 @@ export default function NavSidebar() {
               alt="SkillLinkup"
               width={148}
               height={34}
-              src="/images/logo/skilllinkup-logo.png"
+              src="/images/logo/skilllinkup-brand.png"
             />
           </Link>
           <button

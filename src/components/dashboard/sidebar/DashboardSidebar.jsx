@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
@@ -13,6 +12,7 @@ import { dashboardNavigation } from "@/data/dashboard";
 import useConvexUser from "@/hook/useConvexUser";
 import dashboardSidebarStore, { useHydratedSidebarCollapsed } from "@/store/dashboardSidebarStore";
 import AccountContextSwitcher from "@/components/dashboard/AccountContextSwitcher";
+import BrandLogo from "@/components/brand/BrandLogo";
 import styles from "./DashboardSidebar.module.css";
 
 const ICONS = {
@@ -55,14 +55,9 @@ export default function DashboardSidebar() {
     <div className={styles.sidebar} data-collapsed={collapsed ? "true" : "false"}>
       <div className={styles.brandRow}>
         <Link href="/" className={styles.brand} aria-label="Skilllinkup home">
-          <Image
+          <BrandLogo
             className={styles.fullLogo}
-            src="/images/logo/skilllinkup-logo.png?v=canonical-20260803"
-            alt="Skilllinkup"
-            width={736}
-            height={168}
             priority
-            unoptimized
           />
         </Link>
         <button

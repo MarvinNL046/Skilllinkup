@@ -43,7 +43,7 @@ export default function MobileNavigation2() {
           <Image
             height={32}
             width={140}
-            src="/images/logo/skilllinkup-logo.png"
+            src="/images/logo/skilllinkup-brand.png"
             alt="SkillLinkup"
             style={{ width: 140, height: "auto" }}
           />

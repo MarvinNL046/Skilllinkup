@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Globe2, Instagram, Linkedin, Mail } from "lucide-react";
+import BrandLogo from "@/components/brand/BrandLogo";
 import styles from "./AppFooter.module.css";
 
 const columns = [
@@ -47,14 +47,7 @@ export default function AppFooter() {
         <div className={styles.top}>
           <div className={styles.brand}>
             <Link href="/" className={styles.logoLink} aria-label="Skilllinkup home">
-              <Image
-                src="/images/logo/skilllinkup-logo.png"
-                alt="Skilllinkup"
-                width={736}
-                height={168}
-                className={styles.logo}
-                unoptimized
-              />
+              <BrandLogo className={styles.logo} />
             </Link>
             <p>One worldwide marketplace for online services, local expertise, and real company jobs.</p>
             <div className={styles.world}><Globe2 size={16} /> English · Worldwide</div>

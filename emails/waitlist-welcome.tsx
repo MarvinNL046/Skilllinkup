@@ -103,7 +103,7 @@ export const WaitlistWelcomeEmail = ({
         <Container style={container}>
           <Section style={header}>
             <Img
-              src={`${baseUrl}/images/logo/logo-black.png`}
+              src={`${baseUrl}/images/logo/skilllinkup-brand.png`}
               width="180"
               height="40"
               alt="SkillLinkup"

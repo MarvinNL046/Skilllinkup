@@ -38,7 +38,7 @@ export const WelcomeEmail = ({
  {/* Header */}
  <Section style={header}>
  <Img
- src={`${baseUrl}/images/logo/logo-black.png`}
+ src={`${baseUrl}/images/logo/skilllinkup-brand.png`}
  width="180"
  height="40"
  alt="SkillLinkup"
@@ -146,7 +146,7 @@ export const WelcomeEmail = ({
  {/* Footer */}
  <Section style={footer}>
  <Img
- src={`${baseUrl}/images/logo/logo-black.png`}
+ src={`${baseUrl}/images/logo/skilllinkup-brand.png`}
  width="120"
  height="28"
  alt="SkillLinkup"
