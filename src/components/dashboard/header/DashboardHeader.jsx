@@ -27,7 +27,7 @@ export default function DashboardHeader() {
 
   return (
     <header className={styles.header}>
-      <div className={styles.mobileBrand}><button type="button" onClick={toggleMobile} aria-label="Open dashboard navigation"><Menu size={21} /></button><Link href="/"><Image src="/images/logo/skilllinkup-link-logo.png" alt="Skilllinkup" width={1000} height={200} priority /></Link></div>
+      <div className={styles.mobileBrand}><button type="button" onClick={toggleMobile} aria-label="Open dashboard navigation"><Menu size={21} /></button><Link href="/"><Image src="/images/logo/skilllinkup-template-logo-v2.png" alt="Skilllinkup" width={736} height={168} priority /></Link></div>
       <form className={styles.search} action="/online/services"><Search size={18} /><input name="q" aria-label="Search Skilllinkup" placeholder="Search services, professionals or skills…" /></form>
       <div className={styles.actions}>
         <NotificationBell />

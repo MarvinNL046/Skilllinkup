@@ -1,6 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, BadgeCheck, BriefcaseBusiness, Rocket, ShieldCheck, UserRound } from "lucide-react";
+import {
+  ArrowLeft,
+  BadgeCheck,
+  BriefcaseBusiness,
+  Building2,
+  Laptop2,
+  Rocket,
+  Search,
+  ShieldCheck,
+  UserRound,
+  UserRoundSearch,
+  Wrench,
+} from "lucide-react";
 import styles from "./AuthPageShell.module.css";
 
 export const clerkAppearance = {
@@ -28,13 +40,35 @@ export function AuthTopBar() {
 }
 
 export function RoleChoice({ role }) {
-  return <div className={styles.roles}><span>I want to…</span><div><Link className={!role || role === "client" ? styles.selectedRole : ""} href="/register?role=client"><i><UserRound /></i><strong>Hire a professional</strong><small>I have a project and want the right match.</small><BadgeCheck /></Link><Link className={role === "freelancer" ? styles.selectedRole : ""} href="/register?role=freelancer"><i><BriefcaseBusiness /></i><strong>Work as a professional</strong><small>I want to offer services and find projects.</small><BadgeCheck /></Link></div></div>;
+  const choices = [
+    { id: "client", title: "Hire or book someone", text: "Find online talent or a trusted professional nearby.", Icon: UserRoundSearch },
+    { id: "freelancer", title: "Offer online services", text: "Work with clients worldwide as an online freelancer.", Icon: Laptop2 },
+    { id: "local_professional", title: "Offer local services", text: "Receive suitable requests in your service area.", Icon: Wrench },
+    { id: "candidate", title: "Find a job", text: "Apply for genuine remote, hybrid or local vacancies.", Icon: Search },
+    { id: "company", title: "Hire for a company", text: "Publish vacancies and manage candidates.", Icon: Building2 },
+  ];
+
+  return (
+    <div className={styles.roles}>
+      <span>How do you want to start?</span>
+      <div>
+        {choices.map(({ id, title, text, Icon }) => (
+          <Link key={id} className={role === id ? styles.selectedRole : ""} href={`/register?role=${id}`}>
+            <i><Icon /></i>
+            <strong>{title}</strong>
+            <small>{text}</small>
+            <BadgeCheck />
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default function AuthPageShell({ mode, title, subtitle, children }) {
   const login = mode === "login";
   return <div className={styles.page}><AuthTopBar /><main className={`${styles.shell} ${login ? styles.loginShell : styles.registerShell}`}>
-    {login ? <aside className={styles.story}><div className={styles.storyImage}><Image src="/images/skilllinkup-webdesign/webdesign-hero-v1.png" alt="Professional preparing an online project" fill priority sizes="(max-width: 820px) 100vw, 38vw" /></div><div className={styles.storyQuote}><span>3</span><blockquote>One account for worldwide freelance work, trusted local services and genuine company jobs.</blockquote><div><Image src="/images/logo/skilllinkup-link-logo.png" alt="" width={46} height={46} /><strong>Free private beta<small>No platform payments</small></strong></div></div></aside> : null}
+    {login ? <aside className={styles.story}><div className={styles.storyImage}><Image src="/images/skilllinkup-webdesign/webdesign-hero-v1.png" alt="Professional preparing an online project" fill priority sizes="(max-width: 820px) 100vw, 38vw" /></div><div className={styles.storyQuote}><span>3</span><blockquote>One account for worldwide freelance work, trusted local services and genuine company jobs.</blockquote><div><Image src="/images/logo/skilllinkup-template-logo-v2.png" alt="" width={106} height={24} /><strong>Free private beta<small>No platform payments</small></strong></div></div></aside> : null}
     <section className={styles.formPanel}><header><span className={styles.eyebrow}>{login ? "Welcome back" : "Join Skilllinkup"}</span><h1>{title}</h1><p>{subtitle}</p></header>{children}<div className={styles.privacy}><ShieldCheck size={22} /><span><strong>Your information is safe.</strong><small>We protect your privacy and account data.</small></span></div></section>
     {!login ? <aside className={styles.stepsPanel}><span className={styles.eyebrow}>Getting started</span><h2>How Skilllinkup works</h2><div className={styles.steps}>{steps.map(({ title: stepTitle, text, Icon }, index) => <article key={stepTitle}><b>{index + 1}</b><i><Icon /></i><span><strong>{stepTitle}</strong><small>{text}</small></span></article>)}</div><div className={styles.memberProof}><ShieldCheck /><span><strong>3 connected products</strong><small>Online · Local · Jobs</small></span></div></aside> : null}
   </main></div>;

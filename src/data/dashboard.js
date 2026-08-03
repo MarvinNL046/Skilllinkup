@@ -27,6 +27,9 @@ const _createJob    = { id: 23, name: "Post a Job",         icon: "flaticon-docu
 const _requestLocal = { id: 24, name: "Request Local Quotes", icon: "flaticon-place",       path: "/local/request-quote", subtitle: "Describe a local job once" };
 const _support      = { id: 25, name: "Help & Support",      icon: "flaticon-chat-1",      path: "/dashboard/support", subtitle: "Track questions and safety issues" };
 const _privacy      = { id: 26, name: "Data & Privacy",      icon: "flaticon-document",    path: "/dashboard/privacy", subtitle: "Export data or request deletion" };
+const _browseOnline = { id: 27, name: "Find Online Talent",  icon: "flaticon-wifi",        path: "/online/freelancers", subtitle: "Browse worldwide freelancers" };
+const _browseLocal  = { id: 28, name: "Find Local Pros",     icon: "flaticon-place",       path: "/local/craftsmen", subtitle: "Browse trusted professionals nearby" };
+const _browseJobs   = { id: 29, name: "Find Jobs",           icon: "flaticon-briefcase",   path: "/jobs/browse", subtitle: "Browse genuine vacancies" };
 
 // ============================================================
 // World-specific navigation: dashboardNavigation[role][world]
@@ -52,12 +55,12 @@ export const dashboardNavigation = {
   },
   client: {
     online: {
-      start:    [_dashboard, _myProjects, _createProj, _manageServ, _addServ, _orders, _saved],
+      start:    [_dashboard, _browseOnline, _myProjects, _createProj, _orders, _saved],
       organize: [_message, _reviews, _rewards],
       account:  [_profile, _privacy, _support, _feedback],
     },
     local: {
-      start:    [_dashboard, _requestLocal, _orders, _saved],
+      start:    [_dashboard, _browseLocal, _requestLocal, _quoteReqs, _orders, _saved],
       organize: [_message, _reviews, _rewards],
       account:  [_profile, _privacy, _support, _feedback],
     },
@@ -76,7 +79,7 @@ export const dashboardNavigation = {
   },
   candidate: {
     jobs: {
-      start:    [_dashboard, _applications, _saved],
+      start:    [_dashboard, _browseJobs, _applications, _saved],
       organize: [_message],
       account:  [_profile, _privacy, _support, _feedback],
     },

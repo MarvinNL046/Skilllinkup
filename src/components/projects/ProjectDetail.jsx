@@ -63,7 +63,7 @@ const demoProject = {
   createdAt: new Date("2026-07-01T10:00:00Z").getTime(),
   categoryName: "Interior & Design",
   clientName: "Greenhaus Living",
-  clientAvatar: "/images/logo/skilllinkup-link-logo-light.png",
+  clientAvatar: "/images/team/client-2.png",
 };
 
 const deliverables = [

@@ -745,6 +745,12 @@ test("Convex rejects direct cross-account reads and mutations", async ({
     }),
   ).rejects.toThrow(/Add this role to your account/);
   await expect(
+    client.mutation(api.users.switchAccountContext, {
+      activeRole: "client",
+      preferredWorld: "jobs",
+    }),
+  ).rejects.toThrow(/not available in the selected product world/);
+  await expect(
     client.query(api.marketplace.trust.listReportsForAdmin, {
       limit: 5,
     }),

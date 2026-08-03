@@ -71,6 +71,23 @@ test("keyboard users can skip directly to page content", async ({ page }) => {
   await expect(page.locator("#main-content")).toBeFocused();
 });
 
+test("registration exposes every marketplace starting role", async ({ page }) => {
+  await page.goto("/register", { waitUntil: "domcontentloaded" });
+
+  const choices = [
+    ["Hire or book someone", "client"],
+    ["Offer online services", "freelancer"],
+    ["Offer local services", "local_professional"],
+    ["Find a job", "candidate"],
+    ["Hire for a company", "company"],
+  ] as const;
+
+  for (const [label, role] of choices) {
+    await expect(page.getByRole("link", { name: new RegExp(label, "i") }))
+      .toHaveAttribute("href", `/register?role=${role}`);
+  }
+});
+
 test("reduced-motion preference disables nonessential page motion", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/", { waitUntil: "domcontentloaded" });
