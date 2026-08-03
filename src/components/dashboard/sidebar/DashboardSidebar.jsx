@@ -57,16 +57,8 @@ export default function DashboardSidebar() {
         <Link href="/" className={styles.brand} aria-label="Skilllinkup home">
           <Image
             className={styles.fullLogo}
-            src="/images/logo/skilllinkup-template-logo-v2.png"
+            src="/images/logo/skilllinkup-logo.png"
             alt="Skilllinkup"
-            width={736}
-            height={168}
-            priority
-          />
-          <Image
-            className={styles.markLogo}
-            src="/images/logo/skilllinkup-template-logo-v2.png"
-            alt=""
             width={736}
             height={168}
             priority

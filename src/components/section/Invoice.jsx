@@ -28,7 +28,7 @@ export default function Invoice() {
               <Image
                 height={40}
                 width={133}
-                src="/images/header-logo-dark.svg"
+                src="/images/logo/skilllinkup-logo.png"
                 alt="logo"
               />
               <div className="flex items-center gap-3">

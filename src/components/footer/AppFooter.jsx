@@ -48,7 +48,7 @@ export default function AppFooter() {
           <div className={styles.brand}>
             <Link href="/" className={styles.logoLink} aria-label="Skilllinkup home">
               <Image
-                src="/images/logo/skilllinkup-template-logo-v2.png"
+                src="/images/logo/skilllinkup-logo.png"
                 alt="Skilllinkup"
                 width={736}
                 height={168}

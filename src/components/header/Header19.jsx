@@ -53,7 +53,7 @@ export default function Header19() {
             <Image
               width={736}
               height={168}
-              src="/images/logo/skilllinkup-template-logo-v2.png"
+              src="/images/logo/skilllinkup-logo.png"
               alt="Skilllinkup"
               priority
               style={{ width: 174, height: "auto" }}
