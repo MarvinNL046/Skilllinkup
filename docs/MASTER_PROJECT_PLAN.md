@@ -318,13 +318,14 @@ Completed and verified:
 - Preview and production have an executable environment contract, hosted smoke runner, environment-scoped GitHub release gate, release-record template and exact promotion/rollback procedure. The Vercel project is linked, the general Preview scope inherits an isolated development Clerk/Convex contract, and `/api/health` now identifies the exact version, commit and immutable deployment artifact.
 - A source-backed admin operations snapshot now reports 30-day demand, response coverage, committed matches, completion, cancellation, median first response and open trust queues across all three products. Its admin authorization and fixture-backed calculations are covered by direct Clerk-JWT acceptance.
 - The private-beta KPI contract, segmented cohort plan, daily operations log and English-first support-response library are documented. Human ownership and scheduled cohort activity remain explicit launch gates.
+- The scheduled production monitor now opens one assigned, deduplicated GitHub incident after bounded failure and closes it only after canonical production recovery. The controlled failure/repeat/recovery rehearsal is recorded in `docs/PRODUCTION_MONITOR_REHEARSAL_2026-08-03.md`.
 
 Operational gates still open:
 
 - Keep the verified Preview/Production separation and artifact-specific hosted smoke run green for every release; the engineering Preview rollback rehearsal has passed, while a named release owner/back-up and an approved production rollback rehearsal remain required.
 - The production sitemap, robots, canonicals and Jobs structured-data contract are now continuously verified; configure Search Console and validate the first genuine eligible vacancy before enabling the strict live-inventory gate. See `docs/SEO_RELEASE_GATE.md`.
 - Connect a hosted error-monitoring/alerting provider to the existing health and error surfaces; local readiness does not replace production alert delivery.
-- Keep the scheduled public production monitor green and complete its failure-notification rehearsal with a named owner and backup; synthetic availability does not replace exception monitoring.
+- Keep the scheduled public production monitor green. Its automated failure, deduplication and recovery rehearsal has passed with primary owner `MarvinNL046`; a named human backup and their acknowledged notification destination remain required. Synthetic availability does not replace exception monitoring.
 - Confirm the Local launch region (current hypothesis: Rotterdam–The Hague) and first supply cohort.
 - Name the human owners for support, urgent safety incidents, moderation and daily marketplace operations.
 - Obtain legal review of terms, privacy, cookies and marketplace responsibility wording.

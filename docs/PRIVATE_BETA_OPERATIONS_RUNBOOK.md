@@ -11,6 +11,7 @@ Companion operating artifacts:
 - `BETA_OPERATIONS_LOG_TEMPLATE.md` is the required privacy-safe daily record.
 - `SUPPORT_RESPONSE_TEMPLATES.md` contains approved draft language; replace every bracketed field and assign the ownership roster before use.
 - `PRODUCTION_MONITORING_RUNBOOK.md` defines the scheduled synthetic monitor, notification rehearsal and production triage path.
+- `PRODUCTION_MONITOR_REHEARSAL_2026-08-03.md` records the proven automated failure, deduplication and recovery path.
 - `PREVIEW_ROLLBACK_REHEARSAL_2026-08-02.md` records the artifact-specific engineering rollback and restoration proof.
 - `/admin/trust` exposes the authenticated 30-day product-health snapshot and trust queues to administrators only.
 
