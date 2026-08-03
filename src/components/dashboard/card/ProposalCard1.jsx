@@ -1,9 +1,9 @@
 "use client";
 import Link from "next/link";
-import { Tooltip } from "react-tooltip";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, FileText, Pencil, Trash2 } from "lucide-react";
+import { Calendar, MapPin, FileText } from "lucide-react";
+import ContextMessageButton from "@/components/ui/ContextMessageButton";
 
 const STATUS_VARIANTS = {
   pending: "warning",
@@ -41,10 +41,6 @@ export default function ProposalCard1({ data, bid }) {
         year: "numeric",
       })
     : "April 01, 2023";
-
-  const idSuffix = bid?._id ?? data?.id ?? Math.random();
-  const tooltipEditId = `proposal-edit-${idSuffix}`;
-  const tooltipDeleteId = `proposal-delete-${idSuffix}`;
 
   return (
     <tr>
@@ -109,26 +105,12 @@ export default function ProposalCard1({ data, bid }) {
         )}
       </td>
       <td data-label={t("columnAction")} className="align-top">
-        <div className="flex gap-2">
-          <button
-            type="button"
-            id={tooltipEditId}
-            aria-label={t("edit")}
-            className="text-[var(--text-tertiary)] hover:text-foreground"
-          >
-            <Pencil className="h-4 w-4" />
-          </button>
-          <Tooltip anchorSelect={`#${tooltipEditId}`}>{t("edit")}</Tooltip>
-          <button
-            type="button"
-            id={tooltipDeleteId}
-            aria-label={t("delete")}
-            className="text-[var(--text-tertiary)] hover:text-destructive"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
-          <Tooltip anchorSelect={`#${tooltipDeleteId}`}>{t("delete")}</Tooltip>
-        </div>
+        {isConvexBid && ["pending", "accepted"].includes(bidStatus) ? (
+          <ContextMessageButton
+            context={{ type: "project_bid", bidId: bid._id }}
+            label="Message client"
+          />
+        ) : null}
       </td>
     </tr>
   );

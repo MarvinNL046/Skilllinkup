@@ -126,7 +126,7 @@ function BookingCard({ profile }) {
       <p><Clock3 size={18} /><span><strong>Response time</strong>{profile.responseTimeHours ? `Usually within ${profile.responseTimeHours} hours` : "Not published yet"}</span></p>
       <p><ShieldCheck size={18} /><span><strong>Clear beta agreement</strong>Record scope, delivery and approval</span></p>
     </div>
-    {profile.userId ? <ContactButton recipientId={profile.userId} className={styles.contactButton} /> : <Link href="/sign-up" className={styles.contactButton}><MessageCircle size={18} />Contact freelancer</Link>}
+    {profile.userId && profile._id !== "demo-profile" ? <ContactButton recipientId={profile.userId} profileId={profile._id} className={styles.contactButton} /> : <Link href="/sign-up" className={styles.contactButton}><MessageCircle size={18} />Contact freelancer</Link>}
     <Link href="/online/projects/create" className={styles.offerButton}><FileText size={17} />Request a quote</Link>
     <div className={styles.secureNote}><LockKeyhole size={18} /><span><strong>Your details stay private</strong>No payment or escrow is active during beta.</span></div>
   </aside>;
@@ -190,7 +190,7 @@ export default function FreelancerProfile() {
               <div className={styles.statusRow}><span>{profile.responseTimeHours ? `Typically responds in ${profile.responseTimeHours} hours` : "Response time not published"}</span>{profile.isAvailable && <span><i />Available</span>}</div>
               <div className={styles.skillRow}>{skills.slice(0, 8).map((skill) => <span key={skill}>{skill}</span>)}</div>
             </div>
-            <div className={styles.profileActions}>{profile.userId ? <ContactButton recipientId={profile.userId} className={styles.primaryAction} /> : <Link className={styles.primaryAction} href="/sign-up"><MessageCircle size={18} />Send a message</Link>}<button onClick={() => setSaved((value) => !value)} className={saved ? styles.saved : ""}><Heart size={18} fill={saved ? "currentColor" : "none"} />{saved ? "Saved" : "Save"}</button></div>
+            <div className={styles.profileActions}>{profile.userId && profile._id !== "demo-profile" ? <ContactButton recipientId={profile.userId} profileId={profile._id} className={styles.primaryAction} /> : <Link className={styles.primaryAction} href="/sign-up"><MessageCircle size={18} />Send a message</Link>}<button onClick={() => setSaved((value) => !value)} className={saved ? styles.saved : ""}><Heart size={18} fill={saved ? "currentColor" : "none"} />{saved ? "Saved" : "Save"}</button></div>
           </article>
           {profile._id !== "demo-profile" ? (
             <ReportButton

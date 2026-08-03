@@ -70,6 +70,11 @@ export default function UserChatList1({ data, isSelected, onClick }) {
           >
             {preview}
           </p>
+          {data?.context?.title && (
+            <span className="mt-1 block truncate text-[11px] font-medium text-[var(--primary-700)]">
+              {data.context.title}
+            </span>
+          )}
         </div>
         <span className="text-xs text-[var(--text-tertiary)] flex-shrink-0">
           {formatTime(data?.lastMessageAt)}

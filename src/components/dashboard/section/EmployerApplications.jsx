@@ -10,6 +10,7 @@ import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import DashboardNavigation from "@/components/dashboard/header/DashboardNavigation";
 import styles from "./EmployerApplications.module.css";
+import ContextMessageButton from "@/components/ui/ContextMessageButton";
 
 const nextStatuses = {
   submitted: ["screening", "interview", "offer", "rejected"],
@@ -27,6 +28,7 @@ const statusLabels = {
   rejected: "Rejected",
   withdrawn: "Withdrawn",
 };
+const messageableStatuses = new Set(["screening", "interview", "offer", "hired"]);
 
 export default function EmployerApplications({ jobId }) {
   const { isAuthenticated } = useConvexUser();
@@ -63,7 +65,10 @@ export default function EmployerApplications({ jobId }) {
               <div className={styles.identity}><span data-status={application.status}>{statusLabels[application.status] || application.status}</span><h2>{candidate.name}</h2><a href={`mailto:${candidate.email}`}><Mail size={13} />{candidate.email}</a></div>
               <div className={styles.links}>{application.portfolioUrl ? <a href={application.portfolioUrl} target="_blank" rel="noreferrer"><ExternalLink /> Portfolio</a> : null}{resumeUrl ? <a href={resumeUrl} target="_blank" rel="noreferrer"><FileText /> CV</a> : null}</div>
               <p className={styles.letter}>{application.coverLetter}</p>
-              <div className={styles.stage}><label>Move to<select defaultValue="" disabled={updating === application._id || !nextStatuses[application.status]?.length} onChange={(event) => changeStatus(application._id, event.target.value)}><option value="" disabled>{updating === application._id ? "Updating…" : "Choose stage"}</option>{(nextStatuses[application.status] || []).map((status) => <option key={status} value={status}>{statusLabels[status]}</option>)}</select></label></div>
+              <div className={styles.stage}>
+                {messageableStatuses.has(application.status) ? <ContextMessageButton context={{ type: "job_application", applicationId: application._id }} label="Message candidate" /> : null}
+                <label>Move to<select defaultValue="" disabled={updating === application._id || !nextStatuses[application.status]?.length} onChange={(event) => changeStatus(application._id, event.target.value)}><option value="" disabled>{updating === application._id ? "Updating…" : "Choose stage"}</option>{(nextStatuses[application.status] || []).map((status) => <option key={status} value={status}>{statusLabels[status]}</option>)}</select></label>
+              </div>
             </article>
           ))}
         </section>

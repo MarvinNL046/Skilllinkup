@@ -46,6 +46,7 @@ const payload = {
   serverSecret,
   gigId: manifest.ids?.gigId,
   projectId: manifest.ids?.projectId,
+  bidId: manifest.ids?.bidId,
   quoteRequestId: manifest.ids?.quoteRequestId,
   jobId: manifest.ids?.jobId,
   jobApplicationId: manifest.ids?.jobApplicationId,

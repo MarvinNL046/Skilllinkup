@@ -21,7 +21,6 @@ export default function useConvexMessages(userId) {
 
   const sendMessage = useMutation(api.chat.messages.send);
   const markRead = useMutation(api.chat.messages.markRead);
-  const createConversation = useMutation(api.chat.conversations.create);
 
   return {
     conversations: conversations || [],
@@ -30,6 +29,5 @@ export default function useConvexMessages(userId) {
     setSelectedConversationId,
     sendMessage,
     markRead,
-    createConversation,
   };
 }

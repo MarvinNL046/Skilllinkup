@@ -8,13 +8,18 @@ import { Mail } from "lucide-react";
 import { api } from "../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 
-export default function ContactButton({ recipientId, className = "" }) {
+export default function ContactButton({
+  recipientId,
+  profileId,
+  gigId,
+  className = "",
+}) {
   const t = useTranslations("contactButton");
   const { isSignedIn } = useUser();
   const { convexUser } = useConvexUser();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const createConversation = useMutation(api.chat.conversations.create);
+  const openConversation = useMutation(api.chat.conversations.openForContext);
 
   const handleContact = async () => {
     if (!isSignedIn) {
@@ -22,15 +27,18 @@ export default function ContactButton({ recipientId, className = "" }) {
       router.push(`/login?redirect_url=${encodeURIComponent(returnUrl)}`);
       return;
     }
-    if (!convexUser?._id || !recipientId || convexUser._id === recipientId) return;
+    if (!convexUser?._id || convexUser._id === recipientId) return;
+    const context = gigId
+      ? { type: "gig_inquiry", gigId }
+      : profileId
+        ? { type: "profile_inquiry", freelancerProfileId: profileId }
+        : null;
+    if (!context) return;
 
     setIsLoading(true);
     try {
-      await createConversation({
-        participant1: convexUser._id,
-        participant2: recipientId,
-      });
-      router.push("/message");
+      const conversationId = await openConversation({ context });
+      router.push(`/message?conversation=${conversationId}`);
     } catch (err) {
       console.error("Failed to create conversation:", err);
     } finally {
@@ -39,7 +47,7 @@ export default function ContactButton({ recipientId, className = "" }) {
   };
 
   // Don't show button if viewing own profile
-  if (convexUser?._id === recipientId) return null;
+  if (convexUser?._id === recipientId || (!profileId && !gigId)) return null;
 
   return (
     <button

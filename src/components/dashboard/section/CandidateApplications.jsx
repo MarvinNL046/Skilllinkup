@@ -8,6 +8,7 @@ import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import DashboardNavigation from "@/components/dashboard/header/DashboardNavigation";
 import styles from "./CandidateApplications.module.css";
+import ContextMessageButton from "@/components/ui/ContextMessageButton";
 
 const labels = {
   draft: "Draft",
@@ -20,6 +21,7 @@ const labels = {
   withdrawn: "Withdrawn",
 };
 const withdrawable = new Set(["submitted", "screening", "interview", "offer"]);
+const messageable = new Set(["screening", "interview", "offer", "hired"]);
 
 export default function CandidateApplications() {
   const { isAuthenticated } = useConvexUser();
@@ -47,7 +49,11 @@ export default function CandidateApplications() {
             <article key={application._id}>
               <div className={styles.companyIcon}><Building2 /></div>
               <div className={styles.details}><span className={styles.status} data-status={application.status}>{labels[application.status] || application.status}</span><h2><Link href={`/jobs/job/${job.slug}`}>{job.title}</Link></h2><p>{job.company || "Company not provided"}</p><div><span><MapPin />{job.workType === "remote" ? "Remote" : job.locationCity || job.workType || "Flexible"}</span><span><CalendarDays />Updated {new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(application.statusUpdatedAt)}</span></div></div>
-              <div className={styles.actions}><Link href={`/jobs/job/${job.slug}`}>View vacancy</Link>{withdrawable.has(application.status) ? <button type="button" onClick={() => handleWithdraw(application._id)}>Withdraw</button> : null}</div>
+              <div className={styles.actions}>
+                <Link href={`/jobs/job/${job.slug}`}>View vacancy</Link>
+                {messageable.has(application.status) ? <ContextMessageButton context={{ type: "job_application", applicationId: application._id }} label="Message company" /> : null}
+                {withdrawable.has(application.status) ? <button className={styles.withdraw} type="button" onClick={() => handleWithdraw(application._id)}>Withdraw</button> : null}
+              </div>
             </article>
           ))}
         </section>

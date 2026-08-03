@@ -18,8 +18,8 @@
 .status[data-status="screening"], .status[data-status="interview"], .status[data-status="offer"] { background: #fff3dd; color: #8a5a00; }
 .status[data-status="hired"] { background: #e4f7ef; color: #147253; }
 .actions { display: grid; gap: .4rem; justify-items: end; }
-.actions a, .actions button { border: 0; background: transparent; color: var(--primary-700); font: inherit; font-size: .84rem; font-weight: 750; cursor: pointer; text-decoration: none; }
-.actions button { color: var(--text-tertiary); font-weight: 600; }
+.actions > a, .actions > .withdraw { border: 0; background: transparent; color: var(--primary-700); font: inherit; font-size: .84rem; font-weight: 750; cursor: pointer; text-decoration: none; }
+.actions > .withdraw { color: var(--text-tertiary); font-weight: 600; }
 .empty, .loading { display: grid; justify-items: center; gap: .8rem; padding: clamp(3rem, 8vw, 6rem) 1rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); background: white; text-align: center; }
 .empty i { display: grid; width: 4.5rem; height: 4.5rem; place-items: center; border-radius: 1.4rem; background: var(--primary-50); color: var(--primary-700); }
 .empty h2, .empty p { margin: 0; }

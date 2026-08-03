@@ -724,6 +724,16 @@ test("Convex rejects direct cross-account reads and mutations", async ({
     }),
   ).rejects.toThrow(/Unauthorized/);
   await expect(
+    client.mutation(api.chat.conversations.openForContext, {
+      context: { type: "project_bid", bidId: manifest.ids.bidId },
+    }),
+  ).rejects.toThrow(/Unauthorized/);
+  await expect(
+    client.mutation(api.chat.conversations.openForContext, {
+      context: { type: "local_quote", quoteId: manifest.ids.localQuoteId },
+    }),
+  ).rejects.toThrow(/Unauthorized/);
+  await expect(
     client.mutation(api.chat.messages.send, {
       conversationId: manifest.ids.conversationId,
       content: "This outsider message must never be persisted.",
@@ -796,6 +806,60 @@ test("Convex rejects direct cross-account reads and mutations", async ({
       claimType: "shared",
     }),
   ).rejects.toThrow(/Add the local professional role/);
+});
+
+test("context conversations stay private, idempotent and isolated per product", async ({
+  browser,
+  baseURL,
+}) => {
+  const manifest = readManifest();
+  const onlineClient = await createIsolatedAuthenticatedConvexClient(
+    browser,
+    baseURL,
+    dashboardUserEmail,
+  );
+  const localClient = await createIsolatedAuthenticatedConvexClient(
+    browser,
+    baseURL,
+    localClientUserEmail,
+  );
+  const professional = await createIsolatedAuthenticatedConvexClient(
+    browser,
+    baseURL,
+    freelancerUserEmail,
+  );
+
+  const onlineConversationId = await onlineClient.mutation(
+    api.chat.conversations.openForContext,
+    { context: { type: "project_bid", bidId: manifest.ids.bidId } },
+  );
+  await expect(
+    professional.mutation(api.chat.conversations.openForContext, {
+      context: { type: "project_bid", bidId: manifest.ids.bidId },
+    }),
+  ).resolves.toBe(onlineConversationId);
+
+  const localConversationId = await localClient.mutation(
+    api.chat.conversations.openForContext,
+    { context: { type: "local_quote", quoteId: manifest.ids.localQuoteId } },
+  );
+  await expect(
+    professional.mutation(api.chat.conversations.openForContext, {
+      context: { type: "local_quote", quoteId: manifest.ids.localQuoteId },
+    }),
+  ).resolves.toBe(localConversationId);
+
+  expect(onlineConversationId).not.toBe(localConversationId);
+  expect(
+    (await onlineClient.query(api.chat.conversations.getById, {
+      conversationId: onlineConversationId,
+    }))?.context.type,
+  ).toBe("project_bid");
+  expect(
+    (await localClient.query(api.chat.conversations.getById, {
+      conversationId: localConversationId,
+    }))?.context.type,
+  ).toBe("local_appointment");
 });
 
 test("stored uploads enforce authoritative MIME, size and account ownership", async ({
@@ -1315,6 +1379,30 @@ test("company and candidate complete the protected hiring and withdrawal lifecyc
         employerNote: `Private beta lifecycle moved to ${status}.`,
       }),
     ).resolves.toBe(manifest.ids.jobApplicationId);
+    if (status === "screening") {
+      const companyConversationId = await company.mutation(
+        api.chat.conversations.openForContext,
+        {
+          context: {
+            type: "job_application",
+            applicationId: manifest.ids.jobApplicationId,
+          },
+        },
+      );
+      await expect(
+        candidate.mutation(api.chat.conversations.openForContext, {
+          context: {
+            type: "job_application",
+            applicationId: manifest.ids.jobApplicationId,
+          },
+        }),
+      ).resolves.toBe(companyConversationId);
+      expect(
+        (await candidate.query(api.chat.conversations.getById, {
+          conversationId: companyConversationId,
+        }))?.context.type,
+      ).toBe("job_application");
+    }
   }
   const employerPipeline = await company.query(
     api.marketplace.jobApplications.listForJob,

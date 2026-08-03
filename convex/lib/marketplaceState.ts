@@ -14,6 +14,16 @@ export const marketplaceWorldValidator = v.union(
   v.literal("jobs")
 );
 
+export const conversationContextTypeValidator = v.union(
+  v.literal("profile_inquiry"),
+  v.literal("gig_inquiry"),
+  v.literal("project_bid"),
+  v.literal("order"),
+  v.literal("local_quote"),
+  v.literal("local_appointment"),
+  v.literal("job_application")
+);
+
 export const marketplaceRoleWorlds = {
   client: ["online", "local"],
   freelancer: ["online"],

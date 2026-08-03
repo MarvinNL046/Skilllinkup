@@ -2,6 +2,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 
 const CONTACT_PATTERNS = [
   /@/,
@@ -23,6 +25,7 @@ export default function MessageBox({
   messages = [],
   currentUserId,
   otherParticipant,
+  context,
   onSend,
   hasConversation = false,
   isMobile = false,
@@ -173,11 +176,38 @@ export default function MessageBox({
             e.target.src = "/images/resource/user.png";
           }}
         />
-        <div>
+        <div style={{ minWidth: 0, flex: 1 }}>
           <h6 style={{ margin: 0, fontSize: isMobile ? 14 : 15, fontWeight: 600 }}>
             {otherName}
           </h6>
-          <p style={{ margin: 0, fontSize: 12, color: "var(--primary-600)" }}>{t("active")}</p>
+          {context?.title ? (
+            context.href ? (
+              <Link
+                href={context.href}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                  maxWidth: "100%",
+                  color: "var(--primary-700)",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  textDecoration: "none",
+                }}
+              >
+                <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {context.title}
+                </span>
+                <ArrowUpRight size={13} style={{ flex: "0 0 auto" }} />
+              </Link>
+            ) : (
+              <p style={{ margin: 0, fontSize: 12, color: "var(--primary-700)" }}>
+                {context.title}
+              </p>
+            )
+          ) : (
+            <p style={{ margin: 0, fontSize: 12, color: "var(--primary-600)" }}>{t("active")}</p>
+          )}
         </div>
       </div>
 
