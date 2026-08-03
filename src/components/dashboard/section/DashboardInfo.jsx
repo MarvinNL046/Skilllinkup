@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
+import RoleDashboardInfo from "./RoleDashboardInfo";
 import styles from "./DashboardInfo.module.css";
 
 const FALLBACK_AVATARS = [
@@ -76,19 +77,34 @@ function CalendarCard({ deadlines }) {
 }
 
 export default function DashboardInfo() {
-  const { isLoaded, isAuthenticated } = useConvexUser();
-  const overview = useQuery(api.marketplace.dashboard.getOverview, isAuthenticated ? {} : "skip");
+  const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
+  const role = convexUser?.activeRole || (convexUser?.userType === "freelancer" ? "freelancer" : "client");
+  const world = convexUser?.preferredWorld || "online";
+  const usesSpecializedDashboard =
+    (role === "client" && world === "local") ||
+    role === "local_professional" ||
+    role === "candidate" ||
+    role === "company";
+  const overview = useQuery(
+    api.marketplace.dashboard.getOverview,
+    isAuthenticated && !usesSpecializedDashboard ? {} : "skip",
+  );
   const acceptBid = useMutation(api.marketplace.projects.acceptBid);
   const [accepting, setAccepting] = useState(null);
 
-  if (!isLoaded || (isAuthenticated && overview === undefined)) return <DashboardSkeleton />;
+  if (!isLoaded || (isAuthenticated && convexUser === undefined)) return <DashboardSkeleton />;
   if (!isAuthenticated) return <EmptyState icon={LockKeyhole} title="Sign in to open your dashboard" text="Your projects, messages and private workspaces stay protected." href="/login" action="Sign in" />;
+  if (usesSpecializedDashboard) return <RoleDashboardInfo role={role} world={world} />;
+  if (overview === undefined) return <DashboardSkeleton />;
   if (!overview) return null;
 
   const firstName = overview.user.name.split(" ")[0] || "there";
   const isFreelancer = overview.user.userType === "freelancer";
+  const primaryAction = isFreelancer
+    ? { href: "/projects", label: "Find new projects" }
+    : { href: "/create-projects", label: "Post a new project" };
   const statCards = [
-    { label: "Active projects", value: overview.stats.activeProjects, link: "/manage-projects", hint: "View projects", icon: BriefcaseBusiness },
+    { label: isFreelancer ? "Active workspaces" : "Active projects", value: overview.stats.activeProjects, link: isFreelancer ? "/orders" : "/manage-projects", hint: isFreelancer ? "View current work" : "View projects", icon: BriefcaseBusiness },
     { label: isFreelancer ? "Active proposals" : "New proposals", value: overview.stats.newProposals, link: "/proposal", hint: "View proposals", icon: UserRoundPlus },
     { label: "Unread messages", value: overview.stats.unreadMessages, link: "/message", hint: "Open messages", icon: MessageSquare },
     { label: "Agreed scope value", value: money(overview.stats.outstandingAmount, overview.stats.currency), link: "/orders", hint: "View workspaces", icon: CircleDollarSign },
@@ -105,18 +121,18 @@ export default function DashboardInfo() {
 
   return (
     <div className={styles.dashboard}>
-      <div className={styles.welcome}><div><h1>Good morning, {firstName}</h1><p>Here is an overview of your projects and recent activity.</p></div><Link href="/create-projects"><Plus size={18} /> Post a new project</Link></div>
+      <div className={styles.welcome}><div><h1>Good morning, {firstName}</h1><p>{isFreelancer ? "Here is an overview of your proposals, active work and client activity." : "Here is an overview of your projects and recent activity."}</p></div><Link href={primaryAction.href}><Plus size={18} /> {primaryAction.label}</Link></div>
 
       <section className={styles.stats}>{statCards.map(({ label, value, link, hint, icon: Icon }) => <Link href={link} key={label} className={styles.statCard}><span className={styles.statIcon}><Icon size={25} /></span><span><small>{label}</small><strong>{value}</strong><em>{hint}<ArrowRight size={13} /></em></span></Link>)}</section>
 
       <div className={styles.topGrid}>
-        <section className={`${styles.card} ${styles.projectsCard}`}><SectionHead title="Active projects" href="/manage-projects" link="View all projects" />{overview.activeProjects.length ? <div className={styles.projectTable}><div className={styles.tableHead}><span>Project</span><span>Professional</span><span>Progress</span><span>Status</span><span>Deadline</span><span /></div>{overview.activeProjects.map((project, index) => <Link href={`/dashboard/projects/${project.id}`} className={styles.projectRow} key={project.id}><span><strong>{project.title}</strong><small>{project.category || "Project"}</small></span><span className={styles.person}><Avatar src={project.freelancerAvatar} name={project.freelancerName} index={index} size={34} /><b>{project.freelancerName || "Matching…"}</b></span><span className={styles.progressCell}><b>{project.progress}%</b><i><em style={{ width: `${project.progress}%` }} /></i></span><span><b className={`${styles.status} ${styles[`status_${project.status}`] || ""}`}>{statusLabel(project.status)}</b></span><span>{shortDate(project.deadline)}</span><span><EllipsisVertical size={17} /></span></Link>)}</div> : <EmptyState icon={BriefcaseBusiness} title="No active projects yet" text="Post your first project and start receiving proposals." href="/create-projects" action="Post a project" />}</section>
+        <section className={`${styles.card} ${styles.projectsCard}`}><SectionHead title={isFreelancer ? "Active workspaces" : "Active projects"} href={isFreelancer ? "/orders" : "/manage-projects"} link={isFreelancer ? "View all workspaces" : "View all projects"} />{overview.activeProjects.length ? <div className={styles.projectTable}><div className={styles.tableHead}><span>Project</span><span>{isFreelancer ? "Client" : "Professional"}</span><span>Progress</span><span>Status</span><span>Deadline</span><span /></div>{overview.activeProjects.map((project, index) => <Link href={`/dashboard/projects/${project.id}`} className={styles.projectRow} key={project.id}><span><strong>{project.title}</strong><small>{project.category || "Project"}</small></span><span className={styles.person}><Avatar src={project.freelancerAvatar} name={project.freelancerName} index={index} size={34} /><b>{project.freelancerName || (isFreelancer ? "Client workspace" : "Matching…")}</b></span><span className={styles.progressCell}><b>{project.progress}%</b><i><em style={{ width: `${project.progress}%` }} /></i></span><span><b className={`${styles.status} ${styles[`status_${project.status}`] || ""}`}>{statusLabel(project.status)}</b></span><span>{shortDate(project.deadline)}</span><span><EllipsisVertical size={17} /></span></Link>)}</div> : <EmptyState icon={BriefcaseBusiness} title={isFreelancer ? "No active workspaces yet" : "No active projects yet"} text={isFreelancer ? "Explore open projects and send a focused proposal to a strong match." : "Post your first project and start receiving proposals."} href={primaryAction.href} action={primaryAction.label} />}</section>
 
         <section className={`${styles.card} ${styles.deadlinesCard}`}><SectionHead title="Upcoming deadlines" href="/orders" link="View deadlines" />{overview.deadlines.length ? <div className={styles.timeline}>{overview.deadlines.map((item) => { const date = new Date(item.deadline); return <Link href="/orders" key={item.id}><time><strong>{date.getDate()}</strong><small>{date.toLocaleString("en-US", { month: "short" })}</small></time><i /><span><strong>{item.title}</strong><small>{item.subtitle}</small></span><em>{item.daysRemaining} days</em></Link>; })}</div> : <EmptyState icon={CalendarDays} title="Your schedule is clear" text="Upcoming project deadlines will appear here." />}</section>
       </div>
 
       <div className={styles.middleGrid}>
-        <section className={`${styles.card} ${styles.proposalsCard}`}><SectionHead title="Recent proposals" href="/proposal" link="View all proposals" />{overview.proposals.length ? <div className={styles.proposalList}>{overview.proposals.slice(0,3).map((proposal, index) => <article key={proposal.id}><Avatar src={proposal.freelancerAvatar} name={proposal.freelancerName} index={index + 1} size={46} /><div><strong>{proposal.freelancerName}{proposal.isVerified ? <CheckCircle2 size={14} /> : null}</strong><span>{proposal.freelancerTagline || proposal.projectTitle}</span><small><Star size={12} /> {proposal.ratingAverage ? proposal.ratingAverage.toFixed(1) : "New"} {proposal.ratingCount ? `(${proposal.ratingCount})` : ""}</small></div><p><span>Bid</span><strong>{money(proposal.amount, proposal.currency)}</strong></p><Link href={`/online/project/${proposal.projectId}`}>View</Link>{!isFreelancer && proposal.status === "pending" ? <button type="button" onClick={() => handleAccept(proposal.id)} disabled={accepting === proposal.id}>{accepting === proposal.id ? "Accepting…" : "Accept"}</button> : null}</article>)}</div> : <EmptyState icon={UsersRound} title="No proposals yet" text="New proposals from professionals will appear here." href="/create-projects" action="Post a project" />}</section>
+        <section className={`${styles.card} ${styles.proposalsCard}`}><SectionHead title={isFreelancer ? "My recent proposals" : "Recent proposals"} href="/proposal" link="View all proposals" />{overview.proposals.length ? <div className={styles.proposalList}>{overview.proposals.slice(0,3).map((proposal, index) => <article key={proposal.id}><Avatar src={proposal.freelancerAvatar} name={proposal.freelancerName} index={index + 1} size={46} /><div><strong>{isFreelancer ? proposal.projectTitle : proposal.freelancerName}{proposal.isVerified && !isFreelancer ? <CheckCircle2 size={14} /> : null}</strong><span>{isFreelancer ? proposal.status.replaceAll("_", " ") : proposal.freelancerTagline || proposal.projectTitle}</span><small><Star size={12} /> {proposal.ratingAverage ? proposal.ratingAverage.toFixed(1) : "New"} {proposal.ratingCount ? `(${proposal.ratingCount})` : ""}</small></div><p><span>Bid</span><strong>{money(proposal.amount, proposal.currency)}</strong></p><Link href={`/online/project/${proposal.projectId}`}>View</Link>{!isFreelancer && proposal.status === "pending" ? <button type="button" onClick={() => handleAccept(proposal.id)} disabled={accepting === proposal.id}>{accepting === proposal.id ? "Accepting…" : "Accept"}</button> : null}</article>)}</div> : <EmptyState icon={UsersRound} title={isFreelancer ? "No proposals sent yet" : "No proposals yet"} text={isFreelancer ? "Explore open projects and send a proposal when your experience is a strong match." : "New proposals from professionals will appear here."} href={primaryAction.href} action={primaryAction.label} />}</section>
 
         <section className={`${styles.card} ${styles.messagesCard}`}><SectionHead title="Messages" href="/message" link="View all messages" />{overview.messages.length ? <div className={styles.messageList}>{overview.messages.slice(0,4).map((message, index) => <Link href="/message" key={message.id}><Avatar src={message.counterpartAvatar} name={message.counterpartName} index={index} size={36} /><span><strong>{message.counterpartName}</strong><small>{message.preview}</small></span><time>{relativeTime(message.lastMessageAt)}</time>{message.unreadCount ? <em>{message.unreadCount}</em> : null}</Link>)}</div> : <EmptyState icon={MessageSquare} title="No messages yet" text="Conversations with professionals will appear here." />}</section>
 

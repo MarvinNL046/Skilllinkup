@@ -555,6 +555,10 @@ export const getOverview = query({
     const profileDocs = await Promise.all([...profileIds].map((id) => ctx.db.get(id)));
     const profileMap = new Map(profileDocs.filter((item): item is NonNullable<typeof item> => item !== null).map((item) => [item._id as string, item]));
 
+    const activeClientIds = [...new Set<Id<"users">>(activeOrders.map((order) => order.clientId))];
+    const activeClientDocs = await Promise.all(activeClientIds.map((id) => ctx.db.get(id)));
+    const activeClientMap = new Map(activeClientDocs.filter((item): item is NonNullable<typeof item> => item !== null).map((item) => [item._id as string, item]));
+
     const categoryIds = [...new Set(projects.map((project) => project.categoryId).filter((id): id is Id<"marketplaceCategories"> => id !== undefined))];
     const categoryDocs = await Promise.all(categoryIds.map((id) => ctx.db.get(id)));
     const categoryMap = new Map(categoryDocs.filter((item): item is NonNullable<typeof item> => item !== null).map((item) => [item._id as string, item.name]));
@@ -570,12 +574,13 @@ export const getOverview = query({
     const activeProjects = activeOrders.slice(0, 5).map((order) => {
       const project = order.projectId ? projectMap.get(order.projectId as string) : null;
       const freelancer = order.freelancerId ? profileMap.get(order.freelancerId as string) : null;
+      const client = activeClientMap.get(order.clientId as string);
       return {
         id: order._id as string,
         title: project?.title ?? order.title,
         category: project?.categoryId ? categoryMap.get(project.categoryId as string) ?? null : null,
-        freelancerName: freelancer?.displayName ?? null,
-        freelancerAvatar: freelancer?.avatarUrl ?? null,
+        freelancerName: isProviderContext ? client?.name ?? null : freelancer?.displayName ?? null,
+        freelancerAvatar: isProviderContext ? client?.avatar ?? client?.image ?? null : freelancer?.avatarUrl ?? null,
         progress: orderProgress(order.status),
         status: order.status,
         deadline: order.deliveryDeadline ?? project?.deadline ?? null,
