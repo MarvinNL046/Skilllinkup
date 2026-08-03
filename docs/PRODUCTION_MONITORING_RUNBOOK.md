@@ -11,18 +11,26 @@ The GitHub Actions workflow `Production monitor` runs at 7, 22, 37 and 52 minute
 - the private-beta payment quarantine;
 - rejection of forged internal credentials.
 
-Each scheduled run retries the complete verification up to three times with a bounded 20-second delay. Three failures make the workflow fail and create a visible GitHub Actions failure. The workflow does not send credentials, participant data or request bodies containing personal information.
+Each scheduled run retries the complete verification up to three times with a bounded 20-second delay. Three failures make the workflow fail and open or update one assigned GitHub incident instead of creating repeated issues. A later successful production run records recovery and closes open monitor incidents. The workflow does not send credentials, participant data or request bodies containing personal information.
+
+Incident routing:
+
+- production failures use the `production-monitor` label;
+- deliberate alert tests use the separate `monitor-rehearsal` label;
+- the repository owner `MarvinNL046` is the current primary assignee;
+- repeated failures append evidence to the existing open issue;
+- recovery comments include the green workflow URL before the issue closes.
 
 ## Alert-delivery acceptance
 
-The workflow is an implemented alert source, but the launch gate remains open until a named primary owner and backup prove that the alert reaches their configured GitHub notification destination.
+The workflow now has a named primary owner and an assigned GitHub-issue delivery channel. The launch gate remains partially open until a named human backup confirms their notification destination.
 
-1. Assign the monitoring owner and backup in `PRIVATE_BETA_OPERATIONS_RUNBOOK.md`.
-2. Enable GitHub Actions failure notifications for both people.
+1. Keep the primary owner and future backup current in `PRIVATE_BETA_OPERATIONS_RUNBOOK.md`.
+2. Ensure both people watch assigned GitHub issues or route those notifications to their approved destination.
 3. Manually dispatch `Production monitor` with `base_url` set to `https://monitor-rehearsal.invalid`.
-4. Confirm the workflow fails after three bounded attempts and both people receive the expected notification.
+4. Confirm the workflow fails after three bounded attempts and opens an assigned `monitor-rehearsal` issue.
 5. Record acknowledgement time and channel without copying tokens or personal data into the repository.
-6. Dispatch the workflow again with `https://skilllinkup.com` and confirm it succeeds.
+6. Dispatch the workflow again with `https://skilllinkup.com`; confirm it succeeds, adds a recovery comment and closes the rehearsal issue.
 
 Do not disable Deployment Protection, Clerk authorization, payment quarantine or internal-secret checks to make monitoring green.
 

@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 concurrency:
   group: production-monitor
@@ -50,6 +51,88 @@ jobs:
 
           echo "Production verification failed after three attempts."
           exit 1
+
+      - name: Open or update monitor incident
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          if [ "${MONITOR_BASE_URL}" = "https://skilllinkup.com" ]; then
+            incident_label="production-monitor"
+            incident_title="[Production incident] Skilllinkup monitor failed"
+          else
+            incident_label="monitor-rehearsal"
+            incident_title="[Monitor rehearsal] Alert-delivery test failed as expected"
+          fi
+
+          issue_number="$(gh issue list \
+            --repo "${GITHUB_REPOSITORY}" \
+            --label "${incident_label}" \
+            --state open \
+            --json number \
+            --jq '.[0].number // empty')"
+          run_url="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          body="Target: ${MONITOR_BASE_URL}
+
+          The production contract failed after three bounded attempts.
+
+          - Workflow run: ${run_url}
+          - Commit: ${GITHUB_SHA}
+          - Trigger: ${GITHUB_EVENT_NAME}
+          - Checked at: $(date -u +'%Y-%m-%dT%H:%M:%SZ')
+
+          Follow docs/PRODUCTION_MONITORING_RUNBOOK.md. Do not copy secrets or participant data into this issue."
+
+          if [ -n "${issue_number}" ]; then
+            gh issue comment "${issue_number}" \
+              --repo "${GITHUB_REPOSITORY}" \
+              --body "${body}"
+            incident_url="https://github.com/${GITHUB_REPOSITORY}/issues/${issue_number}"
+          else
+            incident_url="$(gh issue create \
+              --repo "${GITHUB_REPOSITORY}" \
+              --title "${incident_title}" \
+              --body "${body}" \
+              --label "${incident_label}" \
+              --assignee "${GITHUB_REPOSITORY_OWNER}")"
+          fi
+
+          {
+            echo "## Monitor incident delivery"
+            echo "- Incident: ${incident_url}"
+            echo "- Label: ${incident_label}"
+            echo "- Primary owner: ${GITHUB_REPOSITORY_OWNER}"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Resolve recovered monitor incidents
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          if [ "${MONITOR_BASE_URL}" != "https://skilllinkup.com" ]; then
+            echo "Recovery closure is restricted to a successful production check."
+            exit 0
+          fi
+
+          run_url="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          for incident_label in production-monitor monitor-rehearsal; do
+            gh issue list \
+              --repo "${GITHUB_REPOSITORY}" \
+              --label "${incident_label}" \
+              --state open \
+              --json number \
+              --jq '.[].number' | while read -r issue_number; do
+                [ -n "${issue_number}" ] || continue
+                gh issue comment "${issue_number}" \
+                  --repo "${GITHUB_REPOSITORY}" \
+                  --body "Recovery verified against ${MONITOR_BASE_URL}. Green workflow: ${run_url}. Checked at $(date -u +'%Y-%m-%dT%H:%M:%SZ')."
+                gh issue close "${issue_number}" \
+                  --repo "${GITHUB_REPOSITORY}" \
+                  --reason completed
+              done
+          done
 
       - name: Record monitor outcome
         if: always()
