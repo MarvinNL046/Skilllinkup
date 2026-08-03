@@ -251,7 +251,12 @@ export const createBetaGigOrder = mutation({
 
     const conversationId = await ctx.db.insert("conversations", {
       tenantId: gig.tenantId,
+      contextType: "order",
+      contextTitle: gig.title,
+      contextHref: `/orders/${orderId}`,
       orderId,
+      freelancerProfileId: freelancerProfile._id,
+      gigId: gig._id,
       participant1: client._id,
       participant2: freelancerProfile.userId,
       status: "active",

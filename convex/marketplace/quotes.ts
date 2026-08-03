@@ -76,6 +76,7 @@ export const getRequestById = query({
   args: {
     requestId: v.id("quoteRequests"),
   },
+  returns: v.union(v.any(), v.null()),
   handler: async (ctx, args) => {
     const request = await ctx.db.get(args.requestId);
     if (!request) return null;
@@ -139,6 +140,16 @@ export const getRequestById = query({
             )
           )
       : [];
+    const myQuote = currentFreelancerProfileId
+      ? await ctx.db
+          .query("quotes")
+          .withIndex("by_quoteRequest_freelancer", (q) =>
+            q
+              .eq("quoteRequestId", args.requestId)
+              .eq("freelancerId", currentFreelancerProfileId),
+          )
+          .unique()
+      : null;
 
     return {
       ...request,
@@ -152,6 +163,7 @@ export const getRequestById = query({
           : request.description,
       canViewFullDetails,
       quotes,
+      myQuote,
     };
   },
 });
@@ -407,9 +419,14 @@ export const acceptQuote = mutation({
       updatedAt: now,
     });
 
-    await ctx.db.insert("conversations", {
+    const conversationId = await ctx.db.insert("conversations", {
       tenantId: quoteRequest.tenantId,
+      contextType: "local_appointment",
+      contextTitle: quoteRequest.title,
+      contextHref: `/orders/${orderId}`,
       orderId,
+      freelancerProfileId: quote.freelancerId,
+      quoteId: quote._id,
       participant1: quoteRequest.clientId,
       participant2: professionalUser._id,
       unreadCount1: 0,
@@ -433,6 +450,7 @@ export const acceptQuote = mutation({
       createdAt: now,
       updatedAt: now,
     });
+    await ctx.db.patch(conversationId, { localAppointmentId: appointmentId });
 
     await notifyUser(ctx, {
       userId: professionalUser._id,

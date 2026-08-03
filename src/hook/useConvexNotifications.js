@@ -3,11 +3,11 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import useConvexUser from "./useConvexUser";
 
-export default function useConvexNotifications() {
+export default function useConvexNotifications(limit = 20) {
   const { convexUser } = useConvexUser();
   const notifications = useQuery(
     api.marketplace.notifications.list,
-    convexUser?._id ? { userId: convexUser._id, limit: 20 } : "skip"
+    convexUser?._id ? { userId: convexUser._id, limit } : "skip"
   );
   const unreadCount = useQuery(
     api.marketplace.notifications.getUnreadCount,

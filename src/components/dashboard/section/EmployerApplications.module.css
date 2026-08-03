@@ -17,7 +17,7 @@
 .links a { display: inline-flex; align-items: center; gap: .3rem; padding: .5rem .65rem; border: 1px solid var(--border-default); border-radius: var(--radius-md); color: var(--text-primary); font-size: .8rem; font-weight: 700; text-decoration: none; }
 .links svg { width: .9rem; }
 .letter { grid-column: 2 / -1; margin: 0; padding: .85rem; border-radius: var(--radius-md); background: var(--surface-2); color: var(--text-secondary); line-height: 1.6; white-space: pre-wrap; }
-.stage { justify-self: end; }
+.stage { display: grid; justify-items: end; gap: .55rem; justify-self: end; }
 .empty, .loading { display: grid; justify-items: center; gap: .65rem; padding: 5rem 1rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); background: white; text-align: center; color: var(--text-secondary); }
 .empty h2, .empty p { margin: 0; }
 .loading { grid-auto-flow: column; }

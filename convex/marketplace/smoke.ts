@@ -81,6 +81,7 @@ export const seed = mutation({
     categorySlug: v.optional(v.string()),
     locale: v.optional(v.string()),
   },
+  returns: v.any(),
   handler: async (ctx, args) => {
     requireServerSecret(args.serverSecret);
 
@@ -360,8 +361,13 @@ export const seed = mutation({
 
     const conversationId = await ctx.db.insert("conversations", {
       tenantId: lookup.tenantId,
+      contextType: "order",
+      contextTitle: `Smoke Workspace Project ${args.tag}`,
+      contextHref: `/orders/${orderId}`,
       orderId,
       projectId: workspaceProjectId,
+      bidId: acceptedBidId,
+      freelancerProfileId: lookup.freelancerProfileId,
       participant1: localClientId,
       participant2: lookup.freelancerId,
       lastMessageAt: now,
@@ -481,7 +487,12 @@ export const seed = mutation({
     });
     const localConversationId = await ctx.db.insert("conversations", {
       tenantId: lookup.tenantId,
+      contextType: "local_appointment",
+      contextTitle: `Smoke Local Appointment ${args.tag}`,
+      contextHref: `/orders/${localOrderId}`,
       orderId: localOrderId,
+      freelancerProfileId: lookup.freelancerProfileId,
+      quoteId: localQuoteId,
       participant1: localClientId,
       participant2: lookup.freelancerId,
       unreadCount1: 0,
@@ -504,6 +515,7 @@ export const seed = mutation({
       createdAt: now,
       updatedAt: now,
     });
+    await ctx.db.patch(localConversationId, { localAppointmentId });
 
     const cancellationQuoteRequestId = await ctx.db.insert("quoteRequests", {
       tenantId: lookup.tenantId,
@@ -624,6 +636,7 @@ export const seed = mutation({
  */
 export const seedStaycool = mutation({
   args: {},
+  returns: v.any(),
   handler: async (ctx) => {
     const now = Date.now();
 
@@ -944,6 +957,7 @@ export const cleanup = mutation({
     serverSecret: v.string(),
     gigId: v.optional(v.id("gigs")),
     projectId: v.optional(v.id("projects")),
+    bidId: v.optional(v.id("bids")),
     quoteRequestId: v.optional(v.id("quoteRequests")),
     jobId: v.optional(v.id("jobs")),
     jobApplicationId: v.optional(v.id("jobApplications")),
@@ -971,6 +985,7 @@ export const cleanup = mutation({
     adminPreviousRole: v.optional(v.string()),
     qaUserId: v.optional(v.id("users")),
   },
+  returns: v.any(),
   handler: async (ctx, args) => {
     requireServerSecret(args.serverSecret);
 
@@ -1067,6 +1082,32 @@ export const cleanup = mutation({
           }
         }
       }
+    }
+
+    const contextualConversationIds = new Set<Id<"conversations">>();
+    if (args.bidId) {
+      const conversation = await ctx.db
+        .query("conversations")
+        .withIndex("by_bid", (q) => q.eq("bidId", args.bidId))
+        .first();
+      if (conversation) contextualConversationIds.add(conversation._id);
+    }
+    if (args.jobApplicationId) {
+      const conversation = await ctx.db
+        .query("conversations")
+        .withIndex("by_jobApplication", (q) =>
+          q.eq("jobApplicationId", args.jobApplicationId),
+        )
+        .first();
+      if (conversation) contextualConversationIds.add(conversation._id);
+    }
+    for (const conversationId of contextualConversationIds) {
+      const messages = await ctx.db
+        .query("messages")
+        .withIndex("by_conversation", (q) => q.eq("conversationId", conversationId))
+        .take(100);
+      for (const message of messages) await ctx.db.delete(message._id);
+      if (await ctx.db.get(conversationId)) await ctx.db.delete(conversationId);
     }
 
     if (args.localAppointmentId && (await ctx.db.get(args.localAppointmentId))) await ctx.db.delete(args.localAppointmentId);

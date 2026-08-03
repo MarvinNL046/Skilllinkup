@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { api } from "../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import styles from "./JobApplicationPanel.module.css";
+import ContextMessageButton from "@/components/ui/ContextMessageButton";
 
 const statusCopy = {
   draft: ["Draft", "Finish your application when you are ready."],
@@ -30,6 +31,7 @@ const statusCopy = {
 };
 
 const withdrawableStatuses = new Set(["submitted", "screening", "interview", "offer"]);
+const messageableStatuses = new Set(["screening", "interview", "offer", "hired"]);
 
 export default function JobApplicationPanel({ jobId, ownerId }) {
   const pathname = usePathname();
@@ -180,6 +182,9 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
             <small>Submitted {new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(application.submittedAt)}</small>
           ) : null}
         </div>
+        {messageableStatuses.has(application.status) ? (
+          <ContextMessageButton context={{ type: "job_application", applicationId: application._id }} label="Message company" size="default" />
+        ) : null}
         {withdrawableStatuses.has(application.status) ? (
           <button className={styles.textButton} type="button" onClick={handleWithdraw} disabled={isWithdrawing}>
             {isWithdrawing ? "Withdrawing…" : "Withdraw application"}

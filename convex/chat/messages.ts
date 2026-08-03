@@ -48,6 +48,7 @@ export const getByConversation = query({
     conversationId: v.id("conversations"),
     limit: v.optional(v.number()),
   },
+  returns: v.array(v.any()),
   handler: async (ctx, args) => {
     await requireConversationParticipant(ctx, args.conversationId);
     const limit = args.limit ?? 50;
@@ -110,6 +111,7 @@ export const send = mutation({
     fileName: v.optional(v.string()),
     fileSize: v.optional(v.number()),
   },
+  returns: v.id("messages"),
   handler: async (ctx, args) => {
     const { user: currentUser, conversation } =
       await requireConversationParticipant(ctx, args.conversationId);
@@ -179,10 +181,11 @@ export const send = mutation({
       type: "message_received",
       title: `New message from ${currentUser.name}`,
       body: preview.slice(0, 140),
-      link: conversation.orderId
-        ? `/orders/${conversation.orderId}`
-        : "/message",
-      metadata: { conversationId: conversation._id },
+      link: `/message?conversation=${conversation._id}`,
+      metadata: {
+        conversationId: conversation._id,
+        contextType: conversation.contextType ?? null,
+      },
     });
 
     const recipient = await ctx.db.get(recipientId);
@@ -210,6 +213,7 @@ export const markRead = mutation({
   args: {
     conversationId: v.id("conversations"),
   },
+  returns: v.object({ markedCount: v.number() }),
   handler: async (ctx, args) => {
     const { user: currentUser, conversation } =
       await requireConversationParticipant(ctx, args.conversationId);

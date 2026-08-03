@@ -19,6 +19,7 @@ import {
   disputeStatusValidator,
   disputeResolutionValidator,
   freelancerProfileStatusValidator,
+  conversationContextTypeValidator,
 } from "./lib/marketplaceState";
 import {
   reportReasonValidator,
@@ -781,8 +782,17 @@ export default defineSchema({
 
   conversations: defineTable({
     tenantId: v.id("tenants"),
+    contextType: v.optional(conversationContextTypeValidator),
+    contextTitle: v.optional(v.string()),
+    contextHref: v.optional(v.string()),
     orderId: v.optional(v.id("orders")),
     projectId: v.optional(v.id("projects")),
+    bidId: v.optional(v.id("bids")),
+    freelancerProfileId: v.optional(v.id("freelancerProfiles")),
+    gigId: v.optional(v.id("gigs")),
+    quoteId: v.optional(v.id("quotes")),
+    localAppointmentId: v.optional(v.id("localAppointments")),
+    jobApplicationId: v.optional(v.id("jobApplications")),
     participant1: v.id("users"),
     participant2: v.id("users"),
     lastMessageAt: v.optional(v.number()),
@@ -797,6 +807,13 @@ export default defineSchema({
     .index("by_participant2", ["participant2"])
     .index("by_participants", ["participant1", "participant2"])
     .index("by_order", ["orderId"])
+    .index("by_project_and_participants", ["projectId", "participant1", "participant2"])
+    .index("by_bid", ["bidId"])
+    .index("by_freelancerProfile_and_participants", ["freelancerProfileId", "participant1", "participant2"])
+    .index("by_gig_and_participants", ["gigId", "participant1", "participant2"])
+    .index("by_quote", ["quoteId"])
+    .index("by_localAppointment", ["localAppointmentId"])
+    .index("by_jobApplication", ["jobApplicationId"])
     .index("by_lastMessage", ["lastMessageAt"]),
 
   messages: defineTable({

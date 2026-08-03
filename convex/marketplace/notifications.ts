@@ -54,7 +54,7 @@ export const getUnreadCount = query({
       .withIndex("by_user_read", (q) =>
         q.eq("userId", args.userId).eq("isRead", false)
       )
-      .take(10);
+      .take(100);
 
     return unread.length;
   },

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Search, ArrowLeft } from "lucide-react";
@@ -29,6 +29,7 @@ export default function MessageInfo() {
   const userId = convexUser?._id;
   const isMobile = useIsMobile();
   const [mobileShowChat, setMobileShowChat] = useState(false);
+  const initialConversationHandled = useRef(false);
 
   const {
     conversations,
@@ -54,6 +55,16 @@ export default function MessageInfo() {
   const selectedConversation = conversations.find(
     (c) => c._id === selectedConversationId
   );
+
+  useEffect(() => {
+    if (initialConversationHandled.current || conversations.length === 0) return;
+    const requestedId = new URLSearchParams(window.location.search).get("conversation");
+    initialConversationHandled.current = true;
+    if (!requestedId || !conversations.some((item) => item._id === requestedId)) return;
+    setSelectedConversationId(requestedId);
+    if (isMobile) setMobileShowChat(true);
+    void markRead({ conversationId: requestedId }).catch(() => undefined);
+  }, [conversations, isMobile, markRead, setSelectedConversationId]);
 
   async function handleSelectConversation(conversationId) {
     setSelectedConversationId(conversationId);
@@ -190,6 +201,7 @@ export default function MessageInfo() {
               messages={messages}
               currentUserId={userId}
               otherParticipant={selectedConversation?.otherParticipant}
+              context={selectedConversation?.context}
               onSend={handleSendMessage}
               hasConversation={!!selectedConversationId}
               isMobile={isMobile}

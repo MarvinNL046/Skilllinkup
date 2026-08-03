@@ -15,6 +15,7 @@ import {
   Check,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import ContextMessageButton from "@/components/ui/ContextMessageButton";
 
 export default function BidList({ projectId, isOwner }) {
   const t = useTranslations("projectDetail");
@@ -132,17 +133,24 @@ export default function BidList({ projectId, isOwner }) {
                 <Badge variant="success">{t("accepted")}</Badge>
               )}
 
-              {isOwner && bid.status === "pending" && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="mt-3"
-                  onClick={() => handleAccept(bid._id)}
-                  disabled={acceptingId === bid._id}
-                >
-                  {acceptingId === bid._id ? t("accepting") : t("acceptBid")}
-                  <Check className="ml-1 h-4 w-4" />
-                </Button>
+              {isOwner && ["pending", "accepted"].includes(bid.status) && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <ContextMessageButton
+                    context={{ type: "project_bid", bidId: bid._id }}
+                    label="Message professional"
+                  />
+                  {bid.status === "pending" ? (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleAccept(bid._id)}
+                      disabled={acceptingId === bid._id}
+                    >
+                      {acceptingId === bid._id ? t("accepting") : t("acceptBid")}
+                      <Check className="ml-1 h-4 w-4" />
+                    </Button>
+                  ) : null}
+                </div>
               )}
             </div>
           </div>

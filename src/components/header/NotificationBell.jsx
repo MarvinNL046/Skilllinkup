@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { Bell } from "lucide-react";
+import Link from "next/link";
 import { api } from "../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 
@@ -239,6 +240,23 @@ export default function NotificationBell() {
                 ))}
               </div>
             )}
+            <Link
+              href="/dashboard/notifications"
+              onClick={() => setOpen(false)}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "var(--space-3)",
+                paddingTop: "var(--space-3)",
+                borderTop: "1px solid var(--border-subtle)",
+                color: "var(--primary-700)",
+                fontSize: "var(--text-body-sm)",
+                fontWeight: 700,
+                textDecoration: "none",
+              }}
+            >
+              View all notifications
+            </Link>
           </div>
         </div>
       )}

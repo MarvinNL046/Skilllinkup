@@ -19,6 +19,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import ReportButton from "@/components/trust/ReportButton";
+import ContextMessageButton from "@/components/ui/ContextMessageButton";
 
 export default function QuoteRequestDetail({ requestId }) {
   const router = useRouter();
@@ -34,6 +35,7 @@ export default function QuoteRequestDetail({ requestId }) {
   const [claiming, setClaiming] = useState(false);
   const [quoteBusy, setQuoteBusy] = useState(false);
   const [quoteSent, setQuoteSent] = useState(false);
+  const [quoteSentId, setQuoteSentId] = useState(null);
   const [quoteForm, setQuoteForm] = useState({ amount: "", estimatedDays: "1", description: "" });
 
   if (request === undefined || leadStatus === undefined) {
@@ -66,6 +68,8 @@ export default function QuoteRequestDetail({ requestId }) {
   const isLoggedIn = credits !== null;
   const isFreelancer = credits?.profileId !== null;
   const canViewFullDetails = !!request.canViewFullDetails;
+  const myQuoteId = request.myQuote?._id ?? quoteSentId;
+  const myQuoteStatus = request.myQuote?.status ?? (quoteSentId ? "pending" : null);
 
   async function handleClaim(claimType) {
     setClaiming(true);
@@ -87,7 +91,7 @@ export default function QuoteRequestDetail({ requestId }) {
     event.preventDefault();
     setQuoteBusy(true);
     try {
-      await submitQuote({
+      const quoteId = await submitQuote({
         quoteRequestId: requestId,
         amount: Number(quoteForm.amount),
         currency: "EUR",
@@ -95,6 +99,7 @@ export default function QuoteRequestDetail({ requestId }) {
         description: quoteForm.description.trim(),
       });
       setQuoteSent(true);
+      setQuoteSentId(quoteId);
       toast.success("Your quote was sent to the client.");
     } catch (error) { toast.error(error?.message || "The quote could not be sent."); }
     finally { setQuoteBusy(false); }
@@ -186,9 +191,50 @@ export default function QuoteRequestDetail({ requestId }) {
               </CardContent>
             </Card>
 
-            {leadStatus?.alreadyClaimed && !request.isOwner && request.status === "open" ? <Card className="mt-5"><CardContent className="p-8"><h4 className="text-xl font-semibold mb-2">Send your quote</h4><p className="text-sm text-[var(--text-secondary)] mb-5">Be clear about price, timing and what is included. The private beta does not collect payment.</p>{quoteSent ? <div className="flex items-center gap-2 rounded-lg bg-emerald-50 p-4 text-emerald-800"><CheckCircle2 className="h-5 w-5" />Quote sent. The client can now review it.</div> : <form onSubmit={handleSubmitQuote} className="grid grid-cols-1 sm:grid-cols-2 gap-4"><label className="grid gap-2 text-sm font-medium">Fixed quote (EUR)<input className="h-11 rounded-md border border-[var(--border-default)] px-3 font-normal" type="number" min="1" max="1000000" value={quoteForm.amount} onChange={(event) => setQuoteForm((current) => ({ ...current, amount: event.target.value }))} required /></label><label className="grid gap-2 text-sm font-medium">Estimated days<input className="h-11 rounded-md border border-[var(--border-default)] px-3 font-normal" type="number" min="1" max="365" value={quoteForm.estimatedDays} onChange={(event) => setQuoteForm((current) => ({ ...current, estimatedDays: event.target.value }))} required /></label><label className="sm:col-span-2 grid gap-2 text-sm font-medium">What is included?<textarea className="min-h-32 rounded-md border border-[var(--border-default)] p-3 font-normal" minLength={20} maxLength={5000} value={quoteForm.description} onChange={(event) => setQuoteForm((current) => ({ ...current, description: event.target.value }))} required /></label><Button className="sm:col-span-2" type="submit" disabled={quoteBusy}>{quoteBusy ? "Sending…" : "Send quote"}</Button></form>}</CardContent></Card> : null}
+            {leadStatus?.alreadyClaimed && !request.isOwner && request.status === "open" ? (
+              <Card className="mt-5">
+                <CardContent className="p-8">
+                  <h4 className="mb-2 text-xl font-semibold">Send your quote</h4>
+                  <p className="mb-5 text-sm text-[var(--text-secondary)]">Be clear about price, timing and what is included. The private beta does not collect payment.</p>
+                  {quoteSent || request.myQuote ? (
+                    <div className="grid gap-3">
+                      <div className="flex items-center gap-2 rounded-lg bg-emerald-50 p-4 text-emerald-800"><CheckCircle2 className="h-5 w-5" />Quote sent. The client can now review it.</div>
+                      {myQuoteId && ["pending", "accepted"].includes(myQuoteStatus) ? (
+                        <ContextMessageButton context={{ type: "local_quote", quoteId: myQuoteId }} label="Message client" />
+                      ) : null}
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSubmitQuote} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <label className="grid gap-2 text-sm font-medium">Fixed quote (EUR)<input className="h-11 rounded-md border border-[var(--border-default)] px-3 font-normal" type="number" min="1" max="1000000" value={quoteForm.amount} onChange={(event) => setQuoteForm((current) => ({ ...current, amount: event.target.value }))} required /></label>
+                      <label className="grid gap-2 text-sm font-medium">Estimated days<input className="h-11 rounded-md border border-[var(--border-default)] px-3 font-normal" type="number" min="1" max="365" value={quoteForm.estimatedDays} onChange={(event) => setQuoteForm((current) => ({ ...current, estimatedDays: event.target.value }))} required /></label>
+                      <label className="grid gap-2 text-sm font-medium sm:col-span-2">What is included?<textarea className="min-h-32 rounded-md border border-[var(--border-default)] p-3 font-normal" minLength={20} maxLength={5000} value={quoteForm.description} onChange={(event) => setQuoteForm((current) => ({ ...current, description: event.target.value }))} required /></label>
+                      <Button className="sm:col-span-2" type="submit" disabled={quoteBusy}>{quoteBusy ? "Sending…" : "Send quote"}</Button>
+                    </form>
+                  )}
+                </CardContent>
+              </Card>
+            ) : null}
 
-            {request.isOwner && request.quotes?.length ? <Card className="mt-5"><CardContent className="p-8"><h4 className="text-xl font-semibold mb-2">Quotes received</h4><p className="text-sm text-[var(--text-secondary)] mb-5">Compare the proposal and professional before starting the private workspace.</p><div className="grid gap-3">{request.quotes.map((quote) => <article key={quote._id} className="rounded-lg border border-[var(--border-subtle)] p-4"><div className="flex flex-wrap items-start justify-between gap-3"><div><strong className="block">{quote.freelancerProfile?.displayName || "Local professional"}</strong><span className="text-sm text-[var(--text-secondary)]">{quote.estimatedDays ? `${quote.estimatedDays} day${quote.estimatedDays === 1 ? "" : "s"}` : "Timing to agree"}</span></div><strong className="text-lg">{new Intl.NumberFormat("en", { style: "currency", currency: quote.currency || "EUR" }).format(quote.amount)}</strong></div><p className="my-4 text-sm leading-6 text-[var(--text-secondary)]">{quote.description}</p>{quote.status === "pending" && request.status === "open" ? <Button onClick={() => handleAcceptQuote(quote._id)} disabled={quoteBusy}>Accept quote</Button> : <span className="text-sm font-semibold capitalize text-emerald-700">{quote.status}</span>}</article>)}</div></CardContent></Card> : null}
+            {request.isOwner && request.quotes?.length ? (
+              <Card className="mt-5">
+                <CardContent className="p-8">
+                  <h4 className="mb-2 text-xl font-semibold">Quotes received</h4>
+                  <p className="mb-5 text-sm text-[var(--text-secondary)]">Compare the proposal and professional before starting the private workspace.</p>
+                  <div className="grid gap-3">
+                    {request.quotes.map((quote) => (
+                      <article key={quote._id} className="rounded-lg border border-[var(--border-subtle)] p-4">
+                        <div className="flex flex-wrap items-start justify-between gap-3"><div><strong className="block">{quote.freelancerProfile?.displayName || "Local professional"}</strong><span className="text-sm text-[var(--text-secondary)]">{quote.estimatedDays ? `${quote.estimatedDays} day${quote.estimatedDays === 1 ? "" : "s"}` : "Timing to agree"}</span></div><strong className="text-lg">{new Intl.NumberFormat("en", { style: "currency", currency: quote.currency || "EUR" }).format(quote.amount)}</strong></div>
+                        <p className="my-4 text-sm leading-6 text-[var(--text-secondary)]">{quote.description}</p>
+                        <div className="flex flex-wrap items-center gap-2">
+                          {["pending", "accepted"].includes(quote.status) ? <ContextMessageButton context={{ type: "local_quote", quoteId: quote._id }} label="Message professional" /> : null}
+                          {quote.status === "pending" && request.status === "open" ? <Button onClick={() => handleAcceptQuote(quote._id)} disabled={quoteBusy}>Accept quote</Button> : <span className="text-sm font-semibold capitalize text-emerald-700">{quote.status}</span>}
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ) : null}
           </div>
 
           {/* Sidebar */}

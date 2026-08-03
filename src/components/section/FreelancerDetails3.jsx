@@ -149,7 +149,7 @@ function ProfileSidebar({ convexData }) {
         )}
         {convexData?.userId && (
           <div style={{ marginTop: "var(--space-5)" }}>
-            <ContactButton recipientId={convexData.userId} className="w-full" />
+            <ContactButton recipientId={convexData.userId} profileId={convexData._id} className="w-full" />
           </div>
         )}
       </div>

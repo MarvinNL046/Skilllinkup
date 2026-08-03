@@ -57,11 +57,12 @@ export default function DashboardSidebar() {
         <Link href="/" className={styles.brand} aria-label="Skilllinkup home">
           <Image
             className={styles.fullLogo}
-            src="/images/logo/skilllinkup-logo.png"
+            src="/images/logo/skilllinkup-logo.png?v=canonical-20260803"
             alt="Skilllinkup"
             width={736}
             height={168}
             priority
+            unoptimized
           />
         </Link>
         <button

@@ -666,8 +666,13 @@ export const acceptBid = mutation({
     if (!existingConversation) {
       await ctx.db.insert("conversations", {
         tenantId: project.tenantId,
+        contextType: "order",
+        contextTitle: project.title,
+        contextHref: `/orders/${orderId}`,
         orderId,
         projectId: project._id,
+        bidId: bid._id,
+        freelancerProfileId: freelancerProfile._id,
         participant1: project.clientId,
         participant2: freelancerUser._id,
         unreadCount1: 0,
