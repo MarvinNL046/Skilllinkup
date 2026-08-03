@@ -1,6 +1,6 @@
 # Skilllinkup production monitoring runbook
 
-Last updated: 2 August 2026
+Last updated: 3 August 2026
 
 ## Automated synthetic monitor
 
@@ -24,6 +24,8 @@ Incident routing:
 ## Alert-delivery acceptance
 
 The workflow now has a named primary owner and an assigned GitHub-issue delivery channel. The launch gate remains partially open until a named human backup confirms their notification destination.
+
+The automated failure, deduplication and recovery path passed its controlled rehearsal on 3 August 2026. See `PRODUCTION_MONITOR_REHEARSAL_2026-08-03.md` for the immutable run and issue evidence.
 
 1. Keep the primary owner and future backup current in `PRIVATE_BETA_OPERATIONS_RUNBOOK.md`.
 2. Ensure both people watch assigned GitHub issues or route those notifications to their approved destination.
