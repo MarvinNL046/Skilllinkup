@@ -37,11 +37,14 @@ const dashboardSidebarStore = create((set) => ({
  * after hydration and across client-side navigation.
  */
 export function useHydratedSidebarCollapsed() {
-  return useSyncExternalStore(
-    dashboardSidebarStore.subscribe,
-    () => dashboardSidebarStore.getState().collapsed,
+  const hydrated = useSyncExternalStore(
+    () => () => {},
+    () => true,
     () => false,
   );
+  const collapsed = dashboardSidebarStore((state) => state.collapsed);
+
+  return hydrated ? collapsed : false;
 }
 
 export default dashboardSidebarStore;
