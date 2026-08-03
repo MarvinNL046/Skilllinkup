@@ -36,7 +36,7 @@ const steps = [
 ];
 
 export function AuthTopBar() {
-  return <header className={styles.topbar}><Link href="/" aria-label="Skilllinkup home"><Image src="/images/logo/skilllinkup-logo.png" alt="Skilllinkup" width={736} height={168} priority /></Link><Link href="/"><ArrowLeft size={17} />Back to home</Link></header>;
+  return <header className={styles.topbar}><Link href="/" aria-label="Skilllinkup home"><Image src="/images/logo/skilllinkup-brand.png" alt="Skilllinkup" width={736} height={168} priority /></Link><Link href="/"><ArrowLeft size={17} />Back to home</Link></header>;
 }
 
 export function RoleChoice({ role }) {
@@ -68,7 +68,7 @@ export function RoleChoice({ role }) {
 export default function AuthPageShell({ mode, title, subtitle, children }) {
   const login = mode === "login";
   return <div className={styles.page}><AuthTopBar /><main className={`${styles.shell} ${login ? styles.loginShell : styles.registerShell}`}>
-    {login ? <aside className={styles.story}><div className={styles.storyImage}><Image src="/images/skilllinkup-webdesign/webdesign-hero-v1.png" alt="Professional preparing an online project" fill priority sizes="(max-width: 820px) 100vw, 38vw" /></div><div className={styles.storyQuote}><span>3</span><blockquote>One account for worldwide freelance work, trusted local services and genuine company jobs.</blockquote><div><Image src="/images/logo/skilllinkup-logo.png" alt="" width={106} height={24} /><strong>Free private beta<small>No platform payments</small></strong></div></div></aside> : null}
+    {login ? <aside className={styles.story}><div className={styles.storyImage}><Image src="/images/skilllinkup-webdesign/webdesign-hero-v1.png" alt="Professional preparing an online project" fill priority sizes="(max-width: 820px) 100vw, 38vw" /></div><div className={styles.storyQuote}><span>3</span><blockquote>One account for worldwide freelance work, trusted local services and genuine company jobs.</blockquote><div><Image src="/images/logo/skilllinkup-brand.png" alt="" width={106} height={24} /><strong>Free private beta<small>No platform payments</small></strong></div></div></aside> : null}
     <section className={styles.formPanel}><header><span className={styles.eyebrow}>{login ? "Welcome back" : "Join Skilllinkup"}</span><h1>{title}</h1><p>{subtitle}</p></header>{children}<div className={styles.privacy}><ShieldCheck size={22} /><span><strong>Your information is safe.</strong><small>We protect your privacy and account data.</small></span></div></section>
     {!login ? <aside className={styles.stepsPanel}><span className={styles.eyebrow}>Getting started</span><h2>How Skilllinkup works</h2><div className={styles.steps}>{steps.map(({ title: stepTitle, text, Icon }, index) => <article key={stepTitle}><b>{index + 1}</b><i><Icon /></i><span><strong>{stepTitle}</strong><small>{text}</small></span></article>)}</div><div className={styles.memberProof}><ShieldCheck /><span><strong>3 connected products</strong><small>Online · Local · Jobs</small></span></div></aside> : null}
   </main></div>;

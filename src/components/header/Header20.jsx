@@ -45,7 +45,7 @@ export default function Header20() {
             <Image
               width={156}
               height={36}
-              src="/images/logo/skilllinkup-logo.png"
+              src="/images/logo/skilllinkup-brand.png"
               alt="SkillLinkup"
               priority
             />

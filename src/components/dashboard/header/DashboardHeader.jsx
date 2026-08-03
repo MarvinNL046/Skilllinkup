@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useClerk, useUser } from "@clerk/nextjs";
 import { ChevronDown, CircleHelp, LogOut, Menu, Search, Settings, UserRound } from "lucide-react";
+import BrandLogo from "@/components/brand/BrandLogo";
 import NotificationBell from "@/components/header/NotificationBell";
 import dashboardSidebarStore from "@/store/dashboardSidebarStore";
 import styles from "./DashboardHeader.module.css";
@@ -27,7 +28,7 @@ export default function DashboardHeader() {
 
   return (
     <header className={styles.header}>
-      <div className={styles.mobileBrand}><button type="button" onClick={toggleMobile} aria-label="Open dashboard navigation"><Menu size={21} /></button><Link href="/"><Image src="/images/logo/skilllinkup-logo.png?v=canonical-20260803" alt="Skilllinkup" width={736} height={168} priority unoptimized /></Link></div>
+      <div className={styles.mobileBrand}><button type="button" onClick={toggleMobile} aria-label="Open dashboard navigation"><Menu size={21} /></button><Link href="/"><BrandLogo priority /></Link></div>
       <form className={styles.search} action="/online/services"><Search size={18} /><input name="q" aria-label="Search Skilllinkup" placeholder="Search services, professionals or skills…" /></form>
       <div className={styles.actions}>
         <NotificationBell />

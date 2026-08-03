@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useClerk, useUser } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
 import { LogOut } from "lucide-react";
+import BrandLogo from "@/components/brand/BrandLogo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import SearchBarWithDropdown from "@/components/ui/SearchBarWithDropdown";
 import MobileNavigation2 from "./MobileNavigation2";
@@ -50,14 +51,7 @@ export default function Header19() {
           }}
         >
           <Link href="/" aria-label="Skilllinkup home" style={{ display: "inline-flex", width: 174 }}>
-            <Image
-              width={736}
-              height={168}
-              src="/images/logo/skilllinkup-logo.png"
-              alt="Skilllinkup"
-              priority
-              style={{ width: 174, height: "auto" }}
-            />
+            <BrandLogo priority style={{ width: 174, height: "auto" }} />
           </Link>
 
           <nav aria-label="Primary navigation" style={{ display: "flex", justifyContent: "center", gap: "clamp(22px, 2.4vw, 40px)" }}>
