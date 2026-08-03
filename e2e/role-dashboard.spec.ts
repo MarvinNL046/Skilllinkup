@@ -32,6 +32,16 @@ test.beforeEach(async ({ page }) => {
 test("one account receives the correct dashboard for every role context", async ({ page, baseURL }) => {
   await signIn(page, baseURL);
 
+  const dashboardBrand = page.getByRole("link", { name: "Skilllinkup home" });
+  await expect(dashboardBrand.locator("img")).toHaveCount(1);
+  await expect(dashboardBrand.locator("img")).toHaveAttribute(
+    "src",
+    /skilllinkup-logo\.png/,
+  );
+  await page.getByRole("button", { name: "Collapse sidebar" }).click();
+  await expect(dashboardBrand.locator("img")).toBeVisible();
+  await page.getByRole("button", { name: "Expand sidebar" }).click();
+
   const contexts = [
     { value: "client:online", heading: /overview of your projects/i, nav: "Find Online Talent" },
     { value: "client:local", heading: /Your local work, clearly organised/i, nav: "My Quote Requests" },

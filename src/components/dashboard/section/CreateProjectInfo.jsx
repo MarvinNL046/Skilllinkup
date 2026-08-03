@@ -141,7 +141,7 @@ export default function CreateProjectInfo() {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <Link href="/" aria-label="Skilllinkup home"><Image src="/images/logo/skilllinkup-template-logo-v2.png" alt="Skilllinkup" width={736} height={168} priority /></Link>
+        <Link href="/" aria-label="Skilllinkup home"><Image src="/images/logo/skilllinkup-logo.png" alt="Skilllinkup" width={736} height={168} priority /></Link>
         <nav aria-label="Support and account"><Link href="/help"><CircleHelp size={17} /> Need help?</Link><Link href="/contact">Support</Link><Link href={isAuthenticated ? "/my-profile" : "/login"} className={styles.avatarLink}><Image src="/images/skilllinkup-home/professional-lucas-v1.png" alt="Your account" width={44} height={44} /><ChevronDown size={15} /></Link></nav>
       </header>
 

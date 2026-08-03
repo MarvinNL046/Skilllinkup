@@ -612,7 +612,7 @@ export default function WorldHeader() {
                       <Image
                         width={172}
                         height={40}
-                        src="/images/logo/skilllinkup-transparant-rozepunt.webp"
+                        src="/images/logo/skilllinkup-logo.png"
                         alt="Header Logo"
                         priority
                       />

@@ -45,7 +45,7 @@ export default function WorldHeader() {
             <Image
               width={156}
               height={36}
-              src="/images/logo/skilllinkup-template-logo-v2.png"
+              src="/images/logo/skilllinkup-logo.png"
               alt="SkillLinkup"
               priority
             />

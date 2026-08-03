@@ -346,7 +346,7 @@ function OnboardingContent() {
       {/* Minimal header */}
       <header className="py-4 text-center border-bottom">
         <Image
-          src="/images/logo/skilllinkup-transparant-rozepunt.webp"
+          src="/images/logo/skilllinkup-logo.png"
           alt="SkillLinkup"
           width={180}
           height={45}
