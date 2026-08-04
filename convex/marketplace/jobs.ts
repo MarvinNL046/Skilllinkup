@@ -1,20 +1,15 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
-import { requireAuthUser, requireOwner } from "../lib/authHelpers";
+import {
+  requireAuthUser,
+  requireMarketplaceContext,
+  requireOwner,
+} from "../lib/authHelpers";
 import {
   assertTransition,
   jobStatusValidator,
   jobTransitions,
 } from "../lib/marketplaceState";
-
-function requireHiringRole(user: Awaited<ReturnType<typeof requireAuthUser>>) {
-  const roles = user.accountRoles ?? [];
-  const hasHiringRole = roles.includes("company") || roles.includes("client");
-  const isLegacyClient = roles.length === 0 && user.userType === "client";
-  if (!hasHiringRole && !isLegacyClient && user.role !== "admin") {
-    throw new Error("A company or client account is required to manage jobs.");
-  }
-}
 
 /**
  * List open jobs with client info and category name.
@@ -182,12 +177,12 @@ export const create = mutation({
   returns: v.id("jobs"),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
-    requireHiringRole(user);
+    requireMarketplaceContext(user, "company", "jobs", "publishing a vacancy");
     const now = Date.now();
     const title = args.title.trim();
     const description = args.description.trim();
     const slug = args.slug.trim().toLowerCase();
-    const company = args.company?.trim();
+    const company = user.companyName?.trim() || args.company?.trim();
     const locationCity = args.locationCity?.trim();
     const locationCountry = args.locationCountry?.trim();
     if (title.length < 8 || title.length > 120)
@@ -270,7 +265,7 @@ export const remove = mutation({
     const job = await ctx.db.get(args.jobId);
     if (!job) throw new Error("Job not found");
     const user = await requireOwner(ctx, job.clientId);
-    requireHiringRole(user);
+    requireMarketplaceContext(user, "company", "jobs", "closing a vacancy");
     if (job.status !== "closed") {
       assertTransition(jobTransitions, job.status, "closed");
     }
@@ -301,7 +296,7 @@ export const update = mutation({
     const job = await ctx.db.get(args.jobId);
     if (!job) throw new Error("Job not found");
     const user = await requireOwner(ctx, job.clientId);
-    requireHiringRole(user);
+    requireMarketplaceContext(user, "company", "jobs", "updating a vacancy");
 
     if (args.status) {
       assertTransition(jobTransitions, job.status, args.status);

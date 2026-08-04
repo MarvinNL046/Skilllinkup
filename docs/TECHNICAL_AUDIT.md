@@ -1,6 +1,6 @@
 # Skilllinkup technical audit
 
-Last updated: 2 August 2026
+Last updated: 4 August 2026
 
 Scope: technical foundation, canonical routing, Convex domain model, authentication, product workflows, private-beta policy and test readiness.
 
@@ -8,7 +8,7 @@ Scope: technical foundation, canonical routing, Convex domain model, authenticat
 
 - `npx tsc --noEmit` passes.
 - `CONVEX_AGENT_MODE=anonymous npx convex dev --once` pushes successfully to the configured development deployment.
-- `npm run build` succeeds on Next.js 16.2.12 and generates 71 application routes.
+- `npm run build` succeeds on Next.js 16.2.12 and generates 73 application routes.
 - The development server remains available on `http://localhost:3010` and returns HTTP 200.
 - Chromium acceptance passes on `/`, `/online`, `/local`, `/jobs`, `/services`, `/projects` and `/services/webdesign` at 375, 768, 1280 and 1440 pixels: no console errors, horizontal overflow, broken images or duplicate `main` landmarks.
 - Next.js request interception uses `src/proxy.ts`.
@@ -23,6 +23,10 @@ Scope: technical foundation, canonical routing, Convex domain model, authenticat
 - `activeRole`, `accountRoles`, `preferredWorld` and versioned onboarding rules are validated server-side.
 - Clerk subject IDs are the primary identity key. Marketplace code no longer authorizes by client-provided email.
 - Role-aware dashboard navigation and active-role switching are connected.
+- New roles can only be added through role-specific onboarding; legacy direct role/world setters are fail-closed.
+- Protected product mutations require both membership of the relevant role and its exact active product context. UI route guards mirror the same boundary without being trusted as authorization.
+- Online freelancer and Local professional modes use separate provider profiles, preventing services, leads and profile data from leaking between supply products.
+- Customer, provider, candidate and employer actions remain distinct even when one Clerk identity owns several explicitly onboarded modes.
 
 ### Domain status machines
 
@@ -78,7 +82,7 @@ These items are not current build blockers, but must close before public launch.
 ### Automated acceptance
 
 - Cross-product seed and cleanup functions exist, along with Playwright role and workflow coverage.
-- Five isolated development Clerk QA identities cover the marketplace actor, Local client, Jobs company, admin and unrelated outsider without weakening production authorization.
+- Six isolated development Clerk QA identities cover the multi-mode marketplace actor, Online freelancer, Local client, Jobs company, admin and unrelated outsider without weakening production authorization.
 - The combined authenticated and integration run completed with 37 passing scenarios and no skipped cases. It verifies protected-route redirects, all role workspaces, distinct parties for Online, Local and Jobs, a separate admin identity, complete lifecycle transitions, vacancy publishing, messaging/workspaces, project CRUD, payment quarantine, fail-closed internal endpoints and route-level plus direct Convex authorization boundaries.
 - Keyboard acceptance now covers the mobile professional-filter dialog, project-table edit dialog and deep Online/Local workspace controls. Focus is trapped while dialogs are open, restored to the originating action on close and visibly indicated on raw workspace controls.
 - Smoke cleanup now sweeps browser-generated projects and vacancies for every allowlisted QA actor, including after an interrupted run; verification aggregates all actor-owned generated records before reporting success.
@@ -111,7 +115,7 @@ Live payments may only be enabled after commission, protected-payment or escrow 
 
 | Requirement                               | Evidence                                              | Status                                                                                              |
 | ----------------------------------------- | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| Clean production build                    | Next.js 16.2.12 build, 71 routes                      | Passed                                                                                              |
+| Clean production build                    | Next.js 16.2.12 build, 73 routes                      | Passed                                                                                              |
 | Type safety                               | `npx tsc --noEmit`                                    | Passed                                                                                              |
 | Static lint                               | `npm run lint` with zero warnings                     | Passed                                                                                              |
 | Convex schema/function deployment         | `npx convex dev --once`                               | Passed                                                                                              |

@@ -8,7 +8,15 @@ export default function useConvexProfile() {
 
   const profile = useQuery(
     api.marketplace.freelancers.getByUserId,
-    convexUser?._id ? { userId: convexUser._id } : "skip"
+    convexUser?._id
+      ? {
+          userId: convexUser._id,
+          providerRole:
+            convexUser.activeRole === "local_professional"
+              ? "local_professional"
+              : "freelancer",
+        }
+      : "skip"
   );
 
   const updateProfile = useMutation(api.marketplace.freelancers.updateProfile);

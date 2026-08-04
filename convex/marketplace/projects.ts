@@ -1,7 +1,12 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
 import { internal } from "../_generated/api";
-import { requireAuthUser, requireOwner } from "../lib/authHelpers";
+import {
+  requireAuthUser,
+  getProviderProfile,
+  requireMarketplaceContext,
+  requireOwner,
+} from "../lib/authHelpers";
 import { notifyUser } from "../lib/notifications";
 import {
   assertTransition,
@@ -9,20 +14,6 @@ import {
   projectTransitions,
 } from "../lib/marketplaceState";
 import { rateLimiter } from "../lib/rateLimits";
-
-function requireClientRole(user: Awaited<ReturnType<typeof requireAuthUser>>) {
-  const roles = user.accountRoles ?? [];
-  if (roles.length && !roles.includes("client") && user.role !== "admin") {
-    throw new Error("Add the client role before posting a project.");
-  }
-}
-
-function requireFreelancerRole(user: Awaited<ReturnType<typeof requireAuthUser>>) {
-  const roles = user.accountRoles ?? [];
-  if (roles.length && !roles.includes("freelancer") && user.role !== "admin") {
-    throw new Error("Add the online freelancer role before submitting a proposal.");
-  }
-}
 
 function betaOrderNumber() {
   const date = new Date().toISOString().slice(0, 10).replaceAll("-", "");
@@ -319,7 +310,7 @@ export const create = mutation({
   returns: v.id("projects"),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
-    requireClientRole(user);
+    requireMarketplaceContext(user, "client", "online", "posting a project");
     const title = args.title.trim();
     const description = args.description.trim();
     if (title.length < 10 || title.length > 120) throw new Error("Project titles must be between 10 and 120 characters.");
@@ -374,17 +365,14 @@ export const submitBid = mutation({
   returns: v.id("bids"),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
-    requireFreelancerRole(user);
+    requireMarketplaceContext(user, "freelancer", "online", "submitting a proposal");
     if (!Number.isFinite(args.amount) || args.amount <= 0) throw new Error("Enter a valid proposal amount.");
     if (!Number.isInteger(args.deliveryDays) || args.deliveryDays < 1 || args.deliveryDays > 365) throw new Error("Delivery time must be between 1 and 365 days.");
     const pitch = args.pitch.trim();
     if (pitch.length < 80 || pitch.length > 5000) throw new Error("Your proposal must be between 80 and 5,000 characters.");
 
     // Retrieve the freelancer profile for this user
-    const profile = await ctx.db
-      .query("freelancerProfiles")
-      .withIndex("by_userId", (q) => q.eq("userId", user._id))
-      .first();
+    const profile = await getProviderProfile(ctx, user._id, "freelancer");
     if (!profile) throw new Error("Freelancer profile not found");
 
     // Ensure this freelancer hasn't already bid on the project
@@ -432,10 +420,11 @@ export const submitBid = mutation({
 
     // Send new bid notification to project client
     const client = project.clientId ? await ctx.db.get(project.clientId) : null;
-    const freelancerProfile = await ctx.db
-      .query("freelancerProfiles")
-      .withIndex("by_userId", (q) => q.eq("userId", user._id))
-      .first();
+    const freelancerProfile = await getProviderProfile(
+      ctx,
+      user._id,
+      "freelancer",
+    );
 
     if (client?.email) {
       await ctx.scheduler.runAfter(0, internal.lib.email.sendNewBid, {
@@ -518,7 +507,8 @@ export const remove = mutation({
   handler: async (ctx, args) => {
     const project = await ctx.db.get(args.projectId);
     if (!project) throw new Error("Project not found");
-    await requireOwner(ctx, project.clientId);
+    const user = await requireOwner(ctx, project.clientId);
+    requireMarketplaceContext(user, "client", "online", "cancelling a project");
     if (project.status !== "cancelled") assertTransition(projectTransitions, project.status, "cancelled");
 
     await ctx.db.patch(args.projectId, {
@@ -556,7 +546,8 @@ export const update = mutation({
   handler: async (ctx, args) => {
     const project = await ctx.db.get(args.projectId);
     if (!project) throw new Error("Project not found");
-    await requireOwner(ctx, project.clientId);
+    const user = await requireOwner(ctx, project.clientId);
+    requireMarketplaceContext(user, "client", "online", "updating a project");
     if (args.status) assertTransition(projectTransitions, project.status, args.status);
 
     const { projectId, ...fields } = args;
@@ -592,7 +583,8 @@ export const acceptBid = mutation({
     const project = await ctx.db.get(bid.projectId);
     if (!project) throw new Error("Project not found");
 
-    await requireOwner(ctx, project.clientId);
+    const user = await requireOwner(ctx, project.clientId);
+    requireMarketplaceContext(user, "client", "online", "accepting a proposal");
     if (project.status !== "open") throw new Error("This project is no longer accepting proposals.");
     assertTransition(bidTransitions, bid.status, "accepted");
     assertTransition(projectTransitions, project.status, "in_progress");

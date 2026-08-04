@@ -1,6 +1,11 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
-import { getOptionalAuthUser, requireAuthUser } from "../lib/authHelpers";
+import {
+  getOptionalAuthUser,
+  getProviderProfile,
+  requireAuthUser,
+  requireMarketplaceContext,
+} from "../lib/authHelpers";
 import {
   assertTransition,
   quoteRequestTransitions,
@@ -8,20 +13,6 @@ import {
 } from "../lib/marketplaceState";
 import { notifyUser } from "../lib/notifications";
 import { rateLimiter } from "../lib/rateLimits";
-
-function requireClientRole(user: Awaited<ReturnType<typeof requireAuthUser>>) {
-  const roles = user.accountRoles ?? [];
-  if (roles.length && !roles.includes("client") && user.role !== "admin") {
-    throw new Error("Add the client role before requesting a local quote.");
-  }
-}
-
-function requireLocalProfessionalRole(user: Awaited<ReturnType<typeof requireAuthUser>>) {
-  const roles = user.accountRoles ?? [];
-  if (roles.length && !roles.includes("local_professional") && user.role !== "admin") {
-    throw new Error("Add the local professional role before submitting a quote.");
-  }
-}
 
 function betaLocalOrderNumber() {
   const date = new Date().toISOString().slice(0, 10).replaceAll("-", "");
@@ -86,10 +77,11 @@ export const getRequestById = query({
     let currentUserId = currentUser?._id ?? null;
     let currentFreelancerProfileId = null;
     if (currentUser) {
-      const profile = await ctx.db
-        .query("freelancerProfiles")
-        .withIndex("by_userId", (q) => q.eq("userId", currentUser._id))
-        .first();
+      const profile = await getProviderProfile(
+        ctx,
+        currentUser._id,
+        "local_professional",
+      );
       currentFreelancerProfileId = profile?._id ?? null;
     }
 
@@ -187,7 +179,7 @@ export const createRequest = mutation({
   },
   handler: async (ctx, args) => {
     const currentUser = await requireAuthUser(ctx);
-    requireClientRole(currentUser);
+    requireMarketplaceContext(currentUser, "client", "local", "requesting a local quote");
     await rateLimiter.limit(ctx, "localRequest", { key: currentUser._id, throws: true });
     const title = args.title.trim();
     const description = args.description.trim();
@@ -240,14 +232,15 @@ export const submitQuote = mutation({
   },
   handler: async (ctx, args) => {
     const currentUser = await requireAuthUser(ctx);
-    requireLocalProfessionalRole(currentUser);
+    requireMarketplaceContext(currentUser, "local_professional", "local", "submitting a quote");
     await rateLimiter.limit(ctx, "localQuote", { key: currentUser._id, throws: true });
 
     // Resolve freelancer profile for this user
-    const freelancerProfile = await ctx.db
-      .query("freelancerProfiles")
-      .withIndex("by_userId", (q) => q.eq("userId", currentUser._id))
-      .first();
+    const freelancerProfile = await getProviderProfile(
+      ctx,
+      currentUser._id,
+      "local_professional",
+    );
 
     if (!freelancerProfile) {
       throw new Error("Freelancer profile not found. Please create a profile first.");
@@ -333,7 +326,7 @@ export const acceptQuote = mutation({
   },
   handler: async (ctx, args) => {
     const currentUser = await requireAuthUser(ctx);
-    requireClientRole(currentUser);
+    requireMarketplaceContext(currentUser, "client", "local", "accepting a local quote");
 
     // Get the quote
     const quote = await ctx.db.get(args.quoteId);
@@ -485,7 +478,7 @@ export const listMyRequests = query({
   })),
   handler: async (ctx) => {
     const currentUser = await requireAuthUser(ctx);
-    requireClientRole(currentUser);
+    requireMarketplaceContext(currentUser, "client", "local", "updating a local request");
     const requests = await ctx.db
       .query("quoteRequests")
       .withIndex("by_client", (q) => q.eq("clientId", currentUser._id))

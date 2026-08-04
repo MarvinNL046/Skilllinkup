@@ -20,6 +20,8 @@ import {
   disputeResolutionValidator,
   freelancerProfileStatusValidator,
   conversationContextTypeValidator,
+  providerRoleValidator,
+  companyVerificationStatusValidator,
 } from "./lib/marketplaceState";
 import {
   reportReasonValidator,
@@ -63,6 +65,8 @@ export default defineSchema({
     accountRoles: v.optional(v.array(marketplaceRoleValidator)),
     activeRole: v.optional(marketplaceRoleValidator),
     onboardingVersion: v.optional(v.number()),
+    companyName: v.optional(v.string()),
+    companyVerificationStatus: v.optional(companyVerificationStatusValidator),
     avatar: v.optional(v.string()),
     image: v.optional(v.string()),
     bio: v.optional(v.string()),
@@ -379,6 +383,7 @@ export default defineSchema({
 
   freelancerProfiles: defineTable({
     userId: v.id("users"),
+    providerRole: v.optional(providerRoleValidator),
     tenantId: v.id("tenants"),
     displayName: v.string(),
     slug: v.optional(v.string()),
@@ -423,6 +428,7 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_userId", ["userId"])
+    .index("by_userId_and_providerRole", ["userId", "providerRole"])
     .index("by_slug", ["slug"])
     .index("by_status", ["status"])
     .index("by_status_locale", ["status", "locale"])

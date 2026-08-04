@@ -75,8 +75,6 @@ export default function OnboardingExperience() {
   const searchParams = useSearchParams();
   const { convexUser, isLoaded, isClerkSignedIn } = useConvexUser();
   const setAccountContext = useMutation(api.users.setAccountContext);
-  const updateProfile = useMutation(api.marketplace.freelancers.updateProfile);
-  const updateBio = useMutation(api.users.updateBio);
 
   const requestedRole = roleFromQuery(searchParams.get("role"));
   const [step, setStep] = useState(requestedRole ? 2 : 1);
@@ -150,35 +148,20 @@ export default function OnboardingExperience() {
     setError("");
     try {
       const existingRoles = convexUser?.accountRoles || [];
-      const result = await setAccountContext({
+      await setAccountContext({
         accountRoles: [...new Set([...existingRoles, role])],
         activeRole: role,
         preferredWorld: world,
         onboardingVersion: 1,
-      });
-
-      if ((role === "freelancer" || role === "local_professional") && result.profileId) {
-        await updateProfile({
-          profileId: result.profileId,
-          tagline: headline.trim() || undefined,
+        onboardingData: {
+          selections,
+          headline: headline.trim() || undefined,
           bio: bio.trim() || undefined,
           hourlyRate: rate ? Number(rate) : undefined,
-          workType: role === "local_professional" ? "local" : "remote",
-          locationCity: role === "local_professional" ? city.trim() : undefined,
-          locationCountry: role === "local_professional" ? "Netherlands" : undefined,
-          serviceRadiusKm: role === "local_professional" ? 25 : undefined,
-          skills: selections,
-          isAvailable: true,
-        });
-      } else {
-        const details = [
-          companyName.trim() ? `Company: ${companyName.trim()}` : "",
-          headline.trim(),
-          bio.trim(),
-          selections.length ? `Interests: ${selections.join(", ")}` : "",
-        ].filter(Boolean).join("\n");
-        if (details) await updateBio({ bio: details.slice(0, 1200) });
-      }
+          city: role === "local_professional" ? city.trim() : undefined,
+          companyName: role === "company" ? companyName.trim() : undefined,
+        },
+      });
 
       router.replace("/dashboard");
     } catch (cause) {

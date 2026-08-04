@@ -1,7 +1,11 @@
 import { v } from "convex/values";
 import { mutation, query, MutationCtx, QueryCtx } from "../_generated/server";
 import { Doc, Id } from "../_generated/dataModel";
-import { requireAuthUser } from "../lib/authHelpers";
+import {
+  getProviderProfile,
+  requireAuthUser,
+  requireMarketplaceContext,
+} from "../lib/authHelpers";
 import { notifyUser } from "../lib/notifications";
 import {
   assertTransition,
@@ -21,6 +25,16 @@ async function requireAppointmentParty(
   const isClient = appointment.clientId === user._id;
   const isProfessional = professional?.userId === user._id;
   if (!isClient && !isProfessional && user.role !== "admin") throw new Error("Unauthorized.");
+  if (isClient) {
+    requireMarketplaceContext(user, "client", "local", "managing a local appointment");
+  } else if (isProfessional) {
+    requireMarketplaceContext(
+      user,
+      "local_professional",
+      "local",
+      "managing a local appointment",
+    );
+  }
   return { user, appointment, professional, isClient, isProfessional };
 }
 
@@ -47,10 +61,7 @@ export const listMine = query({
   args: { limit: v.optional(v.number()) },
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
-    const profile = await ctx.db
-      .query("freelancerProfiles")
-      .withIndex("by_userId", (q) => q.eq("userId", user._id))
-      .first();
+    const profile = await getProviderProfile(ctx, user._id, "local_professional");
     const limit = Math.min(Math.max(args.limit ?? 50, 1), 100);
     const [clientAppointments, professionalAppointments] = await Promise.all([
       ctx.db.query("localAppointments").withIndex("by_client", (q) => q.eq("clientId", user._id)).order("desc").take(limit),

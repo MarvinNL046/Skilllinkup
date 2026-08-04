@@ -1,5 +1,6 @@
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import CandidateApplications from "@/components/dashboard/section/CandidateApplications";
+import AccountModeGuard from "@/components/dashboard/AccountModeGuard";
 
 export const metadata = {
   title: "My job applications | Skilllinkup",
@@ -7,5 +8,5 @@ export const metadata = {
 };
 
 export default function ApplicationsPage() {
-  return <DashboardLayout maxWidth="wide"><CandidateApplications /></DashboardLayout>;
+  return <DashboardLayout maxWidth="wide"><AccountModeGuard role="candidate" world="jobs"><CandidateApplications /></AccountModeGuard></DashboardLayout>;
 }

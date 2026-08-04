@@ -38,7 +38,7 @@ const _browseJobs   = { id: 29, name: "Find Jobs",           icon: "flaticon-bri
 export const dashboardNavigation = {
   freelancer: {
     online: {
-      start:    [_dashboard, _manageServ, _addServ, _myProjects, _createProj, _proposals, _orders],
+      start:    [_dashboard, _manageServ, _addServ, _proposals, _orders],
       organize: [_message, _reviews, _payouts, _statements, _invoice],
       account:  [_profile, _privacy, _support, _feedback],
     },

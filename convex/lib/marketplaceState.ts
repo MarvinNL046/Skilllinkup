@@ -8,6 +8,18 @@ export const marketplaceRoleValidator = v.union(
   v.literal("company")
 );
 
+export const providerRoleValidator = v.union(
+  v.literal("freelancer"),
+  v.literal("local_professional"),
+);
+
+export const companyVerificationStatusValidator = v.union(
+  v.literal("unverified"),
+  v.literal("pending"),
+  v.literal("verified"),
+  v.literal("rejected"),
+);
+
 export const marketplaceWorldValidator = v.union(
   v.literal("online"),
   v.literal("local"),

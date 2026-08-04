@@ -2,7 +2,12 @@ import { v } from "convex/values";
 import { query, mutation, internalQuery, internalMutation } from "../_generated/server";
 import { internal } from "../_generated/api";
 import { Doc, Id } from "../_generated/dataModel";
-import { requireAuthUser, requireOwner, requireServerSecret } from "../lib/authHelpers";
+import {
+  requireAuthUser,
+  requireMarketplaceContext,
+  requireOwner,
+  requireServerSecret,
+} from "../lib/authHelpers";
 import { assertTransition, orderTransitions, orderTypeValidator } from "../lib/marketplaceState";
 import { notifyUser } from "../lib/notifications";
 
@@ -59,7 +64,8 @@ export const create = mutation({
     if (args.serverSecret) {
       requireServerSecret(args.serverSecret);
     } else {
-      await requireOwner(ctx, args.clientId);
+      const client = await requireOwner(ctx, args.clientId);
+      requireMarketplaceContext(client, "client", "online", "starting an order");
     }
 
     const freelancerProfile = await ctx.db.get(args.freelancerId);
@@ -205,6 +211,7 @@ export const createBetaGigOrder = mutation({
   returns: v.object({ orderId: v.id("orders") }),
   handler: async (ctx, args) => {
     const client = await requireAuthUser(ctx);
+    requireMarketplaceContext(client, "client", "online", "buying a service");
     const [gig, selectedPackage] = await Promise.all([
       ctx.db.get(args.gigId),
       ctx.db.get(args.packageId),

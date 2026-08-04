@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
@@ -21,11 +22,13 @@ import Switch from "@/components/ui/Switch";
 import { Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const ACCOUNT_TYPES = [
-  { key: "client", label: "Client" },
-  { key: "freelancer", label: "Freelancer" },
-  { key: "job_seeker", label: "Job Seeker" },
-];
+const ACCOUNT_ROLE_LABELS = {
+  client: "Customer",
+  freelancer: "Online freelancer",
+  local_professional: "Local professional",
+  candidate: "Job seeker",
+  company: "Company hiring",
+};
 
 const VISIBILITY_OPTIONS = [
   { value: "public", label: "Public — visible to everyone" },
@@ -50,13 +53,19 @@ export default function SettingsTab() {
   const { convexUser, isLoaded } = useConvexUser();
   const { user: clerkUser } = useUser();
 
-  const setUserType = useMutation(api.users.setUserType);
   const upsertNotifications = useMutation(api.marketplace.notificationSettings.upsert);
   const updateProfile = useMutation(api.marketplace.freelancers.updateProfile);
 
   const profile = useQuery(
     api.marketplace.freelancers.getByUserId,
-    convexUser?._id ? { userId: convexUser._id } : "skip"
+    convexUser?._id &&
+      (convexUser.activeRole === "freelancer" ||
+        convexUser.activeRole === "local_professional")
+      ? {
+          userId: convexUser._id,
+          providerRole: convexUser.activeRole,
+        }
+      : "skip"
   );
 
   const notifSettings = useQuery(
@@ -64,7 +73,6 @@ export default function SettingsTab() {
     convexUser?._id ? { userId: convexUser._id } : "skip"
   );
 
-  const [accountType, setAccountType] = useState("");
   const [notifs, setNotifs] = useState({
     newMessage: true,
     orderUpdate: true,
@@ -73,13 +81,8 @@ export default function SettingsTab() {
   });
   const [visibility, setVisibility] = useState("public");
   const [contactPermission, setContactPermission] = useState("everyone");
-  const [savingType, setSavingType] = useState(false);
   const [savingNotifs, setSavingNotifs] = useState(false);
   const [savingPrivacy, setSavingPrivacy] = useState(false);
-
-  useEffect(() => {
-    if (convexUser) setAccountType(convexUser.userType || "client");
-  }, [convexUser]);
 
   useEffect(() => {
     if (notifSettings) {
@@ -98,18 +101,6 @@ export default function SettingsTab() {
       setContactPermission(profile.contactPermission || "everyone");
     }
   }, [profile]);
-
-  const handleSaveType = async () => {
-    setSavingType(true);
-    try {
-      await setUserType({ userType: accountType });
-      toast.success(tt("accountTypeUpdated"));
-    } catch (err) {
-      toast.error(err.message || tt("failed"));
-    } finally {
-      setSavingType(false);
-    }
-  };
 
   const handleSaveNotifs = async () => {
     setSavingNotifs(true);
@@ -193,26 +184,25 @@ export default function SettingsTab() {
       {/* Account Type */}
       <Card className="overflow-hidden">
         <CardHeader className="border-b border-[var(--border-subtle)] pb-4">
-          <CardTitle className="text-lg font-semibold">Account Type</CardTitle>
+          <CardTitle className="text-lg font-semibold">Account modes</CardTitle>
         </CardHeader>
         <CardContent className="pt-6 space-y-4">
           <p className="text-sm text-[var(--text-secondary)]">
-            Your account type determines which features and dashboard sections are
-            available to you.
+            Each mode has its own tools and permissions. Adding a mode requires its
+            own onboarding before it becomes available.
           </p>
           <div className="flex flex-wrap gap-2">
-            {ACCOUNT_TYPES.map((tier) => (
-              <Button
-                key={tier.key}
-                variant={accountType === tier.key ? "default" : "outline"}
-                onClick={() => setAccountType(tier.key)}
+            {(convexUser?.accountRoles || []).map((role) => (
+              <span
+                key={role}
+                className="rounded-full border border-[var(--border-subtle)] bg-[var(--surface-soft)] px-3 py-2 text-sm font-semibold"
               >
-                {tier.label}
-              </Button>
+                {ACCOUNT_ROLE_LABELS[role] || role}
+              </span>
             ))}
           </div>
-          <Button onClick={handleSaveType} disabled={savingType}>
-            {savingType ? "Saving..." : "Save Account Type"}
+          <Button asChild>
+            <Link href="/onboarding">Add another account mode</Link>
           </Button>
         </CardContent>
       </Card>

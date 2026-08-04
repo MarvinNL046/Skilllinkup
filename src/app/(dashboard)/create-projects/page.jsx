@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import CreateProjectInfo from "@/components/dashboard/section/CreateProjectInfo";
 import AppFooter from "@/components/footer/AppFooter";
+import AccountModeGuard from "@/components/dashboard/AccountModeGuard";
 
 export async function generateMetadata() {
   const t = await getTranslations("createProject");
@@ -12,7 +13,7 @@ export async function generateMetadata() {
 export default function page() {
   return (
     <div className="wrapper ovh">
-      <CreateProjectInfo />
+      <AccountModeGuard role="client" world="online"><CreateProjectInfo /></AccountModeGuard>
       <AppFooter />
     </div>
   );

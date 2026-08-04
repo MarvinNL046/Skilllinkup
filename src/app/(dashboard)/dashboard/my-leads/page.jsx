@@ -3,6 +3,7 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import DashboardNavigation from "@/components/dashboard/header/DashboardNavigation";
 import MyLeadsInfo from "@/components/dashboard/section/MyLeadsInfo";
 import MyLeadsPageHeader from "@/components/dashboard/section/MyLeadsPageHeader";
+import AccountModeGuard from "@/components/dashboard/AccountModeGuard";
 
 export async function generateMetadata() {
   const t = await getTranslations("myLeads");
@@ -15,7 +16,7 @@ export default function MyLeadsPage() {
   return (
     <>
       <DashboardLayout maxWidth="wide">
-        <div className="dashboard__content hover-bgc-color">
+        <AccountModeGuard role="local_professional" world="local"><div className="dashboard__content hover-bgc-color">
           <div className="row pb-10">
             <div className="col-lg-12">
               <DashboardNavigation />
@@ -25,7 +26,7 @@ export default function MyLeadsPage() {
             </div>
           </div>
           <MyLeadsInfo />
-        </div>
+        </div></AccountModeGuard>
       </DashboardLayout>
     </>
   );

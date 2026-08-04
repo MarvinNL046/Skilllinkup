@@ -252,53 +252,9 @@ export const setUserType = mutation({
     profileId: v.optional(v.id("freelancerProfiles")),
   }),
   handler: async (ctx, args) => {
-    const user = await requireAuthUser(ctx);
-
-    const patch: Record<string, unknown> = {
-      userType: args.userType,
-      updatedAt: Date.now(),
-    };
-    if (args.preferredWorld) {
-      patch.preferredWorld = args.preferredWorld;
-    }
-    await ctx.db.patch(user._id, patch);
-
-    // If becoming a freelancer, create basic profile
-    if (args.userType === "freelancer") {
-      const existingProfile = await ctx.db
-        .query("freelancerProfiles")
-        .withIndex("by_userId", (q) => q.eq("userId", user._id))
-        .first();
-
-      if (!existingProfile) {
-        // Generate URL-friendly slug from name
-        const baseSlug = (user.name || "freelancer")
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/^-+|-+$/g, "")
-          || "freelancer";
-        const existingSlug = await ctx.db
-          .query("freelancerProfiles")
-          .withIndex("by_slug", (q) => q.eq("slug", baseSlug))
-          .first();
-        const slug = existingSlug
-          ? `${baseSlug}-${Math.random().toString(36).slice(2, 6)}`
-          : baseSlug;
-
-        await ctx.db.insert("freelancerProfiles", {
-          userId: user._id,
-          tenantId: user.tenantId,
-          displayName: user.name,
-          slug,
-          status: "active",
-          locale: "en",
-          createdAt: Date.now(),
-          updatedAt: Date.now(),
-        });
-      }
-    }
-
-    return { success: true };
+    await requireAuthUser(ctx);
+    void args;
+    throw new Error("Account modes can only be added through role-specific onboarding.");
   },
 });
 
@@ -312,14 +268,9 @@ export const setPreferredWorld = mutation({
   },
   returns: v.object({ success: v.boolean() }),
   handler: async (ctx, args) => {
-    const user = await requireAuthUser(ctx);
-
-    await ctx.db.patch(user._id, {
-      preferredWorld: args.preferredWorld,
-      updatedAt: Date.now(),
-    });
-
-    return { success: true };
+    await requireAuthUser(ctx);
+    void args;
+    throw new Error("Complete account setup before switching marketplace modes.");
   },
 });
 
@@ -383,6 +334,14 @@ export const setAccountContext = mutation({
     activeRole: marketplaceRoleValidator,
     preferredWorld: marketplaceWorldValidator,
     onboardingVersion: v.number(),
+    onboardingData: v.object({
+      selections: v.array(v.string()),
+      headline: v.optional(v.string()),
+      bio: v.optional(v.string()),
+      hourlyRate: v.optional(v.number()),
+      city: v.optional(v.string()),
+      companyName: v.optional(v.string()),
+    }),
   },
   returns: v.object({
     success: v.boolean(),
@@ -391,6 +350,7 @@ export const setAccountContext = mutation({
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
     const uniqueRoles = [...new Set(args.accountRoles)];
+    const existingRoles = user.accountRoles ?? [];
 
     if (uniqueRoles.length === 0) {
       throw new Error("Select at least one account role.");
@@ -398,13 +358,44 @@ export const setAccountContext = mutation({
     if (!uniqueRoles.includes(args.activeRole)) {
       throw new Error("The active role must be one of the account roles.");
     }
+    if (existingRoles.some((role) => !uniqueRoles.includes(role))) {
+      throw new Error("Existing account roles cannot be removed during onboarding.");
+    }
+    const addedRoles = uniqueRoles.filter((role) => !existingRoles.includes(role));
+    if (addedRoles.length > 1 || (addedRoles.length === 1 && addedRoles[0] !== args.activeRole)) {
+      throw new Error("Complete onboarding for one new account role at a time.");
+    }
     assertMarketplaceContext(args.activeRole, args.preferredWorld);
     if (!Number.isInteger(args.onboardingVersion) || args.onboardingVersion < 1) {
       throw new Error("Invalid onboarding version.");
     }
 
-    const professionalRole = args.activeRole === "freelancer" || args.activeRole === "local_professional";
-    const legacyUserType = professionalRole ? "freelancer" : "client";
+    const providerRole =
+      args.activeRole === "freelancer" || args.activeRole === "local_professional"
+        ? args.activeRole
+        : null;
+    const selections = [...new Set(args.onboardingData.selections.map((item) => item.trim()).filter(Boolean))].slice(0, 8);
+    const headline = args.onboardingData.headline?.trim().slice(0, 120);
+    const bio = args.onboardingData.bio?.trim().slice(0, 1200);
+    const city = args.onboardingData.city?.trim().slice(0, 100);
+    const companyName = args.onboardingData.companyName?.trim().slice(0, 100);
+    const hourlyRate = args.onboardingData.hourlyRate;
+
+    if ((providerRole || args.activeRole === "candidate") && selections.length === 0) {
+      throw new Error("Choose at least one relevant skill or discipline.");
+    }
+    if (providerRole === "local_professional" && (!city || city.length < 2)) {
+      throw new Error("Enter the city or region you serve.");
+    }
+    if (args.activeRole === "company" && (!companyName || companyName.length < 2)) {
+      throw new Error("Enter your company name.");
+    }
+    if (hourlyRate !== undefined && (!Number.isFinite(hourlyRate) || hourlyRate < 1 || hourlyRate > 9999)) {
+      throw new Error("Enter a valid hourly rate.");
+    }
+
+    const legacyUserType = providerRole ? "freelancer" : "client";
+    const now = Date.now();
 
     await ctx.db.patch(user._id, {
       accountRoles: uniqueRoles,
@@ -412,35 +403,81 @@ export const setAccountContext = mutation({
       preferredWorld: args.preferredWorld,
       onboardingVersion: args.onboardingVersion,
       userType: legacyUserType,
-      updatedAt: Date.now(),
+      companyName: args.activeRole === "company" ? companyName : user.companyName,
+      companyVerificationStatus:
+        args.activeRole === "company"
+          ? user.companyVerificationStatus ?? "unverified"
+          : user.companyVerificationStatus,
+      bio: providerRole ? user.bio : [headline, bio, selections.length ? `Interests: ${selections.join(", ")}` : ""].filter(Boolean).join("\n").slice(0, 1200) || user.bio,
+      updatedAt: now,
     });
 
     let profileId;
-    if (professionalRole) {
-      const existingProfile = await ctx.db
+    if (providerRole) {
+      let existingProfile = await ctx.db
         .query("freelancerProfiles")
-        .withIndex("by_userId", (q) => q.eq("userId", user._id))
+        .withIndex("by_userId_and_providerRole", (q) =>
+          q.eq("userId", user._id).eq("providerRole", providerRole),
+        )
         .first();
+      if (!existingProfile) {
+        const unassignedProfiles = await ctx.db
+          .query("freelancerProfiles")
+          .withIndex("by_userId", (q) => q.eq("userId", user._id))
+          .take(3);
+        existingProfile =
+          unassignedProfiles.find(
+            (profile) =>
+              !profile.providerRole &&
+              (providerRole === "local_professional"
+                ? profile.workType === "local"
+                : profile.workType !== "local"),
+          ) ?? null;
+      }
       profileId = existingProfile?._id;
-      if (!profileId) {
+      if (existingProfile) {
+        await ctx.db.patch(existingProfile._id, {
+          providerRole,
+          tagline: headline,
+          bio,
+          hourlyRate,
+          workType: providerRole === "local_professional" ? "local" : "remote",
+          locationCity: providerRole === "local_professional" ? city : existingProfile.locationCity,
+          locationCountry: providerRole === "local_professional" ? "Netherlands" : existingProfile.locationCountry,
+          serviceRadiusKm: providerRole === "local_professional" ? 25 : existingProfile.serviceRadiusKm,
+          skills: selections,
+          isAvailable: true,
+          updatedAt: now,
+        });
+      } else {
         const baseSlug = (user.name || "professional")
           .toLowerCase()
           .replace(/[^a-z0-9]+/g, "-")
           .replace(/^-+|-+$/g, "") || "professional";
+        const roleSlug = providerRole === "local_professional" ? `${baseSlug}-local` : baseSlug;
         const slugMatch = await ctx.db
           .query("freelancerProfiles")
-          .withIndex("by_slug", (q) => q.eq("slug", baseSlug))
+          .withIndex("by_slug", (q) => q.eq("slug", roleSlug))
           .first();
         profileId = await ctx.db.insert("freelancerProfiles", {
           userId: user._id,
+          providerRole,
           tenantId: user.tenantId,
           displayName: user.name,
-          slug: slugMatch ? `${baseSlug}-${user._id.slice(-5)}` : baseSlug,
-          workType: args.activeRole === "local_professional" ? "local" : "remote",
+          slug: slugMatch ? `${roleSlug}-${user._id.slice(-5)}` : roleSlug,
+          tagline: headline,
+          bio,
+          hourlyRate,
+          workType: providerRole === "local_professional" ? "local" : "remote",
+          locationCity: providerRole === "local_professional" ? city : undefined,
+          locationCountry: providerRole === "local_professional" ? "Netherlands" : undefined,
+          serviceRadiusKm: providerRole === "local_professional" ? 25 : undefined,
+          skills: selections,
+          isAvailable: true,
           status: "active",
           locale: "en",
-          createdAt: Date.now(),
-          updatedAt: Date.now(),
+          createdAt: now,
+          updatedAt: now,
         });
       }
     }

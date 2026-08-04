@@ -17,6 +17,8 @@ export function toSafeUser(user: Doc<"users"> | null) {
     activeRole: user.activeRole ?? null,
     preferredWorld: user.preferredWorld ?? null,
     onboardingVersion: user.onboardingVersion ?? null,
+    companyName: user.companyName ?? null,
+    companyVerificationStatus: user.companyVerificationStatus ?? null,
     clientCreditBalance: user.clientCreditBalance ?? 0,
     clientTier: user.clientTier ?? "bronze",
     clientYearlySpend: user.clientYearlySpend ?? 0,

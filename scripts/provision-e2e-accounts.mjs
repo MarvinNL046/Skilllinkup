@@ -62,6 +62,15 @@ const accountDefinitions = [
     preferredWorld: "online",
   },
   {
+    email: "skilllinkup.qa+freelancer_clerk_test@skilllinkup.com",
+    firstName: "Skilllinkup",
+    lastName: "Freelancer QA",
+    externalId: "skilllinkup-private-beta-freelancer-qa",
+    accountRoles: ["freelancer"],
+    activeRole: "freelancer",
+    preferredWorld: "online",
+  },
+  {
     email: "skilllinkup.qa+outsider_clerk_test@skilllinkup.com",
     firstName: "Skilllinkup",
     lastName: "Outsider QA",
@@ -101,6 +110,14 @@ const browser = await chromium.launch({
   channel: process.env.PLAYWRIGHT_CHANNEL || "chrome",
 });
 
+function onboardingData(role) {
+  if (role === "freelancer") return { selections: ["Web development"], headline: "QA online freelancer" };
+  if (role === "local_professional") return { selections: ["HVAC"], headline: "QA local professional", city: "Rotterdam" };
+  if (role === "candidate") return { selections: ["Engineering"], headline: "QA job candidate" };
+  if (role === "company") return { selections: [], companyName: "Skilllinkup QA Company" };
+  return { selections: ["Build a website"] };
+}
+
 for (const definition of accountDefinitions) {
   const existing = await clerkClient.users.getUserList({
     emailAddress: [definition.email],
@@ -138,14 +155,34 @@ for (const definition of accountDefinitions) {
     image: clerkUser.imageUrl || "",
     clerkId: clerkUser.id,
   });
-  await convex.mutation(api.users.setAccountContext, {
-    accountRoles: definition.accountRoles,
-    activeRole: definition.activeRole,
-    preferredWorld: definition.preferredWorld,
-    onboardingVersion: 1,
-  });
+  const currentUser = await convex.query(api.users.getCurrentUser, {});
+  const completedRoles = [...(currentUser?.accountRoles ?? [])];
+  for (const role of definition.accountRoles) {
+    if (!completedRoles.includes(role)) completedRoles.push(role);
+    const preferredWorld =
+      role === "local_professional"
+        ? "local"
+        : role === "candidate" || role === "company"
+          ? "jobs"
+          : definition.activeRole === role
+            ? definition.preferredWorld
+            : "online";
+    await convex.mutation(api.users.setAccountContext, {
+      accountRoles: [...completedRoles],
+      activeRole: role,
+      preferredWorld,
+      onboardingVersion: 1,
+      onboardingData: onboardingData(role),
+    });
+  }
+  if (definition.activeRole !== definition.accountRoles.at(-1)) {
+    await convex.mutation(api.users.switchAccountContext, {
+      activeRole: definition.activeRole,
+      preferredWorld: definition.preferredWorld,
+    });
+  }
   await context.close();
 }
 
 await browser.close();
-console.log("Provisioned five isolated Clerk development QA identities and synchronized them to Convex.");
+console.log("Provisioned six isolated Clerk development QA identities and synchronized them to Convex.");

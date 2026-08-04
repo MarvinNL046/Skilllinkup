@@ -1,7 +1,13 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
 import { getLeadCreditCost, MAX_SHARED_SLOTS } from "./leadPricing";
-import { getOptionalAuthUser, requireAuthUser, requireServerSecret } from "../lib/authHelpers";
+import {
+  getOptionalAuthUser,
+  getProviderProfile,
+  requireAuthUser,
+  requireMarketplaceContext,
+  requireServerSecret,
+} from "../lib/authHelpers";
 import { Id } from "../_generated/dataModel";
 
 // Get credit balance for the current authenticated freelancer.
@@ -11,10 +17,7 @@ export const getMyCredits = query({
     const user = await getOptionalAuthUser(ctx);
     if (!user) return null;
 
-    const profile = await ctx.db
-      .query("freelancerProfiles")
-      .withIndex("by_userId", (q) => q.eq("userId", user._id))
-      .first();
+    const profile = await getProviderProfile(ctx, user._id, "local_professional");
 
     return {
       balance: profile?.creditBalance ?? 0,
@@ -48,10 +51,7 @@ export const getMyClaims = query({
     const user = await getOptionalAuthUser(ctx);
     if (!user) return [];
 
-    const profile = await ctx.db
-      .query("freelancerProfiles")
-      .withIndex("by_userId", (q) => q.eq("userId", user._id))
-      .first();
+    const profile = await getProviderProfile(ctx, user._id, "local_professional");
     if (!profile) return [];
 
     // Safety limit: avoid unbounded .collect() on large datasets
@@ -138,10 +138,7 @@ export const getLeadStatus = query({
     let alreadyClaimed = false;
     const user = await getOptionalAuthUser(ctx);
     if (user) {
-        const profile = await ctx.db
-          .query("freelancerProfiles")
-          .withIndex("by_userId", (q) => q.eq("userId", user._id))
-          .first();
+        const profile = await getProviderProfile(ctx, user._id, "local_professional");
         if (profile) {
           alreadyClaimed = claims.some((c) => c.freelancerId === profile._id);
         }
@@ -171,15 +168,9 @@ export const claimLead = mutation({
   },
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
-    const roles = user.accountRoles ?? [];
-    if (roles.length && !roles.includes("local_professional") && user.role !== "admin") {
-      throw new Error("Add the local professional role before claiming leads.");
-    }
+    requireMarketplaceContext(user, "local_professional", "local", "claiming a lead");
 
-    const profile = await ctx.db
-      .query("freelancerProfiles")
-      .withIndex("by_userId", (q) => q.eq("userId", user._id))
-      .first();
+    const profile = await getProviderProfile(ctx, user._id, "local_professional");
     if (!profile) throw new Error("Freelancer profile required to claim leads.");
 
     const request = await ctx.db.get(args.quoteRequestId);
@@ -274,10 +265,11 @@ export const addCredits = mutation({
   },
   handler: async (ctx, args) => {
     requireServerSecret(args.serverSecret);
-    const profile = await ctx.db
-      .query("freelancerProfiles")
-      .withIndex("by_userId", (q) => q.eq("userId", args.freelancerUserId))
-      .first();
+    const profile = await getProviderProfile(
+      ctx,
+      args.freelancerUserId,
+      "local_professional",
+    );
 
     if (!profile) throw new Error("Freelancer profile not found.");
 

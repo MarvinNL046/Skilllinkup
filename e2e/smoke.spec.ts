@@ -173,6 +173,22 @@ async function createIsolatedAuthenticatedConvexClient(
   return client;
 }
 
+async function switchAccountMode(
+  client: ConvexHttpClient,
+  activeRole:
+    | "client"
+    | "freelancer"
+    | "local_professional"
+    | "candidate"
+    | "company",
+  preferredWorld: "online" | "local" | "jobs",
+) {
+  await client.mutation(api.users.switchAccountContext, {
+    activeRole,
+    preferredWorld,
+  });
+}
+
 function formatDateInput(daysFromToday = 1) {
   const date = new Date();
   date.setDate(date.getDate() + daysFromToday);
@@ -191,6 +207,71 @@ test("service detail renders", async ({ page, baseURL }) => {
   await expect(
     page.getByText("Smoke Test Package", { exact: false }).first(),
   ).toBeVisible();
+});
+
+test("one login cannot use actions from an inactive account mode", async ({
+  page,
+  baseURL,
+}) => {
+  const manifest = readManifest();
+  const account = await createAuthenticatedConvexClient(
+    page,
+    baseURL,
+    dashboardUserEmail,
+  );
+
+  await switchAccountMode(account, "freelancer", "online");
+  await expect(
+    account.mutation(api.chat.conversations.openForContext, {
+      context: { type: "gig_inquiry", gigId: manifest.ids.gigId },
+    }),
+  ).rejects.toThrow(/Switch to the client .* online account mode/);
+
+  await switchAccountMode(account, "company", "jobs");
+  const ownedJobId = await account.mutation(api.marketplace.jobs.create, {
+    title: "Playwright account mode boundary vacancy",
+    slug: `playwright-account-mode-${Date.now()}`,
+    description:
+      "This temporary vacancy verifies that its owner still needs to activate the company hiring mode before using employer-only management tools.",
+    jobType: "full-time",
+    workType: "remote",
+    locationCountry: "Netherlands",
+    locale: "en",
+  });
+  await expect(
+    account.mutation(api.marketplace.jobApplications.submit, {
+      jobId: manifest.ids.jobId,
+      coverLetter:
+        "This application is intentionally blocked because the same login is currently operating in its company account mode.",
+    }),
+  ).rejects.toThrow(/Switch to the candidate .* jobs account mode/);
+
+  await switchAccountMode(account, "candidate", "jobs");
+  await expect(
+    account.mutation(api.marketplace.jobs.update, {
+      jobId: ownedJobId,
+      status: "paused",
+    }),
+  ).rejects.toThrow(/Switch to the company .* jobs account mode/);
+
+  await switchAccountMode(account, "local_professional", "local");
+  await expect(
+    account.mutation(api.marketplace.gigs.remove, {
+      gigId: manifest.ids.gigId,
+    }),
+  ).rejects.toThrow(/Switch to the freelancer .* online account mode/);
+
+  await switchAccountMode(account, "company", "jobs");
+  await expect(
+    account.mutation(api.marketplace.jobs.remove, { jobId: ownedJobId }),
+  ).resolves.toBe(ownedJobId);
+
+  await switchAccountMode(account, "client", "online");
+  await expect(
+    account.mutation(api.chat.conversations.openForContext, {
+      context: { type: "gig_inquiry", gigId: manifest.ids.gigId },
+    }),
+  ).resolves.toEqual(expect.any(String));
 });
 
 test("project detail renders", async ({ page, baseURL }) => {

@@ -1,9 +1,12 @@
 import { v } from "convex/values";
 import { query, mutation, internalQuery } from "../_generated/server";
 import type { QueryCtx } from "../_generated/server";
+import type { Doc } from "../_generated/dataModel";
 import {
   requireAdmin,
   requireAuthUser,
+  getProviderProfile,
+  requireMarketplaceContext,
   requireOwner,
   requireServerSecret,
 } from "../lib/authHelpers";
@@ -16,6 +19,7 @@ import {
   IMAGE_CONTENT_TYPES,
   setStoredFilePublicUrl,
 } from "../lib/storageValidation";
+import { providerRoleValidator } from "../lib/marketplaceState";
 
 /**
  * Generate a URL-friendly slug from a display name.
@@ -43,6 +47,22 @@ async function generateSlug(
   // Append a short random suffix
   const suffix = Math.random().toString(36).slice(2, 6);
   return `${base}-${suffix}`;
+}
+
+function requireActiveProfileMode(
+  user: Doc<"users">,
+  profile: Doc<"freelancerProfiles">,
+  action: string,
+) {
+  const providerRole =
+    profile.providerRole ??
+    (profile.workType === "local" ? "local_professional" : "freelancer");
+  requireMarketplaceContext(
+    user,
+    providerRole,
+    providerRole === "local_professional" ? "local" : "online",
+    action,
+  );
 }
 
 /**
@@ -96,13 +116,14 @@ export const list = query({
 export const getByUserId = query({
   args: {
     userId: v.id("users"),
+    providerRole: v.optional(providerRoleValidator),
   },
   handler: async (ctx, args) => {
-    await requireOwner(ctx, args.userId);
-    const profile = await ctx.db
-      .query("freelancerProfiles")
-      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
-      .first();
+    const user = await requireOwner(ctx, args.userId);
+    const requestedRole =
+      args.providerRole ??
+      (user.activeRole === "local_professional" ? "local_professional" : "freelancer");
+    const profile = await getProviderProfile(ctx, args.userId, requestedRole);
 
     return profile ?? null;
   },
@@ -201,6 +222,7 @@ export const updateProfile = mutation({
     const profile = await ctx.db.get(profileId);
     if (!profile) throw new Error("Profile not found.");
     if (profile.userId !== user._id) throw new Error("Unauthorized.");
+    requireActiveProfileMode(user, profile, "updating this professional profile");
 
     // Build patch object with only defined fields
     const patch: Record<string, unknown> = { updatedAt: Date.now() };
@@ -253,6 +275,7 @@ export const saveAvatarStorageId = mutation({
     const profile = await ctx.db.get(args.profileId);
     if (!profile) throw new Error("Profile not found.");
     if (profile.userId !== user._id) throw new Error("Unauthorized.");
+    requireActiveProfileMode(user, profile, "updating this profile avatar");
 
     const { assetId } = await claimStoredFile(
       ctx,
@@ -308,6 +331,7 @@ export const saveCoverStorageId = mutation({
     const profile = await ctx.db.get(args.profileId);
     if (!profile) throw new Error("Profile not found.");
     if (profile.userId !== user._id) throw new Error("Unauthorized.");
+    requireActiveProfileMode(user, profile, "updating this profile cover");
 
     const { assetId } = await claimStoredFile(
       ctx,
