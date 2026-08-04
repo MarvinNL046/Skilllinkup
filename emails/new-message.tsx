@@ -53,7 +53,7 @@ export const NewMessageEmail = ({
  <Section style={ctaSection}>
  <Button
  style={ctaButton}
- href={`${baseUrl}/dashboard/messages/${conversationId}`}
+ href={`${baseUrl}/message?conversation=${conversationId}`}
  >
  Read Message
  </Button>

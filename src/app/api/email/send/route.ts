@@ -14,6 +14,13 @@ import { BidRejectedEmail } from "../../../../../emails/bid-rejected";
 import { NewMessageEmail } from "../../../../../emails/new-message";
 import { ReviewReceivedEmail } from "../../../../../emails/review-received";
 import { WaitlistWelcomeEmail } from "../../../../../emails/waitlist-welcome";
+import {
+  JobApplicationReceivedEmail,
+  JobApplicationStatusEmail,
+  LocalAppointmentStatusEmail,
+  LocalQuoteAcceptedEmail,
+  LocalQuoteReceivedEmail,
+} from "../../../../../emails/lifecycle-notifications";
 
 // Map template names to React components
 const templates: Record<string, (props: any) => React.ReactElement> = {
@@ -28,7 +35,16 @@ const templates: Record<string, (props: any) => React.ReactElement> = {
   newMessage: (props) => NewMessageEmail(props),
   reviewReceived: (props) => ReviewReceivedEmail(props),
   waitlistWelcome: (props) => WaitlistWelcomeEmail(props),
+  jobApplicationReceived: (props) => JobApplicationReceivedEmail(props),
+  jobApplicationStatus: (props) => JobApplicationStatusEmail(props),
+  localQuoteReceived: (props) => LocalQuoteReceivedEmail(props),
+  localQuoteAccepted: (props) => LocalQuoteAcceptedEmail(props),
+  localAppointmentStatus: (props) => LocalAppointmentStatusEmail(props),
 };
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
 
 export async function POST(request: NextRequest) {
   const internalSecret = process.env.INTERNAL_EMAIL_SECRET;
@@ -51,7 +67,25 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const { template, to, subject, props } = await request.json();
+    const payload: unknown = await request.json();
+    if (!isRecord(payload)) {
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    }
+    const { template, to, subject, props, idempotencyKey } = payload;
+    if (
+      typeof template !== "string" ||
+      typeof to !== "string" ||
+      !to.includes("@") ||
+      typeof subject !== "string" ||
+      subject.length < 1 ||
+      subject.length > 200 ||
+      !isRecord(props) ||
+      typeof idempotencyKey !== "string" ||
+      idempotencyKey.length < 8 ||
+      idempotencyKey.length > 256
+    ) {
+      return NextResponse.json({ error: "Invalid email payload" }, { status: 400 });
+    }
 
     const templateFn = templates[template];
     if (!templateFn) {
@@ -62,21 +96,27 @@ export async function POST(request: NextRequest) {
     const html = await render(emailComponent);
     const resend = new Resend(resendApiKey);
 
-    const { error } = await resend.emails.send({
-      from: "SkillLinkup <noreply@skilllinkup.com>",
-      to,
-      subject,
-      html,
-    });
+    const { data, error } = await resend.emails.send(
+      {
+        from: "Skilllinkup <noreply@skilllinkup.com>",
+        to,
+        subject,
+        html,
+      },
+      { idempotencyKey },
+    );
 
     if (error) {
       console.error("Resend error:", error);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true });
-  } catch (err: any) {
+    return NextResponse.json({ success: true, id: data?.id ?? null });
+  } catch (err: unknown) {
     console.error("Email send error:", err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Email send failed" },
+      { status: 500 },
+    );
   }
 }

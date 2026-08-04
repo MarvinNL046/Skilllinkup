@@ -16,6 +16,13 @@ export { NewBidEmail } from './new-bid';
 export { BidAcceptedEmail } from './bid-accepted';
 export { BidRejectedEmail } from './bid-rejected';
 export { NewMessageEmail } from './new-message';
+export {
+ JobApplicationReceivedEmail,
+ JobApplicationStatusEmail,
+ LocalQuoteReceivedEmail,
+ LocalQuoteAcceptedEmail,
+ LocalAppointmentStatusEmail,
+} from './lifecycle-notifications';
 
 export {
  type Locale,

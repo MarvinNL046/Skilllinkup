@@ -1,15 +1,78 @@
 "use node";
-import { internalAction } from "../_generated/server";
+
 import { v } from "convex/values";
+import { internal } from "../_generated/api";
+import { ActionCtx, internalAction } from "../_generated/server";
+import { Id } from "../_generated/dataModel";
+import {
+  emailPreferenceValidator,
+  emailTemplateValidator,
+  type EmailPreference,
+  type EmailTemplate,
+} from "./emailState";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
 const INTERNAL_EMAIL_SECRET = process.env.INTERNAL_EMAIL_SECRET;
 
-async function sendEmail(template: string, to: string, subject: string, props: Record<string, any>) {
-  if (!SITE_URL || !INTERNAL_EMAIL_SECRET) {
-    console.error(`Email send skipped (${template}): server URL or internal secret is not configured.`);
+type SendEmailArgs = {
+  template: EmailTemplate;
+  to: string;
+  subject: string;
+  props: Record<string, unknown>;
+  eventKey: string;
+  preference?: EmailPreference;
+  userId?: Id<"users">;
+};
+
+function errorMessage(error: unknown) {
+  return error instanceof Error ? error.message : String(error);
+}
+
+async function sendEmail(ctx: ActionCtx, args: SendEmailArgs) {
+  const recipient = args.userId
+    ? await ctx.runQuery(internal.lib.emailDeliveryState.resolveRecipientByUser, {
+        userId: args.userId,
+        preference: args.preference,
+      })
+    : await ctx.runQuery(internal.lib.emailDeliveryState.resolveRecipientByEmail, {
+        email: args.to,
+        preference: args.preference,
+      });
+  if (!recipient) {
+    console.error(`Email send skipped (${args.template}): recipient no longer exists.`);
     return;
   }
+
+  const delivery = await ctx.runMutation(
+    internal.lib.emailDeliveryState.beginDelivery,
+    {
+      eventKey: args.eventKey,
+      userId: recipient.userId ?? undefined,
+      template: args.template,
+      recipientEmail: recipient.email,
+      subject: args.subject,
+    },
+  );
+  if (!delivery.shouldSend) return;
+
+  if (!recipient.enabled) {
+    await ctx.runMutation(internal.lib.emailDeliveryState.markSkipped, {
+      deliveryId: delivery.deliveryId,
+      reason: `Disabled by ${args.preference ?? "email"} preference.`,
+    });
+    return;
+  }
+
+  if (!SITE_URL || !INTERNAL_EMAIL_SECRET) {
+    const message = "Server URL or internal email secret is not configured.";
+    await ctx.runMutation(internal.lib.emailDeliveryState.markFailed, {
+      deliveryId: delivery.deliveryId,
+      error: message,
+    });
+    console.error(`Email send failed (${args.template}): ${message}`);
+    return;
+  }
+
   try {
     const response = await fetch(new URL("/api/email/send", SITE_URL), {
       method: "POST",
@@ -17,16 +80,37 @@ async function sendEmail(template: string, to: string, subject: string, props: R
         "Content-Type": "application/json",
         Authorization: `Bearer ${INTERNAL_EMAIL_SECRET}`,
       },
-      body: JSON.stringify({ template, to, subject, props }),
+      body: JSON.stringify({
+        template: args.template,
+        to: recipient.email,
+        subject: args.subject,
+        props: args.props,
+        idempotencyKey: args.eventKey,
+      }),
     });
-
+    const result: unknown = await response.json().catch(() => null);
     if (!response.ok) {
-      const err = await response.text();
-      console.error(`Email send failed (${template}):`, err);
+      const detail =
+        typeof result === "object" && result !== null && "error" in result
+          ? String(result.error)
+          : `HTTP ${response.status}`;
+      throw new Error(detail);
     }
-  } catch (err) {
-    // Don't throw - email failures shouldn't break mutations
-    console.error(`Email send error (${template}):`, err);
+    const providerMessageId =
+      typeof result === "object" && result !== null && "id" in result && typeof result.id === "string"
+        ? result.id
+        : undefined;
+    await ctx.runMutation(internal.lib.emailDeliveryState.markSent, {
+      deliveryId: delivery.deliveryId,
+      providerMessageId,
+    });
+  } catch (error) {
+    const message = errorMessage(error);
+    await ctx.runMutation(internal.lib.emailDeliveryState.markFailed, {
+      deliveryId: delivery.deliveryId,
+      error: message,
+    });
+    console.error(`Email send failed (${args.template}):`, message);
   }
 }
 
@@ -39,20 +123,18 @@ export const sendOrderConfirmation = internalAction({
     amount: v.number(),
     currency: v.string(),
     deliveryDays: v.number(),
-    orderId: v.string(),
+    orderId: v.id("orders"),
     locale: v.optional(v.string()),
   },
   returns: v.null(),
   handler: async (ctx, args) => {
-    await sendEmail("orderConfirmation", args.clientEmail, `Order Confirmed: ${args.orderTitle}`, {
-      clientName: args.clientName,
-      orderNumber: args.orderNumber,
-      orderTitle: args.orderTitle,
-      amount: args.amount,
-      currency: args.currency,
-      deliveryDays: args.deliveryDays,
-      orderId: args.orderId,
-      locale: args.locale || "en",
+    await sendEmail(ctx, {
+      template: "orderConfirmation",
+      to: args.clientEmail,
+      subject: `Order confirmed: ${args.orderTitle}`,
+      eventKey: `order-confirmation:${args.orderId}`,
+      preference: "orderUpdate",
+      props: { ...args, locale: args.locale || "en" },
     });
     return null;
   },
@@ -67,20 +149,18 @@ export const sendNewOrderNotification = internalAction({
     amount: v.number(),
     currency: v.string(),
     deliveryDays: v.number(),
-    orderId: v.string(),
+    orderId: v.id("orders"),
     locale: v.optional(v.string()),
   },
   returns: v.null(),
   handler: async (ctx, args) => {
-    await sendEmail("newOrder", args.freelancerEmail, `New Order: ${args.orderTitle}`, {
-      freelancerName: args.freelancerName,
-      orderNumber: args.orderNumber,
-      orderTitle: args.orderTitle,
-      amount: args.amount,
-      currency: args.currency,
-      deliveryDays: args.deliveryDays,
-      orderId: args.orderId,
-      locale: args.locale || "en",
+    await sendEmail(ctx, {
+      template: "newOrder",
+      to: args.freelancerEmail,
+      subject: `New order: ${args.orderTitle}`,
+      eventKey: `new-order:${args.orderId}`,
+      preference: "orderUpdate",
+      props: { ...args, locale: args.locale || "en" },
     });
     return null;
   },
@@ -92,17 +172,18 @@ export const sendOrderDelivered = internalAction({
     clientName: v.string(),
     orderNumber: v.string(),
     orderTitle: v.string(),
-    orderId: v.string(),
+    orderId: v.id("orders"),
     locale: v.optional(v.string()),
   },
   returns: v.null(),
   handler: async (ctx, args) => {
-    await sendEmail("orderDelivered", args.clientEmail, `Delivery Received: ${args.orderTitle}`, {
-      clientName: args.clientName,
-      orderNumber: args.orderNumber,
-      orderTitle: args.orderTitle,
-      orderId: args.orderId,
-      locale: args.locale || "en",
+    await sendEmail(ctx, {
+      template: "orderDelivered",
+      to: args.clientEmail,
+      subject: `Delivery received: ${args.orderTitle}`,
+      eventKey: `order-delivered:${args.orderId}`,
+      preference: "orderUpdate",
+      props: { ...args, locale: args.locale || "en" },
     });
     return null;
   },
@@ -116,19 +197,18 @@ export const sendOrderCompleted = internalAction({
     orderTitle: v.string(),
     amount: v.number(),
     currency: v.string(),
-    orderId: v.string(),
+    orderId: v.id("orders"),
     locale: v.optional(v.string()),
   },
   returns: v.null(),
   handler: async (ctx, args) => {
-    await sendEmail("orderCompleted", args.freelancerEmail, `Payment Released: ${args.orderTitle}`, {
-      freelancerName: args.freelancerName,
-      orderNumber: args.orderNumber,
-      orderTitle: args.orderTitle,
-      amount: args.amount,
-      currency: args.currency,
-      orderId: args.orderId,
-      locale: args.locale || "en",
+    await sendEmail(ctx, {
+      template: "orderCompleted",
+      to: args.freelancerEmail,
+      subject: `Order completed: ${args.orderTitle}`,
+      eventKey: `order-completed:${args.orderId}`,
+      preference: "orderUpdate",
+      props: { ...args, locale: args.locale || "en" },
     });
     return null;
   },
@@ -143,20 +223,19 @@ export const sendNewBid = internalAction({
     currency: v.string(),
     deliveryDays: v.number(),
     freelancerName: v.string(),
-    projectId: v.string(),
+    bidId: v.id("bids"),
+    projectId: v.id("projects"),
     locale: v.optional(v.string()),
   },
   returns: v.null(),
   handler: async (ctx, args) => {
-    await sendEmail("newBid", args.clientEmail, `New Bid on ${args.projectTitle}`, {
-      clientName: args.clientName,
-      projectTitle: args.projectTitle,
-      bidAmount: args.bidAmount,
-      currency: args.currency,
-      deliveryDays: args.deliveryDays,
-      freelancerName: args.freelancerName,
-      projectId: args.projectId,
-      locale: args.locale || "en",
+    await sendEmail(ctx, {
+      template: "newBid",
+      to: args.clientEmail,
+      subject: `New proposal on ${args.projectTitle}`,
+      eventKey: `new-bid:${args.bidId}`,
+      preference: "orderUpdate",
+      props: { ...args, locale: args.locale || "en" },
     });
     return null;
   },
@@ -169,18 +248,18 @@ export const sendBidAccepted = internalAction({
     projectTitle: v.string(),
     amount: v.number(),
     currency: v.string(),
-    orderId: v.optional(v.string()),
+    orderId: v.id("orders"),
     locale: v.optional(v.string()),
   },
   returns: v.null(),
   handler: async (ctx, args) => {
-    await sendEmail("bidAccepted", args.freelancerEmail, `Bid Accepted: ${args.projectTitle}`, {
-      freelancerName: args.freelancerName,
-      projectTitle: args.projectTitle,
-      amount: args.amount,
-      currency: args.currency,
-      orderId: args.orderId,
-      locale: args.locale || "en",
+    await sendEmail(ctx, {
+      template: "bidAccepted",
+      to: args.freelancerEmail,
+      subject: `Proposal accepted: ${args.projectTitle}`,
+      eventKey: `bid-accepted:${args.orderId}`,
+      preference: "orderUpdate",
+      props: { ...args, locale: args.locale || "en" },
     });
     return null;
   },
@@ -195,10 +274,13 @@ export const sendBidRejected = internalAction({
   },
   returns: v.null(),
   handler: async (ctx, args) => {
-    await sendEmail("bidRejected", args.freelancerEmail, `Bid Update: ${args.projectTitle}`, {
-      freelancerName: args.freelancerName,
-      projectTitle: args.projectTitle,
-      locale: args.locale || "en",
+    await sendEmail(ctx, {
+      template: "bidRejected",
+      to: args.freelancerEmail,
+      subject: `Proposal update: ${args.projectTitle}`,
+      eventKey: `bid-rejected:${args.projectTitle}:${args.freelancerEmail}`,
+      preference: "orderUpdate",
+      props: { ...args, locale: args.locale || "en" },
     });
     return null;
   },
@@ -210,17 +292,19 @@ export const sendNewMessage = internalAction({
     recipientName: v.string(),
     senderName: v.string(),
     messagePreview: v.string(),
-    conversationId: v.string(),
+    conversationId: v.id("conversations"),
+    messageId: v.id("messages"),
     locale: v.optional(v.string()),
   },
   returns: v.null(),
   handler: async (ctx, args) => {
-    await sendEmail("newMessage", args.recipientEmail, `New message from ${args.senderName}`, {
-      recipientName: args.recipientName,
-      senderName: args.senderName,
-      messagePreview: args.messagePreview,
-      conversationId: args.conversationId,
-      locale: args.locale || "en",
+    await sendEmail(ctx, {
+      template: "newMessage",
+      to: args.recipientEmail,
+      subject: `New message from ${args.senderName}`,
+      eventKey: `new-message:${args.messageId}`,
+      preference: "newMessage",
+      props: { ...args, locale: args.locale || "en" },
     });
     return null;
   },
@@ -232,26 +316,23 @@ export const sendReviewReceived = internalAction({
     userName: v.string(),
     orderTitle: v.string(),
     rating: v.number(),
-    orderId: v.string(),
+    orderId: v.id("orders"),
     locale: v.optional(v.string()),
   },
   returns: v.null(),
   handler: async (ctx, args) => {
-    await sendEmail("reviewReceived", args.userEmail, "New Review Received", {
-      userName: args.userName,
-      orderTitle: args.orderTitle,
-      rating: args.rating,
-      orderId: args.orderId,
-      locale: args.locale || "en",
+    await sendEmail(ctx, {
+      template: "reviewReceived",
+      to: args.userEmail,
+      subject: "New review received",
+      eventKey: `review-received:${args.orderId}:${args.userEmail}`,
+      preference: "reviewReceived",
+      props: { ...args, locale: args.locale || "en" },
     });
     return null;
   },
 });
 
-/**
- * Scheduled from convex/waitlist.ts:join after a successful signup.
- * Honest messaging that we're still building — no overselling.
- */
 export const sendWaitlistWelcome = internalAction({
   args: {
     to: v.string(),
@@ -263,15 +344,52 @@ export const sendWaitlistWelcome = internalAction({
   returns: v.null(),
   handler: async (ctx, args) => {
     const locale = args.locale === "nl" ? "nl" : "en";
-    const subject =
-      locale === "nl"
-        ? "Je staat op de SkillLinkup wachtlijst"
-        : "You're on the SkillLinkup waitlist";
-    await sendEmail("waitlistWelcome", args.to, subject, {
-      name: args.name,
-      skill: args.skill,
-      userType: args.userType,
-      locale,
+    await sendEmail(ctx, {
+      template: "waitlistWelcome",
+      to: args.to,
+      subject:
+        locale === "nl"
+          ? "Je staat op de Skilllinkup-wachtlijst"
+          : "You're on the Skilllinkup waitlist",
+      eventKey: `waitlist-welcome:${args.to.toLowerCase()}`,
+      props: { ...args, locale },
+    });
+    return null;
+  },
+});
+
+export const sendLifecycleNotification = internalAction({
+  args: {
+    userId: v.id("users"),
+    eventKey: v.string(),
+    template: emailTemplateValidator,
+    title: v.string(),
+    body: v.string(),
+    actionHref: v.string(),
+    preference: emailPreferenceValidator,
+    locale: v.optional(v.string()),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const recipient = await ctx.runQuery(
+      internal.lib.emailDeliveryState.resolveRecipientByUser,
+      { userId: args.userId, preference: args.preference },
+    );
+    if (!recipient) return null;
+    await sendEmail(ctx, {
+      template: args.template,
+      to: recipient.email,
+      subject: args.title,
+      eventKey: args.eventKey,
+      preference: args.preference,
+      userId: args.userId,
+      props: {
+        recipientName: recipient.name,
+        title: args.title,
+        message: args.body,
+        actionHref: args.actionHref,
+        locale: args.locale === "nl" ? "nl" : "en",
+      },
     });
     return null;
   },

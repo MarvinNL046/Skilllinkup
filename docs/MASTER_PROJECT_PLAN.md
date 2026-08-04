@@ -344,6 +344,7 @@ Completed and verified:
 - A source-backed admin operations snapshot now reports 30-day demand, response coverage, committed matches, completion, cancellation, median first response and open trust queues across all three products. Its admin authorization and fixture-backed calculations are covered by direct Clerk-JWT acceptance.
 - The private-beta KPI contract, segmented cohort plan, daily operations log and English-first support-response library are documented. Human ownership and scheduled cohort activity remain explicit launch gates.
 - The scheduled production monitor now opens one assigned, deduplicated GitHub incident after bounded failure and closes it only after canonical production recovery. The controlled failure/repeat/recovery rehearsal is recorded in `docs/PRODUCTION_MONITOR_REHEARSAL_2026-08-03.md`.
+- Transactional lifecycle email is now connected across Online, Local and Jobs with English-first React Email templates, explicit user preferences, deterministic event idempotency, a durable Convex delivery audit and admin-visible failure status.
 
 Operational gates still open:
 
