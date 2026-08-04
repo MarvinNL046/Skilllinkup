@@ -446,6 +446,7 @@ export const submitBid = mutation({
         currency: project.currency ?? "EUR",
         deliveryDays: args.deliveryDays,
         freelancerName: freelancerProfile?.displayName || user.name || "Freelancer",
+        bidId,
         projectId: args.projectId,
       });
     }
@@ -690,6 +691,7 @@ export const acceptBid = mutation({
         projectTitle: project.title,
         amount: bid.amount,
         currency: project.currency ?? "EUR",
+        orderId,
       });
     }
     await notifyUser(ctx, {

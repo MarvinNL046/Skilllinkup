@@ -30,6 +30,7 @@ import {
   supportStatusValidator,
 } from "./lib/trustState";
 import { uploadPurposeValidator } from "./lib/storageState";
+import { emailDeliveryStatusValidator, emailTemplateValidator } from "./lib/emailState";
 
 export default defineSchema({
   // ============================================================
@@ -1092,6 +1093,25 @@ export default defineSchema({
     marketingEmails: v.optional(v.boolean()),
     updatedAt: v.number(),
   }).index("by_user", ["userId"]),
+
+  emailDeliveries: defineTable({
+    eventKey: v.string(),
+    userId: v.optional(v.id("users")),
+    template: emailTemplateValidator,
+    recipientEmail: v.string(),
+    subject: v.string(),
+    status: emailDeliveryStatusValidator,
+    attempts: v.number(),
+    providerMessageId: v.optional(v.string()),
+    lastError: v.optional(v.string()),
+    sentAt: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_eventKey", ["eventKey"])
+    .index("by_user", ["userId"])
+    .index("by_updatedAt", ["updatedAt"])
+    .index("by_status_updatedAt", ["status", "updatedAt"]),
 
   // ============================================================
   // REWARDS

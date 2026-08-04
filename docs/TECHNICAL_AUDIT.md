@@ -37,6 +37,7 @@ Scope: technical foundation, canonical routing, Convex domain model, authenticat
 - Local supports request creation, free beta claiming, quotes, acceptance, appointment state, workspace, completion and review.
 - Jobs supports vacancy creation, public details, one application per candidate, candidate tracking and an employer applicant pipeline.
 - Core actions create in-app notifications for the affected counterparty.
+- Online, Local and Jobs lifecycle emails use the same action events, respect per-user notification preferences and record an idempotent delivery audit with provider message IDs and bounded retries.
 
 ### Routes and builds
 
@@ -70,7 +71,7 @@ These items are not current build blockers, but must close before public launch.
 - Disputes, reviews, listing reports and support tickets are permission checked and have an admin recovery queue.
 - Admin decisions create durable audit events and user notifications.
 - Authenticated account export and deletion-request flows are implemented.
-- Add transactional email templates for Jobs and Local lifecycle events after delivery policy is finalised.
+- The admin Trust & Safety centre exposes recent transactional delivery status and failures without granting public access to recipient data.
 
 ## Remaining P1 launch work
 

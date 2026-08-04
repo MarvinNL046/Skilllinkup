@@ -2,8 +2,20 @@ import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
 import { requireAuthUser, requireOwner } from "../lib/authHelpers";
 
+const notificationSettingsValidator = v.object({
+  _id: v.id("userNotificationSettings"),
+  _creationTime: v.number(),
+  userId: v.id("users"),
+  newMessage: v.optional(v.boolean()),
+  orderUpdate: v.optional(v.boolean()),
+  reviewReceived: v.optional(v.boolean()),
+  marketingEmails: v.optional(v.boolean()),
+  updatedAt: v.number(),
+});
+
 export const getByUser = query({
   args: { userId: v.id("users") },
+  returns: v.union(notificationSettingsValidator, v.null()),
   handler: async (ctx, args) => {
     await requireOwner(ctx, args.userId);
     return await ctx.db
@@ -20,6 +32,7 @@ export const upsert = mutation({
     reviewReceived: v.optional(v.boolean()),
     marketingEmails: v.optional(v.boolean()),
   },
+  returns: v.id("userNotificationSettings"),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
 

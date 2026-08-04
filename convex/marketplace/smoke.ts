@@ -11,6 +11,53 @@ type SeedLookup = {
   freelancerProfileId: Id<"freelancerProfiles">;
 };
 
+const seedResultValidator = v.object({
+  tag: v.string(),
+  locale: v.string(),
+  ids: v.object({
+    gigId: v.id("gigs"),
+    gigPackageId: v.id("gigPackages"),
+    projectId: v.id("projects"),
+    bidId: v.id("bids"),
+    quoteRequestId: v.id("quoteRequests"),
+    jobId: v.id("jobs"),
+    jobApplicationId: v.id("jobApplications"),
+    withdrawalJobId: v.id("jobs"),
+    withdrawalJobApplicationId: v.id("jobApplications"),
+    companyUserId: v.id("users"),
+    localClientId: v.id("users"),
+    workspaceProjectId: v.id("projects"),
+    acceptedBidId: v.id("bids"),
+    orderId: v.id("orders"),
+    conversationId: v.id("conversations"),
+    messageId: v.id("messages"),
+    deliverableId: v.id("orderDeliverables"),
+    localQuoteRequestId: v.id("quoteRequests"),
+    localLeadClaimId: v.id("leadClaims"),
+    localQuoteId: v.id("quotes"),
+    localOrderId: v.id("orders"),
+    localConversationId: v.id("conversations"),
+    localAppointmentId: v.id("localAppointments"),
+    cancellationQuoteRequestId: v.id("quoteRequests"),
+    cancellationQuoteId: v.id("quotes"),
+    cancellationOrderId: v.id("orders"),
+    cancellationAppointmentId: v.id("localAppointments"),
+    adminUserId: v.optional(v.id("users")),
+    adminPreviousRole: v.optional(v.string()),
+    qaUserId: v.id("users"),
+  }),
+  routes: v.object({
+    service: v.string(),
+    project: v.string(),
+    quoteRequest: v.string(),
+    job: v.string(),
+    candidateApplications: v.string(),
+    employerApplications: v.string(),
+    order: v.string(),
+    localOrder: v.string(),
+  }),
+});
+
 function isDedicatedQaEmail(email: string) {
   return /^skilllinkup\.qa\+(?:clerk_test|local-client_clerk_test|company_clerk_test)@skilllinkup\.com$/i.test(email);
 }
@@ -81,7 +128,7 @@ export const seed = mutation({
     categorySlug: v.optional(v.string()),
     locale: v.optional(v.string()),
   },
-  returns: v.any(),
+  returns: seedResultValidator,
   handler: async (ctx, args) => {
     requireServerSecret(args.serverSecret);
 
@@ -636,7 +683,15 @@ export const seed = mutation({
  */
 export const seedStaycool = mutation({
   args: {},
-  returns: v.any(),
+  returns: v.object({
+    userId: v.id("users"),
+    profileId: v.id("freelancerProfiles"),
+    gig1Id: v.id("gigs"),
+    gig2Id: v.id("gigs"),
+    project1Id: v.id("projects"),
+    project2Id: v.id("projects"),
+    message: v.string(),
+  }),
   handler: async (ctx) => {
     const now = Date.now();
 
@@ -650,8 +705,8 @@ export const seedStaycool = mutation({
       .withIndex("by_slug", (q) => q.eq("slug", "staycool-airconditioning"))
       .first();
 
-    let userId: any;
-    let profileId: any;
+    let userId: Id<"users">;
+    let profileId: Id<"freelancerProfiles">;
 
     if (existing) {
       profileId = existing._id;
@@ -985,7 +1040,7 @@ export const cleanup = mutation({
     adminPreviousRole: v.optional(v.string()),
     qaUserId: v.optional(v.id("users")),
   },
-  returns: v.any(),
+  returns: v.object({ ok: v.boolean() }),
   handler: async (ctx, args) => {
     requireServerSecret(args.serverSecret);
 
@@ -1050,6 +1105,12 @@ export const cleanup = mutation({
       )
     )];
     for (const qaActorId of qaActorIds) {
+      const emailDeliveries = await ctx.db
+        .query("emailDeliveries")
+        .withIndex("by_user", (q) => q.eq("userId", qaActorId))
+        .take(500);
+      for (const delivery of emailDeliveries) await ctx.db.delete(delivery._id);
+
       const qaUser = await ctx.db.get(qaActorId);
       if (qaUser && isDedicatedQaEmail(qaUser.email)) {
         const qaJobs = await ctx.db
@@ -1283,6 +1344,7 @@ export const verifyCleanup = query({
     remainingDeliverables: v.number(),
     remainingReviews: v.number(),
     remainingLifecycleNotifications: v.number(),
+    remainingEmailDeliveries: v.number(),
     generatedJobs: v.number(),
     generatedProjects: v.number(),
     adminRole: v.union(v.string(), v.null()),
@@ -1332,6 +1394,7 @@ export const verifyCleanup = query({
     }
 
     let remainingLifecycleNotifications = 0;
+    let remainingEmailDeliveries = 0;
     for (const userId of [args.qaUserId, args.localClientId, args.companyUserId].filter(
       (id): id is Id<"users"> => id !== undefined
     )) {
@@ -1356,6 +1419,10 @@ export const verifyCleanup = query({
           || metadata?.applicationId === args.jobApplicationId
           || metadata?.applicationId === args.withdrawalJobApplicationId;
       }).length;
+      remainingEmailDeliveries += (await ctx.db
+        .query("emailDeliveries")
+        .withIndex("by_user", (q) => q.eq("userId", userId))
+        .take(500)).length;
     }
 
     let generatedJobs = 0;
@@ -1387,6 +1454,7 @@ export const verifyCleanup = query({
       remainingDeliverables === 0 &&
       remainingReviews === 0 &&
       remainingLifecycleNotifications === 0 &&
+      remainingEmailDeliveries === 0 &&
       generatedJobs === 0 &&
       generatedProjects === 0 &&
       adminRole !== "admin";
@@ -1397,6 +1465,7 @@ export const verifyCleanup = query({
       remainingDeliverables,
       remainingReviews,
       remainingLifecycleNotifications,
+      remainingEmailDeliveries,
       generatedJobs,
       generatedProjects,
       adminRole,

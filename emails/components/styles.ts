@@ -5,13 +5,13 @@ import type React from 'react';
 
 // Brand colors
 export const colors = {
- primary: '#ef2b70',
- secondary: '#1e1541',
- accent: '#22c55e',
+ primary: '#ff4b2b',
+ secondary: '#071f43',
+ accent: '#1ea97c',
  amber: '#f59e0b',
  background: '#f8f9fb',
  white: '#ffffff',
- text: '#1e1541',
+ text: '#0a2448',
  textMuted: '#64607d',
  textLight: '#9691ad',
  border: '#e5e7eb',

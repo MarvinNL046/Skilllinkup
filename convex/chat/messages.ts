@@ -14,6 +14,28 @@ const CONTACT_PATTERNS = [
   /(wa\.me|t\.me|telegram|whatsapp|instagram\.com|linkedin\.com)/i,
 ];
 
+const enrichedMessageValidator = v.object({
+  _id: v.id("messages"),
+  _creationTime: v.number(),
+  conversationId: v.id("conversations"),
+  senderId: v.optional(v.id("users")),
+  content: v.optional(v.string()),
+  messageType: v.optional(v.string()),
+  fileUrl: v.optional(v.string()),
+  fileName: v.optional(v.string()),
+  fileSize: v.optional(v.number()),
+  isRead: v.optional(v.boolean()),
+  createdAt: v.number(),
+  sender: v.union(
+    v.object({
+      _id: v.id("users"),
+      name: v.string(),
+      image: v.optional(v.string()),
+    }),
+    v.null(),
+  ),
+});
+
 function containsContactInfo(text: string): boolean {
   return CONTACT_PATTERNS.some((p) => p.test(text));
 }
@@ -48,7 +70,7 @@ export const getByConversation = query({
     conversationId: v.id("conversations"),
     limit: v.optional(v.number()),
   },
-  returns: v.array(v.any()),
+  returns: v.array(enrichedMessageValidator),
   handler: async (ctx, args) => {
     await requireConversationParticipant(ctx, args.conversationId);
     const limit = args.limit ?? 50;
@@ -196,6 +218,7 @@ export const send = mutation({
         senderName: currentUser.name || "User",
         messagePreview: content.slice(0, 200),
         conversationId: args.conversationId,
+        messageId,
       });
     }
 

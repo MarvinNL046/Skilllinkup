@@ -31,6 +31,10 @@ export default function AdminTrustCenter() {
     api.marketplace.operations.getSnapshot,
     isAdmin ? { windowDays: 30 } : "skip",
   );
+  const emailDeliveries = useQuery(
+    api.marketplace.emailDeliveries.listRecent,
+    isAdmin ? { limit: 12 } : "skip",
+  );
   const updateReport = useMutation(api.marketplace.trust.updateReport);
   const updateTicket = useMutation(api.marketplace.trust.updateSupportTicket);
 
@@ -187,6 +191,80 @@ export default function AdminTrustCenter() {
             </Card>
           </div>
         )}
+      </section>
+
+      <section className="mb-8" aria-labelledby="email-health-heading">
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2 id="email-health-heading" className="text-2xl font-semibold">
+              Transactional email health
+            </h2>
+            <p className="text-sm text-[var(--text-secondary)]">
+              Recent lifecycle deliveries for Online, Local and Jobs.
+            </p>
+          </div>
+          {emailDeliveries ? (
+            <Badge
+              variant={
+                emailDeliveries.some((delivery) => delivery.status === "failed")
+                  ? "warning"
+                  : "success"
+              }
+            >
+              {emailDeliveries.filter((delivery) => delivery.status === "failed").length} failed
+            </Badge>
+          ) : null}
+        </div>
+        <Card>
+          <CardContent className="p-0">
+            {emailDeliveries === undefined ? (
+              <p className="p-6 text-sm text-[var(--text-secondary)]">
+                Loading delivery audit...
+              </p>
+            ) : emailDeliveries.length === 0 ? (
+              <p className="p-6 text-sm text-[var(--text-secondary)]">
+                No transactional emails have been recorded yet.
+              </p>
+            ) : (
+              <div className="divide-y divide-[var(--border-subtle)]">
+                {emailDeliveries.map((delivery) => (
+                  <article
+                    key={delivery._id}
+                    className="grid gap-3 p-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-center"
+                  >
+                    <div className="min-w-0">
+                      <div className="mb-1 flex flex-wrap items-center gap-2">
+                        <Badge
+                          variant={
+                            delivery.status === "failed"
+                              ? "warning"
+                              : delivery.status === "sent"
+                                ? "success"
+                                : "muted"
+                          }
+                        >
+                          {delivery.status}
+                        </Badge>
+                        <strong className="truncate">{delivery.subject}</strong>
+                      </div>
+                      <p className="truncate text-sm text-[var(--text-secondary)]">
+                        {delivery.template} · {delivery.recipientEmail} · attempt {delivery.attempts}
+                      </p>
+                      {delivery.lastError ? (
+                        <p className="mt-2 text-sm text-red-700">
+                          {delivery.lastError}
+                        </p>
+                      ) : null}
+                    </div>
+                    <time className="text-xs text-[var(--text-tertiary)]">
+                      {new Date(delivery.updatedAt).toLocaleString("en-GB")}
+                    </time>
+                  </article>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </section>
 
       <div className="mb-6 inline-flex rounded-xl border border-[var(--border-subtle)] bg-white p-1">

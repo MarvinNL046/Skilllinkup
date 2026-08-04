@@ -41,6 +41,35 @@ for (const endpoint of protectedEndpoints) {
   });
 }
 
+test("transactional email endpoint rejects incomplete and unknown delivery contracts", async ({ request }) => {
+  const emailSecret = process.env.INTERNAL_EMAIL_SECRET || readLocalEnvValue("INTERNAL_EMAIL_SECRET");
+  test.skip(!emailSecret, "INTERNAL_EMAIL_SECRET is not configured for the local contract test.");
+
+  const headers = { authorization: `Bearer ${emailSecret}` };
+  const incomplete = await request.post("/api/email/send", {
+    headers,
+    data: {
+      template: "waitlistWelcome",
+      to: "nobody@example.invalid",
+      subject: "Must not send",
+      props: {},
+    },
+  });
+  expect(incomplete.status()).toBe(400);
+
+  const unknown = await request.post("/api/email/send", {
+    headers,
+    data: {
+      template: "forgedTemplate",
+      to: "nobody@example.invalid",
+      subject: "Must not send",
+      props: {},
+      idempotencyKey: "security-test-forged-template",
+    },
+  });
+  expect(unknown.status()).toBe(400);
+});
+
 test("secret-protected Convex maintenance functions reject forged secrets", async () => {
   const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || readLocalEnvValue("NEXT_PUBLIC_CONVEX_URL");
   if (!convexUrl) throw new Error("NEXT_PUBLIC_CONVEX_URL is required for Convex security tests.");
