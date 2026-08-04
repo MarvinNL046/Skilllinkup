@@ -1,8 +1,11 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
 import { Doc, Id } from "../_generated/dataModel";
-import { requireAuthUser } from "../lib/authHelpers";
-import { requireServerSecret } from "../lib/authHelpers";
+import {
+  requireAuthUser,
+  requireMarketplaceContext,
+  requireServerSecret,
+} from "../lib/authHelpers";
 import {
   isPublicFreelancerProfile,
   toPublicFreelancerProfile,
@@ -17,6 +20,21 @@ function asFreelancerProfile(
   doc: unknown
 ): Doc<"freelancerProfiles"> | null {
   return doc as Doc<"freelancerProfiles"> | null;
+}
+
+function requireOwnedOnlineProfile(
+  profile: Doc<"freelancerProfiles"> | null,
+  userId: Id<"users">,
+) {
+  if (!profile) throw new Error("Freelancer profile not found.");
+  if (profile.userId !== userId) throw new Error("Unauthorized.");
+  if (
+    profile.providerRole === "local_professional" ||
+    (!profile.providerRole && profile.workType === "local")
+  ) {
+    throw new Error("Use your Online freelancer profile for this service.");
+  }
+  return profile;
 }
 
 /**
@@ -433,15 +451,11 @@ export const create = mutation({
   },
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
+    requireMarketplaceContext(user, "freelancer", "online", "publishing a service");
     const freelancerProfile = asFreelancerProfile(
       await ctx.db.get(args.freelancerId)
     );
-    if (!freelancerProfile) {
-      throw new Error("Freelancer profile not found.");
-    }
-    if (freelancerProfile.userId !== user._id) {
-      throw new Error("Unauthorized.");
-    }
+    requireOwnedOnlineProfile(freelancerProfile, user._id);
 
     const now = Date.now();
 
@@ -482,11 +496,9 @@ export const getAllByFreelancer = query({
   },
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
+    requireMarketplaceContext(user, "freelancer", "online", "viewing your services");
     const freelancerProfile = await ctx.db.get(args.freelancerId);
-    if (!freelancerProfile) return [];
-    if (freelancerProfile.userId !== user._id) {
-      throw new Error("Unauthorized.");
-    }
+    requireOwnedOnlineProfile(freelancerProfile, user._id);
 
     const gigs = await ctx.db
       .query("gigs")
@@ -507,12 +519,13 @@ export const remove = mutation({
   },
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
+    requireMarketplaceContext(user, "freelancer", "online", "removing a service");
 
     // Verify caller owns this gig (via freelancer profile)
     const gig = await ctx.db.get(args.gigId);
     if (!gig) throw new Error("Gig not found.");
     const gigProfile = await ctx.db.get(gig.freelancerId);
-    if (!gigProfile || gigProfile.userId !== user._id) throw new Error("Unauthorized.");
+    requireOwnedOnlineProfile(gigProfile, user._id);
 
     await ctx.db.patch(args.gigId, {
       status: "deleted",
@@ -540,12 +553,13 @@ export const createPackage = mutation({
   },
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
+    requireMarketplaceContext(user, "freelancer", "online", "adding a service package");
 
     // Verify caller owns this gig
     const gig = await ctx.db.get(args.gigId);
     if (!gig) throw new Error("Gig not found.");
     const gigProfile = await ctx.db.get(gig.freelancerId);
-    if (!gigProfile || gigProfile.userId !== user._id) throw new Error("Unauthorized.");
+    requireOwnedOnlineProfile(gigProfile, user._id);
 
     const now = Date.now();
     const packageId = await ctx.db.insert("gigPackages", {
@@ -586,12 +600,13 @@ export const update = mutation({
   },
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
+    requireMarketplaceContext(user, "freelancer", "online", "updating a service");
 
     // Verify caller owns this gig
     const gigDoc = await ctx.db.get(args.gigId);
     if (!gigDoc) throw new Error("Gig not found.");
     const gigProfile = await ctx.db.get(gigDoc.freelancerId);
-    if (!gigProfile || gigProfile.userId !== user._id) throw new Error("Unauthorized.");
+    requireOwnedOnlineProfile(gigProfile, user._id);
 
     const { gigId, ...fields } = args;
 

@@ -1,7 +1,11 @@
 import { v } from "convex/values";
 import { query } from "../_generated/server";
 import { Id } from "../_generated/dataModel";
-import { requireAuthUser, requireOwner } from "../lib/authHelpers";
+import {
+  getProviderProfile,
+  requireAuthUser,
+  requireOwner,
+} from "../lib/authHelpers";
 
 /**
  * Fetch aggregated dashboard stats for a given user.
@@ -509,10 +513,15 @@ export const getOverview = query({
     const preferredWorld = user.preferredWorld ?? "online";
     const isProviderContext = activeRole === "freelancer" || activeRole === "local_professional";
 
-    const profile = await ctx.db
-      .query("freelancerProfiles")
-      .withIndex("by_userId", (q) => q.eq("userId", user._id))
-      .first();
+    const profile = isProviderContext
+      ? await getProviderProfile(
+          ctx,
+          user._id,
+          activeRole === "local_professional"
+            ? "local_professional"
+            : "freelancer",
+        )
+      : null;
 
     const [clientProjects, clientOrders, freelancerOrders, participant1, participant2, savedItems] = await Promise.all([
       ctx.db.query("projects").withIndex("by_client", (q) => q.eq("clientId", user._id)).order("desc").take(40),

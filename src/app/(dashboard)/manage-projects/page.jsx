@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import ManageProjectInfo from "@/components/dashboard/section/ManageProjectInfo";
+import AccountModeGuard from "@/components/dashboard/AccountModeGuard";
 
 
 export async function generateMetadata() {
@@ -15,7 +16,7 @@ export default function page() {
     <>
 
       <DashboardLayout maxWidth="wide">
-        <ManageProjectInfo />
+        <AccountModeGuard role="client" world="online"><ManageProjectInfo /></AccountModeGuard>
       </DashboardLayout>
     </>
   );

@@ -69,3 +69,39 @@ test("one account receives the correct dashboard for every role context", async 
   const hasHorizontalOverflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
   expect(hasHorizontalOverflow).toBe(false);
 });
+
+test("protected tools require the matching active account mode", async ({ page, baseURL }) => {
+  await signIn(page, baseURL);
+
+  const switcher = page.getByRole("combobox", {
+    name: "Switch account role and marketplace",
+  });
+  await switcher.selectOption("client:online");
+  await page.goto(new URL("/add-services", baseURL).toString(), {
+    waitUntil: "domcontentloaded",
+  });
+  await expect(
+    page.getByRole("heading", { name: "Continue as Online freelancer" }),
+  ).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByText(/another mode on your account/i)).toBeVisible();
+
+  await page.goto(new URL("/dashboard", baseURL).toString(), {
+    waitUntil: "domcontentloaded",
+  });
+  await page
+    .getByRole("combobox", { name: "Switch account role and marketplace" })
+    .selectOption("freelancer:online");
+  await page.goto(new URL("/create-job", baseURL).toString(), {
+    waitUntil: "domcontentloaded",
+  });
+  await expect(
+    page.getByRole("heading", { name: "Continue as Company hiring" }),
+  ).toBeVisible({ timeout: 20_000 });
+
+  await page.goto(new URL("/dashboard", baseURL).toString(), {
+    waitUntil: "domcontentloaded",
+  });
+  await page
+    .getByRole("combobox", { name: "Switch account role and marketplace" })
+    .selectOption("client:online");
+});

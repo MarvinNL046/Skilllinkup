@@ -53,6 +53,9 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
   const withdrawApplication = useMutation(api.marketplace.jobApplications.withdraw);
 
   const isOwner = Boolean(convexUser?._id && ownerId && convexUser._id === ownerId);
+  const hasCandidateMode = (convexUser?.accountRoles || []).includes("candidate");
+  const isCandidateMode =
+    convexUser?.activeRole === "candidate" && convexUser?.preferredWorld === "jobs";
   const characterCount = coverLetter.trim().length;
   const canSubmit = characterCount >= 80 && characterCount <= 5000 && !isSubmitting;
   const loginHref = useMemo(
@@ -156,6 +159,30 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
         </div>
         <Link className={styles.secondaryButton} href="/manage-jobs">
           Manage this vacancy <ArrowRight size={18} />
+        </Link>
+      </aside>
+    );
+  }
+
+  if (!isCandidateMode) {
+    return (
+      <aside className={styles.panel}>
+        <span className={styles.icon}><BriefcaseBusiness /></span>
+        <div>
+          <p className={styles.eyebrow}>Separate job-seeker mode</p>
+          <h2>Continue as a job seeker</h2>
+          <p>
+            {hasCandidateMode
+              ? "Switch to Job seeker from your dashboard before applying."
+              : "Add the Job seeker mode and complete its short onboarding before applying."}
+          </p>
+        </div>
+        <Link
+          className={styles.primaryButton}
+          href={hasCandidateMode ? "/dashboard" : "/onboarding?role=candidate"}
+        >
+          {hasCandidateMode ? "Switch account mode" : "Add job-seeker mode"}
+          <ArrowRight size={18} />
         </Link>
       </aside>
     );

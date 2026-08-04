@@ -3,7 +3,11 @@ import type { Infer } from "convex/values";
 import { mutation, query } from "../_generated/server";
 import type { Doc, Id } from "../_generated/dataModel";
 import type { MutationCtx } from "../_generated/server";
-import { requireAuthUser, requireOwner } from "../lib/authHelpers";
+import {
+  requireAuthUser,
+  requireMarketplaceContext,
+  requireOwner,
+} from "../lib/authHelpers";
 import { conversationContextTypeValidator } from "../lib/marketplaceState";
 
 const conversationContextValidator = v.union(
@@ -80,6 +84,17 @@ async function resolveContext(
     if (!profile || profile.status !== "active") {
       throw new Error("This professional is not available.");
     }
+    const world =
+      profile.providerRole === "local_professional" ||
+      (!profile.providerRole && profile.workType === "local")
+        ? "local"
+        : "online";
+    requireMarketplaceContext(
+      caller,
+      "client",
+      world,
+      "contacting a professional",
+    );
     if (profile.userId === caller._id) {
       throw new Error("You cannot start a conversation with yourself.");
     }
@@ -102,6 +117,12 @@ async function resolveContext(
   }
 
   if (context.type === "gig_inquiry") {
+    requireMarketplaceContext(
+      caller,
+      "client",
+      "online",
+      "contacting a professional",
+    );
     const gig = await ctx.db.get(context.gigId);
     if (!gig || gig.status !== "active") {
       throw new Error("This service is not available.");

@@ -19,33 +19,33 @@ const contexts = {
   company: [{ role: "company", world: "jobs", label: "Company hiring" }],
 };
 
-const legacyWorlds = [
-  { role: "legacy", world: "online", label: "Online" },
-  { role: "legacy", world: "local", label: "Local" },
-  { role: "legacy", world: "jobs", label: "Jobs" },
-];
-
 export default function AccountContextSwitcher({ dark = false, onSwitched }) {
   const { convexUser } = useConvexUser();
   const switchContext = useMutation(api.users.switchAccountContext);
-  const setPreferredWorld = useMutation(api.users.setPreferredWorld);
   const [switching, setSwitching] = useState(false);
 
   if (!convexUser) return null;
   const accountRoles = convexUser.accountRoles || [];
-  const options = accountRoles.length
-    ? accountRoles.flatMap((role) => contexts[role] || [])
-    : legacyWorlds;
-  const currentValue = accountRoles.length
-    ? `${convexUser.activeRole || accountRoles[0]}:${convexUser.preferredWorld || options[0]?.world}`
-    : `legacy:${convexUser.preferredWorld || "online"}`;
+  if (!accountRoles.length) {
+    return (
+      <div className={`${styles.switcher} ${dark ? styles.dark : ""}`}>
+        <Link href="/onboarding"><Plus size={14} /> Complete account setup</Link>
+      </div>
+    );
+  }
+  const options = accountRoles.flatMap((role) => contexts[role] || []);
+  const requestedValue = `${convexUser.activeRole || accountRoles[0]}:${convexUser.preferredWorld || options[0]?.world}`;
+  const currentValue = options.some(
+    (option) => `${option.role}:${option.world}` === requestedValue,
+  )
+    ? requestedValue
+    : `${options[0]?.role}:${options[0]?.world}`;
 
   async function handleChange(event) {
     const [role, world] = event.target.value.split(":");
     setSwitching(true);
     try {
-      if (role === "legacy") await setPreferredWorld({ preferredWorld: world });
-      else await switchContext({ activeRole: role, preferredWorld: world });
+      await switchContext({ activeRole: role, preferredWorld: world });
       onSwitched?.();
     } finally {
       setSwitching(false);

@@ -1,6 +1,6 @@
 # Skilllinkup master project plan
 
-Version: 1 August 2026
+Version: 4 August 2026
 
 ## Implementation checkpoint — 2 August 2026
 
@@ -34,6 +34,8 @@ Skilllinkup uses one identity and one adaptive `/dashboard`; account type is not
 | Hire for a company | `company` | Jobs | Publish verified vacancies and manage candidates |
 
 `client` is the demand-side consumer/customer role. It covers both private individuals and business buyers until organisation-specific collaboration or billing is needed. `company` is reserved for the employer workflow in Jobs; it is not the only role allowed to hire freelancers or local professionals.
+
+Implementation checkpoint (4 August 2026): this separation is now enforced end to end. A role is added only through its own completed onboarding, provider modes have separate Online and Local profiles, protected UI tools show an account-mode guard, and Convex mutations require both role membership and the matching active product context. A customer therefore cannot publish services, a freelancer cannot silently act as a customer, a candidate cannot manage vacancies, and an ordinary customer account cannot act as a Jobs employer. Users may still add and switch modes explicitly while retaining one login and one account history.
 
 The dashboard context switcher exposes task-oriented labels such as `Customer · Online`, `Customer · Local`, `Online freelancer`, `Local professional`, `Job seeker`, and `Company hiring`. Routes describe resources or actions (`/create-projects`, `/local/request-quote`, `/dashboard/applications`) rather than user types. Server-side Convex authorization remains based on the authenticated user's stored roles, ownership and active product context, never on a URL prefix.
 

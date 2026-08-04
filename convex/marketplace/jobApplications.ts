@@ -1,6 +1,10 @@
 import { v } from "convex/values";
 import { mutation, query } from "../_generated/server";
-import { requireAuthUser, requireOwner } from "../lib/authHelpers";
+import {
+  requireAuthUser,
+  requireMarketplaceContext,
+  requireOwner,
+} from "../lib/authHelpers";
 import { notifyUser } from "../lib/notifications";
 import {
   assertTransition,
@@ -156,7 +160,8 @@ export const listForJob = query({
   handler: async (ctx, args) => {
     const job = await ctx.db.get(args.jobId);
     if (!job) throw new Error("Job not found.");
-    await requireOwner(ctx, job.clientId);
+    const employer = await requireOwner(ctx, job.clientId);
+    requireMarketplaceContext(employer, "company", "jobs", "viewing applicants");
 
     const limit = Math.min(Math.max(args.limit ?? 50, 1), 100);
     const applications = args.status
@@ -200,7 +205,8 @@ export const generateResumeUploadUrl = mutation({
   args: {},
   returns: v.string(),
   handler: async (ctx) => {
-    await requireAuthUser(ctx);
+    const candidate = await requireAuthUser(ctx);
+    requireMarketplaceContext(candidate, "candidate", "jobs", "uploading a resume");
     return await ctx.storage.generateUploadUrl();
   },
 });
@@ -215,6 +221,7 @@ export const submit = mutation({
   returns: v.id("jobApplications"),
   handler: async (ctx, args) => {
     const candidate = await requireAuthUser(ctx);
+    requireMarketplaceContext(candidate, "candidate", "jobs", "applying for a vacancy");
     const job = await ctx.db.get(args.jobId);
     if (!job) throw new Error("Job not found.");
     if (job.status !== "open")
@@ -275,14 +282,6 @@ export const submit = mutation({
       updatedAt: now,
     });
 
-    const roles = new Set(candidate.accountRoles ?? []);
-    roles.add("candidate");
-    await ctx.db.patch(candidate._id, {
-      accountRoles: [...roles],
-      activeRole: candidate.activeRole ?? "candidate",
-      preferredWorld: candidate.preferredWorld ?? "jobs",
-      updatedAt: now,
-    });
     await ctx.db.patch(job._id, {
       applicationCount: (job.applicationCount ?? 0) + 1,
       updatedAt: now,
@@ -305,6 +304,7 @@ export const withdraw = mutation({
   returns: v.id("jobApplications"),
   handler: async (ctx, args) => {
     const candidate = await requireAuthUser(ctx);
+    requireMarketplaceContext(candidate, "candidate", "jobs", "withdrawing an application");
     const application = await ctx.db.get(args.applicationId);
     if (!application) throw new Error("Application not found.");
     if (application.candidateId !== candidate._id)
@@ -337,7 +337,8 @@ export const updateStatus = mutation({
     if (!application) throw new Error("Application not found.");
     const job = await ctx.db.get(application.jobId);
     if (!job) throw new Error("Job not found.");
-    await requireOwner(ctx, job.clientId);
+    const employer = await requireOwner(ctx, job.clientId);
+    requireMarketplaceContext(employer, "company", "jobs", "updating an application");
 
     if (["draft", "submitted", "withdrawn"].includes(args.status)) {
       throw new Error("Employers cannot move an application to that status.");
