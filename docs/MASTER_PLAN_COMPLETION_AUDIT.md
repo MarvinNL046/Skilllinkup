@@ -1,12 +1,19 @@
 # Skilllinkup master-plan completion audit
 
-Audit date: 2 August 2026
+Audit date: 9 August 2026
 
 Scope: repository, connected Convex development deployment, local application at port 3010, protected Vercel Preview and public Vercel Production.
 
 Decision rule: implemented code is not called launch-ready without the relevant automated, hosted or human evidence.
 
 ## Executive status
+
+### Engineering update — 9 August 2026
+
+- Company verification is now a complete Jobs lifecycle: employer submission, rate limiting, manual admin review, audit events, user notification and explicit verified/rejected states.
+- Vacancy creation is denied server-side until the company is verified, and public job queries fail closed for unverified, expired or non-open vacancies.
+- Public Jobs queries now have explicit Convex return validators, bounded limits and a deliberately sanitised response that does not expose tenant identifiers.
+- PRs [#29](https://github.com/MarvinNL046/Skilllinkup/pull/29) and [#30](https://github.com/MarvinNL046/Skilllinkup/pull/30) were merged and deployed to production Convex and Vercel. The hosted release contract and production company-trust audit passed after deployment.
 
 The technical private-beta foundation is implemented and verified locally, on a protected Vercel Preview and on public Production. Online, Local and Jobs each have a permission-checked end-to-end lifecycle, shared roles/onboarding, Trust & Safety, privacy controls, free-beta payment quarantine, release validation and cross-product operations metrics. Production deployment `dpl_Bf1ZrgWPK74YiYE5m76ee4UMBAcU` at commit `c2c335aed6931239e550019520ff503a3d8f41e1` passed the anonymous hosted release verifier on `https://skilllinkup.com`; its health payload and response header identify that same immutable artifact.
 
@@ -27,7 +34,7 @@ The application is publicly deployed, but the marketplace is not yet approved fo
 | Shared data model and roles | Proven                                             | Clerk-subject authorization, explicit account roles, onboarding rules and server-side state machines                                                                                             | none for private-beta code scope                                                                                       |
 | Online transaction flow     | Proven                                             | distinct client/freelancer proposal, acceptance, delivery, revision, approval, private messaging and blind reviews; public inventory is Convex-backed and demo routes are explicit previews      | one hosted signed-in smoke                                                                                             |
 | Local transaction flow      | Proven                                             | distinct customer/professional request, quote, appointment, reschedule, cancel, complete and blind review; public scope is limited to five launch trades                                         | approve Rotterdamâ€“The Hague launch hypothesis; hosted signed-in smoke                                                |
-| Jobs transaction flow       | Proven                                             | company publishing/lifecycle and candidate screening, interview, offer, hire and withdrawal                                                                                                      | hosted signed-in smoke and production structured-data validation                                                       |
+| Jobs transaction flow       | Proven                                             | verified-company onboarding and review, vacancy publishing/lifecycle, public fail-closed visibility and candidate screening, interview, offer, hire and withdrawal                               | production structured-data validation of the first genuine eligible vacancy                                            |
 | Dashboard and messaging     | Proven locally                                     | role-aware dashboards, private workspaces, messages, deliverables, applications and operations snapshot                                                                                          | hosted usability and monitoring evidence                                                                               |
 | Trust, privacy and support  | Proven for code scope                              | report/ticket/dispute admin queues, audit events, notifications, account export/deletion request, rate limits                                                                                    | named safety/support/privacy owners and legal retention process                                                        |
 | Payments                    | Deferred by policy                                 | Checkout, credits and Connect return `503 PRIVATE_BETA_FREE`; workspaces use beta-no-payment state                                                                                               | commission, protected funds, refunds, VAT/tax, KYC, countries and legal responsibility                                 |
