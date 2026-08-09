@@ -14,7 +14,202 @@ import {
   getMarketplaceCategoryBySlug,
   getMarketplaceDescendantIds,
 } from "../lib/marketplaceCategories";
-import { gigStatusValidator } from "../lib/marketplaceState";
+import {
+  freelancerProfileStatusValidator,
+  gigStatusValidator,
+} from "../lib/marketplaceState";
+
+const nullableString = v.union(v.string(), v.null());
+const nullableNumber = v.union(v.number(), v.null());
+
+const publicFreelancerValidator = v.object({
+  _id: v.id("freelancerProfiles"),
+  userId: v.id("users"),
+  displayName: v.string(),
+  slug: nullableString,
+  tagline: nullableString,
+  bio: nullableString,
+  avatarUrl: nullableString,
+  coverImageUrl: nullableString,
+  hourlyRate: nullableNumber,
+  workType: nullableString,
+  locationCity: nullableString,
+  locationCountry: nullableString,
+  serviceRadiusKm: nullableNumber,
+  languages: v.array(v.string()),
+  skills: v.array(v.string()),
+  portfolioUrls: v.array(v.string()),
+  websiteUrl: nullableString,
+  linkedinUrl: nullableString,
+  twitterUrl: nullableString,
+  githubUrl: nullableString,
+  profileVisibility: v.string(),
+  contactPermission: v.string(),
+  isVerified: v.boolean(),
+  verificationDate: nullableNumber,
+  responseTimeHours: nullableNumber,
+  completionRate: nullableNumber,
+  totalOrders: v.number(),
+  ratingAverage: v.number(),
+  ratingCount: v.number(),
+  isAvailable: v.boolean(),
+  featured: v.boolean(),
+  level: v.string(),
+  status: freelancerProfileStatusValidator,
+  locale: nullableString,
+  createdAt: v.number(),
+  updatedAt: v.number(),
+});
+
+const publicCategoryValidator = v.object({
+  _id: v.id("marketplaceCategories"),
+  _creationTime: v.number(),
+  name: v.string(),
+  slug: v.string(),
+  description: v.optional(v.string()),
+  icon: v.optional(v.string()),
+  imageUrl: v.optional(v.string()),
+  parentId: v.optional(v.id("marketplaceCategories")),
+  serviceType: v.optional(v.string()),
+  sortOrder: v.optional(v.number()),
+  isActive: v.optional(v.boolean()),
+  locale: v.string(),
+  createdAt: v.number(),
+  updatedAt: v.number(),
+});
+
+const publicGigFields = {
+  _id: v.id("gigs"),
+  _creationTime: v.number(),
+  freelancerId: v.id("freelancerProfiles"),
+  title: v.string(),
+  slug: v.string(),
+  description: v.string(),
+  categoryId: v.optional(v.id("marketplaceCategories")),
+  tags: v.optional(v.array(v.string())),
+  workType: v.optional(v.string()),
+  locationCity: v.optional(v.string()),
+  locationCountry: v.optional(v.string()),
+  serviceRadiusKm: v.optional(v.number()),
+  views: v.optional(v.number()),
+  orderCount: v.optional(v.number()),
+  ratingAverage: v.optional(v.number()),
+  ratingCount: v.optional(v.number()),
+  isFeatured: v.optional(v.boolean()),
+  status: gigStatusValidator,
+  locale: v.string(),
+  publishedAt: v.optional(v.number()),
+  createdAt: v.number(),
+  updatedAt: v.number(),
+};
+
+const packageValidator = v.object({
+  _id: v.id("gigPackages"),
+  _creationTime: v.number(),
+  gigId: v.id("gigs"),
+  tier: v.string(),
+  title: v.string(),
+  description: v.string(),
+  price: v.number(),
+  currency: v.optional(v.string()),
+  deliveryDays: v.number(),
+  revisionCount: v.optional(v.number()),
+  features: v.optional(v.array(v.string())),
+  createdAt: v.number(),
+  updatedAt: v.number(),
+});
+
+const imageValidator = v.object({
+  _id: v.id("gigImages"),
+  _creationTime: v.number(),
+  gigId: v.id("gigs"),
+  imageUrl: v.string(),
+  altText: v.optional(v.string()),
+  sortOrder: v.optional(v.number()),
+  createdAt: v.number(),
+});
+
+const publicGigListItemValidator = v.object({
+  ...publicGigFields,
+  freelancerProfile: publicFreelancerValidator,
+  category: v.union(publicCategoryValidator, v.null()),
+  minPrice: nullableNumber,
+  minDeliveryDays: nullableNumber,
+  firstImage: v.union(imageValidator, v.null()),
+});
+
+const publicGigWithoutProfileValidator = v.object({
+  ...publicGigFields,
+  category: v.union(publicCategoryValidator, v.null()),
+  minPrice: nullableNumber,
+  minDeliveryDays: nullableNumber,
+  firstImage: v.union(imageValidator, v.null()),
+});
+
+const ownerGigListItemValidator = v.object({
+  ...publicGigFields,
+  tenantId: v.id("tenants"),
+  category: v.union(publicCategoryValidator, v.null()),
+  minPrice: nullableNumber,
+  minDeliveryDays: nullableNumber,
+  firstImage: v.union(imageValidator, v.null()),
+});
+
+function toPublicCategory(category: Doc<"marketplaceCategories"> | null) {
+  if (!category) return null;
+  return {
+    _id: category._id,
+    _creationTime: category._creationTime,
+    name: category.name,
+    slug: category.slug,
+    description: category.description,
+    icon: category.icon,
+    imageUrl: category.imageUrl,
+    parentId: category.parentId,
+    serviceType: category.serviceType,
+    sortOrder: category.sortOrder,
+    isActive: category.isActive,
+    locale: category.locale,
+    createdAt: category.createdAt,
+    updatedAt: category.updatedAt,
+  };
+}
+
+function toPublicGig(gig: Doc<"gigs">) {
+  return {
+    _id: gig._id,
+    _creationTime: gig._creationTime,
+    freelancerId: gig.freelancerId,
+    title: gig.title,
+    slug: gig.slug,
+    description: gig.description,
+    categoryId: gig.categoryId,
+    tags: gig.tags,
+    workType: gig.workType,
+    locationCity: gig.locationCity,
+    locationCountry: gig.locationCountry,
+    serviceRadiusKm: gig.serviceRadiusKm,
+    views: gig.views,
+    orderCount: gig.orderCount,
+    ratingAverage: gig.ratingAverage,
+    ratingCount: gig.ratingCount,
+    isFeatured: gig.isFeatured,
+    status: gig.status,
+    locale: gig.locale,
+    publishedAt: gig.publishedAt,
+    createdAt: gig.createdAt,
+    updatedAt: gig.updatedAt,
+  };
+}
+
+function toSafePackage(pkg: Doc<"gigPackages">) {
+  return {
+    ...pkg,
+    features: pkg.features?.filter(
+      (feature): feature is string => typeof feature === "string",
+    ),
+  };
+}
 
 function asFreelancerProfile(
   doc: unknown
@@ -123,9 +318,9 @@ async function enrichGigsPublic(
     const firstImage = allFirstImages[i];
 
     result.push({
-      ...gig,
+      ...toPublicGig(gig),
       freelancerProfile: toPublicFreelancerProfile(freelancerProfile),
-      category: category as Doc<"marketplaceCategories"> | null,
+      category: toPublicCategory(category as Doc<"marketplaceCategories"> | null),
       minPrice: cheapestPackage?.price ?? null,
       minDeliveryDays: cheapestPackage?.deliveryDays ?? null,
       firstImage: firstImage ?? null,
@@ -145,7 +340,7 @@ async function enrichGigsOwner(
   ctx: any,
   gigs: Doc<"gigs">[]
 ): Promise<Array<Doc<"gigs"> & {
-  category: Doc<"marketplaceCategories"> | null;
+  category: Exclude<ReturnType<typeof toPublicCategory>, null> | null;
   minPrice: number | null;
   minDeliveryDays: number | null;
   firstImage: Doc<"gigImages"> | null;
@@ -197,7 +392,7 @@ async function enrichGigsOwner(
 
     return {
       ...gig,
-      category: category as Doc<"marketplaceCategories"> | null,
+      category: toPublicCategory(category as Doc<"marketplaceCategories"> | null),
       minPrice: cheapestPackage?.price ?? null,
       minDeliveryDays: cheapestPackage?.deliveryDays ?? null,
       firstImage: firstImage ?? null,
@@ -214,6 +409,7 @@ export const list = query({
     locale: v.string(),
     limit: v.optional(v.number()),
   },
+  returns: v.array(publicGigListItemValidator),
   handler: async (ctx, args) => {
     const limit = Math.min(Math.max(args.limit ?? 20, 1), 100);
 
@@ -249,8 +445,12 @@ export const listByCategory = query({
     locale: v.string(),
     limit: v.optional(v.number()),
   },
+  returns: v.object({
+    category: v.union(publicCategoryValidator, v.null()),
+    gigs: v.array(publicGigListItemValidator),
+  }),
   handler: async (ctx, args) => {
-    const limit = args.limit ?? 50;
+    const limit = Math.max(1, Math.min(args.limit ?? 50, 100));
 
     const allCategories = await ctx.db
       .query("marketplaceCategories")
@@ -288,9 +488,12 @@ export const listByCategory = query({
       .slice(0, limit);
 
     const enriched = await enrichGigsPublic(ctx, sorted);
+    const selectedCategory = allCategories.find(
+      (candidate) => candidate._id === category._id,
+    ) ?? null;
 
     return {
-      category,
+      category: toPublicCategory(selectedCategory),
       gigs: enriched,
     };
   },
@@ -306,6 +509,16 @@ export const getBySlug = query({
     slug: v.string(),
     locale: v.string(),
   },
+  returns: v.union(
+    v.null(),
+    v.object({
+      ...publicGigFields,
+      freelancerProfile: publicFreelancerValidator,
+      category: v.union(publicCategoryValidator, v.null()),
+      packages: v.array(packageValidator),
+      images: v.array(imageValidator),
+    }),
+  ),
   handler: async (ctx, args) => {
     const gig = await ctx.db
       .query("gigs")
@@ -337,10 +550,10 @@ export const getBySlug = query({
       .take(20);
 
     return {
-      ...gig,
+      ...toPublicGig(gig),
       freelancerProfile: toPublicFreelancerProfile(freelancerProfile),
-      category,
-      packages,
+      category: toPublicCategory(category as Doc<"marketplaceCategories"> | null),
+      packages: packages.map(toSafePackage),
       images,
     };
   },
@@ -354,6 +567,7 @@ export const getByFreelancer = query({
     freelancerId: v.id("freelancerProfiles"),
     locale: v.string(),
   },
+  returns: v.array(publicGigWithoutProfileValidator),
   handler: async (ctx, args) => {
     const freelancerProfile = asFreelancerProfile(
       await ctx.db.get(args.freelancerId)
@@ -371,7 +585,14 @@ export const getByFreelancer = query({
       )
       .take(100);
 
-    return enrichGigsOwner(ctx, gigs);
+    const enriched = await enrichGigsOwner(ctx, gigs);
+    return enriched.map((gig) => ({
+      ...toPublicGig(gig),
+      category: gig.category,
+      minPrice: gig.minPrice,
+      minDeliveryDays: gig.minDeliveryDays,
+      firstImage: gig.firstImage,
+    }));
   },
 });
 
@@ -384,6 +605,7 @@ export const search = query({
     query: v.string(),
     locale: v.string(),
   },
+  returns: v.array(publicGigListItemValidator),
   handler: async (ctx, args) => {
     const results = await ctx.db
       .query("gigs")
@@ -408,6 +630,10 @@ export const getById = query({
     gigId: v.id("gigs"),
     serverSecret: v.optional(v.string()),
   },
+  returns: v.union(v.null(), v.object({
+    ...publicGigFields,
+    tenantId: v.id("tenants"),
+  })),
   handler: async (ctx, args) => {
     requireServerSecret(args.serverSecret);
     const gig = await ctx.db.get(args.gigId);
@@ -424,10 +650,11 @@ export const getPackageById = query({
     packageId: v.id("gigPackages"),
     serverSecret: v.optional(v.string()),
   },
+  returns: v.union(v.null(), packageValidator),
   handler: async (ctx, args) => {
     requireServerSecret(args.serverSecret);
     const pkg = await ctx.db.get(args.packageId);
-    return pkg ?? null;
+    return pkg ? toSafePackage(pkg) : null;
   },
 });
 
@@ -449,6 +676,7 @@ export const create = mutation({
     serviceRadiusKm: v.optional(v.number()),
     locale: v.string(),
   },
+  returns: v.id("gigs"),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
     requireMarketplaceContext(user, "freelancer", "online", "publishing a service");
@@ -494,6 +722,7 @@ export const getAllByFreelancer = query({
   args: {
     freelancerId: v.id("freelancerProfiles"),
   },
+  returns: v.array(ownerGigListItemValidator),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
     requireMarketplaceContext(user, "freelancer", "online", "viewing your services");
@@ -517,6 +746,7 @@ export const remove = mutation({
   args: {
     gigId: v.id("gigs"),
   },
+  returns: v.id("gigs"),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
     requireMarketplaceContext(user, "freelancer", "online", "removing a service");
@@ -551,6 +781,7 @@ export const createPackage = mutation({
     revisionCount: v.optional(v.number()),
     features: v.optional(v.array(v.string())),
   },
+  returns: v.id("gigPackages"),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
     requireMarketplaceContext(user, "freelancer", "online", "adding a service package");
@@ -598,6 +829,7 @@ export const update = mutation({
     status: v.optional(gigStatusValidator),
     locale: v.optional(v.string()),
   },
+  returns: v.id("gigs"),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
     requireMarketplaceContext(user, "freelancer", "online", "updating a service");
@@ -635,6 +867,10 @@ export const getByFreelancerWithPackages = query({
   args: {
     freelancerId: v.id("freelancerProfiles"),
   },
+  returns: v.array(v.object({
+    ...publicGigFields,
+    packages: v.array(packageValidator),
+  })),
   handler: async (ctx, args) => {
     const freelancerProfile = await ctx.db.get(args.freelancerId);
     if (!isPublicFreelancerProfile(freelancerProfile)) return [];
@@ -663,10 +899,10 @@ export const getByFreelancerWithPackages = query({
     const enriched = gigs
       .map((gig, i) => {
         const packages = allPackageArrays[i];
-        const sortedPackages = [...packages].sort(
+        const sortedPackages = packages.map(toSafePackage).sort(
           (a, b) => (tierOrder[a.tier] ?? 99) - (tierOrder[b.tier] ?? 99)
         );
-        return { ...gig, packages: sortedPackages };
+        return { ...toPublicGig(gig), packages: sortedPackages };
       })
       .filter((g) => g.packages.length > 0);
 
