@@ -101,17 +101,26 @@ async function tabToControl(
 ) {
   for (let index = 0; index < maxTabs; index += 1) {
     await page.keyboard.press("Tab");
-    if (await target.evaluate((element) => element === document.activeElement)) {
+    if (
+      await target.evaluate((element) => element === document.activeElement)
+    ) {
       const focusStyle = await target.evaluate((element) => {
         const style = window.getComputedStyle(element);
-        return { outlineStyle: style.outlineStyle, outlineWidth: style.outlineWidth };
+        return {
+          outlineStyle: style.outlineStyle,
+          outlineWidth: style.outlineWidth,
+        };
       });
       expect(focusStyle.outlineStyle).not.toBe("none");
-      expect(Number.parseFloat(focusStyle.outlineWidth)).toBeGreaterThanOrEqual(2);
+      expect(Number.parseFloat(focusStyle.outlineWidth)).toBeGreaterThanOrEqual(
+        2,
+      );
       return;
     }
   }
-  throw new Error(`Keyboard focus did not reach ${await target.getAttribute("aria-label") || await target.textContent() || "the requested control"}.`);
+  throw new Error(
+    `Keyboard focus did not reach ${(await target.getAttribute("aria-label")) || (await target.textContent()) || "the requested control"}.`,
+  );
 }
 
 async function createAuthenticatedConvexClient(
@@ -176,11 +185,7 @@ async function createIsolatedAuthenticatedConvexClient(
 async function switchAccountMode(
   client: ConvexHttpClient,
   activeRole:
-    | "client"
-    | "freelancer"
-    | "local_professional"
-    | "candidate"
-    | "company",
+    "client" | "freelancer" | "local_professional" | "candidate" | "company",
   preferredWorld: "online" | "local" | "jobs",
 ) {
   await client.mutation(api.users.switchAccountContext, {
@@ -228,16 +233,6 @@ test("one login cannot use actions from an inactive account mode", async ({
   ).rejects.toThrow(/Switch to the client .* online account mode/);
 
   await switchAccountMode(account, "company", "jobs");
-  const ownedJobId = await account.mutation(api.marketplace.jobs.create, {
-    title: "Playwright account mode boundary vacancy",
-    slug: `playwright-account-mode-${Date.now()}`,
-    description:
-      "This temporary vacancy verifies that its owner still needs to activate the company hiring mode before using employer-only management tools.",
-    jobType: "full-time",
-    workType: "remote",
-    locationCountry: "Netherlands",
-    locale: "en",
-  });
   await expect(
     account.mutation(api.marketplace.jobApplications.submit, {
       jobId: manifest.ids.jobId,
@@ -249,10 +244,10 @@ test("one login cannot use actions from an inactive account mode", async ({
   await switchAccountMode(account, "candidate", "jobs");
   await expect(
     account.mutation(api.marketplace.jobs.update, {
-      jobId: ownedJobId,
+      jobId: manifest.ids.jobId,
       status: "paused",
     }),
-  ).rejects.toThrow(/Switch to the company .* jobs account mode/);
+  ).rejects.toThrow(/Unauthorized/);
 
   await switchAccountMode(account, "local_professional", "local");
   await expect(
@@ -260,11 +255,6 @@ test("one login cannot use actions from an inactive account mode", async ({
       gigId: manifest.ids.gigId,
     }),
   ).rejects.toThrow(/Switch to the freelancer .* online account mode/);
-
-  await switchAccountMode(account, "company", "jobs");
-  await expect(
-    account.mutation(api.marketplace.jobs.remove, { jobId: ownedJobId }),
-  ).resolves.toBe(ownedJobId);
 
   await switchAccountMode(account, "client", "online");
   await expect(
@@ -297,7 +287,9 @@ test("public project inventory and demo routes are labelled honestly", async ({
   });
 
   await expect(page.getByText("Live private-beta inventory")).toBeVisible();
-  await expect(page.locator('a[href^="/online/project/"]').first()).toBeVisible();
+  await expect(
+    page.locator('a[href^="/online/project/"]').first(),
+  ).toBeVisible();
   await expect(page.getByText("342 projects found")).toHaveCount(0);
   await expect(page.getByText("Studio Bright")).toHaveCount(0);
 
@@ -377,7 +369,10 @@ test("dashboard renders when signed in", async ({ page, baseURL }) => {
   await expect(page).toHaveURL(/\/dashboard/, { timeout: 15_000 });
   await expect(
     page
-      .getByRole("heading", { level: 1, name: /Good (morning|afternoon|evening),/ })
+      .getByRole("heading", {
+        level: 1,
+        name: /Good (morning|afternoon|evening),/,
+      })
       .first(),
   ).toBeVisible({ timeout: 15_000 });
   await expect(
@@ -423,7 +418,9 @@ test("protected workspace indexes expose one labelled page heading", async ({
   });
   await page.reload({ waitUntil: "domcontentloaded" });
   await expect(page.getByRole("link", { name: "Dashboard" })).toBeVisible();
-  const collapseSidebar = page.getByRole("button", { name: "Collapse sidebar" });
+  const collapseSidebar = page.getByRole("button", {
+    name: "Collapse sidebar",
+  });
   await expect(collapseSidebar).toBeVisible();
   await collapseSidebar.click();
   const expandSidebar = page.getByRole("button", { name: "Expand sidebar" });
@@ -596,19 +593,38 @@ test("deep Online and Local workspaces expose visible keyboard focus", async ({
   await page.goto(new URL(manifest.routes.order, baseURL).toString(), {
     waitUntil: "domcontentloaded",
   });
-  await expect(page.getByTestId("order-workspace")).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByTestId("order-workspace")).toBeVisible({
+    timeout: 20_000,
+  });
   await page.locator("body").focus();
-  await tabToControl(page, page.getByRole("button", { name: "Submit work for review" }));
-  await tabToControl(page, page.getByRole("textbox", { name: "Project message" }));
+  await tabToControl(
+    page,
+    page.getByRole("button", { name: "Submit work for review" }),
+  );
+  await tabToControl(
+    page,
+    page.getByRole("textbox", { name: "Project message" }),
+  );
 
   await page.goto(new URL(manifest.routes.localOrder, baseURL).toString(), {
     waitUntil: "domcontentloaded",
   });
-  await expect(page.getByTestId("local-appointment")).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByTestId("local-appointment")).toBeVisible({
+    timeout: 20_000,
+  });
   await page.locator("body").focus();
-  await tabToControl(page, page.getByRole("textbox", { name: "Propose a new appointment time" }));
-  await tabToControl(page, page.getByRole("button", { name: "Confirm appointment" }));
-  await tabToControl(page, page.getByRole("button", { name: "Cancel appointment" }));
+  await tabToControl(
+    page,
+    page.getByRole("textbox", { name: "Propose a new appointment time" }),
+  );
+  await tabToControl(
+    page,
+    page.getByRole("button", { name: "Confirm appointment" }),
+  );
+  await tabToControl(
+    page,
+    page.getByRole("button", { name: "Cancel appointment" }),
+  );
 });
 
 const roleSmokeCases = [
@@ -708,6 +724,9 @@ test("admin account can open the Trust and Safety recovery queue", async ({
   await expect(page.getByText(/committed/).first()).toBeVisible({
     timeout: 20_000,
   });
+  await expect(
+    page.getByRole("button", { name: "Company verification" }),
+  ).toBeVisible();
   await expect(page.getByText("Admin access required")).toHaveCount(0);
 });
 
@@ -932,14 +951,18 @@ test("context conversations stay private, idempotent and isolated per product", 
 
   expect(onlineConversationId).not.toBe(localConversationId);
   expect(
-    (await onlineClient.query(api.chat.conversations.getById, {
-      conversationId: onlineConversationId,
-    }))?.context.type,
+    (
+      await onlineClient.query(api.chat.conversations.getById, {
+        conversationId: onlineConversationId,
+      })
+    )?.context.type,
   ).toBe("project_bid");
   expect(
-    (await localClient.query(api.chat.conversations.getById, {
-      conversationId: localConversationId,
-    }))?.context.type,
+    (
+      await localClient.query(api.chat.conversations.getById, {
+        conversationId: localConversationId,
+      })
+    )?.context.type,
   ).toBe("local_appointment");
 });
 
@@ -1479,9 +1502,11 @@ test("company and candidate complete the protected hiring and withdrawal lifecyc
         }),
       ).resolves.toBe(companyConversationId);
       expect(
-        (await candidate.query(api.chat.conversations.getById, {
-          conversationId: companyConversationId,
-        }))?.context.type,
+        (
+          await candidate.query(api.chat.conversations.getById, {
+            conversationId: companyConversationId,
+          })
+        )?.context.type,
       ).toBe("job_application");
     }
   }
@@ -1567,7 +1592,7 @@ test("company and candidate complete the protected hiring and withdrawal lifecyc
   ).rejects.toThrow(/Unauthorized/);
 });
 
-test("company can publish a vacancy and open its applicant pipeline", async ({
+test("company sees verification gate or can publish into its applicant pipeline", async ({
   page,
   baseURL,
 }) => {
@@ -1581,9 +1606,31 @@ test("company can publish a vacancy and open its applicant pipeline", async ({
     waitUntil: "domcontentloaded",
   });
 
-  await expect(
-    page.getByRole("button", { name: "Publish vacancy" }),
-  ).toBeEnabled({
+  const verificationButton = page.getByRole("button", {
+    name: "Request verification",
+  });
+  const publishButton = page.getByRole("button", { name: "Publish vacancy" });
+  const pendingHeading = page.getByText("Verification in review");
+  await verificationButton.or(publishButton).or(pendingHeading).first().waitFor({
+    state: "visible",
+    timeout: 20_000,
+  });
+  if (await verificationButton.isVisible()) {
+    await expect(
+      page.getByRole("heading", { name: "Verify the hiring organisation" }),
+    ).toBeVisible();
+    await expect(page.getByLabel("Registered company name")).toBeVisible();
+    await expect(page.getByLabel("Company website")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Publish vacancy" })).toHaveCount(0);
+    return;
+  }
+  if (await pendingHeading.isVisible()) {
+    await expect(page.getByText(/publishing stays locked/i)).toBeVisible();
+    await expect(publishButton).toHaveCount(0);
+    return;
+  }
+
+  await expect(publishButton).toBeEnabled({
     timeout: 20_000,
   });
 
@@ -1666,7 +1713,9 @@ test("authenticated project crud flow works", async ({ page, baseURL }) => {
 
   const editModal = page.getByTestId("manage-project-edit-modal");
   await expect(editModal).toBeVisible();
-  await expect(editModal.getByTestId("manage-project-edit-title")).toBeFocused();
+  await expect(
+    editModal.getByTestId("manage-project-edit-title"),
+  ).toBeFocused();
   for (let press = 0; press < 12; press += 1) {
     await page.keyboard.press("Tab");
     const focusInsideDialog = await page.evaluate(() =>

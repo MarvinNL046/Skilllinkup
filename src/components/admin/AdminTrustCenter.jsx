@@ -23,6 +23,10 @@ export default function AdminTrustCenter() {
     api.marketplace.trust.listSupportTicketsForAdmin,
     isAdmin ? { limit: 100 } : "skip",
   );
+  const companyRequests = useQuery(
+    api.marketplace.companyVerifications.listForAdmin,
+    isAdmin ? { limit: 100 } : "skip",
+  );
   const auditEvents = useQuery(
     api.marketplace.trust.listAuditEventsForAdmin,
     isAdmin ? { limit: 25 } : "skip",
@@ -37,6 +41,9 @@ export default function AdminTrustCenter() {
   );
   const updateReport = useMutation(api.marketplace.trust.updateReport);
   const updateTicket = useMutation(api.marketplace.trust.updateSupportTicket);
+  const reviewCompany = useMutation(
+    api.marketplace.companyVerifications.review,
+  );
 
   if (convexUser === undefined) {
     return (
@@ -83,7 +90,27 @@ export default function AdminTrustCenter() {
     }
   }
 
-  const items = view === "reports" ? reports : tickets;
+  async function resolveCompany(requestId, decision) {
+    try {
+      await reviewCompany({
+        requestId,
+        decision,
+        note: notes[requestId] || "",
+      });
+      toast.success(`Company marked ${decision}.`);
+    } catch (error) {
+      toast.error(
+        error?.message || "The company verification could not be updated.",
+      );
+    }
+  }
+
+  const items =
+    view === "reports"
+      ? reports
+      : view === "support"
+        ? tickets
+        : companyRequests;
 
   return (
     <main className="container py-10 lg:py-14">
@@ -211,7 +238,12 @@ export default function AdminTrustCenter() {
                   : "success"
               }
             >
-              {emailDeliveries.filter((delivery) => delivery.status === "failed").length} failed
+              {
+                emailDeliveries.filter(
+                  (delivery) => delivery.status === "failed",
+                ).length
+              }{" "}
+              failed
             </Badge>
           ) : null}
         </div>
@@ -248,7 +280,8 @@ export default function AdminTrustCenter() {
                         <strong className="truncate">{delivery.subject}</strong>
                       </div>
                       <p className="truncate text-sm text-[var(--text-secondary)]">
-                        {delivery.template} · {delivery.recipientEmail} · attempt {delivery.attempts}
+                        {delivery.template} · {delivery.recipientEmail} ·
+                        attempt {delivery.attempts}
                       </p>
                       {delivery.lastError ? (
                         <p className="mt-2 text-sm text-red-700">
@@ -280,6 +313,12 @@ export default function AdminTrustCenter() {
         >
           Support tickets
         </Button>
+        <Button
+          variant={view === "companies" ? "default" : "ghost"}
+          onClick={() => setView("companies")}
+        >
+          Company verification
+        </Button>
       </div>
 
       {items === undefined ? (
@@ -293,8 +332,13 @@ export default function AdminTrustCenter() {
           <CardContent className="p-8 text-center">
             <strong className="block text-lg">Queue clear</strong>
             <span className="text-sm text-[var(--text-secondary)]">
-              There are no {view === "reports" ? "reports" : "tickets"} to
-              review.
+              There are no{" "}
+              {view === "reports"
+                ? "reports"
+                : view === "support"
+                  ? "tickets"
+                  : "company requests"}{" "}
+              to review.
             </span>
           </CardContent>
         </Card>
@@ -322,22 +366,43 @@ export default function AdminTrustCenter() {
                       <span className="text-sm font-semibold text-emerald-700">
                         {"reason" in item
                           ? item.reason.replace(/_/g, " ")
-                          : item.category.replace(/_/g, " ")}
+                          : "category" in item
+                            ? item.category.replace(/_/g, " ")
+                            : item.country}
                       </span>
                     </div>
                     <h2 className="mb-1 text-lg font-semibold">
-                      {"subject" in item
-                        ? item.subject
-                        : item.targetLabel ||
-                          `${item.targetType}: ${item.targetId}`}
+                      {"companyName" in item
+                        ? item.companyName
+                        : "subject" in item
+                          ? item.subject
+                          : item.targetLabel ||
+                            `${item.targetType}: ${item.targetId}`}
                     </h2>
                     <p className="mb-3 text-sm text-[var(--text-secondary)]">
                       {item.userName || item.reporterName} ·{" "}
                       {item.userEmail || item.reporterEmail}
                     </p>
                     <p className="whitespace-pre-wrap text-sm leading-6 text-[var(--text-secondary)]">
-                      {"description" in item ? item.description : item.details}
+                      {"companyName" in item
+                        ? item.evidence
+                        : "description" in item
+                          ? item.description
+                          : item.details}
                     </p>
+                    {"companyName" in item ? (
+                      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[var(--text-secondary)]">
+                        <a
+                          className="font-semibold text-primary"
+                          href={item.website}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Open company website
+                        </a>
+                        <span>Registration: {item.registrationNumber}</span>
+                      </div>
+                    ) : null}
                     {"targetUrl" in item && item.targetUrl ? (
                       <Link
                         className="mt-3 inline-block text-sm font-semibold text-primary"
@@ -385,7 +450,7 @@ export default function AdminTrustCenter() {
                           Dismiss
                         </Button>
                       </>
-                    ) : (
+                    ) : view === "support" ? (
                       <>
                         <Button
                           variant="outline"
@@ -407,6 +472,28 @@ export default function AdminTrustCenter() {
                           Resolve
                         </Button>
                       </>
+                    ) : item.status === "pending" ? (
+                      <>
+                        <Button
+                          variant="outline"
+                          onClick={() => resolveCompany(item._id, "rejected")}
+                        >
+                          Reject
+                        </Button>
+                        <Button
+                          onClick={() => resolveCompany(item._id, "verified")}
+                        >
+                          Verify company
+                        </Button>
+                      </>
+                    ) : (
+                      <Badge
+                        variant={
+                          item.status === "verified" ? "success" : "warning"
+                        }
+                      >
+                        Review completed
+                      </Badge>
                     )}
                   </div>
                 </div>

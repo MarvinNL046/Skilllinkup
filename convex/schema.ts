@@ -32,7 +32,10 @@ import {
   supportStatusValidator,
 } from "./lib/trustState";
 import { uploadPurposeValidator } from "./lib/storageState";
-import { emailDeliveryStatusValidator, emailTemplateValidator } from "./lib/emailState";
+import {
+  emailDeliveryStatusValidator,
+  emailTemplateValidator,
+} from "./lib/emailState";
 
 export default defineSchema({
   // ============================================================
@@ -814,9 +817,17 @@ export default defineSchema({
     .index("by_participant2", ["participant2"])
     .index("by_participants", ["participant1", "participant2"])
     .index("by_order", ["orderId"])
-    .index("by_project_and_participants", ["projectId", "participant1", "participant2"])
+    .index("by_project_and_participants", [
+      "projectId",
+      "participant1",
+      "participant2",
+    ])
     .index("by_bid", ["bidId"])
-    .index("by_freelancerProfile_and_participants", ["freelancerProfileId", "participant1", "participant2"])
+    .index("by_freelancerProfile_and_participants", [
+      "freelancerProfileId",
+      "participant1",
+      "participant2",
+    ])
     .index("by_gig_and_participants", ["gigId", "participant1", "participant2"])
     .index("by_quote", ["quoteId"])
     .index("by_localAppointment", ["localAppointmentId"])
@@ -897,6 +908,26 @@ export default defineSchema({
     .index("by_user_status", ["userId", "status"])
     .index("by_status", ["status"])
     .index("by_priority_status", ["priority", "status"]),
+
+  companyVerificationRequests: defineTable({
+    tenantId: v.id("tenants"),
+    userId: v.id("users"),
+    companyName: v.string(),
+    website: v.string(),
+    registrationNumber: v.string(),
+    country: v.string(),
+    evidence: v.string(),
+    status: companyVerificationStatusValidator,
+    adminNote: v.optional(v.string()),
+    reviewedBy: v.optional(v.id("users")),
+    submittedAt: v.number(),
+    reviewedAt: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_and_status", ["userId", "status"])
+    .index("by_status", ["status"]),
 
   moderationAuditEvents: defineTable({
     tenantId: v.id("tenants"),

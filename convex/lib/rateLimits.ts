@@ -12,5 +12,6 @@ export const rateLimiter = new RateLimiter(components.rateLimiter, {
   localQuote: { kind: "token bucket", rate: 30, period: DAY, capacity: 6 },
   trustReport: { kind: "token bucket", rate: 10, period: DAY, capacity: 3 },
   supportTicket: { kind: "token bucket", rate: 10, period: DAY, capacity: 3 },
+  companyVerification: { kind: "fixed window", rate: 3, period: DAY },
   sendMessage: { kind: "token bucket", rate: 60, period: MINUTE, capacity: 20 },
 });

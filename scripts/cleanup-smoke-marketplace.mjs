@@ -19,7 +19,10 @@ function readEnv(filePath) {
     const idx = line.indexOf("=");
     if (idx === -1) continue;
     const key = line.slice(0, idx).trim();
-    const value = line.slice(idx + 1).trim().replace(/^"|"$/g, "");
+    const value = line
+      .slice(idx + 1)
+      .trim()
+      .replace(/^"|"$/g, "");
     env[key] = value;
   }
   return env;
@@ -30,15 +33,19 @@ if (!fs.existsSync(manifestFile)) {
 }
 
 const env = readEnv(envFile);
-const serverSecret = process.env.INTERNAL_EMAIL_SECRET || env.INTERNAL_EMAIL_SECRET;
+const serverSecret =
+  process.env.INTERNAL_EMAIL_SECRET || env.INTERNAL_EMAIL_SECRET;
 if (!serverSecret) {
   throw new Error("INTERNAL_EMAIL_SECRET is required in .env.local");
 }
-const convexUrl = urlArg?.slice("--url=".length)
-  || (isProd ? process.env.SMOKE_CONVEX_URL_PROD : process.env.SMOKE_CONVEX_URL)
-  || env.NEXT_PUBLIC_CONVEX_URL;
+const convexUrl =
+  urlArg?.slice("--url=".length) ||
+  (isProd ? process.env.SMOKE_CONVEX_URL_PROD : process.env.SMOKE_CONVEX_URL) ||
+  env.NEXT_PUBLIC_CONVEX_URL;
 if (!convexUrl) {
-  throw new Error("No Convex URL found. Set NEXT_PUBLIC_CONVEX_URL or pass --url=...");
+  throw new Error(
+    "No Convex URL found. Set NEXT_PUBLIC_CONVEX_URL or pass --url=...",
+  );
 }
 
 const manifest = JSON.parse(fs.readFileSync(manifestFile, "utf8"));
@@ -53,6 +60,9 @@ const payload = {
   withdrawalJobId: manifest.ids?.withdrawalJobId,
   withdrawalJobApplicationId: manifest.ids?.withdrawalJobApplicationId,
   companyUserId: manifest.ids?.companyUserId,
+  companyPreviousVerificationStatus:
+    manifest.ids?.companyPreviousVerificationStatus,
+  companyPreviousName: manifest.ids?.companyPreviousName,
   localClientId: manifest.ids?.localClientId,
   workspaceProjectId: manifest.ids?.workspaceProjectId,
   acceptedBidId: manifest.ids?.acceptedBidId,
@@ -79,9 +89,18 @@ const client = new ConvexHttpClient(convexUrl);
 await client.mutation(api.marketplace.smoke.cleanup, payload);
 
 const fixtureIds = Object.entries(manifest.ids ?? {})
-  .filter(([key, value]) =>
-    typeof value === "string"
-    && !["adminUserId", "adminPreviousRole", "qaUserId", "localClientId", "companyUserId"].includes(key)
+  .filter(
+    ([key, value]) =>
+      typeof value === "string" &&
+      ![
+        "adminUserId",
+        "adminPreviousRole",
+        "qaUserId",
+        "localClientId",
+        "companyUserId",
+        "companyPreviousVerificationStatus",
+        "companyPreviousName",
+      ].includes(key),
   )
   .map(([, value]) => value);
 const verification = await client.query(api.marketplace.smoke.verifyCleanup, {
@@ -102,7 +121,9 @@ const verification = await client.query(api.marketplace.smoke.verifyCleanup, {
   qaUserId: manifest.ids?.qaUserId,
 });
 if (!verification.ok) {
-  throw new Error(`Smoke cleanup verification failed: ${JSON.stringify(verification)}`);
+  throw new Error(
+    `Smoke cleanup verification failed: ${JSON.stringify(verification)}`,
+  );
 }
 console.log(`Cleanup verified: ${JSON.stringify(verification)}`);
 
