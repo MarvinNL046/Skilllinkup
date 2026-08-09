@@ -1,6 +1,6 @@
 # Skilllinkup technical audit
 
-Last updated: 4 August 2026
+Last updated: 9 August 2026
 
 Scope: technical foundation, canonical routing, Convex domain model, authentication, product workflows, private-beta policy and test readiness.
 
@@ -40,6 +40,8 @@ Scope: technical foundation, canonical routing, Convex domain model, authenticat
 - Service-package purchases now start an authenticated free-beta order directly and open a workspace; they no longer depend on Stripe Checkout.
 - Local supports request creation, free beta claiming, quotes, acceptance, appointment state, workspace, completion and review.
 - Jobs supports vacancy creation, public details, one application per candidate, candidate tracking and an employer applicant pipeline.
+- Jobs employers must complete a rate-limited company-verification request that is reviewed through the admin Trust & Safety queue. Only verified companies can publish, and only verified-company vacancies can appear in public reads.
+- Public Jobs list/detail and private employer-list queries now expose explicit runtime return contracts; public results omit tenant identifiers and reject closed, expired or unverified inventory.
 - Core actions create in-app notifications for the affected counterparty.
 - Online, Local and Jobs lifecycle emails use the same action events, respect per-user notification preferences and record an idempotent delivery audit with provider message IDs and bounded retries.
 

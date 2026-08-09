@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation } from "../_generated/server";
+import type { Doc } from "../_generated/dataModel";
 import {
   requireAuthUser,
   requireMarketplaceContext,
@@ -11,6 +12,90 @@ import {
   jobTransitions,
 } from "../lib/marketplaceState";
 
+const publicJobFields = {
+  _id: v.id("jobs"),
+  _creationTime: v.number(),
+  clientId: v.id("users"),
+  title: v.string(),
+  slug: v.string(),
+  description: v.string(),
+  categoryId: v.optional(v.id("marketplaceCategories")),
+  company: v.optional(v.string()),
+  companyLogo: v.optional(v.string()),
+  requiredSkills: v.optional(v.array(v.string())),
+  salaryMin: v.optional(v.number()),
+  salaryMax: v.optional(v.number()),
+  currency: v.optional(v.string()),
+  jobType: v.string(),
+  experienceLevel: v.optional(v.string()),
+  workType: v.optional(v.string()),
+  locationCity: v.optional(v.string()),
+  locationCountry: v.optional(v.string()),
+  benefits: v.optional(v.array(v.string())),
+  applicationCount: v.optional(v.number()),
+  views: v.optional(v.number()),
+  status: jobStatusValidator,
+  locale: v.string(),
+  publishedAt: v.optional(v.number()),
+  expiresAt: v.optional(v.number()),
+  createdAt: v.number(),
+  updatedAt: v.number(),
+};
+
+const publicJobValidator = v.object({
+  ...publicJobFields,
+  clientName: v.union(v.string(), v.null()),
+  clientAvatar: v.union(v.string(), v.null()),
+  categoryName: v.union(v.string(), v.null()),
+  companyVerified: v.boolean(),
+});
+
+const ownedJobValidator = v.object({
+  ...publicJobFields,
+  tenantId: v.id("tenants"),
+  categoryName: v.union(v.string(), v.null()),
+});
+
+function toPublicJob(
+  job: Doc<"jobs">,
+  client: Doc<"users">,
+  category: Doc<"marketplaceCategories"> | null,
+) {
+  return {
+    _id: job._id,
+    _creationTime: job._creationTime,
+    clientId: job.clientId,
+    title: job.title,
+    slug: job.slug,
+    description: job.description,
+    categoryId: job.categoryId,
+    company: job.company,
+    companyLogo: job.companyLogo,
+    requiredSkills: job.requiredSkills,
+    salaryMin: job.salaryMin,
+    salaryMax: job.salaryMax,
+    currency: job.currency,
+    jobType: job.jobType,
+    experienceLevel: job.experienceLevel,
+    workType: job.workType,
+    locationCity: job.locationCity,
+    locationCountry: job.locationCountry,
+    benefits: job.benefits,
+    applicationCount: job.applicationCount,
+    views: job.views,
+    status: job.status,
+    locale: job.locale,
+    publishedAt: job.publishedAt,
+    expiresAt: job.expiresAt,
+    createdAt: job.createdAt,
+    updatedAt: job.updatedAt,
+    clientName: client.name,
+    clientAvatar: client.avatar ?? client.image ?? null,
+    categoryName: category?.name ?? null,
+    companyVerified: true,
+  };
+}
+
 /**
  * List open jobs with client info and category name.
  */
@@ -19,8 +104,9 @@ export const list = query({
     locale: v.string(),
     limit: v.optional(v.number()),
   },
+  returns: v.array(publicJobValidator),
   handler: async (ctx, args) => {
-    const limit = args.limit ?? 20;
+    const limit = Math.max(1, Math.min(args.limit ?? 20, 100));
 
     const jobs = await ctx.db
       .query("jobs")
@@ -46,13 +132,7 @@ export const list = query({
             ? await ctx.db.get(job.categoryId)
             : null;
 
-          return {
-            ...job,
-            clientName: client?.name ?? null,
-            clientAvatar: client?.avatar ?? client?.image ?? null,
-            categoryName: category?.name ?? null,
-            companyVerified: true,
-          };
+          return toPublicJob(job, client, category);
         } catch {
           // Verification and ownership enrichment must fail closed.
           return null;
@@ -72,6 +152,7 @@ export const getBySlug = query({
     slug: v.string(),
     locale: v.string(),
   },
+  returns: v.union(v.null(), publicJobValidator),
   handler: async (ctx, args) => {
     const job = await ctx.db
       .query("jobs")
@@ -97,13 +178,7 @@ export const getBySlug = query({
     }
     if (client?.companyVerificationStatus !== "verified") return null;
 
-    return {
-      ...job,
-      clientName: client?.name ?? null,
-      clientAvatar: client?.avatar ?? client?.image ?? null,
-      categoryName: category?.name ?? null,
-      companyVerified: true,
-    };
+    return toPublicJob(job, client, category);
   },
 });
 
@@ -115,10 +190,11 @@ export const getByClient = query({
     clientId: v.id("users"),
     limit: v.optional(v.number()),
   },
+  returns: v.array(ownedJobValidator),
   handler: async (ctx, args) => {
     await requireOwner(ctx, args.clientId);
 
-    const limit = args.limit ?? 50;
+    const limit = Math.max(1, Math.min(args.limit ?? 50, 100));
 
     const jobs = await ctx.db
       .query("jobs")
