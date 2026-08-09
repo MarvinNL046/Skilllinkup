@@ -41,6 +41,7 @@ export const list = query({
       eligibleJobs.map(async (job) => {
         try {
           const client = await ctx.db.get(job.clientId);
+          if (client?.companyVerificationStatus !== "verified") return null;
           const category = job.categoryId
             ? await ctx.db.get(job.categoryId)
             : null;
@@ -50,20 +51,16 @@ export const list = query({
             clientName: client?.name ?? null,
             clientAvatar: client?.avatar ?? client?.image ?? null,
             categoryName: category?.name ?? null,
+            companyVerified: true,
           };
         } catch {
-          // If enrichment fails (e.g. deleted user), return job with defaults
-          return {
-            ...job,
-            clientName: null,
-            clientAvatar: null,
-            categoryName: null,
-          };
+          // Verification and ownership enrichment must fail closed.
+          return null;
         }
       }),
     );
 
-    return enriched;
+    return enriched.filter((job) => job !== null);
   },
 });
 
@@ -83,7 +80,12 @@ export const getBySlug = query({
       )
       .first();
 
-    if (!job) return null;
+    if (
+      !job ||
+      job.status !== "open" ||
+      (job.expiresAt !== undefined && job.expiresAt <= Date.now())
+    )
+      return null;
 
     let client = null;
     let category = null;
@@ -93,12 +95,14 @@ export const getBySlug = query({
     } catch {
       // Silently handle missing references
     }
+    if (client?.companyVerificationStatus !== "verified") return null;
 
     return {
       ...job,
       clientName: client?.name ?? null,
       clientAvatar: client?.avatar ?? client?.image ?? null,
       categoryName: category?.name ?? null,
+      companyVerified: true,
     };
   },
 });
@@ -178,6 +182,14 @@ export const create = mutation({
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
     requireMarketplaceContext(user, "company", "jobs", "publishing a vacancy");
+    if (
+      user.role !== "admin" &&
+      user.companyVerificationStatus !== "verified"
+    ) {
+      throw new Error(
+        "Company verification is required before publishing a vacancy.",
+      );
+    }
     const now = Date.now();
     const title = args.title.trim();
     const description = args.description.trim();

@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { mutation, query, MutationCtx } from "../_generated/server";
 import { Id } from "../_generated/dataModel";
 import { requireServerSecret } from "../lib/authHelpers";
+import { companyVerificationStatusValidator } from "../lib/marketplaceState";
 
 type SeedLookup = {
   tenantId: Id<"tenants">;
@@ -25,6 +26,10 @@ const seedResultValidator = v.object({
     withdrawalJobId: v.id("jobs"),
     withdrawalJobApplicationId: v.id("jobApplications"),
     companyUserId: v.id("users"),
+    companyPreviousVerificationStatus: v.optional(
+      companyVerificationStatusValidator,
+    ),
+    companyPreviousName: v.optional(v.string()),
     localClientId: v.id("users"),
     workspaceProjectId: v.id("projects"),
     acceptedBidId: v.id("bids"),
@@ -59,7 +64,9 @@ const seedResultValidator = v.object({
 });
 
 function isDedicatedQaEmail(email: string) {
-  return /^skilllinkup\.qa\+(?:clerk_test|local-client_clerk_test|company_clerk_test)@skilllinkup\.com$/i.test(email);
+  return /^skilllinkup\.qa\+(?:clerk_test|local-client_clerk_test|company_clerk_test)@skilllinkup\.com$/i.test(
+    email,
+  );
 }
 
 async function getSeedLookup(
@@ -74,7 +81,7 @@ async function getSeedLookup(
     freelancerEmail: string;
     categorySlug: string;
     locale: string;
-  }
+  },
 ): Promise<SeedLookup> {
   const tenant = await ctx.db.query("tenants").first();
   if (!tenant) throw new Error("No tenant found.");
@@ -89,7 +96,8 @@ async function getSeedLookup(
     .query("users")
     .withIndex("by_email", (q) => q.eq("email", freelancerEmail))
     .first();
-  if (!freelancer) throw new Error(`Freelancer user not found for ${freelancerEmail}.`);
+  if (!freelancer)
+    throw new Error(`Freelancer user not found for ${freelancerEmail}.`);
 
   const freelancerProfile = await ctx.db
     .query("freelancerProfiles")
@@ -102,10 +110,11 @@ async function getSeedLookup(
   const category = await ctx.db
     .query("marketplaceCategories")
     .withIndex("by_slug_locale", (q) =>
-      q.eq("slug", categorySlug).eq("locale", locale)
+      q.eq("slug", categorySlug).eq("locale", locale),
     )
     .first();
-  if (!category) throw new Error(`Category not found for slug ${categorySlug}.`);
+  if (!category)
+    throw new Error(`Category not found for slug ${categorySlug}.`);
 
   return {
     tenantId: tenant._id,
@@ -149,7 +158,8 @@ export const seed = mutation({
 
     const client = await ctx.db.get(lookup.clientId);
     const freelancer = await ctx.db.get(lookup.freelancerId);
-    if (!client || !freelancer) throw new Error("Smoke test users disappeared during setup.");
+    if (!client || !freelancer)
+      throw new Error("Smoke test users disappeared during setup.");
 
     const clientRoles = new Set(client.accountRoles ?? []);
     clientRoles.add("client");
@@ -183,7 +193,9 @@ export const seed = mutation({
           .first()
       : null;
     if (args.localClientEmail && !localClientUser) {
-      throw new Error(`Local client QA user not found for ${args.localClientEmail}.`);
+      throw new Error(
+        `Local client QA user not found for ${args.localClientEmail}.`,
+      );
     }
 
     const freelancerRoles = new Set(freelancer.accountRoles ?? []);
@@ -210,6 +222,15 @@ export const seed = mutation({
       throw new Error(`Company QA user not found for ${args.companyEmail}.`);
     }
     const companyUserId = companyUser?._id ?? lookup.clientId;
+    const companyOwner = companyUser ?? client;
+    const companyPreviousVerificationStatus =
+      companyOwner.companyVerificationStatus;
+    const companyPreviousName = companyOwner.companyName;
+    await ctx.db.patch(companyUserId, {
+      companyName: companyOwner.companyName ?? "SkillLinkup QA",
+      companyVerificationStatus: "verified",
+      updatedAt: now,
+    });
     const localClientId = localClientUser?._id ?? companyUserId;
 
     const gigId = await ctx.db.insert("gigs", {
@@ -304,7 +325,8 @@ export const seed = mutation({
       tenantId: lookup.tenantId,
       jobId,
       candidateId: lookup.clientId,
-      coverLetter: "Smoke test application for validating the candidate and employer pipelines.",
+      coverLetter:
+        "Smoke test application for validating the candidate and employer pipelines.",
       portfolioUrl: "https://example.com/smoke-portfolio",
       status: "submitted",
       submittedAt: now,
@@ -319,7 +341,8 @@ export const seed = mutation({
       clientId: companyUserId,
       title: `Smoke Withdrawal Job ${args.tag}`,
       slug: `smoke-withdrawal-job-${args.tag}`,
-      description: "Secondary fixture used to prove that a candidate can withdraw an application.",
+      description:
+        "Secondary fixture used to prove that a candidate can withdraw an application.",
       categoryId: lookup.categoryId,
       company: "SkillLinkup QA",
       requiredSkills: ["Communication", "Operations"],
@@ -341,7 +364,8 @@ export const seed = mutation({
       tenantId: lookup.tenantId,
       jobId: withdrawalJobId,
       candidateId: lookup.clientId,
-      coverLetter: "Secondary smoke application used only to validate the candidate withdrawal boundary.",
+      coverLetter:
+        "Secondary smoke application used only to validate the candidate withdrawal boundary.",
       status: "submitted",
       submittedAt: now,
       statusUpdatedAt: now,
@@ -354,7 +378,8 @@ export const seed = mutation({
       clientId: localClientId,
       title: `Smoke Workspace Project ${args.tag}`,
       slug: `smoke-workspace-${args.tag}`,
-      description: "Accepted private-beta project used to validate the complete order workspace.",
+      description:
+        "Accepted private-beta project used to validate the complete order workspace.",
       categoryId: lookup.categoryId,
       requiredSkills: ["Product design", "Next.js", "Convex"],
       budgetMin: 1800,
@@ -429,7 +454,8 @@ export const seed = mutation({
     const messageId = await ctx.db.insert("messages", {
       conversationId,
       senderId: lookup.freelancerId,
-      content: "The private-beta workspace is ready. I will share the first delivery here.",
+      content:
+        "The private-beta workspace is ready. I will share the first delivery here.",
       messageType: "text",
       isRead: false,
       createdAt: now,
@@ -480,7 +506,8 @@ export const seed = mutation({
       clientId: localClientId,
       categoryId: lookup.categoryId,
       title: `Smoke Local Appointment ${args.tag}`,
-      description: "Accepted local service request used to validate scheduling, progress and completion.",
+      description:
+        "Accepted local service request used to validate scheduling, progress and completion.",
       locationCity: "Rotterdam",
       locationPostcode: "3011AA",
       locationCountry: "Netherlands",
@@ -569,7 +596,8 @@ export const seed = mutation({
       clientId: localClientId,
       categoryId: lookup.categoryId,
       title: `Smoke Local Cancellation ${args.tag}`,
-      description: "Secondary accepted local request used to verify cancellation synchronization.",
+      description:
+        "Secondary accepted local request used to verify cancellation synchronization.",
       locationCity: "The Hague",
       locationPostcode: "2511AA",
       locationCountry: "Netherlands",
@@ -588,7 +616,8 @@ export const seed = mutation({
       freelancerId: lookup.freelancerProfileId,
       amount: 225,
       currency: "EUR",
-      description: "Accepted secondary quote for cancellation-state acceptance.",
+      description:
+        "Accepted secondary quote for cancellation-state acceptance.",
       estimatedDays: 1,
       status: "accepted",
       createdAt: now,
@@ -642,6 +671,8 @@ export const seed = mutation({
         withdrawalJobId,
         withdrawalJobApplicationId,
         companyUserId,
+        companyPreviousVerificationStatus,
+        companyPreviousName,
         localClientId,
         workspaceProjectId,
         acceptedBidId,
@@ -718,7 +749,17 @@ export const seedStaycool = mutation({
         bio: "StayCool Airconditioning is uw specialist voor airconditioning in de Randstad. Met meer dan 10 jaar ervaring leveren wij hoogwaardige aircosystemen voor woningen en bedrijfspanden. Van advies tot installatie en jaarlijks onderhoud — wij zorgen voor een aangenaam binnenklimaat het hele jaar door. Wij werken uitsluitend met A-merken zoals Daikin, Mitsubishi en Samsung, en bieden garantie op al onze installaties.",
         workType: "local",
         serviceRadiusKm: 50,
-        skills: ["Airconditioning", "HVAC", "Klimaatbeheersing", "Split-unit installatie", "Warmtepomp", "Onderhoud", "Daikin", "Mitsubishi", "Samsung"],
+        skills: [
+          "Airconditioning",
+          "HVAC",
+          "Klimaatbeheersing",
+          "Split-unit installatie",
+          "Warmtepomp",
+          "Onderhoud",
+          "Daikin",
+          "Mitsubishi",
+          "Samsung",
+        ],
         isVerified: true,
         verificationDate: now,
         level: "pro",
@@ -752,7 +793,17 @@ export const seedStaycool = mutation({
         locationCity: "Rotterdam",
         locationCountry: "Netherlands",
         serviceRadiusKm: 50,
-        skills: ["Airconditioning", "HVAC", "Klimaatbeheersing", "Split-unit installatie", "Warmtepomp", "Onderhoud", "Daikin", "Mitsubishi", "Samsung"],
+        skills: [
+          "Airconditioning",
+          "HVAC",
+          "Klimaatbeheersing",
+          "Split-unit installatie",
+          "Warmtepomp",
+          "Onderhoud",
+          "Daikin",
+          "Mitsubishi",
+          "Samsung",
+        ],
         languages: ["Nederlands", "English"],
         status: "active",
         profileVisibility: "public",
@@ -778,7 +829,9 @@ export const seedStaycool = mutation({
     // Find HVAC category
     const hvacCategory = await ctx.db
       .query("marketplaceCategories")
-      .withIndex("by_slug_locale", (q) => q.eq("slug", "hvac").eq("locale", "en"))
+      .withIndex("by_slug_locale", (q) =>
+        q.eq("slug", "hvac").eq("locale", "en"),
+      )
       .first();
     const hvacCategoryId = hvacCategory?._id;
 
@@ -788,7 +841,8 @@ export const seedStaycool = mutation({
       freelancerId: profileId,
       title: "Airconditioning Installatie",
       slug: "airconditioning-installatie-staycool",
-      description: "Complete airconditioning installatie voor uw woning of kantoor. Inclusief advies op locatie, levering van het systeem, professionele installatie en inbedrijfstelling. Wij werken met topmerken als Daikin, Mitsubishi en Samsung.",
+      description:
+        "Complete airconditioning installatie voor uw woning of kantoor. Inclusief advies op locatie, levering van het systeem, professionele installatie en inbedrijfstelling. Wij werken met topmerken als Daikin, Mitsubishi en Samsung.",
       categoryId: hvacCategoryId,
       tags: ["airco", "installatie", "split-unit", "daikin", "koeling"],
       workType: "local",
@@ -816,7 +870,13 @@ export const seedStaycool = mutation({
       currency: "EUR",
       deliveryDays: 5,
       revisionCount: 0,
-      features: ["Adviesgesprek op locatie", "Daikin/Samsung split-unit", "Professionele installatie", "Inbedrijfstelling & uitleg", "2 jaar garantie"],
+      features: [
+        "Adviesgesprek op locatie",
+        "Daikin/Samsung split-unit",
+        "Professionele installatie",
+        "Inbedrijfstelling & uitleg",
+        "2 jaar garantie",
+      ],
       createdAt: now,
       updatedAt: now,
     });
@@ -830,7 +890,14 @@ export const seedStaycool = mutation({
       currency: "EUR",
       deliveryDays: 7,
       revisionCount: 0,
-      features: ["Adviesgesprek op locatie", "Multi-split systeem (2 units)", "Professionele installatie", "Leidingwerk weggewerkt", "Inbedrijfstelling & uitleg", "3 jaar garantie"],
+      features: [
+        "Adviesgesprek op locatie",
+        "Multi-split systeem (2 units)",
+        "Professionele installatie",
+        "Leidingwerk weggewerkt",
+        "Inbedrijfstelling & uitleg",
+        "3 jaar garantie",
+      ],
       createdAt: now,
       updatedAt: now,
     });
@@ -839,12 +906,20 @@ export const seedStaycool = mutation({
       gigId: gig1Id,
       tier: "premium",
       title: "Complete Woning",
-      description: "Multi-split systeem voor 3-4 ruimtes met premium Daikin units en WiFi-bediening",
+      description:
+        "Multi-split systeem voor 3-4 ruimtes met premium Daikin units en WiFi-bediening",
       price: 4995,
       currency: "EUR",
       deliveryDays: 10,
       revisionCount: 0,
-      features: ["Uitgebreid advies & ontwerp", "Premium Daikin multi-split (3-4 units)", "WiFi-module (app-bediening)", "Complete installatie & afwerking", "Leidingwerk volledig weggewerkt", "5 jaar garantie"],
+      features: [
+        "Uitgebreid advies & ontwerp",
+        "Premium Daikin multi-split (3-4 units)",
+        "WiFi-module (app-bediening)",
+        "Complete installatie & afwerking",
+        "Leidingwerk volledig weggewerkt",
+        "5 jaar garantie",
+      ],
       createdAt: now,
       updatedAt: now,
     });
@@ -855,7 +930,8 @@ export const seedStaycool = mutation({
       freelancerId: profileId,
       title: "Airconditioning Onderhoud & Service",
       slug: "airco-onderhoud-service-staycool",
-      description: "Professioneel onderhoud van uw aircosysteem. Jaarlijks onderhoud verlengt de levensduur, verbetert de luchtkwaliteit en houdt het energieverbruik laag.",
+      description:
+        "Professioneel onderhoud van uw aircosysteem. Jaarlijks onderhoud verlengt de levensduur, verbetert de luchtkwaliteit en houdt het energieverbruik laag.",
       categoryId: hvacCategoryId,
       tags: ["airco", "onderhoud", "service", "reiniging", "inspectie"],
       workType: "local",
@@ -883,7 +959,13 @@ export const seedStaycool = mutation({
       currency: "EUR",
       deliveryDays: 3,
       revisionCount: 0,
-      features: ["Filters reinigen/vervangen", "Koudemiddel controle", "Condensafvoer reinigen", "Werking testen", "Servicerapport"],
+      features: [
+        "Filters reinigen/vervangen",
+        "Koudemiddel controle",
+        "Condensafvoer reinigen",
+        "Werking testen",
+        "Servicerapport",
+      ],
       createdAt: now,
       updatedAt: now,
     });
@@ -892,12 +974,20 @@ export const seedStaycool = mutation({
       gigId: gig2Id,
       tier: "standard",
       title: "Multi-Split (2-3 units)",
-      description: "Onderhoudsbeurt voor multi-split systeem met 2-3 binnenunits",
+      description:
+        "Onderhoudsbeurt voor multi-split systeem met 2-3 binnenunits",
       price: 219,
       currency: "EUR",
       deliveryDays: 3,
       revisionCount: 0,
-      features: ["Alle binnenunits reinigen", "Buitenunit reinigen & inspecteren", "Koudemiddel controle", "Leidingwerk inspectie", "Werking & rendement testen", "Uitgebreid servicerapport"],
+      features: [
+        "Alle binnenunits reinigen",
+        "Buitenunit reinigen & inspecteren",
+        "Koudemiddel controle",
+        "Leidingwerk inspectie",
+        "Werking & rendement testen",
+        "Uitgebreid servicerapport",
+      ],
       createdAt: now,
       updatedAt: now,
     });
@@ -906,12 +996,20 @@ export const seedStaycool = mutation({
       gigId: gig2Id,
       tier: "premium",
       title: "Jaarcontract",
-      description: "Jaarlijks onderhoudscontract met 2 servicebeurten en prioriteit bij storingen",
+      description:
+        "Jaarlijks onderhoudscontract met 2 servicebeurten en prioriteit bij storingen",
       price: 349,
       currency: "EUR",
       deliveryDays: 7,
       revisionCount: 0,
-      features: ["2x onderhoud per jaar", "Alle units gereinigd & geïnspecteerd", "Voorrang bij storingen", "10% korting op reparaties", "Telefonisch advies", "Verlengde garantie"],
+      features: [
+        "2x onderhoud per jaar",
+        "Alle units gereinigd & geïnspecteerd",
+        "Voorrang bij storingen",
+        "10% korting op reparaties",
+        "Telefonisch advies",
+        "Verlengde garantie",
+      ],
       createdAt: now,
       updatedAt: now,
     });
@@ -922,9 +1020,14 @@ export const seedStaycool = mutation({
       clientId: userId,
       title: "Airco installatie bovenwoning Rotterdam-Zuid",
       slug: "airco-installatie-bovenwoning-rotterdam-zuid",
-      description: "We zoeken een ervaren airco-installateur voor het plaatsen van een split-unit systeem in onze bovenwoning in Rotterdam-Zuid. Het gaat om 2 slaapkamers en een woonkamer.",
+      description:
+        "We zoeken een ervaren airco-installateur voor het plaatsen van een split-unit systeem in onze bovenwoning in Rotterdam-Zuid. Het gaat om 2 slaapkamers en een woonkamer.",
       categoryId: hvacCategoryId,
-      requiredSkills: ["Airconditioning", "Split-unit installatie", "Residentieel"],
+      requiredSkills: [
+        "Airconditioning",
+        "Split-unit installatie",
+        "Residentieel",
+      ],
       budgetMin: 2500,
       budgetMax: 4500,
       currency: "EUR",
@@ -944,9 +1047,15 @@ export const seedStaycool = mutation({
       clientId: userId,
       title: "Klimaatbeheersing kantoorpand Capelle a/d IJssel",
       slug: "klimaatbeheersing-kantoorpand-capelle",
-      description: "Voor ons kantoorpand in Capelle aan den IJssel (ca. 200m²) zoeken wij een specialist voor het ontwerpen en installeren van een compleet klimaatbeheersing systeem.",
+      description:
+        "Voor ons kantoorpand in Capelle aan den IJssel (ca. 200m²) zoeken wij een specialist voor het ontwerpen en installeren van een compleet klimaatbeheersing systeem.",
       categoryId: hvacCategoryId,
-      requiredSkills: ["HVAC", "Warmtepomp", "Klimaatbeheersing", "Commercieel"],
+      requiredSkills: [
+        "HVAC",
+        "Warmtepomp",
+        "Klimaatbeheersing",
+        "Commercieel",
+      ],
       budgetMin: 8000,
       budgetMax: 15000,
       currency: "EUR",
@@ -966,7 +1075,8 @@ export const seedStaycool = mutation({
       userId,
       tenantId,
       title: "Villa Klimaatsysteem Wassenaar",
-      description: "Complete klimaatoplossing voor een vrijstaande villa. 6-zone Daikin multi-split systeem met vloerverwarming-integratie. Smart home koppeling via Daikin Onecta app.",
+      description:
+        "Complete klimaatoplossing voor een vrijstaande villa. 6-zone Daikin multi-split systeem met vloerverwarming-integratie. Smart home koppeling via Daikin Onecta app.",
       tags: ["Daikin", "Villa", "Multi-split", "Smart Home"],
       sortOrder: 1,
       createdAt: now - 90 * 24 * 60 * 60 * 1000,
@@ -977,7 +1087,8 @@ export const seedStaycool = mutation({
       userId,
       tenantId,
       title: "Restaurant De Havenloods — Koelinstallatie",
-      description: "Commerciële koelinstallatie voor restaurant met open keuken. Mitsubishi cassette-units met 360° luchtstroom.",
+      description:
+        "Commerciële koelinstallatie voor restaurant met open keuken. Mitsubishi cassette-units met 360° luchtstroom.",
       tags: ["Mitsubishi", "Horeca", "Cassette-unit", "Commercieel"],
       sortOrder: 2,
       createdAt: now - 60 * 24 * 60 * 60 * 1000,
@@ -988,7 +1099,8 @@ export const seedStaycool = mutation({
       userId,
       tenantId,
       title: "Penthouse Rotterdam Kop van Zuid",
-      description: "Luxe penthouse met volledig weggewerkte airconditioning. Samsung WindFree units die koelen zonder directe luchtstroom.",
+      description:
+        "Luxe penthouse met volledig weggewerkte airconditioning. Samsung WindFree units die koelen zonder directe luchtstroom.",
       tags: ["Samsung", "WindFree", "Penthouse", "Design"],
       sortOrder: 3,
       createdAt: now - 30 * 24 * 60 * 60 * 1000,
@@ -1002,7 +1114,8 @@ export const seedStaycool = mutation({
       gig2Id,
       project1Id,
       project2Id,
-      message: "StayCool Airconditioning: 2 gigs (6 packages), 2 projects, 3 portfolio items created",
+      message:
+        "StayCool Airconditioning: 2 gigs (6 packages), 2 projects, 3 portfolio items created",
     };
   },
 });
@@ -1019,6 +1132,10 @@ export const cleanup = mutation({
     withdrawalJobId: v.optional(v.id("jobs")),
     withdrawalJobApplicationId: v.optional(v.id("jobApplications")),
     companyUserId: v.optional(v.id("users")),
+    companyPreviousVerificationStatus: v.optional(
+      companyVerificationStatusValidator,
+    ),
+    companyPreviousName: v.optional(v.string()),
     localClientId: v.optional(v.id("users")),
     workspaceProjectId: v.optional(v.id("projects")),
     acceptedBidId: v.optional(v.id("bids")),
@@ -1046,7 +1163,7 @@ export const cleanup = mutation({
 
     if (args.localAppointmentId || args.cancellationAppointmentId) {
       const notificationUsers = [args.qaUserId, args.localClientId].filter(
-        (id): id is Id<"users"> => id !== undefined
+        (id): id is Id<"users"> => id !== undefined,
       );
       for (const userId of notificationUsers) {
         const notifications = await ctx.db
@@ -1055,10 +1172,11 @@ export const cleanup = mutation({
           .order("desc")
           .take(100);
         for (const notification of notifications) {
-          const metadata = notification.metadata as { appointmentId?: string } | undefined;
+          const metadata = notification.metadata as
+            { appointmentId?: string } | undefined;
           if (
-            metadata?.appointmentId === args.localAppointmentId
-            || metadata?.appointmentId === args.cancellationAppointmentId
+            metadata?.appointmentId === args.localAppointmentId ||
+            metadata?.appointmentId === args.cancellationAppointmentId
           ) {
             await ctx.db.delete(notification._id);
           }
@@ -1068,7 +1186,7 @@ export const cleanup = mutation({
 
     if (args.jobId || args.withdrawalJobId) {
       for (const userId of [args.qaUserId, args.companyUserId].filter(
-        (id): id is Id<"users"> => id !== undefined
+        (id): id is Id<"users"> => id !== undefined,
       )) {
         const notifications = await ctx.db
           .query("notifications")
@@ -1076,12 +1194,13 @@ export const cleanup = mutation({
           .order("desc")
           .take(100);
         for (const notification of notifications) {
-          const metadata = notification.metadata as { jobId?: string; applicationId?: string } | undefined;
+          const metadata = notification.metadata as
+            { jobId?: string; applicationId?: string } | undefined;
           if (
-            metadata?.jobId === args.jobId
-            || metadata?.jobId === args.withdrawalJobId
-            || metadata?.applicationId === args.jobApplicationId
-            || metadata?.applicationId === args.withdrawalJobApplicationId
+            metadata?.jobId === args.jobId ||
+            metadata?.jobId === args.withdrawalJobId ||
+            metadata?.applicationId === args.jobApplicationId ||
+            metadata?.applicationId === args.withdrawalJobApplicationId
           ) {
             await ctx.db.delete(notification._id);
           }
@@ -1099,11 +1218,24 @@ export const cleanup = mutation({
       }
     }
 
-    const qaActorIds = [...new Set(
-      [args.qaUserId, args.localClientId, args.companyUserId].filter(
-        (id): id is Id<"users"> => id !== undefined
-      )
-    )];
+    if (args.companyUserId) {
+      const companyUser = await ctx.db.get(args.companyUserId);
+      if (companyUser && isDedicatedQaEmail(companyUser.email)) {
+        await ctx.db.patch(companyUser._id, {
+          companyName: args.companyPreviousName,
+          companyVerificationStatus: args.companyPreviousVerificationStatus,
+          updatedAt: Date.now(),
+        });
+      }
+    }
+
+    const qaActorIds = [
+      ...new Set(
+        [args.qaUserId, args.localClientId, args.companyUserId].filter(
+          (id): id is Id<"users"> => id !== undefined,
+        ),
+      ),
+    ];
     for (const qaActorId of qaActorIds) {
       const emailDeliveries = await ctx.db
         .query("emailDeliveries")
@@ -1123,7 +1255,8 @@ export const cleanup = mutation({
               .query("jobApplications")
               .withIndex("by_job", (q) => q.eq("jobId", job._id))
               .take(100);
-            for (const application of applications) await ctx.db.delete(application._id);
+            for (const application of applications)
+              await ctx.db.delete(application._id);
             await ctx.db.delete(job._id);
           }
         }
@@ -1165,25 +1298,55 @@ export const cleanup = mutation({
     for (const conversationId of contextualConversationIds) {
       const messages = await ctx.db
         .query("messages")
-        .withIndex("by_conversation", (q) => q.eq("conversationId", conversationId))
+        .withIndex("by_conversation", (q) =>
+          q.eq("conversationId", conversationId),
+        )
         .take(100);
       for (const message of messages) await ctx.db.delete(message._id);
       if (await ctx.db.get(conversationId)) await ctx.db.delete(conversationId);
     }
 
-    if (args.localAppointmentId && (await ctx.db.get(args.localAppointmentId))) await ctx.db.delete(args.localAppointmentId);
-    if (args.cancellationAppointmentId && (await ctx.db.get(args.cancellationAppointmentId))) await ctx.db.delete(args.cancellationAppointmentId);
-    if (args.cancellationOrderId && (await ctx.db.get(args.cancellationOrderId))) await ctx.db.delete(args.cancellationOrderId);
-    if (args.cancellationQuoteId && (await ctx.db.get(args.cancellationQuoteId))) await ctx.db.delete(args.cancellationQuoteId);
-    if (args.cancellationQuoteRequestId && (await ctx.db.get(args.cancellationQuoteRequestId))) await ctx.db.delete(args.cancellationQuoteRequestId);
-    if (args.localConversationId && (await ctx.db.get(args.localConversationId))) await ctx.db.delete(args.localConversationId);
-    if (args.localOrderId && (await ctx.db.get(args.localOrderId))) await ctx.db.delete(args.localOrderId);
-    if (args.localQuoteId && (await ctx.db.get(args.localQuoteId))) await ctx.db.delete(args.localQuoteId);
-    if (args.localLeadClaimId && (await ctx.db.get(args.localLeadClaimId))) await ctx.db.delete(args.localLeadClaimId);
-    if (args.localQuoteRequestId && (await ctx.db.get(args.localQuoteRequestId))) await ctx.db.delete(args.localQuoteRequestId);
+    if (args.localAppointmentId && (await ctx.db.get(args.localAppointmentId)))
+      await ctx.db.delete(args.localAppointmentId);
+    if (
+      args.cancellationAppointmentId &&
+      (await ctx.db.get(args.cancellationAppointmentId))
+    )
+      await ctx.db.delete(args.cancellationAppointmentId);
+    if (
+      args.cancellationOrderId &&
+      (await ctx.db.get(args.cancellationOrderId))
+    )
+      await ctx.db.delete(args.cancellationOrderId);
+    if (
+      args.cancellationQuoteId &&
+      (await ctx.db.get(args.cancellationQuoteId))
+    )
+      await ctx.db.delete(args.cancellationQuoteId);
+    if (
+      args.cancellationQuoteRequestId &&
+      (await ctx.db.get(args.cancellationQuoteRequestId))
+    )
+      await ctx.db.delete(args.cancellationQuoteRequestId);
+    if (
+      args.localConversationId &&
+      (await ctx.db.get(args.localConversationId))
+    )
+      await ctx.db.delete(args.localConversationId);
+    if (args.localOrderId && (await ctx.db.get(args.localOrderId)))
+      await ctx.db.delete(args.localOrderId);
+    if (args.localQuoteId && (await ctx.db.get(args.localQuoteId)))
+      await ctx.db.delete(args.localQuoteId);
+    if (args.localLeadClaimId && (await ctx.db.get(args.localLeadClaimId)))
+      await ctx.db.delete(args.localLeadClaimId);
+    if (
+      args.localQuoteRequestId &&
+      (await ctx.db.get(args.localQuoteRequestId))
+    )
+      await ctx.db.delete(args.localQuoteRequestId);
 
     for (const lifecycleOrderId of [args.orderId, args.localOrderId].filter(
-      (id): id is Id<"orders"> => id !== undefined
+      (id): id is Id<"orders"> => id !== undefined,
     )) {
       const reviews = await ctx.db
         .query("marketplaceReviews")
@@ -1192,7 +1355,7 @@ export const cleanup = mutation({
       for (const review of reviews) await ctx.db.delete(review._id);
 
       for (const userId of [args.qaUserId, args.localClientId].filter(
-        (id): id is Id<"users"> => id !== undefined
+        (id): id is Id<"users"> => id !== undefined,
       )) {
         const notifications = await ctx.db
           .query("notifications")
@@ -1200,8 +1363,10 @@ export const cleanup = mutation({
           .order("desc")
           .take(100);
         for (const notification of notifications) {
-          const metadata = notification.metadata as { orderId?: string } | undefined;
-          if (metadata?.orderId === lifecycleOrderId) await ctx.db.delete(notification._id);
+          const metadata = notification.metadata as
+            { orderId?: string } | undefined;
+          if (metadata?.orderId === lifecycleOrderId)
+            await ctx.db.delete(notification._id);
         }
       }
     }
@@ -1211,14 +1376,17 @@ export const cleanup = mutation({
         .query("orderDeliverables")
         .withIndex("by_order", (q) => q.eq("orderId", args.orderId!))
         .take(100);
-      for (const deliverable of deliverables) await ctx.db.delete(deliverable._id);
+      for (const deliverable of deliverables)
+        await ctx.db.delete(deliverable._id);
     } else if (args.deliverableId && (await ctx.db.get(args.deliverableId))) {
       await ctx.db.delete(args.deliverableId);
     }
     if (args.conversationId) {
       const messages = await ctx.db
         .query("messages")
-        .withIndex("by_conversation", (q) => q.eq("conversationId", args.conversationId!))
+        .withIndex("by_conversation", (q) =>
+          q.eq("conversationId", args.conversationId!),
+        )
         .take(100);
       for (const message of messages) await ctx.db.delete(message._id);
     } else if (args.messageId && (await ctx.db.get(args.messageId))) {
@@ -1233,13 +1401,19 @@ export const cleanup = mutation({
     if (args.acceptedBidId && (await ctx.db.get(args.acceptedBidId))) {
       await ctx.db.delete(args.acceptedBidId);
     }
-    if (args.workspaceProjectId && (await ctx.db.get(args.workspaceProjectId))) {
+    if (
+      args.workspaceProjectId &&
+      (await ctx.db.get(args.workspaceProjectId))
+    ) {
       await ctx.db.delete(args.workspaceProjectId);
     }
     if (args.jobApplicationId && (await ctx.db.get(args.jobApplicationId))) {
       await ctx.db.delete(args.jobApplicationId);
     }
-    if (args.withdrawalJobApplicationId && (await ctx.db.get(args.withdrawalJobApplicationId))) {
+    if (
+      args.withdrawalJobApplicationId &&
+      (await ctx.db.get(args.withdrawalJobApplicationId))
+    ) {
       await ctx.db.delete(args.withdrawalJobApplicationId);
     }
 
@@ -1280,7 +1454,7 @@ export const cleanup = mutation({
       const quotes = await ctx.db
         .query("quotes")
         .withIndex("by_quoteRequest", (q) =>
-          q.eq("quoteRequestId", args.quoteRequestId!)
+          q.eq("quoteRequestId", args.quoteRequestId!),
         )
         .take(100);
       for (const quote of quotes) {
@@ -1289,7 +1463,7 @@ export const cleanup = mutation({
       const claims = await ctx.db
         .query("leadClaims")
         .withIndex("by_quoteRequest", (q) =>
-          q.eq("quoteRequestId", args.quoteRequestId!)
+          q.eq("quoteRequestId", args.quoteRequestId!),
         )
         .take(20);
       for (const claim of claims) {
@@ -1353,85 +1527,106 @@ export const verifyCleanup = query({
     requireServerSecret(args.serverSecret);
     let remainingFixtures = 0;
     for (const rawId of args.fixtureIds) {
-      const normalized = ctx.db.normalizeId("gigs", rawId)
-        ?? ctx.db.normalizeId("gigPackages", rawId)
-        ?? ctx.db.normalizeId("projects", rawId)
-        ?? ctx.db.normalizeId("quoteRequests", rawId)
-        ?? ctx.db.normalizeId("jobs", rawId)
-        ?? ctx.db.normalizeId("jobApplications", rawId)
-        ?? ctx.db.normalizeId("bids", rawId)
-        ?? ctx.db.normalizeId("orders", rawId)
-        ?? ctx.db.normalizeId("conversations", rawId)
-        ?? ctx.db.normalizeId("messages", rawId)
-        ?? ctx.db.normalizeId("orderDeliverables", rawId)
-        ?? ctx.db.normalizeId("leadClaims", rawId)
-        ?? ctx.db.normalizeId("quotes", rawId)
-        ?? ctx.db.normalizeId("localAppointments", rawId)
-        ?? ctx.db.normalizeId("users", rawId);
+      const normalized =
+        ctx.db.normalizeId("gigs", rawId) ??
+        ctx.db.normalizeId("gigPackages", rawId) ??
+        ctx.db.normalizeId("projects", rawId) ??
+        ctx.db.normalizeId("quoteRequests", rawId) ??
+        ctx.db.normalizeId("jobs", rawId) ??
+        ctx.db.normalizeId("jobApplications", rawId) ??
+        ctx.db.normalizeId("bids", rawId) ??
+        ctx.db.normalizeId("orders", rawId) ??
+        ctx.db.normalizeId("conversations", rawId) ??
+        ctx.db.normalizeId("messages", rawId) ??
+        ctx.db.normalizeId("orderDeliverables", rawId) ??
+        ctx.db.normalizeId("leadClaims", rawId) ??
+        ctx.db.normalizeId("quotes", rawId) ??
+        ctx.db.normalizeId("localAppointments", rawId) ??
+        ctx.db.normalizeId("users", rawId);
       if (normalized && (await ctx.db.get(normalized))) remainingFixtures += 1;
     }
 
     const remainingMessages = args.conversationId
-      ? (await ctx.db
-          .query("messages")
-          .withIndex("by_conversation", (q) => q.eq("conversationId", args.conversationId!))
-          .take(100)).length
+      ? (
+          await ctx.db
+            .query("messages")
+            .withIndex("by_conversation", (q) =>
+              q.eq("conversationId", args.conversationId!),
+            )
+            .take(100)
+        ).length
       : 0;
     const remainingDeliverables = args.orderId
-      ? (await ctx.db
-          .query("orderDeliverables")
-          .withIndex("by_order", (q) => q.eq("orderId", args.orderId!))
-          .take(100)).length
+      ? (
+          await ctx.db
+            .query("orderDeliverables")
+            .withIndex("by_order", (q) => q.eq("orderId", args.orderId!))
+            .take(100)
+        ).length
       : 0;
     let remainingReviews = 0;
     for (const lifecycleOrderId of [args.orderId, args.localOrderId].filter(
-      (id): id is Id<"orders"> => id !== undefined
+      (id): id is Id<"orders"> => id !== undefined,
     )) {
-      remainingReviews += (await ctx.db
-        .query("marketplaceReviews")
-        .withIndex("by_order", (q) => q.eq("orderId", lifecycleOrderId))
-        .take(20)).length;
+      remainingReviews += (
+        await ctx.db
+          .query("marketplaceReviews")
+          .withIndex("by_order", (q) => q.eq("orderId", lifecycleOrderId))
+          .take(20)
+      ).length;
     }
 
     let remainingLifecycleNotifications = 0;
     let remainingEmailDeliveries = 0;
-    for (const userId of [args.qaUserId, args.localClientId, args.companyUserId].filter(
-      (id): id is Id<"users"> => id !== undefined
-    )) {
+    for (const userId of [
+      args.qaUserId,
+      args.localClientId,
+      args.companyUserId,
+    ].filter((id): id is Id<"users"> => id !== undefined)) {
       const notifications = await ctx.db
         .query("notifications")
         .withIndex("by_user", (q) => q.eq("userId", userId))
         .order("desc")
         .take(100);
-      remainingLifecycleNotifications += notifications.filter((notification) => {
-        const metadata = notification.metadata as {
-          appointmentId?: string;
-          orderId?: string;
-          jobId?: string;
-          applicationId?: string;
-        } | undefined;
-        return metadata?.appointmentId === args.localAppointmentId
-          || metadata?.appointmentId === args.cancellationAppointmentId
-          || metadata?.orderId === args.orderId
-          || metadata?.orderId === args.localOrderId
-          || metadata?.jobId === args.jobId
-          || metadata?.jobId === args.withdrawalJobId
-          || metadata?.applicationId === args.jobApplicationId
-          || metadata?.applicationId === args.withdrawalJobApplicationId;
-      }).length;
-      remainingEmailDeliveries += (await ctx.db
-        .query("emailDeliveries")
-        .withIndex("by_user", (q) => q.eq("userId", userId))
-        .take(500)).length;
+      remainingLifecycleNotifications += notifications.filter(
+        (notification) => {
+          const metadata = notification.metadata as
+            | {
+                appointmentId?: string;
+                orderId?: string;
+                jobId?: string;
+                applicationId?: string;
+              }
+            | undefined;
+          return (
+            metadata?.appointmentId === args.localAppointmentId ||
+            metadata?.appointmentId === args.cancellationAppointmentId ||
+            metadata?.orderId === args.orderId ||
+            metadata?.orderId === args.localOrderId ||
+            metadata?.jobId === args.jobId ||
+            metadata?.jobId === args.withdrawalJobId ||
+            metadata?.applicationId === args.jobApplicationId ||
+            metadata?.applicationId === args.withdrawalJobApplicationId
+          );
+        },
+      ).length;
+      remainingEmailDeliveries += (
+        await ctx.db
+          .query("emailDeliveries")
+          .withIndex("by_user", (q) => q.eq("userId", userId))
+          .take(500)
+      ).length;
     }
 
     let generatedJobs = 0;
     let generatedProjects = 0;
-    const qaActorIds = [...new Set(
-      [args.qaUserId, args.localClientId, args.companyUserId].filter(
-        (id): id is Id<"users"> => id !== undefined
-      )
-    )];
+    const qaActorIds = [
+      ...new Set(
+        [args.qaUserId, args.localClientId, args.companyUserId].filter(
+          (id): id is Id<"users"> => id !== undefined,
+        ),
+      ),
+    ];
     for (const qaActorId of qaActorIds) {
       const qaUser = await ctx.db.get(qaActorId);
       if (!qaUser || !isDedicatedQaEmail(qaUser.email)) continue;
@@ -1443,8 +1638,12 @@ export const verifyCleanup = query({
         .query("projects")
         .withIndex("by_client", (q) => q.eq("clientId", qaUser._id))
         .take(200);
-      generatedJobs += qaJobs.filter((job) => job.title.startsWith("Playwright Product Designer")).length;
-      generatedProjects += qaProjects.filter((project) => project.title.startsWith("Playwright CRUD Project")).length;
+      generatedJobs += qaJobs.filter((job) =>
+        job.title.startsWith("Playwright Product Designer"),
+      ).length;
+      generatedProjects += qaProjects.filter((project) =>
+        project.title.startsWith("Playwright CRUD Project"),
+      ).length;
     }
     const admin = args.adminUserId ? await ctx.db.get(args.adminUserId) : null;
     const adminRole = admin?.role ?? null;

@@ -13,6 +13,7 @@
     "release:verify-hosted": "node scripts/verify-hosted-release.mjs",
     "seo:verify-contract": "node scripts/check-job-posting-contract.mjs",
     "seo:verify-hosted": "node scripts/verify-hosted-seo.mjs",
+    "jobs:verify-trust": "node scripts/audit-company-verification.mjs",
     "auth:ensure-clerk-convex": "node scripts/ensure-clerk-convex-template.mjs",
     "categories:fiverr:print": "node scripts/seed-fiverr-marketplace-categories.mjs --dry-run",
     "categories:fiverr:print:nl": "node scripts/seed-fiverr-marketplace-categories.mjs --dry-run --locale=nl",

@@ -12,7 +12,7 @@ import useConvexUser from "@/hook/useConvexUser";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Clock3, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 
 function PageShell({ children }) {
@@ -37,8 +37,19 @@ export default function ManageJobInfo() {
 
   const jobs = useQuery(
     api.marketplace.jobs.getByClient,
-    convexUser?._id ? { clientId: convexUser._id, limit: 50 } : "skip"
+    convexUser?._id ? { clientId: convexUser._id, limit: 50 } : "skip",
   );
+  const verificationRequest = useQuery(
+    api.marketplace.companyVerifications.getMine,
+    convexUser?.activeRole === "company" &&
+      convexUser?.preferredWorld === "jobs"
+      ? {}
+      : "skip",
+  );
+  const verificationStatus =
+    verificationRequest?.status ||
+    convexUser?.companyVerificationStatus ||
+    "unverified";
 
   const tabs = [
     { label: t("allJobs"), status: null },
@@ -97,7 +108,9 @@ export default function ManageJobInfo() {
       <PageShell>
         <Card>
           <CardContent className="p-8 text-center">
-            <p className="text-[var(--text-secondary)]">{t("settingUpAccount")}</p>
+            <p className="text-[var(--text-secondary)]">
+              {t("settingUpAccount")}
+            </p>
           </CardContent>
         </Card>
       </PageShell>
@@ -123,10 +136,53 @@ export default function ManageJobInfo() {
         <div className="dashboard_title_area mb-6">
           <div>
             <h2>{t("title")}</h2>
-            <p className="text-[var(--text-secondary)]">{t("pageDescription")}</p>
+            <p className="text-[var(--text-secondary)]">
+              {t("pageDescription")}
+            </p>
           </div>
-          <Button asChild><Link href="/create-job">{t("postAJob")}<ArrowRight className="ml-1 h-4 w-4" /></Link></Button>
+          <Button asChild>
+            <Link href="/create-job">
+              {t("postAJob")}
+              <ArrowRight className="ml-1 h-4 w-4" />
+            </Link>
+          </Button>
         </div>
+        <Card
+          className={`mb-5 ${verificationStatus === "verified" ? "border-emerald-200 bg-emerald-50/60" : "border-amber-200 bg-amber-50/60"}`}
+        >
+          <CardContent className="flex flex-wrap items-center justify-between gap-4 p-5">
+            <div className="flex items-center gap-3">
+              {verificationStatus === "verified" ? (
+                <ShieldCheck className="h-7 w-7 text-emerald-700" />
+              ) : (
+                <Clock3 className="h-7 w-7 text-amber-700" />
+              )}
+              <div>
+                <strong className="block text-base">
+                  {verificationStatus === "verified"
+                    ? "Verified company workspace"
+                    : verificationStatus === "pending"
+                      ? "Company verification in review"
+                      : "Company verification required"}
+                </strong>
+                <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                  {verificationStatus === "verified"
+                    ? "Your published vacancies can appear in the public Jobs marketplace."
+                    : "You can manage existing vacancies, but new vacancies stay locked until verification is approved."}
+                </p>
+              </div>
+            </div>
+            {verificationStatus !== "verified" ? (
+              <Button asChild variant="outline">
+                <Link href="/create-job">
+                  {verificationStatus === "pending"
+                    ? "View verification"
+                    : "Start verification"}
+                </Link>
+              </Button>
+            ) : null}
+          </CardContent>
+        </Card>
         <Card className="overflow-hidden">
           <CardContent className="p-6">
             <div className="mb-5">
@@ -154,7 +210,9 @@ export default function ManageJobInfo() {
                     aria-label={t("loading")}
                     className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--border-subtle)] border-t-primary mx-auto"
                   />
-                  <p className="mt-3 text-sm text-[var(--text-secondary)]">{t("loadingJobs")}</p>
+                  <p className="mt-3 text-sm text-[var(--text-secondary)]">
+                    {t("loadingJobs")}
+                  </p>
                 </div>
               ) : filteredJobs.length === 0 ? (
                 <div className="text-center py-12">
@@ -164,7 +222,12 @@ export default function ManageJobInfo() {
                       : t("noJobsYet")}
                   </p>
                   {!activeStatus && (
-                    <Button asChild><Link href="/create-job">{t("postFirstJob")}<ArrowRight className="ml-1 h-4 w-4" /></Link></Button>
+                    <Button asChild>
+                      <Link href="/create-job">
+                        {t("postFirstJob")}
+                        <ArrowRight className="ml-1 h-4 w-4" />
+                      </Link>
+                    </Button>
                   )}
                 </div>
               ) : (

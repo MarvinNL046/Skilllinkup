@@ -30,6 +30,7 @@ import type * as lib_trustState from "../lib/trustState.js";
 import type * as marketplace_accountPrivacy from "../marketplace/accountPrivacy.js";
 import type * as marketplace_categories from "../marketplace/categories.js";
 import type * as marketplace_clients from "../marketplace/clients.js";
+import type * as marketplace_companyVerifications from "../marketplace/companyVerifications.js";
 import type * as marketplace_dashboard from "../marketplace/dashboard.js";
 import type * as marketplace_deliverables from "../marketplace/deliverables.js";
 import type * as marketplace_disputes from "../marketplace/disputes.js";
@@ -94,6 +95,7 @@ declare const fullApi: ApiFromModules<{
   "marketplace/accountPrivacy": typeof marketplace_accountPrivacy;
   "marketplace/categories": typeof marketplace_categories;
   "marketplace/clients": typeof marketplace_clients;
+  "marketplace/companyVerifications": typeof marketplace_companyVerifications;
   "marketplace/dashboard": typeof marketplace_dashboard;
   "marketplace/deliverables": typeof marketplace_deliverables;
   "marketplace/disputes": typeof marketplace_disputes;
