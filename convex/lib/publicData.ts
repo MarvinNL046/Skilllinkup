@@ -93,7 +93,6 @@ export function toPublicFreelancerProfile(
     verificationDate: profile.verificationDate ?? null,
     responseTimeHours: profile.responseTimeHours ?? null,
     completionRate: profile.completionRate ?? null,
-    totalEarnings: profile.totalEarnings ?? null,
     totalOrders: profile.totalOrders ?? 0,
     ratingAverage: profile.ratingAverage ?? 0,
     ratingCount: profile.ratingCount ?? 0,
