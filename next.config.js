@@ -35,6 +35,9 @@ const nextConfig = {
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+          // Admin panel only. This branch builds nothing else, so it is
+          // unconditional here; the public site lives on main.
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
         ],
       },
     ];
