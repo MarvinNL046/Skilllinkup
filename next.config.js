@@ -65,10 +65,17 @@ const nextConfig = {
     ],
   },
   async headers() {
+    // This repo builds two Vercel projects: the public marketplace and the
+    // admin panel. Only the admin project sets ADMIN_NOINDEX, so the public
+    // site keeps its indexing.
+    const headers =
+      process.env.ADMIN_NOINDEX === "1"
+        ? [...securityHeaders, { key: "X-Robots-Tag", value: "noindex, nofollow" }]
+        : securityHeaders;
     return [
       {
         source: "/(.*)",
-        headers: securityHeaders,
+        headers,
       },
     ];
   },
