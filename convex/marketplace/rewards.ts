@@ -1,258 +1,183 @@
-import { v } from "convex/values";
-import { internalMutation, mutation, query } from "../_generated/server";
+// Reconciled with the existing development deployment (2026-09-07).
+import { requireLivePaymentsEnabled } from "../lib/paymentPolicy";
+import { query } from "../_generated/server";
+import { mutation } from "../_generated/server";
+import { internalMutation } from "../_generated/server";
 import { requireAuthUser } from "../lib/authHelpers";
-
-// ---- Tier helpers ----
-
+import { v } from "convex/values";
 function getTier(yearlySpendCents: number): "bronze" | "silver" | "gold" {
-  if (yearlySpendCents >= 500_000) return "gold";   // €5,000+
-  if (yearlySpendCents >= 100_000) return "silver"; // €1,000+
-  return "bronze";
+  return yearlySpendCents >= 5e5 ? "gold" : yearlySpendCents >= 1e5 ? "silver" : "bronze";
 }
-
-function getCashbackRate(tier: "bronze" | "silver" | "gold"): number {
-  if (tier === "gold") return 0.07;
-  if (tier === "silver") return 0.05;
-  return 0.03;
+function getCashbackRate(tier: string): number {
+  return tier === "gold" ? 0.07 : tier === "silver" ? 0.05 : 0.03;
 }
-
-// ---- Level helpers ----
-
-function calculateLevel(
-  totalOrders: number,
-  ratingAverage: number,
-  completionRate: number,
-  accountAgeMs: number
-): "new" | "rising" | "pro" | "top_rated" {
-  const threeMonths = 90 * 24 * 60 * 60 * 1000;
-  const sixMonths = 180 * 24 * 60 * 60 * 1000;
-
-  if (
-    totalOrders >= 50 &&
-    ratingAverage >= 4.9 &&
-    completionRate >= 95 &&
-    accountAgeMs >= sixMonths
-  ) {
-    return "top_rated";
-  }
-  if (
-    totalOrders >= 20 &&
-    ratingAverage >= 4.7 &&
-    completionRate >= 90 &&
-    accountAgeMs >= threeMonths
-  ) {
-    return "pro";
-  }
-  if (totalOrders >= 5 && ratingAverage >= 4.5 && completionRate >= 85) {
-    return "rising";
-  }
-  return "new";
+function calculateLevel(totalOrders: number, ratingAverage: number, completionRate: number, accountAgeMs: number): "new" | "rising" | "pro" | "top_rated" {
+  return totalOrders >= 50 && ratingAverage >= 4.9 && completionRate >= 95 && accountAgeMs >= 15552e6 ? "top_rated" : totalOrders >= 20 && ratingAverage >= 4.7 && completionRate >= 90 && accountAgeMs >= 7776e6 ? "pro" : totalOrders >= 5 && ratingAverage >= 4.5 && completionRate >= 85 ? "rising" : "new";
 }
-
-// ---- Internal: called from orders.approve ----
-
-export const processOrderCashback = internalMutation({
-  args: { orderId: v.id("orders") },
-  handler: async (ctx, args) => {
-    const order = await ctx.db.get(args.orderId);
-    if (!order || order.status !== "completed") return;
-
-    const client = await ctx.db.get(order.clientId);
-    if (!client) return;
-
-    const now = Date.now();
-    const amountCents = Math.round(order.amount * 100);
-
-    const existingYearlySpend = client.clientYearlySpend ?? 0;
-    const newYearlySpend = existingYearlySpend + amountCents;
-
-    const tier = getTier(newYearlySpend);
-    const previousTier = (client.clientTier ?? "bronze") as "bronze" | "silver" | "gold";
-    const cashbackRate = getCashbackRate(tier);
-    const cashbackCents = Math.round(amountCents * cashbackRate);
-
-    const currentBalance = client.clientCreditBalance ?? 0;
-    const newBalance = currentBalance + cashbackCents;
-
-    await ctx.db.patch(client._id, {
-      clientCreditBalance: newBalance,
-      clientTier: tier,
-      clientYearlySpend: newYearlySpend,
-      updatedAt: now,
-    });
-
-    const tenantId = order.tenantId;
-
-    await ctx.db.insert("rewardTransactions", {
-      userId: order.clientId,
-      tenantId: tenantId,
-      type: "cashback_earned",
-      amount: cashbackCents,
-      orderId: args.orderId,
-      description: `${Math.round(cashbackRate * 100)}% cashback on order "${order.title}"`,
-      createdAt: now,
-    });
-
-    if (tier !== previousTier) {
+var processOrderCashback = internalMutation({
+    args: {
+      orderId: v.id("orders")
+    },
+    handler: async (ctx, args) => {
+      let e = await ctx.db.get(args.orderId);
+      if (!e || e.status !== "completed") return;
+      let t = await ctx.db.get(e.clientId);
+      if (!t) return;
+      let a = Date.now(),
+        o = Math.round(e.amount * 100),
+        c = (t.clientYearlySpend ?? 0) + o,
+        d = getTier(c),
+        u = t.clientTier ?? "bronze",
+        h = getCashbackRate(d),
+        b = Math.round(o * h),
+        C = (t.clientCreditBalance ?? 0) + b;
+      await ctx.db.patch(t._id, {
+        clientCreditBalance: C,
+        clientTier: d,
+        clientYearlySpend: c,
+        updatedAt: a
+      });
+      let m = e.tenantId;
       await ctx.db.insert("rewardTransactions", {
-        userId: order.clientId,
-        tenantId: tenantId,
+        userId: e.clientId,
+        tenantId: m,
+        type: "cashback_earned",
+        amount: b,
+        orderId: args.orderId,
+        description: `${Math.round(h * 100)}% cashback on order "${e.title}"`,
+        createdAt: a
+      }), d !== u && (await ctx.db.insert("rewardTransactions", {
+        userId: e.clientId,
+        tenantId: m,
         type: "tier_upgrade",
         amount: 0,
         orderId: args.orderId,
-        description: `Tier upgraded from ${previousTier} to ${tier}`,
-        createdAt: now + 1,
+        description: `Tier upgraded from ${u} to ${d}`,
+        createdAt: a + 1
+      }));
+    }
+  }),
+  recalculateFreelancerLevel = internalMutation({
+    args: {
+      freelancerProfileId: v.id("freelancerProfiles")
+    },
+    handler: async (ctx, args) => {
+      let e = await ctx.db.get(args.freelancerProfileId);
+      if (!e) return;
+      let t = Date.now() - e.createdAt,
+        a = calculateLevel(e.totalOrders ?? 0, e.ratingAverage ?? 0, e.completionRate ?? 0, t),
+        o = {
+          new: 0,
+          rising: 1,
+          pro: 2,
+          top_rated: 3
+        },
+        l = e.level ?? "new";
+      (o[a] ?? 0) > (o[l] ?? 0) && (await ctx.db.patch(args.freelancerProfileId, {
+        level: a,
+        updatedAt: Date.now()
+      }));
+    }
+  }),
+  getClientRewards = query({
+    args: {
+      userId: v.id("users")
+    },
+    handler: async (ctx, args) => {
+      let e = await requireAuthUser(ctx);
+      if (e._id !== args.userId && e.role !== "admin") throw new Error("Unauthorized.");
+      let t = await ctx.db.get(args.userId);
+      if (!t) return null;
+      let a = t.clientTier ?? "bronze",
+        o = t.clientYearlySpend ?? 0,
+        l = t.clientCreditBalance ?? 0,
+        c = a === "gold" ? null : a === "silver" ? 5e5 : 1e5,
+        d = c ? Math.min(100, Math.round(o / c * 100)) : 100;
+      return {
+        tier: a,
+        balanceCents: l,
+        balanceEuros: l / 100,
+        yearlySpendCents: o,
+        yearlySpendEuros: o / 100,
+        cashbackRate: getCashbackRate(a),
+        nextTierThreshold: c,
+        progressToNextTier: d
+      };
+    }
+  }),
+  getFreelancerLevel = query({
+    args: {
+      profileId: v.id("freelancerProfiles")
+    },
+    handler: async (ctx, args) => {
+      let e = await ctx.db.get(args.profileId);
+      if (!e) return null;
+      let t = e.level ?? "new",
+        a = Date.now() - e.createdAt,
+        o = Math.floor(a / (1440 * 60 * 1e3));
+      return {
+        level: t,
+        totalOrders: e.totalOrders ?? 0,
+        ratingAverage: e.ratingAverage ?? 0,
+        completionRate: e.completionRate ?? 0,
+        accountAgeDays: o,
+        nextLevel: t === "top_rated" ? null : t === "pro" ? "top_rated" : t === "rising" ? "pro" : "rising"
+      };
+    }
+  }),
+  getRewardHistory = query({
+    args: {
+      userId: v.id("users"),
+      limit: v.optional(v.number())
+    },
+    handler: async (ctx, args) => {
+      let e = await requireAuthUser(ctx);
+      if (e._id !== args.userId && e.role !== "admin") throw new Error("Unauthorized.");
+      return await ctx.db.query("rewardTransactions").withIndex("by_user_createdAt", t => t.eq("userId", args.userId)).order("desc").take(Math.min(args.limit ?? 20, 100));
+    }
+  }),
+  applyCredits = mutation({
+    args: {
+      orderId: v.id("orders"),
+      creditsToUseCents: v.number()
+    },
+    returns: v.object({
+      appliedCents: v.number()
+    }),
+    handler: async (ctx, args) => {
+      let e = await requireAuthUser(ctx);
+      if (!Number.isSafeInteger(args.creditsToUseCents) || args.creditsToUseCents <= 0) throw new Error("Credits must be a positive whole number of cents.");
+      requireLivePaymentsEnabled("Applying marketplace credits");
+      let t = await ctx.db.get(args.orderId);
+      if (!t) throw new Error("Order not found.");
+      if (t.clientId !== e._id) throw new Error("Unauthorized.");
+      if (!["pending", "in_progress"].includes(t.status)) throw new Error("Credits can only be applied to active orders.");
+      let a = e.clientCreditBalance ?? 0;
+      if (args.creditsToUseCents > a) throw new Error("Insufficient credit balance.");
+      let o = Math.round(t.amount * 100 * 0.5),
+        l = t.creditAppliedCents ?? 0,
+        c = Math.max(0, o - l);
+      if (args.creditsToUseCents > c) throw new Error(`Cannot apply more than 50% of order amount (${c} cents remaining).`);
+      let d = args.creditsToUseCents;
+      await ctx.db.patch(e._id, {
+        clientCreditBalance: a - d,
+        updatedAt: Date.now()
+      }), await ctx.db.patch(t._id, {
+        creditAppliedCents: l + d,
+        updatedAt: Date.now()
       });
+      let u = t.tenantId;
+      return await ctx.db.insert("rewardTransactions", {
+        userId: e._id,
+        tenantId: u,
+        type: "credit_used",
+        amount: -d,
+        orderId: args.orderId,
+        description: `Credits applied to order "${t.title}"`,
+        createdAt: Date.now()
+      }), {
+        appliedCents: d
+      };
     }
-  },
-});
-
-export const recalculateFreelancerLevel = internalMutation({
-  args: { freelancerProfileId: v.id("freelancerProfiles") },
-  handler: async (ctx, args) => {
-    const profile = await ctx.db.get(args.freelancerProfileId);
-    if (!profile) return;
-
-    const accountAgeMs = Date.now() - profile.createdAt;
-    const newLevel = calculateLevel(
-      profile.totalOrders ?? 0,
-      profile.ratingAverage ?? 0,
-      profile.completionRate ?? 0,
-      accountAgeMs
-    );
-
-    const levelOrder: Record<string, number> = { new: 0, rising: 1, pro: 2, top_rated: 3 };
-    const currentLevel = profile.level ?? "new";
-    if ((levelOrder[newLevel] ?? 0) > (levelOrder[currentLevel] ?? 0)) {
-      await ctx.db.patch(args.freelancerProfileId, {
-        level: newLevel,
-        updatedAt: Date.now(),
-      });
-    }
-  },
-});
-
-// ---- Public queries ----
-
-export const getClientRewards = query({
-  args: { userId: v.id("users") },
-  handler: async (ctx, args) => {
-    const caller = await requireAuthUser(ctx);
-    if (caller._id !== args.userId && caller.role !== "admin") throw new Error("Unauthorized.");
-    const user = await ctx.db.get(args.userId);
-    if (!user) return null;
-
-    const tier = (user.clientTier ?? "bronze") as "bronze" | "silver" | "gold";
-    const yearlySpendCents = user.clientYearlySpend ?? 0;
-    const balanceCents = user.clientCreditBalance ?? 0;
-
-    const nextTierThreshold =
-      tier === "gold" ? null : tier === "silver" ? 500_000 : 100_000;
-    const progressToNextTier = nextTierThreshold
-      ? Math.min(100, Math.round((yearlySpendCents / nextTierThreshold) * 100))
-      : 100;
-
-    return {
-      tier,
-      balanceCents,
-      balanceEuros: balanceCents / 100,
-      yearlySpendCents,
-      yearlySpendEuros: yearlySpendCents / 100,
-      cashbackRate: getCashbackRate(tier),
-      nextTierThreshold,
-      progressToNextTier,
-    };
-  },
-});
-
-export const getFreelancerLevel = query({
-  args: { profileId: v.id("freelancerProfiles") },
-  handler: async (ctx, args) => {
-    const profile = await ctx.db.get(args.profileId);
-    if (!profile) return null;
-
-    const level = (profile.level ?? "new") as "new" | "rising" | "pro" | "top_rated";
-    const accountAgeMs = Date.now() - profile.createdAt;
-    const accountAgeDays = Math.floor(accountAgeMs / (24 * 60 * 60 * 1000));
-
-    return {
-      level,
-      totalOrders: profile.totalOrders ?? 0,
-      ratingAverage: profile.ratingAverage ?? 0,
-      completionRate: profile.completionRate ?? 0,
-      accountAgeDays,
-      nextLevel:
-        level === "top_rated"
-          ? null
-          : level === "pro"
-          ? "top_rated"
-          : level === "rising"
-          ? "pro"
-          : "rising",
-    };
-  },
-});
-
-export const getRewardHistory = query({
-  args: {
-    userId: v.id("users"),
-    limit: v.optional(v.number()),
-  },
-  handler: async (ctx, args) => {
-    const caller = await requireAuthUser(ctx);
-    if (caller._id !== args.userId && caller.role !== "admin") throw new Error("Unauthorized.");
-    return await ctx.db
-      .query("rewardTransactions")
-      .withIndex("by_user_createdAt", (q) => q.eq("userId", args.userId))
-      .order("desc")
-      .take(Math.min(args.limit ?? 20, 100));
-  },
-});
-
-export const applyCredits = mutation({
-  args: {
-    orderId: v.id("orders"),
-    creditsToUseCents: v.number(),
-  },
-  handler: async (ctx, args) => {
-    const user = await requireAuthUser(ctx);
-
-    const order = await ctx.db.get(args.orderId);
-    if (!order) throw new Error("Order not found.");
-    if (order.clientId !== user._id) throw new Error("Unauthorized.");
-
-    if (!["pending", "in_progress"].includes(order.status)) {
-      throw new Error("Credits can only be applied to active orders.");
-    }
-
-    const currentBalance = user.clientCreditBalance ?? 0;
-    if (args.creditsToUseCents > currentBalance) {
-      throw new Error("Insufficient credit balance.");
-    }
-
-    const maxCredits = Math.round(order.amount * 100 * 0.5);
-    if (args.creditsToUseCents > maxCredits) {
-      throw new Error(`Cannot apply more than 50% of order amount (max ${maxCredits} cents).`);
-    }
-    const actualCredits = args.creditsToUseCents;
-
-    await ctx.db.patch(user._id, {
-      clientCreditBalance: currentBalance - actualCredits,
-      updatedAt: Date.now(),
-    });
-
-    const tenantId = order.tenantId;
-
-    await ctx.db.insert("rewardTransactions", {
-      userId: user._id,
-      tenantId: tenantId,
-      type: "credit_used",
-      amount: -actualCredits,
-      orderId: args.orderId,
-      description: `Credits applied to order "${order.title}"`,
-      createdAt: Date.now(),
-    });
-
-    return { appliedCents: actualCredits };
-  },
-});
+  });
+export { applyCredits, getClientRewards, getFreelancerLevel, getRewardHistory, processOrderCashback, recalculateFreelancerLevel };

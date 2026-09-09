@@ -7,7 +7,7 @@ import Link from "next/link";
 import TagsInput from "@/components/ui/TagsInput";
 import { useTranslations } from "next-intl";
 import DashboardNavigation from "../header/DashboardNavigation";
-import ServiceGallery from "./ServiceGallery";
+import ServiceImagePicker from "./ServiceImagePicker";
 import useConvexProfile from "@/hook/useConvexProfile";
 import useConvexCategories from "@/hook/useConvexCategories";
 import { flattenLeafMarketplaceCategories } from "@/lib/marketplaceCategories";
@@ -40,6 +40,7 @@ const EMPTY_PACKAGE = {
   deliveryDays: "",
   revisionCount: "",
 };
+const enhanced = process.env.NEXT_PUBLIC_SERVICE_EDITOR_ENABLED === "1";
 
 function worldToServiceType(world) {
   if (world === "local") return "local";
@@ -53,8 +54,11 @@ export default function AddServiceInfo() {
   const serviceType = worldToServiceType(convexUser?.preferredWorld);
   const categories = useConvexCategories("en", serviceType);
 
-  const createGig = useMutation(api.marketplace.gigs.create);
+  const createGig = useMutation(enhanced ? api.marketplace.serviceEditor.create : api.marketplace.gigs.create);
   const createPackage = useMutation(api.marketplace.gigs.createPackage);
+  const removeGig = useMutation(api.marketplace.gigs.remove);
+  const [imageUrls, setImageUrls] = useState([]);
+  const [uploading, setUploading] = useState(false);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -79,11 +83,13 @@ export default function AddServiceInfo() {
   const isPkgFilled = (pkg) =>
     pkg.title.trim() &&
     pkg.price &&
-    !isNaN(Number(pkg.price)) &&
+    Number.isFinite(Number(pkg.price)) && Number(pkg.price) > 0 &&
     pkg.deliveryDays &&
-    !isNaN(Number(pkg.deliveryDays));
+    Number.isInteger(Number(pkg.deliveryDays)) && Number(pkg.deliveryDays) > 0 &&
+    (!pkg.revisionCount || (Number.isInteger(Number(pkg.revisionCount)) && Number(pkg.revisionCount) >= 0));
 
   const handleSaveAndPublish = async () => {
+    if (saving || saveSuccess || uploading) return;
     if (!profile?._id || !convexUser) {
       setSaveError(t("mustBeSignedIn"));
       return;
@@ -100,6 +106,12 @@ export default function AddServiceInfo() {
       setSaveError(t("completeBasicPackage"));
       return;
     }
+    for (const pkg of [standardPkg, premiumPkg]) {
+      if (Object.values(pkg).some((value) => value.trim()) && !isPkgFilled(pkg)) {
+        setSaveError("Complete each package you started: a name, positive price, whole delivery days and non-negative whole revisions.");
+        return;
+      }
+    }
 
     setSaving(true);
     setSaveError(null);
@@ -107,8 +119,7 @@ export default function AddServiceInfo() {
     try {
       const slug = slugify(title) + "-" + Date.now();
 
-      const gigId = await createGig({
-        tenantId: convexUser.tenantId,
+      const service = {
         freelancerId: profile._id,
         title: title.trim(),
         slug,
@@ -119,35 +130,33 @@ export default function AddServiceInfo() {
         locationCountry: locationCountry.trim() || undefined,
         locationCity: locationCity.trim() || undefined,
         locale: "en",
-      });
-
-      const tiers = [
+        imageUrls,
+        packages: [
         { tier: "basic", pkg: basicPkg },
         { tier: "standard", pkg: standardPkg },
         { tier: "premium", pkg: premiumPkg },
-      ];
-
-      for (const { tier, pkg } of tiers) {
-        if (isPkgFilled(pkg)) {
-          await createPackage({
-            gigId,
+        ].filter(({ pkg }) => isPkgFilled(pkg)).map(({ tier, pkg }) => ({
             tier,
             title: pkg.title.trim(),
             description: pkg.description.trim() || pkg.title.trim(),
             price: Number(pkg.price),
-            currency: "EUR",
             deliveryDays: Number(pkg.deliveryDays),
             revisionCount: pkg.revisionCount
               ? Number(pkg.revisionCount)
               : undefined,
-          });
-        }
+          })),
+      };
+      if (enhanced) await createGig(service);
+      else {
+        const { packages, imageUrls: unusedImages, ...fields } = service;
+        void unusedImages;
+        const gigId = await createGig({ ...fields, tenantId: convexUser.tenantId });
+        try { for (const pkg of packages) await createPackage({ ...pkg, gigId, currency: "EUR" }); }
+        catch (cause) { await removeGig({ gigId }); throw cause; }
       }
 
       setSaveSuccess(true);
-      setTimeout(() => {
-        router.push("/manage-services");
-      }, 1500);
+      router.push("/manage-services");
     } catch (error) {
       console.error("Failed to create gig:", error);
       setSaveError(error.message || t("failedToSave"));
@@ -163,7 +172,7 @@ export default function AddServiceInfo() {
   const SaveButton = () => (
     <Button
       onClick={handleSaveAndPublish}
-      disabled={saving || !profile}
+      disabled={saving || saveSuccess || uploading || !profile}
       className="whitespace-nowrap"
     >
       {saving ? t("saving") : t("saveAndPublish")}
@@ -177,7 +186,7 @@ export default function AddServiceInfo() {
 
       <div className="dashboard_title_area mb-6">
         <div>
-          <h2>{t("pageTitle")}</h2>
+          <h1>{t("pageTitle")}</h1>
           <p className="text-[var(--text-secondary)]">{t("pageDescription")}</p>
         </div>
         <SaveButton />
@@ -211,7 +220,7 @@ export default function AddServiceInfo() {
         </Alert>
       )}
 
-      {!profile && (
+      {profile === null && (
         <Alert variant="warning" className="mb-6">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
@@ -373,7 +382,8 @@ export default function AddServiceInfo() {
                       id={`pkg-price-${label}`}
                       type="number"
                       placeholder={t("pricePlaceholder")}
-                      min="0"
+                      min="0.01"
+                      step="0.01"
                       value={pkg.price}
                       onChange={(e) => updatePkg(setter, "price", e.target.value)}
                     />
@@ -415,7 +425,7 @@ export default function AddServiceInfo() {
         </CardContent>
       </Card>
 
-      <ServiceGallery />
+      {enhanced && <Card className="mb-6"><CardContent className="pt-6"><ServiceImagePicker value={imageUrls} onChange={setImageUrls} disabled={saving || saveSuccess} onBusyChange={setUploading} /></CardContent></Card>}
 
       {/* Bottom submit button */}
       <div className="flex justify-end mb-8">

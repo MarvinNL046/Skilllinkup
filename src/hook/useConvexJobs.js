@@ -1,12 +1,12 @@
 "use client";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import { formatJobSalary } from "@/lib/jobSalary.mjs";
 
 function mapConvexJob(job, index) {
   const benefits = [];
-  if (job.salaryMin && job.salaryMax) {
-    benefits.push(`$${Math.round(job.salaryMin / 1000)}k-$${Math.round(job.salaryMax / 1000)}k`);
-  }
+  const salaryLabel = formatJobSalary(job);
+  if (salaryLabel) benefits.push(salaryLabel);
   if (job.jobType) benefits.push(job.jobType);
   if (job.workType) benefits.push(job.workType === "remote" ? "Remote" : job.workType);
   if (job.experienceLevel) benefits.push(job.experienceLevel);

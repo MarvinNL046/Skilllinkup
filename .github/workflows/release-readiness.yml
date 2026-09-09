@@ -52,6 +52,7 @@ jobs:
       - name: Verify environment separation
         run: npm run env:verify -- --environment=${{ inputs.target_environment }}
       - run: npm run lint
+      - run: npm run test:launch-contracts
       - run: npx tsc --noEmit
       - run: npm run seo:verify-contract
       - run: npm run build

@@ -2,7 +2,7 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import OrderWorkspace from "@/components/dashboard/section/OrderWorkspace";
 
 export const metadata = {
-  title: "Project workspace | Skilllinkup",
+  title: "Order | Skilllinkup",
   robots: { index: false, follow: false },
 };
 

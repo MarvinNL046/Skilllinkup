@@ -10,6 +10,7 @@ export const rateLimiter = new RateLimiter(components.rateLimiter, {
   projectProposal: { kind: "token bucket", rate: 20, period: DAY, capacity: 5 },
   localRequest: { kind: "token bucket", rate: 10, period: DAY, capacity: 3 },
   localQuote: { kind: "token bucket", rate: 30, period: DAY, capacity: 6 },
+  localLeadClaim: { kind: "token bucket", rate: 20, period: DAY, capacity: 4 },
   trustReport: { kind: "token bucket", rate: 10, period: DAY, capacity: 3 },
   supportTicket: { kind: "token bucket", rate: 10, period: DAY, capacity: 3 },
   companyVerification: { kind: "fixed window", rate: 3, period: DAY },

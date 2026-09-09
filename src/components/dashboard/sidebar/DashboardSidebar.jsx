@@ -4,12 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
 import {
-  Bookmark, BriefcaseBusiness, ChevronLeft, ChevronRight, CircleHelp,
+  Bookmark, BriefcaseBusiness, ChevronLeft, ChevronRight,
   ClipboardList, FileText, Globe2, House, LogOut, MapPin, MessageSquare,
-  ReceiptText, ShieldCheck, Star, UserRound, WalletCards,
+  ReceiptText, Star, UserRound, WalletCards,
 } from "lucide-react";
 import { dashboardNavigation } from "@/data/dashboard";
 import useConvexUser from "@/hook/useConvexUser";
+import { getActiveRole } from "@/lib/accountContext.mjs";
 import dashboardSidebarStore, { useHydratedSidebarCollapsed } from "@/store/dashboardSidebarStore";
 import AccountContextSwitcher from "@/components/dashboard/AccountContextSwitcher";
 import BrandLogo from "@/components/brand/BrandLogo";
@@ -46,10 +47,17 @@ export default function DashboardSidebar() {
   const collapsed = useHydratedSidebarCollapsed();
   const toggleCollapsed = dashboardSidebarStore((state) => state.toggleCollapsed);
   const closeMobile = dashboardSidebarStore((state) => state.closeMobile);
-  const role = convexUser?.activeRole || (convexUser?.userType === "freelancer" ? "freelancer" : "client");
+  const role = getActiveRole(convexUser);
   const world = convexUser?.preferredWorld || "online";
   const sections = dashboardNavigation[role]?.[world] || dashboardNavigation.client.online;
-  const primaryItems = [...sections.start, ...sections.organize, ...sections.account];
+  const policyPaths = ["/payouts", "/statements", "/invoice"];
+  const supportPaths = ["/dashboard/support", "/dashboard/feedback"];
+  const groups = [
+    { label: "Work", items: [...sections.start, ...sections.organize].filter((item) => !policyPaths.includes(item.path) && item.path !== "/add-services") },
+    { label: "Account", items: sections.account.filter((item) => !supportPaths.includes(item.path)) },
+    { label: "Support", items: sections.account.filter((item) => supportPaths.includes(item.path)) },
+  ];
+  const policies = sections.organize.filter((item) => policyPaths.includes(item.path));
 
   return (
     <div className={styles.sidebar} data-collapsed={collapsed ? "true" : "false"}>
@@ -74,14 +82,17 @@ export default function DashboardSidebar() {
       {collapsed ? null : <div className={styles.context}><AccountContextSwitcher dark /></div>}
 
       <nav className={styles.navigation} aria-label="Dashboard navigation">
-        {primaryItems.map((item) => <NavItem key={item.id} item={item} active={path === item.path} collapsed={collapsed} onNavigate={closeMobile} />)}
+        {groups.map((group) => <div className={styles.navGroup} key={group.label}>
+          {collapsed ? null : <p className={styles.groupLabel}>{group.label}</p>}
+          {group.items.map((item) => <NavItem key={item.id} item={item} active={path === item.path} collapsed={collapsed} onNavigate={closeMobile} />)}
+        </div>)}
+        {policies.length > 0 && !collapsed ? <details className={styles.policies} open={policyPaths.includes(path) || undefined}>
+          <summary>Policies &amp; records</summary>
+          {policies.map((item) => <NavItem key={item.id} item={item} active={path === item.path} collapsed={false} onNavigate={closeMobile} />)}
+        </details> : null}
       </nav>
 
       <div className={styles.sidebarBottom}>
-        {collapsed ? null : <>
-          <div className={styles.help}><CircleHelp size={25} /><div><strong>Need help?</strong><span>Our support team is here for you.</span></div><Link href="/help">Visit help center</Link></div>
-          <div className={styles.trust}><ShieldCheck size={25} /><div><strong>Safe &amp; trusted</strong><span>Verified talent<br />Clear workspaces</span></div></div>
-        </>}
         <button type="button" className={styles.logout} aria-label={collapsed ? "Log out" : undefined} onClick={() => signOut({ redirectUrl: "/" })}><LogOut size={18} />{collapsed ? null : <span>Log out</span>}</button>
       </div>
     </div>

@@ -26,6 +26,8 @@ export default function WaitlistButton({
   className = "btn btn--primary",
   label,
   style,
+  initialSkill = "",
+  initialUserType = "",
 }) {
   const t = useTranslations("waitlist");
   const locale = useLocale();
@@ -35,8 +37,8 @@ export default function WaitlistButton({
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [skill, setSkill] = useState("");
-  const [userType, setUserType] = useState("");
+  const [skill, setSkill] = useState(initialSkill);
+  const [userType, setUserType] = useState(initialUserType);
   const [trap, setTrap] = useState(""); // honeypot
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
@@ -71,8 +73,8 @@ export default function WaitlistButton({
       setDone(true);
       setEmail("");
       setName("");
-      setSkill("");
-      setUserType("");
+      setSkill(initialSkill);
+      setUserType(initialUserType);
     } catch (err) {
       setError(t("errorGeneric"));
     } finally {
@@ -88,8 +90,8 @@ export default function WaitlistButton({
       setError("");
       setEmail("");
       setName("");
-      setSkill("");
-      setUserType("");
+      setSkill(initialSkill);
+      setUserType(initialUserType);
     }, 300);
   }
 
@@ -116,7 +118,7 @@ export default function WaitlistButton({
         </button>
       </DialogTrigger>
       {open ? (
-        <DialogContent className="max-w-[480px] gap-0 overflow-hidden p-0">
+        <DialogContent className="max-w-[480px] max-h-[90dvh] gap-0 overflow-y-auto p-0">
           <div
             className="modal"
             style={{ maxWidth: 480, width: "100%" }}

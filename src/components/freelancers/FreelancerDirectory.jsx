@@ -2,6 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useQuery, useMutation } from "convex/react";
+import { toast } from "sonner";
+import { api } from "../../../convex/_generated/api";
+import useConvexUser from "@/hook/useConvexUser";
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
@@ -64,10 +69,16 @@ function normalizeProfessional(person, index) {
 }
 
 export default function FreelancerDirectory() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { isAuthenticated } = useConvexUser();
+  const savedItems = useQuery(api.marketplace.savedItems.list, isAuthenticated ? {} : "skip");
+  const saveItem = useMutation(api.marketplace.savedItems.save);
+  const removeItem = useMutation(api.marketplace.savedItems.remove);
   const convexProfessionals = useConvexFreelancers();
   const [showDevelopmentProfiles, setShowDevelopmentProfiles] = useState(false);
-  const [query, setQuery] = useState("");
-  const [location, setLocation] = useState("");
+  const [query, setQuery] = useState(searchParams.get("q") || "");
+  const [location, setLocation] = useState(searchParams.get("location") || "");
   const [category, setCategory] = useState("All services");
   const [maxRate, setMaxRate] = useState(150);
   const [minimumRating, setMinimumRating] = useState(0);
@@ -78,7 +89,14 @@ export default function FreelancerDirectory() {
   const [sort, setSort] = useState("best-match");
   const [view, setView] = useState("grid");
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [saved, setSaved] = useState(() => new Set());
+  const saved = new Set((savedItems || []).map((item) => item.itemId));
+  const [savingIds, setSavingIds] = useState(() => new Set());
+  const [page, setPage] = useState(1);
+  useEffect(() => {
+    setQuery(searchParams.get("q") || "");
+    setLocation(searchParams.get("location") || "");
+  }, [searchParams]);
+  useEffect(() => { setPage(1); }, [query, location, category, maxRate, minimumRating, availableOnly, verifiedOnly, level, language, sort]);
 
   useEffect(() => {
     if (process.env.NODE_ENV !== "development") return undefined;
@@ -113,7 +131,7 @@ export default function FreelancerDirectory() {
       return (!term || searchable.includes(term))
         && (!place || item.location.toLowerCase().includes(place))
         && (category === "All services" || item.profession === category)
-        && (!item.price || item.price <= maxRate)
+        && (maxRate === 150 || !item.price || item.price <= maxRate)
         && (!minimumRating || item.rating >= minimumRating)
         && (!availableOnly || item.isAvailable)
         && (!verifiedOnly || item.verified)
@@ -130,6 +148,9 @@ export default function FreelancerDirectory() {
   }, [professionals, query, location, category, maxRate, minimumRating, availableOnly, verifiedOnly, level, language, sort]);
 
   const clearFilters = () => {
+    setQuery("");
+    setLocation("");
+    router.replace("/online/freelancers", { scroll: false });
     setCategory("All services");
     setMaxRate(150);
     setMinimumRating(0);
@@ -139,13 +160,22 @@ export default function FreelancerDirectory() {
     setLanguage("All languages");
   };
 
-  const toggleSaved = (id) => {
-    setSaved((current) => {
-      const next = new Set(current);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
+  const toggleSaved = async (person) => {
+    if (!isAuthenticated) {
+      router.push(`/login?redirect_url=${encodeURIComponent(`/online/freelancers?${searchParams.toString()}`)}`);
+      return;
+    }
+    if (person.isPreview || savingIds.has(person.id) || savedItems === undefined) return;
+    setSavingIds((current) => new Set(current).add(person.id));
+    try {
+      if (saved.has(person.id)) await removeItem({ itemId: person.id });
+      else await saveItem({ itemType: "freelancer", itemId: person.id, itemTitle: person.name, itemImage: person.img, itemUrl: person.profileHref });
+    } catch (error) { toast.error(error?.message || "Could not update saved professionals. Try again."); }
+    finally { setSavingIds((current) => { const next = new Set(current); next.delete(person.id); return next; }); }
   };
+  const pageCount = Math.max(1, Math.ceil(filtered.length / 6));
+  const currentPage = Math.min(page, pageCount);
+  const visibleProfessionals = filtered.slice((currentPage - 1) * 6, currentPage * 6);
 
   const filterPanelProps = {
     category,
@@ -176,7 +206,13 @@ export default function FreelancerDirectory() {
           <h1>Find the right freelancer</h1>
           <p>Search verified professionals for remote projects or expertise near you.</p>
 
-          <form className={styles.searchBar} onSubmit={(event) => event.preventDefault()}>
+          <form className={styles.searchBar} onSubmit={(event) => {
+            event.preventDefault();
+            const params = new URLSearchParams();
+            if (query.trim()) params.set("q", query.trim());
+            if (location.trim()) params.set("location", location.trim());
+            router.replace(`/online/freelancers?${params.toString()}`, { scroll: false });
+          }}>
             <label><Search size={19} /><span className="sr-only">Search expertise</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="What expertise do you need?" /></label>
             <label><MapPin size={19} /><span className="sr-only">Location</span><input value={location} onChange={(event) => setLocation(event.target.value)} placeholder="City, country or remote" /></label>
             <button type="submit">Search</button>
@@ -192,7 +228,7 @@ export default function FreelancerDirectory() {
 
           <div className={styles.resultsMain}>
             <div className={styles.resultsToolbar}>
-              <div><Dialog open={filtersOpen} onOpenChange={setFiltersOpen}><DialogTrigger asChild><button type="button" className={styles.mobileFilterButton}><Filter size={17} />Filters</button></DialogTrigger><DialogContent className={styles.mobileFilterDialog} showCloseButton={false}><DialogTitle className="sr-only">Filter professionals</DialogTitle><FilterPanel {...filterPanelProps} mobile /></DialogContent></Dialog><h2>{isLoading ? "Finding professionals…" : `${filtered.length} professionals found`}</h2><p>{isDevelopmentPreview ? "Illustrative development profiles — not live professionals." : "Live profiles matched to your search and filters."}</p></div>
+              <div><Dialog open={filtersOpen} onOpenChange={setFiltersOpen}><DialogTrigger asChild><button type="button" className={styles.mobileFilterButton}><Filter size={17} />Filters</button></DialogTrigger><DialogContent className={styles.mobileFilterDialog} showCloseButton={false}><DialogTitle className="sr-only">Filter professionals</DialogTitle><FilterPanel {...filterPanelProps} mobile /></DialogContent></Dialog><h2>{isLoading ? "Finding professionals…" : `${filtered.length} professionals found`}</h2><p>{isDevelopmentPreview ? "Illustrative development profiles — not live professionals." : professionals.length === 100 ? "Filtering the first 100 available profiles." : "Live profiles matched to your search and filters."}</p></div>
               <div className={styles.toolbarActions}>
                 <label className={styles.sortSelect}><span className="sr-only">Sort results</span><select value={sort} onChange={(event) => setSort(event.target.value)}><option value="best-match">Best match</option><option value="most-reviewed">Most reviewed</option><option value="rate-low">Rate: low to high</option><option value="rate-high">Rate: high to low</option></select><ChevronDown size={15} /></label>
                 <div className={styles.viewToggle}><button type="button" className={view === "grid" ? styles.viewActive : ""} onClick={() => setView("grid")} aria-label="Grid view"><Grid2X2 size={17} /></button><button type="button" className={view === "list" ? styles.viewActive : ""} onClick={() => setView("list")} aria-label="List view"><List size={18} /></button></div>
@@ -201,11 +237,11 @@ export default function FreelancerDirectory() {
 
             {isLoading ? <DirectorySkeleton /> : filtered.length === 0 ? <EmptyResults clearFilters={clearFilters} /> : (
               <div className={`${styles.cardGrid} ${view === "list" ? styles.listView : ""}`}>
-                {filtered.map((person) => <ProfessionalCard person={person} saved={saved.has(person.id)} onSave={() => toggleSaved(person.id)} key={person.id} />)}
+                {visibleProfessionals.map((person) => <ProfessionalCard person={person} saved={saved.has(person.id)} saving={person.isPreview || savingIds.has(person.id) || (isAuthenticated && savedItems === undefined)} onSave={() => toggleSaved(person)} key={person.id} />)}
               </div>
             )}
 
-            {!isLoading && filtered.length > 0 && <nav className={styles.pagination} aria-label="Results pagination"><button type="button" disabled>Previous</button><button type="button" className={styles.currentPage}>1</button><button type="button">2</button><button type="button">3</button><span>…</span><button type="button">Next</button></nav>}
+            {!isLoading && pageCount > 1 && <nav className={styles.pagination} aria-label="Results pagination"><button type="button" disabled={currentPage === 1} onClick={() => setPage(currentPage - 1)}>Previous</button><span aria-live="polite">Page {currentPage} of {pageCount}</span><button type="button" disabled={currentPage === pageCount} onClick={() => setPage(currentPage + 1)}>Next</button></nav>}
           </div>
         </div>
       </section>
@@ -250,8 +286,8 @@ function FilterPanel({
     <FilterSelect label="Experience level" value={level} onChange={setLevel} options={["All levels", "top-rated", "pro", "rising", "new"]} />
     <FilterSelect label="Language" value={language} onChange={setLanguage} options={languages} />
     <div className={styles.filterGroup}>
-      <div className={styles.filterLabel}><span>Hourly rate</span><strong>Up to €{maxRate}</strong></div>
-      <input className={styles.range} type="range" min="20" max="150" value={maxRate} onChange={(event) => setMaxRate(Number(event.target.value))} aria-label="Maximum hourly rate" aria-valuetext={`Up to €${maxRate} per hour`} />
+      <div className={styles.filterLabel}><span>Hourly rate</span><strong>{maxRate === 150 ? "Any rate" : `Up to €${maxRate}`}</strong></div>
+      <input className={styles.range} type="range" min="20" max="150" value={maxRate} onChange={(event) => setMaxRate(Number(event.target.value))} aria-label="Maximum hourly rate" aria-valuetext={maxRate === 150 ? "Any hourly rate" : `Up to €${maxRate} per hour`} />
       <div className={styles.rangeValues}><span>€20</span><span>€150+</span></div>
     </div>
     <div className={styles.filterGroup}>
@@ -276,13 +312,13 @@ function SwitchRow({ label, checked, onChange }) {
   return <label className={styles.switchRow}><span>{label}</span><input type="checkbox" checked={checked} onChange={(event) => onChange(event.target.checked)} /><i aria-hidden="true" /></label>;
 }
 
-function ProfessionalCard({ person, saved, onSave }) {
+function ProfessionalCard({ person, saved, saving, onSave }) {
   return (
     <article className={`${styles.professionalCard} ${person.featured ? styles.featuredCard : ""}`}>
       {person.isPreview ? <span className={styles.featuredBadge}>Example profile</span> : person.featured && <span className={styles.featuredBadge}>Featured</span>}
       <div className={styles.portrait}><Image src={person.img} alt={person.name} fill unoptimized sizes="(max-width: 760px) 100vw, 180px" /></div>
       <div className={styles.cardContent}>
-        <div className={styles.cardTop}><div>{person.verified && <span className={styles.verified}><BadgeCheck size={13} />Verified</span>}<h3>{person.name}</h3><span className={styles.profession}>{person.profession}</span></div><button type="button" className={saved ? styles.saved : ""} onClick={onSave} aria-label={saved ? `Remove ${person.name} from saved` : `Save ${person.name}`}><Heart size={20} fill={saved ? "currentColor" : "none"} /></button></div>
+        <div className={styles.cardTop}><div>{person.verified && <span className={styles.verified}><BadgeCheck size={13} />Verified</span>}<h3>{person.name}</h3><span className={styles.profession}>{person.profession}</span></div><button type="button" className={saved ? styles.saved : ""} onClick={onSave} disabled={saving} aria-pressed={saved} aria-label={saved ? `Remove ${person.name} from saved` : `Save ${person.name}`}><Heart size={20} fill={saved ? "currentColor" : "none"} /></button></div>
         <div className={styles.meta}><span><Star size={13} fill="currentColor" />{person.rating || "New"} <small>({person.reviews})</small></span><span><MapPin size={13} />{person.location}</span>{person.isAvailable && <span className={styles.available}>Available</span>}</div>
         <p className={styles.bio}>{person.title}</p>
         <div className={styles.tags}>{person.tags.slice(0, 3).map((tag) => <span key={tag}>{tag}</span>)}</div>

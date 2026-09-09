@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { useMutation } from "convex/react";
 import { LoaderCircle, Plus } from "lucide-react";
+import { toast } from "sonner";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { api } from "../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import styles from "./AccountContextSwitcher.module.css";
@@ -41,12 +43,15 @@ export default function AccountContextSwitcher({ dark = false, onSwitched }) {
     ? requestedValue
     : `${options[0]?.role}:${options[0]?.world}`;
 
-  async function handleChange(event) {
-    const [role, world] = event.target.value.split(":");
+  async function handleChange(value) {
+    if (value === currentValue) return;
+    const [role, world] = value.split(":");
     setSwitching(true);
     try {
       await switchContext({ activeRole: role, preferredWorld: world });
       onSwitched?.();
+    } catch (error) {
+      toast.error(error?.message || "Could not switch account. Please try again.");
     } finally {
       setSwitching(false);
     }
@@ -54,12 +59,13 @@ export default function AccountContextSwitcher({ dark = false, onSwitched }) {
 
   return (
     <div className={`${styles.switcher} ${dark ? styles.dark : ""}`}>
-      <label>
-        <span>{switching ? <LoaderCircle className={styles.spinner} /> : null} Account context</span>
-        <select value={currentValue} onChange={handleChange} disabled={switching} aria-label="Switch account role and marketplace">
-          {options.map((option) => <option key={`${option.role}:${option.world}`} value={`${option.role}:${option.world}`}>{option.label}</option>)}
-        </select>
-      </label>
+      <div className={styles.caption}>{switching ? <LoaderCircle className={styles.spinner} /> : null} Your workspace</div>
+      <Select value={currentValue} onValueChange={handleChange} disabled={switching}>
+        <SelectTrigger className={styles.trigger} aria-label="Switch account role and marketplace"><SelectValue /></SelectTrigger>
+        <SelectContent className={`${styles.menu} ${dark ? styles.darkMenu : ""}`} align="start" sideOffset={6}>
+          {options.map((option) => <SelectItem className={styles.option} key={`${option.role}:${option.world}`} value={`${option.role}:${option.world}`}>{option.label}</SelectItem>)}
+        </SelectContent>
+      </Select>
       {accountRoles.length ? <Link href="/onboarding" title="Add another role"><Plus size={14} /> Add role</Link> : null}
     </div>
   );

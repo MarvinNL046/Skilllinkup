@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
+    "test:launch-contracts": "node scripts/check-account-context.mjs && node scripts/check-launch-security.cjs && node scripts/check-invoice.mjs && node scripts/check-image-retention.cjs",
     "env:verify": "node scripts/verify-environment.mjs",
     "beta:verify-copy": "node scripts/check-private-beta-copy.mjs",
     "release:verify-hosted": "node scripts/verify-hosted-release.mjs",

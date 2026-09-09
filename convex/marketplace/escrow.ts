@@ -1,6 +1,7 @@
 "use node";
 
 import { v } from "convex/values";
+import { requireLivePaymentsEnabled } from "../lib/paymentPolicy";
 import { internalAction } from "../_generated/server";
 import { internal } from "../_generated/api";
 import Stripe from "stripe";
@@ -17,7 +18,9 @@ function getStripe(): Stripe {
  */
 export const releaseToFreelancer = internalAction({
   args: { orderId: v.id("orders") },
+  returns: v.null(),
   handler: async (ctx, args) => {
+    requireLivePaymentsEnabled("Escrow release");
     const order = await ctx.runQuery(internal.marketplace.orders.getByIdInternal, {
       orderId: args.orderId,
     });
@@ -85,7 +88,9 @@ export const releaseToFreelancer = internalAction({
  */
 export const refundToClient = internalAction({
   args: { orderId: v.id("orders") },
+  returns: v.null(),
   handler: async (ctx, args) => {
+    requireLivePaymentsEnabled("Escrow refund");
     const order = await ctx.runQuery(internal.marketplace.orders.getByIdInternal, {
       orderId: args.orderId,
     });

@@ -4,16 +4,22 @@ import Link from "next/link";
 import { Tooltip } from "react-tooltip";
 import { useTranslations } from "next-intl";
 import { Pencil, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
-export default function ManageServiceCard1({ data, removeGig }) {
+export default function ManageServiceCard1({ data, removeGig, onEdit }) {
+  const [deleting, setDeleting] = useState(false);
   const t = useTranslations("manageServices");
   const handleDelete = async () => {
+    if (!window.confirm(`Remove “${data.title}” from your services?`)) return;
     if (data._id && removeGig) {
+      setDeleting(true);
       try {
         await removeGig({ gigId: data._id });
+        toast.success("Service removed");
       } catch (error) {
-        console.error("Failed to delete gig:", error);
-      }
+        toast.error(error?.message || "Could not remove service");
+      } finally { setDeleting(false); }
     }
   };
 
@@ -34,7 +40,7 @@ export default function ManageServiceCard1({ data, removeGig }) {
           </div>
           <div className="flex-grow">
             <h6 className="text-base font-semibold mb-1">
-              <Link href="/services" className="hover:text-primary">
+              <Link href={`/online/service/${data.slug || id}`} className="hover:text-primary">
                 {data.title}
               </Link>
             </h6>
@@ -53,7 +59,7 @@ export default function ManageServiceCard1({ data, removeGig }) {
       </td>
       <td data-label={t("columnTypeCost")} className="align-top">
         <span className="text-sm">
-          ${(data.cost || 0).toFixed(2)}/{t("fixed")}
+          {new Intl.NumberFormat("en-IE", { style: "currency", currency: "EUR" }).format(data.cost || 0)}/{t("fixed")}
         </span>
       </td>
       <td data-label={t("columnActions")} className="align-top">
@@ -61,6 +67,7 @@ export default function ManageServiceCard1({ data, removeGig }) {
           <button
             type="button"
             id={`edit-${id}`}
+            onClick={onEdit}
             aria-label={t("edit")}
             className="text-[var(--text-tertiary)] hover:text-foreground"
           >
@@ -73,6 +80,7 @@ export default function ManageServiceCard1({ data, removeGig }) {
             type="button"
             id={`delete-${id}`}
             onClick={handleDelete}
+            disabled={deleting}
             aria-label={t("delete")}
             className="text-[var(--text-tertiary)] hover:text-destructive"
           >

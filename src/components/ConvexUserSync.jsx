@@ -4,6 +4,7 @@ import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { hasCompletedActiveContext } from "@/lib/accountContext.mjs";
 
 export default function ConvexUserSync() {
     const { user, isSignedIn } = useUser();
@@ -42,8 +43,7 @@ export default function ConvexUserSync() {
     useEffect(() => {
         if (
             convexUser &&
-            !convexUser.onboardingVersion &&
-            !(convexUser.userType && convexUser.preferredWorld) &&
+            !hasCompletedActiveContext(convexUser) &&
             pathname.startsWith("/dashboard") &&
             pathname !== "/onboarding"
         ) {

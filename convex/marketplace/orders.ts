@@ -1,762 +1,544 @@
-import { v } from "convex/values";
-import { query, mutation, internalQuery, internalMutation } from "../_generated/server";
-import { internal } from "../_generated/api";
-import { Doc, Id } from "../_generated/dataModel";
-import {
-  requireAuthUser,
-  requireMarketplaceContext,
-  requireOwner,
-  requireServerSecret,
-} from "../lib/authHelpers";
-import { assertTransition, orderTransitions, orderTypeValidator } from "../lib/marketplaceState";
+import type { Doc, Id } from "../_generated/dataModel";
+// Reconciled with the existing development deployment (2026-09-07).
+import { requireLivePaymentsEnabled } from "../lib/paymentPolicy";
 import { notifyUser } from "../lib/notifications";
-
-/**
- * Calculate the platform fee based on the order amount.
- *
- * IMPORTANT: Fee tiers must match src/app/api/stripe/checkout/route.js:calculateApplicationFeeAmountCents
- * Tiers: <$50 → 15%, $50-500 → 12%, >$500 → 10%
- */
+import { internal } from "../_generated/api";
+import { query } from "../_generated/server";
+import { internalQuery } from "../_generated/server";
+import { mutation } from "../_generated/server";
+import { internalMutation } from "../_generated/server";
+import { requireAuthUser } from "../lib/authHelpers";
+import { requireOwner } from "../lib/authHelpers";
+import { requireMarketplaceContext } from "../lib/authHelpers";
+import { requireServerSecret } from "../lib/authHelpers";
+import { projectTransitions } from "../lib/marketplaceState";
+import { orderTransitions } from "../lib/marketplaceState";
+import { assertTransition } from "../lib/marketplaceState";
+import { orderTypeValidator } from "../lib/marketplaceState";
+import { v } from "convex/values";
 function calculatePlatformFee(amount: number): number {
-  if (amount < 50) return Math.round(amount * 0.15 * 100) / 100;
-  else if (amount <= 500) return Math.round(amount * 0.12 * 100) / 100;
-  else return Math.round(amount * 0.10 * 100) / 100;
+  return amount < 50 ? Math.round(amount * 0.15 * 100) / 100 : amount <= 500 ? Math.round(amount * 0.12 * 100) / 100 : Math.round(amount * 0.1 * 100) / 100;
 }
-
-/**
- * Generate a unique order number in the format ORD-YYYYMMDD-XXXXXX.
- */
 function generateOrderNumber(): string {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  const random = Math.random().toString(36).substring(2, 8).toUpperCase();
-  return `ORD-${year}${month}${day}-${random}`;
+  let r = new Date(),
+    e = r.getFullYear(),
+    t = String(r.getMonth() + 1).padStart(2, "0"),
+    a = String(r.getDate()).padStart(2, "0"),
+    d = Math.random().toString(36).substring(2, 8).toUpperCase();
+  return `ORD-${e}${t}${a}-${d}`;
 }
-
-/**
- * Create a new order.
- * Calculates platform fee and freelancer earnings automatically.
- * Requires authentication.
- */
-export const create = mutation({
-  args: {
-    orderType: orderTypeValidator,
-    title: v.string(),
-    amount: v.number(),
-    currency: v.optional(v.string()),
-    deliveryDays: v.number(),
-    clientId: v.id("users"),
-    freelancerId: v.id("freelancerProfiles"),
-    gigId: v.optional(v.id("gigs")),
-    projectId: v.optional(v.id("projects")),
-    gigPackageId: v.optional(v.id("gigPackages")),
-    serverSecret: v.optional(v.string()),
-  },
-  handler: async (ctx, args) => {
-    if (!["gig", "project"].includes(args.orderType)) {
-      throw new Error("Unsupported order type.");
+async function completeLinkedProject(r, e, t, a: { afterExternalTransfer?: boolean } = {}) {
+  if (e.orderType !== "project" || !e.projectId) return;
+  let d = await r.db.get(e.projectId),
+    s = null;
+  if (d ? (d.tenantId !== e.tenantId || d.clientId !== e.clientId || d.selectedFreelancerId !== e.freelancerId) && (s = "Linked project does not match this order.") : s = "Linked project not found.", s) {
+    if (a.afterExternalTransfer) {
+      console.error(`[orders] Project completion reconciliation skipped for order ${e._id}: ${s}`);
+      return;
     }
-    if (args.gigId && args.projectId) {
-      throw new Error("Order cannot reference both a gig and a project.");
+    throw new Error(s);
+  }
+  if (d && d.status !== "completed") {
+    if (d.status !== "in_progress" && d.status !== "cancelled") {
+      let o = `Linked project cannot complete from ${d.status}.`;
+      if (!a.afterExternalTransfer) throw new Error(o);
+      console.error(`[orders] Project completion reconciliation skipped for order ${e._id}: ${o}`);
+      return;
     }
-    if (args.serverSecret) {
-      requireServerSecret(args.serverSecret);
-    } else {
-      const client = await requireOwner(ctx, args.clientId);
-      requireMarketplaceContext(client, "client", "online", "starting an order");
-    }
-
-    const freelancerProfile = await ctx.db.get(args.freelancerId);
-    if (!freelancerProfile) throw new Error("Freelancer profile not found");
-    if (freelancerProfile.userId === args.clientId) {
-      throw new Error("You cannot create an order for yourself.");
-    }
-
-    let title = args.title;
-    let amount = args.amount;
-    let currency = args.currency ?? "EUR";
-    let deliveryDays = args.deliveryDays;
-
-    if (args.orderType === "gig" && (!args.gigId || !args.gigPackageId)) {
-      throw new Error("Gig orders require both gigId and gigPackageId.");
-    }
-    if (args.orderType === "project" && !args.projectId) {
-      throw new Error("Project orders require a projectId.");
-    }
-
-    const hasGigArgs = !!args.gigId || !!args.gigPackageId;
-    if (hasGigArgs) {
-      if (!args.gigId || !args.gigPackageId) {
-        throw new Error("Gig orders require both gigId and gigPackageId.");
-      }
-
-      const gig = await ctx.db.get(args.gigId);
-      if (!gig) throw new Error("Gig not found");
-      if (gig.freelancerId !== args.freelancerId) {
-        throw new Error("Unauthorized.");
-      }
-
-      const gigPackage = await ctx.db.get(args.gigPackageId);
-      if (!gigPackage) throw new Error("Gig package not found");
-      if (gigPackage.gigId !== args.gigId) {
-        throw new Error("Unauthorized.");
-      }
-
-      title = `${gig.title} - ${gigPackage.title}`;
-      amount = gigPackage.price;
-      currency = gigPackage.currency ?? currency;
-      deliveryDays = gigPackage.deliveryDays;
-    }
-
-    if (args.projectId) {
-      const project = await ctx.db.get(args.projectId);
-      if (!project) throw new Error("Project not found");
-      if (project.clientId !== args.clientId) {
-        throw new Error("Unauthorized.");
-      }
-      if (!project.selectedFreelancerId) {
-        throw new Error("Project order cannot be created before a freelancer is selected.");
-      }
-      if (project.selectedFreelancerId !== args.freelancerId) {
-        throw new Error("Unauthorized.");
-      }
-
-      title = project.title;
-      currency = project.currency ?? currency;
-    }
-
-    // Get the default tenant
-    const tenant = await ctx.db.query("tenants").first();
-    if (!tenant) throw new Error("No tenant found");
-
-    const platformFee = calculatePlatformFee(amount);
-    const freelancerEarnings = Math.round((amount - platformFee) * 100) / 100;
-
-    const deliveryDeadline = Date.now() + deliveryDays * 24 * 60 * 60 * 1000;
-    const now = Date.now();
-
-    const orderId = await ctx.db.insert("orders", {
-      tenantId: tenant._id,
-      orderNumber: generateOrderNumber(),
-      orderType: args.orderType,
-      clientId: args.clientId,
-      freelancerId: args.freelancerId,
-      gigId: args.gigId,
-      projectId: args.projectId,
-      gigPackageId: args.gigPackageId,
-      title,
-      amount,
-      platformFee,
-      freelancerEarnings,
-      currency,
-      deliveryDeadline,
-      revisionsUsed: 0,
-      status: "pending",
-      escrowStatus: "held",
-      createdAt: now,
-      updatedAt: now,
-    });
-
-    // Fetch user data for emails
-    const client = await ctx.db.get(args.clientId);
-    const freelancerUser = freelancerProfile ? await ctx.db.get(freelancerProfile.userId) : null;
-
-    const order = await ctx.db.get(orderId);
-
-    // Send order confirmation to client
-    if (client?.email) {
-      await ctx.scheduler.runAfter(0, internal.lib.email.sendOrderConfirmation, {
-        clientEmail: client.email,
-        clientName: client.name || "Customer",
-        orderNumber: order!.orderNumber,
-        orderTitle: title,
-        amount,
-        currency,
-        deliveryDays,
-        orderId: orderId,
-      });
-    }
-
-    // Send new order notification to freelancer
-    if (freelancerUser?.email) {
-      await ctx.scheduler.runAfter(0, internal.lib.email.sendNewOrderNotification, {
-        freelancerEmail: freelancerUser.email,
-        freelancerName: freelancerProfile?.displayName || freelancerUser.name || "Freelancer",
-        orderNumber: order!.orderNumber,
-        orderTitle: title,
-        amount: amount - platformFee,
-        currency,
-        deliveryDays,
-        orderId: orderId,
-      });
-    }
-
-    return orderId;
-  },
-});
-
-/**
- * Start a service-package order during the free private beta.
- * No charge, transfer, escrow hold or credit movement is created. The listed
- * package amount remains on the order so both parties have a clear scope and
- * price reference for beta feedback.
- */
-export const createBetaGigOrder = mutation({
-  args: {
-    gigId: v.id("gigs"),
-    packageId: v.id("gigPackages"),
-  },
-  returns: v.object({ orderId: v.id("orders") }),
-  handler: async (ctx, args) => {
-    const client = await requireAuthUser(ctx);
-    requireMarketplaceContext(client, "client", "online", "buying a service");
-    const [gig, selectedPackage] = await Promise.all([
-      ctx.db.get(args.gigId),
-      ctx.db.get(args.packageId),
-    ]);
-
-    if (!gig || gig.status !== "active") {
-      throw new Error("This service is not available.");
-    }
-    if (!selectedPackage || selectedPackage.gigId !== gig._id) {
-      throw new Error("The selected package does not belong to this service.");
-    }
-
-    const freelancerProfile = await ctx.db.get(gig.freelancerId);
-    if (!freelancerProfile || freelancerProfile.status !== "active") {
-      throw new Error("The freelancer profile is not available.");
-    }
-    if (freelancerProfile.userId === client._id) {
-      throw new Error("You cannot order your own service.");
-    }
-
-    const now = Date.now();
-    const orderId = await ctx.db.insert("orders", {
-      tenantId: gig.tenantId,
-      orderNumber: generateOrderNumber(),
-      orderType: "gig",
-      clientId: client._id,
-      freelancerId: freelancerProfile._id,
-      gigId: gig._id,
-      gigPackageId: selectedPackage._id,
-      title: `${gig.title} - ${selectedPackage.title}`,
-      description: selectedPackage.description,
-      amount: selectedPackage.price,
-      platformFee: 0,
-      freelancerEarnings: selectedPackage.price,
-      currency: selectedPackage.currency ?? "EUR",
-      deliveryDeadline: now + selectedPackage.deliveryDays * 24 * 60 * 60 * 1000,
-      revisionCount: selectedPackage.revisionCount,
-      revisionsUsed: 0,
-      status: "active",
-      escrowStatus: "beta_no_payment",
-      createdAt: now,
-      updatedAt: now,
-    });
-
-    const conversationId = await ctx.db.insert("conversations", {
-      tenantId: gig.tenantId,
-      contextType: "order",
-      contextTitle: gig.title,
-      contextHref: `/orders/${orderId}`,
-      orderId,
-      freelancerProfileId: freelancerProfile._id,
-      gigId: gig._id,
-      participant1: client._id,
-      participant2: freelancerProfile.userId,
-      status: "active",
-      unreadCount1: 0,
-      unreadCount2: 0,
-      createdAt: now,
-      updatedAt: now,
-    });
-
-    await ctx.db.insert("messages", {
-      conversationId,
-      content: `Private beta order started: ${gig.title}`,
-      messageType: "system",
-      isRead: false,
-      createdAt: now,
-    });
-
-    await notifyUser(ctx, {
-      userId: freelancerProfile.userId,
-      type: "order_placed",
-      title: "New private beta order",
-      body: `${client.name} started ${selectedPackage.title} for ${gig.title}.`,
-      link: `/orders/${orderId}`,
-      metadata: { orderId, gigId: gig._id },
-    });
-
-    return { orderId };
-  },
-});
-
-/**
- * Get an order by its Stripe PaymentIntent ID.
- * Used for idempotency in the webhook handler.
- */
-export const getByStripePaymentIntentId = query({
-  args: {
-    stripePaymentIntentId: v.string(),
-    serverSecret: v.optional(v.string()),
-  },
-  handler: async (ctx, args) => {
-    requireServerSecret(args.serverSecret);
-    const order = await ctx.db
-      .query("orders")
-      .withIndex("by_stripePaymentIntentId", (q) =>
-        q.eq("stripePaymentIntentId", args.stripePaymentIntentId)
-      )
-      .first();
-    return order ?? null;
-  },
-});
-
-/**
- * Update an order with Stripe payment data after a successful payment.
- * Sets stripePaymentIntentId, escrowStatus, status, and requirements.
- */
-export const updateStripePayment = mutation({
-  args: {
-    orderId: v.id("orders"),
-    stripePaymentIntentId: v.string(),
-    requirements: v.optional(v.string()),
-    serverSecret: v.optional(v.string()),
-  },
-  handler: async (ctx, args) => {
-    requireServerSecret(args.serverSecret);
-    const order = await ctx.db.get(args.orderId);
-    if (!order) throw new Error("Order not found.");
-    if (order.status !== "active") {
-      assertTransition(orderTransitions, order.status, "active");
-    }
-    await notifyUser(ctx, {
-      userId: order.clientId,
-      type: "order_delivered",
-      title: "Work submitted for review",
-      body: `${order.title} is ready for your review.`,
-      link: `/orders/${order._id}`,
-      metadata: { orderId: order._id },
-    });
-    await ctx.db.patch(args.orderId, {
-      stripePaymentIntentId: args.stripePaymentIntentId,
-      escrowStatus: "held",
-      status: "active",
-      requirements: args.requirements,
-      updatedAt: Date.now(),
-    });
-    return args.orderId;
-  },
-});
-
-/**
- * Create a transaction record for a completed payment.
- */
-export const createTransaction = mutation({
-  args: {
-    orderId: v.id("orders"),
-    payerId: v.optional(v.id("users")),
-    payeeId: v.optional(v.id("users")),
-    amount: v.number(),
-    platformFee: v.optional(v.number()),
-    currency: v.string(),
-    stripePaymentIntentId: v.optional(v.string()),
-    description: v.optional(v.string()),
-    serverSecret: v.optional(v.string()),
-  },
-  handler: async (ctx, args) => {
-    requireServerSecret(args.serverSecret);
-    // Look up the tenant from the order
-    const order = await ctx.db.get(args.orderId);
-    if (!order) throw new Error("Order not found");
-
-    const now = Date.now();
-
-    const transactionId = await ctx.db.insert("transactions", {
-      tenantId: order.tenantId,
-      orderId: args.orderId,
-      payerId: args.payerId,
-      payeeId: args.payeeId,
-      amount: args.amount,
-      platformFee: args.platformFee,
-      currency: args.currency,
-      transactionType: "payment",
-      stripePaymentIntentId: args.stripePaymentIntentId,
+    d.status === "in_progress" && assertTransition(projectTransitions, d.status, "completed"), await r.db.patch(d._id, {
       status: "completed",
-      description: args.description,
-      createdAt: now,
-      updatedAt: now,
+      updatedAt: t
     });
-
-    return transactionId;
-  },
-});
-
-/**
- * Get orders for a user as either client or freelancer.
- * Enriches each order with client and freelancer display names.
- */
-export const getByUser = query({
-  args: {
-    userId: v.id("users"),
-    role: v.union(v.literal("client"), v.literal("freelancer")),
-    limit: v.optional(v.number()),
-  },
-  handler: async (ctx, args) => {
-    await requireOwner(ctx, args.userId);
-
-    const limit = args.limit ?? 20;
-
-    let orders: Doc<"orders">[];
-    if (args.role === "client") {
-      orders = await ctx.db
-        .query("orders")
-        .withIndex("by_client", (q) => q.eq("clientId", args.userId))
-        .order("desc")
-        .take(limit);
-    } else {
-      // For freelancer role we need to match the freelancerProfiles id.
-      // Fetch the freelancer profile for this user first.
-      const profile = await ctx.db
-        .query("freelancerProfiles")
-        .withIndex("by_userId", (q) => q.eq("userId", args.userId))
-        .first();
-
-      if (!profile) return [];
-
-      orders = await ctx.db
-        .query("orders")
-        .withIndex("by_freelancer", (q) => q.eq("freelancerId", profile._id))
-        .order("desc")
-        .take(limit);
+  }
+}
+var create = mutation({
+    args: {
+      orderType: orderTypeValidator,
+      title: v.string(),
+      amount: v.number(),
+      currency: v.optional(v.string()),
+      deliveryDays: v.number(),
+      clientId: v.id("users"),
+      freelancerId: v.id("freelancerProfiles"),
+      gigId: v.optional(v.id("gigs")),
+      projectId: v.optional(v.id("projects")),
+      gigPackageId: v.optional(v.id("gigPackages")),
+      serverSecret: v.string()
+    },
+    returns: v.id("orders"),
+    handler: async (ctx, args): Promise<Id<"orders">> => {
+      if (requireServerSecret(args.serverSecret), requireLivePaymentsEnabled("Paid order creation"), !["gig", "project"].includes(args.orderType)) throw new Error("Unsupported order type.");
+      if (args.gigId && args.projectId) throw new Error("Order cannot reference both a gig and a project.");
+      let [t, a] = await Promise.all([ctx.db.get(args.clientId), ctx.db.get(args.freelancerId)]);
+      if (!t) throw new Error("Client not found");
+      if (!a) throw new Error("Freelancer profile not found");
+      if (a.tenantId !== t.tenantId) throw new Error("Client and freelancer must belong to the same tenant.");
+      if (a.userId === args.clientId) throw new Error("You cannot create an order for yourself.");
+      let d = args.title,
+        s = args.amount,
+        o = args.currency ?? "EUR",
+        l = args.deliveryDays;
+      if (args.orderType === "gig" && (!args.gigId || !args.gigPackageId)) throw new Error("Gig orders require both gigId and gigPackageId.");
+      if (args.orderType === "project" && !args.projectId) throw new Error("Project orders require a projectId.");
+      if (!!args.gigId || !!args.gigPackageId) {
+        if (!args.gigId || !args.gigPackageId) throw new Error("Gig orders require both gigId and gigPackageId.");
+        let c = await ctx.db.get(args.gigId);
+        if (!c) throw new Error("Gig not found");
+        if (c.tenantId !== t.tenantId) throw new Error("Gig and client must belong to the same tenant.");
+        if (c.freelancerId !== args.freelancerId) throw new Error("Unauthorized.");
+        let w = await ctx.db.get(args.gigPackageId);
+        if (!w) throw new Error("Gig package not found");
+        if (w.gigId !== args.gigId) throw new Error("Unauthorized.");
+        d = `${c.title} - ${w.title}`, s = w.price, o = w.currency ?? o, l = w.deliveryDays;
+      }
+      if (args.projectId) {
+        let c = await ctx.db.get(args.projectId);
+        if (!c) throw new Error("Project not found");
+        if (c.tenantId !== t.tenantId) throw new Error("Project and client must belong to the same tenant.");
+        if (c.clientId !== args.clientId) throw new Error("Unauthorized.");
+        if (!c.selectedFreelancerId) throw new Error("Project order cannot be created before a freelancer is selected.");
+        if (c.selectedFreelancerId !== args.freelancerId) throw new Error("Unauthorized.");
+        d = c.title, o = c.currency ?? o;
+      }
+      let h = calculatePlatformFee(s),
+        T = Math.round((s - h) * 100) / 100,
+        S = Date.now() + l * 24 * 60 * 60 * 1e3,
+        k = Date.now(),
+        v = await ctx.db.insert("orders", {
+          tenantId: t.tenantId,
+          orderNumber: generateOrderNumber(),
+          orderType: args.orderType,
+          clientId: args.clientId,
+          freelancerId: args.freelancerId,
+          gigId: args.gigId,
+          projectId: args.projectId,
+          gigPackageId: args.gigPackageId,
+          title: d,
+          amount: s,
+          platformFee: h,
+          freelancerEarnings: T,
+          currency: o,
+          deliveryDeadline: S,
+          revisionsUsed: 0,
+          status: "pending",
+          escrowStatus: "held",
+          createdAt: k,
+          updatedAt: k
+        }),
+        i = a ? await ctx.db.get(a.userId) : null,
+        p = await ctx.db.get(v);
+      return t?.email && (await ctx.scheduler.runAfter(0, internal.lib.email.sendOrderConfirmation, {
+        clientEmail: t.email,
+        clientName: t.name || "Customer",
+        orderNumber: p.orderNumber,
+        orderTitle: d,
+        amount: s,
+        currency: o,
+        deliveryDays: l,
+        orderId: v
+      })), i?.email && (await ctx.scheduler.runAfter(0, internal.lib.email.sendNewOrderNotification, {
+        freelancerEmail: i.email,
+        freelancerName: a?.displayName || i.name || "Freelancer",
+        orderNumber: p.orderNumber,
+        orderTitle: d,
+        amount: s - h,
+        currency: o,
+        deliveryDays: l,
+        orderId: v
+      })), v;
     }
-
-    // Batch load unique clients
-    const clientIds = [...new Set(orders.map((o) => o.clientId).filter(Boolean))] as Id<"users">[];
-
-    // Batch load unique freelancer profiles
-    const freelancerProfileIds = [...new Set(
-      orders.map((o) => o.freelancerId).filter(Boolean)
-    )] as Id<"freelancerProfiles">[];
-
-    const [clients, freelancerProfiles] = await Promise.all([
-      Promise.all(clientIds.map((id) => ctx.db.get(id))),
-      Promise.all(freelancerProfileIds.map((id) => ctx.db.get(id))),
-    ]);
-
-    const clientMap = new Map(clients.filter(Boolean).map((c) => [c!._id, c!]));
-    const profileMap = new Map(freelancerProfiles.filter(Boolean).map((p) => [p!._id, p!]));
-
-    // Batch load unique user records for freelancer profiles
-    const freelancerUserIds = [...new Set(
-      freelancerProfiles.filter(Boolean).map((p) => p!.userId).filter(Boolean)
-    )] as Id<"users">[];
-
-    const freelancerUsers = await Promise.all(freelancerUserIds.map((id) => ctx.db.get(id)));
-    const freelancerUserMap = new Map(freelancerUsers.filter(Boolean).map((u) => [u!._id, u!]));
-
-    const enriched = orders.map((order) => {
-      const client = clientMap.get(order.clientId);
-      const freelancerProfile = order.freelancerId ? profileMap.get(order.freelancerId) : null;
-      const freelancerUser = freelancerProfile ? freelancerUserMap.get(freelancerProfile.userId) : null;
-
-      return {
-        ...order,
-        clientName: client?.name ?? null,
-        freelancerName: freelancerProfile?.displayName ?? freelancerUser?.name ?? null,
-        freelancerUserId: freelancerProfile?.userId ?? null,
+  }),
+  createBetaGigOrder = mutation({
+    args: {
+      gigId: v.id("gigs"),
+      packageId: v.id("gigPackages")
+    },
+    returns: v.object({
+      orderId: v.id("orders")
+    }),
+    handler: async (ctx, args) => {
+      let t = await requireAuthUser(ctx);
+      requireMarketplaceContext(t, "client", "online", "buying a service");
+      let [a, d] = await Promise.all([ctx.db.get(args.gigId), ctx.db.get(args.packageId)]);
+      if (!a || a.status !== "active") throw new Error("This service is not available.");
+      if (!d || d.gigId !== a._id) throw new Error("The selected package does not belong to this service.");
+      let s = await ctx.db.get(a.freelancerId);
+      if (!s || s.status !== "active") throw new Error("The freelancer profile is not available.");
+      if (s.userId === t._id) throw new Error("You cannot order your own service.");
+      let o = Date.now(),
+        l = await ctx.db.insert("orders", {
+          tenantId: a.tenantId,
+          orderNumber: generateOrderNumber(),
+          orderType: "gig",
+          clientId: t._id,
+          freelancerId: s._id,
+          gigId: a._id,
+          gigPackageId: d._id,
+          title: `${a.title} - ${d.title}`,
+          description: d.description,
+          amount: d.price,
+          platformFee: 0,
+          freelancerEarnings: d.price,
+          currency: d.currency ?? "EUR",
+          deliveryDeadline: o + d.deliveryDays * 24 * 60 * 60 * 1e3,
+          revisionCount: d.revisionCount,
+          revisionsUsed: 0,
+          status: "active",
+          escrowStatus: "beta_no_payment",
+          createdAt: o,
+          updatedAt: o
+        }),
+        f = await ctx.db.insert("conversations", {
+          tenantId: a.tenantId,
+          contextType: "order",
+          contextTitle: a.title,
+          contextHref: `/orders/${l}`,
+          orderId: l,
+          freelancerProfileId: s._id,
+          gigId: a._id,
+          participant1: t._id,
+          participant2: s.userId,
+          status: "active",
+          unreadCount1: 0,
+          unreadCount2: 0,
+          createdAt: o,
+          updatedAt: o
+        });
+      return await ctx.db.insert("messages", {
+        conversationId: f,
+        content: `Private beta order started: ${a.title}`,
+        messageType: "system",
+        isRead: !1,
+        createdAt: o
+      }), await notifyUser(ctx, {
+        userId: s.userId,
+        type: "order_placed",
+        title: "New private beta order",
+        body: `${t.name} started ${d.title} for ${a.title}.`,
+        link: `/orders/${l}`,
+        metadata: {
+          orderId: l,
+          gigId: a._id
+        }
+      }), {
+        orderId: l
       };
-    });
-
-    return enriched;
-  },
-});
-
-/**
- * Get a single order by ID.
- * The requesting user must be the client or freelancer on the order.
- */
-export const getById = query({
-  args: {
-    orderId: v.id("orders"),
-  },
-  handler: async (ctx, args) => {
-    const order = await ctx.db.get(args.orderId);
-    if (!order) return null;
-
-    // Verify the requester is the client or freelancer on this order
-    const requestingUser = await requireAuthUser(ctx);
-
-    const freelancerProfile = order.freelancerId
-      ? await ctx.db.get(order.freelancerId)
-      : null;
-
-    const isClient = order.clientId === requestingUser._id;
-    const isFreelancer = freelancerProfile?.userId === requestingUser._id;
-
-    if (!isClient && !isFreelancer) {
-      throw new Error("Access denied: you are not a party to this order");
     }
-
-    const [client, freelancerUser] = await Promise.all([
-      ctx.db.get(order.clientId),
-      freelancerProfile ? ctx.db.get(freelancerProfile.userId) : Promise.resolve(null),
-    ]);
-
-    return {
-      ...order,
-      clientName: client?.name ?? null,
-      freelancerName: freelancerProfile?.displayName ?? freelancerUser?.name ?? null,
-      freelancerUserId: freelancerProfile?.userId ?? null,
-    };
-  },
-});
-
-/**
- * Freelancer marks an order as delivered.
- * Requires authentication and the caller must be the freelancer on the order.
- */
-export const deliver = mutation({
-  args: {
-    orderId: v.id("orders"),
-  },
-  returns: v.object({ success: v.boolean() }),
-  handler: async (ctx, args) => {
-    const order = await ctx.db.get(args.orderId);
-    if (!order) throw new Error("Order not found");
-    const user = await requireAuthUser(ctx);
-
-    // Verify caller is the freelancer
-    const freelancerProfile = order.freelancerId
-      ? await ctx.db.get(order.freelancerId)
-      : null;
-    if (!freelancerProfile || freelancerProfile.userId !== user._id) {
-      throw new Error("Access denied: only the freelancer can deliver this order");
+  }),
+  getByStripePaymentIntentId = query({
+    args: {
+      stripePaymentIntentId: v.string(),
+      serverSecret: v.optional(v.string())
+    },
+    handler: async (ctx, args) => (requireServerSecret(args.serverSecret), (await ctx.db.query("orders").withIndex("by_stripePaymentIntentId", a => a.eq("stripePaymentIntentId", args.stripePaymentIntentId)).first()) ?? null)
+  }),
+  updateStripePayment = mutation({
+    args: {
+      orderId: v.id("orders"),
+      stripePaymentIntentId: v.string(),
+      requirements: v.optional(v.string()),
+      serverSecret: v.optional(v.string())
+    },
+    returns: v.id("orders"),
+    handler: async (ctx, args) => {
+      requireServerSecret(args.serverSecret), requireLivePaymentsEnabled("Stripe payment reconciliation");
+      let t = await ctx.db.get(args.orderId);
+      if (!t) throw new Error("Order not found.");
+      return t.status !== "active" && assertTransition(orderTransitions, t.status, "active"), await notifyUser(ctx, {
+        userId: t.clientId,
+        type: "order_delivered",
+        title: "Work submitted for review",
+        body: `${t.title} is ready for your review.`,
+        link: `/orders/${t._id}`,
+        metadata: {
+          orderId: t._id
+        }
+      }), await ctx.db.patch(args.orderId, {
+        stripePaymentIntentId: args.stripePaymentIntentId,
+        escrowStatus: "held",
+        status: "active",
+        requirements: args.requirements,
+        updatedAt: Date.now()
+      }), args.orderId;
     }
-    assertTransition(orderTransitions, order.status, "delivered");
-    const deliverable = await ctx.db
-      .query("orderDeliverables")
-      .withIndex("by_order", (q) => q.eq("orderId", order._id))
-      .first();
-    if (!deliverable) throw new Error("Add at least one file or delivery note before submitting the work.");
-
-    await ctx.db.patch(args.orderId, {
-      status: "delivered",
-      updatedAt: Date.now(),
-    });
-
-    // Schedule automatic escrow release after 7 days if client takes no action
-    if (order.escrowStatus === "held") {
-      const releaseJobId = await ctx.scheduler.runAfter(
-        7 * 24 * 60 * 60 * 1000,
-        internal.marketplace.escrow.releaseToFreelancer,
-        { orderId: args.orderId }
-      );
-      await ctx.db.patch(args.orderId, { autoReleaseJobId: releaseJobId });
-    }
-
-    // Send delivery notification to client
-    const client = await ctx.db.get(order.clientId);
-    if (client?.email) {
-      await ctx.scheduler.runAfter(0, internal.lib.email.sendOrderDelivered, {
-        clientEmail: client.email,
-        clientName: client.name || "Customer",
-        orderNumber: order.orderNumber,
-        orderTitle: order.title,
+  }),
+  createTransaction = mutation({
+    args: {
+      orderId: v.id("orders"),
+      payerId: v.optional(v.id("users")),
+      payeeId: v.optional(v.id("users")),
+      amount: v.number(),
+      platformFee: v.optional(v.number()),
+      currency: v.string(),
+      stripePaymentIntentId: v.optional(v.string()),
+      description: v.optional(v.string()),
+      serverSecret: v.optional(v.string())
+    },
+    returns: v.id("transactions"),
+    handler: async (ctx, args) => {
+      requireServerSecret(args.serverSecret), requireLivePaymentsEnabled("Payment ledger creation");
+      let t = await ctx.db.get(args.orderId);
+      if (!t) throw new Error("Order not found");
+      let a = Date.now();
+      return await ctx.db.insert("transactions", {
+        tenantId: t.tenantId,
         orderId: args.orderId,
+        payerId: args.payerId,
+        payeeId: args.payeeId,
+        amount: args.amount,
+        platformFee: args.platformFee,
+        currency: args.currency,
+        transactionType: "payment",
+        stripePaymentIntentId: args.stripePaymentIntentId,
+        status: "completed",
+        description: args.description,
+        createdAt: a,
+        updatedAt: a
       });
     }
-
-    return { success: true };
-  },
-});
-
-/**
- * Client approves the delivery.
- * Sets status to "completed" and escrowStatus to "released".
- * Requires authentication and the caller must be the client on the order.
- */
-export const approve = mutation({
-  args: {
-    orderId: v.id("orders"),
-  },
-  returns: v.object({ success: v.boolean() }),
-  handler: async (ctx, args) => {
-    const order = await ctx.db.get(args.orderId);
-    if (!order) throw new Error("Order not found");
-    const user = await requireAuthUser(ctx);
-
-    if (order.clientId !== user._id) {
-      throw new Error("Access denied: only the client can approve this order");
-    }
-    assertTransition(orderTransitions, order.status, "completed");
-
-    // Cancel the 7-day auto-release job — client approved before timeout
-    if (order.autoReleaseJobId) {
-      await ctx.scheduler.cancel(order.autoReleaseJobId);
-    }
-
-    const now = Date.now();
-    // NOTE: escrowStatus is NOT set here — markReleased (called after Stripe transfer) will set it
-    await ctx.db.patch(args.orderId, {
-      status: "completed",
-      completedAt: now,
-      updatedAt: now,
-      autoReleaseJobId: undefined,
-    });
-
-    // Trigger Stripe transfer — runs asynchronously after this mutation
-    if (order.escrowStatus === "held") {
-      await ctx.scheduler.runAfter(0, internal.marketplace.escrow.releaseToFreelancer, {
-        orderId: args.orderId,
+  }),
+  getByUser = query({
+    args: {
+      userId: v.id("users"),
+      role: v.union(v.literal("client"), v.literal("freelancer")),
+      limit: v.optional(v.number())
+    },
+    handler: async (ctx, args) => {
+      await requireOwner(ctx, args.userId);
+      let t = args.limit ?? 20,
+        a: Doc<"orders">[];
+      if (args.role === "client") a = await ctx.db.query("orders").withIndex("by_client", i => i.eq("clientId", args.userId)).order("desc").take(t);else {
+        let i = await ctx.db.query("freelancerProfiles").withIndex("by_userId", p => p.eq("userId", args.userId)).first();
+        if (!i) return [];
+        a = await ctx.db.query("orders").withIndex("by_freelancer", p => p.eq("freelancerId", i._id)).order("desc").take(t);
+      }
+      let d = [...new Set(a.map(i => i.clientId).filter(Boolean))],
+        s = [...new Set(a.map(i => i.freelancerId).filter(Boolean))],
+        [o, l] = await Promise.all([Promise.all(d.map(i => ctx.db.get(i))), Promise.all(s.map(i => ctx.db.get(i)))]),
+        f = new Map(o.filter(Boolean).map(i => [i._id, i])),
+        h = new Map(l.filter(Boolean).map(i => [i._id, i])),
+        T = [...new Set(l.filter(Boolean).map(i => i.userId).filter(Boolean))],
+        S = await Promise.all(T.map(i => ctx.db.get(i))),
+        k = new Map(S.filter(Boolean).map(i => [i._id, i]));
+      return a.map(i => {
+        let p = f.get(i.clientId),
+          c = i.freelancerId ? h.get(i.freelancerId) : null,
+          w = c ? k.get(c.userId) : null;
+        return {
+          ...i,
+          clientName: p?.name ?? null,
+          freelancerName: c?.displayName ?? w?.name ?? null,
+          freelancerUserId: c?.userId ?? null
+        };
       });
-
-      await ctx.scheduler.runAfter(0, internal.marketplace.rewards.processOrderCashback, {
-        orderId: args.orderId,
-      });
-
-      if (order.freelancerId) {
-        await ctx.scheduler.runAfter(0, internal.marketplace.rewards.recalculateFreelancerLevel, {
-          freelancerProfileId: order.freelancerId,
+    }
+  }),
+  getById = query({
+    args: {
+      orderId: v.id("orders")
+    },
+    handler: async (ctx, args) => {
+      let t = await ctx.db.get(args.orderId);
+      if (!t) return null;
+      let a = await requireAuthUser(ctx),
+        d = t.freelancerId ? await ctx.db.get(t.freelancerId) : null,
+        s = t.clientId === a._id,
+        o = d?.userId === a._id;
+      if (!s && !o) throw new Error("Access denied: you are not a party to this order");
+      let [l, f] = await Promise.all([ctx.db.get(t.clientId), d ? ctx.db.get(d.userId) : Promise.resolve(null)]);
+      return {
+        ...t,
+        clientName: l?.name ?? null,
+        freelancerName: d?.displayName ?? f?.name ?? null,
+        freelancerUserId: d?.userId ?? null
+      };
+    }
+  }),
+  deliver = mutation({
+    args: {
+      orderId: v.id("orders")
+    },
+    returns: v.object({
+      success: v.boolean()
+    }),
+    handler: async (ctx, args): Promise<{ success: boolean }> => {
+      let t = await ctx.db.get(args.orderId);
+      if (!t) throw new Error("Order not found");
+      let a = await requireAuthUser(ctx),
+        d = t.freelancerId ? await ctx.db.get(t.freelancerId) : null;
+      if (!d || d.userId !== a._id) throw new Error("Access denied: only the freelancer can deliver this order");
+      if (t.escrowStatus === "held" && requireLivePaymentsEnabled("Paid-order delivery"), assertTransition(orderTransitions, t.status, "delivered"), !(await ctx.db.query("orderDeliverables").withIndex("by_order", l => l.eq("orderId", t._id)).first())) throw new Error("Add at least one file or delivery note before submitting the work.");
+      if (await ctx.db.patch(args.orderId, {
+        status: "delivered",
+        updatedAt: Date.now()
+      }), t.escrowStatus === "held") {
+        let l = await ctx.scheduler.runAfter(6048e5, internal.marketplace.escrow.releaseToFreelancer, {
+          orderId: args.orderId
+        });
+        await ctx.db.patch(args.orderId, {
+          autoReleaseJobId: l
         });
       }
+      let o = await ctx.db.get(t.clientId);
+      return o?.email && (await ctx.scheduler.runAfter(0, internal.lib.email.sendOrderDelivered, {
+        clientEmail: o.email,
+        clientName: o.name || "Customer",
+        orderNumber: t.orderNumber,
+        orderTitle: t.title,
+        orderId: args.orderId
+      })), {
+        success: !0
+      };
     }
-
-    // Send completion notification to freelancer
-    const freelancerProfile = order.freelancerId ? await ctx.db.get(order.freelancerId) : null;
-    const freelancerUser = freelancerProfile ? await ctx.db.get(freelancerProfile.userId) : null;
-    if (freelancerUser?.email) {
-      await ctx.scheduler.runAfter(0, internal.lib.email.sendOrderCompleted, {
-        freelancerEmail: freelancerUser.email,
-        freelancerName: freelancerProfile?.displayName || freelancerUser.name || "Freelancer",
-        orderNumber: order.orderNumber,
-        orderTitle: order.title,
-        amount: order.freelancerEarnings ?? order.amount,
-        currency: order.currency ?? "EUR",
-        orderId: args.orderId,
-      });
-    }
-    if (freelancerUser) {
-      await notifyUser(ctx, {
-        userId: freelancerUser._id,
+  }),
+  approve = mutation({
+    args: {
+      orderId: v.id("orders")
+    },
+    returns: v.object({
+      success: v.boolean()
+    }),
+    handler: async (ctx, args): Promise<{ success: boolean }> => {
+      let t = await ctx.db.get(args.orderId);
+      if (!t) throw new Error("Order not found");
+      let a = await requireAuthUser(ctx);
+      if (t.clientId !== a._id) throw new Error("Access denied: only the client can approve this order");
+      t.escrowStatus === "held" && requireLivePaymentsEnabled("Paid-order approval"), t.status !== "completed" && assertTransition(orderTransitions, t.status, "completed");
+      let d = Date.now();
+      if (await completeLinkedProject(ctx, t, d), t.status === "completed") return {
+        success: !0
+      };
+      t.autoReleaseJobId && (await ctx.scheduler.cancel(t.autoReleaseJobId)), await ctx.db.patch(args.orderId, {
+        status: "completed",
+        completedAt: d,
+        updatedAt: d,
+        autoReleaseJobId: void 0
+      }), t.escrowStatus === "held" && (await ctx.scheduler.runAfter(0, internal.marketplace.escrow.releaseToFreelancer, {
+        orderId: args.orderId
+      }), await ctx.scheduler.runAfter(0, internal.marketplace.rewards.processOrderCashback, {
+        orderId: args.orderId
+      }), t.freelancerId && (await ctx.scheduler.runAfter(0, internal.marketplace.rewards.recalculateFreelancerLevel, {
+        freelancerProfileId: t.freelancerId
+      })));
+      let s = t.freelancerId ? await ctx.db.get(t.freelancerId) : null,
+        o = s ? await ctx.db.get(s.userId) : null;
+      return o?.email && (await ctx.scheduler.runAfter(0, internal.lib.email.sendOrderCompleted, {
+        freelancerEmail: o.email,
+        freelancerName: s?.displayName || o.name || "Freelancer",
+        orderNumber: t.orderNumber,
+        orderTitle: t.title,
+        amount: t.freelancerEarnings ?? t.amount,
+        currency: t.currency ?? "EUR",
+        orderId: args.orderId
+      })), o && (await notifyUser(ctx, {
+        userId: o._id,
         type: "order_completed",
         title: "Order completed",
-        body: `${order.title} was approved by the client.`,
-        link: `/orders/${order._id}`,
-        metadata: { orderId: order._id },
+        body: `${t.title} was approved by the client.`,
+        link: `/orders/${t._id}`,
+        metadata: {
+          orderId: t._id
+        }
+      })), {
+        success: !0
+      };
+    }
+  }),
+  requestRevision = mutation({
+    args: {
+      orderId: v.id("orders"),
+      message: v.string()
+    },
+    returns: v.object({
+      success: v.boolean(),
+      revisionsUsed: v.number()
+    }),
+    handler: async (ctx, args) => {
+      let t = await ctx.db.get(args.orderId);
+      if (!t) throw new Error("Order not found");
+      let a = await requireAuthUser(ctx);
+      if (t.clientId !== a._id) throw new Error("Access denied: only the client can request a revision");
+      assertTransition(orderTransitions, t.status, "revision_requested");
+      let d = args.message.trim();
+      if (d.length < 10 || d.length > 3e3) throw new Error("Revision feedback must be between 10 and 3,000 characters.");
+      let s = (t.revisionsUsed ?? 0) + 1;
+      await ctx.db.patch(args.orderId, {
+        status: "revision_requested",
+        revisionsUsed: s,
+        updatedAt: Date.now()
       });
-    }
-
-    return { success: true };
-  },
-});
-
-/**
- * Client requests a revision on a delivered order.
- * Increments revisionsUsed and sets status to "revision_requested".
- * Requires authentication and the caller must be the client on the order.
- */
-export const requestRevision = mutation({
-  args: {
-    orderId: v.id("orders"),
-    message: v.string(),
-  },
-  returns: v.object({ success: v.boolean(), revisionsUsed: v.number() }),
-  handler: async (ctx, args) => {
-    const order = await ctx.db.get(args.orderId);
-    if (!order) throw new Error("Order not found");
-    const user = await requireAuthUser(ctx);
-
-    if (order.clientId !== user._id) {
-      throw new Error("Access denied: only the client can request a revision");
-    }
-    assertTransition(orderTransitions, order.status, "revision_requested");
-    const message = args.message.trim();
-    if (message.length < 10 || message.length > 3000) {
-      throw new Error("Revision feedback must be between 10 and 3,000 characters.");
-    }
-
-    const revisionsUsed = (order.revisionsUsed ?? 0) + 1;
-
-    await ctx.db.patch(args.orderId, {
-      status: "revision_requested",
-      revisionsUsed,
-      updatedAt: Date.now(),
-    });
-
-    const conversation = await ctx.db
-      .query("conversations")
-      .withIndex("by_order", (q) => q.eq("orderId", order._id))
-      .unique();
-    if (conversation) {
-      const now = Date.now();
-      await ctx.db.insert("messages", {
-        conversationId: conversation._id,
-        senderId: user._id,
-        content: message,
-        messageType: "order_update",
-        isRead: false,
-        createdAt: now,
-      });
-      await ctx.db.patch(conversation._id, {
-        lastMessageAt: now,
-        lastMessagePreview: message.slice(0, 140),
-        unreadCount2: (conversation.unreadCount2 ?? 0) + 1,
-        updatedAt: now,
-      });
-    }
-
-    const freelancerProfile = order.freelancerId ? await ctx.db.get(order.freelancerId) : null;
-    if (freelancerProfile) {
-      await notifyUser(ctx, {
-        userId: freelancerProfile.userId,
+      let o = await ctx.db.query("conversations").withIndex("by_order", f => f.eq("orderId", t._id)).unique();
+      if (o) {
+        let f = Date.now();
+        await ctx.db.insert("messages", {
+          conversationId: o._id,
+          senderId: a._id,
+          content: d,
+          messageType: "order_update",
+          isRead: !1,
+          createdAt: f
+        }), await ctx.db.patch(o._id, {
+          lastMessageAt: f,
+          lastMessagePreview: d.slice(0, 140),
+          unreadCount2: (o.unreadCount2 ?? 0) + 1,
+          updatedAt: f
+        });
+      }
+      let l = t.freelancerId ? await ctx.db.get(t.freelancerId) : null;
+      return l && (await notifyUser(ctx, {
+        userId: l.userId,
         type: "revision_requested",
         title: "Revision requested",
-        body: `${order.title}: ${message.slice(0, 120)}`,
-        link: `/orders/${order._id}`,
-        metadata: { orderId: order._id },
-      });
+        body: `${t.title}: ${d.slice(0, 120)}`,
+        link: `/orders/${t._id}`,
+        metadata: {
+          orderId: t._id
+        }
+      })), {
+        success: !0,
+        revisionsUsed: s
+      };
     }
-
-    return { success: true, revisionsUsed };
-  },
-});
-
-/** Internal: fetch an order by ID without auth check (used by escrow actions). */
-export const getByIdInternal = internalQuery({
-  args: { orderId: v.id("orders") },
-  handler: async (ctx, args) => ctx.db.get(args.orderId),
-});
-
-/** Internal: mark order escrow as released after Stripe transfer. */
-export const markReleased = internalMutation({
-  args: {
-    orderId: v.id("orders"),
-    stripeTransferId: v.string(),
-  },
-  handler: async (ctx, args) => {
-    await ctx.db.patch(args.orderId, {
-      escrowStatus: "released",
-      stripeTransferId: args.stripeTransferId,
-      status: "completed",
-      completedAt: Date.now(),
-      updatedAt: Date.now(),
-    });
-  },
-});
-
-/** Internal: mark order as refunded after Stripe refund. */
-export const markRefunded = internalMutation({
-  args: { orderId: v.id("orders") },
-  handler: async (ctx, args) => {
-    await ctx.db.patch(args.orderId, {
+  }),
+  getByIdInternal = internalQuery({
+    args: {
+      orderId: v.id("orders")
+    },
+    handler: async (ctx, args) => ctx.db.get(args.orderId)
+  }),
+  markReleased = internalMutation({
+    args: {
+      orderId: v.id("orders"),
+      stripeTransferId: v.string()
+    },
+    returns: v.null(),
+    handler: async (ctx, args) => {
+      requireLivePaymentsEnabled("Stripe transfer reconciliation");
+      let t = await ctx.db.get(args.orderId);
+      if (!t) throw new Error("Order not found.");
+      let a = Date.now();
+      if (t.escrowStatus === "released" && t.stripeTransferId && t.stripeTransferId !== args.stripeTransferId) throw new Error("Order is already associated with a different Stripe transfer.");
+      return await ctx.db.patch(args.orderId, {
+        escrowStatus: "released",
+        stripeTransferId: args.stripeTransferId,
+        status: "completed",
+        completedAt: a,
+        updatedAt: a
+      }), await completeLinkedProject(ctx, t, a, {
+        afterExternalTransfer: !0
+      }), null;
+    }
+  }),
+  markRefunded = internalMutation({
+    args: {
+      orderId: v.id("orders")
+    },
+    returns: v.null(),
+    handler: async (ctx, args) => (requireLivePaymentsEnabled("Stripe refund reconciliation"), await ctx.db.patch(args.orderId, {
       escrowStatus: "refunded",
       status: "cancelled",
       cancelledAt: Date.now(),
-      updatedAt: Date.now(),
-    });
-  },
-});
+      updatedAt: Date.now()
+    }), null)
+  });
+export { approve, create, createBetaGigOrder, createTransaction, deliver, getById, getByIdInternal, getByStripePaymentIntentId, getByUser, markRefunded, markReleased, requestRevision, updateStripePayment };

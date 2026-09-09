@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { dashboardNavigation } from "@/data/dashboard";
 import useConvexUser from "@/hook/useConvexUser";
+import { getActiveRole } from "@/lib/accountContext.mjs";
 import AccountContextSwitcher from "@/components/dashboard/AccountContextSwitcher";
 
 const ICON_MAP = {
@@ -93,7 +94,7 @@ export default function DashboardNavigation() {
     };
   }, [open]);
 
-  const role = convexUser?.activeRole || (convexUser?.userType === "freelancer" ? "freelancer" : "client");
+  const role = getActiveRole(convexUser);
   const world = convexUser?.preferredWorld || "online";
   const sections =
     dashboardNavigation[role]?.[world] ||

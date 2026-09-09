@@ -4,9 +4,11 @@ import {
   requireAuthUser,
   requireServerSecret,
 } from "./lib/authHelpers";
-import { toSafeUser } from "./lib/publicData";
+import { toSafeUser, safeUserValidator } from "./lib/publicData";
 import {
   assertMarketplaceContext,
+  CURRENT_ONBOARDING_VERSION,
+  hasCompletedMarketplaceContext,
   marketplaceRoleValidator,
   marketplaceWorldValidator,
 } from "./lib/marketplaceState";
@@ -21,7 +23,6 @@ export const syncUser = mutation({
     name: v.string(),
     image: v.optional(v.string()),
     clerkId: v.string(),
-    userType: v.optional(v.union(v.literal("client"), v.literal("freelancer"))),
   },
   returns: v.id("users"),
   handler: async (ctx, args) => {
@@ -40,17 +41,12 @@ export const syncUser = mutation({
       typeof identity.email === "string"
         ? identity.email.trim().toLowerCase()
         : undefined;
-    if (!suppliedEmail || !/^\S+@\S+\.\S+$/.test(suppliedEmail)) {
+    if (identityEmail !== undefined && !/^\S+@\S+\.\S+$/.test(identityEmail)) {
       throw new Error("A valid email address is required.");
     }
     if (identityEmail && suppliedEmail !== identityEmail) {
       throw new Error("Unauthorized.");
     }
-
-    // The Clerk subject is the authorization key. Some Convex JWT templates do
-    // not include an email claim, so the signed-in Clerk client supplies the
-    // display/contact email while identity.subject prevents cross-user writes.
-    const email = identityEmail ?? suppliedEmail;
 
     // Check if user already exists by Clerk ID
     const existing = await ctx.db
@@ -59,20 +55,32 @@ export const syncUser = mutation({
       .first();
 
     if (existing) {
-      // Update existing user
+      if (identityEmail && identityEmail !== existing.email) {
+        if (identity.emailVerified !== true) throw new Error("Verify your email before changing it.");
+        const emailOwner = await ctx.db.query("users")
+          .withIndex("by_email", (q) => q.eq("email", identityEmail)).first();
+        if (emailOwner && emailOwner._id !== existing._id) {
+          throw new Error("This email is already linked to another sign-in identity.");
+        }
+      }
       await ctx.db.patch(existing._id, {
         name: args.name,
         image: args.image || existing.image,
-        email,
+        ...(identityEmail ? {
+          email: identityEmail,
+          emailVerified: identity.emailVerified === true ||
+            (identityEmail === existing.email && existing.emailVerified === true),
+        } : {}),
         lastLogin: Date.now(),
         updatedAt: Date.now(),
       });
       return existing._id;
     }
 
-    // Only link a legacy email-only account when the signed JWT itself confirms
-    // that email. This prevents a client-supplied address from claiming another
-    // account when the deployment intentionally omits email from its JWT.
+    if (!identityEmail) {
+      throw new Error("Convex authentication token must contain the Clerk primary email.");
+    }
+    const email = identityEmail;
     if (identityEmail) {
       const existingByEmail = await ctx.db
         .query("users")
@@ -80,10 +88,15 @@ export const syncUser = mutation({
         .first();
 
       if (existingByEmail) {
+        if (existingByEmail.stackAuthId && existingByEmail.stackAuthId !== clerkId) {
+          throw new Error("This email is already linked to another sign-in identity.");
+        }
+        if (identity.emailVerified !== true) throw new Error("Verify your email before linking this account.");
         await ctx.db.patch(existingByEmail._id, {
           stackAuthId: clerkId,
           name: args.name,
           image: args.image || existingByEmail.image,
+          emailVerified: true,
           lastLogin: Date.now(),
           updatedAt: Date.now(),
         });
@@ -105,9 +118,8 @@ export const syncUser = mutation({
       passwordHash: "clerk-managed",
       image: args.image,
       role: "author",
-      userType: args.userType,
       stackAuthId: clerkId,
-      emailVerified: true,
+      emailVerified: identity.emailVerified === true,
       lastLogin: Date.now(),
       createdAt: Date.now(),
       updatedAt: Date.now(),
@@ -122,6 +134,7 @@ export const syncUser = mutation({
  */
 export const getCurrentUser = query({
   args: {},
+  returns: safeUserValidator,
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) return null;
@@ -139,6 +152,7 @@ export const getCurrentUser = query({
  * Get user by Clerk ID.
  */
 export const getByClerkId = query({
+  returns: safeUserValidator,
   args: {
     clerkId: v.string(),
     serverSecret: v.optional(v.string()),
@@ -166,6 +180,7 @@ export const getByClerkId = query({
  * Used by the Stripe webhook to send confirmation emails.
  */
 export const getContact = query({
+  returns: v.union(v.object({ id: v.id("users"), email: v.string(), name: v.string() }), v.null()),
   args: {
     userId: v.id("users"),
     serverSecret: v.optional(v.string()),
@@ -190,6 +205,7 @@ export const getContact = query({
  * Get a user by their email address.
  */
 export const getByEmail = query({
+  returns: safeUserValidator,
   args: {
     email: v.string(),
     serverSecret: v.optional(v.string()),
@@ -217,6 +233,7 @@ export const getByEmail = query({
  * Returns the Convex user document or null.
  */
 export const getByStackAuthId = query({
+  returns: safeUserValidator,
   args: {
     stackAuthId: v.string(),
     serverSecret: v.optional(v.string()),
@@ -311,13 +328,12 @@ export const switchAccountContext = mutation({
 
     assertMarketplaceContext(args.activeRole, args.preferredWorld);
 
+    if (!hasCompletedMarketplaceContext(user, args.activeRole, args.preferredWorld)) {
+      throw new Error("Complete onboarding for this account mode before switching to it.");
+    }
     await ctx.db.patch(user._id, {
       activeRole: args.activeRole,
       preferredWorld: args.preferredWorld,
-      userType:
-        args.activeRole === "freelancer" || args.activeRole === "local_professional"
-          ? "freelancer"
-          : "client",
       updatedAt: Date.now(),
     });
     return { success: true };
@@ -366,8 +382,8 @@ export const setAccountContext = mutation({
       throw new Error("Complete onboarding for one new account role at a time.");
     }
     assertMarketplaceContext(args.activeRole, args.preferredWorld);
-    if (!Number.isInteger(args.onboardingVersion) || args.onboardingVersion < 1) {
-      throw new Error("Invalid onboarding version.");
+    if (args.onboardingVersion !== CURRENT_ONBOARDING_VERSION) {
+      throw new Error("Refresh the page to use the current onboarding version.");
     }
 
     const providerRole =
@@ -381,7 +397,7 @@ export const setAccountContext = mutation({
     const companyName = args.onboardingData.companyName?.trim().slice(0, 100);
     const hourlyRate = args.onboardingData.hourlyRate;
 
-    if ((providerRole || args.activeRole === "candidate") && selections.length === 0) {
+    if (args.activeRole !== "company" && selections.length === 0) {
       throw new Error("Choose at least one relevant skill or discipline.");
     }
     if (providerRole === "local_professional" && (!city || city.length < 2)) {
@@ -394,19 +410,28 @@ export const setAccountContext = mutation({
       throw new Error("Enter a valid hourly rate.");
     }
 
-    const legacyUserType = providerRole ? "freelancer" : "client";
     const now = Date.now();
+    const onboardingContexts = (user.onboardingContexts ?? []).filter(
+      (context) => context.role !== args.activeRole || context.world !== args.preferredWorld,
+    );
+    onboardingContexts.push({ role: args.activeRole, world: args.preferredWorld,
+      version: CURRENT_ONBOARDING_VERSION, completedAt: now, selections });
+    const companyNameChanged = args.activeRole === "company" &&
+      companyName?.toLowerCase() !== user.companyName?.trim().toLowerCase();
+    if (companyNameChanged && user.companyVerificationStatus === "pending") {
+      throw new Error("Your company name cannot change while verification is pending.");
+    }
 
     await ctx.db.patch(user._id, {
       accountRoles: uniqueRoles,
       activeRole: args.activeRole,
       preferredWorld: args.preferredWorld,
       onboardingVersion: args.onboardingVersion,
-      userType: legacyUserType,
+      onboardingContexts,
       companyName: args.activeRole === "company" ? companyName : user.companyName,
       companyVerificationStatus:
         args.activeRole === "company"
-          ? user.companyVerificationStatus ?? "unverified"
+          ? companyNameChanged ? "unverified" : user.companyVerificationStatus ?? "unverified"
           : user.companyVerificationStatus,
       bio: providerRole ? user.bio : [headline, bio, selections.length ? `Interests: ${selections.join(", ")}` : ""].filter(Boolean).join("\n").slice(0, 1200) || user.bio,
       updatedAt: now,

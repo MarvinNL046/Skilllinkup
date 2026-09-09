@@ -1,3 +1,5 @@
+import SeoPage from '@/components/seo/SeoPage';
+import { findSeoPage, seoMetadata } from '@/content/seo';
 import { fetchQuery } from "convex/nextjs";
 import { api } from "../../../../../convex/_generated/api";
 import ResourcePricingTemplate from "@/components/resources/ResourcePricingTemplate";
@@ -9,6 +11,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://skilllinkup.com";
 
 export async function generateMetadata({ params }) {
   const { slug, locale } = await params;
+  const editorial = findSeoPage(`/${locale}/resources/${slug}`);
+  if (editorial) return seoMetadata(editorial);
   try {
     const resource = await fetchQuery(api.resources.getBySlug, { slug, locale });
     if (!resource || resource.status !== "published") return { title: "Resource" };
@@ -28,6 +32,8 @@ export async function generateMetadata({ params }) {
 
 export default async function LocaleResourcePage({ params }) {
   const { slug, locale } = await params;
+  const editorial = findSeoPage(`/${locale}/resources/${slug}`);
+  if (editorial) return <SeoPage page={editorial} />;
   const resource = await fetchQuery(api.resources.getBySlug, { slug, locale }).catch(() => null);
 
   if (!resource || resource.status !== "published") notFound();

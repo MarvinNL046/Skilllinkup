@@ -15,7 +15,7 @@ export default function useConvexMyGigs() {
   const removeGig = useMutation(api.marketplace.gigs.remove);
 
   return {
-    gigs: gigs || [],
+    gigs,
     updateGig,
     removeGig,
     freelancerId: profile?._id,

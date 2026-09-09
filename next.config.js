@@ -36,7 +36,7 @@ const securityHeaders = [
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://*.clerk.com https://clerk.skilllinkup.com https://challenges.cloudflare.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com data:",
-      "img-src 'self' https://img.clerk.com https://*.clerk.com https://clerk.skilllinkup.com data: blob:",
+      "img-src 'self' https://img.clerk.com https://*.clerk.com https://clerk.skilllinkup.com https://*.convex.cloud data: blob:",
       "connect-src 'self' https://*.clerk.accounts.dev https://*.clerk.com https://clerk.skilllinkup.com https://*.convex.cloud https://*.convex.site wss://*.convex.cloud",
       "frame-src 'self' https://*.clerk.accounts.dev https://*.clerk.com https://clerk.skilllinkup.com https://challenges.cloudflare.com",
       "worker-src 'self' blob:",
@@ -47,6 +47,7 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   // Freeze non-secret release metadata into the artifact at build time. Vercel
   // exposes its Git SHA and deployment URL during the build; inlining them
   // keeps /api/health useful even if a runtime is later moved or restored.
@@ -58,6 +59,7 @@ const nextConfig = {
   },
   images: {
     remotePatterns: [
+      { protocol: "https", hostname: "**.convex.cloud" },
       {
         protocol: "https",
         hostname: "img.clerk.com",
@@ -81,6 +83,8 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      // Match only the public www host; leave localhost and app subdomains alone.
+      { source: "/:path*", has: [{ type: "host", value: "www\\.skilllinkup\\.com" }], destination: "https://skilllinkup.com/:path*", permanent: true },
       // Auth route aliases (template used /sign-in, we use /login)
       { source: "/sign-in", destination: "/login", permanent: true },
       { source: "/sign-up", destination: "/register", permanent: true },
@@ -100,12 +104,30 @@ const nextConfig = {
       { source: "/online/projects", destination: "/projects", permanent: true },
       { source: "/job", destination: "/jobs", permanent: true },
       { source: "/job/:id", destination: "/jobs/job/:id", permanent: true },
+      // Exact historical aliases must precede the generic locale redirect.
+      { source: "/disclosure", destination: "/affiliate-disclosure", permanent: true },
+      { source: "/privacy", destination: "/privacy-policy", permanent: true },
+      { source: "/en/resources/upwork-vs-fiverr", destination: "/resources/fiverr-vs-upwork", permanent: true },
+      { source: "/resources/upwork-vs-fiverr", destination: "/resources/fiverr-vs-upwork", permanent: true },
+      { source: "/en/guides/platform-vergelijkingen/upwork-vs-fiverr", destination: "/resources/fiverr-vs-upwork", permanent: true },
+      { source: "/en/gids/platform-vergelijkingen/upwork-vs-fiverr", destination: "/resources/fiverr-vs-upwork", permanent: true },
+      { source: "/en/gids/platform-selectie/beste-freelance-platform-kiezen", destination: "/en/guides/platform-selectie/beste-freelance-platform-kiezen", permanent: true },
+      { source: "/en/gids/platform-reviews/fiverr-pros-cons-deep-dive", destination: "/en/guides/platform-reviews/fiverr-pros-cons-deep-dive", permanent: true },
+      { source: "/en/resources/best-platforms-freelance-writers-content-creators", destination: "/resources/best-platform-writers", permanent: true },
+      { source: "/resources/best-platforms-freelance-writers-content-creators", destination: "/resources/best-platform-writers", permanent: true },
+      { source: "/en/resources/how-to-stand-out-on-crowded-freelance-platforms", destination: "/resources/optimizing-freelance-profile-maximum-visibility", permanent: true },
+      { source: "/resources/how-to-stand-out-on-crowded-freelance-platforms", destination: "/resources/optimizing-freelance-profile-maximum-visibility", permanent: true },
       // Resources: redirect old /en/resources/* URLs to canonical /resources/*
+      { source: "/en/blog", destination: "/blog", permanent: true },
+      { source: "/en/services", destination: "/services", permanent: true },
+      { source: "/en/projects", destination: "/projects", permanent: true },
+      { source: "/en/freelancers", destination: "/online/freelancers", permanent: true },
+      { source: "/en/privacy", destination: "/privacy-policy", permanent: true },
       { source: "/en/resources/:slug", destination: "/resources/:slug", permanent: true },
       // Platforms: redirect old /en/platforms/* URLs to canonical /platforms/*
       { source: "/en/platforms/:slug", destination: "/platforms/:slug", permanent: true },
       // Old blog post URL format
-      { source: "/post/ai-tools-for-freelancers", destination: "/resources/project-management-tools-freelancers", permanent: true },
+      { source: "/post/ai-tools-for-freelancers", destination: "/resources/ai-tools-for-freelancers", permanent: true },
       // Old comparisons listing
       { source: "/comparisons", destination: "/resources", permanent: false },
       // Old NL guides

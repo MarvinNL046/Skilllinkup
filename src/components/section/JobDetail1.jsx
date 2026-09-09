@@ -6,6 +6,7 @@ import { Calendar, MapPin, Clock, Wallet, Check } from "lucide-react";
 import useConvexJobDetail from "@/hook/useConvexJobDetail";
 import JobApplicationPanel from "@/components/jobs/JobApplicationPanel";
 import ReportButton from "@/components/trust/ReportButton";
+import { formatJobSalary } from "@/lib/jobSalary.mjs";
 
 export default function JobDetail1() {
   const t = useTranslations("jobsHub");
@@ -38,14 +39,7 @@ export default function JobDetail1() {
           hours: convexData.hoursPerWeek
             ? t("hoursPerWeek", { hours: convexData.hoursPerWeek })
             : null,
-          salary:
-            convexData.salaryMin && convexData.salaryMax
-              ? `$${Math.round(convexData.salaryMin / 1000)}k - $${Math.round(
-                  convexData.salaryMax / 1000
-                )}k`
-              : convexData.salaryMax
-              ? `$${Math.round(convexData.salaryMax / 1000)}k`
-              : null,
+          salary: formatJobSalary(convexData),
           responsibilities: convexData.responsibilities || [],
           requirements: convexData.requirements || [],
         }

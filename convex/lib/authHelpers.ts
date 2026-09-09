@@ -1,6 +1,7 @@
 import { MutationCtx, QueryCtx } from "../_generated/server";
 import { Doc, Id } from "../_generated/dataModel";
 import type { MarketplaceRole, MarketplaceWorld } from "./marketplaceState";
+import { hasCompletedMarketplaceContext } from "./marketplaceState";
 
 const INTERNAL_SERVER_SECRET = process.env.INTERNAL_EMAIL_SECRET;
 
@@ -59,17 +60,8 @@ export async function requireOwner(
   return user;
 }
 
-function legacyMarketplaceRole(user: Doc<"users">): MarketplaceRole {
-  if (user.userType === "freelancer") {
-    return user.preferredWorld === "local" ? "local_professional" : "freelancer";
-  }
-  if (user.preferredWorld === "jobs") return "company";
-  return "client";
-}
-
 /**
  * Require both a completed account role and the matching active dashboard mode.
- * Legacy accounts without accountRoles retain a narrow migration bridge.
  */
 export function requireMarketplaceContext(
   user: Doc<"users">,
@@ -77,18 +69,18 @@ export function requireMarketplaceContext(
   world: MarketplaceWorld,
   action: string,
 ) {
-  if (user.role === "admin") return;
   const roles = user.accountRoles ?? [];
-  const effectiveRole = user.activeRole ?? legacyMarketplaceRole(user);
-  const effectiveWorld = (user.preferredWorld ?? "online") as MarketplaceWorld;
 
-  if (roles.length > 0 && !roles.includes(role)) {
+  if (!roles.includes(role)) {
     throw new Error(`Add the ${role.replaceAll("_", " ")} role before ${action}.`);
   }
-  if (effectiveRole !== role || effectiveWorld !== world) {
+  if (user.activeRole !== role || user.preferredWorld !== world) {
     throw new Error(
       `Switch to the ${role.replaceAll("_", " ")} · ${world} account mode before ${action}.`,
     );
+  }
+  if (!hasCompletedMarketplaceContext(user, role, world)) {
+    throw new Error(`Complete onboarding for the ${role.replaceAll("_", " ")} · ${world} account mode before ${action}.`);
   }
 }
 

@@ -75,7 +75,7 @@ export default function OrderWorkspace({ orderId }) {
       await addDeliverable({ orderId, storageId, fileName: file?.name, fileSize: file?.size, fileType: file?.type, description: deliveryNote.trim() || undefined });
       setFile(null);
       setDeliveryNote("");
-      toast.success("Added to the workspace.");
+      toast.success("Added to the order.");
     } catch (error) {
       toast.error(error?.message || "The item could not be added.");
     } finally { setBusy(""); }
@@ -137,8 +137,8 @@ export default function OrderWorkspace({ orderId }) {
     finally { setBusy(""); }
   }
 
-  if (order === undefined || deliverables === undefined || conversation === undefined) return <div className={styles.loading}><LoaderCircle /> Opening secure workspace…</div>;
-  if (!order) return <section className={styles.empty}><h1>Workspace not found</h1><Link href="/orders">Back to orders</Link></section>;
+  if (order === undefined || deliverables === undefined || conversation === undefined) return <div className={styles.loading}><LoaderCircle /> Opening order…</div>;
+  if (!order) return <section className={styles.empty}><h1>Order not found</h1><Link href="/orders">Back to orders</Link></section>;
 
   return (
     <div className={styles.page} data-testid="order-workspace">
@@ -167,7 +167,7 @@ export default function OrderWorkspace({ orderId }) {
           </section> : null}
           <div className={styles.sectionTitle}><i><Paperclip /></i><div><h2>Files &amp; delivery</h2><p>Keep briefs, work files and delivery notes attached to this order.</p></div></div>
           {deliverables.length ? <div className={styles.files}>{deliverables.map((item) => <article key={item.id}><i><FileText /></i><div><strong>{item.fileName || "Delivery note"}</strong><span>{item.uploaderName} · {new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(item.createdAt)} {item.fileSize ? `· ${formatBytes(item.fileSize)}` : ""}</span>{item.description ? <p>{item.description}</p> : null}</div><div>{item.downloadUrl ? <a href={item.downloadUrl} target="_blank" rel="noreferrer" aria-label={`Download ${item.fileName}`}><Download /></a> : null}{item.uploadedBy === convexUser?._id && !["delivered", "completed"].includes(order.status) ? <button type="button" onClick={() => removeDeliverable({ deliverableId: item.id })}>Remove</button> : null}</div></article>)}</div> : <div className={styles.noFiles}><UploadCloud /><p>No files or delivery notes yet.</p></div>}
-          {canAddWork ? <form className={styles.deliveryForm} onSubmit={handleAddDeliverable}><label><span>Add a file <em>optional · max 25 MB</em></span><input type="file" onChange={(event) => setFile(event.target.files?.[0] || null)} />{file ? <small>{file.name}</small> : null}</label><label><span>Note <em>optional</em></span><textarea aria-label="Delivery note" value={deliveryNote} onChange={(event) => setDeliveryNote(event.target.value)} placeholder="Explain what you added or share delivery instructions." rows={3} maxLength={3000} /></label><button type="submit" disabled={busy === "deliverable" || (!file && !deliveryNote.trim())}>{busy === "deliverable" ? <LoaderCircle /> : <Paperclip />} Add to workspace</button></form> : null}
+          {canAddWork ? <form className={styles.deliveryForm} onSubmit={handleAddDeliverable}><label><span>Add a file <em>optional · max 25 MB</em></span><input type="file" onChange={(event) => setFile(event.target.files?.[0] || null)} />{file ? <small>{file.name}</small> : null}</label><label><span>Note <em>optional</em></span><textarea aria-label="Delivery note" value={deliveryNote} onChange={(event) => setDeliveryNote(event.target.value)} placeholder="Explain what you added or share delivery instructions." rows={3} maxLength={3000} /></label><button type="submit" disabled={busy === "deliverable" || (!file && !deliveryNote.trim())}>{busy === "deliverable" ? <LoaderCircle /> : <Paperclip />} Add to order</button></form> : null}
           {canDeliver ? <button className={styles.primaryAction} type="button" onClick={handleDeliver} disabled={busy === "deliver"}><CheckCircle2 />{busy === "deliver" ? "Submitting…" : "Submit work for review"}</button> : null}
           {canReview ? <div className={styles.reviewActions}><button type="button" onClick={handleApprove} disabled={busy === "approve"}><CheckCircle2 /> {busy === "approve" ? "Approving…" : "Approve delivery"}</button><form onSubmit={handleRevision}><textarea aria-label="Revision request" value={revision} onChange={(event) => setRevision(event.target.value)} rows={3} minLength={10} maxLength={3000} placeholder="Describe the revision clearly (minimum 10 characters)." /><button type="submit" disabled={revision.trim().length < 10 || busy === "revision"}>{busy === "revision" ? "Sending…" : "Request revision"}</button></form></div> : null}
         </section>

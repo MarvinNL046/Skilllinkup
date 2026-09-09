@@ -21,7 +21,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* App-wide typography: Inter for UI/body, Fraunces for true headings. */
+/* App-wide typography: Inter for headings, body text and controls. */
 html body,
 button,
 input,

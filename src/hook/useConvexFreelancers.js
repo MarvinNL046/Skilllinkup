@@ -14,7 +14,7 @@ function mapConvexFreelancer(fl, index) {
     tags: fl.skills || [],
     skill: fl.tagline || "",
     price: fl.hourlyRate || 0,
-    location: fl.locationCountry?.toLowerCase() || "remote",
+    location: [fl.locationCity, fl.locationCountry].filter(Boolean).join(", ") || "Remote",
     level: fl.isVerified ? "top-rated" : "new",
     isVerified: fl.isVerified === true,
     language: fl.languages?.[0] || "",
@@ -30,7 +30,7 @@ function mapConvexFreelancer(fl, index) {
 }
 
 export default function useConvexFreelancers() {
-  const convexFreelancers = useQuery(api.marketplace.freelancers.list, { locale: "en" });
+  const convexFreelancers = useQuery(api.marketplace.freelancers.list, { locale: "en", limit: 100 });
 
   // undefined means still loading
   if (convexFreelancers === undefined) {

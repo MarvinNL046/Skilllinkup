@@ -1,0 +1,77 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { calculateInvoice, formatInvoiceMoney, INVOICE_CURRENCIES } from '@/lib/invoice.mjs';
+import styles from './InvoiceGenerator.module.css';
+
+function InvoicePreview({ details, items, totals }) {
+  const money = amount => formatInvoiceMoney(amount, details.currency);
+  return <article className={styles.paper} aria-label="Invoice preview">
+    <div className={styles.paperHeader}><h2>Invoice</h2><strong>{details.number || 'Invoice number'}</strong></div>
+    <p>Issued: {details.date || '—'}<br />Due: {details.due || '—'}<br />Currency: {details.currency}</p>
+    <div className={styles.parties}><section><h3>From</h3><p>{details.from || 'Your business name'}</p><p className={styles.multiline}>{details.fromAddress}</p>{details.taxId && <p>Tax / registration ID: {details.taxId}</p>}</section><section><h3>Bill to</h3><p>{details.to || 'Client name'}</p><p className={styles.multiline}>{details.toAddress}</p></section></div>
+    {details.reference && <p>Client / purchase order reference: {details.reference}</p>}
+    <div className={styles.tableWrap}><table><caption className={styles.srOnly}>Invoice line items</caption><thead><tr><th scope="col">Description</th><th scope="col">Qty</th><th scope="col">Rate</th><th scope="col">Amount</th></tr></thead><tbody>{items.map((item, i) => <tr key={item.id}><td>{item.description || 'Work description'}</td><td>{item.quantity}</td><td>{totals ? money(Math.round(Number(item.rate) * 100)) : '—'}</td><td>{totals ? money(totals.lineCents[i]) : '—'}</td></tr>)}</tbody></table></div>
+    <dl className={styles.totals}><div><dt>Subtotal</dt><dd>{totals ? money(totals.subtotalCents) : '—'}</dd></div><div><dt>Tax ({details.taxRate || '0'}%)</dt><dd>{totals ? money(totals.taxCents) : '—'}</dd></div><div><dt>Total</dt><dd data-testid="invoice-total">{totals ? money(totals.totalCents) : '—'}</dd></div></dl>
+    {details.payment && <section><h3>Payment instructions</h3><p className={styles.multiline}>{details.payment}</p></section>}
+    {details.notes && <section><h3>Notes / service period</h3><p className={styles.multiline}>{details.notes}</p></section>}
+  </article>;
+}
+
+export default function InvoiceGenerator() {
+  const [details, setDetails] = useState({ number: '', date: '', due: '', currency: 'USD', from: '', fromAddress: '', to: '', toAddress: '', taxId: '', reference: '', taxRate: '0', payment: '', notes: '' });
+  const [items, setItems] = useState([{ id: 1, description: '', quantity: '1', rate: '0' }]);
+  const nextId = useRef(2);
+  const [printRequest, setPrintRequest] = useState(0);
+  const [error, setError] = useState('');
+  let totals = null;
+  let calculationError = '';
+  try { totals = calculateInvoice(items, details.taxRate); } catch (err) { calculationError = err.message; }
+
+  useEffect(() => {
+    if (printRequest > 0) window.print();
+  }, [printRequest]);
+
+  const change = (key, value) => { setDetails(current => ({ ...current, [key]: value })); setError(''); };
+  const updateItem = (id, key, value) => { setItems(current => current.map(item => item.id === id ? { ...item, [key]: value } : item)); setError(''); };
+  function print(event) {
+    event.preventDefault();
+    if (calculationError) { setError(calculationError); return; }
+    if (details.due < details.date) { setError('The due date must be on or after the issue date.'); return; }
+    if (![details.number, details.from, details.fromAddress, details.to, details.toAddress, ...items.map(item => item.description)].every(value => value.trim())) { setError('Fill in the required fields with more than spaces.'); return; }
+    setError('');
+    setPrintRequest(count => count + 1);
+  }
+  function field(key, label, options = {}) {
+    const { multiline = false, ...attributes } = options;
+    const shared = { id: `invoice-${key}`, value: details[key], onChange: event => change(key, event.target.value), maxLength: multiline ? 2000 : 200, ...attributes };
+    // Native date controls expose an empty value while a date is incomplete.
+    // Leave their DOM value uncontrolled so editing a segment is not erased.
+    if (attributes.type === 'date') { delete shared.value; shared.defaultValue = ''; shared.onInput = shared.onChange; shared.onBlur = shared.onChange; }
+    return <div className={styles.field}><label htmlFor={shared.id}>{label}{attributes.required && ' *'}</label>{multiline ? <textarea {...shared} rows={3} /> : <input {...shared} />}</div>;
+  }
+  return <div className={styles.tool}>
+    <p className={styles.notice}>No account needed. Your entries stay in this open page and are not saved to SkillLinkup. Save a PDF before leaving or reloading.</p>
+    <div className={styles.workspace}>
+      <form className={styles.editor} onSubmit={print}>
+        <h2>Invoice details</h2><p>Fields marked * are required to print. Review the preview before exporting.</p>
+        <div className={styles.fields}>{field('number', 'Invoice number', { required: true })}{field('date', 'Issue date', { type: 'date', required: true })}{field('due', 'Due date', { type: 'date', min: details.date || undefined, required: true })}<div className={styles.field}><label htmlFor="invoice-currency">Currency</label><select id="invoice-currency" value={details.currency} onChange={event => change('currency', event.target.value)}>{INVOICE_CURRENCIES.map(currency => <option key={currency}>{currency}</option>)}</select></div></div>
+        <fieldset><legend>Your business</legend>{field('from', 'Business / legal name', { required: true })}{field('fromAddress', 'Business address, country and contact', { multiline: true, required: true })}{field('taxId', 'Tax / registration ID (optional)')}</fieldset>
+        <fieldset><legend>Client</legend>{field('to', 'Client / legal name', { required: true })}{field('toAddress', 'Billing address and country', { multiline: true, required: true })}{field('reference', 'Client / purchase order reference (optional)')}</fieldset>
+        <fieldset><legend>Work and rates</legend>{items.map((item, index) => <div className={styles.item} key={item.id}>
+          <div className={styles.field}><label htmlFor={`description-${item.id}`}>Description {index + 1} *</label><textarea id={`description-${item.id}`} required maxLength={2000} rows={2} value={item.description} onChange={event => updateItem(item.id, 'description', event.target.value)} /></div>
+          <div className={styles.fields}><div className={styles.field}><label htmlFor={`quantity-${item.id}`}>Quantity {index + 1} *</label><input id={`quantity-${item.id}`} type="number" required min="0.01" max="100000" step="0.01" value={item.quantity} onChange={event => updateItem(item.id, 'quantity', event.target.value)} /></div><div className={styles.field}><label htmlFor={`rate-${item.id}`}>Unit rate {index + 1} *</label><input id={`rate-${item.id}`} type="number" required min="0" max="1000000" step="0.01" value={item.rate} onChange={event => updateItem(item.id, 'rate', event.target.value)} /></div></div>
+          <button type="button" className={styles.textButton} disabled={items.length === 1} onClick={() => setItems(current => current.filter(row => row.id !== item.id))} aria-label={`Remove item ${index + 1}`}>Remove item</button>
+        </div>)}<button type="button" className={styles.secondary} disabled={items.length >= 50} onClick={() => { const id = nextId.current++; setItems(current => [...current, { id, description: '', quantity: '1', rate: '0' }]); }}>Add line item</button></fieldset>
+        {field('taxRate', 'Tax rate (%) — applied to all items', { type: 'number', min: '0', max: '100', step: '0.01', required: true })}
+        <p className={styles.hint}>Enter the rate appropriate to your invoice. This tool does not determine tax treatment or support multiple rates, discounts or structured e-invoices. Check your local requirements.</p>
+        {field('payment', 'Payment instructions (optional)', { multiline: true })}{field('notes', 'Notes / service period (optional)', { multiline: true })}
+        {(error || calculationError) && <p role="alert" className={styles.error}>{error || calculationError}</p>}
+        <button type="submit" className={styles.primary}>Print / save PDF</button><p className={styles.hint}>Choose “Save as PDF” in your browser’s print dialog. This does not send an invoice or collect a payment. Turn off browser headers and footers for a clean document.</p>
+      </form>
+      <div className={styles.preview}><p className={styles.previewLabel}>Live preview</p><InvoicePreview details={details} items={items} totals={totals} /></div>
+    </div>
+    {printRequest > 0 && createPortal(<div id="skilllinkup-invoice-print" className={styles.printOnly}><InvoicePreview details={details} items={items} totals={totals} /></div>, document.body)}
+  </div>;
+}

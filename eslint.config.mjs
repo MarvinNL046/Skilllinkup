@@ -18,6 +18,8 @@ export default defineConfig([
   },
   globalIgnores([
     ".next/**",
+    ".next-qa/**",
+    ".codex-runtime/**",
     ".next-corrupt-*/**",
     "convex/_generated/**",
     "documentation/**",

@@ -1,5 +1,6 @@
 "use client";
 
+import LocalVerificationQueue from "./LocalVerificationQueue";
 import { useState } from "react";
 import Link from "next/link";
 import { useMutation, useQuery } from "convex/react";
@@ -132,6 +133,7 @@ export default function AdminTrustCenter() {
         </Button>
       </div>
 
+      <LocalVerificationQueue />
       <section className="mb-8" aria-labelledby="beta-health-heading">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>
@@ -300,7 +302,7 @@ export default function AdminTrustCenter() {
         </Card>
       </section>
 
-      <div className="mb-6 inline-flex rounded-xl border border-[var(--border-subtle)] bg-white p-1">
+      <div className="mb-6 inline-flex max-w-full flex-wrap rounded-xl border border-[var(--border-subtle)] bg-white p-1">
         <Button
           variant={view === "reports" ? "default" : "ghost"}
           onClick={() => setView("reports")}

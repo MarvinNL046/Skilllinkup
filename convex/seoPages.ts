@@ -1,5 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { requireAdmin } from "./lib/authHelpers";
 
 /**
  * List published SEO pages for a given locale.
@@ -42,7 +43,10 @@ export const insert = mutation({
     locale: v.string(),
     status: v.string(),
   },
+  returns: v.id("seoPages"),
   handler: async (ctx, args) => {
+    const user = await requireAdmin(ctx);
+    if (user.tenantId !== args.tenantId) throw new Error("Unauthorized tenant.");
     const existing = await ctx.db
       .query("seoPages")
       .withIndex("by_slug_locale", (q) =>
@@ -51,6 +55,7 @@ export const insert = mutation({
       .first();
 
     if (existing) {
+      if (existing.tenantId !== user.tenantId) throw new Error("Unauthorized tenant.");
       await ctx.db.patch(existing._id, {
         title: args.title,
         metaTitle: args.metaTitle,

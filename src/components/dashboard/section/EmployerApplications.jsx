@@ -13,7 +13,7 @@ import styles from "./EmployerApplications.module.css";
 import ContextMessageButton from "@/components/ui/ContextMessageButton";
 
 const nextStatuses = {
-  submitted: ["screening", "interview", "offer", "rejected"],
+  submitted: ["screening", "rejected"],
   screening: ["interview", "offer", "rejected"],
   interview: ["interview", "offer", "rejected"],
   offer: ["hired", "rejected"],
@@ -67,7 +67,7 @@ export default function EmployerApplications({ jobId }) {
               <p className={styles.letter}>{application.coverLetter}</p>
               <div className={styles.stage}>
                 {messageableStatuses.has(application.status) ? <ContextMessageButton context={{ type: "job_application", applicationId: application._id }} label="Message candidate" /> : null}
-                <label>Move to<select defaultValue="" disabled={updating === application._id || !nextStatuses[application.status]?.length} onChange={(event) => changeStatus(application._id, event.target.value)}><option value="" disabled>{updating === application._id ? "Updating…" : "Choose stage"}</option>{(nextStatuses[application.status] || []).map((status) => <option key={status} value={status}>{statusLabels[status]}</option>)}</select></label>
+                <label>Move to<select value="" disabled={updating === application._id || !nextStatuses[application.status]?.length} onChange={(event) => changeStatus(application._id, event.target.value)}><option value="" disabled>{updating === application._id ? "Updating…" : "Choose stage"}</option>{(nextStatuses[application.status] || []).map((status) => <option key={status} value={status}>{statusLabels[status]}</option>)}</select></label>
               </div>
             </article>
           ))}

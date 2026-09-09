@@ -81,6 +81,11 @@ test("secret-protected Convex maintenance functions reject forged secrets", asyn
     tag: "forged-secret-attempt",
     clientEmail: "nobody@example.invalid",
     freelancerEmail: "nobody@example.invalid",
+    localProfessionalEmail: "nobody@example.invalid",
+    candidateEmail: "nobody@example.invalid",
+    adminEmail: "nobody@example.invalid",
+    localClientEmail: "nobody@example.invalid",
+    companyEmail: "nobody@example.invalid",
   })).rejects.toThrow(/Unauthorized/);
   await expect(client.query(api.marketplace.smoke.verifyCleanup, {
     serverSecret: forgedSecret,

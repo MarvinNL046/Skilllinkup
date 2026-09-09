@@ -56,6 +56,7 @@ quick-*.mjs
 test-results/
 playwright-report/
 .codex-runtime/
+.next-qa/
 work/edge-profile/
 e2e/.smoke-data.json
 scripts/test-*.js
@@ -63,6 +64,8 @@ scripts/test-*.ts
 scripts/check-*.mjs
 scripts/verify-*.mjs
 !scripts/check-private-beta-copy.mjs
+!scripts/check-account-context.mjs
+!scripts/check-invoice.mjs
 !scripts/verify-environment.mjs
 !scripts/verify-hosted-release.mjs
 

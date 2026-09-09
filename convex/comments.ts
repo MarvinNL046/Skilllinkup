@@ -9,6 +9,15 @@ export const getByPost = query({
   args: {
     postId: v.id("posts"),
   },
+  returns: v.array(v.object({
+    _id: v.id("comments"),
+    postId: v.id("posts"),
+    authorName: v.string(),
+    authorWebsite: v.union(v.string(), v.null()),
+    content: v.string(),
+    parentId: v.union(v.id("comments"), v.null()),
+    createdAt: v.number(),
+  })),
   handler: async (ctx, args) => {
     const comments = await ctx.db
       .query("comments")
@@ -17,7 +26,16 @@ export const getByPost = query({
 
     return comments
       .filter((c) => c.status === "approved")
-      .sort((a, b) => b.createdAt - a.createdAt);
+      .sort((a, b) => b.createdAt - a.createdAt)
+      .map((comment) => ({
+        _id: comment._id,
+        postId: comment.postId,
+        authorName: comment.authorName,
+        authorWebsite: comment.authorWebsite ?? null,
+        content: comment.content,
+        parentId: comment.parentId ?? null,
+        createdAt: comment.createdAt,
+      }));
   },
 });
 

@@ -96,7 +96,7 @@ export default function CreateJobInfo() {
     workType: "remote",
     locationCity: "",
     locationCountry: "Netherlands",
-    benefits: "Flexible hours, Learning budget",
+    benefits: "",
     expiresAt: "",
   });
   const set = (name, value) =>

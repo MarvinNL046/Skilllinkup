@@ -4,6 +4,7 @@ import {
   jobApplicationStatusValidator,
   jobStatusValidator,
   marketplaceRoleValidator,
+  onboardingContextValidator,
   bidStatusValidator,
   projectStatusValidator,
   quoteRequestStatusValidator,
@@ -68,6 +69,7 @@ export default defineSchema({
     accountRoles: v.optional(v.array(marketplaceRoleValidator)),
     activeRole: v.optional(marketplaceRoleValidator),
     onboardingVersion: v.optional(v.number()),
+    onboardingContexts: v.optional(v.array(onboardingContextValidator)),
     companyName: v.optional(v.string()),
     companyVerificationStatus: v.optional(companyVerificationStatusValidator),
     avatar: v.optional(v.string()),
@@ -167,6 +169,7 @@ export default defineSchema({
     storageId: v.id("_storage"),
     ownerId: v.id("users"),
     purpose: uploadPurposeValidator,
+    cleanupAfter: v.optional(v.number()),
     contentType: v.string(),
     fileSize: v.number(),
     publicUrl: v.optional(v.string()),
@@ -432,6 +435,7 @@ export default defineSchema({
   })
     .index("by_userId", ["userId"])
     .index("by_userId_and_providerRole", ["userId", "providerRole"])
+    .index("by_providerRole_and_status_and_locale", ["providerRole", "status", "locale"])
     .index("by_slug", ["slug"])
     .index("by_status", ["status"])
     .index("by_status_locale", ["status", "locale"])
@@ -533,7 +537,8 @@ export default defineSchema({
     createdAt: v.number(),
   })
     .index("by_gig", ["gigId"])
-    .index("by_gig_sortOrder", ["gigId", "sortOrder"]),
+    .index("by_gig_sortOrder", ["gigId", "sortOrder"])
+    .index("by_imageUrl", ["imageUrl"]),
 
   // ============================================================
   // MARKETPLACE: PROJECTS & BIDS
@@ -676,6 +681,7 @@ export default defineSchema({
     stripePaymentIntentId: v.optional(v.string()),
     stripeTransferId: v.optional(v.string()),
     escrowStatus: v.optional(escrowStatusValidator),
+    creditAppliedCents: v.optional(v.number()),
     autoReleaseJobId: v.optional(v.id("_scheduled_functions")),
     completedAt: v.optional(v.number()),
     cancelledAt: v.optional(v.number()),
@@ -752,6 +758,7 @@ export default defineSchema({
     orderId: v.optional(v.id("orders")),
     reviewerId: v.optional(v.id("users")),
     revieweeId: v.optional(v.id("users")),
+    revieweeProfileId: v.optional(v.id("freelancerProfiles")),
     reviewerRole: v.union(v.literal("client"), v.literal("freelancer")),
     overallRating: v.number(),
     communicationRating: v.optional(v.number()),
@@ -764,6 +771,10 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_reviewee", ["revieweeId"])
+    .index("by_reviewee_and_isPublic", ["revieweeId", "isPublic"])
+    .index("by_revieweeProfile", ["revieweeProfileId"])
+    .index("by_revieweeProfile_and_isPublic", ["revieweeProfileId", "isPublic"])
+    .index("by_order_and_reviewer", ["orderId", "reviewerId"])
     .index("by_reviewer", ["reviewerId"])
     .index("by_order", ["orderId"]),
 

@@ -1,300 +1,29 @@
-import { v } from "convex/values";
-import { query, mutation } from "../_generated/server";
-import { internal } from "../_generated/api";
-import {
-  requireAuthUser,
-  getProviderProfile,
-  requireMarketplaceContext,
-  requireOwner,
-} from "../lib/authHelpers";
-import { notifyUser } from "../lib/notifications";
-import {
-  assertTransition,
-  bidTransitions,
-  projectTransitions,
-} from "../lib/marketplaceState";
+// Reconciled with the existing development deployment (2026-09-07).
+import type { Id } from "../_generated/dataModel";
+import { assertOnlineWorkType } from "../lib/onlineMarketplace";
+import { assertActiveOnlineProviderProfile } from "../lib/onlineMarketplace";
+import { assertOnlineProject } from "../lib/onlineMarketplace";
+import { assertOnlineMarketplaceCategory } from "../lib/onlineMarketplace";
 import { rateLimiter } from "../lib/rateLimits";
-
-function betaOrderNumber() {
-  const date = new Date().toISOString().slice(0, 10).replaceAll("-", "");
-  return `BETA-${date}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
-}
-
-/**
- * Count of currently-open projects. Used by the /online/projects hero
- * to show a live "X open projects · live now" badge. Cheap query —
- * just collects the by_status index on "open".
- */
-export const getOpenCount = query({
-  args: {},
-  handler: async (ctx) => {
-    const open = await ctx.db
-      .query("projects")
-      .withIndex("by_status", (q) => q.eq("status", "open"))
-      .take(10_000);
-    return open.length;
-  },
-});
-
-/**
- * List open projects with client info, category name, and bid count.
- */
-export const list = query({
-  args: {
-    locale: v.string(),
-    limit: v.optional(v.number()),
-  },
-  handler: async (ctx, args) => {
-    const limit = Math.min(100, Math.max(1, args.limit ?? 20));
-
-    const projects = await ctx.db
-      .query("projects")
-      .withIndex("by_status_locale", (q) =>
-        q.eq("status", "open").eq("locale", args.locale)
-      )
-      .order("desc")
-      .take(limit);
-
-    // Batch load unique clients and categories
-    const clientIds = [...new Set(projects.map((p) => p.clientId).filter(Boolean))];
-    const categoryIds = [...new Set(projects.map((p) => p.categoryId).filter(Boolean))] as typeof projects[number]["categoryId"][];
-
-    const [clients, categories] = await Promise.all([
-      Promise.all(clientIds.map((id) => ctx.db.get(id))),
-      Promise.all(categoryIds.map((id) => ctx.db.get(id!))),
-    ]);
-
-    const clientMap = new Map(clients.filter(Boolean).map((c) => [c!._id, c!]));
-    const categoryMap = new Map(categories.filter(Boolean).map((c) => [c!._id, c!]));
-
-    const enriched = projects.map((project) => {
-      const client = clientMap.get(project.clientId);
-      const category = project.categoryId ? categoryMap.get(project.categoryId) : null;
-
-      return {
-        ...project,
-        clientName: client?.name ?? null,
-        clientAvatar: client?.avatar ?? (client as any)?.image ?? null,
-        clientVerified: client?.emailVerified === true,
-        categoryName: category?.name ?? null,
-        // Use the stored bidCount field — kept in sync by submitBid mutation
-        bidCount: project.bidCount ?? 0,
-      };
-    });
-
-    return enriched;
-  },
-});
-
-/**
- * Get a single project by slug and locale.
- */
-export const getBySlug = query({
-  args: {
-    slug: v.string(),
-    locale: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const project = await ctx.db
-      .query("projects")
-      .withIndex("by_slug_locale", (q) =>
-        q.eq("slug", args.slug).eq("locale", args.locale)
-      )
-      .first();
-
-    if (!project) return null;
-
-    const [client, category] = await Promise.all([
-      ctx.db.get(project.clientId),
-      project.categoryId ? ctx.db.get(project.categoryId) : Promise.resolve(null),
-    ]);
-
-    return {
-      ...project,
-      clientName: client?.name ?? null,
-      clientAvatar: client?.avatar ?? (client as any)?.image ?? null,
-      clientVerified: client?.emailVerified === true,
-      categoryName: category?.name ?? null,
-      // Use the stored bidCount field — kept in sync by submitBid mutation
-      bidCount: project.bidCount ?? 0,
-    };
-  },
-});
-
-/**
- * Get a single project by its Convex ID.
- * Enriches with client info, category name, and bid count.
- */
-export const getById = query({
-  args: {
-    projectId: v.id("projects"),
-  },
-  handler: async (ctx, args) => {
-    const project = await ctx.db.get(args.projectId);
-    if (!project) return null;
-
-    const [client, category] = await Promise.all([
-      ctx.db.get(project.clientId),
-      project.categoryId ? ctx.db.get(project.categoryId) : Promise.resolve(null),
-    ]);
-
-    return {
-      ...project,
-      clientName: client?.name ?? null,
-      clientAvatar: client?.avatar ?? (client as any)?.image ?? null,
-      categoryName: category?.name ?? null,
-      // Use the stored bidCount field — kept in sync by submitBid mutation
-      bidCount: project.bidCount ?? 0,
-    };
-  },
-});
-
-/**
- * Get all bids for a project, enriched with freelancer profile info.
- * Sorted by status (accepted first) then by creation date ascending.
- */
-export const getBids = query({
-  args: {
-    projectId: v.id("projects"),
-  },
-  handler: async (ctx, args) => {
-    const user = await requireAuthUser(ctx);
-    const project = await ctx.db.get(args.projectId);
-    if (!project) return [];
-    if (project.clientId !== user._id) {
-      throw new Error("Unauthorized.");
-    }
-
-    const bids = await ctx.db
-      .query("bids")
-      .withIndex("by_project", (q) => q.eq("projectId", args.projectId))
-      .take(500);
-
-    // Batch load unique freelancer profiles
-    const profileIds = [...new Set(bids.map((b) => b.freelancerId).filter(Boolean))];
-    const profiles = await Promise.all(profileIds.map((id) => ctx.db.get(id)));
-    const profileMap = new Map(profiles.filter(Boolean).map((p) => [p!._id, p!]));
-
-    // Batch load unique user records for those profiles
-    const userIds = [...new Set(
-      profiles.filter(Boolean).map((p) => p!.userId).filter(Boolean)
-    )];
-    const users = await Promise.all(userIds.map((id) => ctx.db.get(id)));
-    const userMap = new Map(users.filter(Boolean).map((u) => [u!._id, u!]));
-
-    const enriched = bids.map((bid) => {
-      const profile = profileMap.get(bid.freelancerId);
-      const freelancerUser = profile ? userMap.get(profile.userId) : null;
-
-      return {
-        ...bid,
-        freelancerName: profile?.displayName ?? freelancerUser?.name ?? "Unknown",
-        freelancerAvatar: profile?.avatarUrl ?? (freelancerUser as any)?.image ?? null,
-        freelancerRating: profile?.ratingAverage ?? 0,
-        freelancerVerified: profile?.isVerified ?? false,
-      };
-    });
-
-    // Sort: accepted bids first, then by createdAt ascending
-    enriched.sort((a, b) => {
-      if (a.status === "accepted" && b.status !== "accepted") return -1;
-      if (a.status !== "accepted" && b.status === "accepted") return 1;
-      return (a.createdAt ?? 0) - (b.createdAt ?? 0);
-    });
-
-    return enriched;
-  },
-});
-
-/**
- * Get open projects for a specific client (public, no auth required).
- * Used on freelancer profile pages to show what projects they've posted.
- */
-export const getPublicByClient = query({
-  args: {
+import { notifyUser } from "../lib/notifications";
+import { internal } from "../_generated/api";
+import { query } from "../_generated/server";
+import { mutation } from "../_generated/server";
+import { requireAuthUser } from "../lib/authHelpers";
+import { requireOwner } from "../lib/authHelpers";
+import { requireMarketplaceContext } from "../lib/authHelpers";
+import { getProviderProfile } from "../lib/authHelpers";
+import { projectTransitions } from "../lib/marketplaceState";
+import { bidTransitions } from "../lib/marketplaceState";
+import { assertTransition } from "../lib/marketplaceState";
+import { projectStatusValidator } from "../lib/marketplaceState";
+import { bidStatusValidator } from "../lib/marketplaceState";
+import { v } from "convex/values";
+var h = v.union(v.string(), v.null()),
+  N = {
+    _id: v.id("projects"),
+    _creationTime: v.number(),
     clientId: v.id("users"),
-    limit: v.optional(v.number()),
-  },
-  handler: async (ctx, args) => {
-    const limit = args.limit ?? 20;
-
-    const projects = await ctx.db
-      .query("projects")
-      .withIndex("by_client", (q) => q.eq("clientId", args.clientId))
-      .order("desc")
-      .take(limit);
-
-    const openProjects = projects.filter((p) => p.status === "open");
-
-    // Batch load unique categories
-    const categoryIds = [...new Set(
-      openProjects.map((p) => p.categoryId).filter(Boolean)
-    )] as NonNullable<typeof openProjects[number]["categoryId"]>[];
-
-    const categories = await Promise.all(categoryIds.map((id) => ctx.db.get(id)));
-    const categoryMap = new Map(categories.filter(Boolean).map((c) => [c!._id, c!]));
-
-    const enriched = openProjects.map((project) => {
-      const category = project.categoryId ? categoryMap.get(project.categoryId) : null;
-
-      return {
-        ...project,
-        categoryName: category?.name ?? null,
-        // Use the stored bidCount field — kept in sync by submitBid mutation
-        bidCount: project.bidCount ?? 0,
-      };
-    });
-
-    return enriched;
-  },
-});
-
-/**
- * Get all projects for a specific client (all statuses).
- */
-export const getByClient = query({
-  args: {
-    clientId: v.id("users"),
-    limit: v.optional(v.number()),
-  },
-  handler: async (ctx, args) => {
-    await requireOwner(ctx, args.clientId);
-
-    const limit = args.limit ?? 50;
-
-    const projects = await ctx.db
-      .query("projects")
-      .withIndex("by_client", (q) => q.eq("clientId", args.clientId))
-      .order("desc")
-      .take(limit);
-
-    // Batch load unique categories
-    const categoryIds = [...new Set(
-      projects.map((p) => p.categoryId).filter(Boolean)
-    )] as NonNullable<typeof projects[number]["categoryId"]>[];
-
-    const categories = await Promise.all(categoryIds.map((id) => ctx.db.get(id)));
-    const categoryMap = new Map(categories.filter(Boolean).map((c) => [c!._id, c!]));
-
-    const enriched = projects.map((project) => {
-      const category = project.categoryId ? categoryMap.get(project.categoryId) : null;
-
-      return {
-        ...project,
-        categoryName: category?.name ?? null,
-      };
-    });
-
-    return enriched;
-  },
-});
-
-/**
- * Create a new project.
- * Requires authentication. Sets status to "open".
- */
-export const create = mutation({
-  args: {
     title: v.string(),
     slug: v.string(),
     description: v.string(),
@@ -305,395 +34,560 @@ export const create = mutation({
     currency: v.optional(v.string()),
     deadline: v.optional(v.number()),
     workType: v.optional(v.string()),
+    locationCity: v.optional(v.string()),
+    locationCountry: v.optional(v.string()),
+    bidCount: v.number(),
+    views: v.optional(v.number()),
+    status: projectStatusValidator,
     locale: v.string(),
+    publishedAt: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number()
   },
-  returns: v.id("projects"),
-  handler: async (ctx, args) => {
-    const user = await requireAuthUser(ctx);
-    requireMarketplaceContext(user, "client", "online", "posting a project");
-    const title = args.title.trim();
-    const description = args.description.trim();
-    if (title.length < 10 || title.length > 120) throw new Error("Project titles must be between 10 and 120 characters.");
-    if (description.length < 80 || description.length > 10_000) throw new Error("Project descriptions must be between 80 and 10,000 characters.");
-    if (args.budgetMin !== undefined && args.budgetMin < 0) throw new Error("Minimum budget cannot be negative.");
-    if (args.budgetMax !== undefined && args.budgetMax < 0) throw new Error("Maximum budget cannot be negative.");
-    if (args.budgetMin !== undefined && args.budgetMax !== undefined && args.budgetMin > args.budgetMax) throw new Error("Minimum budget cannot exceed maximum budget.");
-
-    // Get the default tenant
-    const tenant = await ctx.db.query("tenants").first();
-    if (!tenant) throw new Error("No tenant found");
-
-    const now = Date.now();
-
-    const projectId = await ctx.db.insert("projects", {
-      tenantId: tenant._id,
-      clientId: user._id,
-      title,
-      slug: args.slug,
-      description,
-      categoryId: args.categoryId,
-      requiredSkills: args.requiredSkills,
-      budgetMin: args.budgetMin,
-      budgetMax: args.budgetMax,
-      currency: args.currency ?? "EUR",
-      deadline: args.deadline,
-      workType: args.workType,
-      status: "open",
-      bidCount: 0,
-      views: 0,
-      locale: args.locale,
-      publishedAt: now,
-      createdAt: now,
-      updatedAt: now,
-    });
-
-    return projectId;
-  },
-});
-
-/**
- * Freelancer submits a bid on a project.
- * Requires authentication. A freelancer may only bid once per project.
- */
-export const submitBid = mutation({
-  args: {
+  O = v.object({
+    ...N,
+    clientName: h,
+    clientAvatar: h,
+    clientVerified: v.boolean(),
+    categoryName: h
+  }),
+  z = v.object({
+    ...N,
+    categoryName: h
+  }),
+  R = v.object({
+    ...N,
+    selectedFreelancerId: v.optional(v.id("freelancerProfiles")),
+    categoryName: h
+  }),
+  $ = {
+    _id: v.id("bids"),
+    _creationTime: v.number(),
     projectId: v.id("projects"),
+    freelancerId: v.id("freelancerProfiles"),
     amount: v.number(),
+    currency: v.optional(v.string()),
     deliveryDays: v.number(),
     pitch: v.string(),
+    status: bidStatusValidator,
+    createdAt: v.number(),
+    updatedAt: v.number()
   },
-  returns: v.id("bids"),
-  handler: async (ctx, args) => {
-    const user = await requireAuthUser(ctx);
-    requireMarketplaceContext(user, "freelancer", "online", "submitting a proposal");
-    if (!Number.isFinite(args.amount) || args.amount <= 0) throw new Error("Enter a valid proposal amount.");
-    if (!Number.isInteger(args.deliveryDays) || args.deliveryDays < 1 || args.deliveryDays > 365) throw new Error("Delivery time must be between 1 and 365 days.");
-    const pitch = args.pitch.trim();
-    if (pitch.length < 80 || pitch.length > 5000) throw new Error("Your proposal must be between 80 and 5,000 characters.");
-
-    // Retrieve the freelancer profile for this user
-    const profile = await getProviderProfile(ctx, user._id, "freelancer");
-    if (!profile) throw new Error("Freelancer profile not found");
-
-    // Ensure this freelancer hasn't already bid on the project
-    const existingBid = await ctx.db
-      .query("bids")
-      .withIndex("by_project_freelancer", (q) =>
-        q.eq("projectId", args.projectId).eq("freelancerId", profile._id)
-      )
-      .unique();
-
-    if (existingBid) {
-      throw new Error("You have already submitted a bid for this project");
-    }
-
-    const project = await ctx.db.get(args.projectId);
-    if (!project) throw new Error("Project not found");
-    if (project.status !== "open") {
-      throw new Error("This project is no longer accepting bids");
-    }
-    if (project.clientId === user._id) {
-      throw new Error("You cannot bid on your own project.");
-    }
-
-    await rateLimiter.limit(ctx, "projectProposal", { key: user._id, throws: true });
-
-    const now = Date.now();
-
-    const bidId = await ctx.db.insert("bids", {
-      projectId: args.projectId,
-      freelancerId: profile._id,
-      amount: args.amount,
-      currency: project.currency ?? "EUR",
-      deliveryDays: args.deliveryDays,
-      pitch,
-      status: "pending",
-      createdAt: now,
-      updatedAt: now,
-    });
-
-    // Increment the project's bid count
-    await ctx.db.patch(args.projectId, {
-      bidCount: (project.bidCount ?? 0) + 1,
-      updatedAt: now,
-    });
-
-    // Send new bid notification to project client
-    const client = project.clientId ? await ctx.db.get(project.clientId) : null;
-    const freelancerProfile = await getProviderProfile(
-      ctx,
-      user._id,
-      "freelancer",
-    );
-
-    if (client?.email) {
-      await ctx.scheduler.runAfter(0, internal.lib.email.sendNewBid, {
-        clientEmail: client.email,
-        clientName: client.name || "Customer",
-        projectTitle: project.title,
-        bidAmount: args.amount,
-        currency: project.currency ?? "EUR",
-        deliveryDays: args.deliveryDays,
-        freelancerName: freelancerProfile?.displayName || user.name || "Freelancer",
-        bidId,
-        projectId: args.projectId,
+  H = v.object({
+    ...$,
+    freelancerName: v.string(),
+    freelancerAvatar: h,
+    freelancerRating: v.number(),
+    freelancerVerified: v.boolean()
+  }),
+  L = v.object({
+    ...$,
+    projectTitle: v.string(),
+    projectSlug: v.string(),
+    projectStatus: v.string(),
+    projectCurrency: v.string()
+  });
+function toProjectFields(t) {
+  return {
+    _id: t._id,
+    _creationTime: t._creationTime,
+    clientId: t.clientId,
+    title: t.title,
+    slug: t.slug,
+    description: t.description,
+    categoryId: t.categoryId,
+    requiredSkills: t.requiredSkills,
+    budgetMin: t.budgetMin,
+    budgetMax: t.budgetMax,
+    currency: t.currency,
+    deadline: t.deadline,
+    workType: t.workType,
+    locationCity: t.locationCity,
+    locationCountry: t.locationCountry,
+    bidCount: t.bidCount ?? 0,
+    views: t.views,
+    status: t.status,
+    locale: t.locale,
+    publishedAt: t.publishedAt,
+    createdAt: t.createdAt,
+    updatedAt: t.updatedAt
+  };
+}
+function toBidFields(t) {
+  return {
+    _id: t._id,
+    _creationTime: t._creationTime,
+    projectId: t.projectId,
+    freelancerId: t.freelancerId,
+    amount: t.amount,
+    currency: t.currency,
+    deliveryDays: t.deliveryDays,
+    pitch: t.pitch,
+    status: t.status,
+    createdAt: t.createdAt,
+    updatedAt: t.updatedAt
+  };
+}
+function isOnlineProject(t) {
+  return !t.workType || t.workType === "remote" || t.workType === "online";
+}
+function assertDirectCancellationAllowed(t) {
+  if (t.status !== "cancelled" && (t.status === "in_progress" || t.selectedFreelancerId)) throw new Error("This project has an active order. Cancel or resolve the linked order instead.");
+}
+function betaOrderNumber() {
+  return `BETA-${new Date().toISOString().slice(0, 10).replaceAll("-", "")}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+}
+var getOpenCount = query({
+    args: {},
+    returns: v.number(),
+    handler: async ctx => (await ctx.db.query("projects").withIndex("by_status", r => r.eq("status", "open")).take(1e4)).filter(isOnlineProject).length
+  }),
+  list = query({
+    args: {
+      locale: v.string(),
+      limit: v.optional(v.number())
+    },
+    returns: v.array(O),
+    handler: async (ctx, args) => {
+      let r = Math.min(100, Math.max(1, args.limit ?? 20)),
+        l = (await ctx.db.query("projects").withIndex("by_status_locale", a => a.eq("status", "open").eq("locale", args.locale)).order("desc").take(Math.min(r * 5, 500))).filter(isOnlineProject).slice(0, r),
+        d = [...new Set(l.map(a => a.clientId).filter(Boolean))],
+        s = [...new Set(l.map(a => a.categoryId).filter(Boolean))],
+        [u, c] = await Promise.all([Promise.all(d.map(a => ctx.db.get(a))), Promise.all(s.map(a => ctx.db.get(a)))]),
+        o = new Map(u.filter(Boolean).map(a => [a._id, a])),
+        p = new Map(c.filter(Boolean).map(a => [a._id, a]));
+      return l.map(a => {
+        let y = o.get(a.clientId),
+          A = a.categoryId ? p.get(a.categoryId) : null;
+        return {
+          ...toProjectFields(a),
+          clientName: y?.name ?? null,
+          clientAvatar: y?.avatar ?? y?.image ?? null,
+          clientVerified: y?.emailVerified === !0,
+          categoryName: A?.name ?? null,
+          bidCount: a.bidCount ?? 0
+        };
       });
     }
-
-    await notifyUser(ctx, {
-      userId: project.clientId,
-      type: "proposal_received",
-      title: "New proposal received",
-      body: `${freelancerProfile?.displayName || user.name} sent a proposal for ${project.title}.`,
-      link: `/online/project/${project.slug}`,
-      metadata: { projectId: project._id, bidId },
-    });
-
-    return bidId;
-  },
-});
-
-/**
- * Get all bids submitted by the current freelancer.
- * Enriched with the project title and slug.
- */
-export const getMyBids = query({
-  args: {
-    freelancerId: v.id("freelancerProfiles"),
-  },
-  handler: async (ctx, args) => {
-    const user = await requireAuthUser(ctx);
-    const profile = await ctx.db.get(args.freelancerId);
-    if (!profile) return [];
-    if (profile.userId !== user._id) {
-      throw new Error("Unauthorized.");
-    }
-
-    const bids = await ctx.db
-      .query("bids")
-      .withIndex("by_freelancer", (q) => q.eq("freelancerId", args.freelancerId))
-      .order("desc")
-      .take(50);
-
-    // Batch load unique projects
-    const projectIds = [...new Set(bids.map((b) => b.projectId).filter(Boolean))];
-    const projects = await Promise.all(projectIds.map((id) => ctx.db.get(id)));
-    const projectMap = new Map(projects.filter(Boolean).map((p) => [p!._id, p!]));
-
-    const enriched = bids.map((bid) => {
-      const project = projectMap.get(bid.projectId);
+  }),
+  getBySlug = query({
+    args: {
+      slug: v.string(),
+      locale: v.string()
+    },
+    returns: v.union(v.null(), O),
+    handler: async (ctx, args) => {
+      let r = await ctx.db.query("projects").withIndex("by_slug_locale", d => d.eq("slug", args.slug).eq("locale", args.locale)).first();
+      if (!r || r.status !== "open" || !isOnlineProject(r)) return null;
+      let [i, l] = await Promise.all([ctx.db.get(r.clientId), r.categoryId ? ctx.db.get(r.categoryId) : Promise.resolve(null)]);
       return {
-        ...bid,
-        projectTitle: project?.title ?? "Unknown",
-        projectSlug: project?.slug ?? "",
-        projectStatus: project?.status ?? "unknown",
-        projectCurrency: project?.currency ?? bid.currency ?? "EUR",
+        ...toProjectFields(r),
+        clientName: i?.name ?? null,
+        clientAvatar: i?.avatar ?? i?.image ?? null,
+        clientVerified: i?.emailVerified === !0,
+        categoryName: l?.name ?? null,
+        bidCount: r.bidCount ?? 0
       };
-    });
-
-    return enriched;
-  },
-});
-
-/**
- * Soft-delete a project (set status to "cancelled").
- * Requires authentication — caller must be the project owner.
- */
-export const remove = mutation({
-  args: {
-    projectId: v.id("projects"),
-  },
-  returns: v.id("projects"),
-  handler: async (ctx, args) => {
-    const project = await ctx.db.get(args.projectId);
-    if (!project) throw new Error("Project not found");
-    const user = await requireOwner(ctx, project.clientId);
-    requireMarketplaceContext(user, "client", "online", "cancelling a project");
-    if (project.status !== "cancelled") assertTransition(projectTransitions, project.status, "cancelled");
-
-    await ctx.db.patch(args.projectId, {
-      status: "cancelled",
-      updatedAt: Date.now(),
-    });
-
-    return args.projectId;
-  },
-});
-
-/**
- * Update an existing project. Authentication required.
- * Caller must be the project owner.
- */
-export const update = mutation({
-  args: {
-    projectId: v.id("projects"),
-    title: v.optional(v.string()),
-    description: v.optional(v.string()),
-    budgetMin: v.optional(v.number()),
-    budgetMax: v.optional(v.number()),
-    deadline: v.optional(v.number()),
-    workType: v.optional(v.string()),
-    status: v.optional(
-      v.union(
-        v.literal("draft"),
-        v.literal("open"),
-        v.literal("cancelled"),
-        v.literal("closed")
-      )
-    ),
-  },
-  returns: v.id("projects"),
-  handler: async (ctx, args) => {
-    const project = await ctx.db.get(args.projectId);
-    if (!project) throw new Error("Project not found");
-    const user = await requireOwner(ctx, project.clientId);
-    requireMarketplaceContext(user, "client", "online", "updating a project");
-    if (args.status) assertTransition(projectTransitions, project.status, args.status);
-
-    const { projectId, ...fields } = args;
-
-    // Build patch object with only defined fields
-    const patch: Record<string, unknown> = { updatedAt: Date.now() };
-    for (const [key, value] of Object.entries(fields)) {
-      if (value !== undefined) {
-        patch[key] = value;
-      }
     }
-
-    await ctx.db.patch(projectId, patch);
-
-    return projectId;
-  },
-});
-
-/**
- * Client accepts a bid.
- * Sets bid status to "accepted" and project status to "in_progress".
- * Requires authentication — caller must be the project owner.
- */
-export const acceptBid = mutation({
-  args: {
-    bidId: v.id("bids"),
-  },
-  returns: v.object({ success: v.boolean(), orderId: v.id("orders") }),
-  handler: async (ctx, args) => {
-    const bid = await ctx.db.get(args.bidId);
-    if (!bid) throw new Error("Bid not found");
-
-    const project = await ctx.db.get(bid.projectId);
-    if (!project) throw new Error("Project not found");
-
-    const user = await requireOwner(ctx, project.clientId);
-    requireMarketplaceContext(user, "client", "online", "accepting a proposal");
-    if (project.status !== "open") throw new Error("This project is no longer accepting proposals.");
-    assertTransition(bidTransitions, bid.status, "accepted");
-    assertTransition(projectTransitions, project.status, "in_progress");
-
-    const existingOrder = await ctx.db
-      .query("orders")
-      .withIndex("by_bid", (q) => q.eq("bidId", bid._id))
-      .unique();
-    if (existingOrder) return { success: true, orderId: existingOrder._id };
-
-    const freelancerProfile = await ctx.db.get(bid.freelancerId);
-    if (!freelancerProfile) throw new Error("Freelancer profile not found.");
-    const freelancerUser = await ctx.db.get(freelancerProfile.userId);
-    if (!freelancerUser) throw new Error("Freelancer account not found.");
-
-    const now = Date.now();
-
-    // Accept the bid
-    await ctx.db.patch(args.bidId, {
-      status: "accepted",
-      updatedAt: now,
-    });
-
-    // Move project to in_progress and record selected freelancer
-    await ctx.db.patch(bid.projectId, {
-      status: "in_progress",
-      selectedFreelancerId: bid.freelancerId,
-      updatedAt: now,
-    });
-
-    const otherBids = await ctx.db
-      .query("bids")
-      .withIndex("by_project_status", (q) =>
-        q.eq("projectId", project._id).eq("status", "pending")
-      )
-      .take(500);
-    await Promise.all(
-      otherBids
-        .filter((item) => item._id !== bid._id)
-        .map((item) => ctx.db.patch(item._id, { status: "rejected", updatedAt: now }))
-    );
-
-    // Private beta: create the workspace immediately without charging either party.
-    // The agreed amount remains on the order; fee and escrow activation stay disabled
-    // until the commercial and legal payment model is approved.
-    const orderId = await ctx.db.insert("orders", {
-      tenantId: project.tenantId,
-      orderNumber: betaOrderNumber(),
-      orderType: "project",
-      clientId: project.clientId,
-      freelancerId: bid.freelancerId,
-      projectId: project._id,
-      bidId: bid._id,
-      title: project.title,
-      description: project.description,
-      amount: bid.amount,
-      platformFee: 0,
-      freelancerEarnings: bid.amount,
-      currency: bid.currency ?? project.currency ?? "EUR",
-      deliveryDeadline: now + bid.deliveryDays * 24 * 60 * 60 * 1000,
-      revisionsUsed: 0,
-      status: "active",
-      escrowStatus: "beta_no_payment",
-      createdAt: now,
-      updatedAt: now,
-    });
-
-    const existingConversation = await ctx.db
-      .query("conversations")
-      .withIndex("by_order", (q) => q.eq("orderId", orderId))
-      .unique();
-    if (!existingConversation) {
-      await ctx.db.insert("conversations", {
-        tenantId: project.tenantId,
+  }),
+  getById = query({
+    args: {
+      projectId: v.id("projects")
+    },
+    returns: v.union(v.null(), R),
+    handler: async (ctx, args) => {
+      let r = await ctx.db.get(args.projectId);
+      if (!r) return null;
+      await requireOwner(ctx, r.clientId);
+      let i = r.categoryId ? await ctx.db.get(r.categoryId) : null;
+      return {
+        ...toProjectFields(r),
+        selectedFreelancerId: r.selectedFreelancerId,
+        categoryName: i?.name ?? null,
+        bidCount: r.bidCount ?? 0
+      };
+    }
+  }),
+  getBids = query({
+    args: {
+      projectId: v.id("projects")
+    },
+    returns: v.array(H),
+    handler: async (ctx, args) => {
+      let r = await requireAuthUser(ctx),
+        i = await ctx.db.get(args.projectId);
+      if (!i) return [];
+      if (i.clientId !== r._id) throw new Error("Unauthorized.");
+      let l = await ctx.db.query("bids").withIndex("by_project", a => a.eq("projectId", args.projectId)).take(500),
+        d = [...new Set(l.map(a => a.freelancerId).filter(Boolean))],
+        s = await Promise.all(d.map(a => ctx.db.get(a))),
+        u = new Map(s.filter(Boolean).map(a => [a._id, a])),
+        c = [...new Set(s.filter(Boolean).map(a => a.userId).filter(Boolean))],
+        o = await Promise.all(c.map(a => ctx.db.get(a))),
+        p = new Map(o.filter(Boolean).map(a => [a._id, a])),
+        b = l.map(a => {
+          let y = u.get(a.freelancerId),
+            A = y ? p.get(y.userId) : null;
+          return {
+            ...toBidFields(a),
+            freelancerName: y?.displayName ?? A?.name ?? "Unknown",
+            freelancerAvatar: y?.avatarUrl ?? A?.image ?? null,
+            freelancerRating: y?.ratingAverage ?? 0,
+            freelancerVerified: y?.isVerified ?? !1
+          };
+        });
+      return b.sort((a, y) => a.status === "accepted" && y.status !== "accepted" ? -1 : a.status !== "accepted" && y.status === "accepted" ? 1 : (a.createdAt ?? 0) - (y.createdAt ?? 0)), b;
+    }
+  }),
+  getPublicByClient = query({
+    args: {
+      clientId: v.id("users"),
+      limit: v.optional(v.number())
+    },
+    returns: v.array(z),
+    handler: async (ctx, args) => {
+      let r = Math.max(1, Math.min(args.limit ?? 20, 100)),
+        l = (await ctx.db.query("projects").withIndex("by_client", o => o.eq("clientId", args.clientId)).order("desc").take(r)).filter(o => o.status === "open" && isOnlineProject(o)),
+        d = [...new Set(l.map(o => o.categoryId).filter(Boolean))],
+        s = await Promise.all(d.map(o => ctx.db.get(o))),
+        u = new Map(s.filter(Boolean).map(o => [o._id, o]));
+      return l.map(o => {
+        let p = o.categoryId ? u.get(o.categoryId) : null;
+        return {
+          ...toProjectFields(o),
+          categoryName: p?.name ?? null,
+          bidCount: o.bidCount ?? 0
+        };
+      });
+    }
+  }),
+  getByClient = query({
+    args: {
+      clientId: v.id("users"),
+      limit: v.optional(v.number())
+    },
+    returns: v.array(R),
+    handler: async (ctx, args) => {
+      await requireOwner(ctx, args.clientId);
+      let r = Math.max(1, Math.min(args.limit ?? 50, 100)),
+        i = await ctx.db.query("projects").withIndex("by_client", c => c.eq("clientId", args.clientId)).order("desc").take(r),
+        l = [...new Set(i.map(c => c.categoryId).filter(Boolean))],
+        d = await Promise.all(l.map(c => ctx.db.get(c))),
+        s = new Map(d.filter(Boolean).map(c => [c._id, c]));
+      return i.map(c => {
+        let o = c.categoryId ? s.get(c.categoryId) : null;
+        return {
+          ...toProjectFields(c),
+          selectedFreelancerId: c.selectedFreelancerId,
+          categoryName: o?.name ?? null
+        };
+      });
+    }
+  }),
+  create = mutation({
+    args: {
+      title: v.string(),
+      slug: v.string(),
+      description: v.string(),
+      categoryId: v.optional(v.id("marketplaceCategories")),
+      requiredSkills: v.optional(v.array(v.string())),
+      budgetMin: v.optional(v.number()),
+      budgetMax: v.optional(v.number()),
+      currency: v.optional(v.string()),
+      deadline: v.optional(v.number()),
+      workType: v.optional(v.string()),
+      locale: v.string()
+    },
+    returns: v.id("projects"),
+    handler: async (ctx, args) => {
+      let r = await requireAuthUser(ctx);
+      requireMarketplaceContext(r, "client", "online", "posting a project");
+      let i = args.workType ?? "remote";
+      assertOnlineWorkType(i, "Online project"), await assertOnlineMarketplaceCategory(ctx, args.categoryId, r.tenantId, args.locale);
+      let l = args.title.trim(),
+        d = args.description.trim();
+      if (l.length < 10 || l.length > 120) throw new Error("Project titles must be between 10 and 120 characters.");
+      if (d.length < 80 || d.length > 1e4) throw new Error("Project descriptions must be between 80 and 10,000 characters.");
+      if (args.budgetMin !== void 0 && args.budgetMin < 0) throw new Error("Minimum budget cannot be negative.");
+      if (args.budgetMax !== void 0 && args.budgetMax < 0) throw new Error("Maximum budget cannot be negative.");
+      if (args.budgetMin !== void 0 && args.budgetMax !== void 0 && args.budgetMin > args.budgetMax) throw new Error("Minimum budget cannot exceed maximum budget.");
+      let s = Date.now();
+      return await ctx.db.insert("projects", {
+        tenantId: r.tenantId,
+        clientId: r._id,
+        title: l,
+        slug: args.slug,
+        description: d,
+        categoryId: args.categoryId,
+        requiredSkills: args.requiredSkills,
+        budgetMin: args.budgetMin,
+        budgetMax: args.budgetMax,
+        currency: args.currency ?? "EUR",
+        deadline: args.deadline,
+        workType: i,
+        status: "open",
+        bidCount: 0,
+        views: 0,
+        locale: args.locale,
+        publishedAt: s,
+        createdAt: s,
+        updatedAt: s
+      });
+    }
+  }),
+  submitBid = mutation({
+    args: {
+      projectId: v.id("projects"),
+      amount: v.number(),
+      deliveryDays: v.number(),
+      pitch: v.string()
+    },
+    returns: v.id("bids"),
+    handler: async (ctx, args): Promise<Id<"bids">> => {
+      let r = await requireAuthUser(ctx);
+      if (requireMarketplaceContext(r, "freelancer", "online", "submitting a proposal"), !Number.isFinite(args.amount) || args.amount <= 0) throw new Error("Enter a valid proposal amount.");
+      if (!Number.isInteger(args.deliveryDays) || args.deliveryDays < 1 || args.deliveryDays > 365) throw new Error("Delivery time must be between 1 and 365 days.");
+      let i = args.pitch.trim();
+      if (i.length < 80 || i.length > 5e3) throw new Error("Your proposal must be between 80 and 5,000 characters.");
+      let l = await getProviderProfile(ctx, r._id, "freelancer"),
+        d = await ctx.db.get(args.projectId);
+      if (!d) throw new Error("Project not found");
+      let s = await ctx.db.get(d.clientId);
+      if (!s) throw new Error("Project client not found");
+      if (s.tenantId !== d.tenantId) throw new Error("Online marketplace tenant mismatch.");
+      let u = assertActiveOnlineProviderProfile(l, {
+        ownerId: r._id,
+        accountTenantId: r.tenantId,
+        resourceTenantId: d.tenantId
+      });
+      if (assertOnlineProject(d, {
+        expectedTenantId: r.tenantId
+      }), await assertOnlineMarketplaceCategory(ctx, d.categoryId, r.tenantId, d.locale), await ctx.db.query("bids").withIndex("by_project_freelancer", a => a.eq("projectId", args.projectId).eq("freelancerId", u._id)).unique()) throw new Error("You have already submitted a bid for this project");
+      if (d.status !== "open") throw new Error("This project is no longer accepting bids");
+      if (d.clientId === r._id) throw new Error("You cannot bid on your own project.");
+      await rateLimiter.limit(ctx, "projectProposal", {
+        key: r._id,
+        throws: !0
+      });
+      let o = Date.now(),
+        p = await ctx.db.insert("bids", {
+          projectId: args.projectId,
+          freelancerId: u._id,
+          amount: args.amount,
+          currency: d.currency ?? "EUR",
+          deliveryDays: args.deliveryDays,
+          pitch: i,
+          status: "pending",
+          createdAt: o,
+          updatedAt: o
+        });
+      await ctx.db.patch(args.projectId, {
+        bidCount: (d.bidCount ?? 0) + 1,
+        updatedAt: o
+      });
+      let b = await getProviderProfile(ctx, r._id, "freelancer");
+      return s.email && (await ctx.scheduler.runAfter(0, internal.lib.email.sendNewBid, {
+        clientEmail: s.email,
+        clientName: s.name || "Customer",
+        projectTitle: d.title,
+        bidAmount: args.amount,
+        currency: d.currency ?? "EUR",
+        deliveryDays: args.deliveryDays,
+        freelancerName: b?.displayName || r.name || "Freelancer",
+        bidId: p,
+        projectId: args.projectId
+      })), await notifyUser(ctx, {
+        userId: d.clientId,
+        type: "proposal_received",
+        title: "New proposal received",
+        body: `${b?.displayName || r.name} sent a proposal for ${d.title}.`,
+        link: `/online/project/${d.slug}`,
+        metadata: {
+          projectId: d._id,
+          bidId: p
+        }
+      }), p;
+    }
+  }),
+  getMyBids = query({
+    args: {
+      freelancerId: v.id("freelancerProfiles")
+    },
+    returns: v.array(L),
+    handler: async (ctx, args) => {
+      let r = await requireAuthUser(ctx),
+        i = await ctx.db.get(args.freelancerId);
+      if (!i) return [];
+      if (i.userId !== r._id) throw new Error("Unauthorized.");
+      let l = await ctx.db.query("bids").withIndex("by_freelancer", o => o.eq("freelancerId", args.freelancerId)).order("desc").take(50),
+        d = [...new Set(l.map(o => o.projectId).filter(Boolean))],
+        s = await Promise.all(d.map(o => ctx.db.get(o))),
+        u = new Map(s.filter(Boolean).map(o => [o._id, o]));
+      return l.map(o => {
+        let p = u.get(o.projectId);
+        return {
+          ...toBidFields(o),
+          projectTitle: p?.title ?? "Unknown",
+          projectSlug: p?.slug ?? "",
+          projectStatus: p?.status ?? "unknown",
+          projectCurrency: p?.currency ?? o.currency ?? "EUR"
+        };
+      });
+    }
+  }),
+  remove = mutation({
+    args: {
+      projectId: v.id("projects")
+    },
+    returns: v.id("projects"),
+    handler: async (ctx, args) => {
+      let r = await ctx.db.get(args.projectId);
+      if (!r) throw new Error("Project not found");
+      let i = await requireOwner(ctx, r.clientId);
+      return requireMarketplaceContext(i, "client", "online", "cancelling a project"), assertDirectCancellationAllowed(r), r.status !== "cancelled" && assertTransition(projectTransitions, r.status, "cancelled"), await ctx.db.patch(args.projectId, {
+        status: "cancelled",
+        updatedAt: Date.now()
+      }), args.projectId;
+    }
+  }),
+  update = mutation({
+    args: {
+      projectId: v.id("projects"),
+      title: v.optional(v.string()),
+      description: v.optional(v.string()),
+      budgetMin: v.optional(v.number()),
+      budgetMax: v.optional(v.number()),
+      deadline: v.optional(v.number()),
+      workType: v.optional(v.string()),
+      status: v.optional(v.union(v.literal("draft"), v.literal("open"), v.literal("cancelled"), v.literal("closed")))
+    },
+    returns: v.id("projects"),
+    handler: async (ctx, args) => {
+      let r = await ctx.db.get(args.projectId);
+      if (!r) throw new Error("Project not found");
+      let i = await requireOwner(ctx, r.clientId);
+      requireMarketplaceContext(i, "client", "online", "updating a project"), args.status === "cancelled" && assertDirectCancellationAllowed(r), args.status && args.status !== r.status && assertTransition(projectTransitions, r.status, args.status), assertOnlineProject(r, {
+        expectedTenantId: i.tenantId,
+        expectedClientId: i._id,
+        workType: args.workType ?? r.workType
+      }), await assertOnlineMarketplaceCategory(ctx, r.categoryId, i.tenantId, r.locale);
+      let {
+          projectId: l,
+          ...d
+        } = args,
+        s = {
+          updatedAt: Date.now()
+        };
+      for (let [u, c] of Object.entries(d)) c !== void 0 && (s[u] = c);
+      return await ctx.db.patch(l, s), l;
+    }
+  }),
+  acceptBid = mutation({
+    args: {
+      bidId: v.id("bids")
+    },
+    returns: v.object({
+      success: v.boolean(),
+      orderId: v.id("orders")
+    }),
+    handler: async (ctx, args) => {
+      let r = await ctx.db.get(args.bidId);
+      if (!r) throw new Error("Bid not found");
+      let i = await ctx.db.get(r.projectId);
+      if (!i) throw new Error("Project not found");
+      let l = await requireOwner(ctx, i.clientId);
+      requireMarketplaceContext(l, "client", "online", "accepting a proposal"), assertOnlineProject(i, {
+        expectedTenantId: l.tenantId,
+        expectedClientId: l._id
+      }), await assertOnlineMarketplaceCategory(ctx, i.categoryId, l.tenantId, i.locale);
+      let d = await ctx.db.query("orders").withIndex("by_bid", a => a.eq("bidId", r._id)).unique();
+      if (d) return {
+        success: !0,
+        orderId: d._id
+      };
+      if (i.status !== "open") throw new Error("This project is no longer accepting proposals.");
+      assertTransition(bidTransitions, r.status, "accepted"), assertTransition(projectTransitions, i.status, "in_progress");
+      let s = await ctx.db.get(r.freelancerId);
+      if (!s) throw new Error("Freelancer profile not found.");
+      let u = await ctx.db.get(s.userId);
+      if (!u) throw new Error("Freelancer account not found.");
+      assertActiveOnlineProviderProfile(s, {
+        ownerId: u._id,
+        accountTenantId: u.tenantId,
+        resourceTenantId: i.tenantId
+      });
+      let c = Date.now();
+      await ctx.db.patch(args.bidId, {
+        status: "accepted",
+        updatedAt: c
+      }), await ctx.db.patch(r.projectId, {
+        status: "in_progress",
+        selectedFreelancerId: r.freelancerId,
+        updatedAt: c
+      });
+      let o = await ctx.db.query("bids").withIndex("by_project_status", a => a.eq("projectId", i._id).eq("status", "pending")).take(500);
+      await Promise.all(o.filter(a => a._id !== r._id).map(a => ctx.db.patch(a._id, {
+        status: "rejected",
+        updatedAt: c
+      })));
+      let p = await ctx.db.insert("orders", {
+        tenantId: i.tenantId,
+        orderNumber: betaOrderNumber(),
+        orderType: "project",
+        clientId: i.clientId,
+        freelancerId: r.freelancerId,
+        projectId: i._id,
+        bidId: r._id,
+        title: i.title,
+        description: i.description,
+        amount: r.amount,
+        platformFee: 0,
+        freelancerEarnings: r.amount,
+        currency: r.currency ?? i.currency ?? "EUR",
+        deliveryDeadline: c + r.deliveryDays * 24 * 60 * 60 * 1e3,
+        revisionsUsed: 0,
+        status: "active",
+        escrowStatus: "beta_no_payment",
+        createdAt: c,
+        updatedAt: c
+      });
+      return (await ctx.db.query("conversations").withIndex("by_order", a => a.eq("orderId", p)).unique()) || (await ctx.db.insert("conversations", {
+        tenantId: i.tenantId,
         contextType: "order",
-        contextTitle: project.title,
-        contextHref: `/orders/${orderId}`,
-        orderId,
-        projectId: project._id,
-        bidId: bid._id,
-        freelancerProfileId: freelancerProfile._id,
-        participant1: project.clientId,
-        participant2: freelancerUser._id,
+        contextTitle: i.title,
+        contextHref: `/orders/${p}`,
+        orderId: p,
+        projectId: i._id,
+        bidId: r._id,
+        freelancerProfileId: s._id,
+        participant1: i.clientId,
+        participant2: u._id,
         unreadCount1: 0,
         unreadCount2: 0,
         status: "active",
-        createdAt: now,
-        updatedAt: now,
-      });
+        createdAt: c,
+        updatedAt: c
+      })), u?.email && (await ctx.scheduler.runAfter(0, internal.lib.email.sendBidAccepted, {
+        freelancerEmail: u.email,
+        freelancerName: s?.displayName || u.name || "Freelancer",
+        projectTitle: i.title,
+        amount: r.amount,
+        currency: i.currency ?? "EUR",
+        orderId: p
+      })), await notifyUser(ctx, {
+        userId: u._id,
+        type: "proposal_accepted",
+        title: "Your proposal was accepted",
+        body: `${i.title} is ready in your private workspace.`,
+        link: `/orders/${p}`,
+        metadata: {
+          projectId: i._id,
+          orderId: p
+        }
+      }), {
+        success: !0,
+        orderId: p
+      };
     }
-    // Send bid accepted notification to freelancer
-    if (freelancerUser?.email) {
-      await ctx.scheduler.runAfter(0, internal.lib.email.sendBidAccepted, {
-        freelancerEmail: freelancerUser.email,
-        freelancerName: freelancerProfile?.displayName || freelancerUser.name || "Freelancer",
-        projectTitle: project.title,
-        amount: bid.amount,
-        currency: project.currency ?? "EUR",
-        orderId,
-      });
-    }
-    await notifyUser(ctx, {
-      userId: freelancerUser._id,
-      type: "proposal_accepted",
-      title: "Your proposal was accepted",
-      body: `${project.title} is ready in your private workspace.`,
-      link: `/orders/${orderId}`,
-      metadata: { projectId: project._id, orderId },
-    });
-    return { success: true, orderId };
-  },
-});
+  });
+export { acceptBid, create, getBids, getByClient, getById, getBySlug, getMyBids, getOpenCount, getPublicByClient, list, remove, submitBid, update };

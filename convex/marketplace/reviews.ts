@@ -1,204 +1,16 @@
-import { v } from "convex/values";
-import { query, mutation, MutationCtx, QueryCtx } from "../_generated/server";
+import type { MutationCtx, QueryCtx } from "../_generated/server";
+import type { Doc, Id } from "../_generated/dataModel";
+// Reconciled with the existing development deployment (2026-09-07).
+import { isPublicOnlineFreelancerProfile } from "../lib/publicData";
 import { internal } from "../_generated/api";
-import { Doc, Id } from "../_generated/dataModel";
+import { query } from "../_generated/server";
+import { mutation } from "../_generated/server";
 import { requireAuthUser } from "../lib/authHelpers";
-
-async function getOrderReviewContext(
-  ctx: QueryCtx | MutationCtx,
-  orderId: Id<"orders">
-) {
-  const order = await ctx.db.get(orderId);
-  if (!order) throw new Error("Order not found");
-
-  const freelancerProfile = order.freelancerId
-    ? await ctx.db.get(order.freelancerId)
-    : null;
-
-  return {
-    order,
-    freelancerProfile,
-    freelancerUserId: freelancerProfile?.userId ?? null,
-  };
-}
-
-function canAccessOrderReviews(
-  user: Doc<"users">,
-  order: Doc<"orders">,
-  freelancerUserId: Id<"users"> | null
-) {
-  return (
-    user.role === "admin" ||
-    order.clientId === user._id ||
-    freelancerUserId === user._id
-  );
-}
-
-async function refreshFreelancerRating(ctx: MutationCtx, userId: Id<"users">) {
-  const profile = await ctx.db
-    .query("freelancerProfiles")
-    .withIndex("by_userId", (q) => q.eq("userId", userId))
-    .first();
-  if (!profile) return;
-  const publicReviews = await ctx.db
-    .query("marketplaceReviews")
-    .withIndex("by_reviewee", (q) => q.eq("revieweeId", userId))
-    .filter((q) => q.eq(q.field("isPublic"), true))
-    .take(1000);
-  const ratingAverage = publicReviews.length
-    ? publicReviews.reduce((total, review) => total + review.overallRating, 0) / publicReviews.length
-    : 0;
-  await ctx.db.patch(profile._id, {
-    ratingAverage: Math.round(ratingAverage * 10) / 10,
-    ratingCount: publicReviews.length,
-    updatedAt: Date.now(),
-  });
-}
-
-/**
- * Get public reviews for a freelancer (by their user ID in revieweeId).
- */
-export const getByFreelancer = query({
-  args: {
-    freelancerId: v.id("freelancerProfiles"),
-    limit: v.optional(v.number()),
-  },
-  handler: async (ctx, args) => {
-    const limit = args.limit ?? 10;
-
-    // Get the freelancer profile to find user_id
-    const profile = await ctx.db.get(args.freelancerId);
-    if (!profile) return [];
-
-    const reviews = await ctx.db
-      .query("marketplaceReviews")
-      .withIndex("by_reviewee", (q) => q.eq("revieweeId", profile.userId))
-      .filter((q) => q.eq(q.field("isPublic"), true))
-      .take(Math.min(limit * 2, 200));
-
-    // Sort by createdAt DESC and limit
-    const sorted = reviews
-      .sort((a, b) => b.createdAt - a.createdAt)
-      .slice(0, limit);
-
-    // Batch load unique reviewers and orders
-    const reviewerIds = [...new Set(sorted.map((r) => r.reviewerId).filter(Boolean))] as Id<"users">[];
-    const orderIds = [...new Set(sorted.map((r) => r.orderId).filter(Boolean))] as Id<"orders">[];
-
-    const [reviewers, orders] = await Promise.all([
-      Promise.all(reviewerIds.map((id) => ctx.db.get(id))),
-      Promise.all(orderIds.map((id) => ctx.db.get(id))),
-    ]);
-
-    const reviewerMap = new Map(reviewers.filter(Boolean).map((r) => [r!._id, r!]));
-    const orderMap = new Map(orders.filter(Boolean).map((o) => [o!._id, o!]));
-
-    const enriched = sorted.map((review) => {
-      const reviewer = review.reviewerId ? reviewerMap.get(review.reviewerId) : null;
-      const order = review.orderId ? orderMap.get(review.orderId) : null;
-
-      return {
-        ...review,
-        reviewerName: reviewer?.name ?? "Anonymous",
-        reviewerAvatar: (reviewer as any)?.image ?? null,
-        orderTitle: order?.title ?? null,
-      };
-    });
-
-    return enriched;
-  },
-});
-
-/**
- * Get all reviews received by a user (as reviewee) using their Convex user ID.
- * Used for the dashboard reviews page. Returns both public and pending reviews.
- */
-export const getByUserId = query({
-  args: {
-    userId: v.id("users"),
-    limit: v.optional(v.number()),
-  },
-  handler: async (ctx, args) => {
-    const caller = await requireAuthUser(ctx);
-    if (caller._id !== args.userId && caller.role !== "admin") {
-      throw new Error("Unauthorized.");
-    }
-
-    const limit = args.limit ?? 50;
-
-    const allReviews = await ctx.db
-      .query("marketplaceReviews")
-      .withIndex("by_reviewee", (q) => q.eq("revieweeId", args.userId))
-      .take(Math.min(limit * 2, 200));
-
-    const sorted = allReviews
-      .sort((a, b) => b.createdAt - a.createdAt)
-      .slice(0, limit);
-
-    // Batch load unique reviewers and orders
-    const reviewerIds = [...new Set(sorted.map((r) => r.reviewerId).filter(Boolean))] as Id<"users">[];
-    const orderIds = [...new Set(sorted.map((r) => r.orderId).filter(Boolean))] as Id<"orders">[];
-
-    const [reviewers, orders] = await Promise.all([
-      Promise.all(reviewerIds.map((id) => ctx.db.get(id))),
-      Promise.all(orderIds.map((id) => ctx.db.get(id))),
-    ]);
-
-    const reviewerMap = new Map(reviewers.filter(Boolean).map((r) => [r!._id, r!]));
-    const orderMap = new Map(orders.filter(Boolean).map((o) => [o!._id, o!]));
-
-    const enriched = sorted.map((review) => {
-      const reviewer = review.reviewerId ? reviewerMap.get(review.reviewerId) : null;
-      const order = review.orderId ? orderMap.get(review.orderId) : null;
-
-      return {
-        ...review,
-        reviewerName: reviewer?.name ?? "Anonymous",
-        reviewerAvatar: (reviewer as any)?.image ?? null,
-        orderTitle: order?.title ?? null,
-      };
-    });
-
-    return enriched;
-  },
-});
-
-/**
- * Get reviews for an order (both client and freelancer reviews).
- */
-export const getByOrder = query({
-  args: { orderId: v.id("orders") },
-  handler: async (ctx, args) => {
-    const user = await requireAuthUser(ctx);
-    const { order, freelancerUserId } = await getOrderReviewContext(ctx, args.orderId);
-
-    if (!canAccessOrderReviews(user, order, freelancerUserId)) {
-      throw new Error("Unauthorized.");
-    }
-
-    const reviews = await ctx.db
-      .query("marketplaceReviews")
-      .withIndex("by_order", (q) => q.eq("orderId", args.orderId))
-      .take(10);
-
-    if (user.role === "admin" || reviews.every((review) => review.isPublic !== false)) {
-      return reviews;
-    }
-
-    return reviews.filter(
-      (review) => review.isPublic !== false || review.reviewerId === user._id
-    );
-  },
-});
-
-/**
- * Submit a review for an order.
- * Uses blind review system: review becomes public only when both parties reviewed.
- */
-export const create = mutation({
-  args: {
-    orderId: v.id("orders"),
-    revieweeId: v.id("users"),
+import { v } from "convex/values";
+var R = v.union(v.string(), v.null()),
+  P = {
+    _id: v.id("marketplaceReviews"),
+    _creationTime: v.number(),
     reviewerRole: v.union(v.literal("client"), v.literal("freelancer")),
     overallRating: v.number(),
     communicationRating: v.optional(v.number()),
@@ -206,101 +18,238 @@ export const create = mutation({
     timelinessRating: v.optional(v.number()),
     valueRating: v.optional(v.number()),
     content: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number()
   },
-  returns: v.id("marketplaceReviews"),
-  handler: async (ctx, args) => {
-    const reviewer = await requireAuthUser(ctx);
-    const ratings = [
-      args.overallRating,
-      args.communicationRating,
-      args.qualityRating,
-      args.timelinessRating,
-      args.valueRating,
-    ].filter((rating): rating is number => rating !== undefined);
-    if (ratings.some((rating) => !Number.isInteger(rating) || rating < 1 || rating > 5)) {
-      throw new Error("Ratings must be whole numbers from 1 to 5.");
-    }
-    const content = args.content?.trim();
-    if (content && (content.length < 10 || content.length > 3000)) {
-      throw new Error("Written reviews must be between 10 and 3,000 characters.");
-    }
-
-    // Check if reviewer already submitted a review for this order
-    const existing = await ctx.db
-      .query("marketplaceReviews")
-      .withIndex("by_order", (q) => q.eq("orderId", args.orderId))
-      .filter((q) => q.eq(q.field("reviewerId"), reviewer._id))
-      .first();
-    if (existing) throw new Error("You already reviewed this order");
-
-    const { order, freelancerUserId } = await getOrderReviewContext(ctx, args.orderId);
-    if (order.status !== "completed") {
-      throw new Error("Reviews are only allowed for completed orders.");
-    }
-
-    const isClient = order.clientId === reviewer._id;
-    const isFreelancer = freelancerUserId === reviewer._id;
-    if (!isClient && !isFreelancer) {
-      throw new Error("Unauthorized.");
-    }
-
-    const expectedRevieweeId = isClient ? freelancerUserId : order.clientId;
-    if (!expectedRevieweeId || args.revieweeId !== expectedRevieweeId) {
-      throw new Error("Unauthorized.");
-    }
-
-    const expectedReviewerRole = isClient ? "client" : "freelancer";
-    if (args.reviewerRole !== expectedReviewerRole) {
-      throw new Error("Unauthorized.");
-    }
-
-    // Check if both parties have now reviewed (blind review system)
-    const otherReview = await ctx.db
-      .query("marketplaceReviews")
-      .withIndex("by_order", (q) => q.eq("orderId", args.orderId))
-      .filter((q) => q.neq(q.field("reviewerId"), reviewer._id))
-      .first();
-
-    const isPublic = !!otherReview;
-
-    const reviewId = await ctx.db.insert("marketplaceReviews", {
-      tenantId: order.tenantId,
-      orderId: args.orderId,
-      reviewerId: reviewer._id,
-      revieweeId: args.revieweeId,
-      reviewerRole: expectedReviewerRole,
-      overallRating: args.overallRating,
-      communicationRating: args.communicationRating,
-      qualityRating: args.qualityRating,
-      timelinessRating: args.timelinessRating,
-      valueRating: args.valueRating,
-      content,
-      isPublic,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-    });
-
-    // If both have now reviewed, make the other review public too
-    if (isPublic && otherReview) {
-      await ctx.db.patch(otherReview._id, { isPublic: true });
-      await Promise.all([
-        refreshFreelancerRating(ctx, args.revieweeId),
-        otherReview.revieweeId ? refreshFreelancerRating(ctx, otherReview.revieweeId) : Promise.resolve(),
-      ]);
-    }
-
-    // Send review notification to reviewee
-    const reviewee = await ctx.db.get(args.revieweeId);
-    if (reviewee?.email) {
-      await ctx.scheduler.runAfter(0, internal.lib.email.sendReviewReceived, {
-        userEmail: reviewee.email,
-        userName: reviewee.name || "User",
-        orderTitle: order.title,
-        rating: args.overallRating,
-        orderId: args.orderId,
+  T = v.object({
+    ...P,
+    reviewerName: v.string(),
+    reviewerAvatar: R,
+    orderTitle: R
+  }),
+  U = v.object({
+    ...P,
+    orderId: v.optional(v.id("orders")),
+    reviewerId: v.optional(v.id("users")),
+    revieweeId: v.optional(v.id("users")),
+    isPublic: v.optional(v.boolean()),
+    reviewerName: v.string(),
+    reviewerAvatar: R,
+    orderTitle: R,
+    orderType: R
+  }),
+  B = v.object({
+    ...P,
+    orderId: v.optional(v.id("orders")),
+    reviewerId: v.optional(v.id("users")),
+    revieweeId: v.optional(v.id("users")),
+    isPublic: v.optional(v.boolean())
+  });
+function toReviewFields(r) {
+  return {
+    _id: r._id,
+    _creationTime: r._creationTime,
+    reviewerRole: r.reviewerRole,
+    overallRating: r.overallRating,
+    communicationRating: r.communicationRating,
+    qualityRating: r.qualityRating,
+    timelinessRating: r.timelinessRating,
+    valueRating: r.valueRating,
+    content: r.content,
+    createdAt: r.createdAt,
+    updatedAt: r.updatedAt
+  };
+}
+function toOrderReview(r) {
+  return {
+    ...toReviewFields(r),
+    orderId: r.orderId,
+    reviewerId: r.reviewerId,
+    revieweeId: r.revieweeId,
+    isPublic: r.isPublic
+  };
+}
+async function getOrderReviewContext(ctx: QueryCtx | MutationCtx, orderId: Id<"orders">) {
+  let n = await ctx.db.get(orderId);
+  if (!n) throw new Error("Order not found");
+  let d = n.freelancerId ? await ctx.db.get(n.freelancerId) : null;
+  return {
+    order: n,
+    freelancerProfile: d,
+    freelancerUserId: d?.userId ?? null
+  };
+}
+function canAccessOrderReviews(user: Doc<"users">, order: Doc<"orders">, freelancerUserId: Id<"users"> | null) {
+  return user.role === "admin" || order.clientId === user._id || freelancerUserId === user._id;
+}
+async function getPublicProfileReviewPairs(r: QueryCtx | MutationCtx, i: Doc<"freelancerProfiles">, n: number) {
+  let [d, u] = await Promise.all([r.db.query("marketplaceReviews").withIndex("by_revieweeProfile_and_isPublic", t => t.eq("revieweeProfileId", i._id).eq("isPublic", !0)).order("desc").take(n), r.db.query("marketplaceReviews").withIndex("by_reviewee_and_isPublic", t => t.eq("revieweeId", i.userId).eq("isPublic", !0)).order("desc").take(n)]),
+    o = new Map([...d, ...u].filter(t => t.revieweeProfileId === i._id || t.revieweeProfileId === void 0).map(t => [t._id, t])),
+    s = [...new Set([...o.values()].map(t => t.orderId).filter(t => t !== void 0))],
+    v = await Promise.all(s.map(t => r.db.get(t))),
+    I = new Map(v.filter(t => t !== null).map(t => [t._id, t]));
+  return [...o.values()].filter(t => {
+    if (!t.orderId) return !1;
+    let l = I.get(t.orderId);
+    return l?.freelancerId === i._id && l.tenantId === i.tenantId && t.revieweeId === i.userId;
+  }).map(t => ({
+    review: t,
+    order: I.get(t.orderId)
+  }));
+}
+async function refreshFreelancerRating(ctx: MutationCtx, userId: Id<"freelancerProfiles">) {
+  let n = await ctx.db.get(userId);
+  if (!n) return;
+  let d = (await getPublicProfileReviewPairs(ctx, n, 1e3)).map(({
+      review: o
+    }) => o),
+    u = d.length ? d.reduce((o, s) => o + s.overallRating, 0) / d.length : 0;
+  await ctx.db.patch(n._id, {
+    ratingAverage: Math.round(u * 10) / 10,
+    ratingCount: d.length,
+    updatedAt: Date.now()
+  });
+}
+async function schedulePublishedReviewEmail(r, i, n, d) {
+  let u = await r.db.get(i);
+  u?.email && (await r.scheduler.runAfter(0, internal.lib.email.sendReviewReceived, {
+    userEmail: u.email,
+    userName: u.name || "User",
+    orderTitle: n.title,
+    rating: d,
+    orderId: n._id
+  }));
+}
+var getByFreelancer = query({
+    args: {
+      freelancerId: v.id("freelancerProfiles"),
+      limit: v.optional(v.number())
+    },
+    returns: v.array(T),
+    handler: async (ctx, args) => {
+      let n = Math.max(1, Math.min(args.limit ?? 10, 100)),
+        d = await ctx.db.get(args.freelancerId);
+      if (!isPublicOnlineFreelancerProfile(d)) return [];
+      let o = (await getPublicProfileReviewPairs(ctx, d, Math.min(Math.max(n * 4, 40), 400))).sort((l, f) => f.review.createdAt - l.review.createdAt).slice(0, n),
+        s = [...new Set(o.map(({
+          review: l
+        }) => l.reviewerId).filter(Boolean))],
+        v = await Promise.all(s.map(l => ctx.db.get(l))),
+        I = new Map(v.filter(Boolean).map(l => [l._id, l]));
+      return o.map(({
+        review: l,
+        order: f
+      }) => {
+        let c = l.reviewerId ? I.get(l.reviewerId) : null;
+        return {
+          ...toReviewFields(l),
+          reviewerName: c?.name ?? "Anonymous",
+          reviewerAvatar: c?.avatar ?? c?.image ?? null,
+          orderTitle: f.title
+        };
       });
     }
-
-    return reviewId;
-  },
-});
+  }),
+  getByUserId = query({
+    args: {
+      userId: v.id("users"),
+      limit: v.optional(v.number())
+    },
+    returns: v.array(U),
+    handler: async (ctx, args) => {
+      let n = await requireAuthUser(ctx);
+      if (n._id !== args.userId && n.role !== "admin") throw new Error("Unauthorized.");
+      let d = Math.max(1, Math.min(args.limit ?? 50, 100)),
+        u = ctx.db.query("marketplaceReviews").withIndex("by_reviewee", a => a.eq("revieweeId", args.userId)),
+        s = (n.role === "admin" ? await u.take(Math.min(d * 2, 200)) : await ctx.db.query("marketplaceReviews").withIndex("by_reviewee_and_isPublic", a => a.eq("revieweeId", args.userId).eq("isPublic", !0)).take(Math.min(d * 2, 200))).sort((a, p) => p.createdAt - a.createdAt).slice(0, d),
+        v = [...new Set(s.map(a => a.reviewerId).filter(Boolean))],
+        I = [...new Set(s.map(a => a.orderId).filter(Boolean))],
+        [t, l] = await Promise.all([Promise.all(v.map(a => ctx.db.get(a))), Promise.all(I.map(a => ctx.db.get(a)))]),
+        f = new Map(t.filter(Boolean).map(a => [a._id, a])),
+        c = new Map(l.filter(Boolean).map(a => [a._id, a]));
+      return s.map(a => {
+        let p = a.reviewerId ? f.get(a.reviewerId) : null,
+          w = a.orderId ? c.get(a.orderId) : null;
+        return {
+          ...toOrderReview(a),
+          reviewerName: p?.name ?? "Anonymous",
+          reviewerAvatar: p?.avatar ?? p?.image ?? null,
+          orderTitle: w?.title ?? null,
+          orderType: w?.orderType ?? null
+        };
+      });
+    }
+  }),
+  getByOrder = query({
+    args: {
+      orderId: v.id("orders")
+    },
+    returns: v.array(B),
+    handler: async (ctx, args) => {
+      let n = await requireAuthUser(ctx),
+        {
+          order: d,
+          freelancerUserId: u
+        } = await getOrderReviewContext(ctx, args.orderId);
+      if (!canAccessOrderReviews(n, d, u)) throw new Error("Unauthorized.");
+      let o = await ctx.db.query("marketplaceReviews").withIndex("by_order", s => s.eq("orderId", args.orderId)).take(10);
+      return n.role === "admin" || o.every(s => s.isPublic === !0) ? o.map(toOrderReview) : o.filter(s => s.isPublic === !0 || s.reviewerId === n._id).map(toOrderReview);
+    }
+  }),
+  create = mutation({
+    args: {
+      orderId: v.id("orders"),
+      revieweeId: v.id("users"),
+      reviewerRole: v.union(v.literal("client"), v.literal("freelancer")),
+      overallRating: v.number(),
+      communicationRating: v.optional(v.number()),
+      qualityRating: v.optional(v.number()),
+      timelinessRating: v.optional(v.number()),
+      valueRating: v.optional(v.number()),
+      content: v.optional(v.string())
+    },
+    returns: v.id("marketplaceReviews"),
+    handler: async (ctx, args) => {
+      let n = await requireAuthUser(ctx);
+      if ([args.overallRating, args.communicationRating, args.qualityRating, args.timelinessRating, args.valueRating].filter(w => w !== void 0).some(w => !Number.isInteger(w) || w < 1 || w > 5)) throw new Error("Ratings must be whole numbers from 1 to 5.");
+      let u = args.content?.trim();
+      if (u && (u.length < 10 || u.length > 3e3)) throw new Error("Written reviews must be between 10 and 3,000 characters.");
+      let {
+        order: o,
+        freelancerUserId: s
+      } = await getOrderReviewContext(ctx, args.orderId);
+      if (o.status !== "completed") throw new Error("Reviews are only allowed for completed orders.");
+      let v = o.clientId === n._id,
+        I = s === n._id;
+      if (!v && !I) throw new Error("Unauthorized.");
+      let t = v ? s : o.clientId;
+      if (!t || args.revieweeId !== t) throw new Error("Unauthorized.");
+      let l = v ? "client" : "freelancer";
+      if (args.reviewerRole !== l) throw new Error("Unauthorized.");
+      if (await ctx.db.query("marketplaceReviews").withIndex("by_order_and_reviewer", w => w.eq("orderId", args.orderId).eq("reviewerId", n._id)).first()) throw new Error("You already reviewed this order");
+      let c = await ctx.db.query("marketplaceReviews").withIndex("by_order_and_reviewer", w => w.eq("orderId", args.orderId).eq("reviewerId", t)).first(),
+        h = !!c,
+        a = v ? o.freelancerId : void 0,
+        p = await ctx.db.insert("marketplaceReviews", {
+          tenantId: o.tenantId,
+          orderId: args.orderId,
+          reviewerId: n._id,
+          revieweeId: args.revieweeId,
+          revieweeProfileId: a,
+          reviewerRole: l,
+          overallRating: args.overallRating,
+          communicationRating: args.communicationRating,
+          qualityRating: args.qualityRating,
+          timelinessRating: args.timelinessRating,
+          valueRating: args.valueRating,
+          content: u,
+          isPublic: h,
+          createdAt: Date.now(),
+          updatedAt: Date.now()
+        });
+      return h && c && (await ctx.db.patch(c._id, {
+        isPublic: !0
+      }), await Promise.all([a ? refreshFreelancerRating(ctx, a) : Promise.resolve(), c.revieweeProfileId ? refreshFreelancerRating(ctx, c.revieweeProfileId) : Promise.resolve()]), await schedulePublishedReviewEmail(ctx, args.revieweeId, o, args.overallRating), c.revieweeId && (await schedulePublishedReviewEmail(ctx, c.revieweeId, o, c.overallRating))), p;
+    }
+  });
+export { create, getByFreelancer, getByOrder, getByUserId };

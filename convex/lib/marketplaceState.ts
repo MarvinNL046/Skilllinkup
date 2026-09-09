@@ -47,6 +47,25 @@ export const marketplaceRoleWorlds = {
 export type MarketplaceRole = keyof typeof marketplaceRoleWorlds;
 export type MarketplaceWorld = "online" | "local" | "jobs";
 
+export const CURRENT_ONBOARDING_VERSION = 1;
+export const onboardingContextValidator = v.object({
+  role: marketplaceRoleValidator,
+  world: marketplaceWorldValidator,
+  version: v.number(),
+  completedAt: v.number(),
+  selections: v.optional(v.array(v.string())),
+});
+
+export function hasCompletedMarketplaceContext(
+  user: { onboardingContexts?: { role: MarketplaceRole; world: MarketplaceWorld; version: number }[] },
+  role: MarketplaceRole,
+  world: string,
+) {
+  return (user.onboardingContexts ?? []).some(
+    (context) => context.role === role && context.world === world && context.version === CURRENT_ONBOARDING_VERSION,
+  );
+}
+
 export function assertMarketplaceContext(
   role: MarketplaceRole,
   world: MarketplaceWorld

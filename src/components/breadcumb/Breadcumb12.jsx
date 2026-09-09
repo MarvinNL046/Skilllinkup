@@ -50,7 +50,7 @@ export default function Breadcumb12() {
         />
         <div className="container relative">
           <div className="max-w-3xl">
-            <h2 className="text-3xl md:text-5xl font-bold mb-3">{t("jobList")}</h2>
+            <h1 className="text-3xl md:text-5xl font-bold mb-3">{t("jobList")}</h1>
             <p className="text-base text-[var(--text-secondary)] mb-8">
               {t("jobListText")}
             </p>

@@ -1,11 +1,12 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import useConvexProfile from "@/hook/useConvexProfile";
+import { getActiveRole } from "@/lib/accountContext.mjs";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -71,8 +72,10 @@ export default function ProfileDetails() {
   const [selectedCoverFile, setSelectedCoverFile] = useState(null);
   const [coverPreviewUrl, setCoverPreviewUrl] = useState(null);
 
+  const initializedProfile = useRef(null);
   useEffect(() => {
-    if (profile) {
+    if (profile && initializedProfile.current !== profile._id) {
+      initializedProfile.current = profile._id;
       setDisplayName(profile.displayName || "");
       setTagline(profile.tagline || "");
       setBio(profile.bio || "");
@@ -83,14 +86,13 @@ export default function ProfileDetails() {
       setLinkedinUrl(profile.linkedinUrl || "");
       setTwitterUrl(profile.twitterUrl || "");
       setGithubUrl(profile.githubUrl || "");
-      if (profile.skills && profile.skills.length > 0) {
-        setSkillsInput(profile.skills.join(", "));
-      }
-      if (profile.languages && profile.languages.length > 0) {
-        setLanguagesInput(profile.languages.join(", "));
-      }
+      setSkillsInput((profile.skills || []).join(", "));
+      setLanguagesInput((profile.languages || []).join(", "));
     }
   }, [profile]);
+
+  useEffect(() => () => { if (previewUrl) URL.revokeObjectURL(previewUrl); }, [previewUrl]);
+  useEffect(() => () => { if (coverPreviewUrl) URL.revokeObjectURL(coverPreviewUrl); }, [coverPreviewUrl]);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -103,6 +105,8 @@ export default function ProfileDetails() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!profile?._id) return;
+    if (!displayName.trim()) { toast.error("Enter your display name."); return; }
+    if (hourlyRate && (!Number.isFinite(Number(hourlyRate)) || Number(hourlyRate) <= 0)) { toast.error("Enter a positive hourly rate."); return; }
     setSaving(true);
 
     const skillsArray = skillsInput
@@ -143,18 +147,18 @@ export default function ProfileDetails() {
 
       await updateProfile({
         profileId: profile._id,
-        displayName: displayName || undefined,
-        tagline: tagline || undefined,
-        bio: bio || undefined,
+        displayName: displayName.trim(),
+        tagline: tagline.trim(),
+        bio: bio.trim(),
         hourlyRate: hourlyRate ? Number(hourlyRate) : undefined,
-        skills: skillsArray.length > 0 ? skillsArray : undefined,
-        languages: languagesArray.length > 0 ? languagesArray : undefined,
-        locationCity: locationCity || undefined,
-        locationCountry: locationCountry || undefined,
-        websiteUrl: websiteUrl || undefined,
-        linkedinUrl: linkedinUrl || undefined,
-        twitterUrl: twitterUrl || undefined,
-        githubUrl: githubUrl || undefined,
+        skills: skillsArray,
+        languages: languagesArray,
+        locationCity: locationCity.trim(),
+        locationCountry: locationCountry.trim(),
+        websiteUrl: websiteUrl.trim(),
+        linkedinUrl: linkedinUrl.trim(),
+        twitterUrl: twitterUrl.trim(),
+        githubUrl: githubUrl.trim(),
       });
 
       toast.success(t("profileSaved"));
@@ -183,7 +187,8 @@ export default function ProfileDetails() {
     );
   }
 
-  const isFreelancer = convexUser?.userType === "freelancer";
+  const activeRole = getActiveRole(convexUser);
+  const isFreelancer = activeRole === "freelancer" || activeRole === "local_professional";
   if (!isFreelancer && profile === null) {
     return (
       <Card className="mb-6 overflow-hidden">
@@ -204,11 +209,7 @@ export default function ProfileDetails() {
               <Label>{t("accountType")}</Label>
               <Input
                 value={
-                  convexUser?.userType === "freelancer"
-                    ? "Freelancer"
-                    : convexUser?.userType === "client"
-                    ? "Client"
-                    : t("notSet")
+                  ({ freelancer: "Freelancer", local_professional: "Local professional", client: "Client", candidate: "Job seeker", company: "Company" })[activeRole] || t("notSet")
                 }
                 disabled
               />
@@ -310,7 +311,8 @@ export default function ProfileDetails() {
                   setPreviewUrl(null);
                 }}
                 className="text-[var(--text-tertiary)] hover:text-destructive"
-                aria-label="Remove avatar"
+                aria-label="Discard selected avatar"
+                disabled={!selectedFile}
               >
                 <Trash2 className="h-4 w-4" />
               </button>

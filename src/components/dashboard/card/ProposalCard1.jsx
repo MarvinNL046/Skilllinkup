@@ -47,7 +47,7 @@ export default function ProposalCard1({ data, bid }) {
       <td data-label={t("columnProject")} className="align-top">
         <h5 className="text-base font-semibold mb-2">
           {projectSlug ? (
-            <Link href={`/en/projects/${projectSlug}`} className="hover:text-primary">
+            <Link href={`/online/project/${projectSlug}`} className="hover:text-primary">
               {title}
             </Link>
           ) : (

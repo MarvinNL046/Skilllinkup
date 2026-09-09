@@ -128,6 +128,7 @@ export default function OnboardingExperience() {
 
   function validate() {
     if (!role) return "Choose how you want to use Skilllinkup.";
+    if (role === "client" && selections.length === 0) return "Choose at least one area you need help with.";
     if (role === "freelancer" && selections.length === 0) return "Choose at least one online skill.";
     if (role === "local_professional" && selections.length === 0) return "Choose at least one local trade.";
     if (role === "local_professional" && city.trim().length < 2) return "Enter the city or region you serve.";

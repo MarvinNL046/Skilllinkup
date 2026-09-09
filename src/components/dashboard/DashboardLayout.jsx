@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import useConvexUser from "@/hook/useConvexUser";
+import { hasCompletedActiveContext } from "@/lib/accountContext.mjs";
 import DashboardHeader from "./header/DashboardHeader";
 import DashboardSidebar from "./sidebar/DashboardSidebar";
 import dashboardSidebarStore, { useHydratedSidebarCollapsed } from "@/store/dashboardSidebarStore";
@@ -18,7 +19,7 @@ import dashboardSidebarStore, { useHydratedSidebarCollapsed } from "@/store/dash
  *   "medium" — 1100px (profile, rewards, feedback)
  *   "form"   — 880px  (create-projects, add-services, settings forms)
  *
- * Auth gate: unauthenticated → /login; missing userType / preferredWorld
+ * Auth gate: unauthenticated → /login; incomplete active account context
  * → /onboarding.
  */
 export default function DashboardLayout({ children, maxWidth = "full" }) {
@@ -35,7 +36,7 @@ export default function DashboardLayout({ children, maxWidth = "full" }) {
     }
     if (
       convexUser &&
-      (!convexUser.userType || !convexUser.preferredWorld) &&
+      !hasCompletedActiveContext(convexUser) &&
       pathname !== "/onboarding"
     ) {
       router.replace("/onboarding");

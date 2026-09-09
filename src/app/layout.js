@@ -1,4 +1,4 @@
-import { DM_Sans, Fraunces, Inter } from "next/font/google";
+import { DM_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import "react-tooltip/dist/react-tooltip.css";
 import "rc-slider/assets/index.css";
@@ -13,20 +13,11 @@ const dmSans = DM_Sans({
   variable: "--font-dm-sans",
 });
 
-// Design-system typography — "Poppins × Inter Modern + Space Grotesk".
-// Poppins: primary sans (fris, tech/creative, rounded geometric personality).
-// Inter: UI/body companion (optimised for small text and dense layouts).
-// Space Grotesk: display + numerics (super-geometric, energetic headlines).
+// Shared design-system font for headings, body text and controls.
 const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-inter",
-  display: "swap",
-});
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-fraunces",
   display: "swap",
 });
 
@@ -79,7 +70,7 @@ export default async function RootLayout({ children }) {
     <html
       lang={locale}
       data-theme="light"
-      className={`${inter.variable} ${fraunces.variable} ${dmSans.variable}`}
+      className={`${inter.variable} ${dmSans.variable}`}
     >
       <head />
       <body className={inter.className} suppressHydrationWarning>

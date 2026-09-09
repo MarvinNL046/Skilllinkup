@@ -1,3 +1,4 @@
+import { seoPages } from '@/content/seo';
 import { fetchQuery } from "convex/nextjs";
 import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
@@ -29,12 +30,14 @@ export async function generateMetadata() {
 export default async function ResourcesPage() {
   const t = await getTranslations("resources");
 
-  const resources = await fetchQuery(api.resources.list, {
+  const cmsResources = await fetchQuery(api.resources.list, {
     locale: "en",
     status: "published",
     limit: 100,
   }).catch(() => []);
 
+  const guides = seoPages.filter(p => p.type === "guide" && p.locale !== "nl").map(p => ({ _id: p.path, path: p.path, slug: p.slug, type: p.slug.includes("vs-") ? "comparison" : p.slug.includes("pricing") ? "pricing" : "guide", metaTitle: p.title, metaDescription: p.description }));
+  const resources = [...guides, ...cmsResources.filter(r => !guides.some(g => g.slug === r.slug))];
   const byType = {
     comparison: resources.filter((r) => r.type === "comparison"),
     pricing: resources.filter((r) => r.type === "pricing"),
@@ -70,6 +73,7 @@ export default async function ResourcesPage() {
         {/* Resource grid */}
         <section className="pt-14 pb-20">
           <div className="container">
+            <p className="mb-8"><Link href="/nl/resources">Nederlandstalige gidsen</Link></p>
             {Object.entries(byType).map(([type, items]) =>
               items.length > 0 ? (
                 <div key={type} className="mb-14">
@@ -79,7 +83,7 @@ export default async function ResourcesPage() {
                   <div className="row g-4">
                     {items.map((resource) => (
                       <div key={resource._id} className="col-md-6 col-lg-4">
-                        <Link href={`/resources/${resource.slug}`} className="no-underline">
+                        <Link href={resource.path || `/resources/${resource.slug}`} className="no-underline">
                           <div className="bdr1 bdrs12 p-8 h-full hover-box-shadow" style={{ transition: "box-shadow 0.2s" }}>
                             <span
                               className="badge px-3 py-2 bdrs8 text-xs mb-4 inline-block text-white"

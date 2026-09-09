@@ -1,3 +1,4 @@
+import { seoPages } from '@/content/seo';
 import { fetchQuery } from "convex/nextjs";
 import { api } from "../../convex/_generated/api";
 import { MetadataRoute } from "next";
@@ -8,6 +9,10 @@ export const revalidate = 3600; // refresh every hour
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
+    ...seoPages.filter(p => p.path !== "/services/webdesign").map(p => ({ url: `${BASE_URL}${p.path}`, changeFrequency: "monthly" as const, priority: 0.8 })),
+    { url: `${BASE_URL}/en/tools/invoice-generator`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${BASE_URL}/nl/resources`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${BASE_URL}/affiliate-disclosure`, changeFrequency: "yearly", priority: 0.3 },
     { url: BASE_URL, changeFrequency: "daily", priority: 1 },
     { url: `${BASE_URL}/online`, changeFrequency: "daily", priority: 0.9 },
     { url: `${BASE_URL}/services`, changeFrequency: "daily", priority: 0.9 },
@@ -94,7 +99,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     const freelancerRoutes: MetadataRoute.Sitemap = (freelancers ?? []).map(
       (f: any) => ({
-        url: `${BASE_URL}/online/freelancer/${f._id}`,
+        url: `${BASE_URL}/online/freelancer/${f.slug || f._id}`,
         lastModified: new Date(f.updatedAt || f.createdAt),
         changeFrequency: "weekly" as const,
         priority: 0.8,
@@ -124,7 +129,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }),
     );
 
-    const resourceRoutes: MetadataRoute.Sitemap = (resources ?? []).map(
+    const resourceRoutes: MetadataRoute.Sitemap = (resources ?? []).filter((r: any) => !seoPages.some(p => p.path === `/resources/${r.slug}`)).map(
       (r: any) => ({
         url: `${BASE_URL}/resources/${r.slug}`,
         lastModified: new Date(r.updatedAt),
@@ -133,7 +138,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }),
     );
 
-    const platformRoutes: MetadataRoute.Sitemap = (platforms ?? []).map(
+    const platformRoutes: MetadataRoute.Sitemap = (platforms ?? []).filter((p: any) => !seoPages.some(page => page.path === `/platforms/${p.slug}`)).map(
       (p: any) => ({
         url: `${BASE_URL}/platforms/${p.slug}`,
         lastModified: new Date(p.updatedAt || p.createdAt),
@@ -142,7 +147,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }),
     );
 
-    const postRoutes: MetadataRoute.Sitemap = (posts ?? []).map((p: any) => ({
+    const postRoutes: MetadataRoute.Sitemap = (posts ?? []).filter((p: any) => p.slug !== "ai-tools-for-freelancers").map((p: any) => ({
       url: `${BASE_URL}/post/${p.slug}`,
       lastModified: new Date(p.updatedAt || p.publishedAt || p.createdAt),
       changeFrequency: "weekly" as const,

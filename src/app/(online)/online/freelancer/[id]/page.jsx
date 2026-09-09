@@ -24,6 +24,9 @@ export async function generateMetadata({ params }) {
       const title = profile.tagline || "";
       return {
         title: title ? `${name} — ${title}` : name,
+        alternates: {
+          canonical: `https://skilllinkup.com/online/freelancer/${profile.slug || profile._id}`,
+        },
         description: profile.bio
           ? profile.bio.slice(0, 155)
           : `Hire ${name} on SkillLinkup. View portfolio, reviews, and services.`,

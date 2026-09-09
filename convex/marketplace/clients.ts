@@ -1,78 +1,44 @@
-import { v } from "convex/values";
-import { query } from "../_generated/server";
+// Reconciled with the existing development deployment (2026-09-07).
 import { toPublicClient } from "../lib/publicData";
-
-/**
- * List users where userType === "client".
- * Returns enriched public-safe data for the employees/clients listing page.
- */
-export const list = query({
-  args: {
-    locale: v.optional(v.string()),
-    limit: v.optional(v.number()),
-  },
-  handler: async (ctx, args) => {
-    const limit = args.limit ?? 20;
-
-    const clients = await ctx.db
-      .query("users")
-      .withIndex("by_userType", (q) => q.eq("userType", "client"))
-      .take(Math.min(Math.max(limit, 1), 100));
-
-    return clients.map((client) => toPublicClient(client));
-  },
-  returns: v.array(
-    v.union(
-      v.null(),
-      v.object({
-        _id: v.id("users"),
-        name: v.string(),
-        avatar: v.union(v.string(), v.null()),
-        bio: v.union(v.string(), v.null()),
-        createdAt: v.number(),
-      })
-    )
-  ),
-});
-
-/**
- * Count marketplace stats for the about page.
- * Returns real counts from the database.
- */
-export const getMarketplaceStats = query({
-  args: {},
-  returns: v.object({
-    freelancers: v.number(),
-    completedProjects: v.number(),
-    clients: v.number(),
-    countries: v.number(),
+import { query } from "../_generated/server";
+import { hasCompletedMarketplaceContext } from "../lib/marketplaceState";
+import { v } from "convex/values";
+var list = query({
+    args: {
+      locale: v.optional(v.string()),
+      limit: v.optional(v.number())
+    },
+    handler: async (ctx, args) => {
+      let o = args.limit ?? 20;
+      return (await ctx.db.query("users").take(1e4)).filter(t => (t.accountRoles ?? []).includes("client") && (hasCompletedMarketplaceContext(t, "client", "online") || hasCompletedMarketplaceContext(t, "client", "local"))).slice(0, Math.min(Math.max(o, 1), 100)).map(t => toPublicClient(t));
+    },
+    returns: v.array(v.union(v.null(), v.object({
+      _id: v.id("users"),
+      name: v.string(),
+      avatar: v.union(v.string(), v.null()),
+      bio: v.union(v.string(), v.null()),
+      createdAt: v.number()
+    })))
   }),
-  handler: async (ctx) => {
-    const [freelancerProfiles, orders, users] = await Promise.all([
-      ctx.db
-        .query("freelancerProfiles")
-        .withIndex("by_status", (q) => q.eq("status", "active"))
-        .take(10000),
-      ctx.db
-        .query("orders")
-        .withIndex("by_status", (q) => q.eq("status", "completed"))
-        .take(10000),
-      ctx.db
-        .query("users")
-        .withIndex("by_userType", (q) => q.eq("userType", "client"))
-        .take(10000),
-    ]);
-
-    const clientCount = users.length;
-    const freelancerCount = freelancerProfiles.length;
-    const completedOrders = orders.length;
-
-    return {
-      freelancers: freelancerCount,
-      completedProjects: completedOrders,
-      clients: clientCount,
-      // Static aspirational number for countries until geo data is tracked
-      countries: 5,
-    };
-  },
-});
+  getMarketplaceStats = query({
+    args: {},
+    returns: v.object({
+      freelancers: v.number(),
+      completedProjects: v.number(),
+      clients: v.number(),
+      countries: v.number()
+    }),
+    handler: async ctx => {
+      let [s, o, a] = await Promise.all([ctx.db.query("freelancerProfiles").withIndex("by_status", n => n.eq("status", "active")).take(1e4), ctx.db.query("orders").withIndex("by_status", n => n.eq("status", "completed")).take(1e4), ctx.db.query("users").take(1e4)]),
+        u = a.filter(n => (n.accountRoles ?? []).includes("client") && (hasCompletedMarketplaceContext(n, "client", "online") || hasCompletedMarketplaceContext(n, "client", "local"))).length,
+        t = s.length,
+        d = o.length;
+      return {
+        freelancers: t,
+        completedProjects: d,
+        clients: u,
+        countries: 5
+      };
+    }
+  });
+export { getMarketplaceStats, list };

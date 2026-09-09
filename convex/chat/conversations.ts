@@ -1,48 +1,6 @@
-import { v } from "convex/values";
-import type { Infer } from "convex/values";
-import { mutation, query } from "../_generated/server";
 import type { Doc, Id } from "../_generated/dataModel";
 import type { MutationCtx } from "../_generated/server";
-import {
-  requireAuthUser,
-  requireMarketplaceContext,
-  requireOwner,
-} from "../lib/authHelpers";
-import { conversationContextTypeValidator } from "../lib/marketplaceState";
-
-const conversationContextValidator = v.union(
-  v.object({
-    type: v.literal("profile_inquiry"),
-    freelancerProfileId: v.id("freelancerProfiles"),
-  }),
-  v.object({
-    type: v.literal("gig_inquiry"),
-    gigId: v.id("gigs"),
-  }),
-  v.object({
-    type: v.literal("project_bid"),
-    bidId: v.id("bids"),
-  }),
-  v.object({
-    type: v.literal("order"),
-    orderId: v.id("orders"),
-  }),
-  v.object({
-    type: v.literal("local_quote"),
-    quoteId: v.id("quotes"),
-  }),
-  v.object({
-    type: v.literal("local_appointment"),
-    appointmentId: v.id("localAppointments"),
-  }),
-  v.object({
-    type: v.literal("job_application"),
-    applicationId: v.id("jobApplications"),
-  }),
-);
-
-type ConversationContextInput = Infer<typeof conversationContextValidator>;
-
+type ConversationContextInput = Infer<typeof _>;
 type ResolvedContext = {
   type: Infer<typeof conversationContextTypeValidator>;
   title: string;
@@ -57,471 +15,292 @@ type ResolvedContext = {
   localAppointmentId?: Id<"localAppointments">;
   jobApplicationId?: Id<"jobApplications">;
 };
-
-function canonicalParticipants(
-  first: Id<"users">,
-  second: Id<"users">,
-): [Id<"users">, Id<"users">] {
+// Reconciled with the existing development deployment (2026-09-07).
+import { query } from "../_generated/server";
+import { mutation } from "../_generated/server";
+import { requireAuthUser } from "../lib/authHelpers";
+import { requireOwner } from "../lib/authHelpers";
+import { requireMarketplaceContext } from "../lib/authHelpers";
+import type { Infer } from "convex/values";
+import { conversationContextTypeValidator } from "../lib/marketplaceState";
+import { v } from "convex/values";
+var _ = v.union(v.object({
+  type: v.literal("profile_inquiry"),
+  freelancerProfileId: v.id("freelancerProfiles")
+}), v.object({
+  type: v.literal("gig_inquiry"),
+  gigId: v.id("gigs")
+}), v.object({
+  type: v.literal("project_bid"),
+  bidId: v.id("bids")
+}), v.object({
+  type: v.literal("order"),
+  orderId: v.id("orders")
+}), v.object({
+  type: v.literal("local_quote"),
+  quoteId: v.id("quotes")
+}), v.object({
+  type: v.literal("local_appointment"),
+  appointmentId: v.id("localAppointments")
+}), v.object({
+  type: v.literal("job_application"),
+  applicationId: v.id("jobApplications")
+}));
+function canonicalParticipants(first: Id<"users">, second: Id<"users">): [Id<"users">, Id<"users">] {
   return first < second ? [first, second] : [second, first];
 }
-
 function canStartProfileInquiry(user: Doc<"users">) {
-  const roles = user.accountRoles ?? [];
-  return (
-    roles.includes("client") ||
-    user.userType === "client" ||
-    user.role === "admin"
-  );
+  return (user.accountRoles ?? []).includes("client");
 }
-
-async function resolveContext(
-  ctx: MutationCtx,
-  caller: Doc<"users">,
-  context: ConversationContextInput,
-): Promise<ResolvedContext> {
+async function resolveContext(ctx: MutationCtx, caller: Doc<"users">, context: ConversationContextInput): Promise<ResolvedContext> {
   if (context.type === "profile_inquiry") {
-    const profile = await ctx.db.get(context.freelancerProfileId);
-    if (!profile || profile.status !== "active") {
-      throw new Error("This professional is not available.");
-    }
-    const world =
-      profile.providerRole === "local_professional" ||
-      (!profile.providerRole && profile.workType === "local")
-        ? "local"
-        : "online";
-    requireMarketplaceContext(
-      caller,
-      "client",
-      world,
-      "contacting a professional",
-    );
-    if (profile.userId === caller._id) {
-      throw new Error("You cannot start a conversation with yourself.");
-    }
-    if (profile.contactPermission === "nobody") {
-      throw new Error("This professional is not accepting new enquiries.");
-    }
-    if (
-      profile.contactPermission === "clients_only" &&
-      !canStartProfileInquiry(caller)
-    ) {
-      throw new Error("Only client accounts can contact this professional.");
-    }
+    let t = await ctx.db.get(context.freelancerProfileId);
+    if (!t || t.status !== "active") throw new Error("This professional is not available.");
+    let r: "local" | "online" = t.providerRole === "local_professional" || !t.providerRole && t.workType === "local" ? "local" : "online";
+    if (requireMarketplaceContext(caller, "client", r, "contacting a professional"), t.userId === caller._id) throw new Error("You cannot start a conversation with yourself.");
+    if (t.contactPermission === "nobody") throw new Error("This professional is not accepting new enquiries.");
+    if (t.contactPermission === "clients_only" && !canStartProfileInquiry(caller)) throw new Error("Only client accounts can contact this professional.");
     return {
       type: context.type,
-      title: `Profile enquiry · ${profile.displayName}`,
-      href: `/online/freelancer/${profile.slug ?? profile._id}`,
-      otherUserId: profile.userId,
-      freelancerProfileId: profile._id,
+      title: `Profile enquiry \xB7 ${t.displayName}`,
+      href: `/online/freelancer/${t.slug ?? t._id}`,
+      otherUserId: t.userId,
+      freelancerProfileId: t._id
     };
   }
-
   if (context.type === "gig_inquiry") {
-    requireMarketplaceContext(
-      caller,
-      "client",
-      "online",
-      "contacting a professional",
-    );
-    const gig = await ctx.db.get(context.gigId);
-    if (!gig || gig.status !== "active") {
-      throw new Error("This service is not available.");
-    }
-    const profile = await ctx.db.get(gig.freelancerId);
-    if (!profile || profile.status !== "active") {
-      throw new Error("This professional is not available.");
-    }
-    if (profile.userId === caller._id) {
-      throw new Error("You cannot enquire about your own service.");
-    }
+    requireMarketplaceContext(caller, "client", "online", "contacting a professional");
+    let t = await ctx.db.get(context.gigId);
+    if (!t || t.status !== "active") throw new Error("This service is not available.");
+    let r = await ctx.db.get(t.freelancerId);
+    if (!r || r.status !== "active") throw new Error("This professional is not available.");
+    if (r.userId === caller._id) throw new Error("You cannot enquire about your own service.");
     return {
       type: context.type,
-      title: gig.title,
-      href: `/online/service/${gig._id}`,
-      otherUserId: profile.userId,
-      freelancerProfileId: profile._id,
-      gigId: gig._id,
+      title: t.title,
+      href: `/online/service/${t._id}`,
+      otherUserId: r.userId,
+      freelancerProfileId: r._id,
+      gigId: t._id
     };
   }
-
   if (context.type === "project_bid") {
-    const bid = await ctx.db.get(context.bidId);
-    if (!bid || !["pending", "accepted"].includes(bid.status)) {
-      throw new Error("This proposal is not available for messaging.");
-    }
-    const [project, profile] = await Promise.all([
-      ctx.db.get(bid.projectId),
-      ctx.db.get(bid.freelancerId),
-    ]);
-    if (!project || !profile) throw new Error("Proposal context not found.");
-    const isClient = caller._id === project.clientId;
-    const isFreelancer = caller._id === profile.userId;
-    if (!isClient && !isFreelancer) throw new Error("Unauthorized.");
+    let t = await ctx.db.get(context.bidId);
+    if (!t || !["pending", "accepted"].includes(t.status)) throw new Error("This proposal is not available for messaging.");
+    let [r, p] = await Promise.all([ctx.db.get(t.projectId), ctx.db.get(t.freelancerId)]);
+    if (!r || !p) throw new Error("Proposal context not found.");
+    let l = caller._id === r.clientId,
+      I = caller._id === p.userId;
+    if (!l && !I) throw new Error("Unauthorized.");
     return {
       type: context.type,
-      title: project.title,
-      href: `/online/project/${project._id}`,
-      otherUserId: isClient ? profile.userId : project.clientId,
-      projectId: project._id,
-      bidId: bid._id,
-      freelancerProfileId: profile._id,
+      title: r.title,
+      href: `/online/project/${r._id}`,
+      otherUserId: l ? p.userId : r.clientId,
+      projectId: r._id,
+      bidId: t._id,
+      freelancerProfileId: p._id
     };
   }
-
   if (context.type === "order") {
-    const order = await ctx.db.get(context.orderId);
-    if (!order || !order.freelancerId) throw new Error("Order not found.");
-    const profile = await ctx.db.get(order.freelancerId);
-    if (!profile) throw new Error("Order professional not found.");
-    const isClient = caller._id === order.clientId;
-    const isFreelancer = caller._id === profile.userId;
-    if (!isClient && !isFreelancer) throw new Error("Unauthorized.");
+    let t = await ctx.db.get(context.orderId);
+    if (!t || !t.freelancerId) throw new Error("Order not found.");
+    let r = await ctx.db.get(t.freelancerId);
+    if (!r) throw new Error("Order professional not found.");
+    let p = caller._id === t.clientId,
+      l = caller._id === r.userId;
+    if (!p && !l) throw new Error("Unauthorized.");
     return {
       type: context.type,
-      title: order.title,
-      href: `/orders/${order._id}`,
-      otherUserId: isClient ? profile.userId : order.clientId,
-      orderId: order._id,
-      projectId: order.projectId,
-      freelancerProfileId: profile._id,
-      gigId: order.gigId,
-      quoteId: order.quoteId,
+      title: t.title,
+      href: `/orders/${t._id}`,
+      otherUserId: p ? r.userId : t.clientId,
+      orderId: t._id,
+      projectId: t.projectId,
+      freelancerProfileId: r._id,
+      gigId: t.gigId,
+      quoteId: t.quoteId
     };
   }
-
   if (context.type === "local_quote") {
-    const quote = await ctx.db.get(context.quoteId);
-    if (!quote || !["pending", "accepted"].includes(quote.status)) {
-      throw new Error("This quote is not available for messaging.");
-    }
-    const [request, profile] = await Promise.all([
-      ctx.db.get(quote.quoteRequestId),
-      ctx.db.get(quote.freelancerId),
-    ]);
-    if (!request || !profile) throw new Error("Quote context not found.");
-    const isClient = caller._id === request.clientId;
-    const isProfessional = caller._id === profile.userId;
-    if (!isClient && !isProfessional) throw new Error("Unauthorized.");
+    let t = await ctx.db.get(context.quoteId);
+    if (!t || !["pending", "accepted"].includes(t.status)) throw new Error("This quote is not available for messaging.");
+    let [r, p] = await Promise.all([ctx.db.get(t.quoteRequestId), ctx.db.get(t.freelancerId)]);
+    if (!r || !p) throw new Error("Quote context not found.");
+    let l = caller._id === r.clientId,
+      I = caller._id === p.userId;
+    if (!l && !I) throw new Error("Unauthorized.");
     return {
       type: context.type,
-      title: request.title,
-      href: `/local/quote-request/${request._id}`,
-      otherUserId: isClient ? profile.userId : request.clientId,
-      quoteId: quote._id,
-      freelancerProfileId: profile._id,
+      title: r.title,
+      href: `/local/quote-request/${r._id}`,
+      otherUserId: l ? p.userId : r.clientId,
+      quoteId: t._id,
+      freelancerProfileId: p._id
     };
   }
-
   if (context.type === "local_appointment") {
-    const appointment = await ctx.db.get(context.appointmentId);
-    if (!appointment) throw new Error("Appointment not found.");
-    const profile = await ctx.db.get(appointment.professionalId);
-    if (!profile) throw new Error("Appointment professional not found.");
-    const isClient = caller._id === appointment.clientId;
-    const isProfessional = caller._id === profile.userId;
-    if (!isClient && !isProfessional) throw new Error("Unauthorized.");
-    const order = await ctx.db.get(appointment.orderId);
+    let t = await ctx.db.get(context.appointmentId);
+    if (!t) throw new Error("Appointment not found.");
+    let r = await ctx.db.get(t.professionalId);
+    if (!r) throw new Error("Appointment professional not found.");
+    let p = caller._id === t.clientId,
+      l = caller._id === r.userId;
+    if (!p && !l) throw new Error("Unauthorized.");
+    let I = await ctx.db.get(t.orderId);
     return {
       type: context.type,
-      title: order?.title ?? "Local appointment",
-      href: `/orders/${appointment.orderId}`,
-      otherUserId: isClient ? profile.userId : appointment.clientId,
-      orderId: appointment.orderId,
-      quoteId: appointment.quoteId,
-      freelancerProfileId: profile._id,
-      localAppointmentId: appointment._id,
+      title: I?.title ?? "Local appointment",
+      href: `/orders/${t.orderId}`,
+      otherUserId: p ? r.userId : t.clientId,
+      orderId: t.orderId,
+      quoteId: t.quoteId,
+      freelancerProfileId: r._id,
+      localAppointmentId: t._id
     };
   }
-
-  const application = await ctx.db.get(context.applicationId);
-  if (!application) throw new Error("Application not found.");
-  if (!["screening", "interview", "offer", "hired"].includes(application.status)) {
-    throw new Error("Messaging opens when the employer starts screening.");
-  }
-  const job = await ctx.db.get(application.jobId);
-  if (!job) throw new Error("Job not found.");
-  const isCandidate = caller._id === application.candidateId;
-  const isEmployer = caller._id === job.clientId;
-  if (!isCandidate && !isEmployer) throw new Error("Unauthorized.");
+  let n = await ctx.db.get(context.applicationId);
+  if (!n) throw new Error("Application not found.");
+  if (!["screening", "interview", "offer", "hired"].includes(n.status)) throw new Error("Messaging opens when the employer starts screening.");
+  let a = await ctx.db.get(n.jobId);
+  if (!a) throw new Error("Job not found.");
+  let s = caller._id === n.candidateId,
+    c = caller._id === a.clientId;
+  if (!s && !c) throw new Error("Unauthorized.");
   return {
     type: context.type,
-    title: job.title,
-    href: `/jobs/job/${job._id}`,
-    otherUserId: isCandidate ? job.clientId : application.candidateId,
-    jobApplicationId: application._id,
+    title: a.title,
+    href: `/jobs/job/${a._id}`,
+    otherUserId: s ? a.clientId : n.candidateId,
+    jobApplicationId: n._id
   };
 }
-
-async function findExisting(
-  ctx: MutationCtx,
-  resolved: ResolvedContext,
-  participant1: Id<"users">,
-  participant2: Id<"users">,
-) {
-  if (resolved.orderId) {
-    return await ctx.db
-      .query("conversations")
-      .withIndex("by_order", (q) => q.eq("orderId", resolved.orderId))
-      .first();
-  }
-  if (resolved.bidId) {
-    return await ctx.db
-      .query("conversations")
-      .withIndex("by_bid", (q) => q.eq("bidId", resolved.bidId))
-      .first();
-  }
-  if (resolved.quoteId) {
-    return await ctx.db
-      .query("conversations")
-      .withIndex("by_quote", (q) => q.eq("quoteId", resolved.quoteId))
-      .first();
-  }
-  if (resolved.localAppointmentId) {
-    return await ctx.db
-      .query("conversations")
-      .withIndex("by_localAppointment", (q) =>
-        q.eq("localAppointmentId", resolved.localAppointmentId),
-      )
-      .first();
-  }
-  if (resolved.jobApplicationId) {
-    return await ctx.db
-      .query("conversations")
-      .withIndex("by_jobApplication", (q) =>
-        q.eq("jobApplicationId", resolved.jobApplicationId),
-      )
-      .first();
-  }
-  if (resolved.gigId) {
-    return await ctx.db
-      .query("conversations")
-      .withIndex("by_gig_and_participants", (q) =>
-        q
-          .eq("gigId", resolved.gigId)
-          .eq("participant1", participant1)
-          .eq("participant2", participant2),
-      )
-      .first();
-  }
-  if (resolved.freelancerProfileId) {
-    return await ctx.db
-      .query("conversations")
-      .withIndex("by_freelancerProfile_and_participants", (q) =>
-        q
-          .eq("freelancerProfileId", resolved.freelancerProfileId)
-          .eq("participant1", participant1)
-          .eq("participant2", participant2),
-      )
-      .first();
-  }
-  return null;
+async function findExisting(ctx: MutationCtx, resolved: ResolvedContext, participant1: Id<"users">, participant2: Id<"users">) {
+  return resolved.orderId ? await ctx.db.query("conversations").withIndex("by_order", a => a.eq("orderId", resolved.orderId)).first() : resolved.bidId ? await ctx.db.query("conversations").withIndex("by_bid", a => a.eq("bidId", resolved.bidId)).first() : resolved.quoteId ? await ctx.db.query("conversations").withIndex("by_quote", a => a.eq("quoteId", resolved.quoteId)).first() : resolved.localAppointmentId ? await ctx.db.query("conversations").withIndex("by_localAppointment", a => a.eq("localAppointmentId", resolved.localAppointmentId)).first() : resolved.jobApplicationId ? await ctx.db.query("conversations").withIndex("by_jobApplication", a => a.eq("jobApplicationId", resolved.jobApplicationId)).first() : resolved.gigId ? await ctx.db.query("conversations").withIndex("by_gig_and_participants", a => a.eq("gigId", resolved.gigId).eq("participant1", participant1).eq("participant2", participant2)).first() : resolved.freelancerProfileId ? await ctx.db.query("conversations").withIndex("by_freelancerProfile_and_participants", a => a.eq("freelancerProfileId", resolved.freelancerProfileId).eq("participant1", participant1).eq("participant2", participant2)).first() : null;
 }
-
 function contextSummary(conversation: Doc<"conversations">) {
-  const type =
-    conversation.contextType ??
-    (conversation.orderId
-      ? "order"
-      : conversation.projectId
-        ? "project_bid"
-        : null);
-  const href =
-    conversation.contextHref ??
-    (conversation.orderId
-      ? `/orders/${conversation.orderId}`
-      : conversation.projectId
-        ? `/online/project/${conversation.projectId}`
-        : null);
+  let i = conversation.contextType ?? (conversation.orderId ? "order" : conversation.projectId ? "project_bid" : null),
+    o = conversation.contextHref ?? (conversation.orderId ? `/orders/${conversation.orderId}` : conversation.projectId ? `/online/project/${conversation.projectId}` : null);
   return {
-    type,
+    type: i,
     title: conversation.contextTitle ?? "Skilllinkup conversation",
-    href,
+    href: o
   };
 }
-
-export const list = query({
-  args: { userId: v.id("users") },
-  returns: v.array(v.any()),
-  handler: async (ctx, args) => {
-    await requireOwner(ctx, args.userId);
-    const [asParticipant1, asParticipant2] = await Promise.all([
-      ctx.db
-        .query("conversations")
-        .withIndex("by_participant1", (q) => q.eq("participant1", args.userId))
-        .order("desc")
-        .take(60),
-      ctx.db
-        .query("conversations")
-        .withIndex("by_participant2", (q) => q.eq("participant2", args.userId))
-        .order("desc")
-        .take(60),
-    ]);
-    const sorted = [...asParticipant1, ...asParticipant2]
-      .sort((a, b) => (b.lastMessageAt ?? b.createdAt) - (a.lastMessageAt ?? a.createdAt))
-      .slice(0, 100);
-    const otherIds = [
-      ...new Set(
-        sorted.map((conversation) =>
-          conversation.participant1 === args.userId
-            ? conversation.participant2
-            : conversation.participant1,
-        ),
-      ),
-    ];
-    const users = await Promise.all(otherIds.map((id) => ctx.db.get(id)));
-    const usersById = new Map(
-      users
-        .filter((user): user is NonNullable<typeof user> => user !== null)
-        .map((user) => [user._id, user]),
-    );
-    return sorted.map((conversation) => {
-      const otherId =
-        conversation.participant1 === args.userId
-          ? conversation.participant2
-          : conversation.participant1;
-      const other = usersById.get(otherId) ?? null;
-      return {
-        ...conversation,
-        otherParticipant: other
-          ? {
-              _id: other._id,
-              name: other.name,
-              image: other.image ?? other.avatar ?? null,
-            }
-          : null,
-        unreadCount:
-          conversation.participant1 === args.userId
-            ? (conversation.unreadCount1 ?? 0)
-            : (conversation.unreadCount2 ?? 0),
-        context: contextSummary(conversation),
-      };
-    });
-  },
-});
-
-export const openForContext = mutation({
-  args: { context: conversationContextValidator },
-  returns: v.id("conversations"),
-  handler: async (ctx, args) => {
-    const caller = await requireAuthUser(ctx);
-    const resolved = await resolveContext(ctx, caller, args.context);
-    const [participant1, participant2] = canonicalParticipants(
-      caller._id,
-      resolved.otherUserId,
-    );
-    const existing = await findExisting(
-      ctx,
-      resolved,
-      participant1,
-      participant2,
-    );
-    if (existing) {
-      const participantsMatch =
-        (existing.participant1 === participant1 &&
-          existing.participant2 === participant2) ||
-        (existing.participant1 === participant2 &&
-          existing.participant2 === participant1);
-      if (
-        !participantsMatch
-      ) {
-        throw new Error("Conversation participants do not match this context.");
+var list = query({
+    args: {
+      userId: v.id("users")
+    },
+    returns: v.array(v.any()),
+    handler: async (ctx, args) => {
+      await requireOwner(ctx, args.userId);
+      let [o, n] = await Promise.all([ctx.db.query("conversations").withIndex("by_participant1", r => r.eq("participant1", args.userId)).order("desc").take(60), ctx.db.query("conversations").withIndex("by_participant2", r => r.eq("participant2", args.userId)).order("desc").take(60)]),
+        a = [...o, ...n].sort((r, p) => (p.lastMessageAt ?? p.createdAt) - (r.lastMessageAt ?? r.createdAt)).slice(0, 100),
+        s = [...new Set(a.map(r => r.participant1 === args.userId ? r.participant2 : r.participant1))],
+        c = await Promise.all(s.map(r => ctx.db.get(r))),
+        t = new Map(c.filter(r => r !== null).map(r => [r._id, r]));
+      return a.map(r => {
+        let p = r.participant1 === args.userId ? r.participant2 : r.participant1,
+          l = t.get(p) ?? null;
+        return {
+          ...r,
+          otherParticipant: l ? {
+            _id: l._id,
+            name: l.name,
+            image: l.image ?? l.avatar ?? null
+          } : null,
+          unreadCount: r.participant1 === args.userId ? r.unreadCount1 ?? 0 : r.unreadCount2 ?? 0,
+          context: contextSummary(r)
+        };
+      });
+    }
+  }),
+  openForContext = mutation({
+    args: {
+      context: _
+    },
+    returns: v.id("conversations"),
+    handler: async (ctx, args) => {
+      let o = await requireAuthUser(ctx),
+        n = await resolveContext(ctx, o, args.context),
+        [a, s] = canonicalParticipants(o._id, n.otherUserId),
+        c = await findExisting(ctx, n, a, s);
+      if (c) {
+        if (!(c.participant1 === a && c.participant2 === s || c.participant1 === s && c.participant2 === a)) throw new Error("Conversation participants do not match this context.");
+        return c._id;
       }
-      return existing._id;
+      let t = Date.now();
+      return await ctx.db.insert("conversations", {
+        tenantId: o.tenantId,
+        contextType: n.type,
+        contextTitle: n.title,
+        contextHref: n.href,
+        orderId: n.orderId,
+        projectId: n.projectId,
+        bidId: n.bidId,
+        freelancerProfileId: n.freelancerProfileId,
+        gigId: n.gigId,
+        quoteId: n.quoteId,
+        localAppointmentId: n.localAppointmentId,
+        jobApplicationId: n.jobApplicationId,
+        participant1: a,
+        participant2: s,
+        unreadCount1: 0,
+        unreadCount2: 0,
+        status: "active",
+        createdAt: t,
+        updatedAt: t
+      });
     }
-    const now = Date.now();
-    return await ctx.db.insert("conversations", {
-      tenantId: caller.tenantId,
-      contextType: resolved.type,
-      contextTitle: resolved.title,
-      contextHref: resolved.href,
-      orderId: resolved.orderId,
-      projectId: resolved.projectId,
-      bidId: resolved.bidId,
-      freelancerProfileId: resolved.freelancerProfileId,
-      gigId: resolved.gigId,
-      quoteId: resolved.quoteId,
-      localAppointmentId: resolved.localAppointmentId,
-      jobApplicationId: resolved.jobApplicationId,
-      participant1,
-      participant2,
-      unreadCount1: 0,
-      unreadCount2: 0,
-      status: "active",
-      createdAt: now,
-      updatedAt: now,
-    });
-  },
-});
-
-export const getById = query({
-  args: { conversationId: v.id("conversations") },
-  returns: v.union(v.any(), v.null()),
-  handler: async (ctx, args) => {
-    const user = await requireAuthUser(ctx);
-    const conversation = await ctx.db.get(args.conversationId);
-    if (!conversation) return null;
-    if (
-      conversation.participant1 !== user._id &&
-      conversation.participant2 !== user._id
-    ) {
-      throw new Error("Unauthorized.");
+  }),
+  getById = query({
+    args: {
+      conversationId: v.id("conversations")
+    },
+    returns: v.union(v.any(), v.null()),
+    handler: async (ctx, args) => {
+      let o = await requireAuthUser(ctx),
+        n = await ctx.db.get(args.conversationId);
+      if (!n) return null;
+      if (n.participant1 !== o._id && n.participant2 !== o._id) throw new Error("Unauthorized.");
+      let [a, s] = await Promise.all([ctx.db.get(n.participant1), ctx.db.get(n.participant2)]);
+      return {
+        ...n,
+        context: contextSummary(n),
+        participant1User: a ? {
+          _id: a._id,
+          name: a.name,
+          image: a.image ?? a.avatar ?? null
+        } : null,
+        participant2User: s ? {
+          _id: s._id,
+          name: s.name,
+          image: s.image ?? s.avatar ?? null
+        } : null
+      };
     }
-    const [participant1User, participant2User] = await Promise.all([
-      ctx.db.get(conversation.participant1),
-      ctx.db.get(conversation.participant2),
-    ]);
-    return {
-      ...conversation,
-      context: contextSummary(conversation),
-      participant1User: participant1User
-        ? {
-            _id: participant1User._id,
-            name: participant1User.name,
-            image: participant1User.image ?? participant1User.avatar ?? null,
-          }
-        : null,
-      participant2User: participant2User
-        ? {
-            _id: participant2User._id,
-            name: participant2User.name,
-            image: participant2User.image ?? participant2User.avatar ?? null,
-          }
-        : null,
-    };
-  },
-});
-
-export const getByOrder = query({
-  args: { orderId: v.id("orders") },
-  returns: v.union(v.any(), v.null()),
-  handler: async (ctx, args) => {
-    const user = await requireAuthUser(ctx);
-    const conversation = await ctx.db
-      .query("conversations")
-      .withIndex("by_order", (q) => q.eq("orderId", args.orderId))
-      .first();
-    if (!conversation) return null;
-    if (
-      conversation.participant1 !== user._id &&
-      conversation.participant2 !== user._id
-    ) {
-      throw new Error("Unauthorized.");
+  }),
+  getByOrder = query({
+    args: {
+      orderId: v.id("orders")
+    },
+    returns: v.union(v.any(), v.null()),
+    handler: async (ctx, args) => {
+      let o = await requireAuthUser(ctx),
+        n = await ctx.db.query("conversations").withIndex("by_order", c => c.eq("orderId", args.orderId)).first();
+      if (!n) return null;
+      if (n.participant1 !== o._id && n.participant2 !== o._id) throw new Error("Unauthorized.");
+      let a = n.participant1 === o._id ? n.participant2 : n.participant1,
+        s = await ctx.db.get(a);
+      return {
+        ...n,
+        context: contextSummary(n),
+        otherParticipant: s ? {
+          _id: s._id,
+          name: s.name,
+          image: s.image ?? s.avatar ?? null
+        } : null
+      };
     }
-    const otherId =
-      conversation.participant1 === user._id
-        ? conversation.participant2
-        : conversation.participant1;
-    const other = await ctx.db.get(otherId);
-    return {
-      ...conversation,
-      context: contextSummary(conversation),
-      otherParticipant: other
-        ? {
-            _id: other._id,
-            name: other.name,
-            image: other.image ?? other.avatar ?? null,
-          }
-        : null,
-    };
-  },
-});
+  });
+export { getById, getByOrder, list, openForContext };

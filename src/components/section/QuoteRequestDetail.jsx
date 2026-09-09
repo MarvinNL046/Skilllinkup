@@ -2,6 +2,7 @@
 import { useQuery, useMutation } from "convex/react";
 import { useTranslations } from "next-intl";
 import { api } from "../../../convex/_generated/api";
+import useConvexUser from "@/hook/useConvexUser";
 import { useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -24,7 +25,10 @@ import ContextMessageButton from "@/components/ui/ContextMessageButton";
 export default function QuoteRequestDetail({ requestId }) {
   const router = useRouter();
   const t = useTranslations("localHub");
-  const request = useQuery(api.marketplace.quotes.getRequestById, { requestId });
+  const { isAuthenticated } = useConvexUser();
+  const publicRequest = useQuery(api.marketplace.quotes.getRequestById, { requestId });
+  const participantRequest = useQuery(api.marketplace.quotes.getParticipantRequestById, isAuthenticated ? { requestId } : "skip");
+  const request = participantRequest ?? publicRequest;
   const leadStatus = useQuery(api.marketplace.leads.getLeadStatus, {
     quoteRequestId: requestId,
   });
@@ -38,7 +42,7 @@ export default function QuoteRequestDetail({ requestId }) {
   const [quoteSentId, setQuoteSentId] = useState(null);
   const [quoteForm, setQuoteForm] = useState({ amount: "", estimatedDays: "1", description: "" });
 
-  if (request === undefined || leadStatus === undefined) {
+  if (publicRequest === undefined || leadStatus === undefined || (isAuthenticated && participantRequest === undefined)) {
     return (
       <section className="pt-8 pb-24">
         <div className="container flex justify-center py-12">
@@ -65,8 +69,8 @@ export default function QuoteRequestDetail({ requestId }) {
     );
   }
 
-  const isLoggedIn = credits !== null;
-  const isFreelancer = credits?.profileId !== null;
+  const isLoggedIn = isAuthenticated;
+  const isFreelancer = Boolean(credits?.profileId);
   const canViewFullDetails = !!request.canViewFullDetails;
   const myQuoteId = request.myQuote?._id ?? quoteSentId;
   const myQuoteStatus = request.myQuote?.status ?? (quoteSentId ? "pending" : null);

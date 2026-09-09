@@ -4,10 +4,8 @@ import { useTranslations } from "next-intl";
 import DashboardNavigation from "../header/DashboardNavigation";
 import DashboardTabs from "../element/DashboardTabs";
 import { useState } from "react";
-import Pagination1 from "@/components/section/Pagination1";
+import ServiceEditor from "./ServiceEditor";
 import ManageServiceCard1 from "../card/ManageServiceCard1";
-import ProposalModal1 from "../modal/ProposalModal1";
-import DeleteModal from "../modal/DeleteModal";
 import useConvexMyGigs from "@/hook/useConvexMyGigs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,17 +13,18 @@ import { ArrowRight, Plus, Briefcase } from "lucide-react";
 
 const STATUS_MAP = {
   0: "active",
-  1: "pending",
-  2: "ongoing",
-  3: "completed",
-  4: "cancelled",
+  1: "draft",
+  2: "paused",
+  3: "pending",
+  4: "rejected",
 };
 
 function mapGigToCard(gig, t) {
   return {
+    ...gig,
     _id: gig._id,
     id: gig._id,
-    img: gig.firstImage?.url || "/images/listings/g-1.jpg",
+    img: gig.firstImage?.imageUrl || "/images/listings/g-1.jpg",
     title: gig.title || t("untitledService"),
     category: gig.category?.name || t("uncategorized"),
     cost: gig.minPrice || 0,
@@ -34,7 +33,7 @@ function mapGigToCard(gig, t) {
   };
 }
 
-function GigTable({ gigs, removeGig, t }) {
+function GigTable({ gigs, removeGig, onEdit, t }) {
   if (gigs.length === 0) {
     return (
       <div className="text-center py-12">
@@ -52,7 +51,7 @@ function GigTable({ gigs, removeGig, t }) {
   }
 
   return (
-    <div className="packages_table table-responsive">
+    <div className="packages_table table-responsive manage-services-table">
       <table className="table-style3 table at-savesearch">
         <thead className="t-head">
           <tr>
@@ -64,7 +63,7 @@ function GigTable({ gigs, removeGig, t }) {
         </thead>
         <tbody className="t-body">
           {gigs.map((item, i) => (
-            <ManageServiceCard1 key={item._id || i} data={item} removeGig={removeGig} />
+            <ManageServiceCard1 key={item._id || i} data={item} removeGig={removeGig} onEdit={() => onEdit(item)} />
           ))}
         </tbody>
       </table>
@@ -77,9 +76,6 @@ function GigTable({ gigs, removeGig, t }) {
           {t("addAnotherGig")}
         </Link>
       </div>
-      <div className="mt-5">
-        <Pagination1 />
-      </div>
     </div>
   );
 }
@@ -87,14 +83,15 @@ function GigTable({ gigs, removeGig, t }) {
 export default function ManageServiceInfo() {
   const t = useTranslations("manageServices");
   const [selectedTab, setSelectedTab] = useState(0);
-  const { gigs, removeGig } = useConvexMyGigs();
+  const { gigs, removeGig, updateGig } = useConvexMyGigs();
+  const [editing, setEditing] = useState(null);
 
   const tabs = [
     t("activeServices"),
+    "Drafts",
+    "Paused",
     t("pendingServices"),
-    t("ongoingServices"),
-    t("completedServices"),
-    t("canceledServices"),
+    "Needs changes",
   ];
 
   const currentStatus = STATUS_MAP[selectedTab];
@@ -117,7 +114,7 @@ export default function ManageServiceInfo() {
         <DashboardNavigation />
         <div className="dashboard_title_area mb-6">
           <div>
-            <h2>{t("title")}</h2>
+            <h1>{t("title")}</h1>
             <p className="text-[var(--text-secondary)]">{t("pageDescription")}</p>
           </div>
           <Button asChild>
@@ -141,12 +138,11 @@ export default function ManageServiceInfo() {
                 }))}
               />
             </div>
-            <GigTable gigs={filteredGigs} removeGig={removeGig} t={t} />
+            {gigs === undefined ? <p role="status">Loading your services…</p> : <GigTable gigs={filteredGigs} removeGig={removeGig} onEdit={setEditing} t={t} />}
           </CardContent>
         </Card>
       </div>
-      <ProposalModal1 />
-      <DeleteModal />
+      {editing ? <ServiceEditor key={editing._id} gig={editing} updateGig={updateGig} onClose={() => setEditing(null)} /> : null}
     </>
   );
 }
