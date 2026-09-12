@@ -7,6 +7,7 @@ import { Menu } from "lucide-react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import WaitlistButton from "@/components/ui/WaitlistButton";
 import navStore from "@/store/navStore";
+import PublicSignInLink from "./PublicSignInLink";
 
 /**
  * Compact mobile header strip — shown only below lg. Lg+ uses the
@@ -50,7 +51,7 @@ export default function MobileNavigation2() {
         </Link>
 
         <div className="mobile-nav-actions" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
-          <LanguageSwitcher />
+          <span className="hidden sm:inline-flex"><LanguageSwitcher /></span>
           {isSignedIn ? (
             <Link href="/dashboard" className="avatar" aria-label={t("dashboard")}>
               {user?.imageUrl ? (
@@ -65,7 +66,10 @@ export default function MobileNavigation2() {
               )}
             </Link>
           ) : (
-            <WaitlistButton className="btn btn--primary btn--sm mobile-nav-signup" />
+            <>
+              <PublicSignInLink className="skl-action-secondary whitespace-nowrap" />
+              <span className="hidden md:inline-flex"><WaitlistButton className="skl-action-primary whitespace-nowrap" /></span>
+            </>
           )}
           <button
             type="button"

@@ -5,6 +5,7 @@ import { ArrowRight, BadgeCheck, Grid2X2, List, MapPin, Search, Star } from "luc
 import { useOnlineDiscovery } from "@/hook/useConvexFreelancers";
 import useDiscoveryFilters from "@/hook/useDiscoveryFilters";
 import SavedItemButton from "@/components/ui/SavedItemButton";
+import DiscoveryEmptyState from "@/components/marketplace/DiscoveryEmptyState";
 import { DiscoveryFilterPanel, DiscoverySuggest, DiscoverySelect, DiscoveryNumber, DiscoveryLoadMore } from "@/components/marketplace/DiscoveryControls";
 import styles from "./FreelancerDirectory.module.css";
 
@@ -39,7 +40,7 @@ export default function FreelancerDirectory() {
       </div></div>
       {status === "LoadingFirstPage" ? <p role="status">Loading profiles…</p> : professionals.length ? <div className={styles.cardGrid + (view === "list" ? " " + styles.listView : "")}>
         {professionals.map((person) => <ProfessionalCard person={person} key={person.id} />)}
-      </div> : status === "Exhausted" ? <div className={styles.empty}><Search size={30} /><h3>No professionals found</h3><p>Try a broader search or remove some filters.</p><button type="button" onClick={reset}>Clear filters</button></div> : <p role="status">Searching the remaining profiles…</p>}
+      </div> : status === "Exhausted" ? <DiscoveryEmptyState kind="freelancers" filters={filters} reset={reset} /> : <p role="status">Searching the remaining profiles…</p>}
       <DiscoveryLoadMore status={status} loadMore={loadMore} />
       </div>
     </div></div></section>

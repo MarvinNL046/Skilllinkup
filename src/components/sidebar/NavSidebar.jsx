@@ -10,6 +10,9 @@ import { isActiveNavigation } from "@/utils/isActiveNavigation";
 import WaitlistButton from "@/components/ui/WaitlistButton";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import navStore from "@/store/navStore";
+import { useTranslations } from "next-intl";
+import PublicSignInLink from "@/components/header/PublicSignInLink";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 function NavLinkItem({ item, path, onNavigate, depth = 0 }) {
   const active = item.path === path;
@@ -100,6 +103,7 @@ function NavGroup({ item, path, onNavigate, depth = 0 }) {
 }
 
 export default function NavSidebar() {
+  const t = useTranslations("nav");
   const path = usePathname();
   const { isSignedIn } = useUser();
   const isOpen = navStore((s) => s.isNavOpen);
@@ -149,6 +153,7 @@ export default function NavSidebar() {
           </button>
         </header>
 
+        <div className="flex justify-end border-b px-6 py-3 sm:hidden"><LanguageSwitcher /></div>
         <nav
           style={{
             flex: 1,
@@ -191,14 +196,14 @@ export default function NavSidebar() {
               className="btn btn--primary"
               style={{ width: "100%", justifyContent: "center" }}
             >
-              Dashboard
+              {t("dashboard")}
               <ArrowRight size={16} />
             </Link>
           ) : (
-            <WaitlistButton
-              className="btn btn--primary"
-              style={{ width: "100%", justifyContent: "center" }}
-            />
+            <div className="grid gap-3">
+              <PublicSignInLink onClick={closeNav} />
+              <WaitlistButton className="skl-action-primary" />
+            </div>
           )}
         </footer>
       </DialogContent>

@@ -20,7 +20,7 @@ export default function OurFaqSection1() {
           <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center" }}>
             <span className="overline" style={{ color: "var(--primary-600)" }}>Help</span>
             <h1 className="display-lg" style={{ fontWeight: 500, margin: "var(--space-2) 0 var(--space-3)" }}>How can we help you?</h1>
-            <p className="body-lg" style={{ color: "var(--text-secondary)", marginBottom: "var(--space-6)" }}>Find answers about accounts, projects, local quotes and the current beta.</p>
+            <p className="body-lg" style={{ color: "var(--text-secondary)", marginBottom: "var(--space-6)" }}>Find answers about the private beta, existing accounts and the public launch waitlist.</p>
             <div role="search" style={{ maxWidth: 520, margin: "0 auto", position: "relative" }}>
               <Search aria-hidden="true" size={18} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "var(--text-tertiary)", pointerEvents: "none" }} />
               <input type="search" className="input" aria-label="Search help answers" placeholder="Search help answers" value={search} onChange={(event) => setSearch(event.target.value)} style={{ paddingLeft: 42, width: "100%" }} />

@@ -9,27 +9,27 @@ const STEPS = [
     Icon: UserCheck,
     titleKey: "step1Title",
     descKey: "step1Desc",
-    fallbackTitle: "Show your skill",
+    fallbackTitle: "Explore profiles",
     fallbackDesc:
-      "Join the waitlist and tell us what you offer — design, development, writing, whatever you're great at.",
+      "Browse published profiles to discover online and local expertise while the beta network grows.",
     tone: "primary",
   },
   {
     Icon: Handshake,
     titleKey: "step2Title",
     descKey: "step2Desc",
-    fallbackTitle: "We build the match",
+    fallbackTitle: "Use your beta account",
     fallbackDesc:
-      "We assemble the network before going live — so day one has real freelancers, real clients, real demand.",
+      "Existing beta participants can log in to their workspace. SkillLinkup does not process payments.",
     tone: "secondary",
   },
   {
     Icon: Rocket,
     titleKey: "step3Title",
     descKey: "step3Desc",
-    fallbackTitle: "Launch together",
+    fallbackTitle: "Follow the public launch",
     fallbackDesc:
-      "When we hit critical mass, everyone on the waitlist gets the launch email. No marketing spam in between.",
+      "Join the waitlist for public launch updates. The waitlist is separate from account registration.",
     tone: "primary",
   },
 ];
@@ -45,12 +45,12 @@ export default function NeedSomething2() {
             {t("eyebrow", { default: "How it works" })}
           </span>
           <h2 className="text-4xl md:text-5xl font-medium tracking-tight max-w-3xl mx-auto">
-            {t("title", { default: "A platform built network-first." })}
+            {t("title", { default: "From private beta to public launch." })}
           </h2>
           <p className="text-lg text-[var(--text-secondary)] max-w-xl mx-auto mt-4">
             {t("subtitle", {
               default:
-                "We're not pretending to be live yet. Here's what happens between now and launch.",
+                "Explore profiles now, follow the public launch, or log in if you already participate in the beta.",
             })}
           </p>
         </div>

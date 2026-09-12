@@ -12,6 +12,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useUser, useClerk } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
 import { LogOut } from "lucide-react";
+import PublicSignInLink from "./PublicSignInLink";
 
 /**
  * Header for /online, /local, /jobs world sections. Same design-system
@@ -103,7 +104,10 @@ export default function WorldHeader() {
               </button>
             </>
           ) : (
-            <WaitlistButton className="btn btn--primary" />
+            <>
+              <PublicSignInLink />
+              <WaitlistButton className="skl-action-primary whitespace-nowrap" />
+            </>
           )}
         </div>
       </header>

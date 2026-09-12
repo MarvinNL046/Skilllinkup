@@ -9,6 +9,8 @@ import BrandLogo from "@/components/brand/BrandLogo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import SearchBarWithDropdown from "@/components/ui/SearchBarWithDropdown";
 import MobileNavigation2 from "./MobileNavigation2";
+import PublicSignInLink from "./PublicSignInLink";
+import WaitlistButton from "@/components/ui/WaitlistButton";
 
 const NAV_ITEMS = [
   { label: "Online Services", href: "/services" },
@@ -100,32 +102,8 @@ export default function Header19() {
               </>
             ) : (
               <>
-                <Link href="/login" style={{ color: "#10213f", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
-                  Log in
-                </Link>
-                <Link
-                  href="/register"
-                  style={{
-                    minWidth: 126,
-                    height: 44,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 9,
-                    backgroundColor: "#ff4f2e",
-                    backgroundImage: "url('/images/skilllinkup-patterns/coral-tiger-print-v1.png')",
-                    backgroundPosition: "center",
-                    backgroundSize: "165px 93px",
-                    color: "#fff",
-                    fontSize: 14,
-                    fontWeight: 700,
-                    textDecoration: "none",
-                    border: "1px solid #e9482b",
-                    boxShadow: "inset 0 1px 0 rgba(255,255,255,.36), 0 9px 20px rgba(255,75,43,.22)",
-                  }}
-                >
-                  Sign up
-                </Link>
+                <PublicSignInLink />
+                <WaitlistButton className="skl-action-primary whitespace-nowrap" />
               </>
             )}
           </div>
