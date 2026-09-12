@@ -34,14 +34,14 @@ export const container: React.CSSProperties = {
 
 // Header
 export const header: React.CSSProperties = {
- backgroundColor: colors.secondary,
+ backgroundColor: colors.white,
+ color: colors.text,
  padding: '24px 32px',
  textAlign: 'center' as const,
 };
 
 export const logo: React.CSSProperties = {
  margin: '0 auto',
- filter: 'brightness(0) invert(1)',
 };
 
 // Hero

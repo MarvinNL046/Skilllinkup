@@ -16,6 +16,7 @@ import {
 } from '@react-email/components';
 import * as React from 'react';
 import { type Locale, getNewsletterTranslations } from './translations';
+import { colors, header as sharedHeader, logo as sharedLogo } from './components/styles';
 
 interface NewsletterArticle {
  title: string;
@@ -315,12 +316,14 @@ const container: React.CSSProperties = {
 };
 
 const header: React.CSSProperties = {
- backgroundColor: '#1e1541',
+ ...sharedHeader,
  padding: '16px 24px',
+ textAlign: 'left',
 };
 
 const logoStyle: React.CSSProperties = {
- filter: 'brightness(0) invert(1)',
+ ...sharedLogo,
+ margin: '0',
 };
 
 const headerRight: React.CSSProperties = {
@@ -328,7 +331,7 @@ const headerRight: React.CSSProperties = {
 };
 
 const dateText: React.CSSProperties = {
- color: 'rgba(255, 255, 255, 0.7)',
+ color: colors.textMuted,
  fontSize: '12px',
  margin: '0',
 };

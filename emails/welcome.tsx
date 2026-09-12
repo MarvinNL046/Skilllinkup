@@ -14,6 +14,7 @@ import {
 } from '@react-email/components';
 import * as React from 'react';
 import { type Locale, getWelcomeTranslations } from './translations';
+import { header, logo } from './components/styles';
 
 interface WelcomeEmailProps {
  email?: string;
@@ -188,17 +189,6 @@ const container: React.CSSProperties = {
  backgroundColor: '#ffffff',
  margin: '0 auto',
  maxWidth: '600px',
-};
-
-const header: React.CSSProperties = {
- backgroundColor: '#1e1541',
- padding: '24px 32px',
- textAlign: 'center' as const,
-};
-
-const logo: React.CSSProperties = {
- margin: '0 auto',
- filter: 'brightness(0) invert(1)',
 };
 
 const heroSection: React.CSSProperties = {

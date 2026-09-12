@@ -1,5 +1,5 @@
 // Shared base layout for all SkillLinkup marketplace email templates
-// Provides: Header (dark bg + logo), optional Hero, Footer (nav + copyright)
+// Provides: Header (white bg + original logo), optional Hero, Footer (nav + copyright)
 // No unsubscribe link — these are transactional emails
 
 import {
