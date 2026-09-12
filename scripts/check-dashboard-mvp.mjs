@@ -187,6 +187,50 @@ await check("Local review queue loads more profiles, prevents duplicate decision
   assert.equal(findElement(tree, e => e.type === "textarea").props.value, "");
 });
 
+await check("CV download authenticates each request and streams a non-cacheable attachment", async () => {
+  let signedIn = false, allowed = true, unavailable = false;
+  let queries = 0, downloads = 0;
+  const Route = loader({
+    "@clerk/nextjs/server": { auth: async () => ({ userId: signedIn ? "qa" : null, getToken: async () => "qa-token" }) },
+    "convex/browser": { ConvexHttpClient: class { setAuth() {} async query() { queries++; if (!allowed) throw Error("Unauthorized"); return unavailable ? null : { url: "https://storage.example.invalid/private", contentType: "application/pdf" }; } } },
+  }, { Response, AbortSignal, process: { env: { INTERNAL_EMAIL_SECRET: "fixture-secret", NEXT_PUBLIC_CONVEX_URL: "https://fixture.convex.cloud" } }, fetch: async () => { downloads++; return new Response("%PDF synthetic QA document"); } })("src/app/api/applications/[applicationId]/resume/route.js");
+  const get = () => Route.GET(null, { params: Promise.resolve({ applicationId: "application" }) });
+  assert.equal((await get()).status, 401); assert.equal(queries, 0);
+  signedIn = true; allowed = false;
+  assert.equal((await get()).status, 403); assert.equal(downloads, 0);
+  allowed = true; unavailable = true;
+  assert.equal((await get()).status, 404);
+  unavailable = false;
+  const response = await get();
+  assert.equal(response.status, 200); assert.equal(await response.text(), "%PDF synthetic QA document");
+  assert.equal(response.headers.get("cache-control"), "private, no-store");
+  assert.match(response.headers.get("content-disposition"), /attachment.*resume.pdf/);
+  assert.equal(response.headers.get("location"), null); assert.equal(response.headers.get("x-content-type-options"), "nosniff");
+});
+
+await check("Application retry reuses the uploaded CV and preserves the draft after failure", async () => {
+  const runner = hookRunner(); let mutationIndex = 0, submits = 0, uploads = 0;
+  const messages = [];
+  const Panel = loader({
+    react: runner.react, "next/link": { default: "a" }, "next/navigation": { usePathname: () => "/jobs/job/qa" },
+    "convex/react": { useQuery: () => null, useMutation: () => [async () => "https://upload.example.invalid", async args => { submits++; assert.equal(args.resumeStorageId, "qa-storage"); if (submits === 1) throw Error("Temporary failure"); return "application"; }, async () => {}][mutationIndex++] },
+    "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
+    sonner: { toast: { success() {}, error: message => messages.push(message) } },
+    "@/hook/useConvexUser": { default: () => ({ isLoaded: true, isAuthenticated: true, convexUser: { _id: "candidate", accountRoles: ["candidate"], activeRole: "candidate", preferredWorld: "jobs" } }) },
+    "./JobApplicationPanel.module.css": { default: {} },
+  }, { fetch: async () => { uploads++; return { ok: true, json: async () => ({ storageId: "qa-storage" }) }; } })("src/components/jobs/JobApplicationPanel.jsx").default;
+  const render = () => runner.render(() => { mutationIndex = 0; return Panel({ jobId: "job", ownerId: "employer" }); });
+  let tree = render();
+  const cover = "Synthetic application for QA only. Testing upload retries with a sample document without personal details.";
+  findElement(tree, e => e.type === "textarea").props.onChange({ target: { value: cover } });
+  findElement(tree, e => e.props?.type === "file").props.onChange({ target: { files: [{ name: "qa.pdf", size: 100, type: "application/pdf" }] } });
+  tree = render(); await findElement(tree, e => e.type === "form").props.onSubmit({ preventDefault() {} });
+  tree = render(); assert.equal(findElement(tree, e => e.type === "textarea").props.value, cover); assert.equal(messages.length, 1);
+  await findElement(tree, e => e.type === "form").props.onSubmit({ preventDefault() {} });
+  assert.equal(uploads, 1); assert.equal(submits, 2);
+  assert.equal(findElement(render(), e => e.type === "textarea").props.value, "");
+});
+
 await check("Candidate withdrawal and employer stages block duplicate actions and retry with the current version", async () => {
   for (const mode of ["Candidate", "Employer"]) {
     const runner = hookRunner(); const calls = [];

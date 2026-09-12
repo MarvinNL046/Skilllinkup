@@ -14,7 +14,7 @@ function load(file) {
   if (mods.has(absolute)) return mods.get(absolute);
   const exports = {}; mods.set(absolute, exports);
   const code = ts.transpileModule(fs.readFileSync(absolute, "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
-  vm.runInNewContext(code, { exports, Date, Math, Map, Set, Number, Object, JSON, console, process: { env: {} }, require: (id) => {
+  vm.runInNewContext(code, { exports, Date, Math, Map, Set, Number, Object, JSON, console, process: { env: { INTERNAL_EMAIL_SECRET: "fixture-only-secret" } }, require: (id) => {
     if (id === "convex/values") return { v: validator, ConvexError: class extends Error {} };
     if (id === "convex/server") return { paginationOptsValidator: {}, paginationResultValidator: () => ({}) };
     if (id.includes("_generated/server")) return { query: (x) => x, mutation: (x) => x, internalQuery: (x) => x };
@@ -66,6 +66,35 @@ async function drain(fn, ctx, args) {
   return rows;
 }
 async function main() {
+  await check("resume metadata and download access are checked without exposing storage links in lists", async () => {
+    const apps = load("convex/marketplace/jobApplications.ts");
+    const roleUser = (id, role) => user(id, { activeRole: role, accountRoles: [role], preferredWorld: "jobs", onboardingContexts: [{ role, world: "jobs", version: 1, completedAt: 1 }] });
+    const ctx = fixture([roleUser("candidate", "candidate"), roleUser("employer", "company"), roleUser("outsider", "company"),
+      { _id: "job", _table: "jobs", tenantId: "tenant", clientId: "employer", title: "QA vacancy", status: "open" },
+    ], "candidate");
+    let metadata = { size: 0, contentType: "application/pdf" };
+    ctx.db.system = { get: async () => metadata };
+    ctx.storage = { getUrl: async () => "https://storage.example.invalid/private-file" };
+    const args = { jobId: "job", coverLetter: "QA synthetic candidate application with a test document only. This contains no personal information and is not a real application.", resumeStorageId: "resume" };
+    await assert.rejects(() => apps.submit.handler(ctx, args), /smaller than/);
+    metadata = { size: 11 * 1024 * 1024, contentType: "application/pdf" };
+    await assert.rejects(() => apps.submit.handler(ctx, args), /smaller than/);
+    metadata = { size: 100, contentType: "text/html" };
+    await assert.rejects(() => apps.submit.handler(ctx, args), /PDF/);
+    metadata = { size: 100, contentType: "application/pdf" };
+    const id = await apps.submit.handler(ctx, args);
+    assert.equal([...ctx.state.values()].find(r => r._table === "fileAssets").ownerId, "candidate");
+    const download = { applicationId: id, serverSecret: "fixture-only-secret" };
+    await assert.rejects(() => apps.getResumeDownload.handler(ctx, { ...download, serverSecret: "wrong" }));
+    assert.match((await apps.getResumeDownload.handler(ctx, download)).url, /private-file/);
+    ctx.auth.getUserIdentity = async () => ({ subject: "employer" });
+    assert.equal((await apps.listForJob.handler(ctx, { jobId: "job" }))[0].resumeUrl, `/api/applications/${id}/resume`);
+    assert.equal((await apps.getResumeDownload.handler(ctx, download)).contentType, "application/pdf");
+    ctx.auth.getUserIdentity = async () => ({ subject: "outsider" });
+    await assert.rejects(() => apps.getResumeDownload.handler(ctx, download), /Unauthorized/);
+    ctx.auth.getUserIdentity = async () => null;
+    await assert.rejects(() => apps.getResumeDownload.handler(ctx, download), /Authentication/);
+  });
   await check("applications notify both parties, preserve private notes and reject stale or unauthorized decisions", async () => {
     const apps = load("convex/marketplace/jobApplications.ts");
     const jobUser = (id, role) => user(id, { activeRole: role, accountRoles: [role], preferredWorld: "jobs", onboardingContexts: [{ role, world: "jobs", version: 1, completedAt: 1 }] });

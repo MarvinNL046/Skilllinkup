@@ -4,6 +4,7 @@ import {
   requireAuthUser,
   requireMarketplaceContext,
   requireOwner,
+  requireServerSecret,
 } from "../lib/authHelpers";
 import { notifyUser } from "../lib/notifications";
 import {
@@ -184,7 +185,7 @@ export const listForJob = query({
         if (!candidate)
           throw new Error("Application candidate no longer exists.");
         const resumeUrl = application.resumeStorageId
-          ? await ctx.storage.getUrl(application.resumeStorageId)
+          ? `/api/applications/${application._id}/resume`
           : null;
         return {
           application,
@@ -198,6 +199,24 @@ export const listForJob = query({
         };
       }),
     );
+  },
+});
+
+// Only the authenticated download route can resolve the underlying storage URL.
+export const getResumeDownload = query({
+  args: { applicationId: v.id("jobApplications"), serverSecret: v.string() },
+  returns: v.union(v.null(), v.object({ url: v.string(), contentType: v.string() })),
+  handler: async (ctx, args) => {
+    requireServerSecret(args.serverSecret);
+    const user = await requireAuthUser(ctx);
+    const application = await ctx.db.get(args.applicationId);
+    if (!application?.resumeStorageId) return null;
+    const job = await ctx.db.get(application.jobId);
+    if (!job || (user._id !== application.candidateId && user._id !== job.clientId)) throw new Error("Unauthorized.");
+    const metadata = await ctx.db.system.get("_storage", application.resumeStorageId);
+    if (!metadata || !metadata.contentType || !DOCUMENT_CONTENT_TYPES.has(metadata.contentType)) return null;
+    const url = await ctx.storage.getUrl(application.resumeStorageId);
+    return url ? { url, contentType: metadata.contentType } : null;
   },
 });
 

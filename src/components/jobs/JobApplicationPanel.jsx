@@ -43,6 +43,7 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
   const actionRef = useRef(false);
+  const uploadedResumeRef = useRef(null);
 
   const application = useQuery(
     api.marketplace.jobApplications.getMineForJob,
@@ -67,6 +68,7 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
 
   async function uploadResume() {
     if (!resume) return undefined;
+    if (resume.size < 1) throw new Error("Your CV file is empty. Choose another file.");
     if (resume.size > 10 * 1024 * 1024) {
       throw new Error("Your CV must be smaller than 10 MB.");
     }
@@ -78,6 +80,8 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
     if (!allowedTypes.has(resume.type)) {
       throw new Error("Upload your CV as a PDF, DOC or DOCX file.");
     }
+    const cached = uploadedResumeRef.current;
+    if (cached?.file === resume && cached.ownerId === convexUser?._id) return cached.storageId;
 
     const uploadUrl = await generateUploadUrl({});
     const response = await fetch(uploadUrl, {
@@ -87,6 +91,8 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
     });
     if (!response.ok) throw new Error("Your CV could not be uploaded.");
     const { storageId } = await response.json();
+    if (typeof storageId !== "string" || !storageId) throw new Error("The upload response was incomplete. Try again.");
+    uploadedResumeRef.current = { file: resume, ownerId: convexUser?._id, storageId };
     return storageId;
   }
 
@@ -107,6 +113,7 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
       setCoverLetter("");
       setPortfolioUrl("");
       setResume(null);
+      uploadedResumeRef.current = null;
     } catch (error) {
       toast.error(error?.message || "Your application could not be sent.");
     } finally {
