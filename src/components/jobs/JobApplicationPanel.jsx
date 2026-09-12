@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
@@ -42,6 +42,7 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
   const [resume, setResume] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
+  const actionRef = useRef(false);
 
   const application = useQuery(
     api.marketplace.jobApplications.getMineForJob,
@@ -91,7 +92,8 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    if (!canSubmit || !jobId) return;
+    if (!canSubmit || !jobId || actionRef.current) return;
+    actionRef.current = true;
     setIsSubmitting(true);
     try {
       const resumeStorageId = await uploadResume();
@@ -108,19 +110,22 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
     } catch (error) {
       toast.error(error?.message || "Your application could not be sent.");
     } finally {
+      actionRef.current = false;
       setIsSubmitting(false);
     }
   }
 
   async function handleWithdraw() {
-    if (!application?._id) return;
+    if (!application?._id || actionRef.current) return;
+    actionRef.current = true;
     setIsWithdrawing(true);
     try {
-      await withdrawApplication({ applicationId: application._id });
+      await withdrawApplication({ applicationId: application._id, expectedUpdatedAt: application.updatedAt });
       toast.success("Your application has been withdrawn.");
     } catch (error) {
       toast.error(error?.message || "The application could not be withdrawn.");
     } finally {
+      actionRef.current = false;
       setIsWithdrawing(false);
     }
   }

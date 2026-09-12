@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useMutation, useQuery } from "convex/react";
@@ -34,21 +34,24 @@ export default function EmployerApplications({ jobId }) {
   const { isAuthenticated } = useConvexUser();
   const [filter, setFilter] = useState("all");
   const [updating, setUpdating] = useState(null);
+  const updatingRef = useRef(false);
   const applications = useQuery(
     api.marketplace.jobApplications.listForJob,
     isAuthenticated && jobId ? { jobId, status: filter === "all" ? undefined : filter, limit: 100 } : "skip"
   );
   const updateStatus = useMutation(api.marketplace.jobApplications.updateStatus);
 
-  async function changeStatus(applicationId, status) {
-    if (!status) return;
-    setUpdating(applicationId);
+  async function changeStatus(application, status) {
+    if (!status || updatingRef.current) return;
+    updatingRef.current = true;
+    setUpdating(application._id);
     try {
-      await updateStatus({ applicationId, status });
+      await updateStatus({ applicationId: application._id, status, expectedUpdatedAt: application.updatedAt });
       toast.success(`Application moved to ${statusLabels[status] || status}.`);
     } catch (error) {
       toast.error(error?.message || "The application stage could not be changed.");
     } finally {
+      updatingRef.current = false;
       setUpdating(null);
     }
   }
@@ -67,7 +70,7 @@ export default function EmployerApplications({ jobId }) {
               <p className={styles.letter}>{application.coverLetter}</p>
               <div className={styles.stage}>
                 {messageableStatuses.has(application.status) ? <ContextMessageButton context={{ type: "job_application", applicationId: application._id }} label="Message candidate" /> : null}
-                <label>Move to<select value="" disabled={updating === application._id || !nextStatuses[application.status]?.length} onChange={(event) => changeStatus(application._id, event.target.value)}><option value="" disabled>{updating === application._id ? "Updating…" : "Choose stage"}</option>{(nextStatuses[application.status] || []).map((status) => <option key={status} value={status}>{statusLabels[status]}</option>)}</select></label>
+                <label>Move to<select value="" disabled={updating !== null || !nextStatuses[application.status]?.length} onChange={(event) => changeStatus(application, event.target.value)}><option value="" disabled>{updating === application._id ? "Updating…" : "Choose stage"}</option>{(nextStatuses[application.status] || []).map((status) => <option key={status} value={status}>{statusLabels[status]}</option>)}</select></label>
               </div>
             </article>
           ))}
