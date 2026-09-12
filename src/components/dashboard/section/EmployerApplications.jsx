@@ -1,9 +1,10 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useMutation, useQuery } from "convex/react";
+import { useMutation, usePaginatedQuery } from "convex/react";
 import { ArrowLeft, ExternalLink, FileText, LoaderCircle, Mail, UserRound } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "../../../../convex/_generated/api";
@@ -35,9 +36,10 @@ export default function EmployerApplications({ jobId }) {
   const [filter, setFilter] = useState("all");
   const [updating, setUpdating] = useState(null);
   const updatingRef = useRef(false);
-  const applications = useQuery(
-    api.marketplace.jobApplications.listForJob,
-    isAuthenticated && jobId ? { jobId, status: filter === "all" ? undefined : filter, limit: 100 } : "skip"
+  const { results: applications, status: pageStatus, loadMore } = usePaginatedQuery(
+    api.marketplace.jobApplications.listForJobPage,
+    isAuthenticated && jobId ? { jobId, status: filter === "all" ? undefined : filter } : "skip",
+    { initialNumItems: 25 }
   );
   const updateStatus = useMutation(api.marketplace.jobApplications.updateStatus);
 
@@ -60,7 +62,7 @@ export default function EmployerApplications({ jobId }) {
     <div className={styles.page}>
       <DashboardNavigation />
       <header className={styles.header}><div><Link href="/manage-jobs"><ArrowLeft size={16} /> Back to vacancies</Link><h1>Review applicants</h1><p>Move candidates through a clear, auditable hiring process.</p></div><label>Stage<select value={filter} onChange={(event) => setFilter(event.target.value)}><option value="all">All applicants</option>{Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label></header>
-      {applications === undefined ? <div className={styles.loading}><LoaderCircle /> Loading applicants…</div> : applications.length === 0 ? <section className={styles.empty}><UserRound /><h2>No applicants in this stage</h2><p>New candidates will appear here as soon as they apply.</p></section> : (
+      {pageStatus === "LoadingFirstPage" ? <div className={styles.loading}><LoaderCircle /> Loading applicants…</div> : applications.length === 0 && pageStatus === "Exhausted" ? <section className={styles.empty}><UserRound /><h2>No applicants in this stage</h2><p>New candidates will appear here as soon as they apply.</p></section> : (
         <section className={styles.list}>
           {applications.map(({ application, candidate, resumeUrl }) => (
             <article key={application._id}>
@@ -76,6 +78,10 @@ export default function EmployerApplications({ jobId }) {
           ))}
         </section>
       )}
+      {pageStatus !== "LoadingFirstPage" && <div className={styles.pagination}>
+        <p role="status">{applications.length} applicants loaded{pageStatus === "Exhausted" ? " · All loaded" : ""}</p>
+        {pageStatus !== "Exhausted" && <Button variant="secondary" type="button" disabled={pageStatus !== "CanLoadMore"} onClick={() => loadMore(25)}>{pageStatus === "LoadingMore" ? "Loading…" : "Load more"}</Button>}
+      </div>}
     </div>
   );
 }

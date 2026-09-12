@@ -231,6 +231,28 @@ await check("Application retry reuses the uploaded CV and preserves the draft af
   assert.equal(findElement(render(), e => e.type === "textarea").props.value, "");
 });
 
+
+await check("Application lists expose loading controls and send stage filters to paginated queries", async () => {
+  for (const mode of ["Candidate", "Employer"]) {
+    const runner = hookRunner(); let state = "CanLoadMore"; let queryArgs; const loads = [];
+    const Page = loader({
+      react: runner.react, "next/link": { default: "a" }, "next/image": { default: "img" },
+      "convex/react": { usePaginatedQuery: (_query, args, options) => { queryArgs = args; assert.equal(options.initialNumItems, 25); return { results: [], status: state, loadMore: n => loads.push(n) }; }, useMutation: () => async () => {} },
+      "lucide-react": new Proxy({}, { get: (_, name) => String(name) }), sonner: { toast: { success() {}, error() {} } },
+      "@/hook/useConvexUser": { default: () => ({ isAuthenticated: true }) },
+      "@/components/dashboard/header/DashboardNavigation": { default: "nav" },
+      ["./" + mode + "Applications.module.css"]: { default: {} },
+    })("src/components/dashboard/section/" + mode + "Applications.jsx").default;
+    const render = () => runner.render(() => Page({ jobId: "job" }));
+    let tree = render(); const more = findElement(tree, e => e.props?.children === "Load more");
+    assert.ok(more); assert.equal(more.props.disabled, false); more.props.onClick(); assert.deepEqual(loads, [25]);
+    if (mode === "Employer") { findElement(tree, e => e.type === "select" && e.props.value === "all").props.onChange({ target: { value: "screening" } }); render(); assert.equal(queryArgs.status, "screening"); assert.equal(queryArgs.jobId, "job"); }
+    state = "LoadingMore"; assert.equal(findElement(render(), e => e.props?.children === "Loading…").props.disabled, true);
+    state = "Exhausted"; assert.ok(!findElement(render(), e => e.props?.children === "Load more"));
+    state = "LoadingFirstPage"; assert.ok(!findElement(render(), e => e.props?.children === "Load more"));
+  }
+});
+
 await check("Candidate withdrawal and employer stages block duplicate actions and retry with the current version", async () => {
   for (const mode of ["Candidate", "Employer"]) {
     const runner = hookRunner(); const calls = [];
@@ -238,7 +260,7 @@ await check("Candidate withdrawal and employer stages block duplicate actions an
     const application = { _id: "application", status: "submitted", updatedAt: 1, statusUpdatedAt: 1 };
     const Page = loader({
       react: runner.react, "next/link": { default: "a" }, "next/image": { default: "img" },
-      "convex/react": { useQuery: () => [{ application, job: { slug: "qa", title: "QA vacancy" }, candidate: { name: "QA Candidate", email: "qa@example.invalid" } }], useMutation: () => args => { calls.push(args); return new Promise((resolve, reject) => { settle = { resolve, reject }; }); } },
+      "convex/react": { usePaginatedQuery: () => ({ results: [{ application, job: { slug: "qa", title: "QA vacancy" }, candidate: { name: "QA Candidate", email: "qa@example.invalid" } }], status: "Exhausted", loadMore() {} }), useMutation: () => args => { calls.push(args); return new Promise((resolve, reject) => { settle = { resolve, reject }; }); } },
       "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
       sonner: { toast: { success() {}, error() {} } },
       "@/hook/useConvexUser": { default: () => ({ isAuthenticated: true }) },

@@ -1,4 +1,7 @@
 import { v } from "convex/values";
+import { paginationOptsValidator, paginationResultValidator } from "convex/server";
+import type { QueryCtx } from "../_generated/server";
+import type { Doc } from "../_generated/dataModel";
 import { mutation, query } from "../_generated/server";
 import {
   requireAuthUser,
@@ -60,6 +63,99 @@ const employerApplicationValidator = v.object({
   resumeUrl: v.union(v.string(), v.null()),
 });
 
+const candidateRowValidator =     v.object({
+      application: candidateApplicationValidator,
+      job: v.object({
+        id: v.id("jobs"),
+        slug: v.string(),
+        title: v.string(),
+        company: v.union(v.string(), v.null()),
+        workType: v.union(v.string(), v.null()),
+        locationCity: v.union(v.string(), v.null()),
+        status: v.string(),
+      }),
+    });
+
+async function candidateRows(ctx: QueryCtx, applications: Doc<"jobApplications">[]) {
+    const jobs = await Promise.all(
+      applications.map((item) => ctx.db.get(item.jobId)),
+    );
+    return applications.flatMap((application, index) => {
+      const job = jobs[index];
+      if (!job) return [];
+      const {
+        candidateId: _candidateId,
+        employerNote: _privateNote,
+        tenantId: _tenantId,
+        ...safe
+      } = application;
+      return [
+        {
+          application: safe,
+          job: {
+            id: job._id,
+            slug: job.slug,
+            title: job.title,
+            company: job.company ?? null,
+            workType: job.workType ?? null,
+            locationCity: job.locationCity ?? null,
+            status: job.status,
+          },
+        },
+      ];
+    });
+}
+async function employerRows(ctx: QueryCtx, applications: Doc<"jobApplications">[]) {
+    return await Promise.all(
+      applications.map(async (application) => {
+        const candidate = await ctx.db.get(application.candidateId);
+        if (!candidate)
+          throw new Error("Application candidate no longer exists.");
+        const resumeUrl = application.resumeStorageId
+          ? `/api/applications/${application._id}/resume`
+          : null;
+        return {
+          application,
+          candidate: {
+            id: candidate._id,
+            name: candidate.name,
+            email: candidate.email,
+            image: candidate.image ?? candidate.avatar ?? null,
+          },
+          resumeUrl,
+        };
+      }),
+    );
+}
+
+export const listMinePage = query({
+  args: { paginationOpts: paginationOptsValidator },
+  returns: paginationResultValidator(candidateRowValidator),
+  handler: async (ctx, args) => {
+    const user = await requireAuthUser(ctx);
+    const result = await ctx.db.query("jobApplications")
+      .withIndex("by_candidate", q => q.eq("candidateId", user._id))
+      .order("desc").paginate(args.paginationOpts);
+    return { ...result, page: await candidateRows(ctx, result.page) };
+  },
+});
+
+export const listForJobPage = query({
+  args: { jobId: v.id("jobs"), status: v.optional(jobApplicationStatusValidator), paginationOpts: paginationOptsValidator },
+  returns: paginationResultValidator(employerApplicationValidator),
+  handler: async (ctx, args) => {
+    const job = await ctx.db.get(args.jobId);
+    if (!job) throw new Error("Job not found.");
+    const employer = await requireOwner(ctx, job.clientId);
+    requireMarketplaceContext(employer, "company", "jobs", "viewing applicants");
+    const applications = args.status
+      ? ctx.db.query("jobApplications").withIndex("by_job_status", q => q.eq("jobId", args.jobId).eq("status", args.status!))
+      : ctx.db.query("jobApplications").withIndex("by_job", q => q.eq("jobId", args.jobId));
+    const result = await applications.order("desc").paginate(args.paginationOpts);
+    return { ...result, page: await employerRows(ctx, result.page) };
+  },
+});
+
 function validatePortfolioUrl(value?: string) {
   if (!value) return;
   let parsed: URL;
@@ -98,20 +194,7 @@ export const getMineForJob = query({
 
 export const listMine = query({
   args: { limit: v.optional(v.number()) },
-  returns: v.array(
-    v.object({
-      application: candidateApplicationValidator,
-      job: v.object({
-        id: v.id("jobs"),
-        slug: v.string(),
-        title: v.string(),
-        company: v.union(v.string(), v.null()),
-        workType: v.union(v.string(), v.null()),
-        locationCity: v.union(v.string(), v.null()),
-        status: v.string(),
-      }),
-    }),
-  ),
+  returns: v.array(candidateRowValidator),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
     const limit = Math.min(Math.max(args.limit ?? 25, 1), 100);
@@ -121,33 +204,7 @@ export const listMine = query({
       .order("desc")
       .take(limit);
 
-    const jobs = await Promise.all(
-      applications.map((item) => ctx.db.get(item.jobId)),
-    );
-    return applications.flatMap((application, index) => {
-      const job = jobs[index];
-      if (!job) return [];
-      const {
-        candidateId: _candidateId,
-        employerNote: _privateNote,
-        tenantId: _tenantId,
-        ...safe
-      } = application;
-      return [
-        {
-          application: safe,
-          job: {
-            id: job._id,
-            slug: job.slug,
-            title: job.title,
-            company: job.company ?? null,
-            workType: job.workType ?? null,
-            locationCity: job.locationCity ?? null,
-            status: job.status,
-          },
-        },
-      ];
-    });
+    return candidateRows(ctx, applications);
   },
 });
 
@@ -179,26 +236,7 @@ export const listForJob = query({
           .order("desc")
           .take(limit);
 
-    return await Promise.all(
-      applications.map(async (application) => {
-        const candidate = await ctx.db.get(application.candidateId);
-        if (!candidate)
-          throw new Error("Application candidate no longer exists.");
-        const resumeUrl = application.resumeStorageId
-          ? `/api/applications/${application._id}/resume`
-          : null;
-        return {
-          application,
-          candidate: {
-            id: candidate._id,
-            name: candidate.name,
-            email: candidate.email,
-            image: candidate.image ?? candidate.avatar ?? null,
-          },
-          resumeUrl,
-        };
-      }),
-    );
+    return employerRows(ctx, applications);
   },
 });
 
