@@ -25,6 +25,7 @@ import { api } from "../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import { Button } from "@/components/ui/button";
 import { safeOnboardingRedirect } from "@/lib/onboardingRedirect.mjs";
+import { onboardingDraftKey, restoreOnboardingDraft } from "@/lib/onboardingDraft.mjs";
 import styles from "./OnboardingExperience.module.css";
 
 const roles = [
@@ -125,7 +126,7 @@ export default function OnboardingExperience() {
   const requestedWorld = searchParams.get("world");
   const [step, setStep] = useState(requestedRole ? 2 : 1);
   const [role, setRole] = useState(requestedRole);
-  const [world, setWorld] = useState("online");
+  const [world, setWorld] = useState(requestedRole === "client" && requestedWorld === "local" ? "local" : roles.find(item => item.id === requestedRole)?.world || "online");
   const [selections, setSelections] = useState([]);
   const [headline, setHeadline] = useState("");
   const [bio, setBio] = useState("");
@@ -151,17 +152,42 @@ export default function OnboardingExperience() {
     }
   }, [isClerkSignedIn, isLoaded, router]);
 
+  const draftKey = onboardingDraftKey(convexUser?._id, requestedRole, requestedWorld);
+  const [restoredKey, setRestoredKey] = useState(null);
+  const [draftNotice, setDraftNotice] = useState("");
   useEffect(() => {
-    if (!role) return;
-    const config = roles.find((item) => item.id === role);
-    setWorld(role === "client" && requestedWorld === "local" ? "local" : config?.world || "online");
-    setSelections([]);
-    setHeadline("");
-    setBio("");
-    setRate("");
-    setCity("");
-    setCompanyName("");
-  }, [role, requestedWorld]);
+    if (!draftKey || !isClerkSignedIn) return;
+    let draft = null;
+    try {
+      draft = restoreOnboardingDraft(window.sessionStorage.getItem(draftKey));
+      setDraftNotice(draft ? "Your unfinished setup was restored in this tab." : "Progress is saved in this tab until you finish or log out.");
+    } catch { setDraftNotice("This browser cannot save your progress. Keep this page open until you finish."); }
+    setRole(draft?.role ?? requestedRole);
+    setStep(draft?.step ?? (requestedRole ? 2 : 1));
+    setWorld(draft?.world ?? (requestedRole === "client" && requestedWorld === "local" ? "local" : roles.find(item => item.id === requestedRole)?.world || "online"));
+    setSelections(draft?.selections ?? []); setHeadline(draft?.headline ?? ""); setBio(draft?.bio ?? ""); setCity(draft?.city ?? ""); setRate(draft?.rate ?? ""); setCompanyName(draft?.companyName ?? "");
+    setRestoredKey(draftKey);
+  }, [draftKey, isClerkSignedIn, requestedRole, requestedWorld]);
+
+  useEffect(() => {
+    if (!draftKey || restoredKey !== draftKey || !isClerkSignedIn || actionRef.current || !role) return;
+    try { window.sessionStorage.setItem(draftKey, JSON.stringify({ version: 1, role, step, world, selections, headline, bio, city, rate, companyName })); }
+    catch { setDraftNotice("This browser cannot save your progress. Keep this page open until you finish."); }
+  }, [draftKey, restoredKey, isClerkSignedIn, role, step, world, selections, headline, bio, city, rate, companyName]);
+
+  function clearDraft(allEntries = false) {
+    if (!draftKey) return;
+    try {
+      const storage = window.sessionStorage;
+      if (allEntries) {
+        const prefix = 'skilllinkup-onboarding:' + convexUser._id + ':';
+        for (let i = storage.length - 1; i >= 0; i--) {
+          const key = storage.key(i);
+          if (key?.startsWith(prefix)) storage.removeItem(key);
+        }
+      } else storage.removeItem(draftKey);
+    } catch { /* Storage may be unavailable. */ }
+  }
 
   const options = useMemo(() => {
     if (role === "freelancer") return onlineSkills;
@@ -182,6 +208,10 @@ export default function OnboardingExperience() {
   }
 
   function chooseRole(nextRole) {
+    if (nextRole !== role) {
+      setWorld(nextRole === "client" && requestedWorld === "local" ? "local" : roles.find(item => item.id === nextRole)?.world || "online");
+      setSelections([]); setHeadline(""); setBio(""); setRate(""); setCity(""); setCompanyName("");
+    }
     setRole(nextRole);
     setError("");
     setStep(2);
@@ -239,6 +269,7 @@ export default function OnboardingExperience() {
         },
       });
 
+      clearDraft();
       router.replace(safeOnboardingRedirect(searchParams.get("redirect_url")));
     } catch (cause) {
       setError(
@@ -258,6 +289,7 @@ export default function OnboardingExperience() {
     setExitError("");
     try {
       await signOut({ redirectUrl: "/" });
+      clearDraft(true);
     } catch {
       actionRef.current = false;
       exitingRef.current = false;
@@ -274,7 +306,7 @@ export default function OnboardingExperience() {
     </nav>
   </header>;
 
-  if (!isLoaded || (isClerkSignedIn && !convexUser)) {
+  if (!isLoaded || (isClerkSignedIn && (!convexUser || (draftKey && restoredKey !== draftKey)))) {
     return <div className={styles.page}>{header}
       {exitError && <p className={styles.error} role="alert">{exitError}</p>}
       <div className={styles.loading}><LoaderCircle /><span>Preparing your account…</span></div>
@@ -287,6 +319,7 @@ export default function OnboardingExperience() {
       {exitError && <p className={styles.error} role="alert">{exitError}</p>}
 
       <main className={styles.shell}>
+        {draftNotice && <p className={styles.draftNotice} role="status">{draftNotice}</p>}
         <section className={styles.intro}>
           <p className={styles.eyebrow}>One account · three marketplaces</p>
           <h1 ref={headingRef} tabIndex={-1}>

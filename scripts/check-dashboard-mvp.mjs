@@ -12,6 +12,7 @@ import * as onboardingRedirects from "../src/lib/onboardingRedirect.mjs";
 import * as messagePolicy from "../src/lib/messagePolicy.mjs";
 import { upcomingAppointments } from "../src/lib/upcomingAppointments.mjs";
 import { validatePublishingForm } from "../src/lib/publishingValidation.mjs";
+import * as onboardingDraft from "../src/lib/onboardingDraft.mjs";
 import * as quoteDraft from "../src/lib/quoteRequestDraft.mjs";
 
 // Runs actual handlers and client helpers with in-memory adapters; never connects
@@ -234,6 +235,41 @@ await check("Application retry reuses the uploaded CV and preserves the draft af
 
 
 
+
+await check("Onboarding drafts survive remount, isolate accounts and clear only after successful setup", async () => {
+  const stored = new Map(); let actor = "account-a"; let failSave = true; let storageFails = false;
+  const storage = { get length() { return stored.size; }, key: index => [...stored.keys()][index], getItem: key => { if (storageFails) throw Error("Blocked"); return stored.get(key) ?? null; }, setItem: (key, value) => { if (storageFails) throw Error("Blocked"); stored.set(key, value); }, removeItem: key => stored.delete(key) };
+  function mount() {
+    const runner = hookRunner();
+    const Page = loader({ react: runner.react, "next/image": { default: "img" }, "next/link": { default: "a" },
+      "next/navigation": { useRouter: () => ({ replace() {} }), useSearchParams: () => new URLSearchParams("role=company") },
+      "@clerk/nextjs": { useClerk: () => ({ signOut: async () => {} }) },
+      "convex/react": { useMutation: () => async () => { if (failSave) throw Error("Temporary failure"); } },
+      "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
+      "@/hook/useConvexUser": { default: () => ({ convexUser: { _id: actor, accountRoles: [] }, isLoaded: true, isClerkSignedIn: true }) },
+      "@/lib/onboardingRedirect.mjs": onboardingRedirects, "@/lib/onboardingDraft.mjs": onboardingDraft, "./OnboardingExperience.module.css": { default: {} },
+    }, { URLSearchParams, window: { sessionStorage: storage } })("src/components/onboarding/OnboardingExperience.jsx").default;
+    return () => runner.render(() => Page());
+  }
+  let render = mount(); let tree = render();
+  findElement(tree, e => e.props?.placeholder === "Your organisation").props.onChange({ target: { value: "Saved QA draft" } }); render();
+  render = mount(); tree = render(); assert.equal(findElement(tree, e => e.props?.placeholder === "Your organisation").props.value, "Saved QA draft");
+  actor = "account-b"; tree = render(); assert.equal(findElement(tree, e => e.props?.placeholder === "Your organisation").props.value, "");
+  actor = "account-a"; tree = render(); assert.equal(findElement(tree, e => e.props?.placeholder === "Your organisation").props.value, "Saved QA draft");
+  const key = onboardingDraft.onboardingDraftKey(actor, "company", null);
+  await findElement(tree, e => e.type === "form").props.onSubmit({ preventDefault() {} }); tree = render(); assert.ok(stored.has(key));
+  failSave = false; await findElement(tree, e => e.type === "form").props.onSubmit({ preventDefault() {} }); assert.equal(stored.has(key), false);
+  render = mount(); tree = render();
+  stored.set(onboardingDraft.onboardingDraftKey(actor, "candidate", null), "other-entry");
+  const otherAccountKey = onboardingDraft.onboardingDraftKey("account-b", "company", null);
+  stored.set(otherAccountKey, "other-account");
+  await findElement(tree, e => e.props?.children === "Log out").props.onClick();
+  assert.equal(stored.has(key), false); assert.equal(stored.has(onboardingDraft.onboardingDraftKey(actor, "candidate", null)), false); assert.equal(stored.get(otherAccountKey), "other-account");
+  storageFails = true; tree = mount()(); assert.ok(findElement(tree, e => e.props?.role === "status" && e.props.children.includes("cannot save")));
+  assert.equal(onboardingDraft.restoreOnboardingDraft('{broken'), null);
+  assert.equal(onboardingDraft.restoreOnboardingDraft(JSON.stringify({ version: 1, role: "admin" })), null);
+});
+
 await check("Onboarding exits preserve drafts on failure and suppress the login redirect during logout", async () => {
   const runner = hookRunner(); const navigations = []; const calls = []; let settle; let signedIn = true; let userReady = true;
   const Page = loader({
@@ -243,7 +279,7 @@ await check("Onboarding exits preserve drafts on failure and suppress the login 
     "convex/react": { useMutation: () => async () => { throw new Error("Should not save"); } },
     "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
     "@/hook/useConvexUser": { default: () => ({ convexUser: userReady ? { accountRoles: [] } : null, isLoaded: true, isClerkSignedIn: signedIn }) },
-    "@/lib/onboardingRedirect.mjs": onboardingRedirects, "./OnboardingExperience.module.css": { default: {} },
+    "@/lib/onboardingRedirect.mjs": onboardingRedirects, "@/lib/onboardingDraft.mjs": onboardingDraft, "./OnboardingExperience.module.css": { default: {} },
   }, { URLSearchParams })("src/components/onboarding/OnboardingExperience.jsx").default;
   const render = () => runner.render(() => Page()); let tree = render();
   findElement(tree, e => e.props?.placeholder === "Your organisation").props.onChange({ target: { value: "QA retained company" } });
@@ -378,7 +414,7 @@ await check("Account mode recovery preserves the form destination and switches i
     "convex/react": {useMutation:()=>args=>{mutations.push(args);return new Promise((resolve,reject)=>{settle={resolve,reject};});}},
     "lucide-react": new Proxy({}, {get:(_,name)=>String(name)}),
     "@/hook/useConvexUser": {default:()=>({convexUser:account,isLoaded:true})},
-    "@/lib/onboardingRedirect.mjs": onboardingRedirects,
+    "@/lib/onboardingRedirect.mjs": onboardingRedirects, "@/lib/onboardingDraft.mjs": onboardingDraft,
   },{window:{location:{pathname:"/local/request-quote",search:"?category=plumbing",hash:"#details"}},URLSearchParams})("src/components/dashboard/AccountModeGuard.jsx").default;
   const render=()=>runner.render(()=>Guard({role:"client",world:"local",children:"Protected form"}));
   const button=tree=>findElement(tree,e=>e.type==="Button");
@@ -553,7 +589,7 @@ await check("Workspace switch opens missing setup and navigates only after a suc
     react: runner.react,
     "next/link": { default: "a" },
     "next/navigation": { useRouter: () => ({ push: (url) => routes.push(url), replace: (url) => routes.push(url) }) },
-    "@/lib/onboardingRedirect.mjs": onboardingRedirects,
+    "@/lib/onboardingRedirect.mjs": onboardingRedirects, "@/lib/onboardingDraft.mjs": onboardingDraft,
     "convex/react": { useMutation: () => (args) => { writes.push(args); return new Promise((resolve, reject) => { settle = { resolve, reject }; }); } },
     "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
     "sonner": { toast: { error: (error) => errors.push(error) } },
@@ -674,7 +710,7 @@ await check("All five onboarding roles save before returning, and failures prese
       "convex/react": { useMutation: () => async (value) => { if (fail) throw new Error("Temporary failure"); writes.push(value); } },
       "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
       "@/hook/useConvexUser": { default: () => ({ convexUser: { accountRoles: ["client"] }, isLoaded: true, isClerkSignedIn: true }) },
-      "@/lib/onboardingRedirect.mjs": onboardingRedirects,
+      "@/lib/onboardingRedirect.mjs": onboardingRedirects, "@/lib/onboardingDraft.mjs": onboardingDraft,
       "./OnboardingExperience.module.css": { default: {} },
       "next/link": { default: "a" }, "@clerk/nextjs": { useClerk: () => ({ signOut: async () => {} }) },
     }, { URLSearchParams })("src/components/onboarding/OnboardingExperience.jsx").default;
