@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "convex/react";
 import {
@@ -23,6 +23,8 @@ import {
   jobDraftKey,
   restoreJobDraft,
 } from "@/lib/jobDraft.mjs";
+import { Button } from "@/components/ui/button";
+import { validatePublishingForm } from "@/lib/publishingValidation.mjs";
 import styles from "./CreateJobInfo.module.css";
 
 const jobTypes = [
@@ -78,6 +80,8 @@ export default function CreateJobInfo() {
     [categories],
   );
   const [busy, setBusy] = useState(false);
+  const publishing = useRef(false);
+  const [submitError, setSubmitError] = useState("");
   const [verificationBusy, setVerificationBusy] = useState(false);
   const [verification, setVerification] = useState({
     companyName: "",
@@ -144,20 +148,11 @@ export default function CreateJobInfo() {
 
   async function submit(event) {
     event.preventDefault();
-    if (!form.title.trim() || form.description.trim().length < 80) {
-      toast.error(
-        "Add a clear title and a description of at least 80 characters.",
-      );
-      return;
-    }
-    if (!form.company.trim() || !form.locationCountry.trim()) {
-      toast.error("Add the hiring company and applicant country.");
-      return;
-    }
-    if (form.workType !== "remote" && !form.locationCity.trim()) {
-      toast.error("Add the city for hybrid and on-site vacancies.");
-      return;
-    }
+    if (publishing.current) return;
+    const error = validatePublishingForm(form, "job");
+    if (error) { setSubmitError(error); return; }
+    publishing.current = true;
+    setSubmitError("");
     setBusy(true);
     try {
       const jobId = await createJob({
@@ -196,8 +191,9 @@ export default function CreateJobInfo() {
       }
       router.push(`/manage-jobs/${jobId}/applications`);
     } catch (error) {
-      toast.error(error?.message || "The vacancy could not be published.");
+      setSubmitError(error?.message || "The vacancy could not be published.");
     } finally {
+      publishing.current = false;
       setBusy(false);
     }
   }
@@ -218,9 +214,9 @@ export default function CreateJobInfo() {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <button type="button" onClick={() => router.back()}>
+        <Button type="button" variant="ghost" disabled={busy || verificationBusy} onClick={() => router.back()}>
           <ArrowLeft /> Back
-        </button>
+        </Button>
         <div>
           <span>Jobs · Company workspace</span>
           <h1>Publish a verified vacancy</h1>
@@ -295,7 +291,7 @@ export default function CreateJobInfo() {
           ) : null}
           <div className={styles.verificationFields}>
             <Field label="Registered company name">
-              <input
+              <input disabled={busy}
                 value={verification.companyName}
                 onChange={(e) =>
                   setVerificationField("companyName", e.target.value)
@@ -305,7 +301,7 @@ export default function CreateJobInfo() {
               />
             </Field>
             <Field label="Company website">
-              <input
+              <input disabled={busy}
                 type="url"
                 value={verification.website}
                 onChange={(e) =>
@@ -316,7 +312,7 @@ export default function CreateJobInfo() {
               />
             </Field>
             <Field label="Registration number">
-              <input
+              <input disabled={busy}
                 value={verification.registrationNumber}
                 onChange={(e) =>
                   setVerificationField("registrationNumber", e.target.value)
@@ -328,7 +324,7 @@ export default function CreateJobInfo() {
               />
             </Field>
             <Field label="Country">
-              <input
+              <input disabled={busy}
                 value={verification.country}
                 onChange={(e) =>
                   setVerificationField("country", e.target.value)
@@ -341,7 +337,7 @@ export default function CreateJobInfo() {
               label="Proof and hiring context"
               hint="40–2,000 characters"
             >
-              <textarea
+              <textarea disabled={busy}
                 value={verification.evidence}
                 onChange={(e) =>
                   setVerificationField("evidence", e.target.value)
@@ -359,15 +355,15 @@ export default function CreateJobInfo() {
               <ShieldCheck /> Your evidence is visible only to authorised
               Skilllinkup administrators.
             </p>
-            <button type="submit" className="skl-action-primary" disabled={verificationBusy}>
+            <Button type="submit"  disabled={verificationBusy}>
               {verificationBusy ? "Submitting…" : "Request verification"}
               <ArrowRight />
-            </button>
+            </Button>
           </footer>
         </form>
       ) : (
         <div className={styles.layout}>
-          <form className={styles.form} onSubmit={submit}>
+          <form className={styles.form} onSubmit={submit} aria-busy={busy}>
             {draftRestored ? (
               <p role="status">Your saved vacancy draft has been restored.</p>
             ) : null}
@@ -383,7 +379,7 @@ export default function CreateJobInfo() {
               </div>
               <div className={styles.fields}>
                 <Field label="Job title">
-                  <input
+                  <input disabled={busy}
                     value={form.title}
                     onChange={(e) => set("title", e.target.value)}
                     placeholder="Senior Product Designer"
@@ -393,7 +389,7 @@ export default function CreateJobInfo() {
                   />
                 </Field>
                 <Field label="Company">
-                  <input
+                  <input disabled={busy}
                     value={form.company}
                     onChange={(e) => set("company", e.target.value)}
                     placeholder={convexUser?.name || "Company name"}
@@ -401,7 +397,7 @@ export default function CreateJobInfo() {
                   />
                 </Field>
                 <Field label="Category">
-                  <select
+                  <select disabled={busy}
                     value={form.categoryId}
                     onChange={(e) => set("categoryId", e.target.value)}
                   >
@@ -414,7 +410,7 @@ export default function CreateJobInfo() {
                   </select>
                 </Field>
                 <Field label="Employment type">
-                  <select
+                  <select disabled={busy}
                     value={form.jobType}
                     onChange={(e) => set("jobType", e.target.value)}
                   >
@@ -430,7 +426,7 @@ export default function CreateJobInfo() {
                   label="Role description"
                   hint={`${form.description.length}/10,000`}
                 >
-                  <textarea
+                  <textarea disabled={busy}
                     value={form.description}
                     onChange={(e) => set("description", e.target.value)}
                     rows={9}
@@ -441,7 +437,7 @@ export default function CreateJobInfo() {
                   />
                 </Field>
                 <Field full label="Required skills" hint="Comma separated">
-                  <input
+                  <input disabled={busy}
                     value={form.requiredSkills}
                     onChange={(e) => set("requiredSkills", e.target.value)}
                     placeholder="Product strategy, Figma, Research"
@@ -461,7 +457,7 @@ export default function CreateJobInfo() {
               </div>
               <div className={styles.fields}>
                 <Field label="Work setup">
-                  <select
+                  <select disabled={busy}
                     value={form.workType}
                     onChange={(e) => set("workType", e.target.value)}
                   >
@@ -471,7 +467,7 @@ export default function CreateJobInfo() {
                   </select>
                 </Field>
                 <Field label="Experience">
-                  <select
+                  <select disabled={busy}
                     value={form.experienceLevel}
                     onChange={(e) => set("experienceLevel", e.target.value)}
                   >
@@ -482,7 +478,7 @@ export default function CreateJobInfo() {
                   </select>
                 </Field>
                 <Field label="City">
-                  <input
+                  <input disabled={busy}
                     value={form.locationCity}
                     onChange={(e) => set("locationCity", e.target.value)}
                     placeholder="Rotterdam"
@@ -494,14 +490,14 @@ export default function CreateJobInfo() {
                     form.workType === "remote" ? "Applicant country" : "Country"
                   }
                 >
-                  <input
+                  <input disabled={busy}
                     value={form.locationCountry}
                     onChange={(e) => set("locationCountry", e.target.value)}
                     required
                   />
                 </Field>
                 <Field label="Salary from">
-                  <input
+                  <input disabled={busy}
                     type="number"
                     min="0"
                     value={form.salaryMin}
@@ -510,7 +506,7 @@ export default function CreateJobInfo() {
                   />
                 </Field>
                 <Field label="Salary to">
-                  <input
+                  <input disabled={busy}
                     type="number"
                     min="0"
                     value={form.salaryMax}
@@ -519,7 +515,7 @@ export default function CreateJobInfo() {
                   />
                 </Field>
                 <Field label="Currency">
-                  <select
+                  <select disabled={busy}
                     value={form.currency}
                     onChange={(e) => set("currency", e.target.value)}
                   >
@@ -529,37 +525,38 @@ export default function CreateJobInfo() {
                   </select>
                 </Field>
                 <Field label="Application deadline">
-                  <input
+                  <input disabled={busy}
                     type="date"
                     value={form.expiresAt}
                     onChange={(e) => set("expiresAt", e.target.value)}
                   />
                 </Field>
                 <Field full label="Benefits" hint="Comma separated">
-                  <input
+                  <input disabled={busy}
                     value={form.benefits}
                     onChange={(e) => set("benefits", e.target.value)}
                   />
                 </Field>
               </div>
             </section>
+            <p role="alert" aria-live="polite">{submitError}</p>
             <footer>
-              <button
+              <Button
                 type="button"
-                className="skl-action-secondary"
+                variant="outline"
                 onClick={saveForLater}
                 disabled={busy || !draftReady}
               >
                 Save for later
-              </button>
-              <button
-                className="skl-action-primary"
+              </Button>
+              <Button
+
                 type="submit"
                 disabled={busy || !draftReady || !isLoaded || !isAuthenticated}
               >
                 {busy ? "Publishing…" : "Publish vacancy"}
                 <ArrowRight />
-              </button>
+              </Button>
             </footer>
           </form>
           <aside>

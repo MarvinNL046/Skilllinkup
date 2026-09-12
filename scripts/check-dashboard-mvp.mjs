@@ -11,6 +11,7 @@ import { getOrderActionContext } from "../src/lib/orderWorkspace.mjs";
 import * as onboardingRedirects from "../src/lib/onboardingRedirect.mjs";
 import * as messagePolicy from "../src/lib/messagePolicy.mjs";
 import { upcomingAppointments } from "../src/lib/upcomingAppointments.mjs";
+import { validatePublishingForm } from "../src/lib/publishingValidation.mjs";
 
 // Runs actual handlers and client helpers with in-memory adapters; never connects
 // to Convex, Clerk or browser storage and does not mutate application data.
@@ -150,6 +151,62 @@ function composerFixture(isMobile = false) {
   const render = () => runner.render(() => Box(props));
   return { props, sends, render, settle: () => settle };
 }
+
+await check("Publishing forms reject whitespace, invalid salaries and expired deadlines", async () => {
+  const valid = { ...EMPTY_JOB_FORM, title: "QA engineer vacancy", company: "QA Company", description: "Responsibilities and expectations for a qualified engineer. ".repeat(3) };
+  assert.equal(validatePublishingForm(valid, "job"), null);
+  for (const change of [{ title: "        " }, { description: " ".repeat(100) }, { salaryMin: "200", salaryMax: "100" }, { salaryMin: "Infinity" }, { salaryMax: "-1" }, { expiresAt: "2000-01-01" }, { workType: "local" }]) assert.ok(validatePublishingForm({ ...valid, ...change }, "job"));
+});
+
+await check("Actual vacancy and quote forms retain failed drafts, block duplicate submits and navigate on success", async () => {
+  for (const kind of ["job", "quote"]) {
+    const runner = hookRunner();
+    const writes = [], routes = [], removed = [];
+    let settle;
+    const validJob = { ...EMPTY_JOB_FORM, title: "QA engineer vacancy", company: "QA Company", description: "Responsibilities and expectations for a qualified engineer. ".repeat(3) };
+    const component = kind === "job" ? "CreateJobInfo" : "CreateQuoteRequestInfo";
+    const Page = loader({
+      react: runner.react,
+      "next/navigation": { useRouter: () => ({ push: (url) => routes.push(url), back() {} }) },
+      "convex/react": { useQuery: () => [], useMutation: () => (args) => { writes.push(args); return new Promise((resolve, reject) => { settle = { resolve, reject }; }); } },
+      "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
+      "sonner": { toast: { success() {}, error() {} } },
+      "@/hook/useConvexUser": { default: () => ({ convexUser: { _id: "qa", role: "admin", name: "QA" }, isLoaded: true, isAuthenticated: true }) },
+      "@/lib/marketplaceCategories": { flattenLeafMarketplaceCategories: () => [{ _id: "qa-category", label: "Plumbing" }] },
+      "@/lib/publishingValidation.mjs": { validatePublishingForm },
+      "@/lib/jobDraft.mjs": { EMPTY_JOB_FORM, jobDraftKey, restoreJobDraft },
+      [`./${component}.module.css`]: { default: {} },
+    }, { localStorage: { getItem: () => JSON.stringify({ version: 1, form: validJob }), removeItem: (key) => removed.push(key) } })(`src/components/dashboard/section/${component}.jsx`).default;
+    let tree = runner.render(() => Page());
+    if (kind === "quote") {
+      for (const [label, value] of [["Service category", "qa-category"], ["Short title", "QA plumbing request"], ["Description", "Please inspect and repair the leaking kitchen tap with replacement parts."], ["City", "Delft"], ["Postcode", "2611 AA"]]) {
+        const field = findElement(tree, (e) => e.type === "label" && findElement(e, (child) => child.type === "span" && child.props.children === label));
+        const input = findElement(field, (e) => ["input", "select", "textarea"].includes(e.type));
+        if (label === "City") assert.equal(input.props.value, "");
+        input.props.onChange({ target: { value } });
+        tree = runner.render();
+      }
+    }
+    const form = findElement(tree, (e) => e.type === "form");
+    const event = { preventDefault() {} };
+    const first = form.props.onSubmit(event);
+    await form.props.onSubmit(event);
+    assert.equal(writes.length, 1);
+    settle.reject(new Error("Temporary connection failure"));
+    await first;
+    tree = runner.render();
+    assert.equal(findElement(tree, (e) => e.props?.role === "alert").props.children, "Temporary connection failure");
+    assert.equal(routes.length, 0);
+    assert.equal(removed.length, 0);
+    const retry = findElement(tree, (e) => e.type === "form").props.onSubmit(event);
+    assert.equal(writes[1].title, writes[0].title);
+    assert.equal(writes[1].description, writes[0].description);
+    settle.resolve("qa-created");
+    await retry;
+    assert.deepEqual(routes, [kind === "job" ? "/manage-jobs/qa-created/applications" : "/local/quote-request/qa-created"]);
+    assert.equal(removed.length, kind === "job" ? 1 : 0);
+  }
+});
 
 await check("Role dashboards link View all to owned records and keep creation actions separate", async () => {
   const Page = loader({
