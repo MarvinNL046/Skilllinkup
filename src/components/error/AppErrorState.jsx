@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { AlertTriangle, ArrowLeft, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import styles from "./AppErrorState.module.css";
 
 export default function AppErrorState({
@@ -18,8 +19,8 @@ export default function AppErrorState({
         <h1>{title}</h1>
         <p className={styles.message}>{message}</p>
         <div className={styles.actions}>
-          {reset ? <button type="button" onClick={reset}><RefreshCw />Try again</button> : null}
-          <Link href="/"><ArrowLeft />Back to home</Link>
+          {reset ? <Button type="button" onClick={reset}><RefreshCw />Try again</Button> : null}
+          <Button variant="secondary" asChild><Link href="/"><ArrowLeft />Back to home</Link></Button>
         </div>
         <small>If this keeps happening, contact <a href="mailto:support@skilllinkup.com">support@skilllinkup.com</a>.</small>
       </section>

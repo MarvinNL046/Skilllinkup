@@ -8,12 +8,14 @@ import { useTranslations } from "next-intl";
 import { Mail } from "lucide-react";
 import { api } from "../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
+import { Button } from "@/components/ui/button";
 
 export default function ContactButton({
   recipientId,
   profileId,
   gigId,
   className = "",
+  variant = "outline",
 }) {
   const t = useTranslations("contactButton");
   const { isSignedIn } = useUser();
@@ -51,14 +53,15 @@ export default function ContactButton({
   if (convexUser?._id === recipientId || (!profileId && !gigId)) return null;
 
   return (
-    <button
-      className={`btn btn--secondary ${className}`}
+    <Button
+      variant={variant}
+      className={className}
       onClick={handleContact}
       disabled={isLoading || (isSignedIn && !convexUser?._id)}
       style={{ justifyContent: "center" }}
     >
       <Mail size={16} />
       {isLoading ? t("openingChat") : t("contact")}
-    </button>
+    </Button>
   );
 }

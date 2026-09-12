@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useQuery } from "convex/react";
 import { useTranslations } from "next-intl";
-import { ArrowRight, Sparkles, Check } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import WaitlistButton from "@/components/ui/WaitlistButton";
 import { api } from "../../../convex/_generated/api";
 
@@ -76,7 +76,6 @@ export default function PrelaunchWorld({
                 marginBottom: "var(--space-6)",
               }}
             >
-              <Sparkles size={12} strokeWidth={2.4} style={{ color: palette.accent }} />
               {eyebrow}
             </span>
           )}
@@ -114,7 +113,7 @@ export default function PrelaunchWorld({
             </p>
             <div className="flex items-center" style={{ gap: "var(--space-3)", flexWrap: "wrap" }}>
               <WaitlistButton
-                className={tone === "secondary" ? "btn btn--accent btn--lg" : "btn btn--primary btn--lg"}
+                size="lg"
               />
               {waitlistCount !== undefined && (
                 <span

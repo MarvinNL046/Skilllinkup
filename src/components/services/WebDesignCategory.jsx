@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -7,6 +8,7 @@ import {
   ClipboardList,
   Gauge,
   Globe2,
+  Headset,
   LayoutTemplate,
   MapPin,
   MessageSquareMore,
@@ -16,8 +18,6 @@ import {
   Settings,
   ShieldCheck,
   ShoppingBag,
-  Sparkles,
-  Star,
   Target,
   UsersRound,
 } from "lucide-react";
@@ -100,7 +100,7 @@ export default function WebDesignCategory() {
             <div className={styles.heroCopy}><span className={styles.eyebrow}>Web design professionals worldwide</span><h1>Find a web designer who brings your idea to life.</h1><strong>Professional web design. Tailored. Results-driven.</strong><p>From sharp portfolio sites to complete online stores. Experienced designers turn your vision into a user-friendly, conversion-focused website that performs.</p></div>
             <div className={styles.heroVisual}><Image src="/images/skilllinkup-webdesign/webdesign-hero-v1.png" alt="Web designer with responsive website designs" fill priority sizes="(max-width: 900px) 100vw, 48vw" /></div>
           </div>
-          <form className={styles.searchBar} action="/online/freelancers" method="get"><label><Search size={19} /><input name="q" defaultValue="Web designer" aria-label="What kind of website do you need?" /></label><label><MapPin size={19} /><input name="location" placeholder="City or country (optional)" aria-label="Designer location" /></label><button type="submit">Find a web designer</button></form>
+          <form className={styles.searchBar} action="/online/freelancers" method="get"><label><Search size={19} /><input name="q" defaultValue="Web designer" aria-label="What kind of website do you need?" /></label><label><MapPin size={19} /><input name="location" placeholder="City or country (optional)" aria-label="Designer location" /></label><Button type="submit">Find a web designer</Button></form>
           <div className={styles.heroTrust}><span><BadgeCheck size={19} />Verified profiles</span><span><ShieldCheck size={19} />Clear milestones</span><span><MessageSquareMore size={19} />Clear agreements</span></div>
         </div>
       </section>
@@ -119,13 +119,13 @@ export default function WebDesignCategory() {
 
       <section className={`${styles.section} ${styles.processSection}`}><div className={styles.centerTitle}><h2>How it works</h2></div><div className={styles.process}><Image src="/images/skilllinkup-home/how-skilllinkup-works-v1.png" alt="Post your project, compare web designers and record delivery" fill sizes="90vw" /></div><div className={styles.processCopy}><article><b>1</b><strong>Post your project</strong><p>Tell us what you need and receive focused proposals.</p></article><article><b>2</b><strong>Compare & choose</strong><p>Review portfolios, expertise, ratings and pricing.</p></article><article><b>3</b><strong>Build & grow</strong><p>Share files, record feedback and approve delivery in one workspace.</p></article></div></section>
 
-      <section className={`${styles.section} ${styles.businessCta}`}><div><span className={styles.eyebrow}>Web design for every organisation</span><h2>Ready for a website that works?</h2><p>Meet designers who understand your goals, audience and brand—not just the pixels.</p><ul><li><Check />Startups and growing teams</li><li><Check />Small and medium businesses</li><li><Check />Online stores and communities</li></ul><span className={styles.ctaButtons}><Link href="/create-projects">Post a project<ArrowRight size={16} /></Link><Link href="/online/freelancers?q=web+designer">View web designers</Link></span></div><span className={styles.ctaImage}><Image src="/images/skilllinkup-home/business-team-v1.png" alt="Team planning a new website" fill sizes="(max-width: 760px) 100vw, 45vw" /></span></section>
+      <section className={`${styles.section} ${styles.businessCta}`}><div><span className={styles.eyebrow}>Web design for every organisation</span><h2>Ready for a website that works?</h2><p>Meet designers who understand your goals, audience and brand—not just the pixels.</p><ul><li><Check />Startups and growing teams</li><li><Check />Small and medium businesses</li><li><Check />Online stores and communities</li></ul><span className={styles.ctaButtons}><Button asChild><Link href="/create-projects">Post a project<ArrowRight size={16} /></Link></Button><Button asChild variant="outline"><Link href="/online/freelancers?q=web+designer">View web designers</Link></Button></span></div><span className={styles.ctaImage}><Image src="/images/skilllinkup-home/business-team-v1.png" alt="Team planning a new website" fill sizes="(max-width: 760px) 100vw, 45vw" /></span></section>
 
       <section className={styles.section}><div className={styles.centerTitle}><h2>What a clear web design workflow includes</h2></div><div className={styles.testimonials}>{[["A focused brief","Goals, audience, pages and technical constraints are clear before proposals arrive."],["Visible delivery","Milestones, files and revision feedback stay together in the workspace."],["Honest beta policy","Examples are labelled and Skilllinkup does not process payment during beta."]].map(([title, copy]) => <article key={title}><p>{copy}</p><span className={styles.quoteAuthor}><strong>{title}<small>Private beta principle</small></strong></span></article>)}</div></section>
 
       <section className={`${styles.section} ${styles.faqSection}`}><div className={styles.centerTitle}><span className={styles.eyebrow}>Good to know</span><h2>Frequently asked questions</h2></div><div className={styles.faqGrid}>{faqs.map(([question, answer]) => <details key={question}><summary>{question}<span>+</span></summary><p>{answer}</p></details>)}</div></section>
 
-      <section className={`${styles.section} ${styles.trustStrip}`} aria-label="Skilllinkup guarantees"><article><ShieldCheck /><span><strong>Safe & reliable</strong><small>Verified profiles and recorded approvals.</small></span></article><article><MessageSquareMore /><span><strong>Clear agreements</strong><small>Transparent pricing and communication.</small></span></article><article><Sparkles /><span><strong>Satisfaction support</strong><small>We help when something needs attention.</small></span></article><article><MonitorSmartphone /><span><strong>Worldwide support</strong><small>Online professionals across time zones.</small></span></article></section>
+      <section className={`${styles.section} ${styles.trustStrip}`} aria-label="Skilllinkup guarantees"><article><ShieldCheck /><span><strong>Safe & reliable</strong><small>Verified profiles and recorded approvals.</small></span></article><article><MessageSquareMore /><span><strong>Clear agreements</strong><small>Transparent pricing and communication.</small></span></article><article><Headset /><span><strong>Satisfaction support</strong><small>We help when something needs attention.</small></span></article><article><MonitorSmartphone /><span><strong>Worldwide support</strong><small>Online professionals across time zones.</small></span></article></section>
     </main>
   );
 }

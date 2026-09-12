@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { ArrowRight, BadgeCheck, Grid2X2, List, MapPin, Search, Star } from "lucide-react";
 import { useOnlineDiscovery } from "@/hook/useConvexFreelancers";
 import useDiscoveryFilters from "@/hook/useDiscoveryFilters";
@@ -21,7 +22,7 @@ export default function FreelancerDirectory() {
       <span className={styles.eyebrow}>Worldwide professional network</span><h1>Find the right freelancer</h1><p>Compare expertise, previous work and availability for your next online project.</p>
       <form className={styles.searchBar} onSubmit={(event) => { event.preventDefault(); const data = new FormData(event.currentTarget); update({ q: data.get("q").trim(), location: data.get("location").trim() }); }}>
         <label><Search size={19} /><span className="sr-only">Search expertise</span><input name="q" defaultValue={filters.q || ""} key={filters.q || ""} maxLength={200} placeholder="What expertise do you need?" /></label>
-        <label><MapPin size={19} /><span className="sr-only">Location</span><input name="location" defaultValue={filters.location || ""} key={filters.location || ""} maxLength={120} placeholder="City or country" /></label><button type="submit">Search <ArrowRight size={17} /></button>
+        <label><MapPin size={19} /><span className="sr-only">Location</span><input name="location" defaultValue={filters.location || ""} key={filters.location || ""} maxLength={120} placeholder="City or country" /></label><Button type="submit">Search <ArrowRight size={17} /></Button>
       </form>
     </div></section>
     <section className={styles.resultsSection}><div className={styles.container}><div className="grid items-start gap-7 lg:grid-cols-[250px_minmax(0,1fr)]">
@@ -44,7 +45,7 @@ export default function FreelancerDirectory() {
       <DiscoveryLoadMore status={status} loadMore={loadMore} />
       </div>
     </div></div></section>
-    <section className={styles.container + " " + styles.postProject}><div><span>Can’t find exactly what you need?</span><h2>Describe your project and compare proposals.</h2><p>Agree on scope, delivery and approval together in a private workspace.</p></div><div><Link href="/create-projects">Post a project <ArrowRight size={16} /></Link><Link href="/help">Learn how it works</Link></div></section>
+    <section className={styles.container + " " + styles.postProject}><div><span>Can’t find exactly what you need?</span><h2>Describe your project and compare proposals.</h2><p>Agree on scope, delivery and approval together in a private workspace.</p></div><div><Button asChild><Link href="/create-projects">Post a project <ArrowRight size={16} /></Link></Button><Link href="/help">Learn how it works</Link></div></section>
   </main>;
 }
 function ProfessionalCard({ person }) {

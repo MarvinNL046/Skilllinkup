@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, FileCheck2, MessageSquareText, ShieldCheck } from "lucide-react";
@@ -50,7 +51,7 @@ export default function ProcessWorkspace() {
               <li><MessageSquareText size={18} /><span><strong>Built-in conversations</strong>Keep messages and project details together.</span></li>
               <li><FileCheck2 size={18} /><span><strong>Clear agreements</strong>Record scope, timing, files, and decisions.</span></li>
             </ul>
-            <Link href="/help">Discover how it works <ArrowRight size={16} /></Link>
+            <Button asChild><Link href="/help">Discover how it works <ArrowRight size={16} /></Link></Button>
           </div>
           <div className={styles.workspaceMock} aria-label="Example Skilllinkup project workspace">
             <Image

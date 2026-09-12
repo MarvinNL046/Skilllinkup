@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { ArrowRight, BadgeCheck, BriefcaseBusiness, Clock3, Grid2X2, LayoutList, MapPin, Search, UsersRound } from "lucide-react";
 import { useProjectDiscovery } from "@/hook/useConvexProjects";
 import useDiscoveryFilters from "@/hook/useDiscoveryFilters";
@@ -19,7 +20,7 @@ export default function ProjectsOverview() {
   const budgetChange = (key, value) => update({ [key]: value, currency: filters.currency || "EUR" });
   return <main className={styles.page}>
     <section className={styles.hero}><div className={styles.container}><nav className={styles.breadcrumb} aria-label="Breadcrumb"><Link href="/">Home</Link><span>/</span><span>Projects</span></nav><div className={styles.heroTitle}><div><span className={styles.eyebrow}>Live private-beta inventory</span><h1>Find projects that fit you.</h1><p>Browse published projects and agree the scope before starting work.</p></div><Link className={styles.savedSearch} href="/saved">Saved projects</Link></div>
-      <form className={styles.searchBar} key={filters.q + ":" + filters.location} onSubmit={(event) => { event.preventDefault(); const data = new FormData(event.currentTarget); update({ q: data.get("q"), location: data.get("location") }); }}><label><Search size={20} /><input name="q" defaultValue={filters.q || ""} placeholder="Keyword, skill or client" aria-label="Search projects" maxLength={200} /></label><label><MapPin size={20} /><input name="location" defaultValue={filters.location || ""} placeholder="City, country or online" aria-label="Project location" maxLength={120} /></label><button type="submit">Search</button></form>
+      <form className={styles.searchBar} key={filters.q + ":" + filters.location} onSubmit={(event) => { event.preventDefault(); const data = new FormData(event.currentTarget); update({ q: data.get("q"), location: data.get("location") }); }}><label><Search size={20} /><input name="q" defaultValue={filters.q || ""} placeholder="Keyword, skill or client" aria-label="Search projects" maxLength={200} /></label><label><MapPin size={20} /><input name="location" defaultValue={filters.location || ""} placeholder="City, country or online" aria-label="Project location" maxLength={120} /></label><Button type="submit">Search</Button></form>
     </div></section>
     <section className={styles.container + " grid items-start gap-7 pb-14 lg:grid-cols-[260px_minmax(0,1fr)]"}>
       <DiscoveryFilterPanel reset={reset}>
@@ -31,10 +32,10 @@ export default function ProjectsOverview() {
         <label className="flex items-start gap-2 text-sm"><input type="checkbox" checked={filters.verified === "1"} onChange={(event) => update({ verified: event.target.checked ? "1" : "" })} />Email-verified clients only</label>
       </DiscoveryFilterPanel>
       <div className={styles.results}><header className={styles.resultsHeader}><h2 role="status">{status === "LoadingFirstPage" ? "Loading projects…" : projects.length + (status === "Exhausted" ? " projects found" : " matching projects loaded")}</h2><div><label>Sort by:<select value={filters.sort || "newest"} onChange={(event) => update({ sort: event.target.value, currency: event.target.value === "budget" ? filters.currency || "EUR" : filters.currency })}><option value="newest">Newest first</option><option value="budget">Highest budget</option></select></label><button type="button" aria-label="List view" aria-pressed={filters.view !== "grid"} onClick={() => update({ view: "list" })}><LayoutList size={18} /></button><button type="button" aria-label="Grid view" aria-pressed={filters.view === "grid"} onClick={() => update({ view: "grid" })}><Grid2X2 size={17} /></button></div></header>
-        <div className={filters.view === "grid" ? styles.projectGrid : styles.projectList}>{status === "LoadingFirstPage" ? <p role="status">Loading published projects…</p> : projects.length ? projects.map((project) => <ProjectCard project={project} key={project.id} />) : status !== "Exhausted" ? <p role="status">Searching the remaining projects…</p> : <div className={styles.empty}><Search size={30} /><h3>No published projects match</h3><p>Try a broader search or remove one or more filters.</p><button type="button" onClick={reset}>Clear filters</button></div>}</div>
+        <div className={filters.view === "grid" ? styles.projectGrid : styles.projectList}>{status === "LoadingFirstPage" ? <p role="status">Loading published projects…</p> : projects.length ? projects.map((project) => <ProjectCard project={project} key={project.id} />) : status !== "Exhausted" ? <p role="status">Searching the remaining projects…</p> : <div className={styles.empty}><Search size={30} /><h3>No published projects match</h3><p>Try a broader search or remove one or more filters.</p><Button type="button" onClick={reset}>Clear filters</Button></div>}</div>
         <DiscoveryLoadMore status={status} loadMore={loadMore} />
       </div>
     </section>
-    <section className={styles.container + " mb-12 rounded-xl border bg-white p-7"}><h2 className="text-xl font-semibold">Have a project in mind?</h2><p className="my-3">Describe the work and compare relevant proposals in your client workspace.</p><Link className="btn btn--primary" href="/create-projects">Post a project<ArrowRight size={16} /></Link></section>
+    <section className={styles.container + " mb-12 rounded-xl border bg-white p-7"}><h2 className="text-xl font-semibold">Have a project in mind?</h2><p className="my-3">Describe the work and compare relevant proposals in your client workspace.</p><Button asChild><Link href="/create-projects">Post a project<ArrowRight size={16} /></Link></Button></section>
   </main>;
 }

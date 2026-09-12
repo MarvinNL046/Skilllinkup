@@ -202,7 +202,7 @@ export default function NavSidebar() {
           ) : (
             <div className="grid gap-3">
               <PublicSignInLink onClick={closeNav} />
-              <WaitlistButton className="skl-action-primary" />
+              <WaitlistButton />
             </div>
           )}
         </footer>

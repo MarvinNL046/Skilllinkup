@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import { useMutation, useQuery } from "convex/react";
 import {
@@ -141,9 +142,9 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
           <h2>Apply with your Skilllinkup profile</h2>
           <p>Sign in to send your application securely and track every next step.</p>
         </div>
-        <Link className={styles.primaryButton} href={loginHref}>
+        <Button asChild className={styles.primaryButton}><Link href={loginHref}>
           Sign in to apply <ArrowRight size={18} />
-        </Link>
+        </Link></Button>
       </aside>
     );
   }
@@ -177,13 +178,12 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
               : "Add the Job seeker mode and complete its short onboarding before applying."}
           </p>
         </div>
-        <Link
-          className={styles.primaryButton}
+        <Button asChild className={styles.primaryButton}><Link
           href={hasCandidateMode ? "/dashboard" : "/onboarding?role=candidate"}
         >
           {hasCandidateMode ? "Switch account mode" : "Add job-seeker mode"}
           <ArrowRight size={18} />
-        </Link>
+        </Link></Button>
       </aside>
     );
   }
@@ -264,10 +264,10 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
             onChange={(event) => setResume(event.target.files?.[0] || null)}
           />
         </label>
-        <button className={styles.primaryButton} type="submit" disabled={!canSubmit}>
+        <Button className={styles.primaryButton} type="submit" disabled={!canSubmit}>
           {isSubmitting ? <LoaderCircle className={styles.spinnerInline} /> : <Send size={18} />}
           {isSubmitting ? "Sending application…" : "Send application"}
-        </button>
+        </Button>
         <p className={styles.privacy}><FileText size={14} /> Only this company can view your application details.</p>
       </form>
     </aside>

@@ -31,9 +31,5 @@
 .card h1 { margin: 0; color: #071b3f; font-size: clamp(30px, 5vw, 46px); line-height: 1.08; }
 .message { max-width: 470px; margin: 18px auto 0; color: #536078; font-size: 16px; line-height: 1.7; }
 .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 28px 0 22px; }
-.actions button, .actions a { min-height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0 20px; border-radius: 10px; font-weight: 700; }
-.actions button { color: #fff; border: 1px solid #ff4f2d; background: #ff4f2d; }
-.actions a { color: #071b3f; border: 1px solid #ccd5e2; background: #fff; }
-.actions svg { width: 17px; height: 17px; }
 .card small { color: #68758b; font-size: 13px; }
 .card small a { color: #168867; font-weight: 700; }

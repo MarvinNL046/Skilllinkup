@@ -49,7 +49,7 @@ export default function DiscoveryEmptyState({ kind, filters = {}, categoryName =
         )}
         <WaitlistButton
           key={`${kind}:${interest}`}
-          className={`skl-action ${kind === "services" ? "skl-action-secondary" : "skl-action-primary"}`}
+          variant={kind === "services" ? "secondary" : "default"}
           label="Get launch updates"
           initialSkill={interest}
           initialUserType={kind === "jobs" ? "" : "client"}

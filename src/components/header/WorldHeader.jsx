@@ -106,7 +106,7 @@ export default function WorldHeader() {
           ) : (
             <>
               <PublicSignInLink />
-              <WaitlistButton className="skl-action-primary whitespace-nowrap" />
+              <WaitlistButton />
             </>
           )}
         </div>

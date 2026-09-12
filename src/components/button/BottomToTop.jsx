@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import styles from "./BottomToTop.module.css";
 
 export default function BottomToTop() {
@@ -17,8 +18,9 @@ export default function BottomToTop() {
   }, []);
 
   return (
-    <button
+    <Button
       type="button"
+      size="icon"
       className={`${styles.button} ${isVisible ? styles.visible : ""}`}
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       aria-label="Back to top"
@@ -26,6 +28,6 @@ export default function BottomToTop() {
       tabIndex={isVisible ? 0 : -1}
     >
       <ArrowUp size={20} strokeWidth={2.2} aria-hidden="true" />
-    </button>
+    </Button>
   );
 }

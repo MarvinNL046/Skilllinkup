@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { api } from "../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
+import { Button } from "@/components/ui/button";
 import styles from "./OnboardingExperience.module.css";
 
 const roles = [
@@ -326,14 +327,14 @@ export default function OnboardingExperience() {
                       <small>Your starting role</small>
                       <strong>{selected?.title}</strong>
                     </div>
-                    <button
+                    <Button
                       type="button"
-                      className="skl-action-secondary"
+                      variant="outline"
                       disabled={saving}
                       onClick={() => setStep(1)}
                     >
                       Change
-                    </button>
+                    </Button>
                   </>
                 );
               })()}
@@ -517,23 +518,23 @@ export default function OnboardingExperience() {
               </p>
             ) : null}
             <div className={styles.actions}>
-              <button
+              <Button
                 type="button"
-                className="skl-action-secondary"
+                variant="outline"
                 disabled={saving}
                 onClick={() => setStep(1)}
               >
                 <ArrowLeft size={17} /> Back
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
-                className={`skl-action-primary ${styles.primaryAction}`}
+                className={styles.primaryAction}
                 disabled={saving}
               >
                 {saving ? <LoaderCircle className={styles.spinner} /> : null}
                 {saving ? "Saving your account…" : "Finish setup"}
                 <ArrowRight size={17} />
-              </button>
+              </Button>
             </div>
           </form>
         )}

@@ -29,7 +29,7 @@ const config = {
   categoryLink: "/jobs/browse",
   categories: [
     { name: "Engineering", description: "Software, cloud, data and QA", icon: "global", href: "/jobs/browse?q=engineering" },
-    { name: "Design & product", description: "UX, research and product roles", icon: "quality", href: "/jobs/browse?q=product" },
+    { name: "Design & product", description: "UX, research and product roles", icon: "design", href: "/jobs/browse?q=product" },
     { name: "Marketing & growth", description: "Brand, content, SEO and demand", icon: "people", href: "/jobs/browse?q=marketing" },
     { name: "Sales", description: "Business development and accounts", icon: "salary", href: "/jobs/browse?q=sales" },
     { name: "Operations & finance", description: "Operations, legal and finance", icon: "jobs", href: "/jobs/browse?q=operations" },

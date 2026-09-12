@@ -155,10 +155,9 @@
 .ready { display: flex; align-items: center; gap: 8px; margin-top: 11px; padding: 10px; border: 1px solid #cfe8df; border-radius: 7px; background: #effaf6; color: #258166; font-size: 10px; }
 
 .actions { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; padding: 16px 20px; }
-.actions button { display: inline-flex; align-items: center; justify-content: center; gap: 9px; justify-self: start; min-width: 150px; height: 46px; border: 1px solid #18355c; border-radius: 8px; background: #fff; color: var(--navy); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+.actions button { display: inline-flex; align-items: center; justify-content: center; gap: 9px; justify-self: start; min-width: 150px; }
 .actions button:nth-child(2) { justify-self: center; }
-.actions .primaryAction { justify-self: end; min-width: 205px; border-color: #ee4527; background: var(--coral); color: #fff; box-shadow: inset 0 1px 0 #ffffff52, 0 8px 18px #ff4f2e20; }
-.actions button:disabled { cursor: wait; opacity: .65; }
+.actions .primaryAction { justify-self: end; min-width: 205px; }
 
 .trustBar { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, 1fr); padding: 13px 24px; border-color: #cfe5dd; background: #f4fbf8; }
 .trustBar > div { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 42px; color: var(--mint); }

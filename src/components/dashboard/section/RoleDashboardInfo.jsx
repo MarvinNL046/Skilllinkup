@@ -14,7 +14,6 @@ import {
   Plus,
   Search,
   Send,
-  Sparkles,
   UsersRound,
 } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
@@ -85,7 +84,7 @@ function StatCard({ label, value, hint, Icon }) {
 }
 
 function EmptyState({ config }) {
-  return <div className={styles.empty}><i><Sparkles size={25} /></i><h3>{config.emptyTitle}</h3><p>{config.emptyText}</p><Link className="skl-action-primary" href={config.action.href}>{config.action.label}<ArrowRight size={15} /></Link></div>;
+  return <div className={styles.empty}><h3>{config.emptyTitle}</h3><p>{config.emptyText}</p><Link className="skl-action-primary" href={config.action.href}>{config.action.label}<ArrowRight size={15} /></Link></div>;
 }
 
 export default function RoleDashboardInfo({ role, world }) {
@@ -139,7 +138,7 @@ export default function RoleDashboardInfo({ role, world }) {
       { label: "Applications", value: all.length, hint: "Submitted vacancies", Icon: Send },
       { label: "In review", value: all.filter((item) => ["submitted", "screening"].includes(item.application.status)).length, hint: "Employer reviewing", Icon: FileSearch },
       { label: "Interviews", value: all.filter((item) => item.application.status === "interview").length, hint: "Conversations planned", Icon: UsersRound },
-      { label: "Offers", value: all.filter((item) => ["offer", "hired"].includes(item.application.status)).length, hint: "Positive outcomes", Icon: Sparkles },
+      { label: "Offers", value: all.filter((item) => ["offer", "hired"].includes(item.application.status)).length, hint: "Positive outcomes", Icon: CheckCircle2 },
     ];
     items = all.slice(0, 8).map((item) => ({ id: item.application._id, title: item.job.title, subtitle: item.job.company || "Verified company", status: item.application.status, meta: item.job.workType || "Job", location: item.job.locationCity, href: `/jobs/job/${item.job.id}` }));
   } else {

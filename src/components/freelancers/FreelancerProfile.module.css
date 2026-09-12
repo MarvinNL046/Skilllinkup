@@ -163,9 +163,8 @@
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
-.profileActions a,
-.profileActions button,
-.contactButton,
+.profileActions a:not(.primaryAction),
+.profileActions button:not(.primaryAction),
 .offerButton {
   height: 44px;
   border-radius: 8px;
@@ -176,14 +175,7 @@
   font-size: 14px;
   font-weight: 700;
 }
-.primaryAction,
-.contactButton {
-  background: #ff4f2e !important;
-  color: #fff !important;
-  border: 1px solid #ff4f2e !important;
-  box-shadow: inset 0 -3px 0 rgba(126, 27, 10, 0.18);
-}
-.profileActions button {
+.profileActions button:not(.primaryAction) {
   background: #fff;
   border: 1px solid #dadddf;
   color: #30415e;
@@ -831,16 +823,6 @@
   gap: 8px;
   position: relative;
   z-index: 1;
-}
-.cta > div:last-child a:first-child {
-  background: #ff4f2e;
-  color: #fff;
-  border-radius: 8px;
-  padding: 12px 28px;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 750;
-  box-shadow: inset 0 -3px 0 rgba(126, 27, 10, 0.18);
 }
 .cta > div:last-child a:last-child {
   font-size: 12px;

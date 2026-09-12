@@ -79,7 +79,8 @@
 .fileField small { justify-self: start !important; }
 .fileField input { position: absolute; width: 1px; height: 1px; opacity: 0; }
 
-.primaryButton,
+.primaryButton { min-height: 3.15rem; }
+
 .secondaryButton {
   display: inline-flex;
   min-height: 3.15rem;
@@ -95,8 +96,6 @@
   text-decoration: none;
   transition: transform 160ms ease, background 160ms ease;
 }
-.primaryButton:hover { background: var(--primary-700); transform: translateY(-1px); }
-.primaryButton:disabled { cursor: not-allowed; opacity: 0.5; transform: none; }
 .secondaryButton { background: white; color: var(--primary-700); }
 .secondaryButton:hover { background: var(--primary-50); }
 

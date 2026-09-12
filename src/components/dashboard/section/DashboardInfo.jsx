@@ -26,6 +26,7 @@ import RoleDashboardInfo from "./RoleDashboardInfo";
 import styles from "./DashboardInfo.module.css";
 import { useRouter } from "next/navigation";
 import useDashboardMetrics from "@/hook/useDashboardMetrics";
+import { Button } from "@/components/ui/button";
 
 const FALLBACK_AVATARS = [
   "/images/skilllinkup-home/professional-lucas-v1.png",
@@ -282,9 +283,11 @@ export default function DashboardInfo() {
           </p>
         </div>
         {!firstStep ? (
-          <Link className="skl-action-primary" href={primaryAction.href}>
-            <Plus size={18} /> {primaryAction.label}
-          </Link>
+          <Button asChild>
+            <Link href={primaryAction.href}>
+              <Plus size={18} /> {primaryAction.label}
+            </Link>
+          </Button>
         ) : null}
       </div>
       {firstStep ? (
@@ -297,10 +300,12 @@ export default function DashboardInfo() {
             <h2 id="first-step-title">{firstStep.title}</h2>
             <p>{firstStep.text}</p>
           </div>
-          <Link className="skl-action-primary" href={firstStep.href}>
-            {firstStep.label}
-            <ArrowRight size={16} />
-          </Link>
+          <Button asChild>
+            <Link href={firstStep.href}>
+              {firstStep.label}
+              <ArrowRight size={16} />
+            </Link>
+          </Button>
         </section>
       ) : null}
 
@@ -458,25 +463,25 @@ export default function DashboardInfo() {
                           {money(proposal.amount, proposal.currency)}
                         </strong>
                       </p>
-                      <Link
-                        className="skl-action-secondary"
-                        href={
-                          isFreelancer
-                            ? "/proposal"
-                            : `/projects/${proposal.projectId}`
-                        }
-                      >
-                        View
-                      </Link>
+                      <Button asChild variant="secondary">
+                        <Link
+                          href={
+                            isFreelancer
+                              ? "/proposal"
+                              : `/projects/${proposal.projectId}`
+                          }
+                        >
+                          View
+                        </Link>
+                      </Button>
                       {!isFreelancer && proposal.status === "pending" ? (
-                        <button
-                          className="skl-action-primary"
+                        <Button
                           type="button"
                           onClick={() => handleAccept(proposal.id)}
                           disabled={accepting === proposal.id}
                         >
                           {accepting === proposal.id ? "Accepting…" : "Accept"}
-                        </button>
+                        </Button>
                       ) : null}
                     </article>
                   ))}

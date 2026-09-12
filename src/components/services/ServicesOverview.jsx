@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -15,8 +16,7 @@ import {
   Monitor,
   Search,
   ShieldCheck,
-  Sparkles,
-  Star,
+  Target,
   UsersRound,
   Video,
   Wrench,
@@ -128,7 +128,7 @@ export default function ServicesOverview() {
           <form className={styles.searchBar} action="/online/services" method="get">
             <label><Search size={20} /><input name="q" type="search" aria-label="Search services" placeholder="What can we help you with?" /></label>
             <label><MapPin size={20} /><select name="scope" defaultValue="online" aria-label="Marketplace type"><option value="local">Local professionals</option><option value="online">Online worldwide</option></select></label>
-            <button type="submit">Search</button>
+            <Button type="submit">Search</Button>
           </form>
         </div>
       </section>
@@ -169,7 +169,7 @@ export default function ServicesOverview() {
 
       <section className={`${styles.section} ${styles.joinSection}`}>
         <div className={styles.joinPanel}>
-          <div><span className={styles.eyebrow}>Grow with Skilllinkup</span><h2>Can&apos;t find your service?</h2><p>Offer your expertise and reach clients nearby and worldwide. Creating a profile is free.</p><Link href="/register">Offer your services<ArrowRight size={16} /></Link></div>
+          <div><span className={styles.eyebrow}>Grow with Skilllinkup</span><h2>Can&apos;t find your service?</h2><p>Offer your expertise and reach clients nearby and worldwide. Creating a profile is free.</p><Button asChild><Link href="/register">Offer your services<ArrowRight size={16} /></Link></Button></div>
           <Image src="/images/skilllinkup-home/business-team-v2.png" alt="Professionals working together" width={1100} height={640} />
         </div>
       </section>
@@ -183,7 +183,7 @@ export default function ServicesOverview() {
         <article><ShieldCheck size={27} /><span><strong>Compare profiles</strong><small>Published experience and work samples.</small></span></article>
         <article><ClipboardList size={27} /><span><strong>Clear agreements</strong><small>Transparent pricing and communication.</small></span></article>
         <article><BadgeCheck size={27} /><span><strong>Professional profiles</strong><small>Profiles, ratings and verification signals.</small></span></article>
-        <article><Sparkles size={27} /><span><strong>Quality first</strong><small>Find the right match for every project.</small></span></article>
+        <article><Target size={27} /><span><strong>Quality first</strong><small>Find the right match for every project.</small></span></article>
       </section>
     </main>
   );

@@ -48,11 +48,11 @@
 .skl-action-secondary { background: var(--action-secondary-bg); border-color: var(--action-secondary-border); color: var(--action-secondary-text); }
 .skl-action-destructive { background: var(--action-danger-bg); border-color: var(--action-danger-border); color: var(--action-danger-text); }
 .skl-action-ghost { background: transparent; color: var(--action-secondary-text); }
-.skl-action-link { min-height: 0; padding: 0; background: transparent; color: var(--action-primary-bg); text-underline-offset: 4px; }
+.skl-action-link { min-height: 0; padding: 0; background: transparent; color: var(--action-link-text); text-underline-offset: 4px; }
 .skl-action-primary:hover:not(:disabled):not([aria-disabled="true"]) { background: var(--action-primary-hover); border-color: var(--action-primary-hover); color: var(--action-primary-text); }
 .skl-action-secondary:hover:not(:disabled):not([aria-disabled="true"]), .skl-action-ghost:hover:not(:disabled):not([aria-disabled="true"]) { background: var(--action-secondary-hover); color: var(--action-secondary-text); }
 .skl-action-destructive:hover:not(:disabled):not([aria-disabled="true"]) { background: var(--action-danger-hover); border-color: var(--action-danger-hover); color: var(--action-danger-text); }
-.skl-action-link:hover:not(:disabled):not([aria-disabled="true"]) { color: var(--action-primary-hover); text-decoration: underline; }
+.skl-action-link:hover:not(:disabled):not([aria-disabled="true"]) { color: var(--action-link-hover); text-decoration: underline; }
 :is(.skl-action, .skl-action-primary, .skl-action-secondary, .skl-action-destructive):focus-visible { outline: 2px solid var(--action-focus-ring); outline-offset: 3px; }
 :is(.skl-action, .skl-action-primary, .skl-action-secondary, .skl-action-destructive):is(:disabled, [aria-disabled="true"]) { opacity: .5; cursor: not-allowed; box-shadow: none; transform: none; }
 .skl-action--sm { min-height: 36px; padding: 7px 12px; font-size: 13px; }
