@@ -66,6 +66,26 @@ async function drain(fn, ctx, args) {
   return rows;
 }
 async function main() {
+  await check("application pages reach older rows, preserve privacy and enforce job ownership", async () => {
+    const apps = load("convex/marketplace/jobApplications.ts");
+    const company = user("employer", { activeRole: "company", accountRoles: ["company"], preferredWorld: "jobs", onboardingContexts: [{ role: "company", world: "jobs", version: 1, completedAt: 1 }] });
+    const rows = Array.from({ length: 125 }, (_, i) => ({ _id: "app-" + i, _table: "jobApplications", _creationTime: i, tenantId: "tenant", jobId: "job", candidateId: "candidate", status: i % 2 ? "screening" : "submitted", employerNote: "PRIVATE", updatedAt: i }));
+    const ctx = fixture([company, user("candidate"), user("outsider"), { _id: "job", _table: "jobs", clientId: "employer", title: "QA", slug: "qa", status: "open" }, ...rows], "candidate");
+    const mine = await drain(apps.listMinePage, ctx, {});
+    assert.equal(mine.length, 125); assert.equal(new Set(mine.map(r => r.application._id)).size, 125);
+    assert.equal(mine[0].application._id, "app-124"); assert.equal(mine.at(-1).application._id, "app-0");
+    assert.ok(mine.every(r => !("employerNote" in r.application) && !("candidateId" in r.application)));
+    ctx.auth.getUserIdentity = async () => ({ subject: "employer" });
+    assert.equal((await drain(apps.listForJobPage, ctx, { jobId: "job" })).length, 125);
+    const filtered = await drain(apps.listForJobPage, ctx, { jobId: "job", status: "screening" });
+    assert.equal(filtered.length, 62); assert.ok(filtered.every(r => r.application.status === "screening"));
+    ctx.auth.getUserIdentity = async () => ({ subject: "outsider" });
+    assert.equal((await drain(apps.listMinePage, ctx, {})).length, 0);
+    await assert.rejects(() => drain(apps.listForJobPage, ctx, { jobId: "job" }));
+    ctx.auth.getUserIdentity = async () => null;
+    await assert.rejects(() => drain(apps.listMinePage, ctx, {}));
+  });
+
   await check("resume metadata and download access are checked without exposing storage links in lists", async () => {
     const apps = load("convex/marketplace/jobApplications.ts");
     const roleUser = (id, role) => user(id, { activeRole: role, accountRoles: [role], preferredWorld: "jobs", onboardingContexts: [{ role, world: "jobs", version: 1, completedAt: 1 }] });

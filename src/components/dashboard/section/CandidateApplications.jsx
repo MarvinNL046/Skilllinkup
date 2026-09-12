@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useMutation, useQuery } from "convex/react";
+import { useMutation, usePaginatedQuery } from "convex/react";
 import { ArrowRight, BriefcaseBusiness, Building2, CalendarDays, LoaderCircle, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "../../../../convex/_generated/api";
@@ -27,7 +27,7 @@ const messageable = new Set(["screening", "interview", "offer", "hired"]);
 
 export default function CandidateApplications() {
   const { isAuthenticated } = useConvexUser();
-  const applications = useQuery(api.marketplace.jobApplications.listMine, isAuthenticated ? { limit: 50 } : "skip");
+  const { results: applications, status: pageStatus, loadMore } = usePaginatedQuery(api.marketplace.jobApplications.listMinePage, isAuthenticated ? {} : "skip", { initialNumItems: 25 });
   const withdraw = useMutation(api.marketplace.jobApplications.withdraw);
   const withdrawingRef = useRef(false);
   const [withdrawing, setWithdrawing] = useState(null);
@@ -51,7 +51,7 @@ export default function CandidateApplications() {
     <div className={styles.page}>
       <DashboardNavigation />
       <header className={styles.header}><div><p>Jobs · Candidate workspace</p><h1>My applications</h1><span>Follow every application from first submission to final decision.</span></div><Button asChild><Link href="/jobs/browse">Browse jobs <ArrowRight size={17} /></Link></Button></header>
-      {applications === undefined ? <div className={styles.loading}><LoaderCircle /> Loading applications…</div> : applications.length === 0 ? (
+      {pageStatus === "LoadingFirstPage" ? <div className={styles.loading}><LoaderCircle /> Loading applications…</div> : applications.length === 0 && pageStatus === "Exhausted" ? (
         <section className={styles.empty}><i><BriefcaseBusiness /></i><h2>Your next role starts here</h2><p>You have not applied to a vacancy yet. Explore transparent roles from verified companies.</p><Button asChild><Link href="/jobs/browse">Find verified jobs <ArrowRight size={17} /></Link></Button></section>
       ) : (
         <section className={styles.list} aria-label="Your job applications">
@@ -68,6 +68,10 @@ export default function CandidateApplications() {
           ))}
         </section>
       )}
+      {pageStatus !== "LoadingFirstPage" && <div className={styles.pagination}>
+        <p role="status">{applications.length} applications loaded{pageStatus === "Exhausted" ? " · All loaded" : ""}</p>
+        {pageStatus !== "Exhausted" && <Button variant="secondary" type="button" disabled={pageStatus !== "CanLoadMore"} onClick={() => loadMore(25)}>{pageStatus === "LoadingMore" ? "Loading…" : "Load more"}</Button>}
+      </div>}
     </div>
   );
 }

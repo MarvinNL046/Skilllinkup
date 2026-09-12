@@ -26,3 +26,6 @@
 .loading svg { animation: spin 800ms linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (max-width: 700px) { .header { align-items: stretch; flex-direction: column; } .list article { grid-template-columns: auto 1fr; } .actions { grid-column: 1 / -1; grid-auto-flow: column; justify-content: end; } }
+
+.pagination { display: grid; justify-items: center; gap: .65rem; }
+.pagination p { margin: 0; color: var(--text-secondary); font-size: .85rem; }
