@@ -1,6 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { validateContact } from "@/lib/contactValidation.mjs";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { Mail, Clock, MapPin, ArrowRight } from "lucide-react";
@@ -23,48 +26,49 @@ export default function ContactInfo1() {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const [website, setWebsite] = useState("");
+  const [feedback, setFeedback] = useState(null);
+  const requestId = useRef(null);
+  const sendingRef = useRef(false);
+  const submitContact = useMutation(api.contact.submit);
   const t = useTranslations("contact");
 
   async function handleSubmit(e) {
     e.preventDefault();
-
-    if (!name.trim() || !email.trim() || !subject || !message.trim()) {
-      toast.error(t("fillAllFields"));
+    if (sendingRef.current) return;
+    const result = validateContact({ name, email, subject, message });
+    if (result.error) {
+      setFeedback({ error: true, text: result.error });
       return;
     }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) {
-      toast.error(t("invalidEmail"));
-      return;
+    sendingRef.current = true;
+    const signature = JSON.stringify(result.value);
+    if (requestId.current?.signature !== signature) {
+      requestId.current = { id: crypto.randomUUID(), signature };
     }
-
     setSending(true);
+    setFeedback(null);
     const loadingToast = toast.loading(t("sendingMessage"));
 
     try {
-      const res = await fetch("/api/email/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, subject, message }),
-      });
-
+      await submitContact({ ...result.value, requestId: requestId.current.id, website });
       toast.dismiss(loadingToast);
-
-      if (!res.ok) {
-        throw new Error("Server responded with an error");
-      }
-
-      toast.success(t("messageSent"));
+      const confirmation = "Your message has been received. We will reply to your email address.";
+      setFeedback({ error: false, text: confirmation });
+      toast.success(confirmation);
+      requestId.current = null;
       setName("");
       setEmail("");
       setSubject("");
       setMessage("");
-    } catch {
+    } catch (error) {
       toast.dismiss(loadingToast);
-      toast.error(t("sendFailed"));
+      const text = typeof error?.data === "string" ? error.data : t("sendFailed");
+      setFeedback({ error: true, text });
+      toast.error(text);
     } finally {
       setSending(false);
+      sendingRef.current = false;
     }
   }
 
@@ -126,11 +130,21 @@ export default function ContactInfo1() {
                 {t("sendUsMessageDesc")}
               </p>
               <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="hidden" aria-hidden="true">
+                  <label htmlFor="contact-website">Website</label>
+                  <input id="contact-website" tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} />
+                </div>
+                {feedback ? <p role={feedback.error ? "alert" : "status"} className={feedback.error ? "text-sm text-red-700" : "text-sm text-emerald-700"}>{feedback.text}</p> : null}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="contact-name">{t("name")}</Label>
                     <Input
                       id="contact-name"
+                      disabled={sending}
+                      required
+                      minLength={2}
+                      maxLength={100}
+                      autoComplete="name"
                       type="text"
                       placeholder={t("namePlaceholder")}
                       value={name}
@@ -141,6 +155,10 @@ export default function ContactInfo1() {
                     <Label htmlFor="contact-email">{t("email")}</Label>
                     <Input
                       id="contact-email"
+                      disabled={sending}
+                      required
+                      maxLength={254}
+                      autoComplete="email"
                       type="email"
                       placeholder={t("emailPlaceholder")}
                       value={email}
@@ -151,7 +169,7 @@ export default function ContactInfo1() {
 
                 <div className="space-y-2">
                   <Label htmlFor="contact-subject">{t("subject")}</Label>
-                  <Select value={subject} onValueChange={setSubject}>
+                  <Select value={subject} onValueChange={setSubject} disabled={sending}>
                     <SelectTrigger id="contact-subject">
                       <SelectValue placeholder={t("selectTopic")} />
                     </SelectTrigger>
@@ -169,6 +187,10 @@ export default function ContactInfo1() {
                   <Label htmlFor="contact-message">{t("message")}</Label>
                   <Textarea
                     id="contact-message"
+                    disabled={sending}
+                    required
+                    minLength={20}
+                    maxLength={5000}
                     rows={6}
                     placeholder={t("messagePlaceholder")}
                     value={message}

@@ -1,12 +1,7 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
-import { useMutation } from "convex/react";
-import { toast } from "sonner";
 import { Clock, RefreshCcw, Check, ArrowRight } from "lucide-react";
-import { api } from "../../../convex/_generated/api";
 
 /**
  * Gig pricing widget in the service-detail sidebar. Rebuilt on the
@@ -15,15 +10,11 @@ import { api } from "../../../convex/_generated/api";
  */
 export default function ServiceDetailPrice1({
   packages = [],
-  gigId,
+  onOrder,
+  isOrdering = false,
 }) {
   const t = useTranslations("gigDetail");
   const [selectedTab, setSelectedTab] = useState(0);
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const router = useRouter();
-  const { isSignedIn } = useUser();
-  const createBetaOrder = useMutation(api.marketplace.orders.createBetaGigOrder);
-
   const hasPackages = packages && packages.length > 0;
   const displayPackages = packages;
 
@@ -36,30 +27,6 @@ export default function ServiceDetailPrice1({
       : activePackage?.currency === "GBP"
       ? "£"
       : "€";
-
-  async function handleOrder() {
-    if (!hasPackages || !activePackage) return;
-    if (!isSignedIn) {
-      const currentPath =
-        typeof window !== "undefined" ? window.location.pathname : "/";
-      router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
-      return;
-    }
-
-    setIsCheckingOut(true);
-    try {
-      const result = await createBetaOrder({
-        gigId,
-        packageId: activePackage._id,
-      });
-      toast.success("Your private beta workspace is ready.");
-      router.push(`/orders/${result.orderId}`);
-    } catch (err) {
-      console.error("[beta-order] error:", err);
-      toast.error(err.message || "Could not start the order");
-      setIsCheckingOut(false);
-    }
-  }
 
   if (!hasPackages) {
     return (
@@ -240,12 +207,12 @@ export default function ServiceDetailPrice1({
       <button
         type="button"
         className="btn btn--primary btn--lg"
-        onClick={handleOrder}
-        disabled={!hasPackages || isCheckingOut}
+        onClick={() => onOrder?.(activePackage)}
+        disabled={!hasPackages || isOrdering || !onOrder}
         title={!hasPackages ? t("noPackagesTitle") : undefined}
         style={{ width: "100%", justifyContent: "center" }}
       >
-        {isCheckingOut ? (
+        {isOrdering ? (
           <span className="spinner-border spinner-border-sm" role="status" />
         ) : (
           <>

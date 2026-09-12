@@ -4,16 +4,16 @@ import { ArrowRight, BadgeCheck, Check, Globe2, Headphones, ShieldCheck, WalletC
 import styles from "./WorldwideHome.module.css";
 
 const benefits = [
-  { Icon: BadgeCheck, title: "Verified professionals", text: "Clear profiles, experience, and identity signals help you know who you are working with.", proof: "Profile and identity checks" },
+  { Icon: BadgeCheck, title: "Profiles you can compare", text: "Read the skills, experience and work samples each professional has chosen to publish.", proof: "Published skills and portfolios" },
   { Icon: WalletCards, title: "Clear agreements", text: "Keep scope, milestones and approvals in one place, with a clear record from start to finish.", proof: "Private beta: no payments" },
-  { Icon: Globe2, title: "Local and worldwide", text: "Find nearby hands-on help or work with specialists across borders from one marketplace.", proof: "One trusted global network" },
+  { Icon: Globe2, title: "Local and worldwide", text: "Find nearby hands-on help or work with specialists across borders from one marketplace.", proof: "Search by skill and location" },
   { Icon: Headphones, title: "Human support", text: "Get practical help when a project, service, quote, or application needs attention.", proof: "Support when it matters" },
 ];
 
 const stories = [
   { quote: "Hire a specialist worldwide for a defined service or project, then keep scope and delivery in one workspace.", name: "Online", role: "Global freelance work", image: "/images/skilllinkup-home/testimonial-maya-v2.png" },
   { quote: "Request quotes from nearby professionals without publishing your full address to the public marketplace.", name: "Local", role: "Rotterdam–The Hague beta", image: "/images/skilllinkup-home/testimonial-daniel-v2.png" },
-  { quote: "Discover a verified company vacancy and track every application step from one candidate dashboard.", name: "Jobs", role: "Dutch and remote European roles", image: "/images/skilllinkup-home/testimonial-amara-v2.png" },
+  { quote: "Discover a verified company vacancy and track application status updates in one candidate dashboard.", name: "Jobs", role: "Dutch and remote European roles", image: "/images/skilllinkup-home/testimonial-amara-v2.png" },
 ];
 
 export default function TrustStories() {
@@ -23,8 +23,8 @@ export default function TrustStories() {
         <div className={styles.whyInner}>
           <div className={styles.whyIntro}>
             <span className={styles.eyebrow}>Built around trust</span>
-            <h2>Why people choose Skilllinkup</h2>
-            <p>Good work starts with confidence. Skilllinkup brings people, agreements, progress and support around every collaboration into one clear experience.</p>
+            <h2>Built for clear collaboration</h2>
+            <p>Compare the available information, agree on the work and keep the collaboration history in one place.</p>
 
             <div className={styles.trustPromise}>
               <span><ShieldCheck size={28} strokeWidth={1.8} /></span>

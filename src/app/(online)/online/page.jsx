@@ -2,7 +2,7 @@ import MarketplaceHub from "@/components/marketplace/MarketplaceHub";
 
 export const metadata = {
   title: "Hire Online Freelancers Worldwide",
-  description: "Find vetted remote freelancers and digital services for design, development, marketing, writing and more.",
+  description: "Find remote freelancers and digital services for design, development, marketing, writing and more.",
   alternates: { canonical: "/online" },
 };
 
@@ -11,11 +11,11 @@ const config = {
   eyebrow: "Online talent · Worldwide",
   title: "Great digital work,",
   accent: "wherever you are.",
-  description: "Hire vetted freelancers worldwide for focused projects or ongoing support. Compare services, portfolios and proposals in one trusted workspace.",
+  description: "Find freelancers for digital projects and compare their published services, portfolios and proposals. Agree on the work in a shared workspace.",
   image: "/images/skilllinkup-products/online-services-v1.png",
   imageAlt: "Smiling online freelancer working from her home studio",
-  search: { action: "/online/services", keywordLabel: "Service or skill", keywordPlaceholder: "What do you need help with?", location: "Worldwide or time zone", button: "Find talent" },
-  trust: ["Vetted profiles", "Clear agreements", "Visible deliverables"],
+  search: { action: "/online/services", keywordLabel: "Service or skill", keywordPlaceholder: "What do you need help with?", location: "City or country (optional)", button: "Find talent" },
+  trust: ["Published profiles", "Clear agreements", "Visible deliverables"],
   proof: { label: "Launch scope", value: "Worldwide Online" },
   rating: { value: "Free beta", label: "No platform payments" },
   stats: [
@@ -31,7 +31,7 @@ const config = {
     { name: "Web design", description: "Websites, UX/UI and conversion", icon: "global", href: "/services/webdesign" },
     { name: "Development", description: "Apps, platforms and integrations", icon: "jobs", href: "/online/services?q=development" },
     { name: "Marketing", description: "Campaigns, SEO and growth", icon: "quality", href: "/online/services?q=marketing" },
-    { name: "Writing & translation", description: "Content in every language", icon: "verified", href: "/online/services?q=writing" },
+    { name: "Writing & translation", description: "Copywriting and translation", icon: "verified", href: "/online/services?q=writing" },
     { name: "Design & branding", description: "Identity, graphics and motion", icon: "people", href: "/online/services?q=design" },
     { name: "Video & audio", description: "Production, editing and voice", icon: "fast", href: "/online/services?q=video" },
     { name: "Data & AI", description: "Automation, insights and models", icon: "shield", href: "/online/services?q=data" },
@@ -52,12 +52,12 @@ const config = {
   highlightEyebrow: "Product preview",
   highlightTitle: "Ways to start with a service or specialist",
   highlights: [
-    { kicker: "Popular service", meta: "From €499", title: "Conversion-focused website", description: "A polished responsive website with clear scope, delivery moments and launch support.", tags: ["Web design", "UX/UI", "Responsive"], value: "7–14 days", href: "/services/webdesign", cta: "Explore" },
-    { kicker: "Specialist", meta: "€65 / hour", title: "Senior product designer", description: "Bring experienced product thinking into a sprint, redesign or growing design system.", tags: ["Figma", "Research", "Design systems"], value: "Available this week", href: "/online/freelancers", cta: "View talent" },
-    { kicker: "Project route", meta: "Free to post", title: "Receive tailored proposals", description: "Share the outcome once and let relevant freelancers respond with an approach and price.", tags: ["Matched talent", "Compare", "No obligation"], value: "First replies in 24h", href: "/create-projects", cta: "Post project" },
+    { kicker: "Popular service", meta: "Scope to agree", title: "Conversion-focused website", description: "A polished responsive website with clear scope, delivery moments and launch support.", tags: ["Web design", "UX/UI", "Responsive"], value: "Compare packages", href: "/services/webdesign", cta: "Explore" },
+    { kicker: "Specialist", meta: "Compare expertise", title: "Senior product designer", description: "Bring experienced product thinking into a sprint, redesign or growing design system.", tags: ["Figma", "Research", "Design systems"], value: "Confirm availability", href: "/online/freelancers", cta: "View talent" },
+    { kicker: "Project route", meta: "Free to post", title: "Receive tailored proposals", description: "Share the outcome once and let relevant freelancers respond with an approach and price.", tags: ["Project brief", "Compare", "Proposals"], value: "Review incoming proposals", href: "/create-projects", cta: "Post project" },
   ],
   pathTitle: "Use online talent your way",
-  pathDescription: "Buy a clearly scoped service, compare freelancers, or publish a project and let specialists come to you.",
+  pathDescription: "Start with a clearly scoped service, compare freelancers, or publish a project and let specialists come to you.",
   paths: [
     { icon: "quality", title: "Browse ready-made services", description: "Choose a defined package with transparent scope, timing and price.", href: "/online/services", cta: "Explore services" },
     { icon: "people", title: "Find a freelancer", description: "Search profiles, compare portfolios and contact the right specialist directly.", href: "/online/freelancers", cta: "Browse freelancers" },
@@ -66,24 +66,24 @@ const config = {
   stepsTitle: "From brief to delivery in three steps",
   steps: [
     { title: "Describe the outcome", description: "Share your goal, scope, timing and budget." },
-    { title: "Compare with confidence", description: "Review verified profiles, work samples and proposals." },
+    { title: "Compare with confidence", description: "Review published profiles, work samples and proposals." },
     { title: "Work with clarity", description: "Use milestones, messaging and recorded approvals in one workspace." },
   ],
   testimonialTitle: "Work that feels personal—even across borders",
   testimonials: [
-    { initials: "EV", name: "Eva van Dijk", role: "Founder, Bloom & Grow", quote: "I found a designer who understood the brief immediately. The milestones made the whole project feel calm and controlled." },
-    { initials: "BJ", name: "Bas de Jong", role: "Marketing lead", quote: "The difference is clarity. I could compare the work, discuss the approach and keep every decision in one place." },
-    { initials: "FE", name: "Fatima El Yousfi", role: "Independent photographer", quote: "My profile finally shows more than a rate. Clients can see how I work and what a successful project looks like." },
+    { initials: "EV", name: "Eva van Dijk", role: "Founder, Bloom & Grow", quote: "A founder can share a brief, compare service packages and agree on a delivery before starting." },
+    { initials: "BJ", name: "Bas de Jong", role: "Marketing lead", quote: "A marketing lead can compare portfolios, discuss the approach and keep decisions in the workspace." },
+    { initials: "FE", name: "Fatima El Yousfi", role: "Independent photographer", quote: "A freelancer can publish services, explain their experience and share examples of previous work." },
   ],
   faqs: [
-    { question: "How are online freelancers verified?", answer: "Profiles can be checked for identity, professional experience and portfolio quality. The exact verification status is shown on every profile." },
+    { question: "How should I assess a freelancer?", answer: "Compare the biography, skills, portfolio and reviews that are published. A profile badge is one signal; confirm that the person has the experience your specific project needs." },
     { question: "Can I hire for ongoing work?", answer: "Yes. You can agree a one-off delivery, recurring support or a longer project with multiple milestones." },
     { question: "Does SkillLinkup process payment during beta?", answer: "No. The private beta records scope, milestones and approval but does not collect, hold or release funds." },
-    { question: "What if the scope changes?", answer: "Changes can be discussed and added as a new milestone so price, timing and responsibilities remain explicit." },
-    { question: "Can I work across time zones?", answer: "Yes. Profiles can show location, working hours and availability, allowing you to choose the overlap that suits your team." },
+    { question: "What if the scope changes?", answer: "Discuss changes in the workspace and confirm any revised scope, price and timing together before more work begins." },
+    { question: "Can I work across time zones?", answer: "Yes. Profiles show location and availability when provided. Agree working hours and useful meeting times directly with the freelancer." },
     { question: "Is posting a project free?", answer: "Yes. Publishing a project and comparing proposals is free during the private beta." },
   ],
-  cta: { eyebrow: "Ready when you are", title: "Turn your next idea into finished work.", description: "Find the right specialist now, or publish a project for free.", primaryHref: "/online/freelancers", primaryLabel: "Find a freelancer", secondaryHref: "/create-projects", secondaryLabel: "Post a project" },
+  cta: { eyebrow: "Ready when you are", title: "Turn your next idea into finished work.", description: "Browse published profiles or describe your project to invite proposals.", primaryHref: "/online/freelancers", primaryLabel: "Find a freelancer", secondaryHref: "/create-projects", secondaryLabel: "Post a project" },
 };
 
 export default function OnlinePage() { return <MarketplaceHub config={config} />; }

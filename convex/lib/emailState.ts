@@ -15,6 +15,7 @@ export const emailDeliveryStatusValidator = v.union(
 );
 
 export const emailTemplateValidator = v.union(
+  v.literal("contactMessage"),
   v.literal("orderConfirmation"),
   v.literal("newOrder"),
   v.literal("orderDelivered"),
@@ -40,6 +41,7 @@ export type EmailPreference =
   | "marketingEmails";
 
 export type EmailTemplate =
+  | "contactMessage"
   | "orderConfirmation"
   | "newOrder"
   | "orderDelivered"

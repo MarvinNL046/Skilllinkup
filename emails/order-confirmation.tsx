@@ -60,7 +60,7 @@ export const OrderConfirmationEmail = ({
  <Text style={infoLabel}>Service</Text>
  <Text style={infoValue}>{orderTitle}</Text>
 
- <Text style={infoLabel}>Amount</Text>
+ <Text style={infoLabel}>Agreed scope amount</Text>
  <Text style={infoValue}>{formatCurrency(amount, currency)}</Text>
 
  <Text style={infoLabel}>Delivery Time</Text>
@@ -70,15 +70,15 @@ export const OrderConfirmationEmail = ({
  </Section>
 
  <Text style={paragraph}>
- You will be notified when the freelancer starts working on your order and when
- the delivery is ready for your review.
+ This is a free private-beta order. No payment has been collected and no escrow is active.
+ The amount above describes the agreed scope. We will notify you when work is submitted for review.
  </Text>
  </Section>
 
  <Section style={ctaSection}>
  <Button
  style={ctaButton}
- href={`${baseUrl}/dashboard/orders/${orderId}`}
+ href={`${baseUrl}/orders/${orderId}`}
  >
  View Your Order
  </Button>

@@ -36,6 +36,7 @@ import { uploadPurposeValidator } from "./lib/storageState";
 import {
   emailDeliveryStatusValidator,
   emailTemplateValidator,
+  emailPreferenceValidator,
 } from "./lib/emailState";
 
 export default defineSchema({
@@ -436,6 +437,10 @@ export default defineSchema({
     .index("by_userId", ["userId"])
     .index("by_userId_and_providerRole", ["userId", "providerRole"])
     .index("by_providerRole_and_status_and_locale", ["providerRole", "status", "locale"])
+    .index("by_role_status_locale_rating", ["providerRole", "status", "locale", "ratingAverage"])
+    .index("by_role_status_locale_rate", ["providerRole", "status", "locale", "hourlyRate"])
+    .index("by_status_locale_rating", ["status", "locale", "ratingAverage"])
+    .index("by_status_locale_rate", ["status", "locale", "hourlyRate"])
     .index("by_slug", ["slug"])
     .index("by_status", ["status"])
     .index("by_status_locale", ["status", "locale"])
@@ -545,6 +550,7 @@ export default defineSchema({
   // ============================================================
 
   projects: defineTable({
+    budgetSortValue: v.optional(v.number()),
     tenantId: v.id("tenants"),
     clientId: v.id("users"),
     title: v.string(),
@@ -573,7 +579,8 @@ export default defineSchema({
     .index("by_client", ["clientId"])
     .index("by_status", ["status"])
     .index("by_status_locale", ["status", "locale"])
-    .index("by_slug_locale", ["slug", "locale"]),
+    .index("by_slug_locale", ["slug", "locale"])
+    .index("by_status_locale_budgetValue", ["status", "locale", "budgetSortValue"]),
 
   bids: defineTable({
     projectId: v.id("projects"),
@@ -598,6 +605,7 @@ export default defineSchema({
   // ============================================================
 
   jobs: defineTable({
+    salarySortValue: v.optional(v.number()),
     tenantId: v.id("tenants"),
     clientId: v.id("users"),
     title: v.string(),
@@ -629,7 +637,8 @@ export default defineSchema({
     .index("by_status_locale", ["status", "locale"])
     .index("by_slug_locale", ["slug", "locale"])
     .index("by_client", ["clientId"])
-    .index("by_client_status", ["clientId", "status"]),
+    .index("by_client_status", ["clientId", "status"])
+    .index("by_status_locale_salaryValue", ["status", "locale", "salarySortValue"]),
 
   jobApplications: defineTable({
     tenantId: v.id("tenants"),
@@ -656,6 +665,8 @@ export default defineSchema({
   // ============================================================
 
   orders: defineTable({
+    clientRequestId: v.optional(v.string()),
+    deliveryVersion: v.optional(v.number()),
     tenantId: v.id("tenants"),
     orderNumber: v.string(),
     orderType: orderTypeValidator,
@@ -692,6 +703,8 @@ export default defineSchema({
     .index("by_freelancer", ["freelancerId"])
     .index("by_status", ["status"])
     .index("by_orderNumber", ["orderNumber"])
+    .index("by_client_and_requestId", ["clientId", "clientRequestId"])
+    .index("by_client_and_package", ["clientId", "gigPackageId"])
     .index("by_bid", ["bidId"])
     .index("by_quote", ["quoteId"])
     .index("by_quoteRequest", ["quoteRequestId"])
@@ -820,12 +833,16 @@ export default defineSchema({
     lastMessagePreview: v.optional(v.string()),
     unreadCount1: v.optional(v.number()),
     unreadCount2: v.optional(v.number()),
+    readThrough1: v.optional(v.number()),
+    readThrough2: v.optional(v.number()),
     status: v.optional(v.string()), // active, archived, blocked
     createdAt: v.number(),
     updatedAt: v.number(),
   })
     .index("by_participant1", ["participant1"])
     .index("by_participant2", ["participant2"])
+    .index("by_participant1_activity", ["participant1", "lastMessageAt"])
+    .index("by_participant2_activity", ["participant2", "lastMessageAt"])
     .index("by_participants", ["participant1", "participant2"])
     .index("by_order", ["orderId"])
     .index("by_project_and_participants", [
@@ -1142,7 +1159,19 @@ export default defineSchema({
     updatedAt: v.number(),
   }).index("by_user", ["userId"]),
 
+  contactMessages: defineTable({
+    requestId: v.string(), name: v.string(), email: v.string(),
+    subject: v.string(), message: v.string(),
+    status: v.union(v.literal("open"), v.literal("closed")),
+    createdAt: v.number(), updatedAt: v.number(),
+  }).index("by_requestId", ["requestId"]).index("by_status", ["status"]),
+
   emailDeliveries: defineTable({
+    payload: v.optional(v.object({ to: v.string(), props: v.any(), preference: v.optional(emailPreferenceValidator) })),
+    leaseExpiresAt: v.optional(v.number()),
+    leaseVersion: v.optional(v.number()),
+    nextAttemptAt: v.optional(v.number()),
+    retryable: v.optional(v.boolean()),
     eventKey: v.string(),
     userId: v.optional(v.id("users")),
     template: emailTemplateValidator,
@@ -1157,6 +1186,8 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_eventKey", ["eventKey"])
+    .index("by_status_and_leaseExpiresAt", ["status", "leaseExpiresAt"])
+    .index("by_status_and_nextAttemptAt", ["status", "nextAttemptAt"])
     .index("by_user", ["userId"])
     .index("by_updatedAt", ["updatedAt"])
     .index("by_status_updatedAt", ["status", "updatedAt"]),

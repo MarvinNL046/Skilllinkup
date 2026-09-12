@@ -50,7 +50,7 @@ export default function ClientQuoteRequestsInfo() {
           <h1>My quote requests</h1>
           <p>Track responses, compare local professionals and keep every appointment in one place.</p>
         </div>
-        <Link href="/local/request-quote"><Plus size={18} /> Request local quotes</Link>
+        <Link className="skl-action-primary" href="/local/request-quote"><Plus size={18} /> Request local quotes</Link>
       </header>
 
       {requests.length === 0 ? (
@@ -58,7 +58,7 @@ export default function ClientQuoteRequestsInfo() {
           <i><FileText size={28} /></i>
           <h2>Tell us what needs doing</h2>
           <p>Describe the job once and receive suitable quotes from trusted professionals near you.</p>
-          <Link href="/local/request-quote">Start a quote request <ArrowRight size={16} /></Link>
+          <Link className="skl-action-primary" href="/local/request-quote">Start a quote request <ArrowRight size={16} /></Link>
         </section>
       ) : (
         <section className={styles.grid} aria-label="Your local quote requests">

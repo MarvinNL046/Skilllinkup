@@ -1,35 +1,11 @@
 "use client";
 
 import FaqAccordion from "@/components/ui/FaqAccordion";
+import { helpFaqs } from "@/data/helpFaqs";
 
-const faqs = [
-  {
-    id: "One",
-    q: "How do I get started as a freelancer on SkillLinkup?",
-    a: "Sign up for a free account, complete your profile with your skills and portfolio, and start browsing available projects or create service listings. Clients can find you through search or you can apply to posted projects directly.",
-    open: true,
-  },
-  {
-    id: "Two",
-    q: "How do payments work?",
-    a: "SkillLinkup does not collect, hold or release funds during the free private beta. The workspace records scope, delivery and approval; payment terms will be published before live payments are enabled.",
-  },
-  {
-    id: "Three",
-    q: "Is it free to create an account?",
-    a: "Yes, creating an account on SkillLinkup is completely free for both freelancers and clients. You can browse platforms, compare services, and set up your profile at no cost.",
-  },
-  {
-    id: "Four",
-    q: "How do I find the right freelancer for my project?",
-    a: "Use the search and filter options on the Services page to find freelancers by skill, rating, price range, and delivery time. You can also browse our platform comparisons to find the best freelance platform for your specific needs.",
-  },
-  {
-    id: "Five",
-    q: "What if I have a dispute with a client or freelancer?",
-    a: "SkillLinkup has a built-in dispute resolution system. If you encounter any issues, you can open a dispute through your dashboard. Our team will review the case and help mediate a fair resolution for both parties.",
-  },
-];
+const faqs = helpFaqs.filter((item) =>
+  ["getting-started", "finding-professionals", "payments", "orders", "support"].includes(item.id)
+);
 
 /**
  * Contact / become-seller FAQ block — wraps the shared FaqAccordion
@@ -58,7 +34,7 @@ export default function OurFaq1() {
             Frequently asked questions
           </h2>
           <p className="body-md" style={{ color: "var(--text-secondary)", margin: 0 }}>
-            Everything you need to know about using SkillLinkup.
+            The basics of getting started and working together during the beta.
           </p>
         </div>
 

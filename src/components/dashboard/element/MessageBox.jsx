@@ -4,22 +4,10 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-
-const CONTACT_PATTERNS = [
-  /@/,
-  /(\+?\d[\d\s\-().]{6,}\d)/,
-  /(\d[\s.\-]?){6,}/,
-  /(https?:\/\/|www\.)/i,
-  /\b(wa\.me|t\.me|telegram|whatsapp|instagram|linkedin|facebook|messenger|snapchat|tiktok|signal|discord)\b/i,
-  /\b(teams|zoom|loom|skype|google\s*meet|facetime|webex|jitsi|whereby)\b/i,
-  /\b(gmail|hotmail|outlook|yahoo|protonmail|icloud|live\.com|msn|ziggo|kpn|xs4all)\b/i,
-  /\b\w+\s*(at|apenstaartje)\s*\w+\s*(dot|punt)\s*\w+/i,
-  /\b(bel\s*me|stuur.*sms|app\s*me|call\s*me|text\s*me|dm\s*me)\b/i,
-];
-
-function containsContactInfo(text) {
-  return CONTACT_PATTERNS.some((p) => p.test(text));
-}
+import {
+  getMessagePolicyError,
+  MESSAGE_MAX_LENGTH,
+} from "@/lib/messagePolicy.mjs";
 
 export default function MessageBox({
   messages = [],
@@ -30,16 +18,22 @@ export default function MessageBox({
   hasConversation = false,
   isMobile = false,
   onMobileBack,
+  messageStatus = "Exhausted",
+  onLoadOlder,
+  readError,
+  onRetryRead,
 }) {
   const t = useTranslations("messages");
   const [inputValue, setInputValue] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [sendError, setSendError] = useState(null);
   const chatBoxRef = useRef(null);
-  const prevCountRef = useRef(0);
-  const messageCount = messages?.length ?? 0;
-  const blockError =
-    inputValue.trim() && containsContactInfo(inputValue) ? t("contactBlocked") : null;
+  const previousNewest = useRef(null);
+  const olderAnchor = useRef(null);
+  const nearBottom = useRef(true);
+  const blockError = inputValue.trim()
+    ? getMessagePolicyError(inputValue)
+    : null;
 
   const scrollToBottom = () => {
     const el = chatBoxRef.current;
@@ -52,13 +46,30 @@ export default function MessageBox({
   };
 
   useEffect(() => {
-    if (messageCount > prevCountRef.current) scrollToBottom();
-    prevCountRef.current = messageCount;
-  }, [messageCount]);
+    const newest = messages.at(-1)?._id;
+    const element = chatBoxRef.current;
+    if (!element) return;
+    if (olderAnchor.current && messageStatus !== "LoadingMore") {
+      element.scrollTop =
+        olderAnchor.current.top +
+        element.scrollHeight -
+        olderAnchor.current.height;
+      olderAnchor.current = null;
+    } else if (newest !== previousNewest.current && nearBottom.current) {
+      element.scrollTop = element.scrollHeight;
+    }
+    previousNewest.current = newest;
+  }, [messages, messageStatus]);
 
-  useEffect(() => {
-    if (hasConversation && messageCount > 0) scrollToBottom();
-  }, [hasConversation, messageCount]);
+  function loadOlder() {
+    if (!onLoadOlder || messageStatus !== "CanLoadMore") return;
+    const element = chatBoxRef.current;
+    olderAnchor.current = {
+      top: element?.scrollTop || 0,
+      height: element?.scrollHeight || 0,
+    };
+    onLoadOlder();
+  }
 
   async function handleSend(e) {
     e.preventDefault();
@@ -70,9 +81,7 @@ export default function MessageBox({
       setInputValue("");
       scrollToBottom();
     } catch (err) {
-      setSendError(
-        err?.data ?? err?.message ?? t("sendFailed")
-      );
+      setSendError(err?.data ?? err?.message ?? t("sendFailed"));
     } finally {
       setIsSending(false);
     }
@@ -94,8 +103,7 @@ export default function MessageBox({
   }
 
   const otherName = otherParticipant?.name || "User";
-  const otherAvatar =
-    otherParticipant?.image || "/images/resource/user.png";
+  const otherAvatar = otherParticipant?.image || "/images/resource/user.png";
 
   if (!hasConversation) {
     return (
@@ -113,12 +121,15 @@ export default function MessageBox({
         <div style={{ textAlign: "center" }}>
           <i
             className="flaticon-chat"
-            style={{ fontSize: 50, color: "var(--primary-600)", display: "block", marginBottom: 16 }}
+            style={{
+              fontSize: 50,
+              color: "var(--primary-600)",
+              display: "block",
+              marginBottom: 16,
+            }}
           />
           <h5>{t("selectConversation")}</h5>
-          <p style={{ color: "#6b7280" }}>
-            {t("selectConversationHint")}
-          </p>
+          <p style={{ color: "#6b7280" }}>{t("selectConversationHint")}</p>
         </div>
       </div>
     );
@@ -177,7 +188,9 @@ export default function MessageBox({
           }}
         />
         <div style={{ minWidth: 0, flex: 1 }}>
-          <h6 style={{ margin: 0, fontSize: isMobile ? 14 : 15, fontWeight: 600 }}>
+          <h6
+            style={{ margin: 0, fontSize: isMobile ? 14 : 15, fontWeight: 600 }}
+          >
             {otherName}
           </h6>
           {context?.title ? (
@@ -195,18 +208,28 @@ export default function MessageBox({
                   textDecoration: "none",
                 }}
               >
-                <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                <span
+                  style={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
                   {context.title}
                 </span>
                 <ArrowUpRight size={13} style={{ flex: "0 0 auto" }} />
               </Link>
             ) : (
-              <p style={{ margin: 0, fontSize: 12, color: "var(--primary-700)" }}>
+              <p
+                style={{ margin: 0, fontSize: 12, color: "var(--primary-700)" }}
+              >
                 {context.title}
               </p>
             )
           ) : (
-            <p style={{ margin: 0, fontSize: 12, color: "var(--primary-600)" }}>{t("active")}</p>
+            <p style={{ margin: 0, fontSize: 12, color: "var(--primary-600)" }}>
+              {t("active")}
+            </p>
           )}
         </div>
       </div>
@@ -214,12 +237,38 @@ export default function MessageBox({
       {/* Messages */}
       <div
         ref={chatBoxRef}
+        onScroll={(event) => {
+          const element = event.currentTarget;
+          nearBottom.current =
+            element.scrollHeight - element.scrollTop - element.clientHeight <
+            100;
+        }}
         style={{
           flex: 1,
           overflowY: "auto",
           padding: isMobile ? 12 : 20,
         }}
       >
+        {messageStatus === "CanLoadMore" || messageStatus === "LoadingMore" ? (
+          <button
+            type="button"
+            className="skl-action-secondary mb-4"
+            onClick={loadOlder}
+            disabled={messageStatus === "LoadingMore"}
+          >
+            {messageStatus === "LoadingMore"
+              ? "Loading earlier messages…"
+              : "Load earlier messages"}
+          </button>
+        ) : null}
+        {readError ? (
+          <p role="status" className="mb-3 text-sm text-amber-800">
+            {readError}{" "}
+            <button type="button" className="skl-action-secondary" onClick={onRetryRead}>
+              Retry
+            </button>
+          </p>
+        ) : null}
         <div
           style={{
             display: "flex",
@@ -229,7 +278,9 @@ export default function MessageBox({
             justifyContent: messages.length === 0 ? "center" : "flex-end",
           }}
         >
-          {messages.length === 0 ? (
+          {messageStatus === "LoadingFirstPage" ? (
+            <p role="status">Loading messages…</p>
+          ) : messages.length === 0 ? (
             <p style={{ textAlign: "center", color: "#6b7280" }}>
               {t("noMessagesYet")}
             </p>
@@ -317,6 +368,11 @@ export default function MessageBox({
         >
           <input
             type="text"
+            aria-label="Message"
+            maxLength={MESSAGE_MAX_LENGTH}
+            aria-describedby={
+              blockError || sendError ? "message-send-error" : undefined
+            }
             placeholder={t("typeMessage")}
             value={inputValue}
             onChange={(e) => {
@@ -332,45 +388,55 @@ export default function MessageBox({
               border: "none",
               borderRadius: 10,
               background: "#f4f4f5",
-              outline: "none",
               color: "#111827",
             }}
           />
           <button
+            className="skl-action-primary"
             type="submit"
+            aria-label={isSending ? "Sending message" : "Send message"}
             disabled={isSending || !inputValue.trim() || !!blockError}
-            style={{
-              padding: isMobile ? "10px 14px" : "10px 20px",
-              fontSize: 14,
-              fontWeight: 600,
-              color: "#fff",
-              background:
-                isSending || !inputValue.trim() || blockError
-                  ? "#a3d48f"
-                  : "var(--primary-600)",
-              border: "none",
-              borderRadius: 10,
-              cursor:
-                isSending || !inputValue.trim() || blockError
-                  ? "not-allowed"
-                  : "pointer",
-              whiteSpace: "nowrap",
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-            }}
+            style={{ paddingInline: isMobile ? 14 : 20 }}
           >
-            {isSending ? (isMobile ? "..." : t("sending")) : (isMobile ? <i className="fal fa-paper-plane" /> : t("send"))}
+            {isSending ? (
+              isMobile ? (
+                "..."
+              ) : (
+                t("sending")
+              )
+            ) : isMobile ? (
+              <i className="fal fa-paper-plane" />
+            ) : (
+              t("send")
+            )}
             {!isMobile && <i className="fal fa-arrow-right-long" />}
           </button>
         </form>
         {blockError && (
-          <p style={{ color: "#dc2626", fontSize: 12, margin: "6px 0 0", padding: "0 4px" }}>
+          <p
+            id="message-send-error"
+            role="alert"
+            style={{
+              color: "#dc2626",
+              fontSize: 12,
+              margin: "6px 0 0",
+              padding: "0 4px",
+            }}
+          >
             {blockError}
           </p>
         )}
         {sendError && !blockError && (
-          <p style={{ color: "#dc2626", fontSize: 12, margin: "6px 0 0", padding: "0 4px" }}>
+          <p
+            id="message-send-error"
+            role="alert"
+            style={{
+              color: "#dc2626",
+              fontSize: 12,
+              margin: "6px 0 0",
+              padding: "0 4px",
+            }}
+          >
             {sendError}
           </p>
         )}

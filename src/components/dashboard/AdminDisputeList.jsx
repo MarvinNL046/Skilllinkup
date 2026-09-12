@@ -51,14 +51,14 @@ export default function AdminDisputeList() {
               <td>{new Date(d.openedAt).toLocaleDateString()}</td>
               <td>
                 <button
-                  className="btn btn-success btn-sm me-2"
+                  className="skl-action-primary me-2"
                   disabled={!!loading}
                   onClick={() => handleResolve(d._id, "freelancer_wins")}
                 >
                   {loading === d._id + "freelancer_wins" ? "..." : t("releaseToFreelancer")}
                 </button>
                 <button
-                  className="btn btn-danger btn-sm"
+                  className="skl-action-destructive"
                   disabled={!!loading}
                   onClick={() => handleResolve(d._id, "client_wins")}
                 >

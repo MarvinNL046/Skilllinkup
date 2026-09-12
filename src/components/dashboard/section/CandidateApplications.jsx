@@ -40,9 +40,9 @@ export default function CandidateApplications() {
   return (
     <div className={styles.page}>
       <DashboardNavigation />
-      <header className={styles.header}><div><p>Jobs · Candidate workspace</p><h1>My applications</h1><span>Follow every application from first submission to final decision.</span></div><Link href="/jobs/browse">Browse jobs <ArrowRight size={17} /></Link></header>
+      <header className={styles.header}><div><p>Jobs · Candidate workspace</p><h1>My applications</h1><span>Follow every application from first submission to final decision.</span></div><Link className="skl-action-primary" href="/jobs/browse">Browse jobs <ArrowRight size={17} /></Link></header>
       {applications === undefined ? <div className={styles.loading}><LoaderCircle /> Loading applications…</div> : applications.length === 0 ? (
-        <section className={styles.empty}><i><BriefcaseBusiness /></i><h2>Your next role starts here</h2><p>You have not applied to a vacancy yet. Explore transparent roles from verified companies.</p><Link href="/jobs/browse">Find verified jobs <ArrowRight size={17} /></Link></section>
+        <section className={styles.empty}><i><BriefcaseBusiness /></i><h2>Your next role starts here</h2><p>You have not applied to a vacancy yet. Explore transparent roles from verified companies.</p><Link className="skl-action-primary" href="/jobs/browse">Find verified jobs <ArrowRight size={17} /></Link></section>
       ) : (
         <section className={styles.list} aria-label="Your job applications">
           {applications.map(({ application, job }) => (
@@ -50,9 +50,9 @@ export default function CandidateApplications() {
               <div className={styles.companyIcon}><Building2 /></div>
               <div className={styles.details}><span className={styles.status} data-status={application.status}>{labels[application.status] || application.status}</span><h2><Link href={`/jobs/job/${job.slug}`}>{job.title}</Link></h2><p>{job.company || "Company not provided"}</p><div><span><MapPin />{job.workType === "remote" ? "Remote" : job.locationCity || job.workType || "Flexible"}</span><span><CalendarDays />Updated {new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(application.statusUpdatedAt)}</span></div></div>
               <div className={styles.actions}>
-                <Link href={`/jobs/job/${job.slug}`}>View vacancy</Link>
+                <Link className="skl-action-secondary" href={`/jobs/job/${job.slug}`}>View vacancy</Link>
                 {messageable.has(application.status) ? <ContextMessageButton context={{ type: "job_application", applicationId: application._id }} label="Message company" /> : null}
-                {withdrawable.has(application.status) ? <button className={styles.withdraw} type="button" onClick={() => handleWithdraw(application._id)}>Withdraw</button> : null}
+                {withdrawable.has(application.status) ? <button className="skl-action-destructive" type="button" onClick={() => handleWithdraw(application._id)}>Withdraw</button> : null}
               </div>
             </article>
           ))}

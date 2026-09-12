@@ -64,7 +64,7 @@ export const ReviewReceivedEmail = ({
  <Section style={ctaSection}>
  <Button
  style={ctaButton}
- href={`${baseUrl}/dashboard/orders/${orderId}`}
+ href={`${baseUrl}/orders/${orderId}`}
  >
  View Review
  </Button>

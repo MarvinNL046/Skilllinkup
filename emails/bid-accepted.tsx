@@ -35,8 +35,8 @@ export const BidAcceptedEmail = ({
  locale = 'en',
 }: BidAcceptedEmailProps) =>{
  const orderHref = orderId
- ? `${baseUrl}/dashboard/seller/orders/${orderId}`
- : `${baseUrl}/dashboard/seller/orders`;
+ ? `${baseUrl}/orders/${orderId}`
+ : `${baseUrl}/orders`;
 
  return (
  <BaseLayout

@@ -1,184 +1,27 @@
 "use client";
-import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
-import listingStore from "@/store/listingStore";
-import ListingOption2 from "../element/ListingOption2";
-import ListingSidebar5 from "../sidebar/ListingSidebar5";
-import Pagination1 from "./Pagination1";
-import priceStore from "@/store/priceStore";
-import useConvexFreelancers from "@/hook/useConvexFreelancers";
-import FreelancerCard2 from "../card/FreelancerCard2";
-import FreelancerCardList from "../card/FreelancerCardList";
-import ListingSidebarModal5 from "../modal/ListingSidebarModal5";
-import EmptyState from "@/components/ui/EmptyState";
-import { User } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { Search, MapPin, BadgeCheck } from "lucide-react";
+import { useLocalDiscovery } from "@/hook/useConvexFreelancers";
+import useDiscoveryFilters from "@/hook/useDiscoveryFilters";
+import SavedItemButton from "@/components/ui/SavedItemButton";
+import { DiscoveryFilterPanel, DiscoverySuggest, DiscoverySelect, DiscoveryNumber, DiscoveryLoadMore } from "@/components/marketplace/DiscoveryControls";
 
 export default function Listing14() {
-  const t = useTranslations("listing");
-  const searchParams = useSearchParams();
-  const setSearch = listingStore((state) => state.setSearch);
-  const getCategory = listingStore((state) => state.getCategory);
-  const priceRange = priceStore((state) => state.priceRange);
-  const getLocation = listingStore((state) => state.getLocation);
-  const getSearch = listingStore((state) => state.getSearch);
-  const getLevel = listingStore((state) => state.getLevel);
-  const getSpeak = listingStore((state) => state.getSpeak);
-  const getBestSeller = listingStore((state) => state.getBestSeller);
-  const getAvailableOnly = listingStore((state) => state.getAvailableOnly);
-  const getViewMode = listingStore((state) => state.getViewMode);
-
-  // Sync URL search params to Zustand store on mount
-  useEffect(() => {
-    const q = searchParams.get("q");
-    if (q) setSearch(q);
-  }, [searchParams, setSearch]);
-
-  // category filter
-  const categoryFilter = (item) =>
-    getCategory?.length !== 0 ? getCategory.includes(item.skill) : true;
-
-  // salary filter
-  const priceFilter = (item) =>
-    priceRange.min <= item.price && priceRange.max >= item.price;
-
-  // location filter
-  const locationFilter = (item) =>
-    getLocation?.length !== 0
-      ? getLocation.includes(item.location.split(" ").join("-").toLowerCase())
-      : item;
-
-  const searchFilter = (item) =>
-    getSearch !== ""
-      ? (item.name || "").toLowerCase().includes(getSearch.toLowerCase()) ||
-        (item.skill || "").toLowerCase().includes(getSearch.toLowerCase()) ||
-        (item.location || "").toLowerCase().includes(getSearch.toLowerCase())
-      : true;
-
-  // level filter
-  const levelFilter = (item) =>
-    getLevel?.length !== 0 ? getLevel.includes(item.level) : true;
-
-  // speak filter
-  const languageFilter = (item) =>
-    getSpeak?.length !== 0
-      ? getSpeak.includes(item.language.toLowerCase())
-      : item;
-
-  // availability filter
-  const availabilityFilter = (item) =>
-    getAvailableOnly ? item.isAvailable : true;
-
-  // sort comparator based on selected option
-  const sortComparator = (a, b) => {
-    if (getBestSeller === "recommended") {
-      return (b.ratingAverage ?? 0) - (a.ratingAverage ?? 0);
-    }
-    if (getBestSeller === "new-arrivals") {
-      return (b.createdAt ?? 0) - (a.createdAt ?? 0);
-    }
-    // "best-seller" — sort by total orders/earnings
-    return (b.totalOrders ?? 0) - (a.totalOrders ?? 0);
-  };
-
-  const freelancer1 = useConvexFreelancers();
-
-  if (freelancer1 === undefined) {
-    return (
-      <section style={{ padding: "var(--space-14) 0" }}>
-        <div className="container">
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "var(--space-3)",
-              padding: "var(--space-12) 0",
-              color: "var(--text-secondary)",
-            }}
-          >
-            <div
-              role="status"
-              aria-label={t("loading")}
-              style={{
-                width: 28,
-                height: 28,
-                border: "3px solid var(--border-subtle)",
-                borderTopColor: "var(--primary-600)",
-                borderRadius: "999px",
-                animation: "spin 0.9s linear infinite",
-              }}
-            />
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  const filtered = freelancer1
-    .slice(0, 9)
-    .filter(categoryFilter)
-    .filter(priceFilter)
-    .filter(locationFilter)
-    .filter(searchFilter)
-    .filter(levelFilter)
-    .filter(languageFilter)
-    .filter(availabilityFilter)
-    .sort(sortComparator);
-
-  const isList = getViewMode === "list";
-  const gridStyle = isList
-    ? { display: "grid", gap: "var(--space-4)" }
-    : {
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-        gap: "var(--space-5)",
-      };
-
-  return (
-    <>
-      <section style={{ padding: "var(--space-10) 0 var(--space-16)" }}>
-        <div className="container">
-          <div
-            className="listing-layout"
-            style={{
-              display: "grid",
-              gap: "var(--space-8)",
-              alignItems: "start",
-            }}
-          >
-            <aside style={{ minWidth: 0 }}>
-              <ListingSidebar5 />
-            </aside>
-            <div style={{ minWidth: 0 }}>
-              <ListingOption2 itemLength={filtered.length} itemLabel={t("freelancers")} />
-              {filtered.length === 0 ? (
-                <EmptyState
-                  Icon={User}
-                  title={t("noFreelancersTitle")}
-                  description={t("noFreelancersDescription")}
-                  actionLabel={t("noFreelancersAction")}
-                  actionHref="/register"
-                />
-              ) : (
-                <div style={gridStyle}>
-                  {filtered.map((item, i) =>
-                    isList ? (
-                      <FreelancerCardList key={i} data={item} />
-                    ) : (
-                      <FreelancerCard2 key={i} data={item} />
-                    )
-                  )}
-                </div>
-              )}
-              <div style={{ marginTop: "var(--space-8)" }}>
-                <Pagination1 itemCount={filtered.length} />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <ListingSidebarModal5 />
-    </>
-  );
+  const { filters, update, reset } = useDiscoveryFilters();
+  const { items, status, loadMore } = useLocalDiscovery(filters);
+  const skills = [...new Set([filters.skill, ...items.flatMap((profile) => profile.tags)].filter(Boolean))];
+  const languages = [...new Set([filters.language, ...items.flatMap((profile) => profile.languages || [])].filter(Boolean))];
+  return <main className="container py-10"><div className="mb-6"><h1 className="text-3xl font-semibold">Find a local professional</h1><p className="mt-3 text-[var(--text-secondary)]">Search by trade and service area. Confirm availability and scope before booking.</p></div>
+    <form className="mb-8 grid gap-3 rounded-xl border bg-white p-4 sm:grid-cols-[1fr_1fr_auto]" key={filters.q + ":" + filters.location} onSubmit={(event) => { event.preventDefault(); const data = new FormData(event.currentTarget); update({ q: data.get("q"), location: data.get("location") }); }}><label><span className="sr-only">Trade or professional</span><input className="input w-full" name="q" defaultValue={filters.q || ""} maxLength={120} placeholder="Trade or professional" /></label><label><span className="sr-only">City or postcode</span><input className="input w-full" name="location" defaultValue={filters.location || ""} maxLength={120} placeholder="City or postcode" /></label><button className="btn btn--primary" type="submit"><Search size={16} />Find a pro</button></form>
+    <div className="grid items-start gap-7 lg:grid-cols-[260px_minmax(0,1fr)]"><DiscoveryFilterPanel reset={reset}>
+      <DiscoverySuggest label="Trade or skill" value={filters.skill} onChange={(skill) => update({ skill })} options={skills} />
+      <DiscoverySuggest label="Language" value={filters.language} onChange={(language) => update({ language })} options={languages} />
+      <DiscoveryNumber label="Maximum hourly rate (EUR)" value={filters.maxRate} onChange={(maxRate) => update({ maxRate })} />
+      <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={filters.available === "1"} onChange={(event) => update({ available: event.target.checked ? "1" : "" })} />Available for new work</label>
+      <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={filters.verified === "1"} onChange={(event) => update({ verified: event.target.checked ? "1" : "" })} />Verified profiles only</label>
+    </DiscoveryFilterPanel><section className="min-w-0" aria-label="Local professionals"><header className="mb-5 flex flex-wrap items-center justify-between gap-3"><p role="status">{status === "LoadingFirstPage" ? "Finding professionals…" : items.length + (status === "Exhausted" ? " professionals found" : " matching professionals loaded")}</p><label className="text-sm">Sort <select value={filters.sort || "rating"} className="rounded-lg border p-2" onChange={(event) => update({ sort: event.target.value })}><option value="rating">Highest rated</option><option value="rate">Lowest hourly rate</option><option value="newest">Newest profiles</option></select></label></header>
+      {status === "LoadingFirstPage" ? <p role="status">Loading local profiles…</p> : items.length ? <div className="grid gap-5 sm:grid-cols-2">{items.map((person) => <article key={person.id} className="rounded-xl border bg-white p-6"><div className="flex items-start justify-between gap-3"><Image src={person.img} alt={person.name} width={64} height={64} className="rounded-full" /><SavedItemButton itemType="freelancer" itemId={person.id} title={person.name} image={person.img} href={"/local/craftsman/" + person.slug} /></div><h2 className="mt-4 text-xl font-semibold"><Link href={"/local/craftsman/" + person.slug}>{person.name}</Link></h2>{person.isVerified ? <p className="my-2 flex items-center gap-1 text-sm"><BadgeCheck size={15} />Verified profile</p> : null}<p className="mt-2">{person.profession}</p><p className="mt-2 flex items-center gap-1 text-sm text-[var(--text-secondary)]"><MapPin size={14} />{person.location}{person.serviceRadiusKm ? " · " + person.serviceRadiusKm + " km service radius" : ""}</p><div className="my-4 flex flex-wrap gap-2">{person.tags.slice(0, 4).map((skill) => <span key={skill} className="rounded-md bg-slate-50 px-2 py-1 text-sm">{skill}</span>)}</div><div className="flex items-center justify-between gap-3"><span>{person.price != null ? "€" + person.price + " / hour" : "Rate on request"}</span><Link className="text-primary" href={"/local/craftsman/" + person.slug}>View profile →</Link></div></article>)}</div> : status !== "Exhausted" ? <p role="status">Searching the remaining listings…</p> : <div className="rounded-xl border p-8"><h2 className="text-lg font-medium">No matching local professionals yet</h2><p className="my-3">Try a nearby city, another trade or fewer filters.</p><button className="btn btn--secondary" type="button" onClick={reset}>Clear filters</button></div>}
+      <DiscoveryLoadMore status={status} loadMore={loadMore} />
+    </section></div><div className="mt-10 rounded-xl border p-6"><h2 className="text-xl font-semibold">Describe the work you need</h2><p className="my-3">Create one local request with the scope, area and preferred dates.</p><Link className="btn btn--primary" href="/local/request-quote">Request quotes</Link></div></main>;
 }

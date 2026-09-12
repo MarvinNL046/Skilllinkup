@@ -7,6 +7,7 @@ import {
   requireMarketplaceContext,
 } from "../lib/authHelpers";
 import { notifyUser } from "../lib/notifications";
+import { assertOrderNotDisputed, requireBetaOrder } from "../lib/orderLifecycle";
 import {
   assertTransition,
   localAppointmentStatusValidator,
@@ -25,6 +26,7 @@ async function requireAppointmentParty(
   const isClient = appointment.clientId === user._id;
   const isProfessional = professional?.userId === user._id;
   if (!isClient && !isProfessional && user.role !== "admin") throw new Error("Unauthorized.");
+  if (appointment.tenantId !== user.tenantId || professional?.tenantId !== appointment.tenantId) throw new Error("This appointment belongs to another workspace.");
   if (isClient) {
     requireMarketplaceContext(user, "client", "local", "managing a local appointment");
   } else if (isProfessional) {
@@ -36,6 +38,15 @@ async function requireAppointmentParty(
     );
   }
   return { user, appointment, professional, isClient, isProfessional };
+}
+
+async function requireMutableAppointmentOrder(ctx: MutationCtx, appointment: Doc<"localAppointments">) {
+  const order = await ctx.db.get(appointment.orderId);
+  if (!order || order.tenantId !== appointment.tenantId || order.clientId !== appointment.clientId || order.freelancerId !== appointment.professionalId || order.quoteRequestId !== appointment.quoteRequestId) throw new Error("The appointment and order do not match.");
+  requireBetaOrder(order);
+  await assertOrderNotDisputed(ctx, order);
+  if (["completed", "cancelled"].includes(order.status)) throw new Error("This order is closed.");
+  return order;
 }
 
 export const getByOrder = query({
@@ -102,9 +113,10 @@ export const reschedule = mutation({
   returns: v.object({ success: v.boolean() }),
   handler: async (ctx, args) => {
     const { user, appointment, isClient } = await requireAppointmentParty(ctx, args.appointmentId);
+    await requireMutableAppointmentOrder(ctx, appointment);
     if (["completed", "cancelled", "no_show"].includes(appointment.status)) throw new Error("This appointment is closed.");
-    if (args.scheduledStart < Date.now() - 5 * 60 * 1000) throw new Error("Choose a future appointment time.");
-    if (args.scheduledEnd !== undefined && args.scheduledEnd <= args.scheduledStart) throw new Error("The end time must be after the start time.");
+    if (!Number.isFinite(args.scheduledStart) || args.scheduledStart < Date.now() - 5 * 60 * 1000) throw new Error("Choose a future appointment time.");
+    if (args.scheduledEnd !== undefined && (!Number.isFinite(args.scheduledEnd) || args.scheduledEnd <= args.scheduledStart)) throw new Error("The end time must be after the start time.");
     const note = args.note?.trim();
     if (note && note.length > 1000) throw new Error("Notes cannot exceed 1,000 characters.");
     await ctx.db.patch(appointment._id, {
@@ -128,6 +140,7 @@ export const updateStatus = mutation({
   returns: v.object({ success: v.boolean() }),
   handler: async (ctx, args) => {
     const { appointment, professional, isClient, isProfessional, user } = await requireAppointmentParty(ctx, args.appointmentId);
+    const order = await requireMutableAppointmentOrder(ctx, appointment);
     assertTransition(localAppointmentTransitions, appointment.status, args.status);
     if (args.status === "confirmed" && !isProfessional && user.role !== "admin") {
       throw new Error("The professional confirms the appointment.");
@@ -149,8 +162,8 @@ export const updateStatus = mutation({
       cancelledAt: args.status === "cancelled" ? now : appointment.cancelledAt,
       updatedAt: now,
     });
-    const order = await ctx.db.get(appointment.orderId);
     const request = await ctx.db.get(appointment.quoteRequestId);
+    if (!request || request.tenantId !== order.tenantId || request.clientId !== order.clientId) throw new Error("The local request and order do not match.");
     if (args.status === "in_progress" && request?.status === "accepted") {
       assertTransition(quoteRequestTransitions, request.status, "in_progress");
       await ctx.db.patch(request._id, { status: "in_progress", updatedAt: now });

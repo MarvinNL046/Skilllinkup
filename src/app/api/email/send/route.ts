@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { render } from "@react-email/render";
+import { ContactMessageEmail } from "../../../../../emails/contact-message";
 
 // Import all email templates
 import { OrderConfirmationEmail } from "../../../../../emails/order-confirmation";
@@ -24,6 +25,7 @@ import {
 
 // Map template names to React components
 const templates: Record<string, (props: any) => React.ReactElement> = {
+  contactMessage: (props) => ContactMessageEmail(props),
   orderConfirmation: (props) => OrderConfirmationEmail(props),
   newOrder: (props) => NewOrderEmail(props),
   orderDelivered: (props) => OrderDeliveredEmail(props),

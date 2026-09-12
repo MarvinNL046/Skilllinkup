@@ -46,6 +46,15 @@ export default function DashboardTabs({
             type="button"
             role="tab"
             aria-selected={active}
+            tabIndex={active ? 0 : -1}
+            onKeyDown={event => {
+              const index = options.findIndex(item => item.value === opt.value);
+              const next = event.key === "Home" ? 0 : event.key === "End" ? options.length - 1 : event.key === "ArrowRight" ? (index + 1) % options.length : event.key === "ArrowLeft" ? (index - 1 + options.length) % options.length : null;
+              if (next === null) return;
+              event.preventDefault();
+              onChange?.(options[next].value);
+              event.currentTarget.parentElement?.querySelectorAll('[role="tab"]')[next]?.focus();
+            }}
             onClick={() => onChange?.(opt.value)}
             style={{
               display: "inline-flex",

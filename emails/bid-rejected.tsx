@@ -49,7 +49,7 @@ export const BidRejectedEmail = ({
  <Section style={ctaSection}>
  <Button
  style={ctaButton}
- href={`${baseUrl}/marketplace/projects`}
+ href={`${baseUrl}/projects`}
  >
  Browse Projects
  </Button>

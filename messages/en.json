@@ -262,7 +262,7 @@
     "getInTouchDesc": "Have a question about SkillLinkup? We're here to help freelancers and clients get the most out of the platform.",
     "emailLabel": "Email",
     "responseTime": "Response Time",
-    "responseTimeDesc": "We typically respond within 24 hours on business days.",
+    "responseTimeDesc": "Response times may vary during beta. We will reply to the email address you provide.",
     "location": "Location",
     "locationDesc": "The Netherlands — Serving freelancers worldwide",
     "sendUsMessage": "Send Us a Message",
@@ -285,7 +285,7 @@
     "sendMessage": "Send Message",
     "sending": "Sending...",
     "sendingMessage": "Sending your message...",
-    "messageSent": "Message sent! We'll get back to you within 24 hours.",
+    "messageSent": "Your message has been received. We will reply to your email address.",
     "fillAllFields": "Please fill in all fields before sending.",
     "invalidEmail": "Please enter a valid email address.",
     "sendFailed": "Failed to send message. Please try again."
@@ -317,7 +317,7 @@
     "start4Q": "What is the difference between online and local services?",
     "start4A": "Online services are delivered remotely — think web development, graphic design, or content writing. Local services are performed on-site in your area — like home repairs, cleaning, or photography. You can find both types on SkillLinkup.",
     "start5Q": "How do I contact support?",
-    "start5A": "You can reach us via the contact page or email us directly at info@skilllinkup.com. We typically respond within 24 hours on business days."
+    "start5A": "You can reach us via the contact page or email us directly at info@skilllinkup.com. Include the relevant page or order reference so we can understand your question."
   },
   "pricing": {
     "title": "Pricing",
@@ -584,9 +584,9 @@
   },
   "help": {
     "title": "Help & Support",
-    "metaDescription": "Get help with SkillLinkup. Browse our support articles, guides, and resources for freelancers and clients.",
+    "metaDescription": "Find answers about SkillLinkup accounts, projects, local quotes, job applications and the current beta. Contact support if you need more help.",
     "heading": "How can we help you?",
-    "subtitle": "Browse our help categories or search for answers below",
+    "subtitle": "Find answers about accounts, projects, local quotes and the current beta.",
     "searchPlaceholder": "Search"
   },
   "online": {
@@ -1516,7 +1516,7 @@
   },
   "saved": {
     "title": "Saved",
-    "pageDescription": "Your saved gigs, projects, and jobs.",
+    "pageDescription": "Your saved professionals, services, projects, and jobs.",
     "tabServices": "Services",
     "tabProjects": "Projects",
     "tabJobs": "Jobs",

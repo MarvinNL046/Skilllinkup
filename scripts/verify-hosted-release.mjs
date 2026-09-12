@@ -47,11 +47,15 @@ if (shareToken) {
 for (const pathname of [
   "/",
   "/online",
+  "/online/freelancers",
   "/local",
   "/jobs",
   "/services",
   "/projects",
   "/pricing",
+  "/business",
+  "/contact",
+  "/en/tools/invoice-generator",
   "/privacy-policy",
   "/terms",
 ]) {

@@ -2,7 +2,7 @@
 .welcome { display:flex; align-items:flex-start; justify-content:space-between; gap:24px; margin-bottom:18px; }
 .welcome h1 { margin:0 0 4px; font-family:var(--font-sans)!important; font-size:clamp(25px,2.1vw,34px); font-weight:760; letter-spacing:-.025em; }
 .welcome p { margin:0; color:var(--muted); font-size:15px; }
-.welcome>a { display:inline-flex; align-items:center; justify-content:center; gap:9px; min-height:46px; padding:0 20px; border-radius:8px; background:var(--coral); color:#fff; font-size:14px; font-weight:750; text-decoration:none; box-shadow:inset 0 1px 0 #ffffff50,0 9px 22px #ff4f2e20; }
+.welcome>a { display:inline-flex; align-items:center; justify-content:center; gap:9px; }
 
 .stats { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; margin-bottom:18px; }
 .statCard { display:flex; align-items:center; gap:17px; min-height:106px; padding:18px; border:1px solid var(--line); border-radius:12px; background:#fff; color:inherit; text-decoration:none; box-shadow:0 8px 26px rgb(8 36 79 / 3%); transition:transform 170ms ease,box-shadow 170ms ease; }
@@ -55,8 +55,7 @@
 .proposalList article>div>strong { display:flex; align-items:center; gap:4px; overflow:hidden; font-size:12px; text-overflow:ellipsis; white-space:nowrap; }.proposalList article>div>strong svg { color:var(--mint); }
 .proposalList article>div>span { color:#728197; font-size:10px; }.proposalList article>div>small { display:flex; align-items:center; gap:3px; color:#6e7d90; font-size:10px; }.proposalList article>div>small svg { color:#ffad0b;fill:#ffad0b; }
 .proposalList article>p { display:flex; flex-direction:column; margin:0; }.proposalList article>p span { color:#7b8898;font-size:10px; }.proposalList article>p strong { font-size:13px; }
-.proposalList article>a,.proposalList article>button { display:grid; place-items:center; min-width:56px; min-height:32px; padding:0 9px; border:1px solid #cbd5df; border-radius:6px; background:#fff; color:#16345d; font:inherit; font-size:11px; font-weight:700; text-decoration:none; cursor:pointer; }
-.proposalList article>button { border-color:#ef482a;background:var(--coral);color:#fff; }.proposalList article>button:disabled { opacity:.6; }
+.proposalList article>a,.proposalList article>button { display:grid; place-items:center; min-width:56px; }
 
 .messageList { padding:4px 18px 10px; }
 .messageList>a { display:grid; grid-template-columns:auto minmax(0,1fr) auto auto; align-items:center; gap:8px; min-height:54px; color:inherit; text-decoration:none; }
@@ -89,7 +88,6 @@
 .dashboard { max-width: 1440px; margin-inline: auto; --line: #e5e8ec; }
 .welcome { margin-bottom: 26px; }
 .welcome h1 { font-weight: 600; font-size: clamp(25px, 2.1vw, 30px); }
-.welcome > a { box-shadow: none; font-weight: 600; }
 .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: #fff; margin-bottom: 24px; }
 .statCard { min-height: 88px; border: 0; border-right: 1px solid var(--line); border-radius: 0; box-shadow: none; gap: 14px; transition: background-color 150ms ease; }
 .statCard:last-child { border-right: 0; }
@@ -109,7 +107,7 @@
 .empty strong { margin-top: 0; font-weight: 500; }
 .empty p { max-width: 420px; margin-bottom: 0; font-size: 13px; }
 .deadlinesCard { padding-bottom: 0; }
-.dashboard :is(a, button):focus-visible { outline: 2px solid var(--coral); outline-offset: 3px; }
+.dashboard :is(a, button):focus-visible { outline: 2px solid var(--action-focus-ring); outline-offset: 3px; }
 @media (max-width: 1000px) { .workspaceGrid { grid-template-columns: 1fr; } }
 @media (max-width: 600px) {
   .stats { grid-template-columns: 1fr; }
@@ -124,6 +122,6 @@
 .firstStep span { color:#69778b; font-size:12px; }
 .firstStep h2 { margin:6px 0; font-size:20px; font-weight:600; font-family:var(--font-sans); }
 .firstStep p { max-width:600px; margin:0; color:#627086; font-size:14px; }
-.firstStep a { display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:12px 16px; border-radius:8px; background:var(--navy); color:white; font-size:14px; text-decoration:none; flex-shrink:0; }
+.firstStep a { display:inline-flex; align-items:center; justify-content:center; gap:10px; flex-shrink:0; }
 .empty { min-height:0; padding:16px 20px; gap:4px; }
 @media(max-width:600px) { .firstStep { flex-direction:column; align-items:stretch; padding:20px; } .firstStep a { white-space:normal; } }

@@ -39,16 +39,16 @@ export const OrderCompletedEmail = ({
  return (
  <BaseLayout
  locale={locale}
- preview={`Payment released for order #${orderNumber} — ${formatCurrency(amount, currency)}`}
- heroTitle="Payment Released!"
- heroSubtitle="Your earnings have been transferred to your account"
+ preview={`Order #${orderNumber} completed — ${orderTitle}`}
+ heroTitle="Order Completed"
+ heroSubtitle="The client has approved your delivery"
  heroColor={colors.accent}
  >
  <Section style={contentSection}>
  <Text style={paragraph}>Hi {freelancerName},</Text>
  <Text style={paragraph}>
- Great news! The client has approved your delivery and payment has been released.
- Your earnings are now available in your SkillLinkup wallet.
+ The client has approved your delivery and the order is complete.
+ You can review the finished work and leave feedback from the order page.
  </Text>
 
  <Section style={infoBox}>
@@ -58,22 +58,22 @@ export const OrderCompletedEmail = ({
  <Text style={infoLabel}>Service</Text>
  <Text style={infoValue}>{orderTitle}</Text>
 
- <Text style={earningsLabel}>Earnings</Text>
+ <Text style={earningsLabel}>Agreed scope amount</Text>
  <Text style={earningsValue}>{formatCurrency(amount, currency)}</Text>
  </Section>
 
  <Text style={paragraph}>
- You can withdraw your earnings to your bank account or PayPal from your earnings
- dashboard at any time.
+ This was a free private-beta order. No payment, escrow transfer or wallet earnings
+ were created. The amount above describes the agreed scope only.
  </Text>
  </Section>
 
  <Section style={ctaSection}>
  <Button
  style={ctaButton}
- href={`${baseUrl}/dashboard/seller/earnings`}
+ href={`${baseUrl}/orders/${orderId}`}
  >
- View Earnings
+ View Completed Order
  </Button>
  </Section>
  </BaseLayout>

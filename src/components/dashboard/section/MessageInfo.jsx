@@ -2,7 +2,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { Search, ArrowLeft } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { Search } from "lucide-react";
 import useConvexUser from "@/hook/useConvexUser";
 import useConvexMessages from "@/hook/useConvexMessages";
 import DashboardNavigation from "../header/DashboardNavigation";
@@ -29,7 +30,9 @@ export default function MessageInfo() {
   const userId = convexUser?._id;
   const isMobile = useIsMobile();
   const [mobileShowChat, setMobileShowChat] = useState(false);
-  const initialConversationHandled = useRef(false);
+  const searchParams = useSearchParams();
+  const requestedConversation = searchParams.get("conversation");
+  const handledConversation = useRef(null);
 
   const {
     conversations,
@@ -37,8 +40,12 @@ export default function MessageInfo() {
     selectedConversationId,
     setSelectedConversationId,
     sendMessage,
-    markRead,
-  } = useConvexMessages(userId);
+    messageStatus,
+    loadOlder,
+    readError,
+    retryRead,
+    conversationsLoading,
+  } = useConvexMessages(userId, !isMobile || mobileShowChat);
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -53,29 +60,24 @@ export default function MessageInfo() {
   });
 
   const selectedConversation = conversations.find(
-    (c) => c._id === selectedConversationId
+    (c) => c._id === selectedConversationId,
   );
 
   useEffect(() => {
-    if (initialConversationHandled.current || conversations.length === 0) return;
-    const requestedId = new URLSearchParams(window.location.search).get("conversation");
-    initialConversationHandled.current = true;
-    if (!requestedId || !conversations.some((item) => item._id === requestedId)) return;
-    setSelectedConversationId(requestedId);
-    if (isMobile) setMobileShowChat(true);
-    void markRead({ conversationId: requestedId }).catch(() => undefined);
-  }, [conversations, isMobile, markRead, setSelectedConversationId]);
+    if (
+      !requestedConversation ||
+      handledConversation.current === requestedConversation ||
+      !conversations.some((item) => item._id === requestedConversation)
+    )
+      return;
+    handledConversation.current = requestedConversation;
+    setSelectedConversationId(requestedConversation);
+    setMobileShowChat(true);
+  }, [requestedConversation, conversations, setSelectedConversationId]);
 
   async function handleSelectConversation(conversationId) {
     setSelectedConversationId(conversationId);
     if (isMobile) setMobileShowChat(true);
-    if (conversationId) {
-      try {
-        await markRead({ conversationId });
-      } catch {
-        // ignore
-      }
-    }
   }
 
   function handleMobileBack() {
@@ -100,7 +102,7 @@ export default function MessageInfo() {
       <div
         className={cn(
           "messages-2pane grid flex-1 bg-[var(--bg-elevated)] border border-[var(--border-subtle)] rounded-xl overflow-hidden shadow-sm",
-          isMobile ? "grid-cols-1" : "grid-cols-[minmax(280px,360px)_1fr]"
+          isMobile ? "grid-cols-1" : "grid-cols-[minmax(280px,360px)_1fr]",
         )}
         style={{
           minHeight: "calc(100vh - var(--dash-topbar-h, 64px) - 96px)",
@@ -110,7 +112,7 @@ export default function MessageInfo() {
           <aside
             className={cn(
               "flex flex-col min-w-0 bg-[var(--bg)]",
-              !isMobile && "border-r border-[var(--border-subtle)]"
+              !isMobile && "border-r border-[var(--border-subtle)]",
             )}
           >
             <div className="p-4 px-5 border-b border-[var(--border-subtle)] bg-[var(--bg-elevated)]">
@@ -138,7 +140,7 @@ export default function MessageInfo() {
             </div>
 
             <div className="flex-1 overflow-y-auto p-2">
-              {convexUser === undefined ? (
+              {convexUser === undefined || conversationsLoading ? (
                 <div className="flex justify-center py-8">
                   <div
                     role="status"
@@ -156,7 +158,27 @@ export default function MessageInfo() {
                     {t("noConversationsYet")}
                   </p>
                   <Button asChild variant="outline" size="sm">
-                    <Link href="/projects">Find clients</Link>
+                    <Link
+                      href={
+                        convexUser?.activeRole === "client"
+                          ? convexUser.preferredWorld === "local"
+                            ? "/local/craftsmen"
+                            : "/online/freelancers"
+                          : convexUser?.activeRole === "company"
+                            ? "/manage-jobs"
+                            : convexUser?.activeRole === "candidate"
+                              ? "/jobs/browse"
+                              : "/online/projects"
+                      }
+                    >
+                      {convexUser?.activeRole === "client"
+                        ? "Find professionals"
+                        : convexUser?.activeRole === "company"
+                          ? "Review vacancies"
+                          : convexUser?.activeRole === "candidate"
+                            ? "Find jobs"
+                            : "Find work"}
+                    </Link>
                   </Button>
                 </div>
               ) : filteredConversations.length === 0 ? (
@@ -174,7 +196,9 @@ export default function MessageInfo() {
                         onClick={() => handleSelectConversation(conv._id)}
                         className={cn(
                           "p-3 rounded-md text-left font-inherit cursor-pointer transition-colors",
-                          active ? "bg-primary/10" : "hover:bg-[var(--surface-2)]"
+                          active
+                            ? "bg-primary/10"
+                            : "hover:bg-[var(--surface-2)]",
                         )}
                       >
                         <UserChatList1 data={conv} isSelected={active} />
@@ -189,16 +213,13 @@ export default function MessageInfo() {
 
         {showPanel && (
           <div className="flex flex-col min-w-0 min-h-0">
-            {isMobile && mobileShowChat && (
-              <div className="px-4 py-3 border-b border-[var(--border-subtle)] bg-[var(--bg-elevated)]">
-                <Button variant="ghost" size="sm" onClick={handleMobileBack}>
-                  <ArrowLeft className="mr-1 h-4 w-4" />
-                  Back
-                </Button>
-              </div>
-            )}
             <MessageBox
+              key={selectedConversationId || "empty"}
               messages={messages}
+              messageStatus={messageStatus}
+              onLoadOlder={loadOlder}
+              readError={readError}
+              onRetryRead={retryRead}
               currentUserId={userId}
               otherParticipant={selectedConversation?.otherParticipant}
               context={selectedConversation?.context}

@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { calculateInvoice, formatInvoiceMoney, INVOICE_CURRENCIES } from '@/lib/invoice.mjs';
 import styles from './InvoiceGenerator.module.css';
 
@@ -23,25 +22,42 @@ export default function InvoiceGenerator() {
   const [details, setDetails] = useState({ number: '', date: '', due: '', currency: 'USD', from: '', fromAddress: '', to: '', toAddress: '', taxId: '', reference: '', taxRate: '0', payment: '', notes: '' });
   const [items, setItems] = useState([{ id: 1, description: '', quantity: '1', rate: '0' }]);
   const nextId = useRef(2);
-  const [printRequest, setPrintRequest] = useState(0);
+  const [download, setDownload] = useState(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const exportBusy = useRef(false);
   const [error, setError] = useState('');
   let totals = null;
   let calculationError = '';
   try { totals = calculateInvoice(items, details.taxRate); } catch (err) { calculationError = err.message; }
 
-  useEffect(() => {
-    if (printRequest > 0) window.print();
-  }, [printRequest]);
+  useEffect(() => () => { if (download) URL.revokeObjectURL(download.url); }, [download]);
 
   const change = (key, value) => { setDetails(current => ({ ...current, [key]: value })); setError(''); };
   const updateItem = (id, key, value) => { setItems(current => current.map(item => item.id === id ? { ...item, [key]: value } : item)); setError(''); };
-  function print(event) {
+  async function exportPdf(event) {
     event.preventDefault();
+    if (exportBusy.current) return;
     if (calculationError) { setError(calculationError); return; }
     if (details.due < details.date) { setError('The due date must be on or after the issue date.'); return; }
     if (![details.number, details.from, details.fromAddress, details.to, details.toAddress, ...items.map(item => item.description)].every(value => value.trim())) { setError('Fill in the required fields with more than spaces.'); return; }
     setError('');
-    setPrintRequest(count => count + 1);
+    exportBusy.current = true;
+    setIsExporting(true);
+    setDownload(null);
+    try {
+      const { createInvoicePdf } = await import('@/lib/invoicePdf.mjs');
+      const result = await createInvoicePdf(details, items);
+      const url = URL.createObjectURL(result.blob);
+      setDownload({ url, filename: result.filename });
+      const anchor = document.createElement('a');
+      anchor.href = url; anchor.download = result.filename;
+      document.body.appendChild(anchor); anchor.click(); anchor.remove();
+    } catch (exportError) {
+      setError(exportError.message?.startsWith('Some characters') ? exportError.message : 'Your PDF could not be created. Please try again. Your invoice entries are still here.');
+    } finally {
+      exportBusy.current = false;
+      setIsExporting(false);
+    }
   }
   function field(key, label, options = {}) {
     const { multiline = false, ...attributes } = options;
@@ -54,8 +70,9 @@ export default function InvoiceGenerator() {
   return <div className={styles.tool}>
     <p className={styles.notice}>No account needed. Your entries stay in this open page and are not saved to SkillLinkup. Save a PDF before leaving or reloading.</p>
     <div className={styles.workspace}>
-      <form className={styles.editor} onSubmit={print}>
-        <h2>Invoice details</h2><p>Fields marked * are required to print. Review the preview before exporting.</p>
+      <form className={styles.editor} onSubmit={exportPdf} aria-busy={isExporting}>
+        <h2>Invoice details</h2><p>Fields marked * are required to download. Review the preview before exporting.</p>
+        <fieldset className={styles.exportFields} disabled={isExporting}>
         <div className={styles.fields}>{field('number', 'Invoice number', { required: true })}{field('date', 'Issue date', { type: 'date', required: true })}{field('due', 'Due date', { type: 'date', min: details.date || undefined, required: true })}<div className={styles.field}><label htmlFor="invoice-currency">Currency</label><select id="invoice-currency" value={details.currency} onChange={event => change('currency', event.target.value)}>{INVOICE_CURRENCIES.map(currency => <option key={currency}>{currency}</option>)}</select></div></div>
         <fieldset><legend>Your business</legend>{field('from', 'Business / legal name', { required: true })}{field('fromAddress', 'Business address, country and contact', { multiline: true, required: true })}{field('taxId', 'Tax / registration ID (optional)')}</fieldset>
         <fieldset><legend>Client</legend>{field('to', 'Client / legal name', { required: true })}{field('toAddress', 'Billing address and country', { multiline: true, required: true })}{field('reference', 'Client / purchase order reference (optional)')}</fieldset>
@@ -68,10 +85,12 @@ export default function InvoiceGenerator() {
         <p className={styles.hint}>Enter the rate appropriate to your invoice. This tool does not determine tax treatment or support multiple rates, discounts or structured e-invoices. Check your local requirements.</p>
         {field('payment', 'Payment instructions (optional)', { multiline: true })}{field('notes', 'Notes / service period (optional)', { multiline: true })}
         {(error || calculationError) && <p role="alert" className={styles.error}>{error || calculationError}</p>}
-        <button type="submit" className={styles.primary}>Print / save PDF</button><p className={styles.hint}>Choose “Save as PDF” in your browser’s print dialog. This does not send an invoice or collect a payment. Turn off browser headers and footers for a clean document.</p>
+        <button type="submit" className={styles.primary} disabled={isExporting}>{isExporting ? 'Creating PDF…' : 'Download PDF'}</button>
+        </fieldset>
+        <p className={styles.hint}>Download your invoice as a PDF, then open it to print. Your invoice is created on this device; it is not sent to SkillLinkup or your client.</p>
+        {download && <div role="status" className={styles.downloadReady}>Your PDF is ready. If the download did not start, <a href={download.url} download={download.filename}>save {download.filename}</a>. <a href={download.url} target="_blank" rel="noopener noreferrer">Open PDF</a><p>If your in-app browser blocks downloads, use this tool in Chrome, Edge or Firefox.</p><p>This file contains the details from your last export. Download again after making changes.</p></div>}
       </form>
       <div className={styles.preview}><p className={styles.previewLabel}>Live preview</p><InvoicePreview details={details} items={items} totals={totals} /></div>
     </div>
-    {printRequest > 0 && createPortal(<div id="skilllinkup-invoice-print" className={styles.printOnly}><InvoicePreview details={details} items={items} totals={totals} /></div>, document.body)}
   </div>;
 }

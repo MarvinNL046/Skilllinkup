@@ -12,7 +12,7 @@ function SectionHeader({ title, modalType, onAdd, setModalType }) {
     <div className="flex justify-between items-center bdrb1 pb-4 mb-5">
       <h5 className="list-title mb-0">{title}</h5>
       <button
-        className="ud-btn btn-thm btn-sm"
+        className="skl-action-primary"
         onClick={() => {
           setModalType(modalType);
           onAdd();

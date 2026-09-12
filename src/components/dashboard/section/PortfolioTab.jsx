@@ -59,14 +59,15 @@ function ProjectCard({ project, onEdit, onDelete }) {
           )}
           <div className="flex gap-2">
             <button
-              className="ud-btn btn-white btn-sm"
+              className="skl-action-secondary"
               onClick={() => onEdit(project)}
             >
               <span className="flaticon-pencil me-1" />
               Edit
             </button>
             <button
-              className="ud-btn btn-white btn-sm text-danger"
+              className="skl-action-destructive"
+              aria-label="Delete portfolio project"
               onClick={() => onDelete(project._id)}
             >
               <span className="flaticon-delete" />
@@ -124,7 +125,7 @@ export default function PortfolioTab() {
         <div className="flex justify-between items-center bdrb1 pb-4 mb-6">
           <h5 className="list-title">Portfolio Projects</h5>
           <button
-            className="ud-btn btn-thm btn-sm"
+            className="skl-action-primary"
             onClick={openCreate}
           >
             + Add Project
@@ -138,7 +139,7 @@ export default function PortfolioTab() {
               No portfolio projects yet. Add your first project!
             </p>
             <button
-              className="ud-btn btn-thm"
+              className="skl-action-primary"
               onClick={openCreate}
             >
               + Add Project
