@@ -5,7 +5,7 @@
 :root {
   /* Skilllinkup core brand + page rhythm */
   --brand-navy: #0b2041;
-  --brand-coral: #ff4f2e;
+  --brand-coral: #f55331;
   --brand-mint: #20aa80;
   --layout-page-gutter: 32px;
   --layout-content-max: 1200px;
@@ -29,7 +29,7 @@
      Dark ink keeps labels readable on both the default and hover orange. */
   --action-primary-bg: var(--brand-coral);
   --action-primary-text: #1c1917;
-  --action-primary-hover: #f04422;
+  --action-primary-hover: #ed4625;
   --action-primary-border: var(--action-primary-bg);
   --action-secondary-bg: #ffffff;
   --action-secondary-text: #0b2041;
@@ -44,7 +44,7 @@
   --action-link-text: #c74620;
   --action-link-hover: #aa3818;
   --action-focus-ring: #c74620;
-  --action-focus-shadow: rgb(255 79 46 / 20%);
+  --action-focus-shadow: rgb(245 83 49 / 20%);
 
   /* ---------- SECONDARY — Warm Terracotta-Amber ----------
      De menselijke tegenhanger. Gebruikt voor CTA-accents,
