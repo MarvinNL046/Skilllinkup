@@ -3,7 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ArrowLeft, Send, LoaderCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   getMessagePolicyError,
   MESSAGE_MAX_LENGTH,
@@ -31,6 +32,7 @@ export default function MessageBox({
   const previousNewest = useRef(null);
   const olderAnchor = useRef(null);
   const nearBottom = useRef(true);
+  const sendingRef = useRef(false);
   const blockError = inputValue.trim()
     ? getMessagePolicyError(inputValue)
     : null;
@@ -73,24 +75,27 @@ export default function MessageBox({
 
   async function handleSend(e) {
     e.preventDefault();
-    if (!inputValue.trim() || isSending || blockError) return;
+    if (!inputValue.trim() || sendingRef.current || blockError) return;
+    sendingRef.current = true;
     setSendError(null);
     setIsSending(true);
     try {
       await onSend(inputValue);
       setInputValue("");
+      nearBottom.current = true;
       scrollToBottom();
     } catch (err) {
       setSendError(err?.data ?? err?.message ?? t("sendFailed"));
     } finally {
+      sendingRef.current = false;
       setIsSending(false);
     }
   }
 
   function handleKeyDown(e) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend(e);
+    if (e.nativeEvent?.isComposing || e.isComposing || e.keyCode === 229) return;
+    if (e.key === "Enter" && !e.shiftKey && !isMobile) {
+      return handleSend(e);
     }
   }
 
@@ -143,7 +148,7 @@ export default function MessageBox({
         border: isMobile ? "none" : "1px solid #eee",
         display: "flex",
         flexDirection: "column",
-        height: isMobile ? "calc(100vh - 160px)" : "calc(100vh - 240px)",
+        height: isMobile ? "calc(100dvh - 160px)" : "calc(100dvh - 240px)",
         minHeight: isMobile ? 300 : 400,
         overflow: "hidden",
       }}
@@ -160,22 +165,15 @@ export default function MessageBox({
         }}
       >
         {isMobile && onMobileBack && (
-          <button
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
             onClick={onMobileBack}
-            style={{
-              background: "none",
-              border: "none",
-              padding: "4px 8px",
-              cursor: "pointer",
-              fontSize: 18,
-              color: "#6b7280",
-              display: "flex",
-              alignItems: "center",
-            }}
             aria-label={t("backToConversations")}
           >
-            <i className="fal fa-arrow-left" />
-          </button>
+            <ArrowLeft aria-hidden="true" />
+          </Button>
         )}
         <Image
           height={isMobile ? 36 : 44}
@@ -245,28 +243,31 @@ export default function MessageBox({
         }}
         style={{
           flex: 1,
+          minHeight: 0,
           overflowY: "auto",
           padding: isMobile ? 12 : 20,
         }}
       >
         {messageStatus === "CanLoadMore" || messageStatus === "LoadingMore" ? (
-          <button
+          <Button
             type="button"
-            className="skl-action-secondary mb-4"
+            variant="outline"
+            size="sm"
+            className="mb-4"
             onClick={loadOlder}
             disabled={messageStatus === "LoadingMore"}
           >
             {messageStatus === "LoadingMore"
               ? "Loading earlier messages…"
               : "Load earlier messages"}
-          </button>
+          </Button>
         ) : null}
         {readError ? (
           <p role="status" className="mb-3 text-sm text-amber-800">
             {readError}{" "}
-            <button type="button" className="skl-action-secondary" onClick={onRetryRead}>
+            <Button type="button" variant="outline" size="sm" onClick={onRetryRead}>
               Retry
-            </button>
+            </Button>
           </p>
         ) : null}
         <div
@@ -343,6 +344,7 @@ export default function MessageBox({
                       background: isOwn ? "var(--primary-600)" : "#f3f4f6",
                       color: isOwn ? "#fff" : "#111827",
                       wordBreak: "break-word",
+                      whiteSpace: "pre-wrap",
                     }}
                   >
                     {content}
@@ -364,14 +366,15 @@ export default function MessageBox({
       >
         <form
           onSubmit={handleSend}
-          style={{ display: "flex", alignItems: "center", gap: 10 }}
+          style={{ display: "flex", alignItems: "flex-end", gap: 10 }}
+          aria-busy={isSending}
         >
-          <input
-            type="text"
+          <textarea
+            rows={3}
             aria-label="Message"
             maxLength={MESSAGE_MAX_LENGTH}
             aria-describedby={
-              blockError || sendError ? "message-send-error" : undefined
+              blockError || sendError ? "message-compose-help message-send-error" : "message-compose-help"
             }
             placeholder={t("typeMessage")}
             value={inputValue}
@@ -383,35 +386,40 @@ export default function MessageBox({
             disabled={isSending}
             style={{
               flex: 1,
+              minWidth: 0,
               padding: "10px 16px",
-              fontSize: 14,
+              fontSize: 16,
+              lineHeight: 1.5,
+              resize: "none",
               border: "none",
               borderRadius: 10,
               background: "#f4f4f5",
               color: "#111827",
             }}
           />
-          <button
-            className="skl-action-primary"
+          <Button
             type="submit"
+            size={isMobile ? "icon" : "default"}
             aria-label={isSending ? "Sending message" : "Send message"}
             disabled={isSending || !inputValue.trim() || !!blockError}
-            style={{ paddingInline: isMobile ? 14 : 20 }}
           >
             {isSending ? (
               isMobile ? (
-                "..."
+                <LoaderCircle className="animate-spin" aria-hidden="true" />
               ) : (
                 t("sending")
               )
             ) : isMobile ? (
-              <i className="fal fa-paper-plane" />
+              <Send aria-hidden="true" />
             ) : (
               t("send")
             )}
             {!isMobile && <i className="fal fa-arrow-right-long" />}
-          </button>
+          </Button>
         </form>
+        <p id="message-compose-help" style={{ fontSize: 12, margin: "6px 0 0", color: "#6b7280" }}>
+          {isMobile ? "Enter adds a new line. Tap send when ready." : "Enter to send · Shift+Enter for a new line"}
+        </p>
         {blockError && (
           <p
             id="message-send-error"

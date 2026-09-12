@@ -9,6 +9,7 @@ import { EMPTY_JOB_FORM, jobDraftKey, restoreJobDraft } from "../src/lib/jobDraf
 import { collectAccountExport, ACCOUNT_EXPORT_SECTIONS } from "../src/lib/accountExport.mjs";
 import { getOrderActionContext } from "../src/lib/orderWorkspace.mjs";
 import * as onboardingRedirects from "../src/lib/onboardingRedirect.mjs";
+import * as messagePolicy from "../src/lib/messagePolicy.mjs";
 
 // Runs actual handlers and client helpers with in-memory adapters; never connects
 // to Convex, Clerk or browser storage and does not mutate application data.
@@ -131,6 +132,91 @@ function findElement(tree, predicate) {
   for (const child of children) { const found = findElement(child, predicate); if (found) return found; }
   return null;
 }
+
+function composerFixture(isMobile = false) {
+  const runner = hookRunner();
+  const sends = [];
+  let settle;
+  const props = { isMobile, hasConversation: true, currentUserId: "qa", messages: [], onSend: (text) => { sends.push(text); return new Promise((resolve, reject) => { settle = { resolve, reject }; }); } };
+  const Box = loader({
+    react: runner.react,
+    "next-intl": { useTranslations: () => (key) => key },
+    "next/image": { default: "img" },
+    "next/link": { default: "a" },
+    "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
+    "@/lib/messagePolicy.mjs": messagePolicy,
+  }, { requestAnimationFrame: (callback) => callback() })("src/components/dashboard/element/MessageBox.jsx").default;
+  const render = () => runner.render(() => Box(props));
+  return { props, sends, render, settle: () => settle };
+}
+
+await check("Composer preserves multiline drafts, skips IME and prevents duplicate sends", async () => {
+  const f = composerFixture();
+  let tree = f.render();
+  let input = findElement(tree, (e) => e.type === "textarea");
+  input.props.onChange({ target: { value: "First line\nSecond line" } });
+  tree = f.render();
+  input = findElement(tree, (e) => e.type === "textarea");
+  for (const extra of [{ shiftKey: true }, { nativeEvent: { isComposing: true } }, { keyCode: 229 }]) {
+    await input.props.onKeyDown({ key: "Enter", preventDefault() { throw Error("Must not intercept composition/newline"); }, ...extra });
+  }
+  assert.equal(f.sends.length, 0);
+  const event = { key: "Enter", preventDefault() {} };
+  const first = input.props.onKeyDown(event);
+  await input.props.onKeyDown(event);
+  assert.deepEqual(f.sends, ["First line\nSecond line"]);
+  f.settle().reject(new Error("Connection interrupted"));
+  await first;
+  tree = f.render();
+  assert.equal(findElement(tree, (e) => e.type === "textarea").props.value, "First line\nSecond line");
+  assert.equal(findElement(tree, (e) => e.props?.role === "alert").props.children, "Connection interrupted");
+  const retry = findElement(tree, (e) => e.type === "form").props.onSubmit(event);
+  f.settle().resolve();
+  await retry;
+  tree = f.render();
+  assert.equal(findElement(tree, (e) => e.type === "textarea").props.value, "");
+});
+
+await check("Mobile Enter adds lines; submit sends, and bubbles retain line breaks", async () => {
+  const f = composerFixture(true);
+  f.props.messages = [{ _id: "qa-message", content: "One\nTwo", senderId: "qa" }];
+  let tree = f.render();
+  assert.equal(findElement(tree, (e) => e.type === "p" && e.props.children === "One\nTwo").props.style.whiteSpace, "pre-wrap");
+  findElement(tree, (e) => e.type === "textarea").props.onChange({ target: { value: "One\nTwo" } });
+  tree = f.render();
+  await findElement(tree, (e) => e.type === "textarea").props.onKeyDown({ key: "Enter", preventDefault() { throw Error("Mobile Enter should add a line"); } });
+  assert.equal(f.sends.length, 0);
+  const send = findElement(tree, (e) => e.type === "form").props.onSubmit({ preventDefault() {} });
+  assert.deepEqual(f.sends, ["One\nTwo"]);
+  f.settle().resolve();
+  await send;
+});
+
+await check("Conversation scrolling preserves older history and follows successful outgoing sends", async () => {
+  const f = composerFixture();
+  let tree = f.render();
+  const scroller = findElement(tree, (e) => e.props?.onScroll);
+  const element = { scrollHeight: 1000, scrollTop: 100, clientHeight: 400 };
+  scroller.props.ref.current = element;
+  scroller.props.onScroll({ currentTarget: element });
+  f.props.messages = [{ _id: "incoming", content: "New", senderId: "other" }];
+  tree = f.render();
+  assert.equal(element.scrollTop, 100);
+  f.props.messageStatus = "CanLoadMore";
+  f.props.onLoadOlder = () => {};
+  tree = f.render();
+  findElement(tree, (e) => e.props?.children === "Load earlier messages").props.onClick();
+  element.scrollHeight = 1500;
+  f.props.messages = [{ _id: "older", content: "Old", senderId: "other" }, ...f.props.messages];
+  tree = f.render();
+  assert.equal(element.scrollTop, 600);
+  findElement(tree, (e) => e.type === "textarea").props.onChange({ target: { value: "Reply" } });
+  tree = f.render();
+  const send = findElement(tree, (e) => e.type === "form").props.onSubmit({ preventDefault() {} });
+  f.settle().resolve();
+  await send;
+  assert.equal(element.scrollTop, 1500);
+});
 
 await check("Onboarding retains conversation destinations and rejects external or looping returns", async () => {
   const destination = "/message?conversation=older-message&filter=unread#latest";
