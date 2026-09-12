@@ -187,6 +187,33 @@ await check("Local review queue loads more profiles, prevents duplicate decision
   assert.equal(findElement(tree, e => e.type === "textarea").props.value, "");
 });
 
+await check("Candidate withdrawal and employer stages block duplicate actions and retry with the current version", async () => {
+  for (const mode of ["Candidate", "Employer"]) {
+    const runner = hookRunner(); const calls = [];
+    let settle;
+    const application = { _id: "application", status: "submitted", updatedAt: 1, statusUpdatedAt: 1 };
+    const Page = loader({
+      react: runner.react, "next/link": { default: "a" }, "next/image": { default: "img" },
+      "convex/react": { useQuery: () => [{ application, job: { slug: "qa", title: "QA vacancy" }, candidate: { name: "QA Candidate", email: "qa@example.invalid" } }], useMutation: () => args => { calls.push(args); return new Promise((resolve, reject) => { settle = { resolve, reject }; }); } },
+      "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
+      sonner: { toast: { success() {}, error() {} } },
+      "@/hook/useConvexUser": { default: () => ({ isAuthenticated: true }) },
+      "@/components/dashboard/header/DashboardNavigation": { default: "nav" },
+      [`./${mode}Applications.module.css`]: { default: {} },
+    })(`src/components/dashboard/section/${mode}Applications.jsx`).default;
+    const render = () => runner.render(() => Page({ jobId: "job" }));
+    const action = tree => mode === "Candidate"
+      ? () => findElement(tree, e => e.props?.children === "Withdraw").props.onClick()
+      : () => findElement(tree, e => e.type === "select" && e.props.value === "").props.onChange({ target: { value: "screening" } });
+    const click = action(render()); const first = click(); await click();
+    assert.equal(calls.length, 1); assert.equal(calls[0].expectedUpdatedAt, 1);
+    settle.reject(new Error("Temporary failure")); await first;
+    application.updatedAt = 2;
+    const retry = action(render())(); settle.resolve("application"); await retry;
+    assert.equal(calls.length, 2); assert.equal(calls[1].expectedUpdatedAt, 2);
+  }
+});
+
 await check("Appointment form preserves failed dates, blocks overlapping actions and sends the viewed version", async () => {
   const runner = hookRunner();
   let queryIndex = 0, settle;

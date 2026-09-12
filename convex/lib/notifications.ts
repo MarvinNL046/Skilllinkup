@@ -44,6 +44,8 @@ function lifecycleEmail(args: {
             preference: "orderUpdate",
           }
         : null;
+    case "job_application_withdrawn":
+      return applicationId ? { eventKey: `job-application-withdrawn:${applicationId}`, template: "jobApplicationStatus", preference: "orderUpdate" } : null;
     case "local_quote_received":
       return quoteId
         ? {

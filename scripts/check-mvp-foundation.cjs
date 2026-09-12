@@ -66,6 +66,57 @@ async function drain(fn, ctx, args) {
   return rows;
 }
 async function main() {
+  await check("applications notify both parties, preserve private notes and reject stale or unauthorized decisions", async () => {
+    const apps = load("convex/marketplace/jobApplications.ts");
+    const jobUser = (id, role) => user(id, { activeRole: role, accountRoles: [role], preferredWorld: "jobs", onboardingContexts: [{ role, world: "jobs", version: 1, completedAt: 1 }] });
+    for (const finalStatus of ["withdrawn", "hired"]) {
+      const ctx = fixture([jobUser("candidate", "candidate"), jobUser("employer", "company"), jobUser("outsider", "company"),
+        { _id: "job", _table: "jobs", tenantId: "tenant", clientId: "employer", title: "QA vacancy", slug: "qa-vacancy", status: "open", applicationCount: 0 },
+      ], "candidate");
+      const actAs = id => { ctx.auth.getUserIdentity = async () => ({ subject: id }); };
+      const args = { jobId: "job", coverLetter: "QA application only: I have relevant experience and would like to discuss the responsibilities and working arrangements." };
+      const id = await apps.submit.handler(ctx, args);
+      assert.equal(ctx.state.get("job").applicationCount, 1);
+      await assert.rejects(() => apps.submit.handler(ctx, args), /already applied/);
+      assert.equal(ctx.state.get("job").applicationCount, 1);
+      actAs("outsider");
+      await assert.rejects(() => apps.listForJob.handler(ctx, { jobId: "job" }), /Unauthorized/);
+      await assert.rejects(() => apps.updateStatus.handler(ctx, { applicationId: id, status: "screening" }), /Unauthorized/);
+      actAs("employer");
+      await apps.updateStatus.handler(ctx, { applicationId: id, status: "screening", employerNote: "Private internal evaluation" });
+      let version = ctx.state.get(id).updatedAt;
+      await apps.updateStatus.handler(ctx, { applicationId: id, status: "interview", expectedUpdatedAt: version });
+      assert.equal(ctx.state.get(id).employerNote, "Private internal evaluation");
+      const writes = ctx.writes.length;
+      await apps.updateStatus.handler(ctx, { applicationId: id, status: "interview", expectedUpdatedAt: version });
+      assert.equal(ctx.writes.length, writes);
+      await assert.rejects(() => apps.updateStatus.handler(ctx, { applicationId: id, status: "offer", expectedUpdatedAt: version }), /application changed/);
+      actAs("candidate");
+      const safe = await apps.getMineForJob.handler(ctx, { jobId: "job" });
+      assert.equal(safe.status, "interview"); assert.ok(!("employerNote" in safe));
+      assert.ok(!JSON.stringify(await apps.listMine.handler(ctx, {})).includes("Private internal"));
+      if (finalStatus === "withdrawn") {
+        await assert.rejects(() => apps.withdraw.handler(ctx, { applicationId: id, expectedUpdatedAt: version }), /application changed/);
+        version = ctx.state.get(id).updatedAt;
+        await apps.withdraw.handler(ctx, { applicationId: id, expectedUpdatedAt: version });
+        const count = ctx.writes.length;
+        await apps.withdraw.handler(ctx, { applicationId: id, expectedUpdatedAt: version });
+        assert.equal(ctx.writes.length, count);
+        const notice = [...ctx.state.values()].find(r => r.type === "job_application_withdrawn");
+        assert.equal(notice.userId, "employer"); assert.equal(ctx.scheduled.at(-1)[2].eventKey, `job-application-withdrawn:${id}`);
+        actAs("employer");
+        assert.equal((await apps.listForJob.handler(ctx, { jobId: "job" }))[0].application.status, "withdrawn");
+        await assert.rejects(() => apps.updateStatus.handler(ctx, { applicationId: id, status: "offer" }));
+      } else {
+        actAs("employer");
+        for (const status of ["offer", "hired"]) await apps.updateStatus.handler(ctx, { applicationId: id, status });
+        actAs("candidate");
+        await assert.rejects(() => apps.withdraw.handler(ctx, { applicationId: id }));
+        assert.equal((await apps.getMineForJob.handler(ctx, { jobId: "job" })).status, "hired");
+      }
+      assert.ok(!JSON.stringify([...ctx.state.values()].filter(r => r._table === "notifications")).includes("Private internal"));
+    }
+  });
   await check("rescheduling notifies the other party, rejects stale changes and cancellation is safe to retry", async () => {
     const appointments = load("convex/marketplace/localAppointments.ts");
     for (const actor of ["buyer", "seller"]) {

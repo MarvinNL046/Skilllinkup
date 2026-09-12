@@ -300,7 +300,7 @@ export const submit = mutation({
 });
 
 export const withdraw = mutation({
-  args: { applicationId: v.id("jobApplications") },
+  args: { applicationId: v.id("jobApplications"), expectedUpdatedAt: v.optional(v.number()) },
   returns: v.id("jobApplications"),
   handler: async (ctx, args) => {
     const candidate = await requireAuthUser(ctx);
@@ -309,17 +309,26 @@ export const withdraw = mutation({
     if (!application) throw new Error("Application not found.");
     if (application.candidateId !== candidate._id)
       throw new Error("Unauthorized.");
+    if (application.status === "withdrawn") return application._id;
+    if (args.expectedUpdatedAt !== undefined && args.expectedUpdatedAt !== application.updatedAt) throw new Error("The application changed. Review the latest status and try again.");
 
     assertTransition(
       jobApplicationTransitions,
       application.status,
       "withdrawn",
     );
-    const now = Date.now();
+    const now = Math.max(Date.now(), application.updatedAt + 1);
     await ctx.db.patch(application._id, {
       status: "withdrawn",
       statusUpdatedAt: now,
       updatedAt: now,
+    });
+    const job = await ctx.db.get(application.jobId);
+    if (job) await notifyUser(ctx, {
+      userId: job.clientId, type: "job_application_withdrawn", title: "Application withdrawn",
+      body: `${candidate.name} withdrew their application for ${job.title}.`,
+      link: `/manage-jobs/${job._id}/applications`,
+      metadata: { jobId: job._id, applicationId: application._id },
     });
     return application._id;
   },
@@ -330,6 +339,7 @@ export const updateStatus = mutation({
     applicationId: v.id("jobApplications"),
     status: jobApplicationStatusValidator,
     employerNote: v.optional(v.string()),
+    expectedUpdatedAt: v.optional(v.number()),
   },
   returns: v.id("jobApplications"),
   handler: async (ctx, args) => {
@@ -343,24 +353,24 @@ export const updateStatus = mutation({
     if (["draft", "submitted", "withdrawn"].includes(args.status)) {
       throw new Error("Employers cannot move an application to that status.");
     }
+    const employerNote = args.employerNote?.trim();
+    if (employerNote && employerNote.length > 3000) throw new Error("Employer notes cannot exceed 3,000 characters.");
+    if (application.status === args.status && (args.employerNote === undefined || application.employerNote === employerNote)) return application._id;
+    if (args.expectedUpdatedAt !== undefined && args.expectedUpdatedAt !== application.updatedAt) throw new Error("The application changed. Review the latest status and try again.");
     assertTransition(
       jobApplicationTransitions,
       application.status,
       args.status,
     );
 
-    const employerNote = args.employerNote?.trim();
-    if (employerNote && employerNote.length > 3000) {
-      throw new Error("Employer notes cannot exceed 3,000 characters.");
-    }
-    const now = Date.now();
+    const now = Math.max(Date.now(), application.updatedAt + 1);
     await ctx.db.patch(application._id, {
       status: args.status,
-      employerNote,
+      ...(args.employerNote === undefined ? {} : { employerNote }),
       statusUpdatedAt: now,
       updatedAt: now,
     });
-    await notifyUser(ctx, {
+    if (application.status !== args.status) await notifyUser(ctx, {
       userId: application.candidateId,
       type: "job_application_status",
       title: "Application updated",
