@@ -12,6 +12,7 @@ import * as onboardingRedirects from "../src/lib/onboardingRedirect.mjs";
 import * as messagePolicy from "../src/lib/messagePolicy.mjs";
 import { upcomingAppointments } from "../src/lib/upcomingAppointments.mjs";
 import { validatePublishingForm } from "../src/lib/publishingValidation.mjs";
+import * as quoteDraft from "../src/lib/quoteRequestDraft.mjs";
 
 // Runs actual handlers and client helpers with in-memory adapters; never connects
 // to Convex, Clerk or browser storage and does not mutate application data.
@@ -152,6 +153,58 @@ function composerFixture(isMobile = false) {
   return { props, sends, render, settle: () => settle };
 }
 
+await check("Local drafts restore only allowed fields and keep different accounts separate", async () => {
+  assert.notEqual(quoteDraft.quoteRequestDraftKey("a"), quoteDraft.quoteRequestDraftKey("b"));
+  assert.equal(quoteDraft.quoteRequestDraftKey(null), null);
+  for (const raw of ["broken", "null", '{"version":2,"form":{}}', '{"version":1,"form":[]}']) assert.equal(quoteDraft.restoreQuoteRequestDraft(raw), null);
+  const restored = quoteDraft.restoreQuoteRequestDraft(JSON.stringify({version:1, form:{title:"Saved request", description:"a".repeat(6000),city:17,admin:true}}));
+  assert.equal(restored.description.length,5000);
+  assert.equal(restored.city,"");
+  assert.equal(restored.admin,undefined);
+});
+
+await check("Local Save for later survives remount, isolates accounts and reports storage failure", async () => {
+  const storage = new Map();
+  const routes = [];
+  let userId = "qa-one", blocked = false;
+  const globals = { localStorage: { getItem: key => storage.get(key) || null, setItem: (key,value) => { if(blocked) throw Error("Storage blocked"); storage.set(key,value); }, removeItem: key => storage.delete(key) } };
+  function mount() {
+    const runner = hookRunner();
+    const Page = loader({
+      react: runner.react,
+      "next/navigation": { useRouter: () => ({push: url => routes.push(url),back(){}}) },
+      "convex/react": {useQuery:()=>[],useMutation:()=>async()=>{throw Error("Drafts must not publish");}},
+      "lucide-react": new Proxy({}, {get:(_,name)=>String(name)}),
+      "sonner": {toast:{success(){},error(){}}},
+      "@/hook/useConvexUser": {default:()=>({convexUser:{_id:userId}})},
+      "@/lib/marketplaceCategories": {flattenLeafMarketplaceCategories:()=>[]},
+      "@/lib/publishingValidation.mjs": {validatePublishingForm},
+      "@/lib/quoteRequestDraft.mjs": quoteDraft,
+      "./CreateQuoteRequestInfo.module.css": {default:{}},
+    },globals)("src/components/dashboard/section/CreateQuoteRequestInfo.jsx").default;
+    return () => runner.render(()=>Page());
+  }
+  let render = mount(), tree = render();
+  const title = tree => findElement(tree,e=>e.props?.placeholder === "Annual air-conditioning maintenance");
+  title(tree).props.onChange({target:{value:"Unfinished local request"}});
+  tree=render();
+  findElement(tree,e=>e.props?.children === "Save for later").props.onClick();
+  assert.deepEqual(routes,["/dashboard/quote-requests"]);
+  render=mount(); tree=render();
+  assert.equal(title(tree).props.value,"Unfinished local request");
+  userId="qa-two";tree=render();
+  assert.equal(title(tree).props.value,"");
+  title(tree).props.onChange({target:{value:"Second account request"}});
+  tree=render();blocked=true;
+  findElement(tree,e=>e.props?.children === "Save for later").props.onClick();
+  tree=render();
+  assert.equal(title(tree).props.value,"Second account request");
+  assert.match(findElement(tree,e=>e.props?.role === "alert").props.children,/could not save/);
+  assert.equal(routes.length,1);
+  assert.equal(storage.has(quoteDraft.quoteRequestDraftKey("qa-two")),false);
+  assert.equal(quoteDraft.restoreQuoteRequestDraft(storage.get(quoteDraft.quoteRequestDraftKey("qa-one"))).title,"Unfinished local request");
+});
+
 await check("Publishing forms reject whitespace, invalid salaries and expired deadlines", async () => {
   const valid = { ...EMPTY_JOB_FORM, title: "QA engineer vacancy", company: "QA Company", description: "Responsibilities and expectations for a qualified engineer. ".repeat(3) };
   assert.equal(validatePublishingForm(valid, "job"), null);
@@ -174,6 +227,7 @@ await check("Actual vacancy and quote forms retain failed drafts, block duplicat
       "@/hook/useConvexUser": { default: () => ({ convexUser: { _id: "qa", role: "admin", name: "QA" }, isLoaded: true, isAuthenticated: true }) },
       "@/lib/marketplaceCategories": { flattenLeafMarketplaceCategories: () => [{ _id: "qa-category", label: "Plumbing" }] },
       "@/lib/publishingValidation.mjs": { validatePublishingForm },
+      "@/lib/quoteRequestDraft.mjs": quoteDraft,
       "@/lib/jobDraft.mjs": { EMPTY_JOB_FORM, jobDraftKey, restoreJobDraft },
       [`./${component}.module.css`]: { default: {} },
     }, { localStorage: { getItem: () => JSON.stringify({ version: 1, form: validJob }), removeItem: (key) => removed.push(key) } })(`src/components/dashboard/section/${component}.jsx`).default;
@@ -204,7 +258,7 @@ await check("Actual vacancy and quote forms retain failed drafts, block duplicat
     settle.resolve("qa-created");
     await retry;
     assert.deepEqual(routes, [kind === "job" ? "/manage-jobs/qa-created/applications" : "/local/quote-request/qa-created"]);
-    assert.equal(removed.length, kind === "job" ? 1 : 0);
+    assert.equal(removed.length, 1);
   }
 });
 
