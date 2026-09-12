@@ -22,6 +22,7 @@ import {
 import { api } from "../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import { Button } from "@/components/ui/button";
+import { safeOnboardingRedirect } from "@/lib/onboardingRedirect.mjs";
 import styles from "./OnboardingExperience.module.css";
 
 const roles = [
@@ -120,7 +121,7 @@ export default function OnboardingExperience() {
   const [selections, setSelections] = useState([]);
   const [headline, setHeadline] = useState("");
   const [bio, setBio] = useState("");
-  const [city, setCity] = useState("Rotterdam");
+  const [city, setCity] = useState("");
   const [rate, setRate] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [saving, setSaving] = useState(false);
@@ -137,7 +138,7 @@ export default function OnboardingExperience() {
   useEffect(() => {
     if (isLoaded && !isClerkSignedIn) {
       router.replace(
-        `/login?redirect_url=${encodeURIComponent("/onboarding")}`,
+        `/login?${new URLSearchParams({ redirect_url: window.location.pathname + window.location.search + window.location.hash })}`,
       );
     }
   }, [isClerkSignedIn, isLoaded, router]);
@@ -147,6 +148,11 @@ export default function OnboardingExperience() {
     const config = roles.find((item) => item.id === role);
     setWorld(config?.world || "online");
     setSelections([]);
+    setHeadline("");
+    setBio("");
+    setRate("");
+    setCity("");
+    setCompanyName("");
   }, [role]);
 
   const options = useMemo(() => {
@@ -224,7 +230,7 @@ export default function OnboardingExperience() {
         },
       });
 
-      router.replace("/dashboard");
+      router.replace(safeOnboardingRedirect(searchParams.get("redirect_url")));
     } catch (cause) {
       setError(
         cause?.message ||

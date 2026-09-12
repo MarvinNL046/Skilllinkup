@@ -8,6 +8,7 @@ import { validateProjectFields } from "../src/lib/projectValidation.mjs";
 import { EMPTY_JOB_FORM, jobDraftKey, restoreJobDraft } from "../src/lib/jobDraft.mjs";
 import { collectAccountExport, ACCOUNT_EXPORT_SECTIONS } from "../src/lib/accountExport.mjs";
 import { getOrderActionContext } from "../src/lib/orderWorkspace.mjs";
+import * as onboardingRedirects from "../src/lib/onboardingRedirect.mjs";
 
 // Runs actual handlers and client helpers with in-memory adapters; never connects
 // to Convex, Clerk or browser storage and does not mutate application data.
@@ -99,6 +100,7 @@ function hookRunner() {
   let index = 0, dirty = false, effects = [], renderFn;
   const same = (a, b) => a && b && a.length === b.length && a.every((v, i) => Object.is(v, b[i]));
   const react = {
+    useRef(initial) { const slot = index++; state[slot] ??= { current: initial }; return state[slot]; },
     useState(initial) {
       const slot = index++;
       if (!(slot in state)) state[slot] = typeof initial === "function" ? initial() : initial;
@@ -129,6 +131,74 @@ function findElement(tree, predicate) {
   for (const child of children) { const found = findElement(child, predicate); if (found) return found; }
   return null;
 }
+
+await check("Onboarding retains conversation destinations and rejects external or looping returns", async () => {
+  const destination = "/message?conversation=older-message&filter=unread#latest";
+  const setup = onboardingRedirects.onboardingUrl(destination);
+  const fromLogin = new URLSearchParams(new URLSearchParams({ redirect_url: setup }).toString()).get("redirect_url");
+  assert.equal(onboardingRedirects.safeOnboardingRedirect(new URL(fromLogin, "https://internal.invalid").searchParams.get("redirect_url")), destination);
+  for (const invalid of [undefined, "https://evil.example", "//evil.example", "javascript:alert(1)", "/login", "/onboarding", "/onboarding?redirect_url=/onboarding", "/%6fnboarding", "/%256fnboarding", "/en/onboarding", "/foo/../onboarding"]) {
+    assert.equal(onboardingRedirects.safeOnboardingRedirect(invalid), "/dashboard");
+  }
+});
+
+await check("All five onboarding roles save before returning, and failures preserve the form", async () => {
+  for (const role of ["client", "freelancer", "local_professional", "candidate", "company"]) {
+    const runner = hookRunner();
+    const navigations = [], writes = [];
+    let fail = true;
+    const destination = "/message?conversation=qa-conversation#latest";
+    const params = new URLSearchParams({ role, redirect_url: destination });
+    const Page = loader({
+      react: runner.react,
+      "next/image": { default: "img" },
+      "next/navigation": { useRouter: () => ({ replace: (url) => navigations.push(url) }), useSearchParams: () => params },
+      "convex/react": { useMutation: () => async (value) => { if (fail) throw new Error("Temporary failure"); writes.push(value); } },
+      "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
+      "@/hook/useConvexUser": { default: () => ({ convexUser: { accountRoles: ["client"] }, isLoaded: true, isClerkSignedIn: true }) },
+      "@/lib/onboardingRedirect.mjs": onboardingRedirects,
+      "./OnboardingExperience.module.css": { default: {} },
+    }, { URLSearchParams })("src/components/onboarding/OnboardingExperience.jsx").default;
+    let tree = runner.render(() => Page());
+    const input = (placeholder, value) => {
+      findElement(tree, (e) => e.type === "input" && e.props.placeholder === placeholder).props.onChange({ target: { value } });
+      tree = runner.render();
+    };
+    if (role === "freelancer") {
+      input("65", "90");
+      input("What do you do best?", "QA online headline");
+      findElement(tree, (e) => e.props?.children === "Change").props.onClick();
+      tree = runner.render();
+      findElement(tree, (e) => e.type === "button" && findElement(e, (child) => child.type === "strong" && child.props.children === "I am looking for a job")).props.onClick();
+      tree = runner.render();
+      assert.equal(findElement(tree, (e) => e.type === "input" && e.props.placeholder === "What do you do best?").props.value, "");
+      findElement(tree, (e) => e.props?.children === "Change").props.onClick();
+      tree = runner.render();
+      findElement(tree, (e) => e.type === "button" && findElement(e, (child) => child.type === "strong" && child.props.children === "I work online")).props.onClick();
+      tree = runner.render();
+      assert.equal(findElement(tree, (e) => e.type === "input" && e.props.placeholder === "65").props.value, "");
+    }
+    if (role === "local_professional") {
+      assert.equal(findElement(tree, (e) => e.type === "input" && e.props.placeholder === "Rotterdam").props.value, "");
+      input("Rotterdam", "Delft");
+    }
+    if (role === "company") input("Your organisation", "QA Company");
+    else {
+      findElement(tree, (e) => e.type === "button" && e.props["aria-pressed"] === false && Array.isArray(e.props.children) && typeof e.props.children.at(-1) === "string").props.onClick();
+      tree = runner.render();
+    }
+    await findElement(tree, (e) => e.type === "form").props.onSubmit({ preventDefault() {} });
+    tree = runner.render();
+    assert.equal(navigations.length, 0);
+    assert.equal(findElement(tree, (e) => e.props?.role === "alert").props.children, "Temporary failure");
+    fail = false;
+    await findElement(tree, (e) => e.type === "form").props.onSubmit({ preventDefault() {} });
+    assert.equal(writes.length, 1);
+    assert.equal(writes[0].activeRole, role);
+    assert.equal(writes[0].preferredWorld, role === "local_professional" ? "local" : ["candidate", "company"].includes(role) ? "jobs" : "online");
+    assert.deepEqual(navigations, [destination]);
+  }
+});
 await check("Real vacancy editor sends jobId, persists edits and clears an optional deadline", async () => {
   const runner = hookRunner();
   const Editor = loader({ react: runner.react })("src/components/dashboard/modal/JobEditModal.jsx").default;
