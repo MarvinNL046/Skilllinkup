@@ -62,6 +62,14 @@ function coversLocalServiceArea(e, t) {
     s = normalizeAreaValue(t.locationPostcode);
   return !!(m && s && m === s);
 }
+function profileClaimBlock(user, profile, request): string | null {
+  if (!profile || profile.providerRole !== "local_professional") return "Complete your Local professional profile before claiming requests.";
+  if (profile.status !== "active" || !["local", "hybrid"].includes(profile.workType)) return "Your Local professional profile is not active for local work. Contact support to review it.";
+  if (profile.tenantId !== user.tenantId || request.tenantId !== user.tenantId) return "This request or profile belongs to another workspace.";
+  if (profile.isVerified !== true) return "Your Local professional profile is not eligible to claim leads until it is verified. Contact support to arrange an identity, business and service-area review.";
+  if (!coversLocalServiceArea(profile, request)) return "This quote request is outside your verified service area.";
+  return null;
+}
 var getMyCredits = query({
     args: {},
     handler: async ctx => {
@@ -136,6 +144,7 @@ var getMyCredits = query({
     args: {
       quoteRequestId: v.id("quoteRequests")
     },
+    returns: v.union(v.null(), v.object({ claimedSlots: v.number(), maxSlots: v.number(), slotsRemaining: v.number(), isExclusive: v.boolean(), alreadyClaimed: v.boolean(), creditCost: v.number(), exclusiveCost: v.number(), canClaimExclusive: v.boolean(), claimBlockReason: v.union(v.string(), v.null()) })),
     handler: async (ctx, args) => {
       let i = await ctx.db.get(args.quoteRequestId);
       if (!i) return null;
@@ -145,9 +154,16 @@ var getMyCredits = query({
         c = Math.max(0, a - d),
         m = !1,
         s = await getOptionalAuthUser(ctx);
+      let claimBlockReason: string | null = null;
       if (s) {
         let w = await getProviderProfile(ctx, s._id, "local_professional");
         w && (m = o.some(q => q.freelancerId === w._id));
+        if (s.role === "admin") claimBlockReason = "Administrators cannot claim Local leads.";
+        else {
+          try { requireMarketplaceContext(s, "local_professional", "local", "claiming a lead"); }
+          catch (error) { claimBlockReason = error instanceof Error ? error.message : "Complete Local professional onboarding before claiming a lead."; }
+          claimBlockReason ??= profileClaimBlock(s, w, i);
+        }
       }
       let f = getLeadCreditCost(i.budgetIndication, "shared"),
         p = getLeadCreditCost(i.budgetIndication, "exclusive");
@@ -159,7 +175,8 @@ var getMyCredits = query({
         alreadyClaimed: m,
         creditCost: f,
         exclusiveCost: p,
-        canClaimExclusive: d === 0 && !i.isExclusive
+        canClaimExclusive: d === 0 && !i.isExclusive,
+        claimBlockReason
       };
     }
   }),
@@ -181,14 +198,12 @@ var getMyCredits = query({
         throws: !0
       });
       let o = await ctx.db.query("freelancerProfiles").withIndex("by_userId_and_providerRole", q => q.eq("userId", i._id).eq("providerRole", "local_professional")).unique();
-      if (!o) throw new Error("An explicit Local professional profile is required to claim leads.");
-      if (o.providerRole !== "local_professional" || o.status !== "active" || o.isVerified !== !0 || o.workType !== "local" && o.workType !== "hybrid") throw new Error("Your Local professional profile is not eligible to claim leads.");
-      if (o.tenantId !== i.tenantId) throw new Error("Your Local professional profile belongs to another workspace.");
       let a = await ctx.db.get(args.quoteRequestId);
       if (!a) throw new Error("Quote request not found.");
       if (a.status !== "open") throw new Error("This quote request is no longer open.");
-      if (a.tenantId !== i.tenantId) throw new Error("This quote request belongs to another workspace.");
-      if (!coversLocalServiceArea(o, a)) throw new Error("This quote request is outside your verified service area.");
+      const blocked = profileClaimBlock(i, o, a);
+      if (blocked) throw new Error(blocked);
+      if (!o) throw new Error("Local professional profile not found.");
       if ((await ctx.db.query("leadClaims").withIndex("by_quoteRequest", q => q.eq("quoteRequestId", args.quoteRequestId)).take(MAX_SHARED_SLOTS)).some(q => q.freelancerId === o._id)) throw new Error("You have already claimed this lead.");
       let c = a.claimedSlots ?? 0,
         m = a.maxSlots ?? MAX_SHARED_SLOTS;

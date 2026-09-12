@@ -153,6 +153,40 @@ function composerFixture(isMobile = false) {
   return { props, sends, render, settle: () => settle };
 }
 
+await check("Local review queue loads more profiles, prevents duplicate decisions and preserves failed evidence", async () => {
+  const runner = hookRunner();
+  const calls = [], loads = [];
+  let settle;
+  const Queue = loader({
+    react: runner.react,
+    "convex/react": {
+      usePaginatedQuery: () => ({ results: [{ id: "qa-profile", name: "QA Local", city: "Rotterdam", country: "Netherlands", verified: false, updatedAt: 1 }], status: "CanLoadMore", loadMore: size => loads.push(size) }),
+      useMutation: () => args => { calls.push(args); return new Promise((resolve, reject) => { settle = { resolve, reject }; }); },
+    },
+    sonner: { toast: { success() {} } },
+  })("src/components/admin/LocalVerificationQueue.jsx").default;
+  const render = () => runner.render(() => Queue());
+  let tree = render();
+  findElement(tree, e => e.props?.children === "Load more profiles").props.onClick();
+  assert.deepEqual(loads, [20]);
+  const note = "Checked identity, business evidence and the service area.";
+  findElement(tree, e => e.type === "textarea").props.onChange({ target: { value: note } });
+  tree = render();
+  const button = findElement(tree, e => e.props?.children === "Verify professional");
+  const first = button.props.onClick();
+  await button.props.onClick();
+  assert.equal(calls.length, 1);
+  settle.reject(new Error("The profile changed. Review current details.")); await first;
+  tree = render();
+  assert.equal(findElement(tree, e => e.type === "textarea").props.value, note);
+  assert.match(findElement(tree, e => e.props?.role === "alert").props.children, /profile changed/);
+  const retry = findElement(tree, e => e.props?.children === "Verify professional").props.onClick();
+  settle.resolve(null); await retry;
+  assert.equal(calls.length, 2);
+  tree = render();
+  assert.equal(findElement(tree, e => e.type === "textarea").props.value, "");
+});
+
 await check("Account mode recovery preserves the form destination and switches in place after retry", async () => {
   const runner = hookRunner();
   let account = null, settle;

@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "convex/react";
 import { useTranslations } from "next-intl";
 import { api } from "../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -37,6 +37,7 @@ export default function QuoteRequestDetail({ requestId }) {
   const submitQuote = useMutation(api.marketplace.quotes.submitQuote);
   const acceptQuote = useMutation(api.marketplace.quotes.acceptQuote);
   const [claiming, setClaiming] = useState(false);
+  const claimingRef = useRef(false);
   const [quoteBusy, setQuoteBusy] = useState(false);
   const [quoteSent, setQuoteSent] = useState(false);
   const [quoteSentId, setQuoteSentId] = useState(null);
@@ -76,6 +77,8 @@ export default function QuoteRequestDetail({ requestId }) {
   const myQuoteStatus = request.myQuote?.status ?? (quoteSentId ? "pending" : null);
 
   async function handleClaim(claimType) {
+    if (claimingRef.current || leadStatus?.claimBlockReason) return;
+    claimingRef.current = true;
     setClaiming(true);
     try {
       const result = await claimLead({ quoteRequestId: requestId, claimType });
@@ -87,6 +90,7 @@ export default function QuoteRequestDetail({ requestId }) {
     } catch (err) {
       toast.error(err.message || t("failedToClaim"));
     } finally {
+      claimingRef.current = false;
       setClaiming(false);
     }
   }
@@ -284,6 +288,14 @@ export default function QuoteRequestDetail({ requestId }) {
                   <Button asChild className="w-full">
                     <Link href="/login">{t("logInToClaim")}</Link>
                   </Button>
+                ) : leadStatus?.claimBlockReason ? (
+                  <div className="space-y-3 text-sm">
+                    <p role="status">{leadStatus.claimBlockReason}</p>
+                    <Button asChild variant="secondary" className="w-full">
+                      <Link href="/dashboard/my-leads">Review my Local account</Link>
+                    </Button>
+                    <Link href="/contact" className="block text-center underline">Contact support</Link>
+                  </div>
                 ) : !isFreelancer ? (
                   <p className="text-center text-xs text-[var(--text-secondary)]">
                     {t("needFreelancerProfile")}

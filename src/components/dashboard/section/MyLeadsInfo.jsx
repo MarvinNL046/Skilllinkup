@@ -9,6 +9,27 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, MapPin, User, Mail, Phone } from "lucide-react";
 
 export default function MyLeadsInfo() {
+  const verification = useQuery(api.marketplace.localVerifications.getMine, {});
+  return <>
+    <Card className="mb-6">
+      <CardContent className="p-5 space-y-3">
+        {verification === undefined ? <p role="status">Checking your Local profile…</p> : <>
+          <h2 className="text-lg font-semibold">{verification?.verified && verification?.active ? "Your Local profile is verified" : "Prepare your Local profile for review"}</h2>
+          <p className="text-sm text-[var(--text-secondary)]">{verification?.verified && verification?.active
+            ? `Your service area is based on ${[verification.city, verification.country].filter(Boolean).join(", ")}. You can claim open requests that match your verified area. Changing your service area requires a new review.`
+            : "Complete your profile and service area, then contact support to arrange an identity and business review. New lead claims stay locked until your active Local profile is verified."}</p>
+          <div className="flex flex-wrap gap-3">
+            <Button asChild variant="secondary"><Link href="/my-profile?tab=profile">Review profile</Link></Button>
+            {(!verification?.verified || !verification?.active) && <Button asChild><Link href="/contact">Contact support for review</Link></Button>}
+          </div>
+        </>}
+      </CardContent>
+    </Card>
+    <ClaimedLeads />
+  </>;
+}
+
+function ClaimedLeads() {
   const t = useTranslations("myLeads");
   const claims = useQuery(api.marketplace.leads.getMyClaims);
 
