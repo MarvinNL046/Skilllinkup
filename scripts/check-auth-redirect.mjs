@@ -31,17 +31,74 @@ check("Unsafe destinations and direct/encoded auth loops fall back to dashboard"
   for (const target of rejectedTargets) assert.equal(safeAuthRedirect(target), "/dashboard", String(target));
 });
 
+const browserOrigins = [
+  "https://skilllinkup.com",
+  "http://localhost:3011",
+  "https://skilllinkup-h8hbbt5d7-marvinnl046s-projects.vercel.app",
+];
+const clerkReturnPath = "/create-projects?category=logo%20design&skills=C%2B%2B#brief";
+check("Clerk absolute returns are normalized only for the trusted current browser origin", () => {
+  for (const origin of browserOrigins) {
+    const query = new URLSearchParams({ redirect_url: origin + clerkReturnPath });
+    const target = new URLSearchParams(query.toString()).get("redirect_url");
+    assert.equal(safeAuthRedirect(target, origin), clerkReturnPath);
+    assert.equal(safeAuthRedirect(target), "/dashboard");
+    assert.equal(safeAuthRedirect(`${origin}/online/../services?q=design`, origin), "/services?q=design");
+  }
+  assert.equal(safeAuthRedirect("https://skilllinkup.com:443/create-projects", "https://skilllinkup.com"), "/create-projects");
+});
+
+check("Absolute return URLs cannot change scheme, host or port or include credentials", () => {
+  const origin = "https://skilllinkup.com";
+  for (const target of [
+    "http://skilllinkup.com/create-projects", "https://skilllinkup.com:444/create-projects",
+    "https://skilllinkup.com.example.org/create-projects", "https://example.org/create-projects",
+    "https://user@skilllinkup.com/create-projects", "https://user:password@skilllinkup.com/create-projects",
+    "https://@skilllinkup.com/create-projects", "ftp://skilllinkup.com/create-projects",
+    "javascript:location.href='/create-projects'", "//skilllinkup.com/create-projects",
+  ]) assert.equal(safeAuthRedirect(target, origin), "/dashboard", target);
+  assert.equal(safeAuthRedirect("https://localhost:3011/create-projects", "http://localhost:3011"), "/dashboard");
+  assert.equal(safeAuthRedirect("http://localhost:3012/create-projects", "http://localhost:3011"), "/dashboard");
+  for (const untrusted of [undefined, null, "null", "https://skilllinkup.com/path", "https://user@skilllinkup.com", "ftp://skilllinkup.com"]) {
+    assert.equal(safeAuthRedirect(`${origin}/create-projects`, untrusted), "/dashboard");
+  }
+});
+
+check("Same-origin absolute URLs retain encoded path and auth-loop protections", () => {
+  for (const origin of browserOrigins) {
+    for (const path of rejectedTargets.filter((target) => typeof target === "string" && target.startsWith("/"))) {
+      assert.equal(safeAuthRedirect(origin + path, origin), "/dashboard", origin + path);
+    }
+  }
+});
+
 // Exercise the actual JSX component/effect with Clerk and navigation adapters.
 // No browser, authentication request, storage access or network is involved.
-function componentFixture(file, { target, isLoaded = true, isSignedIn = false, pathname = "/services" } = {}) {
+function componentFixture(file, { target, isLoaded = true, isSignedIn = false, pathname = "/services", origin = browserOrigins[0], server = false } = {}) {
   const effects = [];
   const navigations = [];
+  const state = [];
+  const dependencies = [];
+  let hookIndex = 0;
+  let originReads = 0;
   const params = new URLSearchParams();
   if (target !== undefined && target !== null) params.set("redirect_url", target);
   const SignIn = () => null;
   const router = { replace: (url) => navigations.push(url) };
   const overrides = {
-    react: { ...react, useEffect: (callback) => effects.push(callback) },
+    react: {
+      ...react,
+      useState(initial) {
+        const index = hookIndex++;
+        if (!(index in state)) state[index] = initial;
+        return [state[index], (value) => { state[index] = value; }];
+      },
+      useEffect(callback, deps) {
+        const index = hookIndex++;
+        if (!dependencies[index] || deps.some((value, position) => !Object.is(value, dependencies[index][position]))) effects.push(callback);
+        dependencies[index] = deps;
+      },
+    },
     "next/navigation": { useRouter: () => router, useSearchParams: () => params, usePathname: () => pathname },
     "next/link": { __esModule: true, default: "Link" },
     "next-intl": { useTranslations: () => (key) => key === "signIn" ? "Inloggen" : key },
@@ -53,12 +110,25 @@ function componentFixture(file, { target, isLoaded = true, isSignedIn = false, p
   const source = fs.readFileSync(new URL(`../${file}`, import.meta.url), "utf8");
   const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText;
   const exports = {};
-  vm.runInNewContext(code, { exports, require(id) {
+  const browser = server ? {} : { window: { get location() { originReads += 1; return { origin }; } } };
+  vm.runInNewContext(code, { exports, ...browser, require(id) {
     if (Object.hasOwn(overrides, id)) return overrides[id];
     if (id === "react/jsx-runtime") return require(id);
     throw new Error(`Unexpected fixture dependency: ${id}`);
   } });
-  return { Page: exports.default, effects, navigations, SignIn, params };
+  function flushEffects() { effects.splice(0).forEach((effect) => effect()); }
+  function renderContent() {
+    hookIndex = 0;
+    const boundary = exports.default();
+    const content = boundary.props.children;
+    return { boundary, rendered: content.type(content.props) };
+  }
+  function renderAfterMount() {
+    renderContent();
+    flushEffects();
+    return renderContent();
+  }
+  return { Page: exports.default, effects, navigations, SignIn, params, renderContent, renderAfterMount, flushEffects, originReads: () => originReads };
 }
 
 function findElement(element, type) {
@@ -75,12 +145,10 @@ const loginFile = "src/app/(auth)/login/[[...login]]/page.jsx";
 check("Already signed-in sessions honor the safe return target instead of overwriting it", () => {
   for (const target of ["/services?q=logo%20design&sort=newest", "/local/professionals", ...rejectedTargets]) {
     const fixture = componentFixture(loginFile, { target, isSignedIn: true });
-    const boundary = fixture.Page();
+    const { boundary, rendered } = fixture.renderAfterMount();
     assert.equal(boundary.type, react.Suspense);
-    const content = boundary.props.children;
-    const rendered = content.type(content.props);
     assert.equal(findElement(rendered, fixture.SignIn), null);
-    fixture.effects.forEach((effect) => effect());
+    fixture.flushEffects();
     assert.deepEqual(fixture.navigations, [safeAuthRedirect(target)]);
   }
 });
@@ -88,23 +156,68 @@ check("Already signed-in sessions honor the safe return target instead of overwr
 check("Clerk sign-in receives the same safe target while the signup route remains unchanged", () => {
   for (const target of ["/jobs/browse?q=C%2B%2B", "//example.org", "/nl/login", undefined]) {
     const fixture = componentFixture(loginFile, { target });
-    const content = fixture.Page().props.children;
-    const signIn = findElement(content.type(content.props), fixture.SignIn);
+    const { rendered } = fixture.renderAfterMount();
+    const signIn = findElement(rendered, fixture.SignIn);
     assert.ok(signIn);
     assert.equal(signIn.props.forceRedirectUrl, safeAuthRedirect(target));
     assert.equal(signIn.props.fallbackRedirectUrl, safeAuthRedirect(target));
     assert.equal(signIn.props.signUpUrl, "/register");
-    fixture.effects.forEach((effect) => effect());
+    fixture.flushEffects();
     assert.equal(fixture.navigations.length, 0);
   }
 });
 
 check("Loading auth state neither redirects nor mounts the sign-in widget", () => {
   const fixture = componentFixture(loginFile, { target: "/services", isLoaded: false, isSignedIn: true });
-  const content = fixture.Page().props.children;
-  assert.equal(findElement(content.type(content.props), fixture.SignIn), null);
-  fixture.effects.forEach((effect) => effect());
+  const { rendered } = fixture.renderAfterMount();
+  assert.equal(findElement(rendered, fixture.SignIn), null);
+  fixture.flushEffects();
   assert.equal(fixture.navigations.length, 0);
+});
+
+check("Server and initial client output wait for browser origin without premature Clerk props or navigation", () => {
+  for (const isSignedIn of [false, true]) {
+    const target = browserOrigins[0] + clerkReturnPath;
+    const server = componentFixture(loginFile, { target, isSignedIn, server: true });
+    const client = componentFixture(loginFile, { target, isSignedIn });
+    const serverOutput = server.renderContent().rendered;
+    const clientOutput = client.renderContent().rendered;
+    assert.equal(findElement(serverOutput, server.SignIn), null);
+    assert.equal(findElement(clientOutput, client.SignIn), null);
+    const { renderToStaticMarkup } = require("react-dom/server");
+    assert.equal(renderToStaticMarkup(serverOutput), renderToStaticMarkup(clientOutput));
+    assert.equal(client.originReads(), 0);
+    client.flushEffects();
+    assert.equal(client.originReads(), 1);
+    assert.deepEqual(client.navigations, []);
+  }
+});
+
+check("Mounted login uses trusted browser origin for Clerk props and existing-session navigation", () => {
+  for (const origin of browserOrigins) {
+    for (const isSignedIn of [false, true]) {
+      for (const [target, expected] of [
+        [origin + clerkReturnPath, clerkReturnPath],
+        ["https://example.org/create-projects", "/dashboard"],
+        [origin + "/%256cogin", "/dashboard"],
+      ]) {
+        const fixture = componentFixture(loginFile, { target, origin, isSignedIn });
+        const { rendered } = fixture.renderAfterMount();
+        fixture.flushEffects();
+        assert.equal(fixture.originReads(), 1);
+        if (isSignedIn) {
+          assert.deepEqual(fixture.navigations, [expected]);
+        } else {
+          const signIn = findElement(rendered, fixture.SignIn);
+          assert.ok(signIn);
+          assert.equal(signIn.props.forceRedirectUrl, expected);
+          assert.equal(signIn.props.fallbackRedirectUrl, expected);
+          assert.equal(signIn.props.signUpUrl, "/register");
+          assert.deepEqual(fixture.navigations, []);
+        }
+      }
+    }
+  }
 });
 
 check("Public sign-in links preserve page filters, locale labels and the menu-close handler", () => {

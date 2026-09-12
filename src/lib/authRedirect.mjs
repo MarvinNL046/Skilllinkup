@@ -4,15 +4,25 @@ const AUTH_PATH = /^\/(?:[a-z]{2}\/)?(?:login|register|sign-in|sign-up)(?:\/|$)/
 const UNSAFE_CHARACTERS = /[\\\u0000-\u001f\u007f]/;
 
 // Input is the value returned by URLSearchParams.get(), not the outer encoded
-// query string. Keep query/fragment encoding intact while checking the path.
-export function safeAuthRedirect(value) {
-  if (typeof value !== "string" || !value.startsWith("/") || value.startsWith("//") || UNSAFE_CHARACTERS.test(value)) {
+// query string. trustedOrigin must come from window.location.origin, never the
+// redirect parameter. Keep query/fragment encoding intact while checking paths.
+export function safeAuthRedirect(value, trustedOrigin) {
+  if (typeof value !== "string" || value.startsWith("//") || UNSAFE_CHARACTERS.test(value)) {
     return FALLBACK;
   }
 
   try {
+    const relative = value.startsWith("/");
+    if (!relative && !/^https?:\/\//i.test(value)) return FALLBACK;
     const target = new URL(value, INTERNAL_ORIGIN);
-    if (target.origin !== INTERNAL_ORIGIN) return FALLBACK;
+    if (relative) {
+      if (target.origin !== INTERNAL_ORIGIN) return FALLBACK;
+    } else {
+      if (typeof trustedOrigin !== "string") return FALLBACK;
+      const trusted = new URL(trustedOrigin);
+      if (!/^https?:$/.test(trusted.protocol) || trusted.origin !== trustedOrigin || target.origin !== trusted.origin) return FALLBACK;
+      if (target.username || target.password || /^https?:\/\/[^/?#]*@/i.test(value)) return FALLBACK;
+    }
     let pathname = target.pathname;
 
     // Check encoded separators, dot segments and auth routes too. Bound repeated
