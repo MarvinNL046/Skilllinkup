@@ -177,6 +177,8 @@ export default function MessageInfo() {
                             ? "/manage-jobs"
                             : convexUser?.activeRole === "candidate"
                               ? "/jobs/browse"
+                              : convexUser?.activeRole === "local_professional"
+                                ? "/local/quote-requests"
                               : "/online/projects"
                       }
                     >
