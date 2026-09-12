@@ -87,7 +87,7 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  color: var(--home-coral);
+  color: var(--action-link-text);
   font-size: 14px;
   font-weight: 750;
   text-decoration: none;
@@ -126,7 +126,7 @@
 }
 .heroAccent {
   margin: 16px 0 0;
-  color: var(--home-coral);
+  color: var(--action-link-text);
   font-family: var(--font-display);
   font-size: clamp(1.45rem, 2.1vw, 1.9rem);
   font-weight: 550;
@@ -335,6 +335,7 @@
 }
 .productCard {
   --accent: var(--home-coral);
+  --accent-text: var(--action-link-text);
   overflow: hidden;
   border: 1px solid var(--home-line);
   border-radius: var(--home-radius);
@@ -354,10 +355,12 @@
 }
 .productCard.mint {
   --accent: var(--home-mint);
+  --accent-text: var(--home-mint);
   background: #f7fcfa;
 }
 .productCard.navy {
   --accent: var(--home-navy);
+  --accent-text: var(--home-navy);
   background: #f7f9fc;
 }
 .productImage {
@@ -396,7 +399,7 @@
   text-align: center;
 }
 .productEyebrow {
-  color: var(--accent);
+  color: var(--accent-text);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.09em;
@@ -439,7 +442,7 @@
   gap: 8px;
   margin-top: auto;
   padding-top: 19px;
-  color: var(--accent);
+  color: var(--accent-text);
   font-size: 13px;
   font-weight: 780;
   text-decoration: none;
@@ -503,7 +506,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 7px;
-  color: var(--home-coral);
+  color: var(--action-link-text);
   font-size: 13px;
   font-weight: 780;
   text-decoration: none;
@@ -929,7 +932,7 @@
   align-items: center;
   gap: 7px;
   margin-top: 22px;
-  color: var(--home-coral);
+  color: var(--action-link-text);
   font-size: 13px;
   font-weight: 780;
   text-decoration: none;
@@ -1202,7 +1205,7 @@
   flex: 0 0 26px;
   border-radius: 50%;
   background: #fff0eb;
-  color: var(--home-coral);
+  color: var(--action-link-text);
   font-size: 17px;
   font-weight: 400;
   transition: transform 0.2s;
@@ -1224,10 +1227,18 @@
   gap: 7px;
   width: max-content;
   margin: 25px auto 0;
-  color: var(--home-coral);
+  color: var(--action-link-text);
   font-size: 13px;
   font-weight: 780;
   text-decoration: none;
+}
+
+.sectionHeading > a:hover,
+.popularServicesAll:hover,
+.whyIntro > a:hover,
+.faqMore:hover,
+.productCard:not(.mint):not(.navy) .productBody > a:hover {
+  color: var(--action-link-hover);
 }
 
 /* Newsletter and footer */
