@@ -23,7 +23,7 @@ export const clerkAppearance = {
     dividerLine: { background: "#e1e6e9" }, dividerText: { color: "#748196", fontSize: "11px" },
     formFieldLabel: { color: "#0a2448", fontSize: "12px", fontWeight: 750 }, formFieldInput: { minHeight: "48px", borderRadius: "8px", borderColor: "#d7dfe4", fontSize: "14px" },
     formButtonPrimary: `skl-action-primary ${styles.authPrimary}`,
-    footerAction: { marginTop: "18px" }, footerActionText: { color: "#68778c", fontSize: "12px" }, footerActionLink: { color: "var(--action-primary-bg)", fontWeight: 600 },
+    footerAction: { marginTop: "18px", gap: "6px", flexWrap: "wrap", justifyContent: "center", textAlign: "center" }, footerActionText: { color: "#68778c", fontSize: "12px" }, footerActionLink: { color: "var(--action-primary-bg)", fontWeight: 600, whiteSpace: "nowrap" },
     identityPreviewText: { color: "#0a2448" }, formResendCodeLink: { color: "var(--action-primary-bg)" },
   },
   variables: { colorPrimary: "var(--action-primary-bg)", colorText: "#0a2448", colorTextSecondary: "#68778c", colorBackground: "#ffffff", borderRadius: "8px", fontFamily: "var(--font-sans)" },
