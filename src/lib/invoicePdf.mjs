@@ -22,16 +22,38 @@ export function invoiceFilename(number) {
   return `invoice-${safe || 'download'}.pdf`;
 }
 
+const logoError = 'The company logo could not be added to the PDF. Please choose a valid PNG image and try again.';
+
+function readLogo(doc, logo) {
+  if (logo === null) return null;
+  try {
+    // Decode locally before calling jsPDF: malformed input must never fall back
+    // to fetching an image URL. Only the normalized PNG from the picker is used.
+    const match = typeof logo?.dataUrl === 'string' && logo.dataUrl.match(/^data:image\/png;base64,([A-Za-z0-9+/]+={0,2})$/);
+    if (!match || match[1].length % 4 !== 0) throw new Error();
+    const bytes = Uint8Array.from(atob(match[1]), character => character.charCodeAt(0));
+    const image = doc.getImageProperties(bytes);
+    if (image.fileType !== 'PNG' || !Number.isFinite(image.width) || !Number.isFinite(image.height) || image.width <= 0 || image.height <= 0) throw new Error();
+    // Use decoded dimensions rather than caller metadata to keep the aspect
+    // ratio intact, even when width/height in a saved UI state are stale.
+    const scale = Math.min(48 / image.width, 22 / image.height);
+    return { bytes, width: image.width * scale, height: image.height * scale };
+  } catch {
+    throw new Error(logoError);
+  }
+}
+
 // Render from invoice data rather than a screenshot: text stays selectable and
 // tables can flow over A4 pages. Optional font bytes also allow exact offline QA.
-export async function createInvoicePdf(details, items, fonts) {
+export async function createInvoicePdf(details, items, fonts, logo = null) {
   const required = [details.number, details.date, details.due, details.from, details.fromAddress, details.to, details.toAddress, ...items.map(item => item.description)];
   if (!required.every(value => typeof value === 'string' && value.trim())) throw new Error('Fill in all required invoice fields.');
   if (details.due < details.date) throw new Error('The due date must be on or after the issue date.');
   if (!INVOICE_CURRENCIES.includes(details.currency)) throw new Error('Unsupported currency.');
   const totals = calculateInvoice(items, details.taxRate);
-  const [regular, semibold] = fonts || await loadFonts();
   const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true, putOnlyUsedFonts: true });
+  const image = readLogo(doc, logo);
+  const [regular, semibold] = fonts || await loadFonts();
   doc.addFileToVFS('Inter-Regular.ttf', regular);
   doc.addFont('Inter-Regular.ttf', 'Inter', 'normal');
   doc.addFileToVFS('Inter-SemiBold.ttf', semibold);
@@ -49,6 +71,14 @@ export async function createInvoicePdf(details, items, fonts) {
   const line = [225, 231, 235];
   const money = cents => formatInvoiceMoney(cents, details.currency);
   let y = margin;
+  if (image) {
+    try {
+      doc.addImage(image.bytes, 'PNG', margin, y, image.width, image.height);
+    } catch {
+      throw new Error(logoError);
+    }
+    y += image.height + 6;
+  }
   function table(options, gap = 7) {
     if (y > 265) { doc.addPage(); y = margin; }
     autoTable(doc, {
