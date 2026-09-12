@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { useMutation, useQuery } from "convex/react";
 import {
@@ -82,6 +82,8 @@ export default function OrderWorkspace({ orderId }) {
   const [deliveryNote, setDeliveryNote] = useState("");
   const [revision, setRevision] = useState("");
   const [appointmentDate, setAppointmentDate] = useState("");
+  const appointmentBusyRef = useRef(false);
+  const [appointmentError, setAppointmentError] = useState("");
   const [busy, setBusy] = useState("");
 
   const { isClient, isLocal, matchesContext, requiredContext } =
@@ -185,38 +187,45 @@ export default function OrderWorkspace({ orderId }) {
   }
 
   async function handleAppointmentStatus(status) {
-    if (!appointment?._id) return;
+    if (!appointment?._id || busy || appointmentBusyRef.current) return;
+    appointmentBusyRef.current = true;
+    setAppointmentError("");
     setBusy(`appointment-${status}`);
     try {
-      await updateAppointmentStatus({ appointmentId: appointment._id, status });
+      await updateAppointmentStatus({ appointmentId: appointment._id, status, expectedUpdatedAt: appointment.updatedAt });
       toast.success(
         status === "completed"
           ? "Local service completed."
           : `Appointment ${status.replaceAll("_", " ")}.`,
       );
     } catch (error) {
-      toast.error(error?.message || "The appointment could not be updated.");
+      setAppointmentError(error?.message || "The appointment could not be updated.");
     } finally {
+      appointmentBusyRef.current = false;
       setBusy("");
     }
   }
 
   async function handleReschedule(event) {
     event.preventDefault();
-    if (!appointment?._id || !appointmentDate) return;
+    if (!appointment?._id || !appointmentDate || busy || appointmentBusyRef.current) return;
+    appointmentBusyRef.current = true;
+    setAppointmentError("");
     setBusy("appointment-reschedule");
     try {
       await rescheduleAppointment({
         appointmentId: appointment._id,
         scheduledStart: new Date(appointmentDate).getTime(),
+        expectedUpdatedAt: appointment.updatedAt,
       });
       setAppointmentDate("");
       toast.success("New appointment time requested.");
     } catch (error) {
-      toast.error(
+      setAppointmentError(
         error?.message || "The appointment could not be rescheduled.",
       );
     } finally {
+      appointmentBusyRef.current = false;
       setBusy("");
     }
   }
@@ -335,7 +344,7 @@ export default function OrderWorkspace({ orderId }) {
               </div>
               {canAddWork &&
               matchesContext &&
-              !["completed", "cancelled", "no_show"].includes(
+              ["requested", "confirmed"].includes(
                 appointment.status,
               ) ? (
                 <form
@@ -345,6 +354,7 @@ export default function OrderWorkspace({ orderId }) {
                   <input
                     type="datetime-local"
                     value={appointmentDate}
+                    disabled={Boolean(busy)}
                     onChange={(event) => setAppointmentDate(event.target.value)}
                     aria-label="Propose a new appointment time"
                   />
@@ -356,6 +366,7 @@ export default function OrderWorkspace({ orderId }) {
                   </Button>
                 </form>
               ) : null}
+              {appointmentError && <p role="alert">{appointmentError}</p>}
               {canAddWork && matchesContext ? (
                 <div className={styles.appointmentActions}>
                   {!isClient && appointment.status === "requested" ? (

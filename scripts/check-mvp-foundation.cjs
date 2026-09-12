@@ -66,6 +66,51 @@ async function drain(fn, ctx, args) {
   return rows;
 }
 async function main() {
+  await check("rescheduling notifies the other party, rejects stale changes and cancellation is safe to retry", async () => {
+    const appointments = load("convex/marketplace/localAppointments.ts");
+    for (const actor of ["buyer", "seller"]) {
+      const localUser = (id, role) => user(id, { activeRole: role, accountRoles: [role], preferredWorld: "local", onboardingContexts: [{ role, world: "local", version: 1, completedAt: 1 }] });
+      const ctx = fixture([localUser("buyer", "client"), localUser("seller", "local_professional"), localUser("outsider", "client"),
+        { _id: "profile", _table: "freelancerProfiles", userId: "seller", tenantId: "tenant" },
+        { _id: "request", _table: "quoteRequests", tenantId: "tenant", clientId: "buyer", status: "accepted" },
+        { _id: "order", _table: "orders", tenantId: "tenant", clientId: "buyer", freelancerId: "profile", quoteRequestId: "request", orderType: "local_quote", escrowStatus: "beta_no_payment", status: "active" },
+        { _id: "visit", _table: "localAppointments", tenantId: "tenant", clientId: "buyer", professionalId: "profile", quoteRequestId: "request", orderId: "order", status: "confirmed", confirmedAt: 1, updatedAt: 1, clientNote: "Keep client note", professionalNote: "Keep professional note" },
+      ], actor);
+      const args = { appointmentId: "visit", scheduledStart: Date.now() + 86400000, expectedUpdatedAt: 1 };
+      await assert.rejects(() => appointments.reschedule.handler(ctx, { ...args, expectedUpdatedAt: 0 }), /appointment changed/);
+      await assert.rejects(() => appointments.reschedule.handler(ctx, { ...args, scheduledEnd: args.scheduledStart - 1 }), /end time/);
+      await appointments.reschedule.handler(ctx, args);
+      assert.equal(ctx.state.get("visit").status, "requested");
+      assert.equal(ctx.state.get("visit").confirmedAt, undefined);
+      assert.equal(ctx.state.get("visit").clientNote, "Keep client note");
+      assert.equal(ctx.state.get("visit").professionalNote, "Keep professional note");
+      assert.equal(ctx.scheduled.length, 1);
+      const notices = () => [...ctx.state.values()].filter(r => r._table === "notifications");
+      assert.equal(notices()[0].userId, actor === "buyer" ? "seller" : "buyer");
+      assert.equal(notices()[0].type, "local_appointment_rescheduled");
+      const writes = ctx.writes.length;
+      await appointments.reschedule.handler(ctx, args);
+      assert.equal(ctx.writes.length, writes); assert.equal(ctx.scheduled.length, 1);
+      await assert.rejects(() => appointments.updateStatus.handler(ctx, { appointmentId: "visit", status: "cancelled", expectedUpdatedAt: 1 }), /appointment changed/);
+      ctx.auth.getUserIdentity = async () => ({ subject: "seller" });
+      await appointments.updateStatus.handler(ctx, { appointmentId: "visit", status: "confirmed" });
+      const firstConfirmationKey = ctx.scheduled.at(-1)[2].eventKey;
+      await appointments.reschedule.handler(ctx, { appointmentId: "visit", scheduledStart: args.scheduledStart + 86400000 });
+      await appointments.updateStatus.handler(ctx, { appointmentId: "visit", status: "confirmed" });
+      assert.notEqual(ctx.scheduled.at(-1)[2].eventKey, firstConfirmationKey);
+      await appointments.updateStatus.handler(ctx, { appointmentId: "visit", status: "in_progress" });
+      await assert.rejects(() => appointments.reschedule.handler(ctx, { appointmentId: "visit", scheduledStart: args.scheduledStart }), /Only a requested or confirmed/);
+      ctx.auth.getUserIdentity = async () => ({ subject: actor });
+      await appointments.updateStatus.handler(ctx, { appointmentId: "visit", status: "cancelled" });
+      for (const id of ["visit", "order", "request"]) assert.equal(ctx.state.get(id).status, "cancelled");
+      assert.equal(notices().at(-1).userId, actor === "buyer" ? "seller" : "buyer");
+      const count = ctx.writes.length;
+      await appointments.updateStatus.handler(ctx, { appointmentId: "visit", status: "cancelled", expectedUpdatedAt: 1 });
+      assert.equal(ctx.writes.length, count);
+      ctx.auth.getUserIdentity = async () => ({ subject: "outsider" });
+      await assert.rejects(() => appointments.updateStatus.handler(ctx, { appointmentId: "visit", status: "cancelled" }), /Unauthorized/);
+    }
+  });
   await check("Local review pagination includes older profiles and enforces reviewed ownership", async () => {
     const verification = load("convex/marketplace/localVerifications.ts");
     const ctx = fixture([user("admin", { role: "admin" }), user("seller"), user("outsider"),

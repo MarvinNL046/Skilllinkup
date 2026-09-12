@@ -25,6 +25,7 @@ function lifecycleEmail(args: {
   const orderId = metadataString(args.metadata, "orderId");
   const appointmentId = metadataString(args.metadata, "appointmentId");
   const status = metadataString(args.metadata, "status");
+  const updatedAt = metadataString(args.metadata, "updatedAt");
 
   switch (args.type) {
     case "job_application_received":
@@ -62,10 +63,14 @@ function lifecycleEmail(args: {
     case "local_appointment_status":
       return appointmentId && status
         ? {
-            eventKey: `local-appointment-status:${appointmentId}:${status}`,
+            eventKey: `local-appointment-status:${appointmentId}:${status}${updatedAt ? `:${updatedAt}` : ""}`,
             template: "localAppointmentStatus",
             preference: "orderUpdate",
           }
+        : null;
+    case "local_appointment_rescheduled":
+      return appointmentId && updatedAt
+        ? { eventKey: `local-appointment-rescheduled:${appointmentId}:${updatedAt}`, template: "localAppointmentStatus", preference: "orderUpdate" }
         : null;
     default:
       return null;

@@ -40,12 +40,12 @@ async function requireAppointmentParty(
   return { user, appointment, professional, isClient, isProfessional };
 }
 
-async function requireMutableAppointmentOrder(ctx: MutationCtx, appointment: Doc<"localAppointments">) {
+async function requireMutableAppointmentOrder(ctx: MutationCtx, appointment: Doc<"localAppointments">, allowCancelledRetry = false) {
   const order = await ctx.db.get(appointment.orderId);
   if (!order || order.tenantId !== appointment.tenantId || order.clientId !== appointment.clientId || order.freelancerId !== appointment.professionalId || order.quoteRequestId !== appointment.quoteRequestId) throw new Error("The appointment and order do not match.");
   requireBetaOrder(order);
   await assertOrderNotDisputed(ctx, order);
-  if (["completed", "cancelled"].includes(order.status)) throw new Error("This order is closed.");
+  if (["completed", "cancelled"].includes(order.status) && !(allowCancelledRetry && order.status === "cancelled")) throw new Error("This order is closed.");
   return order;
 }
 
@@ -109,23 +109,34 @@ export const reschedule = mutation({
     scheduledStart: v.number(),
     scheduledEnd: v.optional(v.number()),
     note: v.optional(v.string()),
+    expectedUpdatedAt: v.optional(v.number()),
   },
   returns: v.object({ success: v.boolean() }),
   handler: async (ctx, args) => {
-    const { user, appointment, isClient } = await requireAppointmentParty(ctx, args.appointmentId);
+    const { user, appointment, professional, isClient } = await requireAppointmentParty(ctx, args.appointmentId);
     await requireMutableAppointmentOrder(ctx, appointment);
-    if (["completed", "cancelled", "no_show"].includes(appointment.status)) throw new Error("This appointment is closed.");
+    if (!["requested", "confirmed"].includes(appointment.status)) throw new Error("Only a requested or confirmed appointment can be rescheduled.");
     if (!Number.isFinite(args.scheduledStart) || args.scheduledStart < Date.now() - 5 * 60 * 1000) throw new Error("Choose a future appointment time.");
     if (args.scheduledEnd !== undefined && (!Number.isFinite(args.scheduledEnd) || args.scheduledEnd <= args.scheduledStart)) throw new Error("The end time must be after the start time.");
     const note = args.note?.trim();
     if (note && note.length > 1000) throw new Error("Notes cannot exceed 1,000 characters.");
+    if (appointment.status === "requested" && appointment.scheduledStart === args.scheduledStart && appointment.scheduledEnd === args.scheduledEnd && (args.note === undefined || (isClient ? appointment.clientNote : appointment.professionalNote) === note)) return { success: true };
+    if (args.expectedUpdatedAt !== undefined && args.expectedUpdatedAt !== appointment.updatedAt) throw new Error("The appointment changed. Review the latest details and try again.");
+    const now = Math.max(Date.now(), appointment.updatedAt + 1);
     await ctx.db.patch(appointment._id, {
       scheduledStart: args.scheduledStart,
       scheduledEnd: args.scheduledEnd,
       status: "requested",
-      ...(isClient ? { clientNote: note } : { professionalNote: note }),
+      ...(args.note === undefined ? {} : isClient ? { clientNote: note } : { professionalNote: note }),
       confirmedAt: undefined,
-      updatedAt: Date.now(),
+      updatedAt: now,
+    });
+    const recipientId = isClient ? professional?.userId : appointment.clientId;
+    if (recipientId && recipientId !== user._id) await notifyUser(ctx, {
+      userId: recipientId, type: "local_appointment_rescheduled", title: "New appointment time proposed",
+      body: "A new appointment time has been proposed. Review the updated details in your workspace; the professional must confirm the appointment again.",
+      link: `/orders/${appointment.orderId}`,
+      metadata: { orderId: appointment.orderId, appointmentId: appointment._id, updatedAt: now },
     });
     return { success: true };
   },
@@ -136,11 +147,17 @@ export const updateStatus = mutation({
     appointmentId: v.id("localAppointments"),
     status: localAppointmentStatusValidator,
     note: v.optional(v.string()),
+    expectedUpdatedAt: v.optional(v.number()),
   },
   returns: v.object({ success: v.boolean() }),
   handler: async (ctx, args) => {
     const { appointment, professional, isClient, isProfessional, user } = await requireAppointmentParty(ctx, args.appointmentId);
-    const order = await requireMutableAppointmentOrder(ctx, appointment);
+    const cancellationRetry = args.status === "cancelled" && appointment.status === "cancelled";
+    const order = await requireMutableAppointmentOrder(ctx, appointment, cancellationRetry);
+    const request = await ctx.db.get(appointment.quoteRequestId);
+    if (!request || request.tenantId !== order.tenantId || request.clientId !== order.clientId) throw new Error("The local request and order do not match.");
+    if (cancellationRetry && order.status === "cancelled" && request.status === "cancelled") return { success: true };
+    if (args.expectedUpdatedAt !== undefined && args.expectedUpdatedAt !== appointment.updatedAt) throw new Error("The appointment changed. Review the latest details and try again.");
     assertTransition(localAppointmentTransitions, appointment.status, args.status);
     if (args.status === "confirmed" && !isProfessional && user.role !== "admin") {
       throw new Error("The professional confirms the appointment.");
@@ -151,19 +168,17 @@ export const updateStatus = mutation({
     if (args.status === "cancelled" && !isClient && !isProfessional && user.role !== "admin") {
       throw new Error("Unauthorized.");
     }
-    const now = Date.now();
+    const now = Math.max(Date.now(), appointment.updatedAt + 1);
     const note = args.note?.trim();
     if (note && note.length > 1000) throw new Error("Notes cannot exceed 1,000 characters.");
     await ctx.db.patch(appointment._id, {
       status: args.status,
-      ...(isClient ? { clientNote: note } : { professionalNote: note }),
+      ...(args.note === undefined ? {} : isClient ? { clientNote: note } : { professionalNote: note }),
       confirmedAt: args.status === "confirmed" ? now : appointment.confirmedAt,
       completedAt: args.status === "completed" ? now : appointment.completedAt,
       cancelledAt: args.status === "cancelled" ? now : appointment.cancelledAt,
       updatedAt: now,
     });
-    const request = await ctx.db.get(appointment.quoteRequestId);
-    if (!request || request.tenantId !== order.tenantId || request.clientId !== order.clientId) throw new Error("The local request and order do not match.");
     if (args.status === "in_progress" && request?.status === "accepted") {
       assertTransition(quoteRequestTransitions, request.status, "in_progress");
       await ctx.db.patch(request._id, { status: "in_progress", updatedAt: now });
@@ -199,7 +214,7 @@ export const updateStatus = mutation({
         title: "Local appointment updated",
         body: `The appointment is now ${args.status.replaceAll("_", " ")}.`,
         link: `/orders/${appointment.orderId}`,
-        metadata: { orderId: appointment.orderId, appointmentId: appointment._id, status: args.status },
+        metadata: { orderId: appointment.orderId, appointmentId: appointment._id, status: args.status, updatedAt: now },
       });
     }
     return { success: true };
