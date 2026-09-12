@@ -23,7 +23,7 @@
 .loading { grid-auto-flow: column; }
 .loading svg { animation: spin 800ms linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-@media (max-width: 850px) { .list article { grid-template-columns: auto minmax(0, 1fr); } .links, .stage { justify-self: start; } .letter { grid-column: 1 / -1; } }
+@media (max-width: 850px) { .list article { grid-template-columns: 3.25rem minmax(0, 1fr); } .links, .stage, .letter { grid-column: 1 / -1; } .links, .stage { justify-self: stretch; } .stage { justify-items: start; } .stage label { width: 100%; } }
 @media (max-width: 600px) { .header { align-items: stretch; flex-direction: column; } .links { flex-wrap: wrap; } }
 
 .pagination { display: grid; justify-items: center; gap: .65rem; }

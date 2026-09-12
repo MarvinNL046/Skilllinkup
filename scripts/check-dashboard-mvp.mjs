@@ -232,6 +232,23 @@ await check("Application retry reuses the uploaded CV and preserves the draft af
 });
 
 
+
+await check("Unavailable jobs stop rendering instead of showing an empty application page", async () => {
+  let result = null; let fail = false;
+  const Page = loader({
+    "convex/nextjs": { fetchQuery: async () => { if (fail) throw new Error("Backend unavailable"); return result; } },
+    "next-intl/server": { getTranslations: async () => key => key },
+    "next/navigation": { notFound: () => { throw new Error("NOT_FOUND"); } },
+    "@/lib/seo/jobPosting.mjs": { buildJobPosting: () => null },
+    "@/components/breadcumb/Breadcumb10": { default: "nav" }, "@/components/breadcumb/Breadcumb13": { default: "header" }, "@/components/section/JobDetail1": { default: "section" },
+  })("src/app/(jobs-world)/jobs/job/[id]/page.jsx").default;
+  await assert.rejects(() => Page({ params: Promise.resolve({ id: "closed-job" }) }), /NOT_FOUND/);
+  fail = true;
+  await assert.rejects(() => Page({ params: Promise.resolve({ id: "job" }) }), /Backend unavailable/);
+  fail = false; result = { status: "open" };
+  assert.ok(await Page({ params: Promise.resolve({ id: "job" }) }));
+});
+
 await check("Application lists expose loading controls and send stage filters to paginated queries", async () => {
   for (const mode of ["Candidate", "Employer"]) {
     const runner = hookRunner(); let state = "CanLoadMore"; let queryArgs; const loads = [];
