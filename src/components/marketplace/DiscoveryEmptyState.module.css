@@ -1,0 +1,38 @@
+.empty {
+  padding: clamp(24px, 4vw, 36px);
+  border: 1px solid var(--border-default, #dce3e7);
+  border-radius: 16px;
+  background: #fff;
+}
+
+.empty h2 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.empty p {
+  max-width: 60ch;
+  margin: 12px 0 0;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.empty .note {
+  margin-top: 16px;
+  font-size: 13px;
+}
+
+@media (max-width: 480px) {
+  .actions { align-items: stretch; flex-direction: column; }
+  .actions > * { width: 100%; white-space: normal; text-align: center; }
+}

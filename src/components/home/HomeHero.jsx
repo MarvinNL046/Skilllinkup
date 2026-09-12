@@ -20,7 +20,7 @@ const trustItems = [
 const stats = [
   { Icon: Users, value: "One account", label: "Multiple professional roles" },
   { Icon: BriefcaseBusiness, value: "3 products", label: "Online · Local · Jobs" },
-  { Icon: ShieldCheck, value: "Free beta", label: "No platform payments" },
+  { Icon: ShieldCheck, value: "Private beta", label: "No platform payments" },
   { Icon: Globe2, value: "English-first", label: "Online launches worldwide" },
 ];
 
@@ -30,14 +30,14 @@ export default function HomeHero() {
       <section className={`${styles.section} ${styles.hero}`}>
         <div className={styles.heroInner}>
           <div className={styles.heroCopy}>
-            <span className={styles.eyebrow}>ONLINE · LOCAL · JOBS</span>
+            <span className={styles.eyebrow}>PRIVATE BETA · ONLINE · LOCAL · JOBS</span>
             <h1>
               Find the right work. <span>Or the right person.</span>
             </h1>
             <p className={styles.lead}>
-              Stop switching between platforms. Hire freelancers worldwide,
-              find professionals nearby, or discover verified jobs—all
-              in one place.
+              Explore online freelancers, local professionals and company jobs
+              while Skilllinkup is in private beta. Our network is growing
+              ahead of public launch.
             </p>
             <form className={styles.searchBox} action="/services" method="get">
               <label className={styles.searchField}>

@@ -10,7 +10,7 @@ const worldNavigation = {
   ],
   jobs: [
     { id: 1, name: "Browse Jobs", path: "/jobs/browse" },
-    { id: 2, name: "Companies", path: "/jobs/companies" },
+    { id: 2, name: "For employers", path: "/jobs/companies" },
   ],
   shared: [],
 };

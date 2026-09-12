@@ -11,7 +11,7 @@
     "lint": "eslint . --max-warnings=0",
     "test:mvp": "node scripts/check-mvp-foundation.cjs && node scripts/check-mvp-orders.cjs && node scripts/check-dashboard-mvp.mjs && node scripts/check-mvp-discovery.cjs",
     "test:invoice-pdf": "node scripts/check-invoice.mjs && node scripts/check-invoice-pdf.mjs",
-    "test:launch-contracts": "node scripts/check-account-context.mjs && node scripts/check-launch-security.cjs && node scripts/check-invoice.mjs && node scripts/check-image-retention.cjs",
+    "test:launch-contracts": "node scripts/check-account-context.mjs && node scripts/check-launch-security.cjs && node scripts/check-invoice.mjs && node scripts/check-image-retention.cjs && node scripts/check-auth-redirect.mjs",
     "env:verify": "node scripts/verify-environment.mjs",
     "beta:verify-copy": "node scripts/check-private-beta-copy.mjs",
     "release:verify-hosted": "node scripts/verify-hosted-release.mjs",

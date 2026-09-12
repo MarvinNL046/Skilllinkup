@@ -98,17 +98,25 @@
   font-size: 14px;
 }
 .searchBar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   min-width: 124px;
-  border: 1px solid #e9482b;
-  border-radius: 9px;
-  background: var(--coral);
-  color: #fff;
+  border: 1px solid transparent;
+  border-radius: var(--action-radius);
+  background: var(--action-primary-bg);
+  color: var(--action-primary-text);
   font-size: 14px;
-  font-weight: 780;
+  font-weight: 600;
   cursor: pointer;
-  box-shadow:
-    inset 0 1px 0 #ffffff48,
-    0 8px 18px #ff4f2e24;
+}
+.searchBar button:hover {
+  background: var(--action-primary-hover);
+}
+.searchBar button:focus-visible {
+  outline: 2px solid var(--action-primary-bg);
+  outline-offset: 3px;
 }
 
 .resultsSection {

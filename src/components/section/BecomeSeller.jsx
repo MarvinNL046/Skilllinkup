@@ -37,7 +37,7 @@ export default function BecomeSeller() {
       description: t("localDesc"),
       features: [t("localF1"), t("localF2"), t("localF3")],
       cta: t("localCta"),
-      href: "/register?role=freelancer",
+      href: "/register?role=local_professional",
     },
     {
       id: "jobs",

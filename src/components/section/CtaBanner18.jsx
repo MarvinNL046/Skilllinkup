@@ -16,10 +16,10 @@ const valueProps = [
 ];
 
 const bullets = [
-  { key: "b1", fallback: "Built network-first — day one with real demand" },
+  { key: "b1", fallback: "Explore published profiles now" },
   { key: "b2", fallback: "One place for online, local, and jobs" },
-  { key: "b3", fallback: "Free beta, transparent launch policy" },
-  { key: "b4", fallback: "No spam between now and launch" },
+  { key: "b3", fallback: "Private beta, no platform payments" },
+  { key: "b4", fallback: "Waitlist for public launch updates" },
 ];
 
 export default function CtaBanner18() {
@@ -107,7 +107,7 @@ export default function CtaBanner18() {
               >
                 {t("subtitle", {
                   default:
-                    "Everything that connects skill and need — in one place. Join the waitlist to be part of day one.",
+                    "Explore profiles during the private beta. Join the waitlist for public launch updates.",
                 })}
               </p>
               <WaitlistButton

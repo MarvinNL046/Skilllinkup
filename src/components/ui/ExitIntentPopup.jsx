@@ -22,9 +22,9 @@ const DELAY_MS = 5000;
 const COPY = {
   en: {
     eyebrow: "Stay in the loop",
-    title: "Be part of the launch.",
+    title: "Follow the public launch.",
     description:
-      "Join the Skilllinkup waitlist. We'll email you when we're ready to welcome you.",
+      "Skilllinkup is in private beta. Explore profiles now, and join the waitlist for public launch updates.",
     email: "Email address",
     placeholder: "you@example.com",
     join: "Join the waitlist",
@@ -34,14 +34,14 @@ const COPY = {
     privacyLink: "privacy policy",
     success: "You're on the list.",
     already: "You're already on the list.",
-    successDescription: "We'll email you when Skilllinkup is ready to launch.",
+    successDescription: "We'll email you about Skilllinkup's public launch. You can keep exploring profiles in the meantime.",
     done: "Continue browsing",
   },
   nl: {
     eyebrow: "Blijf op de hoogte",
-    title: "Wees erbij vanaf de start.",
+    title: "Volg de publieke lancering.",
     description:
-      "Meld je aan voor de Skilllinkup-wachtlijst. Je krijgt een e-mail zodra we je kunnen verwelkomen.",
+      "Skilllinkup is in private bèta. Bekijk nu al profielen en meld je aan voor updates over de publieke lancering.",
     email: "E-mailadres",
     placeholder: "jij@voorbeeld.nl",
     join: "Op de wachtlijst",
@@ -52,7 +52,7 @@ const COPY = {
     success: "Je staat op de lijst.",
     already: "Je staat al op de lijst.",
     successDescription:
-      "Je krijgt een e-mail zodra Skilllinkup van start gaat.",
+      "Je krijgt updates over de publieke lancering van Skilllinkup. Ondertussen kun je profielen blijven bekijken.",
     done: "Verder bekijken",
   },
 };

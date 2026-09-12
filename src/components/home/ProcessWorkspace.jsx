@@ -15,7 +15,7 @@ export default function ProcessWorkspace() {
       <section className={`${styles.section} ${styles.processSection}`}>
         <header className={styles.centerHeading}>
           <span className={styles.eyebrow}>Simple from start to finish</span>
-          <h2>How Skilllinkup works</h2>
+          <h2>How the beta workspace works</h2>
         </header>
         <div className={styles.processVisual}>
           <Image
@@ -44,7 +44,7 @@ export default function ProcessWorkspace() {
           <div className={styles.workspaceCopy}>
             <span className={styles.eyebrow}>Everything in one place</span>
             <h2>From first message to finished work.</h2>
-            <p>Keep scope, messages, files and delivery decisions organised in one shared workspace.</p>
+            <p>Beta participants can keep scope, messages, files and delivery decisions organised in one shared workspace. Skilllinkup does not process payments.</p>
             <ul>
               <li><ShieldCheck size={18} /><span><strong>Recorded approvals</strong>Confirm delivered milestones in one clear workspace.</span></li>
               <li><MessageSquareText size={18} /><span><strong>Built-in conversations</strong>Keep messages and project details together.</span></li>

@@ -5,6 +5,7 @@ import AppFooter from "@/components/footer/AppFooter";
 import styles from "./WorldwideHome.module.css";
 
 const faqs = [
+  ["Is Skilllinkup publicly launched?", "Skilllinkup is in private beta ahead of public launch. You can explore published profiles now. Existing beta participants can log in to their workspace; the waitlist is for public launch updates."],
   ["What makes Skilllinkup different?", "Online freelance work, local service requests, and real company jobs come together in one worldwide marketplace."],
   ["Can I offer more than one type of service?", "Yes. You can offer remote expertise, provide hands-on services locally, and explore company jobs."],
   ["How does Skilllinkup build trust?", "Compare the published profile and reviews, check any verification badge, and confirm the scope before starting work."],
@@ -35,7 +36,7 @@ export default function HomeFaqFooter() {
 
       <section className={`${styles.section} ${styles.newsletterSection}`}>
         <Send size={30} aria-hidden="true" />
-        <div><h2>Follow the launch</h2><p>Join the waitlist for updates about the Skilllinkup beta.</p></div>
+        <div><h2>Follow the public launch</h2><p>Explore profiles during the private beta and join the waitlist for public launch updates.</p></div>
         <div><WaitlistButton label="Join the waitlist" /></div>
       </section>
 

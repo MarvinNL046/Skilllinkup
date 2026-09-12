@@ -11,6 +11,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import SearchBarWithDropdown from "@/components/ui/SearchBarWithDropdown";
 import { useTranslations } from "next-intl";
 import { LogOut } from "lucide-react";
+import PublicSignInLink from "./PublicSignInLink";
 
 /**
  * Header20 — primary header used across all /service, /employee, /auth,
@@ -103,7 +104,10 @@ export default function Header20() {
               </button>
             </>
           ) : (
-            <WaitlistButton className="btn btn--primary" />
+            <>
+              <PublicSignInLink />
+              <WaitlistButton className="skl-action-primary whitespace-nowrap" />
+            </>
           )}
         </div>
       </header>
