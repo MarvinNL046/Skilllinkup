@@ -1,7 +1,7 @@
 import { fetchQuery } from "convex/nextjs";
 import { getTranslations } from "next-intl/server";
 import { api } from "../../../../../../convex/_generated/api";
-import TabSection1 from "@/components/section/TabSection1";
+import { notFound } from "next/navigation";
 import Breadcumb10 from "@/components/breadcumb/Breadcumb10";
 import Breadcumb13 from "@/components/breadcumb/Breadcumb13";
 import JobDetail1 from "@/components/section/JobDetail1";
@@ -54,13 +54,8 @@ export async function generateMetadata({ params }) {
 export default async function page({ params }) {
   const { id } = await params;
   const t = await getTranslations("jobsHub");
-  let job = null;
-  try {
-    job = await fetchQuery(api.marketplace.jobs.getBySlug, {
-      slug: id,
-      locale: "en",
-    });
-  } catch {}
+  const job = await fetchQuery(api.marketplace.jobs.getBySlug, { slug: id, locale: "en" });
+  if (!job) notFound();
 
   const isOpen =
     job?.status === "open" && (!job.expiresAt || job.expiresAt > Date.now());
@@ -78,7 +73,6 @@ export default async function page({ params }) {
           }}
         />
       ) : null}
-      <TabSection1 />
       <Breadcumb10
         path={[t("breadcrumbHome"), t("breadcrumbJobs"), t("breadcrumbDetail")]}
       />

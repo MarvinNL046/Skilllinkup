@@ -68,7 +68,7 @@ export default function EmployerApplications({ jobId }) {
             <article key={application._id}>
               <div className={styles.avatar}>{candidate.image ? <Image src={candidate.image} alt="" width={52} height={52} unoptimized /> : <UserRound />}</div>
               <div className={styles.identity}><span data-status={application.status}>{statusLabels[application.status] || application.status}</span><h2>{candidate.name}</h2><a href={`mailto:${candidate.email}`}><Mail size={13} />{candidate.email}</a></div>
-              <div className={styles.links}>{application.portfolioUrl ? <a href={application.portfolioUrl} target="_blank" rel="noreferrer"><ExternalLink /> Portfolio</a> : null}{resumeUrl ? <a href={resumeUrl} target="_blank" rel="noreferrer"><FileText /> CV</a> : null}</div>
+              <div className={styles.links}>{application.portfolioUrl ? <a href={application.portfolioUrl} target="_blank" rel="noreferrer"><ExternalLink /> Portfolio</a> : null}{resumeUrl ? <a href={resumeUrl} download rel="noreferrer"><FileText /> CV</a> : null}</div>
               <p className={styles.letter}>{application.coverLetter}</p>
               <div className={styles.stage}>
                 {messageableStatuses.has(application.status) ? <ContextMessageButton context={{ type: "job_application", applicationId: application._id }} label="Message candidate" /> : null}

@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
+import { formatJobSalary } from "@/lib/jobSalary.mjs";
 import { ArrowRight } from "lucide-react";
 
 export default function Breadcumb13() {
@@ -14,11 +15,9 @@ export default function Breadcumb13() {
     id ? { slug: id, locale: "en" } : "skip"
   );
 
-  const title = job?.title || "Job Opening";
+  if (!job) return null;
+  const title = job.title;
   const company = job?.company || "";
-  const salaryMin = job?.salaryMin;
-  const salaryMax = job?.salaryMax;
-  const currency = job?.currency || "EUR";
   const workType = job?.workType || "Remote";
   const workTypeLabel =
     workType.toLowerCase() === "remote" && job?.locationCountry
@@ -26,12 +25,7 @@ export default function Breadcumb13() {
       : workType;
   const jobType = job?.jobType || "";
 
-  const salaryLabel =
-    salaryMin && salaryMax
-      ? `€${salaryMin.toLocaleString()}–€${salaryMax.toLocaleString()}`
-      : salaryMin
-      ? `From €${salaryMin.toLocaleString()}`
-      : "";
+  const salaryLabel = formatJobSalary(job);
 
   return (
     <section>
@@ -60,13 +54,13 @@ export default function Breadcumb13() {
                   height={100}
                   width={100}
                   className="rounded-md flex-shrink-0"
-                  src="/images/team/job-single.png"
-                  alt="job"
+                  src={job.companyLogo || "/images/logo/skilllinkup-brand.png"}
+                  alt={job.companyLogo && company ? `${company} logo` : "Skilllinkup"}
                 />
                 <div>
-                  <h4 className="text-2xl md:text-3xl font-semibold mb-2">
+                  <h1 className="text-2xl md:text-3xl font-semibold mb-2">
                     {title}
-                  </h4>
+                  </h1>
                   {company && (
                     <h6 className="text-base text-primary mb-3">{company}</h6>
                   )}
