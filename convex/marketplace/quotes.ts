@@ -202,6 +202,12 @@ var listRequests = query({
     args: {
       quoteId: v.id("quotes")
     },
+    returns: v.object({
+      success: v.boolean(),
+      quoteId: v.id("quotes"),
+      orderId: v.id("orders"),
+      appointmentId: v.union(v.id("localAppointments"), v.null())
+    }),
     handler: async (ctx, args) => {
       let i = await requireAuthUser(ctx);
       requireMarketplaceContext(i, "client", "local", "accepting a local quote");
@@ -210,10 +216,12 @@ var listRequests = query({
       let n = await ctx.db.get(r.quoteRequestId);
       if (!n) throw new Error("Quote request not found.");
       if (n.clientId !== i._id) throw new Error("Only the client who created this request can accept quotes.");
-      if (!["open", "matched"].includes(n.status)) throw new Error("This quote request can no longer be awarded.");
-      assertTransition(quoteTransitions, r.status, "accepted"), assertTransition(quoteRequestTransitions, n.status, "accepted");
+      if (n.tenantId !== i.tenantId) throw new Error("This quote request belongs to another workspace.");
+      // A retry returns the original result, including after the appointment advances.
+      // Keep ownership checks above this branch; never create a second workspace.
       let u = await ctx.db.query("orders").withIndex("by_quote", c => c.eq("quoteId", r._id)).unique();
       if (u) {
+        if (r.status !== "accepted" || u.clientId !== i._id || u.tenantId !== n.tenantId || u.quoteRequestId !== n._id || u.freelancerId !== r.freelancerId || u.orderType !== "local_quote") throw new Error("The accepted quote and order do not match.");
         let c = await ctx.db.query("localAppointments").withIndex("by_order", q => q.eq("orderId", u._id)).unique();
         return {
           success: !0,
@@ -222,6 +230,8 @@ var listRequests = query({
           appointmentId: c?._id ?? null
         };
       }
+      if (!["open", "matched"].includes(n.status)) throw new Error("This quote request can no longer be awarded.");
+      assertTransition(quoteTransitions, r.status, "accepted"), assertTransition(quoteRequestTransitions, n.status, "accepted");
       let a = await ctx.db.get(r.freelancerId);
       if (!a) throw new Error("Local professional profile not found.");
       let m = await ctx.db.get(a.userId);

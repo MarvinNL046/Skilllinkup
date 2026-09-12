@@ -66,6 +66,61 @@ async function drain(fn, ctx, args) {
   return rows;
 }
 async function main() {
+  await check("local request lifecycle creates one workspace and safely retries acceptance", async () => {
+    const quotes = load("convex/marketplace/quotes.ts");
+    const leads = load("convex/marketplace/leads.ts");
+    const appointments = load("convex/marketplace/localAppointments.ts");
+    const localUser = (id, role) => user(id, { activeRole: role, accountRoles: [role], preferredWorld: "local", onboardingContexts: [{ role, world: "local", version: 1, completedAt: 1 }] });
+    const ctx = fixture([localUser("buyer", "client"), localUser("seller", "local_professional"), localUser("outsider", "client"),
+      { _id: "category", _table: "marketplaceCategories", tenantId: "tenant", name: "Plumbing", serviceType: "local" },
+      { _id: "profile", _table: "freelancerProfiles", tenantId: "tenant", userId: "seller", providerRole: "local_professional", status: "active", workType: "local", isVerified: false, creditBalance: 100, locationCity: "Rotterdam", locationCountry: "Netherlands" },
+    ]);
+    const actAs = (id) => { ctx.auth.getUserIdentity = async () => ({ subject: id }); };
+    const rows = (table) => [...ctx.state.values()].filter((row) => row._table === table);
+    const requestId = await quotes.createRequest.handler(ctx, { categoryId: "category", title: "QA repair a leaking tap", description: "Isolated QA request: inspect and repair a leaking kitchen tap.", locationCity: "Rotterdam", locationCountry: "Netherlands", preferredDate: Date.now() + 86400000 });
+    assert.equal((await quotes.listMyRequests.handler(ctx, {}))[0]._id, requestId);
+    actAs("seller");
+    await assert.rejects(() => leads.claimLead.handler(ctx, { quoteRequestId: requestId, claimType: "shared" }), /not eligible/);
+    assert.equal(rows("leadClaims").length, 0);
+    // Eligibility is a fixture only: no real profile is verified by this test.
+    ctx.state.get("profile").isVerified = true;
+    const claim = await leads.claimLead.handler(ctx, { quoteRequestId: requestId, claimType: "shared" });
+    assert.equal(ctx.state.get("profile").creditBalance, 100 - claim.creditsSpent);
+    await assert.rejects(() => leads.claimLead.handler(ctx, { quoteRequestId: requestId, claimType: "shared" }), /already claimed/);
+    const quoteId = await quotes.submitQuote.handler(ctx, { quoteRequestId: requestId, amount: 150, currency: "EUR", description: "Inspect and repair the kitchen tap, including materials." });
+    actAs("outsider");
+    await assert.rejects(() => quotes.acceptQuote.handler(ctx, { quoteId }), /Only the client/);
+    actAs("buyer");
+    ctx.state.set("competing-quote", { _id: "competing-quote", _table: "quotes", quoteRequestId: requestId, freelancerId: "other-profile", status: "pending" });
+    const accepted = await quotes.acceptQuote.handler(ctx, { quoteId });
+    assert.equal(ctx.state.get("competing-quote").status, "rejected");
+    await assert.rejects(() => quotes.acceptQuote.handler(ctx, { quoteId: "competing-quote" }), /no longer be awarded/);
+    const beforeRetry = { writes: ctx.writes.length, scheduled: ctx.scheduled.length };
+    assert.deepEqual(await quotes.acceptQuote.handler(ctx, { quoteId }), accepted);
+    assert.equal(ctx.writes.length, beforeRetry.writes);
+    assert.equal(ctx.scheduled.length, beforeRetry.scheduled);
+    ctx.state.get("buyer").tenantId = "other-tenant";
+    await assert.rejects(() => quotes.acceptQuote.handler(ctx, { quoteId }), /another workspace/);
+    ctx.state.get("buyer").tenantId = "tenant";
+    ctx.state.get(accepted.orderId).clientId = "outsider";
+    await assert.rejects(() => quotes.acceptQuote.handler(ctx, { quoteId }), /do not match/);
+    ctx.state.get(accepted.orderId).clientId = "buyer";
+    for (const table of ["orders", "conversations", "localAppointments"]) assert.equal(rows(table).length, 1);
+    assert.equal(rows("orders")[0].escrowStatus, "beta_no_payment");
+    assert.equal(rows("conversations")[0].localAppointmentId, accepted.appointmentId);
+    assert.equal((await appointments.getByOrder.handler(ctx, { orderId: accepted.orderId })).status, "requested");
+    await assert.rejects(() => appointments.updateStatus.handler(ctx, { appointmentId: accepted.appointmentId, status: "confirmed" }), /professional confirms/);
+    actAs("outsider");
+    await assert.rejects(() => quotes.acceptQuote.handler(ctx, { quoteId }), /Only the client/);
+    await assert.rejects(() => appointments.getByOrder.handler(ctx, { orderId: accepted.orderId }), /Unauthorized/);
+    actAs("seller");
+    for (const status of ["confirmed", "in_progress", "completed"]) await appointments.updateStatus.handler(ctx, { appointmentId: accepted.appointmentId, status });
+    assert.equal(ctx.state.get(requestId).status, "completed");
+    assert.equal(ctx.state.get(accepted.orderId).status, "completed");
+    actAs("buyer");
+    assert.equal((await appointments.getByOrder.handler(ctx, { orderId: accepted.orderId })).status, "completed");
+    assert.deepEqual(await quotes.acceptQuote.handler(ctx, { quoteId }), accepted);
+  });
   await check("profile and service enquiries share privacy checks and remain idempotent", async () => {
     for (const permission of ["everyone", "clients_only", "nobody"]) {
       const rows = [user(), user("seller"),
