@@ -66,6 +66,35 @@ async function drain(fn, ctx, args) {
   return rows;
 }
 async function main() {
+  await check("Local review pagination includes older profiles and enforces reviewed ownership", async () => {
+    const verification = load("convex/marketplace/localVerifications.ts");
+    const ctx = fixture([user("admin", { role: "admin" }), user("seller"), user("outsider"),
+      ...Array.from({ length: 125 }, (_, i) => ({ _id: "local-" + i, _table: "freelancerProfiles", _creationTime: i, tenantId: "tenant", providerRole: "local_professional", status: "active", displayName: "QA " + i, userId: "seller", workType: "local", locationCity: "Rotterdam", locationCountry: "Netherlands", updatedAt: 1 })),
+      ...Array.from({ length: 150 }, (_, i) => ({ _id: "online-" + i, _table: "freelancerProfiles", _creationTime: i + 200, tenantId: "tenant", providerRole: "freelancer", status: "active" })),
+      { _id: "foreign", _table: "freelancerProfiles", tenantId: "other", providerRole: "local_professional", status: "active", updatedAt: 1 },
+    ], "admin");
+    const all = await drain(verification.listPage, ctx, {});
+    assert.equal(all.length, 125);
+    assert.equal(new Set(all.map(p => p.id)).size, 125);
+    const review = { profileId: "local-0", verified: true, expectedUpdatedAt: 1, note: "QA fixture only: identity and service area checks recorded." };
+    await assert.rejects(() => verification.review.handler(ctx, { ...review, profileId: "foreign" }), /not available/);
+    await assert.rejects(() => verification.review.handler(ctx, { ...review, expectedUpdatedAt: 0 }), /profile changed/);
+    await assert.rejects(() => verification.review.handler(ctx, { ...review, note: "ok" }), /20/);
+    ctx.auth.getUserIdentity = async () => ({ subject: "outsider" });
+    await assert.rejects(() => verification.review.handler(ctx, review), /Admin/);
+    await assert.rejects(() => verification.listPage.handler(ctx, { paginationOpts: { cursor: null, numItems: 20 } }), /Admin/);
+    ctx.auth.getUserIdentity = async () => ({ subject: "admin" });
+    await verification.review.handler(ctx, review);
+    assert.equal(ctx.state.get("local-0").isVerified, true);
+    const audit = [...ctx.state.values()].filter(r => r._table === "moderationAuditEvents");
+    assert.equal(audit.length, 1); assert.equal(audit[0].actorId, "admin");
+    const notification = [...ctx.state.values()].find(r => r._table === "notifications");
+    assert.equal(notification.userId, "seller");
+    assert.ok(!JSON.stringify(notification).includes(review.note), "Private evidence leaked into notification");
+    await assert.rejects(() => verification.review.handler(ctx, review), /profile changed/);
+    await verification.review.handler(ctx, { ...review, verified: false, expectedUpdatedAt: ctx.state.get("local-0").updatedAt });
+    assert.equal(ctx.state.get("local-0").isVerified, false);
+  });
   await check("local request lifecycle creates one workspace and safely retries acceptance", async () => {
     const quotes = load("convex/marketplace/quotes.ts");
     const leads = load("convex/marketplace/leads.ts");
@@ -80,10 +109,16 @@ async function main() {
     const requestId = await quotes.createRequest.handler(ctx, { categoryId: "category", title: "QA repair a leaking tap", description: "Isolated QA request: inspect and repair a leaking kitchen tap.", locationCity: "Rotterdam", locationCountry: "Netherlands", preferredDate: Date.now() + 86400000 });
     assert.equal((await quotes.listMyRequests.handler(ctx, {}))[0]._id, requestId);
     actAs("seller");
+    assert.match((await leads.getLeadStatus.handler(ctx, { quoteRequestId: requestId })).claimBlockReason, /verified/);
     await assert.rejects(() => leads.claimLead.handler(ctx, { quoteRequestId: requestId, claimType: "shared" }), /not eligible/);
     assert.equal(rows("leadClaims").length, 0);
     // Eligibility is a fixture only: no real profile is verified by this test.
     ctx.state.get("profile").isVerified = true;
+    ctx.state.get("profile").locationCity = "Maastricht";
+    assert.match((await leads.getLeadStatus.handler(ctx, { quoteRequestId: requestId })).claimBlockReason, /outside/);
+    await assert.rejects(() => leads.claimLead.handler(ctx, { quoteRequestId: requestId, claimType: "shared" }), /outside/);
+    ctx.state.get("profile").locationCity = "Rotterdam";
+    assert.equal((await leads.getLeadStatus.handler(ctx, { quoteRequestId: requestId })).claimBlockReason, null);
     const claim = await leads.claimLead.handler(ctx, { quoteRequestId: requestId, claimType: "shared" });
     assert.equal(ctx.state.get("profile").creditBalance, 100 - claim.creditsSpent);
     await assert.rejects(() => leads.claimLead.handler(ctx, { quoteRequestId: requestId, claimType: "shared" }), /already claimed/);

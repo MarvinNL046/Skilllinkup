@@ -445,6 +445,7 @@ export default defineSchema({
     .index("by_status", ["status"])
     .index("by_status_locale", ["status", "locale"])
     .index("by_tenant", ["tenantId"])
+    .index("by_tenant_providerRole_status", ["tenantId", "providerRole", "status"])
     .searchIndex("search_freelancers", {
       searchField: "bio",
       filterFields: ["status", "workType"],
