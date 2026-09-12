@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { useClerk } from "@clerk/nextjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMutation } from "convex/react";
 import {
@@ -110,6 +112,11 @@ function roleFromQuery(value) {
 
 export default function OnboardingExperience() {
   const router = useRouter();
+  const { signOut } = useClerk();
+  const actionRef = useRef(false);
+  const exitingRef = useRef(false);
+  const [signingOut, setSigningOut] = useState(false);
+  const [exitError, setExitError] = useState("");
   const searchParams = useSearchParams();
   const { convexUser, isLoaded, isClerkSignedIn } = useConvexUser();
   const setAccountContext = useMutation(api.users.setAccountContext);
@@ -137,7 +144,7 @@ export default function OnboardingExperience() {
   }, [error]);
 
   useEffect(() => {
-    if (isLoaded && !isClerkSignedIn) {
+    if (isLoaded && !isClerkSignedIn && !exitingRef.current) {
       router.replace(
         `/login?${new URLSearchParams({ redirect_url: window.location.pathname + window.location.search + window.location.hash })}`,
       );
@@ -206,12 +213,13 @@ export default function OnboardingExperience() {
 
   async function finishSetup(event) {
     event.preventDefault();
-    if (saving || !convexUser) return;
+    if (actionRef.current || !convexUser) return;
     const validationError = validate();
     if (validationError) {
       setError(validationError);
       return;
     }
+    actionRef.current = true;
     setSaving(true);
     setError("");
     try {
@@ -237,33 +245,46 @@ export default function OnboardingExperience() {
         cause?.message ||
           "We could not finish your account setup. Please try again.",
       );
+      actionRef.current = false;
       setSaving(false);
     }
   }
 
+  async function handleSignOut() {
+    if (actionRef.current) return;
+    actionRef.current = true;
+    exitingRef.current = true;
+    setSigningOut(true);
+    setExitError("");
+    try {
+      await signOut({ redirectUrl: "/" });
+    } catch {
+      actionRef.current = false;
+      exitingRef.current = false;
+      setSigningOut(false);
+      setExitError("We could not sign you out. Please try again.");
+    }
+  }
+
+  const header = <header className={styles.header}>
+    <Image src="/images/logo/skilllinkup-brand.png" alt="Skilllinkup" width={170} height={42} priority />
+    <nav className={styles.exitActions} aria-label="Leave account setup">
+      <Button asChild variant="secondary" size="sm"><Link href="/" aria-disabled={saving || signingOut} onClick={event => { if (actionRef.current) event.preventDefault(); }}>Back to website</Link></Button>
+      {isClerkSignedIn && <Button type="button" variant="ghost" size="sm" disabled={saving || signingOut} onClick={handleSignOut}>{signingOut ? "Signing out…" : "Log out"}</Button>}
+    </nav>
+  </header>;
+
   if (!isLoaded || (isClerkSignedIn && !convexUser)) {
-    return (
-      <div className={styles.loading}>
-        <LoaderCircle />
-        <span>Preparing your account…</span>
-      </div>
-    );
+    return <div className={styles.page}>{header}
+      {exitError && <p className={styles.error} role="alert">{exitError}</p>}
+      <div className={styles.loading}><LoaderCircle /><span>Preparing your account…</span></div>
+    </div>;
   }
 
   return (
     <div className={styles.page}>
-      <header className={styles.header}>
-        <Image
-          src="/images/logo/skilllinkup-brand.png"
-          alt="Skilllinkup"
-          width={170}
-          height={42}
-          priority
-        />
-        <span>
-          <ShieldCheck size={17} /> Secure account setup
-        </span>
-      </header>
+      {header}
+      {exitError && <p className={styles.error} role="alert">{exitError}</p>}
 
       <main className={styles.shell}>
         <section className={styles.intro}>
@@ -319,7 +340,7 @@ export default function OnboardingExperience() {
           <form
             className={styles.form}
             onSubmit={finishSetup}
-            aria-busy={saving}
+            aria-busy={saving || signingOut}
           >
             <div className={styles.selectedRole}>
               {(() => {
@@ -337,7 +358,7 @@ export default function OnboardingExperience() {
                     <Button
                       type="button"
                       variant="outline"
-                      disabled={saving}
+                      disabled={saving || signingOut}
                       onClick={() => setStep(1)}
                     >
                       Change
@@ -353,7 +374,7 @@ export default function OnboardingExperience() {
                 <button
                   type="button"
                   aria-pressed={world === "online"}
-                  disabled={saving}
+                  disabled={saving || signingOut}
                   className={world === "online" ? styles.activeChoice : ""}
                   onClick={() => setWorld("online")}
                 >
@@ -367,7 +388,7 @@ export default function OnboardingExperience() {
                 <button
                   type="button"
                   aria-pressed={world === "local"}
-                  disabled={saving}
+                  disabled={saving || signingOut}
                   className={world === "local" ? styles.activeChoice : ""}
                   onClick={() => setWorld("local")}
                 >
@@ -528,7 +549,7 @@ export default function OnboardingExperience() {
               <Button
                 type="button"
                 variant="outline"
-                disabled={saving}
+                disabled={saving || signingOut}
                 onClick={() => setStep(1)}
               >
                 <ArrowLeft size={17} /> Back
@@ -536,7 +557,7 @@ export default function OnboardingExperience() {
               <Button
                 type="submit"
                 className={styles.primaryAction}
-                disabled={saving}
+                disabled={saving || signingOut}
               >
                 {saving ? <LoaderCircle className={styles.spinner} /> : null}
                 {saving ? "Saving your account…" : "Finish setup"}

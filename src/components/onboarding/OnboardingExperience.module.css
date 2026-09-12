@@ -62,3 +62,6 @@
 @media (prefers-reduced-motion: reduce) { .roleCard, .worldChoice button, .options button, .progress span { transition: none; } .spinner, .loading svg { animation: none; } }
 @media (max-width: 720px) { .header span { display: none; } .roleGrid { grid-template-columns: 1fr; } .roleCard:last-child { grid-column: auto; width: 100%; } .splitFields { grid-template-columns: 1fr; } .form { border-radius: var(--radius-xl); } }
 @media (max-width: 480px) { .shell { width: min(100% - 1rem, 70rem); padding-top: 2rem; } .roleCard { grid-template-columns: auto 1fr; } .roleCard > svg { display: none; } .actions { display: grid; } .actions button { width: 100%; } .actions .primaryAction { grid-row: 1; } }
+
+.exitActions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+@media (max-width: 540px) { .header { flex-wrap: wrap; gap: .75rem; } .exitActions { width: 100%; justify-content: space-between; } }
