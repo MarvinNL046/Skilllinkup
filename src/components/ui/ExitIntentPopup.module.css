@@ -1,0 +1,137 @@
+.card {
+  width: calc(100% - 32px);
+  max-width: 460px;
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  gap: 24px;
+  padding: 32px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #fff;
+  color: var(--brand-navy);
+  font-family: var(--font-sans);
+  box-shadow: 0 16px 48px rgb(11 32 65 / 16%);
+}
+.close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  color: #64748b;
+}
+.heading {
+  padding-top: 8px;
+}
+.eyebrow {
+  margin: 0 36px 12px 0;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.title {
+  margin: 0 0 12px;
+  color: var(--brand-navy);
+  font-family: var(--font-sans);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+.description {
+  margin: 0;
+  color: #526176;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.label {
+  color: var(--brand-navy);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+.input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--action-radius);
+  background: #fff;
+  color: var(--brand-navy);
+  font: inherit;
+  font-size: 16px;
+  line-height: 22px;
+}
+.input::placeholder {
+  color: #64748b;
+}
+.input:focus-visible {
+  outline: 2px solid var(--action-focus-ring);
+  outline-offset: 2px;
+  border-color: var(--action-primary-bg);
+}
+.input:disabled {
+  opacity: 0.6;
+}
+.actions {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+.privacy {
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.privacy a {
+  color: #526176;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.privacy a:focus-visible {
+  outline: 2px solid var(--action-focus-ring);
+  outline-offset: 2px;
+}
+.error {
+  margin: 0;
+  color: var(--action-danger-bg);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.trap {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.success button {
+  width: 100%;
+}
+@media (max-width: 480px) {
+  .card {
+    padding: 28px 24px 24px;
+  }
+  .title {
+    font-size: 24px;
+  }
+  .actions {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    animation: none;
+    transition: none;
+  }
+}
