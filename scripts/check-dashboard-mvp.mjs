@@ -187,6 +187,47 @@ await check("Local review queue loads more profiles, prevents duplicate decision
   assert.equal(findElement(tree, e => e.type === "textarea").props.value, "");
 });
 
+await check("Appointment form preserves failed dates, blocks overlapping actions and sends the viewed version", async () => {
+  const runner = hookRunner();
+  let queryIndex = 0, settle;
+  const calls = [];
+  const visit = { _id: "visit", status: "confirmed", updatedAt: 7, timezone: "Europe/Amsterdam" };
+  const order = { _id: "order", status: "active", amount: 150, escrowStatus: "beta_no_payment" };
+  const Workspace = loader({
+    react: runner.react, "next/link": { default: "a" },
+    "convex/react": { useQuery: () => [order, [], null, visit][queryIndex++], useMutation: () => args => { calls.push(args); return new Promise((resolve, reject) => { settle = { resolve, reject }; }); } },
+    "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
+    sonner: { toast: { success() {}, error() {} } },
+    "@/hook/useConvexUser": { default: () => ({ isAuthenticated: true, convexUser: { _id: "buyer" } }) },
+    "@/components/dashboard/header/DashboardNavigation": { default: "nav" },
+    "@/hook/useConversationMessages": { default: () => ({}) },
+    "@/components/dashboard/element/MessageBox": { default: "MessageBox" },
+    "@/lib/orderWorkspace.mjs": { getOrderActionContext: () => ({ isClient: true, isLocal: true, matchesContext: true }) },
+    "./OrderWorkspace.module.css": { default: {} },
+  })("src/components/dashboard/section/OrderWorkspace.jsx").default;
+  const render = () => runner.render(() => { queryIndex = 0; return Workspace({ orderId: "order" }); });
+  let tree = render();
+  const dateInput = t => findElement(t, e => e.props?.type === "datetime-local");
+  dateInput(tree).props.onChange({ target: { value: "2030-10-12T14:30" } });
+  tree = render();
+  const form = findElement(tree, e => e.type === "form" && dateInput(e));
+  const first = form.props.onSubmit({ preventDefault() {} });
+  await findElement(tree, e => e.props?.children === "Cancel appointment").props.onClick();
+  assert.equal(calls.length, 1); assert.equal(calls[0].expectedUpdatedAt, 7);
+  settle.reject(new Error("The appointment changed.")); await first;
+  tree = render();
+  assert.equal(dateInput(tree).props.value, "2030-10-12T14:30");
+  assert.match(findElement(tree, e => e.props?.role === "alert").props.children, /appointment changed/);
+  visit.updatedAt = 8;
+  tree = render();
+  const retry = findElement(tree, e => e.type === "form" && dateInput(e)).props.onSubmit({ preventDefault() {} });
+  settle.resolve({ success: true }); await retry;
+  assert.equal(calls[1].expectedUpdatedAt, 8);
+  assert.equal(dateInput(render()).props.value, "");
+  visit.status = "in_progress";
+  assert.equal(dateInput(render()), null);
+});
+
 await check("Account mode recovery preserves the form destination and switches in place after retry", async () => {
   const runner = hookRunner();
   let account = null, settle;
