@@ -1,6 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { quoteRequestDraftKey, restoreQuoteRequestDraft } from "@/lib/quoteRequestDraft.mjs";
 import { useQuery } from "convex/react";
 import {
   ArrowRight,
@@ -34,7 +37,17 @@ function formatDate(timestamp) {
 }
 
 export default function ClientQuoteRequestsInfo() {
-  const { isAuthenticated, isLoaded } = useConvexUser();
+  const { convexUser, isAuthenticated, isLoaded } = useConvexUser();
+  const draftKey = quoteRequestDraftKey(convexUser?._id);
+  const [savedDraft, setSavedDraft] = useState(null);
+  useEffect(() => {
+    setSavedDraft(null);
+    if (!draftKey) return;
+    try {
+      const form = restoreQuoteRequestDraft(localStorage.getItem(draftKey));
+      if (form) setSavedDraft({ key: draftKey, title: form.title });
+    } catch { /* Published requests remain available without browser storage. */ }
+  }, [draftKey]);
   const requests = useQuery(api.marketplace.quotes.listMyRequests, isAuthenticated ? {} : "skip");
 
   if (!isLoaded || (isAuthenticated && requests === undefined)) {
@@ -50,15 +63,24 @@ export default function ClientQuoteRequestsInfo() {
           <h1>My quote requests</h1>
           <p>Track responses, compare local professionals and keep every appointment in one place.</p>
         </div>
-        <Link className="skl-action-primary" href="/local/request-quote"><Plus size={18} /> Request local quotes</Link>
+        <Button asChild><Link href="/local/request-quote"><Plus size={18} /> Request local quotes</Link></Button>
       </header>
+
+      {savedDraft?.key === draftKey && savedDraft && (
+        <section className={styles.empty}>
+          <h2>Continue your saved request</h2>
+          <p>{savedDraft.title || "Untitled local request"}</p>
+          <p>Saved for this account in this browser. This request has not been published.</p>
+          <Button asChild variant="outline"><Link href="/local/request-quote">Resume draft <ArrowRight size={16} /></Link></Button>
+        </section>
+      )}
 
       {requests.length === 0 ? (
         <section className={styles.empty}>
           <i><FileText size={28} /></i>
           <h2>Tell us what needs doing</h2>
           <p>Describe the job once and receive suitable quotes from trusted professionals near you.</p>
-          <Link className="skl-action-primary" href="/local/request-quote">Start a quote request <ArrowRight size={16} /></Link>
+          <Button asChild><Link href="/local/request-quote">Start a quote request <ArrowRight size={16} /></Link></Button>
         </section>
       ) : (
         <section className={styles.grid} aria-label="Your local quote requests">
