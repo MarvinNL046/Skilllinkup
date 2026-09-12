@@ -52,14 +52,17 @@ function canonicalParticipants(first: Id<"users">, second: Id<"users">): [Id<"us
 function canStartProfileInquiry(user: Doc<"users">) {
   return (user.accountRoles ?? []).includes("client");
 }
+function requireInquiryPermission(caller: Doc<"users">, profile: Doc<"freelancerProfiles">) {
+  if (profile.contactPermission === "nobody") throw new Error("This professional is not accepting new enquiries.");
+  if (profile.contactPermission === "clients_only" && !canStartProfileInquiry(caller)) throw new Error("Only client accounts can contact this professional.");
+}
 async function resolveContext(ctx: MutationCtx, caller: Doc<"users">, context: ConversationContextInput): Promise<ResolvedContext> {
   if (context.type === "profile_inquiry") {
     let t = await ctx.db.get(context.freelancerProfileId);
     if (!t || t.status !== "active") throw new Error("This professional is not available.");
     let r: "local" | "online" = t.providerRole === "local_professional" || !t.providerRole && t.workType === "local" ? "local" : "online";
     if (requireMarketplaceContext(caller, "client", r, "contacting a professional"), t.userId === caller._id) throw new Error("You cannot start a conversation with yourself.");
-    if (t.contactPermission === "nobody") throw new Error("This professional is not accepting new enquiries.");
-    if (t.contactPermission === "clients_only" && !canStartProfileInquiry(caller)) throw new Error("Only client accounts can contact this professional.");
+    requireInquiryPermission(caller, t);
     return {
       type: context.type,
       title: `Profile enquiry \xB7 ${t.displayName}`,
@@ -75,6 +78,7 @@ async function resolveContext(ctx: MutationCtx, caller: Doc<"users">, context: C
     let r = await ctx.db.get(t.freelancerId);
     if (!r || r.status !== "active") throw new Error("This professional is not available.");
     if (r.userId === caller._id) throw new Error("You cannot enquire about your own service.");
+    requireInquiryPermission(caller, r);
     return {
       type: context.type,
       title: t.title,

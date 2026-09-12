@@ -1,11 +1,12 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import useConvexUser from "@/hook/useConvexUser";
 import useConvexMessages from "@/hook/useConvexMessages";
+import useRequestedConversation from "@/hook/useRequestedConversation";
 import DashboardNavigation from "../header/DashboardNavigation";
 import UserChatList1 from "../card/UserChatList1";
 import MessageBox from "../element/MessageBox";
@@ -31,11 +32,11 @@ export default function MessageInfo() {
   const isMobile = useIsMobile();
   const [mobileShowChat, setMobileShowChat] = useState(false);
   const searchParams = useSearchParams();
+  const router = useRouter();
   const requestedConversation = searchParams.get("conversation");
-  const handledConversation = useRef(null);
 
   const {
-    conversations,
+    conversations: recentConversations,
     messages,
     selectedConversationId,
     setSelectedConversationId,
@@ -46,6 +47,9 @@ export default function MessageInfo() {
     retryRead,
     conversationsLoading,
   } = useConvexMessages(userId, !isMobile || mobileShowChat);
+
+  const { conversations, requestedLoading, requestedError, retryRequested } =
+    useRequestedConversation(userId, requestedConversation, recentConversations, conversationsLoading);
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -63,20 +67,18 @@ export default function MessageInfo() {
     (c) => c._id === selectedConversationId,
   );
 
+  const requestedAvailable = conversations.some((item) => item._id === requestedConversation);
   useEffect(() => {
-    if (
-      !requestedConversation ||
-      handledConversation.current === requestedConversation ||
-      !conversations.some((item) => item._id === requestedConversation)
-    )
-      return;
-    handledConversation.current = requestedConversation;
+    if (!requestedConversation || !requestedAvailable) return;
     setSelectedConversationId(requestedConversation);
     setMobileShowChat(true);
-  }, [requestedConversation, conversations, setSelectedConversationId]);
+  }, [requestedConversation, requestedAvailable, userId, setSelectedConversationId]);
 
   async function handleSelectConversation(conversationId) {
     setSelectedConversationId(conversationId);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("conversation", conversationId);
+    router.replace(`/message?${params.toString()}`, { scroll: false });
     if (isMobile) setMobileShowChat(true);
   }
 
@@ -99,6 +101,13 @@ export default function MessageInfo() {
   return (
     <div className="flex flex-col h-full">
       <DashboardNavigation />
+      {requestedLoading && <p role="status" className="p-4 text-sm">Opening conversation…</p>}
+      {requestedError && (
+        <div role="alert" className="mb-4 rounded-lg border p-4">
+          <p>This conversation could not be opened. It may be unavailable, or you may need to sign in with a different account.</p>
+          <Button type="button" variant="outline" size="sm" onClick={retryRequested}>Try again</Button>
+        </div>
+      )}
       <div
         className={cn(
           "messages-2pane grid flex-1 bg-[var(--bg-elevated)] border border-[var(--border-subtle)] rounded-xl overflow-hidden shadow-sm",
@@ -211,7 +220,7 @@ export default function MessageInfo() {
           </aside>
         )}
 
-        {showPanel && (
+        {showPanel && !requestedLoading && !requestedError && (
           <div className="flex flex-col min-w-0 min-h-0">
             <MessageBox
               key={selectedConversationId || "empty"}

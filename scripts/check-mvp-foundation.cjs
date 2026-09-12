@@ -53,6 +53,7 @@ const user = (id = "buyer", extra = {}) => ({ _id: id, _table: "users", tenantId
   activeRole: "client", preferredWorld: "online", accountRoles: ["client"], onboardingContexts: [{ role: "client", world: "online", version: 1, completedAt: 1 }], ...extra });
 const conversation = (id = "conversation", extra = {}) => ({ _id: id, _table: "conversations", participant1: "buyer", participant2: "seller", createdAt: 1, unreadCount1: 0, unreadCount2: 0, ...extra });
 const messages = load("convex/chat/messages.ts");
+const conversations = load("convex/chat/conversations.ts");
 const contact = load("convex/contact.ts");
 const discovery = load("convex/marketplace/discovery.ts");
 const metrics = load("convex/marketplace/dashboardMetrics.ts");
@@ -65,6 +66,25 @@ async function drain(fn, ctx, args) {
   return rows;
 }
 async function main() {
+  await check("profile and service enquiries share privacy checks and remain idempotent", async () => {
+    for (const permission of ["everyone", "clients_only", "nobody"]) {
+      const rows = [user(), user("seller"),
+        { _id: "profile", _table: "freelancerProfiles", userId: "seller", providerRole: "freelancer", status: "active", displayName: "QA professional", contactPermission: permission },
+        { _id: "gig", _table: "gigs", freelancerId: "profile", status: "active", title: "QA service" }];
+      const ctx = fixture(rows);
+      for (const context of [{ type: "profile_inquiry", freelancerProfileId: "profile" }, { type: "gig_inquiry", gigId: "gig" }]) {
+        if (permission === "nobody") {
+          await assert.rejects(() => conversations.openForContext.handler(ctx, { context }), /not accepting new enquiries/);
+          assert.equal(ctx.writes.length, 0);
+        } else {
+          const id = await conversations.openForContext.handler(ctx, { context });
+          assert.equal(await conversations.openForContext.handler(ctx, { context }), id);
+          const stranger = fixture([...ctx.state.values(), user("stranger")], "stranger");
+          await assert.rejects(() => conversations.getById.handler(stranger, { conversationId: id }), /Unauthorized/);
+        }
+      }
+    }
+  });
   await check("policy allows ordinary product names and budgets but blocks actionable contact", async () => {
     for (const text of ["Design Instagram banners", "I know Teams and Loom.", "The budget is 2500 and delivery takes 7 days.", "A 2026-09-12 launch date."]) assert.equal(policy.getMessagePolicyError(text), null);
     for (const text of ["Email me user@example.invalid", "Visit https://example.invalid", "WhatsApp: +31 612345678", "Instagram handle: @example"]) assert.ok(policy.getMessagePolicyError(text));
@@ -83,6 +103,37 @@ async function main() {
     assert.ok((await drain(messages.list, ctx, { conversationId: "conversation" })).every((message) => message.isRead));
     ctx.state.set("new", { _id: "new", _table: "messages", _creationTime: 626, createdAt: 626, conversationId: "conversation", senderId: "seller", isRead: false });
     assert.equal((await messages.list.handler(ctx, { conversationId: "conversation", paginationOpts: { cursor: null, numItems: 1 } })).page[0].isRead, false);
+  });
+  await check("sending persists content, recipient unread status, notification and email intent", async () => {
+    const ctx = fixture([user(), user("seller"), conversation()]);
+    const id = await messages.send.handler(ctx, { conversationId: "conversation", content: "  Please confirm the project scope.  " });
+    assert.equal(ctx.state.get(id).content, "Please confirm the project scope.");
+    assert.equal(ctx.state.get(id).senderId, "buyer");
+    assert.equal(ctx.state.get("conversation").unreadCount1, 0);
+    assert.equal(ctx.state.get("conversation").unreadCount2, 1);
+    const notifications = [...ctx.state.values()].filter((row) => row._table === "notifications");
+    assert.equal(notifications.length, 1);
+    assert.equal(notifications[0].userId, "seller");
+    assert.equal(notifications[0].link, "/message?conversation=conversation");
+    assert.equal(ctx.scheduled.length, 1);
+    assert.equal(ctx.scheduled[0][2].messageId, id);
+    assert.equal(ctx.scheduled[0][2].recipientEmail, "seller@example.invalid");
+    const recipient = fixture([...ctx.state.values()], "seller");
+    const saved = await messages.getByConversation.handler(recipient, { conversationId: "conversation" });
+    assert.equal(saved[0]._id, id);
+    await messages.markRead.handler(recipient, { conversationId: "conversation" });
+    assert.equal(recipient.state.get("conversation").unreadCount2, 0);
+    for (const actor of ["outsider", null]) {
+      const rejected = fixture([user(), user("seller"), user("outsider"), conversation()], actor);
+      await assert.rejects(() => messages.send.handler(rejected, { conversationId: "conversation", content: "Must not be delivered." }));
+      assert.equal(rejected.writes.length, 0);
+      assert.equal(rejected.scheduled.length, 0);
+    }
+    for (const content of [" ", "x".repeat(3001), "Visit https://example.invalid"]) {
+      const rejected = fixture([user(), user("seller"), conversation()]);
+      await assert.rejects(() => messages.send.handler(rejected, { conversationId: "conversation", content }));
+      assert.equal(rejected.writes.length, 0);
+    }
   });
   await check("contact is durable and idempotent, with validation and private admin access", async () => {
     const ctx = fixture([]);
