@@ -18,7 +18,7 @@ export default function ContactButton({
   variant = "outline",
 }) {
   const t = useTranslations("contactButton");
-  const { isSignedIn } = useUser();
+  const { isSignedIn, isLoaded } = useUser();
   const { convexUser } = useConvexUser();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +26,9 @@ export default function ContactButton({
 
   const handleContact = async () => {
     if (!isSignedIn) {
-      const returnUrl = typeof window !== "undefined" ? window.location.pathname : "";
+      const returnUrl = typeof window !== "undefined"
+        ? `${window.location.pathname}${window.location.search}${window.location.hash}`
+        : "";
       router.push(`/login?redirect_url=${encodeURIComponent(returnUrl)}`);
       return;
     }
@@ -54,10 +56,11 @@ export default function ContactButton({
 
   return (
     <Button
+      type="button"
       variant={variant}
       className={className}
       onClick={handleContact}
-      disabled={isLoading || (isSignedIn && !convexUser?._id)}
+      disabled={!isLoaded || isLoading || (isSignedIn && !convexUser?._id)}
       style={{ justifyContent: "center" }}
     >
       <Mail size={16} />

@@ -274,4 +274,85 @@ await check("Metrics cursor skips a deleted project but still rejects another cl
   assert.equal((await metrics.chunk.handler(fixture(user, null).ctx, { ...args, cursor: JSON.stringify({ ...JSON.parse(args.cursor), projectDone: true }) })).nextCursor, null);
   await assert.rejects(() => metrics.chunk.handler(fixture(user, { ...project, clientId: "another-owner" }).ctx, args), /scope is not available/);
 });
+await check("Contact button preserves the full login return path and opens the profile context", async () => {
+  const runner = hookRunner();
+  const routes = [], opened = [];
+  let auth = { isLoaded: false, isSignedIn: false }, currentUser = null;
+  const Contact = loader({
+    react: runner.react,
+    "convex/react": { useMutation: () => async (args) => { opened.push(args); return "conversation-fixture"; } },
+    "@clerk/nextjs": { useUser: () => auth },
+    "next/navigation": { useRouter: () => ({ push: (route) => routes.push(route) }) },
+    "next-intl": { useTranslations: () => (key) => key },
+    "lucide-react": { Mail: "Mail" },
+    "sonner": { toast: { error: () => {} } },
+    "@/hook/useConvexUser": { default: () => ({ convexUser: currentUser }) },
+  }, { window: { location: { pathname: "/online/freelancer/example", search: "?tab=services", hash: "#contact" } } })("src/components/ui/ContactButton.jsx").default;
+  const render = () => runner.render(() => Contact({ recipientId: "seller", profileId: "profile" }));
+  assert.equal(render().props.disabled, true);
+  auth = { isLoaded: true, isSignedIn: false };
+  assert.equal(render().props.type, "button");
+  await render().props.onClick();
+  assert.equal(routes[0], "/login?redirect_url=%2Fonline%2Ffreelancer%2Fexample%3Ftab%3Dservices%23contact");
+  assert.equal(opened.length, 0);
+  auth = { isLoaded: true, isSignedIn: true };
+  assert.equal(render().props.disabled, true);
+  currentUser = { _id: "buyer" };
+  await render().props.onClick();
+  assert.equal(opened[0].context.type, "profile_inquiry");
+  assert.equal(opened[0].context.freelancerProfileId, "profile");
+  assert.equal(routes[1], "/message?conversation=conversation-fixture");
+  currentUser = { _id: "seller" };
+  assert.equal(render(), null);
+});
+await check("Older conversation links resolve outside the bounded inbox and reuse listed conversations", async () => {
+  const runner = hookRunner();
+  const pending = [];
+  const client = { query: (_api, args) => new Promise((resolve, reject) => pending.push({ args, resolve, reject })) };
+  const hook = loader({ react: runner.react, "convex/react": { useConvex: () => client } })("src/hook/useRequestedConversation.js").default;
+  let recent = [], loading = true;
+  const render = () => runner.render(() => hook("buyer", "old-conversation", recent, loading));
+  assert.equal(render().requestedLoading, true);
+  assert.equal(pending.length, 0);
+  loading = false;
+  assert.equal(render().requestedLoading, true);
+  assert.equal(pending[0].args.conversationId, "old-conversation");
+  pending[0].resolve({ _id: "old-conversation", participant1: "buyer", participant2: "seller", participant2User: { _id: "seller", name: "Seller" }, unreadCount1: 3 });
+  await Promise.resolve();
+  const result = render();
+  assert.equal(result.requestedLoading, false);
+  assert.equal(result.conversations[0].otherParticipant._id, "seller");
+  assert.equal(result.conversations[0].unreadCount, 3);
+  recent = [{ _id: "old-conversation", unreadCount: 0 }];
+  assert.equal(render().conversations.length, 1);
+  assert.equal(render().conversations[0].unreadCount, 0);
+  assert.equal(pending.length, 1);
+});
+await check("Conversation link failures retry safely and stale account responses are discarded", async () => {
+  const runner = hookRunner();
+  const pending = [];
+  const client = { query: (_api, args) => new Promise((resolve, reject) => pending.push({ args, resolve, reject })) };
+  const hook = loader({ react: runner.react, "convex/react": { useConvex: () => client } })("src/hook/useRequestedConversation.js").default;
+  let actor = "buyer", id = "private-conversation";
+  const render = () => runner.render(() => hook(actor, id, [], false));
+  render();
+  pending[0].reject(new Error("Unauthorized"));
+  await Promise.resolve();
+  assert.equal(render().requestedError, true);
+  assert.equal(render().conversations.length, 0);
+  render().retryRequested();
+  assert.equal(render().requestedLoading, true);
+  assert.equal(pending.length, 2);
+  actor = "another-account";
+  render();
+  pending[1].resolve({ _id: id, participant1: "buyer", participant2: "seller" });
+  await Promise.resolve();
+  assert.equal(render().conversations.length, 0);
+  pending[2].resolve(null);
+  await Promise.resolve();
+  assert.equal(render().requestedError, true);
+  id = null;
+  assert.equal(render().requestedError, false);
+  assert.equal(render().requestedLoading, false);
+});
 console.log(`Dashboard MVP regression checks passed: ${checks} scenario groups.`);
