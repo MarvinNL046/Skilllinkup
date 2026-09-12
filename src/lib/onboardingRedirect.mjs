@@ -14,6 +14,12 @@ export function safeOnboardingRedirect(value) {
   return target;
 }
 
-export function onboardingUrl(destination) {
-  return `/onboarding?${new URLSearchParams({ redirect_url: safeOnboardingRedirect(destination) })}`;
+export function onboardingUrl(destination, context) {
+  const params = new URLSearchParams({ redirect_url: safeOnboardingRedirect(destination) });
+  const worlds = { client: ["online", "local"], freelancer: ["online"], local_professional: ["local"], candidate: ["jobs"], company: ["jobs"] };
+  if (worlds[context?.role]?.includes(context?.world)) {
+    params.set("role", context.role);
+    params.set("world", context.world);
+  }
+  return `/onboarding?${params}`;
 }
