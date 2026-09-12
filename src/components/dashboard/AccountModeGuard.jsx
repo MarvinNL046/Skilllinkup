@@ -1,6 +1,10 @@
 "use client";
 
-import Link from "next/link";
+import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { onboardingUrl } from "@/lib/onboardingRedirect.mjs";
 import { ArrowRight, CheckCircle2, Layers3 } from "lucide-react";
 import useConvexUser from "@/hook/useConvexUser";
 import { Button } from "@/components/ui/button";
@@ -16,6 +20,11 @@ const labels = {
 
 export default function AccountModeGuard({ role, world, children }) {
   const { convexUser, isLoaded } = useConvexUser();
+  const router = useRouter();
+  const switchContext = useMutation(api.users.switchAccountContext);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const inFlight = useRef(false);
 
   if (!isLoaded || convexUser === undefined) {
     return (
@@ -27,7 +36,33 @@ export default function AccountModeGuard({ role, world, children }) {
   const hasRole = roles.includes(role);
   const isActive =
     convexUser?.activeRole === role && convexUser?.preferredWorld === world;
-  if (hasRole && isActive) return children;
+  const complete = hasRole && convexUser.onboardingContexts?.some((context) => context.role === role && context.world === world && context.version > 0);
+  if (isActive && complete) return children;
+
+  async function continueInMode() {
+    if (inFlight.current) return;
+    const destination = window.location.pathname + window.location.search + window.location.hash;
+    if (!convexUser) {
+      router.push(`/login?${new URLSearchParams({ redirect_url: destination })}`);
+      return;
+    }
+    if (!complete) {
+      router.push(onboardingUrl(destination, { role, world }));
+      return;
+    }
+    inFlight.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      await switchContext({ activeRole: role, preferredWorld: world });
+      // The reactive account query reveals this same page after switching.
+    } catch {
+      setError("We could not switch your account mode. Please try again.");
+    } finally {
+      inFlight.current = false;
+      setBusy(false);
+    }
+  }
 
   return (
     <Card className="overflow-hidden border-[var(--border-subtle)]">
@@ -40,22 +75,23 @@ export default function AccountModeGuard({ role, world, children }) {
             Separate account mode
           </p>
           <h1 className="mb-2 text-2xl font-semibold text-[var(--navy-900)]">
-            Continue as {labels[role]}
+            Continue as {labels[role]} · {world === "jobs" ? "Jobs" : world === "local" ? "Local" : "Online"}
           </h1>
           <p className="max-w-2xl text-base leading-7 text-[var(--text-secondary)]">
-            {hasRole
-              ? "This tool belongs to another mode on your account. Switch from the dashboard menu first."
-              : "Complete the short onboarding for this mode before its tools and permissions become available."}
+            {complete
+              ? "Switch to this account mode to continue here."
+              : "Complete the short setup for this mode. You will return to this page when it is ready."}
           </p>
           <p className="mt-3 flex items-center gap-2 text-sm font-semibold text-emerald-700">
             <CheckCircle2 size={16} /> Your existing account and history stay unchanged
           </p>
         </div>
-        <Button asChild>
-          <Link href={hasRole ? "/dashboard" : `/onboarding?role=${role}`}>
-            {hasRole ? "Open dashboard" : "Add this mode"}<ArrowRight size={16} />
-          </Link>
-        </Button>
+        <div>
+          <Button type="button" onClick={continueInMode} disabled={busy}>
+            {busy ? "Switching…" : !convexUser ? "Sign in to continue" : complete ? "Switch and continue" : "Complete setup"}<ArrowRight size={16} />
+          </Button>
+          {error && <p role="alert" className="mt-3 text-sm">{error}</p>}
+        </div>
       </CardContent>
     </Card>
   );

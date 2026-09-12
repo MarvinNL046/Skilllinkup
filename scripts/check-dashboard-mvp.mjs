@@ -153,6 +153,45 @@ function composerFixture(isMobile = false) {
   return { props, sends, render, settle: () => settle };
 }
 
+await check("Account mode recovery preserves the form destination and switches in place after retry", async () => {
+  const runner = hookRunner();
+  let account = null, settle;
+  const routes = [], mutations = [];
+  const destination = "/local/request-quote?category=plumbing#details";
+  const Guard = loader({
+    react: runner.react,
+    "next/navigation": {useRouter:()=>({push:url=>routes.push(url)})},
+    "convex/react": {useMutation:()=>args=>{mutations.push(args);return new Promise((resolve,reject)=>{settle={resolve,reject};});}},
+    "lucide-react": new Proxy({}, {get:(_,name)=>String(name)}),
+    "@/hook/useConvexUser": {default:()=>({convexUser:account,isLoaded:true})},
+    "@/lib/onboardingRedirect.mjs": onboardingRedirects,
+  },{window:{location:{pathname:"/local/request-quote",search:"?category=plumbing",hash:"#details"}},URLSearchParams})("src/components/dashboard/AccountModeGuard.jsx").default;
+  const render=()=>runner.render(()=>Guard({role:"client",world:"local",children:"Protected form"}));
+  const button=tree=>findElement(tree,e=>e.type==="Button");
+  let tree=render();
+  await button(tree).props.onClick();
+  assert.equal(new URL(routes.pop(),"https://internal.invalid").searchParams.get("redirect_url"),destination);
+  for(const roles of [[],["client"]]) {
+    account={accountRoles:roles,activeRole:"client",preferredWorld:"online",onboardingContexts:[]};
+    tree=render(); await button(tree).props.onClick();
+    const url=new URL(routes.pop(),"https://internal.invalid");
+    assert.equal(url.pathname,"/onboarding");
+    assert.equal(url.searchParams.get("role"),"client");
+    assert.equal(url.searchParams.get("world"),"local");
+    assert.equal(url.searchParams.get("redirect_url"),destination);
+  }
+  assert.equal(mutations.length,0);
+  account.onboardingContexts=[{role:"client",world:"local",version:1}];
+  tree=render();const first=button(tree).props.onClick();await button(tree).props.onClick();
+  assert.equal(mutations.length,1);
+  settle.reject(new Error("Offline"));await first;tree=render();
+  assert.match(findElement(tree,e=>e.props?.role==="alert").props.children,/try again/);
+  const retry=button(tree).props.onClick();settle.resolve({success:true});await retry;
+  assert.equal(routes.length,0);
+  account={...account,preferredWorld:"local"};
+  assert.equal(render(),"Protected form");
+});
+
 await check("Local drafts restore only allowed fields and keep different accounts separate", async () => {
   assert.notEqual(quoteDraft.quoteRequestDraftKey("a"), quoteDraft.quoteRequestDraftKey("b"));
   assert.equal(quoteDraft.quoteRequestDraftKey(null), null);
