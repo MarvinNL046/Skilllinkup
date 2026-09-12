@@ -11,6 +11,9 @@ import { requireAuthUser } from "../lib/authHelpers";
 import { requireOwner } from "../lib/authHelpers";
 import { requireMarketplaceContext } from "../lib/authHelpers";
 import { requireServerSecret } from "../lib/authHelpers";
+import { assertActiveOnlineProviderProfile, assertOnlineGig, assertOnlineMarketplaceCategory } from "../lib/onlineMarketplace";
+import { assertOrderNotDisputed, finishLinkedWork, remainingRevisions, requireBetaOrder, requireOrderContext } from "../lib/orderLifecycle";
+import { orderViewValidator } from "../lib/orderView";
 import { projectTransitions } from "../lib/marketplaceState";
 import { orderTransitions } from "../lib/marketplaceState";
 import { assertTransition } from "../lib/marketplaceState";
@@ -151,7 +154,8 @@ var create = mutation({
   createBetaGigOrder = mutation({
     args: {
       gigId: v.id("gigs"),
-      packageId: v.id("gigPackages")
+      packageId: v.id("gigPackages"),
+      requestId: v.optional(v.string()),
     },
     returns: v.object({
       orderId: v.id("orders")
@@ -159,12 +163,34 @@ var create = mutation({
     handler: async (ctx, args) => {
       let t = await requireAuthUser(ctx);
       requireMarketplaceContext(t, "client", "online", "buying a service");
+      if (args.requestId !== undefined && !/^[A-Za-z0-9_-]{16,128}$/.test(args.requestId)) throw new Error("Invalid order request ID.");
+      if (args.requestId) {
+        const existing = await ctx.db.query("orders").withIndex("by_client_and_requestId", q => q.eq("clientId", t._id).eq("clientRequestId", args.requestId)).unique();
+        if (existing) {
+          if (existing.gigId !== args.gigId || existing.gigPackageId !== args.packageId || existing.tenantId !== t.tenantId) throw new Error("This order request ID was already used for another package.");
+          return { orderId: existing._id };
+        }
+      }
       let [a, d] = await Promise.all([ctx.db.get(args.gigId), ctx.db.get(args.packageId)]);
       if (!a || a.status !== "active") throw new Error("This service is not available.");
       if (!d || d.gigId !== a._id) throw new Error("The selected package does not belong to this service.");
       let s = await ctx.db.get(a.freelancerId);
       if (!s || s.status !== "active") throw new Error("The freelancer profile is not available.");
       if (s.userId === t._id) throw new Error("You cannot order your own service.");
+      const seller = await ctx.db.get(s.userId);
+      if (!seller || seller.tenantId !== t.tenantId) throw new Error("The freelancer account belongs to another workspace.");
+      assertActiveOnlineProviderProfile(s, { ownerId: seller._id, accountTenantId: seller.tenantId, resourceTenantId: t.tenantId });
+      assertOnlineGig(a, s, { expectedTenantId: t.tenantId });
+      await assertOnlineMarketplaceCategory(ctx, a.categoryId, t.tenantId, a.locale);
+      if (s.isAvailable === false || s.profileVisibility === "private") throw new Error("This freelancer is not accepting new orders.");
+      if (!/^[A-Z]{3}$/.test(d.currency ?? "EUR")) throw new Error("The selected package needs a valid currency.");
+      if (!Number.isFinite(d.price) || d.price < 0 || d.price > 1_000_000 || !Number.isInteger(d.deliveryDays) || d.deliveryDays < 1 || d.deliveryDays > 365 || (d.revisionCount !== undefined && (!Number.isInteger(d.revisionCount) || d.revisionCount < 0))) throw new Error("The selected package needs to be updated before ordering.");
+      if (!args.requestId) {
+        // Compatibility for an older tab: reuse its most recent active commitment.
+        // Modern callers supply a new intent ID when deliberately ordering again.
+        const recent = await ctx.db.query("orders").withIndex("by_client_and_package", q => q.eq("clientId", t._id).eq("gigPackageId", args.packageId)).order("desc").first();
+        if (recent && recent.tenantId === t.tenantId && !["completed", "cancelled"].includes(recent.status)) return { orderId: recent._id };
+      }
       let o = Date.now(),
         l = await ctx.db.insert("orders", {
           tenantId: a.tenantId,
@@ -174,6 +200,7 @@ var create = mutation({
           freelancerId: s._id,
           gigId: a._id,
           gigPackageId: d._id,
+          clientRequestId: args.requestId,
           title: `${a.title} - ${d.title}`,
           description: d.description,
           amount: d.price,
@@ -183,6 +210,7 @@ var create = mutation({
           deliveryDeadline: o + d.deliveryDays * 24 * 60 * 60 * 1e3,
           revisionCount: d.revisionCount,
           revisionsUsed: 0,
+          deliveryVersion: 0,
           status: "active",
           escrowStatus: "beta_no_payment",
           createdAt: o,
@@ -204,6 +232,14 @@ var create = mutation({
           createdAt: o,
           updatedAt: o
         });
+      await ctx.scheduler.runAfter(0, internal.lib.email.sendOrderConfirmation, {
+        clientEmail: t.email, clientName: t.name || "Customer", orderNumber: (await ctx.db.get(l))!.orderNumber,
+        orderTitle: `${a.title} - ${d.title}`, amount: d.price, currency: d.currency ?? "EUR", deliveryDays: d.deliveryDays, orderId: l,
+      });
+      await ctx.scheduler.runAfter(0, internal.lib.email.sendNewOrderNotification, {
+        freelancerEmail: seller.email, freelancerName: s.displayName || seller.name, orderNumber: (await ctx.db.get(l))!.orderNumber,
+        orderTitle: `${a.title} - ${d.title}`, amount: d.price, currency: d.currency ?? "EUR", deliveryDays: d.deliveryDays, orderId: l,
+      });
       return await ctx.db.insert("messages", {
         conversationId: f,
         content: `Private beta order started: ${a.title}`,
@@ -303,14 +339,15 @@ var create = mutation({
       role: v.union(v.literal("client"), v.literal("freelancer")),
       limit: v.optional(v.number())
     },
+    returns: v.array(orderViewValidator),
     handler: async (ctx, args) => {
       await requireOwner(ctx, args.userId);
-      let t = args.limit ?? 20,
+      let t = Math.min(100, Math.max(1, Math.floor(args.limit ?? 20))),
         a: Doc<"orders">[];
       if (args.role === "client") a = await ctx.db.query("orders").withIndex("by_client", i => i.eq("clientId", args.userId)).order("desc").take(t);else {
-        let i = await ctx.db.query("freelancerProfiles").withIndex("by_userId", p => p.eq("userId", args.userId)).first();
-        if (!i) return [];
-        a = await ctx.db.query("orders").withIndex("by_freelancer", p => p.eq("freelancerId", i._id)).order("desc").take(t);
+        const profiles = await ctx.db.query("freelancerProfiles").withIndex("by_userId", p => p.eq("userId", args.userId)).take(20);
+        const groups = await Promise.all(profiles.map(profile => ctx.db.query("orders").withIndex("by_freelancer", p => p.eq("freelancerId", profile._id)).order("desc").take(t)));
+        a = [...new Map(groups.flat().map(order => [order._id, order])).values()].sort((x, y) => y.createdAt - x.createdAt).slice(0, t);
       }
       let d = [...new Set(a.map(i => i.clientId).filter(Boolean))],
         s = [...new Set(a.map(i => i.freelancerId).filter(Boolean))],
@@ -326,6 +363,8 @@ var create = mutation({
           w = c ? k.get(c.userId) : null;
         return {
           ...i,
+          remainingRevisions: remainingRevisions(i),
+          deliveryVersion: i.deliveryVersion ?? 0,
           clientName: p?.name ?? null,
           freelancerName: c?.displayName ?? w?.name ?? null,
           freelancerUserId: c?.userId ?? null
@@ -337,6 +376,7 @@ var create = mutation({
     args: {
       orderId: v.id("orders")
     },
+    returns: v.union(v.null(), orderViewValidator),
     handler: async (ctx, args) => {
       let t = await ctx.db.get(args.orderId);
       if (!t) return null;
@@ -348,6 +388,8 @@ var create = mutation({
       let [l, f] = await Promise.all([ctx.db.get(t.clientId), d ? ctx.db.get(d.userId) : Promise.resolve(null)]);
       return {
         ...t,
+        remainingRevisions: remainingRevisions(t),
+        deliveryVersion: t.deliveryVersion ?? 0,
         clientName: l?.name ?? null,
         freelancerName: d?.displayName ?? f?.name ?? null,
         freelancerUserId: d?.userId ?? null
@@ -367,9 +409,15 @@ var create = mutation({
       let a = await requireAuthUser(ctx),
         d = t.freelancerId ? await ctx.db.get(t.freelancerId) : null;
       if (!d || d.userId !== a._id) throw new Error("Access denied: only the freelancer can deliver this order");
+      requireOrderContext(a, t, "provider");
+      requireBetaOrder(t);
+      await assertOrderNotDisputed(ctx, t);
+      if (["local", "local_quote"].includes(t.orderType)) throw new Error("Update local service progress in the appointment workspace.");
+      if (t.status === "delivered") return { success: true };
       if (t.escrowStatus === "held" && requireLivePaymentsEnabled("Paid-order delivery"), assertTransition(orderTransitions, t.status, "delivered"), !(await ctx.db.query("orderDeliverables").withIndex("by_order", l => l.eq("orderId", t._id)).first())) throw new Error("Add at least one file or delivery note before submitting the work.");
       if (await ctx.db.patch(args.orderId, {
         status: "delivered",
+        deliveryVersion: (t.deliveryVersion ?? 0) + 1,
         updatedAt: Date.now()
       }), t.escrowStatus === "held") {
         let l = await ctx.scheduler.runAfter(6048e5, internal.marketplace.escrow.releaseToFreelancer, {
@@ -379,13 +427,15 @@ var create = mutation({
           autoReleaseJobId: l
         });
       }
+      await notifyUser(ctx, { userId: t.clientId, type: "order_delivered", title: "Work submitted for review", body: `${t.title} is ready for your review.`, link: `/orders/${t._id}`, metadata: { orderId: t._id, deliveryVersion: (t.deliveryVersion ?? 0) + 1 } });
       let o = await ctx.db.get(t.clientId);
       return o?.email && (await ctx.scheduler.runAfter(0, internal.lib.email.sendOrderDelivered, {
         clientEmail: o.email,
         clientName: o.name || "Customer",
         orderNumber: t.orderNumber,
         orderTitle: t.title,
-        orderId: args.orderId
+        orderId: args.orderId,
+        deliveryVersion: (t.deliveryVersion ?? 0) + 1,
       })), {
         success: !0
       };
@@ -403,9 +453,13 @@ var create = mutation({
       if (!t) throw new Error("Order not found");
       let a = await requireAuthUser(ctx);
       if (t.clientId !== a._id) throw new Error("Access denied: only the client can approve this order");
+      requireOrderContext(a, t, "client");
+      requireBetaOrder(t);
+      await assertOrderNotDisputed(ctx, t);
+      if (["local", "local_quote"].includes(t.orderType)) throw new Error("Update local service progress in the appointment workspace.");
       t.escrowStatus === "held" && requireLivePaymentsEnabled("Paid-order approval"), t.status !== "completed" && assertTransition(orderTransitions, t.status, "completed");
       let d = Date.now();
-      if (await completeLinkedProject(ctx, t, d), t.status === "completed") return {
+      if (await finishLinkedWork(ctx, t, "completed", d), t.status === "completed") return {
         success: !0
       };
       t.autoReleaseJobId && (await ctx.scheduler.cancel(t.autoReleaseJobId)), await ctx.db.patch(args.orderId, {
@@ -458,7 +512,13 @@ var create = mutation({
       if (!t) throw new Error("Order not found");
       let a = await requireAuthUser(ctx);
       if (t.clientId !== a._id) throw new Error("Access denied: only the client can request a revision");
+      requireOrderContext(a, t, "client");
+      requireBetaOrder(t);
+      await assertOrderNotDisputed(ctx, t);
+      if (["local", "local_quote"].includes(t.orderType)) throw new Error("Use the local appointment workspace for this order.");
+      if (t.status === "revision_requested") throw new Error("A revision has already been requested. Wait for the next delivery.");
       assertTransition(orderTransitions, t.status, "revision_requested");
+      if (remainingRevisions(t) === 0) throw new Error("All included revisions have been used. Discuss any additional work with the freelancer.");
       let d = args.message.trim();
       if (d.length < 10 || d.length > 3e3) throw new Error("Revision feedback must be between 10 and 3,000 characters.");
       let s = (t.revisionsUsed ?? 0) + 1;
@@ -480,7 +540,7 @@ var create = mutation({
         }), await ctx.db.patch(o._id, {
           lastMessageAt: f,
           lastMessagePreview: d.slice(0, 140),
-          unreadCount2: (o.unreadCount2 ?? 0) + 1,
+          ...(o.participant1 === a._id ? { unreadCount2: (o.unreadCount2 ?? 0) + 1 } : { unreadCount1: (o.unreadCount1 ?? 0) + 1 }),
           updatedAt: f
         });
       }

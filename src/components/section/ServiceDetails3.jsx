@@ -1,7 +1,7 @@
 "use client";
 
 import Sticky from "react-stickynode";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 
 import useScreen from "@/hook/useScreen";
@@ -9,6 +9,7 @@ import ServiceContactWidget1 from "../element/ServiceContactWidget1";
 import ServiceDetailSlider2 from "../element/ServiceDetailSlider2";
 import ServiceDetailPrice1 from "../element/ServiceDetailPrice1";
 import Image from "next/image";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
@@ -26,28 +27,36 @@ export default function ServiceDetail3() {
   const router = useRouter();
   const { isSignedIn } = useUser();
   const [orderingPackageId, setOrderingPackageId] = useState(null);
+  const purchaseIntents = useRef(new Map());
+  const orderPending = useRef(false);
   const createBetaOrder = useMutation(api.marketplace.orders.createBetaGigOrder);
 
   async function handleSelectPackage(pkg) {
-    if (!pkg) return;
+    if (!pkg || orderPending.current) return;
     if (!isSignedIn) {
       const currentPath =
         typeof window !== "undefined" ? window.location.pathname : "/";
-      router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
+      router.push(`/login?redirect_url=${encodeURIComponent(currentPath)}`);
       return;
     }
 
+    orderPending.current = true;
+    const intentKey = `${data.id}:${pkg._id}`;
+    if (!purchaseIntents.current.has(intentKey)) purchaseIntents.current.set(intentKey, crypto.randomUUID());
     setOrderingPackageId(pkg._id);
     try {
       const result = await createBetaOrder({
         gigId: data.id,
         packageId: pkg._id,
+        requestId: purchaseIntents.current.get(intentKey),
       });
+      purchaseIntents.current.delete(intentKey);
       toast.success("Your private beta workspace is ready.");
       router.push(`/orders/${result.orderId}`);
     } catch (err) {
       console.error("[beta-order] error:", err);
       toast.error(err.message || "Could not start the order");
+      orderPending.current = false;
       setOrderingPackageId(null);
     }
   }
@@ -77,6 +86,8 @@ export default function ServiceDetail3() {
           }
         : null
       : null; // null = still loading
+
+  if (gigData === null) return <section className="container py-20"><h1>Service unavailable</h1><p>This service may have been removed or unpublished.</p><Link href="/services?q=">Browse services</Link></section>;
 
   if (data === null) {
     return (
@@ -297,7 +308,7 @@ export default function ServiceDetail3() {
                                       marginBottom: 4,
                                     }}
                                   >
-                                    €{pkg.price}
+                                    {new Intl.NumberFormat("en-GB", { style: "currency", currency: pkg.currency || "EUR" }).format(pkg.price)}
                                   </div>
                                   <div
                                     style={{
@@ -337,7 +348,7 @@ export default function ServiceDetail3() {
                               },
                               {
                                 label: t("total"),
-                                values: packages.map((p) => `€${p.price}`),
+                                values: packages.map((p) => new Intl.NumberFormat("en-GB", { style: "currency", currency: p.currency || "EUR" }).format(p.price)),
                               },
                             ].map((row, idx) => (
                               <tr key={idx}>
@@ -385,7 +396,7 @@ export default function ServiceDetail3() {
                                     type="button"
                                     className="btn btn--primary btn--sm"
                                     onClick={() => handleSelectPackage(pkg)}
-                                    disabled={orderingPackageId === pkg._id}
+                                    disabled={orderingPackageId !== null}
                                     style={{ width: "100%", justifyContent: "center" }}
                                   >
                                     {orderingPackageId === pkg._id ? (
@@ -415,6 +426,8 @@ export default function ServiceDetail3() {
                       <div className="blog-sidebar ms-lg-auto">
                         <ServiceDetailPrice1
                           packages={packages}
+                          onOrder={handleSelectPackage}
+                          isOrdering={orderingPackageId !== null}
                           gigId={data?.id}
                           gigTitle={data?.title}
                           freelancerStripeAccountId={data?.freelancer?.stripeAccountId || ""}
@@ -440,6 +453,8 @@ export default function ServiceDetail3() {
                     <div className="blog-sidebar ms-lg-auto">
                       <ServiceDetailPrice1
                         packages={packages}
+                          onOrder={handleSelectPackage}
+                          isOrdering={orderingPackageId !== null}
                         gigId={data?.id}
                         gigTitle={data?.title}
                         freelancerStripeAccountId={data?.freelancer?.stripeAccountId || ""}

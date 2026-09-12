@@ -48,9 +48,10 @@ export default function ManageProjectCard({ project, onEdit, onDelete }) {
     ? (() => {
         const diff = Date.now() - createdAt;
         const hours = Math.floor(diff / 3600000);
+        if (hours < 1) return t("recently");
         if (hours < 24) {
           return hours !== 1
-            ? t("hoursAgoPlural", { count: hours || 1 })
+            ? t("hoursAgoPlural", { count: hours })
             : t("hoursAgo", { count: 1 });
         }
         const days = Math.floor(diff / 86400000);

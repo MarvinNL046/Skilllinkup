@@ -16,12 +16,14 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ContextMessageButton from "@/components/ui/ContextMessageButton";
+import { useRouter } from "next/navigation";
 
 export default function BidList({ projectId, isOwner }) {
+  const router = useRouter();
   const t = useTranslations("projectDetail");
   const bids = useQuery(
     api.marketplace.projects.getBids,
-    isOwner && projectId ? { projectId } : "skip"
+    isOwner && projectId ? { projectId } : "skip",
   );
   const acceptBid = useMutation(api.marketplace.projects.acceptBid);
   const [acceptingId, setAcceptingId] = useState(null);
@@ -31,7 +33,8 @@ export default function BidList({ projectId, isOwner }) {
     setAcceptingId(bidId);
     setAcceptError("");
     try {
-      await acceptBid({ bidId });
+      const result = await acceptBid({ bidId });
+      router.push(`/orders/${result.orderId}`);
     } catch (err) {
       setAcceptError(err.message || t("failedToSubmit"));
     } finally {
@@ -40,15 +43,25 @@ export default function BidList({ projectId, isOwner }) {
   };
 
   if (!isOwner) {
-    return <p className="text-[var(--text-secondary)] mb-5">{t("proposalsOwnerOnly")}</p>;
+    return (
+      <p className="text-[var(--text-secondary)] mb-5">
+        {t("proposalsOwnerOnly")}
+      </p>
+    );
   }
 
   if (bids === undefined) {
-    return <p className="text-[var(--text-secondary)] mb-5">{t("loadingProposals")}</p>;
+    return (
+      <p className="text-[var(--text-secondary)] mb-5">
+        {t("loadingProposals")}
+      </p>
+    );
   }
 
   if (!bids || bids.length === 0) {
-    return <p className="text-[var(--text-secondary)] mb-5">{t("noProposals")}</p>;
+    return (
+      <p className="text-[var(--text-secondary)] mb-5">{t("noProposals")}</p>
+    );
   }
 
   const avgAmount =
@@ -61,7 +74,8 @@ export default function BidList({ projectId, isOwner }) {
       {isOwner && avgAmount && (
         <p className="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] mb-5">
           <DollarSign className="h-4 w-4 text-primary" />
-          {t("averageBid")} <strong className="text-foreground">€{avgAmount}</strong>
+          {t("averageBid")}{" "}
+          <strong className="text-foreground">€{avgAmount}</strong>
         </p>
       )}
       {acceptError && (
@@ -76,7 +90,7 @@ export default function BidList({ projectId, isOwner }) {
             key={bid._id}
             className={cn(
               "flex items-start gap-3 pb-5 border-b border-[var(--border-subtle)]",
-              bid.status === "accepted" && "opacity-90"
+              bid.status === "accepted" && "opacity-90",
             )}
           >
             <div className="flex-shrink-0">
@@ -118,7 +132,9 @@ export default function BidList({ projectId, isOwner }) {
                   )}
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold text-foreground mb-0">€{bid.amount}</p>
+                  <p className="font-semibold text-foreground mb-0">
+                    €{bid.amount}
+                  </p>
                   <p className="text-xs text-[var(--text-secondary)] mb-0">
                     {bid.deliveryDays} {t("days")}
                   </p>
@@ -144,9 +160,11 @@ export default function BidList({ projectId, isOwner }) {
                       variant="outline"
                       size="sm"
                       onClick={() => handleAccept(bid._id)}
-                      disabled={acceptingId === bid._id}
+                      disabled={acceptingId !== null}
                     >
-                      {acceptingId === bid._id ? t("accepting") : t("acceptBid")}
+                      {acceptingId === bid._id
+                        ? t("accepting")
+                        : t("acceptBid")}
                       <Check className="ml-1 h-4 w-4" />
                     </Button>
                   ) : null}

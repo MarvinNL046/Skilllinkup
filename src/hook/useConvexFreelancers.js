@@ -1,42 +1,35 @@
 "use client";
-import { useQuery } from "convex/react";
+import { useEffect } from "react";
+import { useQuery, usePaginatedQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
-
-function mapConvexFreelancer(fl, index) {
-  return {
-    id: index + 1,
-    _id: fl._id,
-    img: fl.avatarUrl || "/images/team/default-avatar.svg",
-    name: fl.displayName || "Freelancer",
-    profession: fl.tagline || "Professional",
-    rating: fl.ratingAverage || 0,
-    reviews: fl.ratingCount || 0,
-    tags: fl.skills || [],
-    skill: fl.tagline || "",
-    price: fl.hourlyRate || 0,
-    location: [fl.locationCity, fl.locationCountry].filter(Boolean).join(", ") || "Remote",
-    level: fl.isVerified ? "top-rated" : "new",
-    isVerified: fl.isVerified === true,
-    language: fl.languages?.[0] || "",
-    sort: "best-seller",
-    title: fl.bio ? fl.bio.substring(0, 80) : "",
-    slug: fl.slug || fl._id,
-    isAvailable: fl.isAvailable ?? false,
-    completionRate: fl.completionRate ?? null,
-    totalOrders: fl.totalOrders ?? 0,
-    portfolioImg: fl.portfolioUrls?.[0] || null,
-    totalEarnings: fl.totalEarnings ?? null,
-  };
+import { DISCOVERY_LIMIT, numberFilter, mapProfessional } from "@/lib/marketplaceDiscovery.mjs";
+export default function useConvexFreelancers({ world = "online", query = "", location = "" } = {}) {
+  const profiles = useQuery(world === "local" ? api.marketplace.freelancers.listLocal : api.marketplace.freelancers.list,
+    world === "local" ? { locale: "en", limit: DISCOVERY_LIMIT, query, location } : { locale: "en", limit: DISCOVERY_LIMIT });
+  return profiles?.map(mapProfessional);
 }
 
-export default function useConvexFreelancers() {
-  const convexFreelancers = useQuery(api.marketplace.freelancers.list, { locale: "en", limit: 100 });
+export function useLocalDiscovery(filters = {}) {
+  const query = usePaginatedQuery(api.marketplace.discovery.localProfessionals, {
+    locale: "en", query: filters.q || undefined, location: filters.location || undefined,
+    skill: filters.skill || undefined, language: filters.language || undefined,
+    maxRate: numberFilter(filters.maxRate) ?? undefined, availableOnly: filters.available === "1", verifiedOnly: filters.verified === "1",
+    sort: ["rate", "newest"].includes(filters.sort) ? filters.sort : "rating",
+  }, { initialNumItems: 24 });
+  const { status, results, loadMore } = query;
+  useEffect(() => { if (status === "CanLoadMore" && results.length === 0) loadMore(24); }, [status, results.length, loadMore]);
+  return { ...query, items: query.results.map(mapProfessional) };
+}
 
-  // undefined means still loading
-  if (convexFreelancers === undefined) {
-    return undefined;
-  }
-
-  // Map Convex data (may be empty array)
-  return convexFreelancers.map(mapConvexFreelancer);
+export function useOnlineDiscovery(filters = {}) {
+  const query = usePaginatedQuery(api.marketplace.discovery.onlineProfessionals, {
+    locale: "en", query: filters.q || undefined, location: filters.location || undefined,
+    skill: filters.skill || undefined, language: filters.language || undefined,
+    maxRate: numberFilter(filters.maxRate) ?? undefined, minRating: numberFilter(filters.minRating) ?? undefined,
+    level: filters.level || undefined, availableOnly: filters.available === "1", verifiedOnly: filters.verified === "1",
+    sort: ["rating", "rate", "newest"].includes(filters.sort) ? filters.sort : "rating",
+  }, { initialNumItems: 24 });
+  const { status, results, loadMore } = query;
+  useEffect(() => { if (status === "CanLoadMore" && results.length === 0) loadMore(24); }, [status, results.length, loadMore]);
+  return { ...query, items: query.results.map(mapProfessional) };
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMutation } from "convex/react";
@@ -61,10 +61,46 @@ const roles = [
   },
 ];
 
-const onlineSkills = ["Web development", "Product design", "Marketing", "Writing", "Video & audio", "Data & AI", "Business support", "Photography"];
-const localTrades = ["HVAC", "Plumbing", "Carpentry", "Electrical", "Painting", "Roofing", "Cleaning", "Landscaping"];
-const jobDisciplines = ["Engineering", "Design & product", "Marketing", "Sales", "Operations", "Finance", "People & HR", "Customer success"];
-const clientNeeds = ["Build a website", "Design & branding", "Marketing & growth", "Business support", "Home maintenance", "Renovation", "Coaching", "Something else"];
+const onlineSkills = [
+  "Web development",
+  "Product design",
+  "Marketing",
+  "Writing",
+  "Video & audio",
+  "Data & AI",
+  "Business support",
+  "Photography",
+];
+const localTrades = [
+  "HVAC",
+  "Plumbing",
+  "Carpentry",
+  "Electrical",
+  "Painting",
+  "Roofing",
+  "Cleaning",
+  "Landscaping",
+];
+const jobDisciplines = [
+  "Engineering",
+  "Design & product",
+  "Marketing",
+  "Sales",
+  "Operations",
+  "Finance",
+  "People & HR",
+  "Customer success",
+];
+const clientNeeds = [
+  "Build a website",
+  "Design & branding",
+  "Marketing & growth",
+  "Business support",
+  "Home maintenance",
+  "Renovation",
+  "Coaching",
+  "Something else",
+];
 
 function roleFromQuery(value) {
   return roles.some((item) => item.id === value) ? value : null;
@@ -88,10 +124,20 @@ export default function OnboardingExperience() {
   const [companyName, setCompanyName] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const headingRef = useRef(null);
+  const errorRef = useRef(null);
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, [step]);
+  useEffect(() => {
+    if (error) errorRef.current?.focus();
+  }, [error]);
 
   useEffect(() => {
     if (isLoaded && !isClerkSignedIn) {
-      router.replace(`/login?redirect_url=${encodeURIComponent("/onboarding")}`);
+      router.replace(
+        `/login?redirect_url=${encodeURIComponent("/onboarding")}`,
+      );
     }
   }, [isClerkSignedIn, isLoaded, router]);
 
@@ -116,7 +162,7 @@ export default function OnboardingExperience() {
         ? current.filter((item) => item !== value)
         : current.length < 8
           ? [...current, value]
-          : current
+          : current,
     );
   }
 
@@ -128,18 +174,31 @@ export default function OnboardingExperience() {
 
   function validate() {
     if (!role) return "Choose how you want to use Skilllinkup.";
-    if (role === "client" && selections.length === 0) return "Choose at least one area you need help with.";
-    if (role === "freelancer" && selections.length === 0) return "Choose at least one online skill.";
-    if (role === "local_professional" && selections.length === 0) return "Choose at least one local trade.";
-    if (role === "local_professional" && city.trim().length < 2) return "Enter the city or region you serve.";
-    if (role === "candidate" && selections.length === 0) return "Choose at least one job discipline.";
-    if (role === "company" && companyName.trim().length < 2) return "Enter your company name.";
-    if (rate && (!Number.isFinite(Number(rate)) || Number(rate) < 1 || Number(rate) > 9999)) return "Enter a valid hourly rate.";
+    if (role === "client" && selections.length === 0)
+      return "Choose at least one area you need help with.";
+    if (role === "freelancer" && selections.length === 0)
+      return "Choose at least one online skill.";
+    if (role === "local_professional" && selections.length === 0)
+      return "Choose at least one local trade.";
+    if (role === "local_professional" && city.trim().length < 2)
+      return "Enter the city or region you serve.";
+    if (role === "candidate" && selections.length === 0)
+      return "Choose at least one job discipline.";
+    if (role === "company" && companyName.trim().length < 2)
+      return "Enter your company name.";
+    if (
+      rate &&
+      (!Number.isFinite(Number(rate)) ||
+        Number(rate) < 1 ||
+        Number(rate) > 9999)
+    )
+      return "Enter a valid hourly rate.";
     return null;
   }
 
   async function finishSetup(event) {
     event.preventDefault();
+    if (saving || !convexUser) return;
     const validationError = validate();
     if (validationError) {
       setError(validationError);
@@ -166,93 +225,323 @@ export default function OnboardingExperience() {
 
       router.replace("/dashboard");
     } catch (cause) {
-      setError(cause?.message || "We could not finish your account setup. Please try again.");
+      setError(
+        cause?.message ||
+          "We could not finish your account setup. Please try again.",
+      );
       setSaving(false);
     }
   }
 
-  if (!isLoaded || (isClerkSignedIn && convexUser === undefined)) {
-    return <div className={styles.loading}><LoaderCircle /><span>Preparing your account…</span></div>;
+  if (!isLoaded || (isClerkSignedIn && !convexUser)) {
+    return (
+      <div className={styles.loading}>
+        <LoaderCircle />
+        <span>Preparing your account…</span>
+      </div>
+    );
   }
 
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <Image src="/images/logo/skilllinkup-brand.png" alt="Skilllinkup" width={170} height={42} priority />
-        <span><ShieldCheck size={17} /> Secure account setup</span>
+        <Image
+          src="/images/logo/skilllinkup-brand.png"
+          alt="Skilllinkup"
+          width={170}
+          height={42}
+          priority
+        />
+        <span>
+          <ShieldCheck size={17} /> Secure account setup
+        </span>
       </header>
 
       <main className={styles.shell}>
         <section className={styles.intro}>
           <p className={styles.eyebrow}>One account · three marketplaces</p>
-          <h1>{step === 1 ? "What brings you to Skilllinkup?" : "Make your account work for you"}</h1>
-          <p>{step === 1 ? "Choose your starting role. You can add another role or switch product worlds later." : "A few useful details help us show better matches from day one."}</p>
-          <div className={styles.progress} aria-label={`Step ${step} of 2`}><span style={{ width: `${step * 50}%` }} /></div>
+          <h1 ref={headingRef} tabIndex={-1}>
+            {step === 1
+              ? "What brings you to Skilllinkup?"
+              : "Make your account work for you"}
+          </h1>
+          <p>
+            {step === 1
+              ? "Choose your starting role. You can add another role or switch product worlds later."
+              : "A few useful details help us show better matches from day one."}
+          </p>
+          <div
+            className={styles.progress}
+            role="progressbar"
+            aria-label="Account setup progress"
+            aria-valuemin={1}
+            aria-valuemax={2}
+            aria-valuenow={step}
+            aria-valuetext={`Step ${step} of 2`}
+          >
+            <span style={{ width: `${step * 50}%` }} />
+          </div>
           <small>Step {step} of 2</small>
         </section>
 
         {step === 1 ? (
-          <section className={styles.roleGrid} aria-label="Choose an account role">
+          <section
+            className={styles.roleGrid}
+            aria-label="Choose an account role"
+          >
             {roles.map(({ id, title, description, Icon }) => (
-              <button key={id} type="button" className={styles.roleCard} onClick={() => chooseRole(id)}>
-                <i><Icon /></i>
-                <span><strong>{title}</strong><small>{description}</small></span>
+              <button
+                key={id}
+                type="button"
+                className={styles.roleCard}
+                onClick={() => chooseRole(id)}
+              >
+                <i>
+                  <Icon />
+                </i>
+                <span>
+                  <strong>{title}</strong>
+                  <small>{description}</small>
+                </span>
                 <ArrowRight />
               </button>
             ))}
           </section>
         ) : (
-          <form className={styles.form} onSubmit={finishSetup}>
+          <form
+            className={styles.form}
+            onSubmit={finishSetup}
+            aria-busy={saving}
+          >
             <div className={styles.selectedRole}>
-              {(() => { const selected = roles.find((item) => item.id === role); const Icon = selected?.Icon || Search; return <><i><Icon /></i><div><small>Your starting role</small><strong>{selected?.title}</strong></div><button type="button" onClick={() => setStep(1)}>Change</button></>; })()}
+              {(() => {
+                const selected = roles.find((item) => item.id === role);
+                const Icon = selected?.Icon || Search;
+                return (
+                  <>
+                    <i>
+                      <Icon />
+                    </i>
+                    <div>
+                      <small>Your starting role</small>
+                      <strong>{selected?.title}</strong>
+                    </div>
+                    <button
+                      type="button"
+                      className="skl-action-secondary"
+                      disabled={saving}
+                      onClick={() => setStep(1)}
+                    >
+                      Change
+                    </button>
+                  </>
+                );
+              })()}
             </div>
 
             {role === "client" ? (
               <fieldset className={styles.worldChoice}>
                 <legend>Where do you need help first?</legend>
-                <button type="button" className={world === "online" ? styles.activeChoice : ""} onClick={() => setWorld("online")}><Globe2 /><span><strong>Online, worldwide</strong><small>Digital services and freelance projects</small></span><Check /></button>
-                <button type="button" className={world === "local" ? styles.activeChoice : ""} onClick={() => setWorld("local")}><MapPin /><span><strong>Local, nearby</strong><small>Trusted professionals around Rotterdam–The Hague</small></span><Check /></button>
+                <button
+                  type="button"
+                  aria-pressed={world === "online"}
+                  disabled={saving}
+                  className={world === "online" ? styles.activeChoice : ""}
+                  onClick={() => setWorld("online")}
+                >
+                  <Globe2 />
+                  <span>
+                    <strong>Online, worldwide</strong>
+                    <small>Digital services and freelance projects</small>
+                  </span>
+                  <Check />
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={world === "local"}
+                  disabled={saving}
+                  className={world === "local" ? styles.activeChoice : ""}
+                  onClick={() => setWorld("local")}
+                >
+                  <MapPin />
+                  <span>
+                    <strong>Local, nearby</strong>
+                    <small>
+                      Trusted professionals around Rotterdam–The Hague
+                    </small>
+                  </span>
+                  <Check />
+                </button>
               </fieldset>
             ) : null}
 
             {role === "company" ? (
-              <label className={styles.field}><span>Company name</span><input value={companyName} onChange={(event) => setCompanyName(event.target.value)} placeholder="Your organisation" maxLength={100} required /></label>
+              <label className={styles.field}>
+                <span>Company name</span>
+                <input
+                  value={companyName}
+                  onChange={(event) => setCompanyName(event.target.value)}
+                  placeholder="Your organisation"
+                  maxLength={100}
+                  required
+                />
+              </label>
             ) : null}
 
             {role !== "client" && role !== "company" ? (
-              <label className={styles.field}><span>{role === "candidate" ? "Professional headline" : "Profile headline"} <em>optional</em></span><input value={headline} onChange={(event) => setHeadline(event.target.value)} placeholder={role === "local_professional" ? "e.g. Certified HVAC technician" : "What do you do best?"} maxLength={120} /></label>
+              <label className={styles.field}>
+                <span>
+                  {role === "candidate"
+                    ? "Professional headline"
+                    : "Profile headline"}{" "}
+                  <em>optional</em>
+                </span>
+                <input
+                  value={headline}
+                  onChange={(event) => setHeadline(event.target.value)}
+                  placeholder={
+                    role === "local_professional"
+                      ? "e.g. Certified HVAC technician"
+                      : "What do you do best?"
+                  }
+                  maxLength={120}
+                />
+              </label>
             ) : null}
 
             {role === "local_professional" ? (
-              <label className={styles.field}><span>Primary service city</span><input value={city} onChange={(event) => setCity(event.target.value)} placeholder="Rotterdam" maxLength={100} required /></label>
+              <label className={styles.field}>
+                <span>Primary service city</span>
+                <input
+                  value={city}
+                  onChange={(event) => setCity(event.target.value)}
+                  placeholder="Rotterdam"
+                  maxLength={100}
+                  required
+                />
+              </label>
             ) : null}
 
             {options.length ? (
               <fieldset className={styles.options}>
-                <legend>{role === "client" ? "What are you interested in?" : role === "candidate" ? "Which roles interest you?" : "Choose your strongest skills"}</legend>
-                <p>Select up to eight. You can refine this later.</p>
-                <div>{options.map((option) => <button key={option} type="button" className={selections.includes(option) ? styles.selectedOption : ""} onClick={() => toggleSelection(option)}>{selections.includes(option) ? <Check size={14} /> : null}{option}</button>)}</div>
+                <legend>
+                  {role === "client"
+                    ? "What are you interested in?"
+                    : role === "candidate"
+                      ? "Which roles interest you?"
+                      : "Choose your strongest skills"}
+                </legend>
+                <p aria-live="polite">
+                  {selections.length} of 8 selected. You can refine this later.
+                </p>
+                <div>
+                  {options.map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      aria-pressed={selections.includes(option)}
+                      disabled={
+                        saving ||
+                        (!selections.includes(option) && selections.length >= 8)
+                      }
+                      className={
+                        selections.includes(option) ? styles.selectedOption : ""
+                      }
+                      onClick={() => toggleSelection(option)}
+                    >
+                      {selections.includes(option) ? <Check size={14} /> : null}
+                      {option}
+                    </button>
+                  ))}
+                </div>
               </fieldset>
             ) : null}
 
             {role === "freelancer" || role === "local_professional" ? (
               <div className={styles.splitFields}>
-                <label className={styles.field}><span>Short introduction <em>optional</em></span><textarea value={bio} onChange={(event) => setBio(event.target.value)} placeholder="Tell clients what they can rely on you for." rows={4} maxLength={800} /></label>
-                <label className={styles.field}><span>Hourly rate <em>optional</em></span><span className={styles.moneyInput}><b>€</b><input type="number" value={rate} onChange={(event) => setRate(event.target.value)} min="1" max="9999" placeholder="65" /><b>/ hour</b></span></label>
+                <label className={styles.field}>
+                  <span>
+                    Short introduction <em>optional</em>
+                  </span>
+                  <textarea
+                    value={bio}
+                    onChange={(event) => setBio(event.target.value)}
+                    placeholder="Tell clients what they can rely on you for."
+                    rows={4}
+                    maxLength={800}
+                  />
+                </label>
+                <label className={styles.field}>
+                  <span>
+                    Hourly rate <em>optional</em>
+                  </span>
+                  <span className={styles.moneyInput}>
+                    <b>€</b>
+                    <input
+                      type="number"
+                      value={rate}
+                      onChange={(event) => setRate(event.target.value)}
+                      min="1"
+                      max="9999"
+                      placeholder="65"
+                    />
+                    <b>/ hour</b>
+                  </span>
+                </label>
               </div>
             ) : role === "candidate" || role === "company" ? (
-              <label className={styles.field}><span>{role === "company" ? "What kind of people are you hiring?" : "What are you looking for?"} <em>optional</em></span><textarea value={bio} onChange={(event) => setBio(event.target.value)} rows={4} maxLength={800} /></label>
+              <label className={styles.field}>
+                <span>
+                  {role === "company"
+                    ? "What kind of people are you hiring?"
+                    : "What are you looking for?"}{" "}
+                  <em>optional</em>
+                </span>
+                <textarea
+                  value={bio}
+                  onChange={(event) => setBio(event.target.value)}
+                  rows={4}
+                  maxLength={800}
+                />
+              </label>
             ) : null}
 
-            {error ? <p className={styles.error} role="alert">{error}</p> : null}
+            {error ? (
+              <p
+                ref={errorRef}
+                tabIndex={-1}
+                className={styles.error}
+                role="alert"
+              >
+                {error}
+              </p>
+            ) : null}
             <div className={styles.actions}>
-              <button type="button" onClick={() => setStep(1)}><ArrowLeft size={17} /> Back</button>
-              <button type="submit" disabled={saving}>{saving ? <LoaderCircle className={styles.spinner} /> : null}{saving ? "Saving your account…" : "Finish setup"}<ArrowRight size={17} /></button>
+              <button
+                type="button"
+                className="skl-action-secondary"
+                disabled={saving}
+                onClick={() => setStep(1)}
+              >
+                <ArrowLeft size={17} /> Back
+              </button>
+              <button
+                type="submit"
+                className={`skl-action-primary ${styles.primaryAction}`}
+                disabled={saving}
+              >
+                {saving ? <LoaderCircle className={styles.spinner} /> : null}
+                {saving ? "Saving your account…" : "Finish setup"}
+                <ArrowRight size={17} />
+              </button>
             </div>
           </form>
         )}
       </main>
-      <footer className={styles.footer}><ShieldCheck size={16} /> Your role only controls your experience. You can switch safely at any time.</footer>
+      <footer className={styles.footer}>
+        <ShieldCheck size={16} /> Your role only controls your experience. You
+        can switch safely at any time.
+      </footer>
     </div>
   );
 }

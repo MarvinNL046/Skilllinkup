@@ -85,7 +85,7 @@ function StatCard({ label, value, hint, Icon }) {
 }
 
 function EmptyState({ config }) {
-  return <div className={styles.empty}><i><Sparkles size={25} /></i><h3>{config.emptyTitle}</h3><p>{config.emptyText}</p><Link href={config.action.href}>{config.action.label}<ArrowRight size={15} /></Link></div>;
+  return <div className={styles.empty}><i><Sparkles size={25} /></i><h3>{config.emptyTitle}</h3><p>{config.emptyText}</p><Link className="skl-action-primary" href={config.action.href}>{config.action.label}<ArrowRight size={15} /></Link></div>;
 }
 
 export default function RoleDashboardInfo({ role, world }) {
@@ -160,7 +160,7 @@ export default function RoleDashboardInfo({ role, world }) {
     <div className={styles.page}>
       <header className={styles.hero}>
         <div><span>{config.eyebrow}</span><h1>Good morning, {firstName}</h1><h2>{config.title}</h2><p>{config.description}</p></div>
-        <Link href={config.action.href}><ActionIcon size={18} />{config.action.label}</Link>
+        <Link className="skl-action-primary" href={config.action.href}><ActionIcon size={18} />{config.action.label}</Link>
       </header>
       <section className={styles.stats}>{stats.map((stat) => <StatCard key={stat.label} {...stat} />)}</section>
       <div className={styles.contentGrid} data-has-schedule={schedule.length ? "true" : "false"}>

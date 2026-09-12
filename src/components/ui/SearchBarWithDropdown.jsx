@@ -2,6 +2,7 @@
 import { useState, useEffect, useId, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useQuery } from "convex/react";
+import { discoveryHref } from "@/lib/marketplaceDiscovery.mjs";
 import { Search } from "lucide-react";
 import { api } from "../../../convex/_generated/api";
 
@@ -42,6 +43,7 @@ export default function SearchBarWithDropdown({
   const router = useRouter();
   const pathname = usePathname();
   const serviceType = pathToServiceType(pathname);
+  const scope = pathname.startsWith("/jobs") ? "jobs" : pathname.startsWith("/local") ? "local" : "online";
   const wrapperRef = useRef(null);
   const suggestionsId = useId();
 
@@ -66,12 +68,12 @@ export default function SearchBarWithDropdown({
 
   const gigResults = useQuery(
     api.marketplace.gigs.search,
-    active ? { query: debouncedQuery.trim(), locale: "en" } : "skip"
+    active && scope === "online" ? { query: debouncedQuery.trim(), locale: "en" } : "skip"
   );
 
   const categoryResults = useQuery(
     api.marketplace.categories.search,
-    active ? { query: debouncedQuery.trim(), locale: "en", serviceType } : "skip"
+    active && scope !== "jobs" ? { query: debouncedQuery.trim(), locale: "en", serviceType } : "skip"
   );
 
   // Combine: categories first, then unique gig titles, max 8 total
@@ -86,12 +88,12 @@ export default function SearchBarWithDropdown({
     return combined.slice(0, 8);
   })() : [];
 
-  const isLoading = active && (gigResults === undefined || categoryResults === undefined);
+  const isLoading = active && ((scope === "online" && gigResults === undefined) || (scope !== "jobs" && categoryResults === undefined));
 
   function navigate(q) {
     setIsOpen(false);
     setQuery(q);
-    router.push(`/online/services?q=${encodeURIComponent(q)}`);
+    router.push(discoveryHref({ scope, query: q }));
   }
 
   function handleSubmit(e) {
@@ -121,12 +123,12 @@ export default function SearchBarWithDropdown({
         <input
           type="text"
           role="combobox"
-          aria-label="Search services"
+          aria-label={scope === "jobs" ? "Search jobs" : scope === "local" ? "Search local professionals" : "Search services"}
           aria-autocomplete="list"
           aria-controls={suggestionsId}
           aria-expanded={isOpen}
           className="form-control border-0"
-          placeholder={placeholder}
+          placeholder={scope === "jobs" ? "Search jobs, skills or companies…" : scope === "local" ? "Search local professionals…" : placeholder}
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
@@ -200,10 +202,10 @@ export default function SearchBarWithDropdown({
                   gap: 6,
                 }}
               >
-                <span>↗</span> POPULAR RIGHT NOW
+                <span>↗</span> EXPLORE
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {POPULAR.map((term) => (
+                {(scope === "local" ? ["plumbing", "heating", "electrical", "carpentry"] : scope === "jobs" ? ["engineering", "marketing", "sales", "customer support"] : POPULAR).map((term) => (
                   <button
                     key={term}
                     type="button"

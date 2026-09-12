@@ -37,7 +37,7 @@ export default function MarketplaceHub({ config }) {
       <section className={styles.hero}>
         <div className={`${styles.container} ${styles.heroGrid}`}>
           <div className={styles.heroCopy}>
-            <span className={styles.eyebrow}><Sparkles /> {config.eyebrow}</span>
+            <span className={styles.eyebrow}>{config.tone !== "local" && <Sparkles aria-hidden="true" />}{config.eyebrow}</span>
             <h1>{config.title}{" "}<em>{config.accent}</em></h1>
             <p>{config.description}</p>
 
@@ -69,7 +69,7 @@ export default function MarketplaceHub({ config }) {
               <span><small>{config.proof.label}</small><strong>{config.proof.value}</strong></span>
             </div>
             <div className={styles.ratingCard}>
-              <span><Star /> {config.rating.value}</span>
+              <span><Globe2 /> {config.rating.value}</span>
               <small>{config.rating.label}</small>
             </div>
           </div>
@@ -123,7 +123,7 @@ export default function MarketplaceHub({ config }) {
 
       <section className={`${styles.container} ${styles.section}`}>
         <header className={styles.sectionHeader}>
-          <div><span className={styles.eyebrow}>{config.highlightEyebrow}</span><h2>{config.highlightTitle}</h2><p>Illustrative product examples — availability and inventory appear only when approved listings are live.</p></div>
+          <div><span className={styles.eyebrow}>{config.highlightEyebrow}</span><h2>{config.highlightTitle}</h2><p>Ways to describe your needs. These examples are not live listings; search to see what is currently published.</p></div>
         </header>
         <div className={styles.highlightGrid}>
           {config.highlights.map((item) => (
@@ -186,8 +186,8 @@ export default function MarketplaceHub({ config }) {
           <div className={styles.testimonials}>
             {config.testimonials.map((item) => (
               <article key={item.name}>
-                <blockquote>{item.quote}</blockquote>
-                <footer><span>{item.initials}</span><strong>{item.role}<small>Example journey · not a testimonial</small></strong></footer>
+                <p>{item.quote}</p>
+                <footer><span aria-hidden="true"><Users size={20} /></span><strong>{item.role}<small>Example workflow</small></strong></footer>
               </article>
             ))}
           </div>

@@ -83,7 +83,7 @@ function SectionHeader({ title, href = "/online/services", link = "View all serv
 }
 
 function ServiceCard({ service }) {
-  return <Link className={styles.serviceCard} href="/online/services"><span className={`${styles.serviceImage} ${styles[service.image]}`} /><strong>{service.title}</strong><small>Illustrative package · {service.seller}</small><span className={styles.serviceMeta}><em>Product preview</em><b>example from {service.price}</b></span></Link>;
+  return <Link className={styles.serviceCard} href="/services?category=web-design"><span className={`${styles.serviceImage} ${styles[service.image]}`} /><strong>{service.title}</strong><small>Illustrative package · {service.seller}</small><span className={styles.serviceMeta}><em>Product preview</em><b>example from {service.price}</b></span></Link>;
 }
 
 function DesignerCard({ person }) {
@@ -100,7 +100,7 @@ export default function WebDesignCategory() {
             <div className={styles.heroCopy}><span className={styles.eyebrow}>Web design professionals worldwide</span><h1>Find a web designer who brings your idea to life.</h1><strong>Professional web design. Tailored. Results-driven.</strong><p>From sharp portfolio sites to complete online stores. Experienced designers turn your vision into a user-friendly, conversion-focused website that performs.</p></div>
             <div className={styles.heroVisual}><Image src="/images/skilllinkup-webdesign/webdesign-hero-v1.png" alt="Web designer with responsive website designs" fill priority sizes="(max-width: 900px) 100vw, 48vw" /></div>
           </div>
-          <form className={styles.searchBar} action="/online/freelancers" method="get"><label><Search size={19} /><input name="q" defaultValue="Web designer" aria-label="What kind of website do you need?" /></label><label><MapPin size={19} /><select name="location" defaultValue="all" aria-label="Designer location"><option value="all">Location or online</option><option value="online">Online worldwide</option><option value="local">Near me</option></select></label><button type="submit">Find a web designer</button></form>
+          <form className={styles.searchBar} action="/online/freelancers" method="get"><label><Search size={19} /><input name="q" defaultValue="Web designer" aria-label="What kind of website do you need?" /></label><label><MapPin size={19} /><input name="location" placeholder="City or country (optional)" aria-label="Designer location" /></label><button type="submit">Find a web designer</button></form>
           <div className={styles.heroTrust}><span><BadgeCheck size={19} />Verified profiles</span><span><ShieldCheck size={19} />Clear milestones</span><span><MessageSquareMore size={19} />Clear agreements</span></div>
         </div>
       </section>

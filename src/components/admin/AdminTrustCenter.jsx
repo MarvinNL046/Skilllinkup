@@ -1,6 +1,7 @@
 "use client";
 
 import LocalVerificationQueue from "./LocalVerificationQueue";
+import ContactInbox from "./ContactInbox";
 import { useState } from "react";
 import Link from "next/link";
 import { useMutation, useQuery } from "convex/react";
@@ -134,6 +135,7 @@ export default function AdminTrustCenter() {
       </div>
 
       <LocalVerificationQueue />
+      <ContactInbox />
       <section className="mb-8" aria-labelledby="beta-health-heading">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>

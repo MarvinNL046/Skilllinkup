@@ -1,32 +1,4 @@
 import { Suspense } from "react";
-import { getTranslations } from "next-intl/server";
-import Breadcumb1 from "@/components/breadcumb/Breadcumb1";
 import Listing14 from "@/components/section/Listing14";
-
-export async function generateMetadata() {
-  const t = await getTranslations("localHub");
-  return {
-    title: t("craftsmenTitle"),
-    description: t("craftsmenDescription"),
-    openGraph: {
-      title: t("craftsmenTitle"),
-      description: t("craftsmenDescription"),
-    },
-  };
-}
-
-export default async function CraftsmenPage() {
-  const t = await getTranslations("localHub");
-  return (
-    <>
-      <Breadcumb1
-        title={t("craftsmenTitle")}
-        brief={t("craftsmenBrief")}
-        isBtnActive={false}
-      />
-      <Suspense>
-        <Listing14 />
-      </Suspense>
-    </>
-  );
-}
+export const metadata = { title: "Find local professionals", description: "Browse local trades and find professionals in your service area.", alternates: { canonical: "/local/craftsmen" } };
+export default function CraftsmenPage() { return <Suspense fallback={<p role="status" className="container py-12">Loading local search…</p>}><Listing14 /></Suspense>; }

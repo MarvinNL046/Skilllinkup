@@ -194,7 +194,7 @@ var list = query({
     returns: v.array(v.any()),
     handler: async (ctx, args) => {
       await requireOwner(ctx, args.userId);
-      let [o, n] = await Promise.all([ctx.db.query("conversations").withIndex("by_participant1", r => r.eq("participant1", args.userId)).order("desc").take(60), ctx.db.query("conversations").withIndex("by_participant2", r => r.eq("participant2", args.userId)).order("desc").take(60)]),
+      let [o, n] = await Promise.all([ctx.db.query("conversations").withIndex("by_participant1_activity", r => r.eq("participant1", args.userId)).order("desc").take(60), ctx.db.query("conversations").withIndex("by_participant2_activity", r => r.eq("participant2", args.userId)).order("desc").take(60)]),
         a = [...o, ...n].sort((r, p) => (p.lastMessageAt ?? p.createdAt) - (r.lastMessageAt ?? r.createdAt)).slice(0, 100),
         s = [...new Set(a.map(r => r.participant1 === args.userId ? r.participant2 : r.participant1))],
         c = await Promise.all(s.map(r => ctx.db.get(r))),

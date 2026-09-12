@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { validateProjectFields } from "@/lib/projectValidation.mjs";
 import {
   Select,
   SelectContent,
@@ -28,19 +29,32 @@ export default function ProposalModal1({ isOpen, onClose, project, onUpdate }) {
   const [budgetMax, setBudgetMax] = useState("");
   const [workType, setWorkType] = useState("remote");
   const [isUpdating, setIsUpdating] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!project) return;
+    if (!project || !isOpen) return;
     setTitle(project.title ?? "");
     setDescription(project.description ?? "");
     setBudgetMin(project.budgetMin != null ? String(project.budgetMin) : "");
     setBudgetMax(project.budgetMax != null ? String(project.budgetMax) : "");
-    setWorkType(project.workType ?? "remote");
-  }, [project]);
+    setWorkType("remote");
+    setError("");
+  }, [project, isOpen]);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
     if (!project?._id || !onUpdate) return;
+    const errors = validateProjectFields({
+      title,
+      description,
+      budgetMin: budgetMin === "" ? project.budgetMin : budgetMin,
+      budgetMax: budgetMax === "" ? project.budgetMax : budgetMax,
+    });
+    if (Object.keys(errors).length) {
+      setError(Object.values(errors)[0]);
+      return;
+    }
+    setError("");
     setIsUpdating(true);
     try {
       const fields = {
@@ -66,11 +80,19 @@ export default function ProposalModal1({ isOpen, onClose, project, onUpdate }) {
 
   return (
     <Dialog open={!!isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-xl" data-testid="manage-project-edit-modal">
+      <DialogContent
+        className="max-w-xl"
+        data-testid="manage-project-edit-modal"
+      >
         <DialogHeader>
           <DialogTitle>{t("editProject")}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleUpdate} className="space-y-4">
+          {error ? (
+            <p role="alert" className="text-sm text-red-700">
+              {error}
+            </p>
+          ) : null}
           <div className="space-y-2">
             <Label htmlFor="proposal-title">{t("labelTitle")}</Label>
             <Input
@@ -79,17 +101,23 @@ export default function ProposalModal1({ isOpen, onClose, project, onUpdate }) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
+              minLength={10}
+              maxLength={120}
               data-testid="manage-project-edit-title"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="proposal-description">{t("labelDescription")}</Label>
+            <Label htmlFor="proposal-description">
+              {t("labelDescription")}
+            </Label>
             <Textarea
               id="proposal-description"
               rows={4}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               required
+              minLength={80}
+              maxLength={10000}
               data-testid="manage-project-edit-description"
             />
           </div>
@@ -99,6 +127,8 @@ export default function ProposalModal1({ isOpen, onClose, project, onUpdate }) {
               <Input
                 id="proposal-budget-min"
                 type="number"
+                min="0.01"
+                step="0.01"
                 value={budgetMin}
                 onChange={(e) => setBudgetMin(e.target.value)}
                 data-testid="manage-project-edit-budget-min"
@@ -109,6 +139,8 @@ export default function ProposalModal1({ isOpen, onClose, project, onUpdate }) {
               <Input
                 id="proposal-budget-max"
                 type="number"
+                min="0.01"
+                step="0.01"
                 value={budgetMax}
                 onChange={(e) => setBudgetMax(e.target.value)}
                 data-testid="manage-project-edit-budget-max"
@@ -118,13 +150,14 @@ export default function ProposalModal1({ isOpen, onClose, project, onUpdate }) {
           <div className="space-y-2">
             <Label htmlFor="proposal-work-type">{t("labelWorkType")}</Label>
             <Select value={workType} onValueChange={setWorkType}>
-              <SelectTrigger id="proposal-work-type" data-testid="manage-project-edit-work-type">
+              <SelectTrigger
+                id="proposal-work-type"
+                data-testid="manage-project-edit-work-type"
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="remote">{t("remote")}</SelectItem>
-                <SelectItem value="onsite">{t("onSite")}</SelectItem>
-                <SelectItem value="hybrid">{t("hybrid")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -137,7 +170,11 @@ export default function ProposalModal1({ isOpen, onClose, project, onUpdate }) {
             >
               {t("cancel")}
             </Button>
-            <Button type="submit" disabled={isUpdating} data-testid="manage-project-edit-submit">
+            <Button
+              type="submit"
+              disabled={isUpdating}
+              data-testid="manage-project-edit-submit"
+            >
               {isUpdating ? t("updating") : t("update")}
             </Button>
           </DialogFooter>

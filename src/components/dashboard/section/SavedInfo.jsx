@@ -12,18 +12,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Heart, Bookmark } from "lucide-react";
+import { toast } from "sonner";
 
-const TAB_TYPES = ["gig", "project", "job"];
+const TAB_TYPES = ["freelancer", "gig", "project", "job"];
 
 export default function SavedInfo() {
   const t = useTranslations("saved");
   const [getCurrentTab, setCurrentTab] = useState(0);
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
 
-  const tabs = [t("tabServices"), t("tabProjects"), t("tabJobs")];
-  const emptyMessages = [t("noSavedServices"), t("noSavedProjects"), t("noSavedJobs")];
-  const browseLabels = [t("browseServices"), t("browseProjects"), t("browseJobs")];
-  const browsePaths = ["/online/services", "/online/projects", "/online/jobs"];
+  const tabs = ["Professionals", t("tabServices"), t("tabProjects"), t("tabJobs")];
+  const emptyMessages = ["Your saved professionals will appear here.", t("noSavedServices"), t("noSavedProjects"), t("noSavedJobs")];
+  const browseLabels = ["Find professionals", t("browseServices"), t("browseProjects"), t("browseJobs")];
+  const browsePaths = ["/online/freelancers", "/online/services", "/online/projects", "/jobs/browse"];
 
   const savedItems = useQuery(
     api.marketplace.savedItems.list,
@@ -39,7 +40,7 @@ export default function SavedInfo() {
     try {
       await removeItem({ itemId: String(itemId) });
     } catch (err) {
-      console.error("Failed to remove saved item:", err);
+      toast.error(err?.message || "Could not remove this saved item. Please try again.");
     } finally {
       setRemovingId(null);
     }

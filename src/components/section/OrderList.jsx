@@ -7,21 +7,41 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Receipt } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
+import useConvexUser from "@/hook/useConvexUser";
+import { getActiveRole } from "@/lib/accountContext.mjs";
 
-const ACTIVE_STATUSES = ["pending", "active", "in_progress", "revision_requested"];
+const ACTIVE_STATUSES = [
+  "pending",
+  "active",
+  "in_progress",
+  "revision_requested",
+];
 
 function filterOrders(orders, tab) {
   if (!orders) return [];
   if (tab === "all") return orders;
-  if (tab === "active") return orders.filter((o) => ACTIVE_STATUSES.includes(o.status));
-  if (tab === "delivered") return orders.filter((o) => o.status === "delivered");
-  if (tab === "completed") return orders.filter((o) => o.status === "completed");
+  if (tab === "active")
+    return orders.filter((o) => ACTIVE_STATUSES.includes(o.status));
+  if (tab === "delivered")
+    return orders.filter((o) => o.status === "delivered");
+  if (tab === "completed")
+    return orders.filter((o) => o.status === "completed");
   return orders;
 }
 
 export default function OrderList() {
   const t = useTranslations("orders");
-  const [roleView, setRoleView] = useState("client");
+  const { convexUser } = useConvexUser();
+  const activeRole = getActiveRole(convexUser);
+  const context = `${convexUser?._id}:${activeRole}:${convexUser?.preferredWorld}`;
+  const [roleChoice, setRoleChoice] = useState(null);
+  const defaultRole = ["freelancer", "local_professional"].includes(activeRole)
+    ? "freelancer"
+    : "client";
+  const roleView =
+    roleChoice?.context === context ? roleChoice.role : defaultRole;
+  const setRoleView = (role) => setRoleChoice({ context, role });
   const [activeTab, setActiveTab] = useState("all");
 
   const { orders, isLoading } = useConvexOrders(roleView);
@@ -46,12 +66,14 @@ export default function OrderList() {
       <div className="flex gap-2 mb-5 flex-wrap">
         <Button
           variant={roleView === "client" ? "default" : "outline"}
+          aria-pressed={roleView === "client"}
           onClick={() => setRoleView("client")}
         >
           {t("asBuyer")}
         </Button>
         <Button
           variant={roleView === "freelancer" ? "default" : "outline"}
+          aria-pressed={roleView === "freelancer"}
           onClick={() => setRoleView("freelancer")}
         >
           {t("asSeller")}
@@ -70,20 +92,40 @@ export default function OrderList() {
             tab.key === "all"
               ? orders?.length
               : orders
-              ? filterOrders(orders, tab.key).length
-              : null;
+                ? filterOrders(orders, tab.key).length
+                : null;
           return (
             <button
               key={tab.key}
               role="tab"
               aria-selected={active}
+              tabIndex={active ? 0 : -1}
+              onKeyDown={(event) => {
+                const index = tabs.findIndex((item) => item.key === tab.key);
+                const next =
+                  event.key === "Home"
+                    ? 0
+                    : event.key === "End"
+                      ? tabs.length - 1
+                      : event.key === "ArrowRight"
+                        ? (index + 1) % tabs.length
+                        : event.key === "ArrowLeft"
+                          ? (index - 1 + tabs.length) % tabs.length
+                          : null;
+                if (next === null) return;
+                event.preventDefault();
+                setActiveTab(tabs[next].key);
+                event.currentTarget.parentElement
+                  ?.querySelectorAll('[role="tab"]')
+                  [next]?.focus();
+              }}
               type="button"
               onClick={() => setActiveTab(tab.key)}
               className={cn(
                 "px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors min-h-[44px]",
                 active
                   ? "border-primary text-primary"
-                  : "border-transparent text-[var(--text-secondary)] hover:text-foreground"
+                  : "border-transparent text-[var(--text-secondary)] hover:text-foreground",
               )}
             >
               {tab.label}
@@ -112,7 +154,9 @@ export default function OrderList() {
           {!isLoading && filteredOrders.length === 0 && (
             <div className="text-center py-12">
               <Receipt className="h-10 w-10 text-[var(--text-tertiary)] mx-auto mb-4" />
-              <h5 className="text-lg font-semibold mb-2">{t("noOrdersFound")}</h5>
+              <h5 className="text-lg font-semibold mb-2">
+                {t("noOrdersFound")}
+              </h5>
               <p className="text-[var(--text-secondary)] mb-0">
                 {activeTab === "all"
                   ? t("noOrdersRole", {
@@ -123,6 +167,23 @@ export default function OrderList() {
                     })
                   : t("noOrdersStatus", { status: activeTab })}
               </p>
+              <Button asChild variant="outline" className="mt-5">
+                <Link
+                  href={
+                    roleView === "client"
+                      ? convexUser?.preferredWorld === "local"
+                        ? "/local/request-quote"
+                        : "/online/freelancers"
+                      : activeRole === "local_professional"
+                        ? "/local/quote-requests"
+                        : "/online/projects"
+                  }
+                >
+                  {roleView === "client"
+                    ? "Find a professional"
+                    : "Find new work"}
+                </Link>
+              </Button>
             </div>
           )}
 

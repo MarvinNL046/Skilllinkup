@@ -7,6 +7,7 @@ import { api } from "../../../convex/_generated/api";
 import ReviewForm from "@/components/element/ReviewForm";
 import OpenDisputeModal from "@/components/dispute/OpenDisputeModal";
 import useConvexUser from "@/hook/useConvexUser";
+import { getOrderActionContext } from "@/lib/orderWorkspace.mjs";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -64,7 +65,7 @@ export default function OrderCard({ order, role }) {
 
   const orderReviews = useQuery(
     api.marketplace.reviews.getByOrder,
-    order.status === "completed" && order._id ? { orderId: order._id } : "skip"
+    order.status === "completed" && order._id ? { orderId: order._id } : "skip",
   );
 
   const STATUS_LABELS = {
@@ -99,7 +100,12 @@ export default function OrderCard({ order, role }) {
   };
 
   const handleRevision = async () => {
-    if (!revisionMessage.trim()) return;
+    if (
+      order.remainingRevisions === 0 ||
+      revisionMessage.trim().length < 10 ||
+      revisionMessage.trim().length > 3000
+    )
+      return;
     setActionLoading(true);
     try {
       await requestRevision({
@@ -115,11 +121,18 @@ export default function OrderCard({ order, role }) {
     setActionLoading(false);
   };
 
-  const showClientButtons = role === "client" && order.status === "delivered";
+  const { isLocal, matchesContext } = getOrderActionContext(order, convexUser);
+  const showClientButtons =
+    role === "client" &&
+    !isLocal &&
+    matchesContext &&
+    order.status === "delivered";
   const isCompleted = order.status === "completed";
 
   const canOpenDispute =
-    ["active", "in_progress", "delivered", "revision_requested"].includes(order.status) &&
+    ["active", "in_progress", "delivered", "revision_requested"].includes(
+      order.status,
+    ) &&
     order.escrowStatus !== "disputed" &&
     order.escrowStatus !== "released" &&
     order.escrowStatus !== "refunded";
@@ -131,8 +144,8 @@ export default function OrderCard({ order, role }) {
 
   const revieweeId =
     role === "client"
-      ? order.freelancerUserId ?? null
-      : order.clientId ?? null;
+      ? (order.freelancerUserId ?? null)
+      : (order.clientId ?? null);
 
   return (
     <Card>
@@ -154,8 +167,8 @@ export default function OrderCard({ order, role }) {
                 <span className="inline-flex items-center gap-1">
                   <User className="h-3.5 w-3.5 text-primary" />
                   {role === "client"
-                    ? order.freelancerName ?? "—"
-                    : order.clientName ?? "—"}
+                    ? (order.freelancerName ?? "—")
+                    : (order.clientName ?? "—")}
                 </span>
                 <span className="inline-flex items-center gap-1">
                   <Calendar className="h-3.5 w-3.5 text-primary" />
@@ -184,7 +197,10 @@ export default function OrderCard({ order, role }) {
 
             <div className="flex flex-col gap-2">
               <Button size="sm" variant="outline" asChild>
-                <Link href={`/orders/${order._id}`}>Open workspace<ArrowRight className="ml-1 h-4 w-4" /></Link>
+                <Link href={`/orders/${order._id}`}>
+                  Open workspace
+                  <ArrowRight className="ml-1 h-4 w-4" />
+                </Link>
               </Button>
               {showClientButtons && (
                 <>
@@ -211,12 +227,17 @@ export default function OrderCard({ order, role }) {
                   <Button
                     size="sm"
                     variant="outline"
-                    disabled={actionLoading}
+                    disabled={actionLoading || order.remainingRevisions === 0}
                     onClick={() => setShowRevisionForm((prev) => !prev)}
                   >
                     {showRevisionForm ? t("cancel") : t("requestRevision")}
                     <ArrowRight className="ml-1 h-4 w-4" />
                   </Button>
+                  {order.remainingRevisions === 0 ? (
+                    <p className="text-xs text-[var(--text-secondary)]">
+                      All included revisions have been used.
+                    </p>
+                  ) : null}
                 </>
               )}
 
@@ -262,9 +283,17 @@ export default function OrderCard({ order, role }) {
           <>
             <Separator className="my-4" />
             <div className="rounded-md bg-[var(--surface-2)] p-5">
+              {typeof order.remainingRevisions === "number" ? (
+                <p className="mb-2 text-sm">
+                  {order.remainingRevisions} revisions remaining
+                </p>
+              ) : null}
               <p className="text-sm font-medium mb-3">{t("revisionPrompt")}</p>
               <Textarea
                 rows={3}
+                aria-label="Revision feedback"
+                minLength={10}
+                maxLength={3000}
                 value={revisionMessage}
                 onChange={(e) => setRevisionMessage(e.target.value)}
                 placeholder={t("revisionPlaceholder")}
@@ -272,7 +301,11 @@ export default function OrderCard({ order, role }) {
               />
               <Button
                 size="sm"
-                disabled={!revisionMessage.trim() || actionLoading}
+                disabled={
+                  revisionMessage.trim().length < 10 ||
+                  actionLoading ||
+                  order.remainingRevisions === 0
+                }
                 onClick={handleRevision}
               >
                 {actionLoading ? (

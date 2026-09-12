@@ -4,6 +4,7 @@ import { v } from "convex/values";
 import { internal } from "../_generated/api";
 import { ActionCtx, internalAction } from "../_generated/server";
 import { Id } from "../_generated/dataModel";
+import { EMAIL_TIMEOUT_MS } from "./emailRetryPolicy";
 import {
   emailPreferenceValidator,
   emailTemplateValidator,
@@ -29,6 +30,7 @@ function errorMessage(error: unknown) {
 }
 
 async function sendEmail(ctx: ActionCtx, args: SendEmailArgs) {
+  if (JSON.stringify(args.props).length > 64_000) throw new Error("Email payload is too large.");
   const recipient = args.userId
     ? await ctx.runQuery(internal.lib.emailDeliveryState.resolveRecipientByUser, {
         userId: args.userId,
@@ -51,14 +53,25 @@ async function sendEmail(ctx: ActionCtx, args: SendEmailArgs) {
       template: args.template,
       recipientEmail: recipient.email,
       subject: args.subject,
+      payload: { to: args.to, props: args.props, preference: args.preference },
     },
   );
   if (!delivery.shouldSend) return;
+
+  if (process.env.EMAIL_DELIVERY_DISABLED === "true") {
+    await ctx.runMutation(internal.lib.emailDeliveryState.markSkipped, {
+      deliveryId: delivery.deliveryId,
+      reason: "Delivery disabled in this environment.",
+      leaseVersion: delivery.leaseVersion,
+    });
+    return;
+  }
 
   if (!recipient.enabled) {
     await ctx.runMutation(internal.lib.emailDeliveryState.markSkipped, {
       deliveryId: delivery.deliveryId,
       reason: `Disabled by ${args.preference ?? "email"} preference.`,
+      leaseVersion: delivery.leaseVersion,
     });
     return;
   }
@@ -68,11 +81,13 @@ async function sendEmail(ctx: ActionCtx, args: SendEmailArgs) {
     await ctx.runMutation(internal.lib.emailDeliveryState.markFailed, {
       deliveryId: delivery.deliveryId,
       error: message,
+      leaseVersion: delivery.leaseVersion,
     });
     console.error(`Email send failed (${args.template}): ${message}`);
     return;
   }
 
+  let retryable = true;
   try {
     const response = await fetch(new URL("/api/email/send", SITE_URL), {
       method: "POST",
@@ -87,9 +102,11 @@ async function sendEmail(ctx: ActionCtx, args: SendEmailArgs) {
         props: args.props,
         idempotencyKey: args.eventKey,
       }),
+      signal: AbortSignal.timeout(EMAIL_TIMEOUT_MS),
     });
     const result: unknown = await response.json().catch(() => null);
     if (!response.ok) {
+      retryable = response.status >= 500 || [401, 403, 408, 409, 429].includes(response.status);
       const detail =
         typeof result === "object" && result !== null && "error" in result
           ? String(result.error)
@@ -103,12 +120,15 @@ async function sendEmail(ctx: ActionCtx, args: SendEmailArgs) {
     await ctx.runMutation(internal.lib.emailDeliveryState.markSent, {
       deliveryId: delivery.deliveryId,
       providerMessageId,
+      leaseVersion: delivery.leaseVersion,
     });
   } catch (error) {
     const message = errorMessage(error);
     await ctx.runMutation(internal.lib.emailDeliveryState.markFailed, {
       deliveryId: delivery.deliveryId,
       error: message,
+      leaseVersion: delivery.leaseVersion,
+      retryable,
     });
     console.error(`Email send failed (${args.template}):`, message);
   }
@@ -173,6 +193,7 @@ export const sendOrderDelivered = internalAction({
     orderNumber: v.string(),
     orderTitle: v.string(),
     orderId: v.id("orders"),
+    deliveryVersion: v.optional(v.number()),
     locale: v.optional(v.string()),
   },
   returns: v.null(),
@@ -181,7 +202,7 @@ export const sendOrderDelivered = internalAction({
       template: "orderDelivered",
       to: args.clientEmail,
       subject: `Delivery received: ${args.orderTitle}`,
-      eventKey: `order-delivered:${args.orderId}`,
+      eventKey: `order-delivered:${args.orderId}:v${args.deliveryVersion ?? 1}`,
       preference: "orderUpdate",
       props: { ...args, locale: args.locale || "en" },
     });
@@ -390,6 +411,28 @@ export const sendLifecycleNotification = internalAction({
         actionHref: args.actionHref,
         locale: args.locale === "nl" ? "nl" : "en",
       },
+    });
+    return null;
+  },
+});
+
+export const retryDelivery = internalAction({
+  args: { deliveryId: v.id("emailDeliveries") },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const payload = await ctx.runQuery(internal.lib.emailDeliveryState.getRetryPayload, args);
+    if (payload) await sendEmail(ctx, payload);
+    return null;
+  },
+});
+
+export const sendContactMessage = internalAction({
+  args: { contactId: v.id("contactMessages"), name: v.string(), email: v.string(), subject: v.string(), message: v.string() },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    await sendEmail(ctx, {
+      template: "contactMessage", to: process.env.CONTACT_EMAIL || "info@skilllinkup.com",
+      subject: `Contact: ${args.subject}`.slice(0, 200), eventKey: `contact:${args.contactId}`, props: { ...args },
     });
     return null;
   },

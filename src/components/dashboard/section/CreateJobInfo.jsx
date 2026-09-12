@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "convex/react";
 import {
@@ -19,6 +19,11 @@ import { toast } from "sonner";
 import { api } from "../../../../convex/_generated/api";
 import { flattenLeafMarketplaceCategories } from "@/lib/marketplaceCategories";
 import useConvexUser from "@/hook/useConvexUser";
+import {
+  EMPTY_JOB_FORM,
+  jobDraftKey,
+  restoreJobDraft,
+} from "@/lib/jobDraft.mjs";
 import styles from "./CreateJobInfo.module.css";
 
 const jobTypes = [
@@ -82,23 +87,38 @@ export default function CreateJobInfo() {
     country: "Netherlands",
     evidence: "",
   });
-  const [form, setForm] = useState({
-    title: "",
-    company: "",
-    categoryId: "",
-    description: "",
-    requiredSkills: "",
-    salaryMin: "",
-    salaryMax: "",
-    currency: "EUR",
-    jobType: "full-time",
-    experienceLevel: "mid",
-    workType: "remote",
-    locationCity: "",
-    locationCountry: "Netherlands",
-    benefits: "",
-    expiresAt: "",
-  });
+  const [form, setForm] = useState(EMPTY_JOB_FORM);
+  const draftKey = jobDraftKey(convexUser?._id);
+  const [draftReady, setDraftReady] = useState(false);
+  const [draftRestored, setDraftRestored] = useState(false);
+  useEffect(() => {
+    setForm(EMPTY_JOB_FORM);
+    setDraftReady(false);
+    setDraftRestored(false);
+    if (!draftKey) return;
+    try {
+      const draft = restoreJobDraft(localStorage.getItem(draftKey));
+      if (draft) {
+        setForm(draft);
+        setDraftRestored(true);
+      }
+    } catch {
+      /* The form remains usable if browser storage is unavailable. */
+    }
+    setDraftReady(true);
+  }, [draftKey]);
+  function saveForLater() {
+    if (!draftKey || busy) return;
+    try {
+      localStorage.setItem(draftKey, JSON.stringify({ version: 1, form }));
+      toast.success("Vacancy draft saved on this device.");
+      router.push("/manage-jobs");
+    } catch {
+      toast.error(
+        "Your browser could not save this draft. Keep this page open to preserve your work.",
+      );
+    }
+  }
   const set = (name, value) =>
     setForm((current) => ({ ...current, [name]: value }));
   const setVerificationField = (name, value) =>
@@ -170,6 +190,11 @@ export default function CreateJobInfo() {
         locale: "en",
       });
       toast.success("Your vacancy is live.");
+      try {
+        localStorage.removeItem(draftKey);
+      } catch {
+        /* Publication has already succeeded. */
+      }
       router.push(`/manage-jobs/${jobId}/applications`);
     } catch (error) {
       toast.error(error?.message || "The vacancy could not be published.");
@@ -335,7 +360,7 @@ export default function CreateJobInfo() {
               <ShieldCheck /> Your evidence is visible only to authorised
               Skilllinkup administrators.
             </p>
-            <button type="submit" disabled={verificationBusy}>
+            <button type="submit" className="skl-action-primary" disabled={verificationBusy}>
               {verificationBusy ? "Submitting…" : "Request verification"}
               <ArrowRight />
             </button>
@@ -344,6 +369,9 @@ export default function CreateJobInfo() {
       ) : (
         <div className={styles.layout}>
           <form className={styles.form} onSubmit={submit}>
+            {draftRestored ? (
+              <p role="status">Your saved vacancy draft has been restored.</p>
+            ) : null}
             <section>
               <div className={styles.sectionHead}>
                 <i>
@@ -519,14 +547,16 @@ export default function CreateJobInfo() {
             <footer>
               <button
                 type="button"
-                className={styles.secondary}
-                onClick={() => router.push("/manage-jobs")}
+                className="skl-action-secondary"
+                onClick={saveForLater}
+                disabled={busy || !draftReady}
               >
                 Save for later
               </button>
               <button
+                className="skl-action-primary"
                 type="submit"
-                disabled={busy || !isLoaded || !isAuthenticated}
+                disabled={busy || !draftReady || !isLoaded || !isAuthenticated}
               >
                 {busy ? "Publishing…" : "Publish vacancy"}
                 <ArrowRight />

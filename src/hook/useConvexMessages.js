@@ -2,32 +2,31 @@
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { useState } from "react";
+import useConversationMessages from "./useConversationMessages";
 
-export default function useConvexMessages(userId) {
+export default function useConvexMessages(userId, active = true) {
   const [selectedConversationId, setSelectedConversationId] = useState(null);
 
   // Convex useQuery is reactive - auto-updates when data changes
   const conversations = useQuery(
     api.chat.conversations.list,
-    userId ? { userId } : "skip"
+    userId ? { userId } : "skip",
   );
 
-  const messages = useQuery(
-    api.chat.messages.getByConversation,
-    selectedConversationId
-      ? { conversationId: selectedConversationId, limit: 50 }
-      : "skip"
+  const history = useConversationMessages(
+    selectedConversationId,
+    userId,
+    active,
   );
 
   const sendMessage = useMutation(api.chat.messages.send);
-  const markRead = useMutation(api.chat.messages.markRead);
 
   return {
     conversations: conversations || [],
-    messages: messages || [],
+    ...history,
+    conversationsLoading: Boolean(userId) && conversations === undefined,
     selectedConversationId,
     setSelectedConversationId,
     sendMessage,
-    markRead,
   };
 }

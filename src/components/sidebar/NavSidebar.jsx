@@ -8,6 +8,7 @@ import { ChevronDown, X, ArrowRight } from "lucide-react";
 import navigation from "@/data/navigation";
 import { isActiveNavigation } from "@/utils/isActiveNavigation";
 import WaitlistButton from "@/components/ui/WaitlistButton";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import navStore from "@/store/navStore";
 
 function NavLinkItem({ item, path, onNavigate, depth = 0 }) {
@@ -98,90 +99,27 @@ function NavGroup({ item, path, onNavigate, depth = 0 }) {
   );
 }
 
-/**
- * Mobile navigation offcanvas on the SkillLinkup Design System.
- * Replaces Bootstrap's data-bs-toggle="offcanvas" pattern with a
- * controlled React panel + backdrop. Closes on ESC, backdrop click,
- * and route changes.
- */
 export default function NavSidebar() {
   const path = usePathname();
   const { isSignedIn } = useUser();
   const isOpen = navStore((s) => s.isNavOpen);
   const closeNav = navStore((s) => s.closeNav);
   const closeBtnRef = useRef(null);
-
-  // Close on ESC
-  useEffect(() => {
-    if (!isOpen) return;
-    function onKey(e) {
-      const nestedDialogOpen = e.target instanceof Element
-        && Boolean(e.target.closest('[role="dialog"][data-state="open"]'));
-      if (e.key === "Escape" && !e.defaultPrevented && !nestedDialogOpen) closeNav();
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [isOpen, closeNav]);
+  const openerRef = useRef(null);
 
   // Close on route change
   useEffect(() => {
     closeNav();
   }, [path, closeNav]);
 
-  // Lock body scroll while open + move focus to close button
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-      requestAnimationFrame(() => closeBtnRef.current?.focus());
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isOpen]);
-
   return (
-    <>
-      {/* Backdrop */}
-      <div
-        onClick={closeNav}
-        aria-hidden="true"
-        style={{
-          position: "fixed",
-          inset: 0,
-          background: "oklch(0% 0 0 / 0.4)",
-          backdropFilter: "blur(2px)",
-          opacity: isOpen ? 1 : 0,
-          pointerEvents: isOpen ? "auto" : "none",
-          transition: "opacity 200ms var(--ease-standard, ease-out)",
-          zIndex: 1040,
-        }}
-      />
-
-      {/* Panel */}
-      <aside
-        role="dialog"
-        aria-modal="true"
-        aria-label="Mobile navigation"
-        aria-hidden={isOpen ? undefined : "true"}
-        inert={isOpen ? undefined : true}
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          bottom: 0,
-          width: "min(88vw, 360px)",
-          background: "var(--bg-elevated)",
-          borderRight: "1px solid var(--border-subtle)",
-          boxShadow: "var(--shadow-3)",
-          transform: isOpen ? "translateX(0)" : "translateX(-100%)",
-          transition: "transform 240ms var(--ease-standard, ease-out)",
-          zIndex: 1050,
-          display: "flex",
-          flexDirection: "column",
-        }}
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) closeNav(); }}>
+      <DialogContent showCloseButton={false} aria-describedby={undefined}
+        onOpenAutoFocus={(event) => { openerRef.current = document.activeElement; event.preventDefault(); closeBtnRef.current?.focus(); }}
+        onCloseAutoFocus={(event) => { event.preventDefault(); openerRef.current?.focus(); }}
+        style={{ left: 0, top: 0, bottom: 0, transform: "none", width: "min(88vw, 360px)", maxWidth: "none", height: "100dvh", display: "flex", flexDirection: "column", padding: 0, gap: 0, borderRadius: 0 }}
       >
+        <DialogTitle className="sr-only">Mobile navigation</DialogTitle>
         <header
           style={{
             display: "flex",
@@ -263,7 +201,7 @@ export default function NavSidebar() {
             />
           )}
         </footer>
-      </aside>
-    </>
+      </DialogContent>
+    </Dialog>
   );
 }

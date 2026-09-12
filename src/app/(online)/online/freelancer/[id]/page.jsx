@@ -10,7 +10,7 @@ function isValidParam(id) {
 
 // Convex IDs are alphanumeric strings (no hyphens)
 function isConvexId(id) {
-  return id && typeof id === "string" && id.length > 10 && /^[a-zA-Z0-9]+$/.test(id);
+  return id && typeof id === "string" && /^[a-z0-9]{32}$/i.test(id);
 }
 
 export async function generateMetadata({ params }) {
@@ -50,6 +50,13 @@ export default async function page({ params }) {
   // Reject obviously invalid IDs (numeric, too short, injection attempts)
   if (!isValidParam(id)) {
     notFound();
+  }
+
+  if (!(process.env.NODE_ENV === "development" && (id === "demo" || id === "lisa-de-jong"))) {
+    const profile = isConvexId(id)
+      ? await fetchQuery(api.marketplace.freelancers.getById, { profileId: id })
+      : await fetchQuery(api.marketplace.freelancers.getBySlug, { slug: id });
+    if (!profile) notFound();
   }
 
   return (

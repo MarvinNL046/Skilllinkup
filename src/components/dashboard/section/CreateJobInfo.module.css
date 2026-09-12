@@ -150,27 +150,12 @@
 }
 .form > footer button {
   display: inline-flex;
-  min-height: 2.8rem;
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  border: 1px solid var(--primary-600);
-  border-radius: var(--radius-md);
-  background: var(--primary-600);
-  padding: 0.65rem 1.1rem;
-  color: #fff;
-  font: inherit;
-  font-size: 0.86rem;
-  font-weight: 800;
-  cursor: pointer;
 }
 .form > footer button svg {
   width: 1rem;
-}
-.form > footer .secondary {
-  border-color: var(--border-strong);
-  background: #fff;
-  color: var(--text-primary);
 }
 .layout > aside {
   position: sticky;
@@ -441,22 +426,8 @@
 }
 .verificationForm > footer button {
   display: inline-flex;
-  min-height: 2.8rem;
   align-items: center;
   gap: 0.45rem;
-  border: 0;
-  border-radius: var(--radius-md);
-  background: var(--primary-600);
-  padding: 0.7rem 1.1rem;
-  color: #fff;
-  font: inherit;
-  font-size: 0.86rem;
-  font-weight: 800;
-  cursor: pointer;
-}
-.verificationForm > footer button:disabled {
-  cursor: wait;
-  opacity: 0.65;
 }
 .verificationForm > footer button svg {
   width: 1rem;

@@ -6,13 +6,8 @@ import { MutationCtx, QueryCtx } from "../_generated/server";
 import { requireAuthUser } from "../lib/authHelpers";
 import { notifyUser } from "../lib/notifications";
 import { rateLimiter } from "../lib/rateLimits";
-
-const CONTACT_PATTERNS = [
-  /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/,
-  /(\+?\d[\d\s\-().]{6,}\d)/,
-  /(https?:\/\/|www\.)/i,
-  /(wa\.me|t\.me|telegram|whatsapp|instagram\.com|linkedin\.com)/i,
-];
+import { paginationOptsValidator } from "convex/server";
+import { getMessagePolicyError } from "../../src/lib/messagePolicy.mjs";
 
 const enrichedMessageValidator = v.object({
   _id: v.id("messages"),
@@ -35,10 +30,6 @@ const enrichedMessageValidator = v.object({
     v.null(),
   ),
 });
-
-function containsContactInfo(text: string): boolean {
-  return CONTACT_PATTERNS.some((p) => p.test(text));
-}
 
 async function requireConversationParticipant(
   ctx: QueryCtx | MutationCtx,
@@ -72,8 +63,8 @@ export const getByConversation = query({
   },
   returns: v.array(enrichedMessageValidator),
   handler: async (ctx, args) => {
-    await requireConversationParticipant(ctx, args.conversationId);
-    const limit = args.limit ?? 50;
+    const { conversation } = await requireConversationParticipant(ctx, args.conversationId);
+    const limit = Math.max(1, Math.min(args.limit ?? 50, 100));
 
     // Query in descending order and take only the last N messages.
     // This avoids loading the entire conversation history into memory.
@@ -104,6 +95,8 @@ export const getByConversation = query({
 
     const enriched = messages.map((msg) => ({
       ...msg,
+      isRead: Boolean(msg.isRead || msg._creationTime <=
+        (msg.senderId === conversation.participant1 ? conversation.readThrough2 ?? 0 : conversation.readThrough1 ?? 0)),
       sender: msg.senderId
         ? (() => {
             const s = senderMap.get(msg.senderId as Id<"users">);
@@ -147,16 +140,9 @@ export const send = mutation({
         "Chat file attachments are unavailable until they use protected Skilllinkup storage.",
       );
     }
-    if (!content) throw new Error("Write a message.");
-    if (content && content.length > 3000)
-      throw new Error("Messages cannot exceed 3,000 characters.");
-
-    // Block messages containing contact info (anti-bypass)
-    if (content && containsContactInfo(content)) {
-      throw new ConvexError(
-        "Contactgegevens mogen niet gedeeld worden via de chat. Gebruik het platform voor verdere afspraken.",
-      );
-    }
+    const policyError = getMessagePolicyError(content);
+    if (policyError) throw new ConvexError(policyError);
+    if (!content) throw new ConvexError("Write a message.");
 
     await rateLimiter.limit(ctx, "sendMessage", {
       key: currentUser._id,
@@ -241,41 +227,57 @@ export const markRead = mutation({
     const { user: currentUser, conversation } =
       await requireConversationParticipant(ctx, args.conversationId);
 
-    // Determine the other participant (whose messages we are marking as read)
-    const otherParticipantId =
-      conversation.participant1 === currentUser._id
-        ? conversation.participant2
-        : conversation.participant1;
-
-    // Fetch unread messages from the other participant.
-    // .take(500) caps the scan so a very long conversation never loads
-    // unbounded rows into memory. 500 unread messages is a safe upper bound
-    // for any realistic use case.
-    const recentMessages = await ctx.db
+    // A read watermark covers the entire history without a capped batch of
+    // writes. Convex serializes this read with concurrent message mutations.
+    const latest = await ctx.db
       .query("messages")
       .withIndex("by_conversation", (q) =>
         q.eq("conversationId", args.conversationId),
       )
       .order("desc")
-      .take(500);
-
-    const toMark = recentMessages.filter(
-      (m) => m.senderId === otherParticipantId && m.isRead === false,
-    );
-
-    // Mark each as read
-    await Promise.all(
-      toMark.map((message) => ctx.db.patch(message._id, { isRead: true })),
-    );
-
-    // Reset the current user's unreadCount to 0
+      .first();
     const isParticipant1 = conversation.participant1 === currentUser._id;
-
+    const markedCount = isParticipant1 ? conversation.unreadCount1 ?? 0 : conversation.unreadCount2 ?? 0;
+    if (!markedCount && !latest) return { markedCount: 0 };
     await ctx.db.patch(args.conversationId, {
-      ...(isParticipant1 ? { unreadCount1: 0 } : { unreadCount2: 0 }),
+      ...(isParticipant1
+        ? { unreadCount1: 0, readThrough1: latest?._creationTime ?? 0 }
+        : { unreadCount2: 0, readThrough2: latest?._creationTime ?? 0 }),
       updatedAt: Date.now(),
     });
+    return { markedCount };
+  },
+});
 
-    return { markedCount: toMark.length };
+export const list = query({
+  args: { conversationId: v.id("conversations"), paginationOpts: paginationOptsValidator },
+  returns: v.object({
+    page: v.array(enrichedMessageValidator),
+    isDone: v.boolean(),
+    continueCursor: v.string(),
+    splitCursor: v.optional(v.union(v.string(), v.null())),
+    pageStatus: v.optional(v.union(v.literal("SplitRecommended"), v.literal("SplitRequired"), v.null())),
+  }),
+  handler: async (ctx, args) => {
+    const { conversation } = await requireConversationParticipant(ctx, args.conversationId);
+    const result = await ctx.db.query("messages")
+      .withIndex("by_conversation", (q) => q.eq("conversationId", args.conversationId))
+      .order("desc").paginate({ ...args.paginationOpts, numItems: Math.min(args.paginationOpts.numItems, 100) });
+    const ids = [...new Set(result.page.flatMap((message) => message.senderId ? [message.senderId] : []))];
+    const senders = new Map((await Promise.all(ids.map((id) => ctx.db.get(id))))
+      .filter((sender) => sender !== null).map((sender) => [sender._id, sender]));
+    return {
+      ...result,
+      page: result.page.map((message) => {
+        const sender = message.senderId ? senders.get(message.senderId) : null;
+        const readThrough = message.senderId === conversation.participant1
+          ? conversation.readThrough2 : conversation.readThrough1;
+        return {
+          ...message,
+          isRead: Boolean(message.isRead || message._creationTime <= (readThrough ?? 0)),
+          sender: sender ? { _id: sender._id, name: sender.name, image: sender.image ?? sender.avatar } : null,
+        };
+      }),
+    };
   },
 });

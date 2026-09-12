@@ -1,12 +1,16 @@
 "use client";
 
 import { useEffect } from "react";
+import * as Dialog from "@radix-ui/react-dialog";
+import { X } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import useConvexUser from "@/hook/useConvexUser";
 import { hasCompletedActiveContext } from "@/lib/accountContext.mjs";
 import DashboardHeader from "./header/DashboardHeader";
 import DashboardSidebar from "./sidebar/DashboardSidebar";
-import dashboardSidebarStore, { useHydratedSidebarCollapsed } from "@/store/dashboardSidebarStore";
+import dashboardSidebarStore, {
+  useHydratedSidebarCollapsed,
+} from "@/store/dashboardSidebarStore";
 
 /**
  * Dashboard app-shell — full-width layout, NOT a centered marketing
@@ -25,7 +29,8 @@ import dashboardSidebarStore, { useHydratedSidebarCollapsed } from "@/store/dash
 export default function DashboardLayout({ children, maxWidth = "full" }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { convexUser, isLoaded, isClerkSignedIn } = useConvexUser();
+  const { convexUser, isLoaded, isClerkSignedIn, isAuthenticated } =
+    useConvexUser();
   const collapsed = useHydratedSidebarCollapsed();
   const mobileOpen = dashboardSidebarStore((s) => s.mobileOpen);
   const closeMobile = dashboardSidebarStore((s) => s.closeMobile);
@@ -48,16 +53,32 @@ export default function DashboardLayout({ children, maxWidth = "full" }) {
     closeMobile();
   }, [pathname, closeMobile]);
 
-  // Lock body scroll while the mobile drawer is open so the page behind
-  // the overlay doesn't scroll when users swipe inside the drawer.
   useEffect(() => {
-    if (!mobileOpen) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const closeOnDesktop = () => {
+      if (desktop.matches) closeMobile();
     };
-  }, [mobileOpen]);
+    desktop.addEventListener("change", closeOnDesktop);
+    closeOnDesktop();
+    return () => desktop.removeEventListener("change", closeOnDesktop);
+  }, [closeMobile]);
+
+  if (
+    !isLoaded ||
+    !isAuthenticated ||
+    !convexUser ||
+    !hasCompletedActiveContext(convexUser)
+  ) {
+    return (
+      <main
+        id="dashboard-content"
+        className="app-shell__content"
+        aria-busy="true"
+      >
+        <p role="status">Opening your workspace...</p>
+      </main>
+    );
+  }
 
   return (
     <div
@@ -68,19 +89,41 @@ export default function DashboardLayout({ children, maxWidth = "full" }) {
         minWidth: 0,
       }}
     >
-      <aside
-        className="app-shell__sidebar"
-        data-mobile-open={mobileOpen ? "true" : "false"}
-      >
+      <aside className="app-shell__sidebar">
         <DashboardSidebar />
       </aside>
-      {mobileOpen && (
-        <div
-          className="app-shell__backdrop"
-          onClick={closeMobile}
-          aria-hidden="true"
-        />
-      )}
+      <Dialog.Root
+        open={mobileOpen}
+        onOpenChange={(open) => {
+          if (!open) closeMobile();
+        }}
+      >
+        <Dialog.Portal>
+          <Dialog.Overlay className="app-shell__backdrop" />
+          <Dialog.Content
+            id="dashboard-mobile-navigation"
+            className="app-shell__mobile-navigation"
+            onCloseAutoFocus={(event) => {
+              event.preventDefault();
+              document.getElementById("dashboard-navigation-trigger")?.focus();
+            }}
+          >
+            <Dialog.Title className="sr-only">
+              Dashboard navigation
+            </Dialog.Title>
+            <Dialog.Description className="sr-only">
+              Choose a workspace or dashboard page.
+            </Dialog.Description>
+            <Dialog.Close
+              className="app-shell__drawer-close"
+              aria-label="Close dashboard navigation"
+            >
+              <X size={19} />
+            </Dialog.Close>
+            <DashboardSidebar mobile />
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
       <section className="app-shell__workspace">
         <DashboardHeader />
         <main

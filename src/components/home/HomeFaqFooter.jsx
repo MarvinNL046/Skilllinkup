@@ -1,15 +1,16 @@
 import Link from "next/link";
-import { ArrowRight, Mail, Send } from "lucide-react";
+import { ArrowRight, Send } from "lucide-react";
+import WaitlistButton from "@/components/ui/WaitlistButton";
 import AppFooter from "@/components/footer/AppFooter";
 import styles from "./WorldwideHome.module.css";
 
 const faqs = [
-  ["What makes Skilllinkup different?", "Online freelance work, trusted local services, and real company jobs come together in one worldwide marketplace."],
+  ["What makes Skilllinkup different?", "Online freelance work, local service requests, and real company jobs come together in one worldwide marketplace."],
   ["Can I offer more than one type of service?", "Yes. You can offer remote expertise, provide hands-on services locally, and explore company jobs."],
-  ["How does Skilllinkup build trust?", "Profiles, reviews, clear agreements, recorded approvals, and verification tools help both sides decide confidently."],
-  ["Is Skilllinkup available worldwide?", "Yes. Online services and remote jobs connect globally, while local results match the location you choose."],
+  ["How does Skilllinkup build trust?", "Compare the published profile and reviews, check any verification badge, and confirm the scope before starting work."],
+  ["Is Skilllinkup available worldwide?", "Online discovery supports international projects. Local services depend on the professionals in your chosen area, and jobs may have geographic requirements. The beta network is still growing."],
   ["How do payments work during beta?", "Skilllinkup does not collect, hold, or release funds during the free private beta. Payment policy will be published before activation."],
-  ["Can businesses post permanent jobs?", "Yes. Companies can publish genuine local or remote roles alongside freelance projects."],
+  ["Can businesses post permanent jobs?", "Yes. Companies can publish permanent, temporary or contract roles after company onboarding and verification."],
 ];
 
 export default function HomeFaqFooter() {
@@ -34,12 +35,8 @@ export default function HomeFaqFooter() {
 
       <section className={`${styles.section} ${styles.newsletterSection}`}>
         <Send size={30} aria-hidden="true" />
-        <div><h2>Stay in the loop</h2><p>Useful tips, new opportunities, and product updates—without the noise.</p></div>
-        <form action="/newsletter" method="post">
-          <label className="sr-only" htmlFor="newsletter-email">Email address</label>
-          <div><Mail size={17} /><input id="newsletter-email" type="email" name="email" placeholder="Your email address" required /></div>
-          <button type="submit">Subscribe</button>
-        </form>
+        <div><h2>Follow the launch</h2><p>Join the waitlist for updates about the Skilllinkup beta.</p></div>
+        <div><WaitlistButton label="Join the waitlist" /></div>
       </section>
 
       <AppFooter />

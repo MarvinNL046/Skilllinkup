@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import ManageJobCard from "../card/ManageJobCard";
-import ProposalModal1 from "../modal/ProposalModal1";
+import JobEditModal from "../modal/JobEditModal";
 import DeleteModal from "../modal/DeleteModal";
 import useConvexUser from "@/hook/useConvexUser";
 import { toast } from "sonner";
@@ -263,10 +263,10 @@ export default function ManageJobInfo() {
           </CardContent>
         </Card>
       </div>
-      <ProposalModal1
+      <JobEditModal
         isOpen={editOpen}
         onClose={() => setEditOpen(false)}
-        project={selectedJob}
+        job={selectedJob}
         onUpdate={handleUpdate}
       />
       <DeleteModal

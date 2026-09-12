@@ -42,7 +42,7 @@ const publicJobFields = {
   updatedAt: v.number(),
 };
 
-const publicJobValidator = v.object({
+export const publicJobValidator = v.object({
   ...publicJobFields,
   clientName: v.union(v.string(), v.null()),
   clientAvatar: v.union(v.string(), v.null()),
@@ -56,7 +56,7 @@ const ownedJobValidator = v.object({
   categoryName: v.union(v.string(), v.null()),
 });
 
-function toPublicJob(
+export function toPublicJob(
   job: Doc<"jobs">,
   client: Doc<"users">,
   category: Doc<"marketplaceCategories"> | null,
@@ -293,9 +293,9 @@ export const create = mutation({
       )
       .first();
     if (existing) throw new Error("A job with this URL already exists.");
-    if (args.salaryMin !== undefined && args.salaryMin < 0)
+    if (args.salaryMin !== undefined && (!Number.isFinite(args.salaryMin) || args.salaryMin < 0))
       throw new Error("Minimum salary cannot be negative.");
-    if (args.salaryMax !== undefined && args.salaryMax < 0)
+    if (args.salaryMax !== undefined && (!Number.isFinite(args.salaryMax) || args.salaryMax < 0))
       throw new Error("Maximum salary cannot be negative.");
     if (
       args.salaryMin !== undefined &&
@@ -308,6 +308,7 @@ export const create = mutation({
       throw new Error("The application deadline must be in the future.");
 
     const jobId = await ctx.db.insert("jobs", {
+      salarySortValue: args.salaryMax ?? args.salaryMin,
       tenantId: user.tenantId,
       clientId: user._id,
       title,
@@ -377,7 +378,7 @@ export const update = mutation({
     title: v.optional(v.string()),
     description: v.optional(v.string()),
     status: v.optional(jobStatusValidator),
-    expiresAt: v.optional(v.number()),
+    expiresAt: v.optional(v.union(v.number(), v.null())),
   },
   returns: v.id("jobs"),
   handler: async (ctx, args) => {
@@ -390,8 +391,13 @@ export const update = mutation({
       assertTransition(jobTransitions, job.status, args.status);
     }
 
-    const { jobId, ...fields } = args;
-    await ctx.db.patch(jobId, { ...fields, updatedAt: Date.now() });
+    const title = (args.title ?? job.title).trim();
+    const description = (args.description ?? job.description).trim();
+    if (title.length < 8 || title.length > 120) throw new Error("Use a title between 8 and 120 characters.");
+    if (description.length < 80 || description.length > 10000) throw new Error("Use a description between 80 and 10,000 characters.");
+    if (typeof args.expiresAt === "number" && (!Number.isFinite(args.expiresAt) || args.expiresAt <= Date.now())) throw new Error("The application deadline must be in the future.");
+    const { jobId, expiresAt, ...fields } = args;
+    await ctx.db.patch(jobId, { ...fields, title, description, ...(expiresAt !== undefined ? { expiresAt: expiresAt ?? undefined } : {}), updatedAt: Date.now() });
 
     return jobId;
   },

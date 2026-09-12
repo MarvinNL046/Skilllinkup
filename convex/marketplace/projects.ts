@@ -19,6 +19,7 @@ import { assertTransition } from "../lib/marketplaceState";
 import { projectStatusValidator } from "../lib/marketplaceState";
 import { bidStatusValidator } from "../lib/marketplaceState";
 import { v } from "convex/values";
+import { assertValidProjectFields } from "../../src/lib/projectValidation.mjs";
 var h = v.union(v.string(), v.null()),
   N = {
     _id: v.id("projects"),
@@ -87,7 +88,7 @@ var h = v.union(v.string(), v.null()),
     projectStatus: v.string(),
     projectCurrency: v.string()
   });
-function toProjectFields(t) {
+export function toProjectFields(t) {
   return {
     _id: t._id,
     _creationTime: t._creationTime,
@@ -306,6 +307,7 @@ var getOpenCount = query({
       assertOnlineWorkType(i, "Online project"), await assertOnlineMarketplaceCategory(ctx, args.categoryId, r.tenantId, args.locale);
       let l = args.title.trim(),
         d = args.description.trim();
+      assertValidProjectFields({ ...args, title: l, description: d });
       if (l.length < 10 || l.length > 120) throw new Error("Project titles must be between 10 and 120 characters.");
       if (d.length < 80 || d.length > 1e4) throw new Error("Project descriptions must be between 80 and 10,000 characters.");
       if (args.budgetMin !== void 0 && args.budgetMin < 0) throw new Error("Minimum budget cannot be negative.");
@@ -313,6 +315,7 @@ var getOpenCount = query({
       if (args.budgetMin !== void 0 && args.budgetMax !== void 0 && args.budgetMin > args.budgetMax) throw new Error("Minimum budget cannot exceed maximum budget.");
       let s = Date.now();
       return await ctx.db.insert("projects", {
+        budgetSortValue: args.budgetMax ?? args.budgetMin,
         tenantId: r.tenantId,
         clientId: r._id,
         title: l,
@@ -471,11 +474,14 @@ var getOpenCount = query({
         expectedClientId: i._id,
         workType: args.workType ?? r.workType
       }), await assertOnlineMarketplaceCategory(ctx, r.categoryId, i.tenantId, r.locale);
+      const cleanFields = { ...args, ...(args.title !== undefined ? { title: args.title.trim() } : {}), ...(args.description !== undefined ? { description: args.description.trim() } : {}) };
+      assertValidProjectFields({ ...r, ...cleanFields });
       let {
           projectId: l,
           ...d
-        } = args,
+        } = cleanFields,
         s = {
+          budgetSortValue: cleanFields.budgetMax ?? r.budgetMax ?? cleanFields.budgetMin ?? r.budgetMin,
           updatedAt: Date.now()
         };
       for (let [u, c] of Object.entries(d)) c !== void 0 && (s[u] = c);
@@ -591,3 +597,5 @@ var getOpenCount = query({
     }
   });
 export { acceptBid, create, getBids, getByClient, getById, getBySlug, getMyBids, getOpenCount, getPublicByClient, list, remove, submitBid, update };
+
+export { O as publicProjectValidator };

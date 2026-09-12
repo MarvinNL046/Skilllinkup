@@ -6,7 +6,7 @@ import styles from "./WorldwideHome.module.css";
 const steps = [
   { number: "1", title: "Tell us what you need", text: "Post a project, find local help, or explore real company jobs." },
   { number: "2", title: "Compare professionals", text: "Review profiles, ratings, experience, location, and availability." },
-  { number: "3", title: "Work safely together", text: "Set clear terms, record approvals, and stay connected from start to finish." },
+  { number: "3", title: "Work with clear agreements", text: "Set clear terms, record approvals, and stay connected from start to finish." },
 ];
 
 export default function ProcessWorkspace() {
@@ -20,7 +20,7 @@ export default function ProcessWorkspace() {
         <div className={styles.processVisual}>
           <Image
             src="/images/skilllinkup-home/how-skilllinkup-works-v1.png"
-            alt="Three steps: describe the work, compare professionals, and collaborate securely"
+            alt="Three steps: describe the work, compare professionals, and agree on the work"
             width={2172}
             height={724}
             sizes="(max-width: 760px) 100vw, 960px"
@@ -44,18 +44,18 @@ export default function ProcessWorkspace() {
           <div className={styles.workspaceCopy}>
             <span className={styles.eyebrow}>Everything in one place</span>
             <h2>From first message to finished work.</h2>
-            <p>Keep the entire collaboration clear, organized, and protected inside one shared workspace.</p>
+            <p>Keep scope, messages, files and delivery decisions organised in one shared workspace.</p>
             <ul>
               <li><ShieldCheck size={18} /><span><strong>Recorded approvals</strong>Confirm delivered milestones in one clear workspace.</span></li>
               <li><MessageSquareText size={18} /><span><strong>Built-in conversations</strong>Keep messages and project details together.</span></li>
               <li><FileCheck2 size={18} /><span><strong>Clear agreements</strong>Record scope, timing, files, and decisions.</span></li>
             </ul>
-            <Link href="/how-it-works">Discover how it works <ArrowRight size={16} /></Link>
+            <Link href="/help">Discover how it works <ArrowRight size={16} /></Link>
           </div>
           <div className={styles.workspaceMock} aria-label="Example Skilllinkup project workspace">
             <Image
               src="/images/skilllinkup-home/project-workspace-v1.png"
-              alt="Skilllinkup project dashboard with project progress, agreement status, messages, and shared files"
+              alt="Illustrative Skilllinkup project workspace showing progress, messages and shared files"
               width={1536}
               height={1024}
               sizes="(max-width: 1050px) 100vw, 760px"

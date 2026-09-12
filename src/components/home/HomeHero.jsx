@@ -7,15 +7,14 @@ import {
   MapPin,
   Search,
   ShieldCheck,
-  Star,
   Users,
 } from "lucide-react";
 import styles from "./WorldwideHome.module.css";
 
 const trustItems = [
   { Icon: ShieldCheck, label: "Clear agreements" },
-  { Icon: BadgeCheck, label: "Verified talent" },
-  { Icon: Headphones, label: "Global support" },
+  { Icon: BadgeCheck, label: "Compare profiles" },
+  { Icon: Headphones, label: "Contact support" },
 ];
 
 const stats = [
@@ -37,7 +36,7 @@ export default function HomeHero() {
             </h1>
             <p className={styles.lead}>
               Stop switching between platforms. Hire freelancers worldwide,
-              book trusted professionals nearby, or discover verified jobs—all
+              find professionals nearby, or discover verified jobs—all
               in one place.
             </p>
             <form className={styles.searchBox} action="/services" method="get">
@@ -75,18 +74,18 @@ export default function HomeHero() {
               sizes="(max-width: 900px) 100vw, 48vw"
             />
             <div className={`${styles.floatingCard} ${styles.floatingTop}`}>
-              <span className={styles.avatarDot}>AO</span>
+              <span className={styles.avatarDot}><Users size={18} /></span>
               <span>
-                <strong>Verified professional</strong>
+                <strong>Find your professional</strong>
                 <small>
-                  <MapPin size={12} /> Available worldwide
+                  <MapPin size={12} /> Online and local expertise
                 </small>
               </span>
-              <BadgeCheck size={19} />
+              <Globe2 size={19} />
             </div>
             <div className={`${styles.floatingCard} ${styles.floatingBottom}`}>
               <span className={styles.rating}>
-                <Star size={14} fill="currentColor" /> 4.9
+                <Globe2 size={14} /> Global
               </span>
               <span>
                 <strong>One global marketplace</strong>

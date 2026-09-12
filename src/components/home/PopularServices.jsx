@@ -5,7 +5,7 @@ import styles from "./WorldwideHome.module.css";
 const services = [
   { title: "Web Design", href: "/online/services?category=web-design", Icon: Monitor, position: "serviceImageOne" },
   { title: "Photography", href: "/online/services?category=photography", Icon: Camera, position: "serviceImageTwo" },
-  { title: "Home Repairs", href: "/local?category=home-repairs", Icon: Wrench, position: "serviceImageThree" },
+  { title: "Home Repairs", href: "/local/craftsmen?q=home+repairs", Icon: Wrench, position: "serviceImageThree" },
   { title: "Digital Marketing", href: "/online/services?category=marketing", Icon: Megaphone, position: "serviceImageFour" },
   { title: "Virtual Assistance", href: "/online/services?category=virtual-assistance", Icon: ClipboardList, position: "serviceImageFive" },
   { title: "Career Coaching", href: "/online/services?category=coaching", Icon: MessagesSquare, position: "serviceImageSix" },
@@ -21,8 +21,8 @@ export default function PopularServices() {
         </div>
 
         <nav className={styles.serviceScope} aria-label="Browse services by work type">
-          <Link className={styles.serviceScopeActive} href="/local">Local</Link>
-          <Link href="/online/services">Online</Link>
+          <Link href="/local/craftsmen">Local</Link>
+          <Link href="/services?q=">Online</Link>
         </nav>
 
         <Link className={styles.popularServicesAll} href="/services">

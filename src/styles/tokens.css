@@ -30,6 +30,23 @@
   --primary-800: oklch(36% 0.125 36);
   --primary-900: oklch(26% 0.085 35);
 
+  /* Shared action styles: dashboard, onboarding and reusable Button. */
+  --action-primary-bg: #c74620;
+  --action-primary-text: #ffffff;
+  --action-primary-hover: #aa3818;
+  --action-primary-border: var(--action-primary-bg);
+  --action-secondary-bg: #ffffff;
+  --action-secondary-text: #0b2041;
+  --action-secondary-hover: #f8fafc;
+  --action-secondary-border: #cbd5e1;
+  --action-danger-bg: #b42318;
+  --action-danger-hover: #912018;
+  --action-danger-text: #ffffff;
+  --action-danger-border: var(--action-danger-bg);
+  --action-radius: 8px;
+  --action-height: 44px;
+  --action-focus-ring: #a93616;
+
   /* ---------- SECONDARY — Warm Terracotta-Amber ----------
      De menselijke tegenhanger. Gebruikt voor CTA-accents,
      trust-elementen, en het lokale/vakman-spoor.            */

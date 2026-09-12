@@ -26,7 +26,7 @@ import styles from "./ServicesOverview.module.css";
 const categories = [
   { name: "Web Design", href: "/services/webdesign", icon: Monitor, image: "spriteOne" },
   { name: "Photography", href: "/online/services?category=photography", icon: Camera, image: "spriteTwo" },
-  { name: "Home Repairs", href: "/local?category=home-repairs", icon: Wrench, image: "spriteThree" },
+  { name: "Home Repairs", href: "/local/craftsmen?q=home-repairs", icon: Wrench, image: "spriteThree" },
   { name: "Marketing", href: "/online/services?category=marketing", icon: Megaphone, image: "spriteFour" },
   { name: "Administration", href: "/online/services?category=administration", icon: ClipboardList, image: "spriteFive" },
   { name: "Coaching", href: "/online/services?category=coaching", icon: MessageCircleMore, image: "spriteSix" },
@@ -34,14 +34,14 @@ const categories = [
   { name: "Video & Animation", href: "/online/services?category=video", icon: Video, image: "teamImage" },
   { name: "IT & Development", href: "/online/services?category=development", icon: Code2, image: "portfolioTwo" },
   { name: "Education", href: "/online/services?category=education", icon: BookOpen, image: "portfolioThree" },
-  { name: "Events", href: "/local?category=events", icon: UsersRound, image: "businessImage" },
-  { name: "Health & Wellbeing", href: "/local?category=wellbeing", icon: HeartPulse, image: "portfolioFour" },
+  { name: "Events", href: "/local/craftsmen?q=events", icon: UsersRound, image: "businessImage" },
+  { name: "Health & Wellbeing", href: "/local/craftsmen?q=wellbeing", icon: HeartPulse, image: "portfolioFour" },
 ];
 
 const popularServices = [
   { title: "WordPress website", price: "€250", rating: "4.8", reviews: 120, href: "/online/services?category=wordpress", image: "spriteOne" },
   { title: "Business photography", price: "€150", rating: "4.9", reviews: 98, href: "/online/services?category=photography", image: "spriteTwo" },
-  { title: "Interior painting", price: "€200", rating: "4.7", reviews: 76, href: "/local?category=painting", image: "spriteThree" },
+  { title: "Interior painting", price: "€200", rating: "4.7", reviews: 76, href: "/local/craftsmen?q=painting", image: "spriteThree" },
   { title: "Social media management", price: "€120/mo", rating: "4.8", reviews: 89, href: "/online/services?category=social-media", image: "spriteFour" },
   { title: "Administrative support", price: "€120/mo", rating: "4.8", reviews: 69, href: "/online/services?category=administration", image: "spriteFive" },
   { title: "Career coaching", price: "€75/hr", rating: "4.9", reviews: 53, href: "/online/services?category=coaching", image: "spriteSix" },
@@ -50,26 +50,26 @@ const popularServices = [
 ];
 
 const localProfessionals = [
-  { name: "Lisa de Jong", role: "Web Designer", city: "Amsterdam", price: "€40/hr", rating: "5.0", image: "/images/skilllinkup-home/professional-sarah-v1.png" },
-  { name: "Omar Khalil", role: "Home Professional", city: "Rotterdam", price: "€55/hr", rating: "4.9", image: "/images/skilllinkup-home/professional-lucas-v1.png" },
-  { name: "Sanne Müller", role: "Marketer", city: "Utrecht", price: "€45/hr", rating: "4.9", image: "/images/skilllinkup-home/professional-yuki-v1.png" },
-  { name: "Jeroen Visser", role: "Photographer", city: "The Hague", price: "€50/hr", rating: "5.0", image: "/images/skilllinkup-home/professional-adaeze-v1.png" },
-  { name: "Nora Williams", role: "Coach", city: "Eindhoven", price: "€50/hr", rating: "4.9", image: "/images/skilllinkup-home/testimonial-maya-v2.png" },
-  { name: "Mark Evans", role: "Developer", city: "Amsterdam", price: "€65/hr", rating: "4.9", image: "/images/skilllinkup-home/testimonial-daniel-v2.png" },
+  { name: "Heating & boilers", role: "Maintenance and repairs", href: "/local/craftsmen?q=heating", image: "/images/skilllinkup-home/professional-sarah-v1.png" },
+  { name: "Plumbing", role: "Leaks, fittings and installations", href: "/local/craftsmen?q=plumbing", image: "/images/skilllinkup-home/professional-lucas-v1.png" },
+  { name: "Electrical work", role: "Lighting and home repairs", href: "/local/craftsmen?q=electrical", image: "/images/skilllinkup-home/professional-yuki-v1.png" },
+  { name: "Carpentry", role: "Woodwork and storage", href: "/local/craftsmen?q=carpentry", image: "/images/skilllinkup-home/professional-adaeze-v1.png" },
+  { name: "Air conditioning", role: "Installation and maintenance", href: "/local/craftsmen?q=air+conditioning", image: "/images/skilllinkup-home/testimonial-maya-v2.png" },
+  { name: "Painting", role: "Interior and exterior work", href: "/local/craftsmen?q=painting", image: "/images/skilllinkup-home/testimonial-daniel-v2.png" },
 ];
 
 const onlineProfessionals = [
-  { name: "Danique Post", role: "Content Strategist", price: "€30/hr", rating: "4.9", image: "/images/skilllinkup-home/testimonial-amara-v2.png" },
-  { name: "Rachid El Amrani", role: "Web Developer", price: "€55/hr", rating: "4.9", image: "/images/skilllinkup-home/professional-lucas-v1.png" },
-  { name: "Lotte Janssen", role: "Graphic Designer", price: "€55/hr", rating: "4.9", image: "/images/skilllinkup-home/professional-sarah-v1.png" },
-  { name: "Fatima El Yousfi", role: "Translator NL/EN/FR", price: "€35/hr", rating: "4.9", image: "/images/skilllinkup-home/professional-adaeze-v1.png" },
-  { name: "Bas de Jong", role: "Marketing Specialist", price: "€26/hr", rating: "4.9", image: "/images/skilllinkup-home/testimonial-daniel-v2.png" },
-  { name: "Eva van Dijk", role: "Virtual Assistant", price: "€28/hr", rating: "4.9", image: "/images/skilllinkup-home/testimonial-maya-v2.png" },
+  { name: "Content strategy", role: "Plan content and messaging", href: "/online/freelancers?q=content", image: "/images/skilllinkup-home/testimonial-amara-v2.png" },
+  { name: "Web development", role: "Build websites and applications", href: "/online/freelancers?q=development", image: "/images/skilllinkup-home/professional-lucas-v1.png" },
+  { name: "Graphic design", role: "Create visual assets", href: "/online/freelancers?q=design", image: "/images/skilllinkup-home/professional-sarah-v1.png" },
+  { name: "Translation", role: "Adapt content for your audience", href: "/online/freelancers?q=translation", image: "/images/skilllinkup-home/professional-adaeze-v1.png" },
+  { name: "Marketing", role: "Plan and run campaigns", href: "/online/freelancers?q=marketing", image: "/images/skilllinkup-home/testimonial-daniel-v2.png" },
+  { name: "Virtual assistance", role: "Support everyday operations", href: "/online/freelancers?q=assistant", image: "/images/skilllinkup-home/testimonial-maya-v2.png" },
 ];
 
 const trending = [
   "Build a business website", "Design a logo", "Translate website copy", "Manage social media",
-  "Find a local painter", "Improve my SEO", "Administrative support", "Edit a product video",
+  "Painting", "Improve my SEO", "Administrative support", "Edit a product video",
   "Develop an app", "Create a presentation",
 ];
 
@@ -95,14 +95,12 @@ function SectionHeader({ title, href, link }) {
 
 function ProfessionalCard({ professional, compact = false }) {
   return (
-    <Link className={compact ? styles.compactProfessional : styles.professionalCard} href={compact ? "/online/freelancers" : "/local"}>
+    <Link className={compact ? styles.compactProfessional : styles.professionalCard} href={professional.href}>
       <Image src={professional.image} alt="" width={compact ? 58 : 180} height={compact ? 58 : 128} />
       <span>
         <strong>{professional.name}</strong>
         <small>{professional.role}</small>
-        <em>Illustrative profile</em>
-        {!compact ? <small><MapPin size={12} /> {professional.city}</small> : null}
-        <b>from {professional.price}</b>
+        <em>Explore this skill</em>
       </span>
     </Link>
   );
@@ -128,31 +126,31 @@ export default function ServicesOverview() {
             </div>
           </div>
           <form className={styles.searchBar} action="/online/services" method="get">
-            <label><Search size={20} /><input name="q" type="search" placeholder="What can we help you with?" /></label>
-            <label><MapPin size={20} /><select name="scope" defaultValue="all" aria-label="Service location"><option value="all">Location or online</option><option value="local">Near me</option><option value="online">Online worldwide</option></select></label>
+            <label><Search size={20} /><input name="q" type="search" aria-label="Search services" placeholder="What can we help you with?" /></label>
+            <label><MapPin size={20} /><select name="scope" defaultValue="online" aria-label="Marketplace type"><option value="local">Local professionals</option><option value="online">Online worldwide</option></select></label>
             <button type="submit">Search</button>
           </form>
         </div>
       </section>
 
       <section className={`${styles.section} ${styles.categorySection}`}>
-        <div className={styles.scopeTabs} aria-label="Service scope"><Link className={styles.scopeActive} href="/local"><MapPin size={15} /> Local</Link><Link href="/online/services"><Monitor size={15} /> Online</Link></div>
+        <div className={styles.scopeTabs} aria-label="Service scope"><Link href="/local/craftsmen"><MapPin size={15} /> Local</Link><Link href="/services?q="><Monitor size={15} /> Online</Link></div>
         <div className={styles.categoryGrid}>{categories.map(({ name, href, icon: Icon, image }) => <Link href={href} className={styles.categoryCard} key={name}><span className={`${styles.categoryImage} ${styles[image]}`} /><i><Icon size={19} /></i><strong>{name}</strong></Link>)}</div>
       </section>
 
       <section className={styles.section}>
-        <SectionHeader title="Illustrative service examples" href="/online/services" link="View approved services" />
-        <div className={styles.serviceGrid}>{popularServices.map((service) => <Link className={styles.serviceCard} href={service.href} key={service.title}><span className={`${styles.serviceImage} ${styles[service.image]}`} /><strong>{service.title}</strong><small>example scope from {service.price}</small><em>Product preview</em></Link>)}</div>
+        <SectionHeader title="Ideas for your next project" href="/services?q=" link="Browse published services" />
+        <div className={styles.serviceGrid}>{popularServices.map((service) => <Link className={styles.serviceCard} href={service.href} key={service.title}><span className={`${styles.serviceImage} ${styles[service.image]}`} /><strong>{service.title}</strong><small>Explore services and compare the published scope.</small><em>Search this service</em></Link>)}</div>
       </section>
 
       <section className={styles.section}>
-        <SectionHeader title="Example profiles near you" href="/local" link="View approved professionals" />
-        <div className={styles.cityTabs}><Link className={styles.cityActive} href="/local">All cities</Link>{["Amsterdam","Rotterdam","Utrecht","Eindhoven","The Hague"].map((city) => <Link href={`/local?city=${encodeURIComponent(city)}`} key={city}>{city}</Link>)}</div>
+        <SectionHeader title="Explore local trades" href="/local/craftsmen" link="Browse published profiles" />
+        <div className={styles.cityTabs}><Link className={styles.cityActive} href="/local/craftsmen">All cities</Link>{["Amsterdam","Rotterdam","Utrecht","Eindhoven","The Hague"].map((city) => <Link href={`/local/craftsmen?location=${encodeURIComponent(city)}`} key={city}>{city}</Link>)}</div>
         <div className={styles.professionalGrid}>{localProfessionals.map((professional) => <ProfessionalCard professional={professional} key={professional.name} />)}</div>
       </section>
 
       <section className={styles.section}>
-        <SectionHeader title="Example online profiles" href="/online/freelancers" link="View approved professionals" />
+        <SectionHeader title="Explore online expertise" href="/online/freelancers" link="Browse published profiles" />
         <div className={styles.onlineGrid}>{onlineProfessionals.map((professional) => <ProfessionalCard professional={professional} compact key={professional.name} />)}</div>
       </section>
 
@@ -166,7 +164,7 @@ export default function ServicesOverview() {
 
       <section className={`${styles.section} ${styles.trendingSection}`}>
         <div className={styles.centerTitle}><h2>Trending searches</h2></div>
-        <div className={styles.trending}>{trending.map((term) => <Link href={`/online/services?q=${encodeURIComponent(term)}`} key={term}><Search size={14} />{term}</Link>)}</div>
+        <div className={styles.trending}>{trending.map((term) => <Link href={term === "Painting" ? "/local/craftsmen?q=painting" : `/services?q=${encodeURIComponent(term)}`} key={term}><Search size={14} />{term}</Link>)}</div>
       </section>
 
       <section className={`${styles.section} ${styles.joinSection}`}>
@@ -181,10 +179,10 @@ export default function ServicesOverview() {
         <div className={styles.faqGrid}>{faqs.map(([question, answer]) => <details key={question}><summary>{question}<span>+</span></summary><p>{answer}</p></details>)}</div>
       </section>
 
-      <section className={`${styles.section} ${styles.trustStrip}`} aria-label="Skilllinkup guarantees">
-        <article><ShieldCheck size={27} /><span><strong>Safe & reliable</strong><small>Verified profiles and clear records.</small></span></article>
+      <section className={`${styles.section} ${styles.trustStrip}`} aria-label="Working with Skilllinkup">
+        <article><ShieldCheck size={27} /><span><strong>Compare profiles</strong><small>Published experience and work samples.</small></span></article>
         <article><ClipboardList size={27} /><span><strong>Clear agreements</strong><small>Transparent pricing and communication.</small></span></article>
-        <article><BadgeCheck size={27} /><span><strong>Trusted professionals</strong><small>Profiles, ratings and verification signals.</small></span></article>
+        <article><BadgeCheck size={27} /><span><strong>Professional profiles</strong><small>Profiles, ratings and verification signals.</small></span></article>
         <article><Sparkles size={27} /><span><strong>Quality first</strong><small>Find the right match for every project.</small></span></article>
       </section>
     </main>

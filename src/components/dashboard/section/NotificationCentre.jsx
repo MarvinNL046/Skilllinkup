@@ -63,7 +63,7 @@ export default function NotificationCentre() {
           <h1>Notifications</h1>
           <p>Updates from your projects, local work, applications and support—kept in one reliable timeline.</p>
         </div>
-        <button type="button" onClick={handleMarkAll} disabled={!unreadCount}>
+        <button className="skl-action-secondary" type="button" onClick={handleMarkAll} disabled={!unreadCount}>
           <CheckCheck size={17} /> Mark all as read
         </button>
       </header>

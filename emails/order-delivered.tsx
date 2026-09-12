@@ -55,8 +55,8 @@ export const OrderDeliveredEmail = ({
 
  <Section style={noteBox}>
  <Text style={noteText}>
- Please review and approve the delivery within 3 days. If no action is taken,
- the order will be automatically marked as complete.
+ Review the work and approve it when the agreed scope is complete. You can request
+ any remaining included revisions from the order page. No payment or automatic release is active during the private beta.
  </Text>
  </Section>
  </Section>
@@ -64,7 +64,7 @@ export const OrderDeliveredEmail = ({
  <Section style={ctaSection}>
  <Button
  style={ctaButton}
- href={`${baseUrl}/dashboard/orders/${orderId}`}
+ href={`${baseUrl}/orders/${orderId}`}
  >
  Review Delivery
  </Button>

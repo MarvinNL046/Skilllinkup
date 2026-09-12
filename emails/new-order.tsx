@@ -61,7 +61,7 @@ export const NewOrderEmail = ({
  <Text style={infoLabel}>Service</Text>
  <Text style={infoValue}>{orderTitle}</Text>
 
- <Text style={infoLabel}>Earnings</Text>
+ <Text style={infoLabel}>Agreed scope amount</Text>
  <Text style={infoValue}>{formatCurrency(amount, currency)}</Text>
 
  <Text style={infoLabel}>Delivery Time</Text>
@@ -71,15 +71,15 @@ export const NewOrderEmail = ({
  </Section>
 
  <Text style={paragraph}>
- Make sure to deliver on time to maintain your reputation. You can communicate
- with the client directly from your order page.
+ This is a free private-beta order. No payment or escrow is active; the amount is shown for scope only.
+ Communicate with the client directly from your order page.
  </Text>
  </Section>
 
  <Section style={ctaSection}>
  <Button
  style={ctaButton}
- href={`${baseUrl}/dashboard/seller/orders/${orderId}`}
+ href={`${baseUrl}/orders/${orderId}`}
  >
  View Order Details
  </Button>

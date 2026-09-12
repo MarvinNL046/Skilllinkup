@@ -116,11 +116,11 @@ export default function ServiceContactWidget1({ freelancer }) {
       </div>
 
       <Link
-        href={freelancerId ? `/freelancers/${freelancerId}` : "/freelancers"}
+        href={freelancerId ? `/online/freelancer/${freelancer.slug || freelancerId}` : "/online/freelancers"}
         className="btn btn--secondary"
         style={{ width: "100%", justifyContent: "center" }}
       >
-        {t("contactMe")}
+        View professional
         <ArrowRight size={16} />
       </Link>
     </div>

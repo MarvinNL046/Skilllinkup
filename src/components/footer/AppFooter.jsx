@@ -7,10 +7,10 @@ const columns = [
   {
     title: "For clients",
     links: [
-      ["Post a project", "/register"],
+      ["Post a project", "/create-projects"],
       ["Online services", "/services"],
       ["Local services", "/local"],
-      ["Post a job", "/register"],
+      ["Post a job", "/create-job"],
     ],
   },
   {
@@ -18,7 +18,7 @@ const columns = [
     links: [
       ["Join Skilllinkup", "/register"],
       ["Find projects", "/projects"],
-      ["Find jobs", "/jobs"],
+      ["Find jobs", "/jobs/browse"],
       ["Pricing", "/pricing"],
     ],
   },

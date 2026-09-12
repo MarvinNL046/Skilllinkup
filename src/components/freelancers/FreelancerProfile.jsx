@@ -9,26 +9,22 @@ import {
   ArrowRight,
   BadgeCheck,
   BriefcaseBusiness,
-  CalendarDays,
-  Check,
-  ChevronLeft,
-  ChevronRight,
   Clock3,
   FileText,
   Globe2,
-  Heart,
   LockKeyhole,
   MapPin,
   MessageCircle,
   ShieldCheck,
   Star,
-  UsersRound,
 } from "lucide-react";
 import { api } from "../../../convex/_generated/api";
 import useConvexFreelancerDetail from "@/hook/useConvexFreelancerDetail";
 import ContactButton from "@/components/ui/ContactButton";
 import { FreelancerProfileSkeleton } from "@/components/loading/PageSkeletons";
 import ReportButton from "@/components/trust/ReportButton";
+import SavedItemButton from "@/components/ui/SavedItemButton";
+import { servicePriceLabel } from "@/lib/marketplaceDiscovery.mjs";
 import styles from "./FreelancerProfile.module.css";
 
 const DEMO_REFERENCE_DATE = new Date("2026-07-01T12:00:00Z").getTime();
@@ -109,25 +105,16 @@ function formatPeriod(item) {
 }
 
 function BookingCard({ profile }) {
-  const [selectedDay, setSelectedDay] = useState(12);
-  const now = new Date();
-  const monthName = now.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
-  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
-  const days = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-  const blanks = (firstDay + 6) % 7;
-
   return <aside className={styles.bookingCard}>
-    <div className={styles.rate}><strong>{profile.hourlyRate ? `€${profile.hourlyRate}` : "Rate on request"}</strong>{profile.hourlyRate ? <span>/ per hour</span> : null}</div>
-    <div className={styles.available}><span />{profile.isAvailable ? "Available for new projects" : "Availability by arrangement"}</div>
-    <div className={styles.calendarTitle}><span>Select a date</span><div><button aria-label="Previous month"><ChevronLeft size={16} /></button><strong>{monthName}</strong><button aria-label="Next month"><ChevronRight size={16} /></button></div></div>
-    <div className={styles.calendarWeek}>{["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].map((day) => <span key={day}>{day}</span>)}</div>
-    <div className={styles.calendarGrid}>{Array.from({ length: blanks }, (_, i) => <span key={`b-${i}`} />)}{Array.from({ length: days }, (_, i) => i + 1).map((day) => <button key={day} className={selectedDay === day ? styles.selectedDay : ""} onClick={() => setSelectedDay(day)}>{day}</button>)}</div>
+    <div className={styles.rate}><strong>{profile.hourlyRate != null ? `€${profile.hourlyRate}` : "Rate on request"}</strong>{profile.hourlyRate != null ? <span>/ per hour</span> : null}</div>
+    <div className={styles.available}><span />{profile.isAvailable ? "Available for new projects" : "Not currently accepting new work"}</div>
+    <p>Contact this professional to agree on scope and a start date.</p>
     <div className={styles.bookingFacts}>
       <p><Clock3 size={18} /><span><strong>Response time</strong>{profile.responseTimeHours ? `Usually within ${profile.responseTimeHours} hours` : "Not published yet"}</span></p>
       <p><ShieldCheck size={18} /><span><strong>Clear beta agreement</strong>Record scope, delivery and approval</span></p>
     </div>
     {profile.userId && profile._id !== "demo-profile" ? <ContactButton recipientId={profile.userId} profileId={profile._id} className={styles.contactButton} /> : <Link href="/sign-up" className={styles.contactButton}><MessageCircle size={18} />Contact freelancer</Link>}
-    <Link href="/online/projects/create" className={styles.offerButton}><FileText size={17} />Request a quote</Link>
+    <Link href="/create-projects" className={styles.offerButton}><FileText size={17} />Request a quote</Link>
     <div className={styles.secureNote}><LockKeyhole size={18} /><span><strong>Your details stay private</strong>No payment or escrow is active during beta.</span></div>
   </aside>;
 }
@@ -136,7 +123,6 @@ export default function FreelancerProfile() {
   const { id } = useParams();
   const liveProfile = useConvexFreelancerDetail(id);
   const [showDemo, setShowDemo] = useState(false);
-  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     if (liveProfile !== undefined) return;
@@ -144,7 +130,7 @@ export default function FreelancerProfile() {
     return () => clearTimeout(timer);
   }, [liveProfile]);
 
-  const isDemoRoute = id === "lisa-de-jong" || id === "demo";
+  const isDemoRoute = process.env.NODE_ENV === "development" && (id === "lisa-de-jong" || id === "demo");
   const profile = liveProfile || ((showDemo || liveProfile === null) && isDemoRoute ? demoProfile : null);
   const profileId = profile && profile._id !== "demo-profile" ? profile._id : null;
   const userId = profile?.userId || null;
@@ -157,8 +143,8 @@ export default function FreelancerProfile() {
   const similar = useQuery(api.marketplace.freelancers.list, { locale: "en", limit: 5 });
 
   const isDemoProfile = profile?._id === "demo-profile";
-  const serviceItems = gigs?.length ? gigs.slice(0, 3).map((gig) => ({ ...gig, price: gig.packages?.[0]?.price || profile?.hourlyRate })) : isDemoProfile ? demoServices : [];
-  const portfolioItems = portfolio?.length ? portfolio.slice(0, 6).map((item, index) => ({ ...item, image: item.imageUrls?.[0], spritePosition: item.imageUrls?.[0] ? null : demoPortfolio[index % demoPortfolio.length].spritePosition })) : isDemoProfile ? demoPortfolio : [];
+  const serviceItems = gigs?.length ? gigs : isDemoProfile ? demoServices : [];
+  const portfolioItems = portfolio?.length ? portfolio.map((item) => ({ ...item, image: item.imageUrls?.[0] })) : isDemoProfile ? demoPortfolio : [];
   const experienceItems = experience?.length ? experience : isDemoProfile ? demoExperience : [];
   const educationItems = education?.length ? education : isDemoProfile ? demoEducation : [];
   const reviewItems = reviews?.length ? reviews : isDemoProfile ? demoReviews : [];
@@ -186,11 +172,11 @@ export default function FreelancerProfile() {
             <div className={styles.profileIntro}>
               <div className={styles.nameRow}><h1>{profile.displayName}</h1>{profile.isVerified && <BadgeCheck size={22} aria-label="Verified profile" />}</div>
               <p className={styles.tagline}>{profile.tagline || "Independent professional"}</p>
-              <div className={styles.metaRow}><span><Star size={17} fill="currentColor" /> <strong>{(profile.ratingAverage || 0).toFixed(1)}</strong> ({profile.ratingCount || 0} reviews)</span>{location && <span><MapPin size={16} />{location}</span>}<span><Globe2 size={16} />Online</span></div>
+              <div className={styles.metaRow}><span><Star size={17} fill="currentColor" /> <strong>{profile.ratingCount ? (profile.ratingAverage || 0).toFixed(1) : "No reviews yet"}</strong> {profile.ratingCount > 0 && <>({profile.ratingCount} {profile.ratingCount === 1 ? "review" : "reviews"})</>}</span>{location && <span><MapPin size={16} />{location}</span>}<span><Globe2 size={16} />Online</span></div>
               <div className={styles.statusRow}><span>{profile.responseTimeHours ? `Typically responds in ${profile.responseTimeHours} hours` : "Response time not published"}</span>{profile.isAvailable && <span><i />Available</span>}</div>
               <div className={styles.skillRow}>{skills.slice(0, 8).map((skill) => <span key={skill}>{skill}</span>)}</div>
             </div>
-            <div className={styles.profileActions}>{profile.userId && profile._id !== "demo-profile" ? <ContactButton recipientId={profile.userId} profileId={profile._id} className={styles.primaryAction} /> : <Link className={styles.primaryAction} href="/sign-up"><MessageCircle size={18} />Send a message</Link>}<button onClick={() => setSaved((value) => !value)} className={saved ? styles.saved : ""}><Heart size={18} fill={saved ? "currentColor" : "none"} />{saved ? "Saved" : "Save"}</button></div>
+            <div className={styles.profileActions}>{profile.userId && profile._id !== "demo-profile" ? <ContactButton recipientId={profile.userId} profileId={profile._id} className={styles.primaryAction} /> : <Link className={styles.primaryAction} href="/sign-up"><MessageCircle size={18} />Send a message</Link>}<SavedItemButton itemType="freelancer" itemId={profile._id} title={profile.displayName} image={avatar} href={`/online/freelancer/${profile.slug || profile._id}`} showLabel disabled={isDemoProfile} /></div>
           </article>
           {profile._id !== "demo-profile" ? (
             <ReportButton
@@ -200,31 +186,25 @@ export default function FreelancerProfile() {
             />
           ) : null}
 
-          <section className={styles.workOverview} aria-label="Work overview">
-            <div className={styles.workOverviewTitle}><span>Work overview</span><small>Updated today</small></div>
-            <div className={`${styles.workStat} ${styles.workStatOpen}`}><i><BriefcaseBusiness size={18} /></i><div><strong>{profile.openSlots ?? (profile.isAvailable !== false ? 2 : 0)}</strong><span>Open spots</span></div><em>Available</em></div>
-            <div className={`${styles.workStat} ${styles.workStatPending}`}><i><Clock3 size={18} /></i><div><strong>{profile.activeProjects ?? (profile._id === "demo-profile" ? 3 : 0)}</strong><span>In progress</span></div><em>Pending</em></div>
-            <div className={`${styles.workStat} ${styles.workStatDone}`}><i><Check size={18} /></i><div><strong>{profile.totalOrders || 0}</strong><span>Completed</span></div><em>Done</em></div>
-          </section>
 
-          <section className={styles.about}><SectionHeading title="About me" /><p>{profile.bio || "This professional has not added a biography yet."}</p><div className={styles.highlights}><span><BriefcaseBusiness size={18} /><strong>{isDemoProfile ? "6+ years" : profile.totalOrders ? "Active" : "New"}</strong> profile</span><span><UsersRound size={18} /><strong>{profile.totalOrders || 0}</strong> completed projects</span><span><Check size={18} /><strong>{profile.completionRate || 0}%</strong> completion rate</span></div></section>
+          <section className={styles.about}><SectionHeading title="About me" /><p>{profile.bio || "This professional has not added a biography yet."}</p></section>
         </div>
         <BookingCard profile={profile} />
       </div>
 
-      <section className={styles.section}><SectionHeading title="My services" linkLabel="View all services" href="/online/services" />{serviceItems.length ? <div className={styles.serviceGrid}>{serviceItems.map((service, index) => <article key={service._id || service.title}><div className={styles.serviceIcon}>{[<Globe2 key="a" />, <BadgeCheck key="b" />, <BriefcaseBusiness key="c" />][index]}</div><div><h3>{service.title}</h3><p>{service.description}</p><strong>From <em>€{service.price || profile.hourlyRate || 0} / hour</em></strong></div></article>)}</div> : <p className={styles.emptySection}>No services have been published yet.</p>}</section>
+      <section className={styles.section}><SectionHeading title="My services" />{serviceItems.length ? <div className={styles.serviceGrid}>{serviceItems.map((service, index) => <article key={service._id || service.title}><div className={styles.serviceIcon}>{[<Globe2 key="a" />, <BadgeCheck key="b" />, <BriefcaseBusiness key="c" /> ][index % 3]}</div><div><h3>{service.slug ? <Link href={`/online/service/${service.slug}`}>{service.title}</Link> : service.title}</h3><p>{service.description}</p><strong>{isDemoProfile ? "Illustrative service" : servicePriceLabel(service)}</strong></div></article>)}</div> : <p className={styles.emptySection}>{gigs === undefined && profileId ? "Loading published services…" : "No services have been published yet."}</p>}</section>
 
-      <section className={styles.section}><SectionHeading title="Portfolio" linkLabel="View all projects" />{portfolioItems.length ? <div className={styles.portfolioGrid}>{portfolioItems.map((item) => <article key={item._id || item.title}><div className={styles.portfolioImage}>{item.image ? <Image src={item.image} alt={item.title} fill sizes="(max-width: 720px) 100vw, 33vw" /> : <span role="img" aria-label={item.title} style={{ backgroundPosition: item.spritePosition }} />}</div><div><h3>{item.title}</h3><p>{(item.tags || []).join(" · ")}</p></div></article>)}</div> : <p className={styles.emptySection}>No portfolio work has been published yet.</p>}</section>
+      <section className={styles.section}><SectionHeading title="Portfolio" />{portfolioItems.length ? <div className={styles.portfolioGrid}>{portfolioItems.map((item) => <article key={item._id || item.title}><div className={styles.portfolioImage}>{item.image ? <Image src={item.image} alt={item.title} fill sizes="(max-width: 720px) 100vw, 33vw" /> : isDemoProfile ? <span role="img" aria-label={item.title} style={{ backgroundPosition: item.spritePosition }} /> : <div className="flex h-full items-center justify-center bg-slate-100 text-slate-500">No preview image</div>}</div><div><h3>{item.title}</h3><p>{(item.tags || []).join(" · ")}</p></div></article>)}</div> : <p className={styles.emptySection}>{portfolio === undefined && userId ? "Loading portfolio…" : "No portfolio work has been published yet."}</p>}</section>
 
-      <section className={styles.resumeSection}><div><SectionHeading title="Experience & education" />{experienceItems.length || educationItems.length ? <div className={styles.timeline}>{experienceItems.map((item) => <article key={item._id}><span /><time>{formatPeriod(item)}</time><div><h3>{item.title}</h3><strong>{item.company}</strong><p>{item.description}</p></div></article>)}{educationItems.map((item) => <article key={item._id}><span /><time>{formatPeriod(item)}</time><div><h3>{item.degree || item.field || "Education"}</h3><strong>{item.school}</strong><p>{item.description}</p></div></article>)}</div> : <p className={styles.emptySection}>No work history has been added yet.</p>}</div><div><SectionHeading title="Skills" />{skills.length ? <div className={styles.skillsPanel}>{skills.map((skill) => <span key={skill}>{skill}</span>)}</div> : <p className={styles.emptySection}>No skills have been added yet.</p>}</div></section>
+      <section className={styles.resumeSection}><div><SectionHeading title="Experience & education" />{experienceItems.length || educationItems.length ? <div className={styles.timeline}>{experienceItems.map((item) => <article key={item._id}><span /><time>{formatPeriod(item)}</time><div><h3>{item.title}</h3><strong>{item.company}</strong><p>{item.description}</p></div></article>)}{educationItems.map((item) => <article key={item._id}><span /><time>{formatPeriod(item)}</time><div><h3>{item.degree || item.field || "Education"}</h3><strong>{item.school}</strong><p>{item.description}</p></div></article>)}</div> : <p className={styles.emptySection}>{userId && (experience === undefined || education === undefined) ? "Loading work history…" : "No work history has been added yet."}</p>}</div><div><SectionHeading title="Skills" />{skills.length ? <div className={styles.skillsPanel}>{skills.map((skill) => <span key={skill}>{skill}</span>)}</div> : <p className={styles.emptySection}>No skills have been added yet.</p>}</div></section>
 
-      <section className={styles.section}><SectionHeading title={isDemoProfile ? "Illustrative feedback" : "Reviews"} />{reviewItems.length ? <div className={styles.reviewsLayout}><aside className={styles.reviewSummary}><strong>{(profile.ratingAverage || 0).toFixed(1)}<small>/ 5</small></strong><Stars value={profile.ratingAverage || 0} /><p>Based on {profile.ratingCount || reviewItems.length} {isDemoProfile ? "sample entries" : "reviews"}</p>{[5,4,3,2,1].map((n) => <div key={n}><span>{n} stars</span><i><b style={{ width: n === 5 ? "100%" : "0%" }} /></i><span>{n === 5 ? profile.ratingCount || reviewItems.length : 0}</span></div>)}</aside><div className={styles.reviewGrid}>{reviewItems.slice(0, 4).map((review) => <article key={review._id}><header><Image src={review.reviewerAvatar || "/images/team/default-avatar.svg"} alt="" width={44} height={44} /><div><strong>{review.reviewerName || "Client"}</strong><span>{isDemoProfile ? "Illustrative feedback" : "Verified collaboration"}</span></div></header><div className={styles.reviewRating}><Stars value={review.overallRating} small /><strong>{review.overallRating.toFixed(1)}</strong></div><p>{review.content}</p><time>{new Date(review.createdAt).toLocaleDateString("en-GB", { month: "long", year: "numeric" })}</time></article>)}</div></div> : <p className={styles.emptySection}>No reviews have been published yet.</p>}</section>
+      <section className={styles.section}><SectionHeading title={isDemoProfile ? "Illustrative feedback" : "Reviews"} />{reviewItems.length ? <div className={styles.reviewsLayout}><aside className={styles.reviewSummary}><strong>{(profile.ratingAverage || 0).toFixed(1)}<small>/ 5</small></strong><Stars value={profile.ratingAverage || 0} /><p>Based on {profile.ratingCount || reviewItems.length} {isDemoProfile ? "sample entries" : (profile.ratingCount || reviewItems.length) === 1 ? "review" : "reviews"}</p></aside><div className={styles.reviewGrid}>{reviewItems.slice(0, 4).map((review) => <article key={review._id}><header><Image src={review.reviewerAvatar || "/images/team/default-avatar.svg"} alt="" width={44} height={44} /><div><strong>{review.reviewerName || "Client"}</strong><span>{isDemoProfile ? "Illustrative feedback" : "Verified collaboration"}</span></div></header><div className={styles.reviewRating}><Stars value={review.overallRating} small /><strong>{review.overallRating.toFixed(1)}</strong></div><p>{review.content}</p><time>{new Date(review.createdAt).toLocaleDateString("en-GB", { month: "long", year: "numeric" })}</time></article>)}</div></div> : <p className={styles.emptySection}>{reviews === undefined && profileId ? "Loading reviews…" : "No reviews have been published yet."}</p>}</section>
 
       <section className={styles.section}><SectionHeading title="Availability" />{isDemoProfile ? <><div className={styles.availability}>{["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day, index) => <div key={day}><strong>{day}</strong>{index < 5 ? <><span>09:00 – 17:00</span><em><i />Available</em></> : <span>Closed</span>}</div>)}</div><p className={styles.timezone}><Clock3 size={15} /> Illustrative schedule in Netherlands time (CET)</p></> : <p className={styles.emptySection}>{profile.isAvailable ? "Available for new work. Agree exact dates in the workspace." : "Not currently accepting new work."}</p>}</section>
 
       {similarItems.length > 0 && <section className={styles.section}><SectionHeading title={isDemoProfile ? "Illustrative related profiles" : "Similar freelancers"} linkLabel="View all freelancers" href="/online/freelancers" /><div className={styles.similarGrid}>{similarItems.map((person) => <Link href={person.slug ? `/online/freelancer/${person.slug}` : "/online/freelancers"} key={person._id}><Image src={person.avatarUrl || "/images/team/default-avatar.svg"} alt={person.displayName} width={64} height={64} /><div><h3>{person.displayName}</h3><p>{person.tagline}</p><span><Star size={13} fill="currentColor" />{person.ratingAverage || 0} ({person.ratingCount || 0}) · <MapPin size={13} />{person.locationCity || "Online"}</span><strong>{person.hourlyRate ? `From €${person.hourlyRate} / hour` : "Rate on request"}</strong></div></Link>)}</div></section>}
 
-      <section className={styles.cta}><div className={styles.ctaIcon}><ShieldCheck /></div><div><h2>Need talent for your project?</h2><p>Post a project and receive proposals from carefully screened freelancers.</p></div><div><Link href="/online/projects/create">Post a project</Link><Link href="/how-it-works">Learn about safe collaboration <ArrowRight size={15} /></Link></div></section>
+      <section className={styles.cta}><div className={styles.ctaIcon}><ShieldCheck /></div><div><h2>Need talent for your project?</h2><p>Post a project and compare proposals, profiles and previous work.</p></div><div><Link href="/create-projects">Post a project</Link><Link href="/help">Learn about safe collaboration <ArrowRight size={15} /></Link></div></section>
     </div>
   </main>;
 }

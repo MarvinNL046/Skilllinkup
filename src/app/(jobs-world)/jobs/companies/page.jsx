@@ -1,6 +1,6 @@
 import BusinessLanding from "@/components/business/BusinessLanding";
 
-export const metadata = { title: "Skilllinkup for Business", description: "Find verified flexible talent and manage projects, contracts, invoices and performance in one secure platform." };
+export const metadata = { title: "Skilllinkup for Business", description: "Learn how Skilllinkup supports company vacancies, project briefs, private workspaces and application management during beta." };
 
 export default function CompaniesPage() {
   return <BusinessLanding />;

@@ -262,7 +262,7 @@
     "getInTouchDesc": "Heb je een vraag over SkillLinkup? We helpen freelancers en klanten graag om het meeste uit het platform te halen.",
     "emailLabel": "E-mail",
     "responseTime": "Reactietijd",
-    "responseTimeDesc": "We reageren doorgaans binnen 24 uur op werkdagen.",
+    "responseTimeDesc": "De reactietijd kan variëren tijdens de bèta. We antwoorden op het e-mailadres dat je opgeeft.",
     "location": "Locatie",
     "locationDesc": "Nederland — Freelancers wereldwijd bedienen",
     "sendUsMessage": "Stuur ons een bericht",
@@ -285,7 +285,7 @@
     "sendMessage": "Bericht versturen",
     "sending": "Versturen...",
     "sendingMessage": "Je bericht wordt verstuurd...",
-    "messageSent": "Bericht verstuurd! We nemen binnen 24 uur contact met je op.",
+    "messageSent": "Je bericht is ontvangen. We antwoorden op je e-mailadres.",
     "fillAllFields": "Vul alle velden in voordat je verstuurt.",
     "invalidEmail": "Vul een geldig e-mailadres in.",
     "sendFailed": "Bericht versturen mislukt. Probeer het opnieuw."
@@ -317,7 +317,7 @@
     "start4Q": "Wat is het verschil tussen online en lokale diensten?",
     "start4A": "Online diensten worden op afstand geleverd — denk aan webontwikkeling, grafisch ontwerp of content schrijven. Lokale diensten worden ter plaatse uitgevoerd in jouw buurt — zoals reparaties, schoonmaak of fotografie. Je vindt beide types op SkillLinkup.",
     "start5Q": "Hoe neem ik contact op met support?",
-    "start5A": "Je kunt ons bereiken via de contactpagina of ons direct mailen op info@skilllinkup.com. We reageren doorgaans binnen 24 uur op werkdagen."
+    "start5A": "Je kunt ons bereiken via de contactpagina of rechtstreeks mailen naar info@skilllinkup.com. Vermeld de relevante pagina of orderreferentie, zodat we je vraag kunnen beoordelen."
   },
   "pricing": {
     "title": "Prijzen",
@@ -1516,7 +1516,7 @@
   },
   "saved": {
     "title": "Opgeslagen",
-    "pageDescription": "Je opgeslagen services, projecten en vacatures.",
+    "pageDescription": "Je opgeslagen professionals, services, projecten en vacatures.",
     "tabServices": "Services",
     "tabProjects": "Projecten",
     "tabJobs": "Vacatures",

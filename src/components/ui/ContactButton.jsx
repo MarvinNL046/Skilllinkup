@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { toast } from "sonner";
 import { useMutation } from "convex/react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
@@ -40,7 +41,7 @@ export default function ContactButton({
       const conversationId = await openConversation({ context });
       router.push(`/message?conversation=${conversationId}`);
     } catch (err) {
-      console.error("Failed to create conversation:", err);
+      toast.error(err?.message || "Could not open the conversation. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -53,7 +54,7 @@ export default function ContactButton({
     <button
       className={`btn btn--secondary ${className}`}
       onClick={handleContact}
-      disabled={isLoading}
+      disabled={isLoading || (isSignedIn && !convexUser?._id)}
       style={{ justifyContent: "center" }}
     >
       <Mail size={16} />

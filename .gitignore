@@ -66,6 +66,8 @@ scripts/verify-*.mjs
 !scripts/check-private-beta-copy.mjs
 !scripts/check-account-context.mjs
 !scripts/check-invoice.mjs
+!scripts/check-invoice-pdf.mjs
+!scripts/check-dashboard-mvp.mjs
 !scripts/verify-environment.mjs
 !scripts/verify-hosted-release.mjs
 

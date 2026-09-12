@@ -40,11 +40,12 @@ function NavItem({ item, active, collapsed, onNavigate }) {
   return <Link href={item.path} onClick={onNavigate} className={`${styles.navItem} ${active ? styles.active : ""}`} title={collapsed ? item.name : undefined} aria-label={collapsed ? item.name : undefined}><Icon size={19} />{collapsed ? null : <span>{item.name}</span>}</Link>;
 }
 
-export default function DashboardSidebar() {
+export default function DashboardSidebar({ mobile = false }) {
   const path = usePathname();
   const { signOut } = useClerk();
   const { convexUser } = useConvexUser();
-  const collapsed = useHydratedSidebarCollapsed();
+  const savedCollapsed = useHydratedSidebarCollapsed();
+  const collapsed = !mobile && savedCollapsed;
   const toggleCollapsed = dashboardSidebarStore((state) => state.toggleCollapsed);
   const closeMobile = dashboardSidebarStore((state) => state.closeMobile);
   const role = getActiveRole(convexUser);
