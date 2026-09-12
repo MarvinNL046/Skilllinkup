@@ -111,7 +111,7 @@ export default function CtaBanner18() {
                 })}
               </p>
               <WaitlistButton
-                className="btn btn--accent btn--lg"
+                size="lg"
                 label={t("cta", { default: "Join the waitlist" })}
               />
             </div>

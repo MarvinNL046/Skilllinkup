@@ -98,25 +98,7 @@
   font-size: 14px;
 }
 .searchBar button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
   min-width: 124px;
-  border: 1px solid transparent;
-  border-radius: var(--action-radius);
-  background: var(--action-primary-bg);
-  color: var(--action-primary-text);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.searchBar button:hover {
-  background: var(--action-primary-hover);
-}
-.searchBar button:focus-visible {
-  outline: 2px solid var(--action-primary-bg);
-  outline-offset: 3px;
 }
 
 .resultsSection {
@@ -788,25 +770,12 @@
   gap: 12px;
   flex: 0 0 auto;
 }
-.postProject a {
+.postProject a:not(:first-child) {
   color: var(--navy);
   font-size: 11px;
   font-weight: 750;
   text-decoration: none;
 }
-.postProject a:first-child {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 13px 17px;
-  border: 1px solid #e9482b;
-  border-radius: 8px;
-  background: var(--coral);
-  color: #fff;
-  font-size: 12px;
-  box-shadow: 0 8px 18px #ff4f2e22;
-}
-
 @media (max-width: 1100px) {
   .resultsLayout {
     grid-template-columns: 245px minmax(0, 1fr);
@@ -975,7 +944,7 @@
 .cardFooter a,
 .pagination button,
 .postProject span,
-.postProject a,
+.postProject a:not(:first-child),
 .mobileFilterButton {
   font-size: 12px;
 }

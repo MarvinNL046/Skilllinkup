@@ -106,7 +106,7 @@ export default function Header20() {
           ) : (
             <>
               <PublicSignInLink />
-              <WaitlistButton className="skl-action-primary whitespace-nowrap" />
+              <WaitlistButton />
             </>
           )}
         </div>

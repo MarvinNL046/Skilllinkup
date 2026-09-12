@@ -104,7 +104,7 @@ export default function Breadcumb1({ title, brief, isBtnActive, crumbs = [] }) {
             )}
             {isBtnActive && (
               <div style={{ marginTop: "var(--space-6)" }}>
-                <WaitlistButton className="btn btn--accent" />
+                <WaitlistButton />
               </div>
             )}
           </div>

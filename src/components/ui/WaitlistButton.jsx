@@ -4,8 +4,9 @@ import { useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
-import { ArrowRight, Check, Sparkles } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { api } from "../../../convex/_generated/api";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -23,7 +24,9 @@ const PIONEER_THRESHOLD = 25;
  * design-system button & modal classes rather than Bootstrap.
  */
 export default function WaitlistButton({
-  className = "btn btn--primary",
+  className,
+  variant = "default",
+  size,
   label,
   style,
   initialSkill = "",
@@ -113,9 +116,9 @@ export default function WaitlistButton({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <button type="button" className={className} style={style}>
+        <Button type="button" variant={variant} size={size} className={className} style={style}>
           {label ?? t("joinWaitlist")}
-        </button>
+        </Button>
       </DialogTrigger>
       {open ? (
         <DialogContent className="max-w-[480px] max-h-[90dvh] gap-0 overflow-y-auto p-0">
@@ -138,7 +141,6 @@ export default function WaitlistButton({
                           letterSpacing: "var(--tracking-wider)",
                         }}
                       >
-                        <Sparkles size={13} strokeWidth={2.2} />
                         <span>{counterLabel()}</span>
                       </div>
                       <DialogTitle className="h3" style={{ margin: 0 }}>
@@ -234,15 +236,14 @@ export default function WaitlistButton({
                         {error}
                       </p>
                     )}
-                    <button
+                    <Button
                       type="submit"
-                      className="btn btn--primary btn--lg"
-                      style={{ width: "100%" }}
+                      className="w-full"
                       disabled={loading}
                     >
                       {loading ? t("submitting") : t("joinNow")}
                       <ArrowRight size={18} />
-                    </button>
+                    </Button>
                     <p
                       className="body-sm"
                       style={{
@@ -305,9 +306,9 @@ export default function WaitlistButton({
                     {t("successShare")}
                   </p>
                 )}
-                <button className="btn btn--secondary" onClick={handleClose}>
+                <Button type="button" variant="secondary" onClick={handleClose}>
                   {t("close")}
-                </button>
+                </Button>
               </div>
             )}
           </div>

@@ -68,7 +68,7 @@ export default function MobileNavigation2() {
           ) : (
             <>
               <PublicSignInLink className="skl-action-secondary whitespace-nowrap" />
-              <span className="hidden md:inline-flex"><WaitlistButton className="skl-action-primary whitespace-nowrap" /></span>
+              <span className="hidden md:inline-flex"><WaitlistButton /></span>
             </>
           )}
           <button

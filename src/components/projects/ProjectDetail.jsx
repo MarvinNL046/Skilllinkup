@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "convex/react";
@@ -466,9 +467,9 @@ export default function ProjectDetail() {
                     Sign in to introduce yourself, share your price and propose
                     a delivery date.
                   </p>
-                  <Link href="/login">
+                  <Button asChild><Link href="/login">
                     Sign in to propose <ArrowRight size={16} />
-                  </Link>
+                  </Link></Button>
                 </div>
               ) : isOwner ? (
                 <p className={styles.ownerNote}>
@@ -480,9 +481,9 @@ export default function ProjectDetail() {
               ) : (
                 <div className={styles.signInPrompt}>
                   <p>The proposal form becomes active for live projects.</p>
-                  <Link href="/projects">
+                  <Button asChild><Link href="/projects">
                     Explore live projects <ArrowRight size={16} />
-                  </Link>
+                  </Link></Button>
                 </div>
               )}
             </section>
@@ -525,13 +526,13 @@ export default function ProjectDetail() {
                     : "Open until filled"}
                 </strong>
               </div>
-              <button
+              <Button
                 className={styles.proposalButton}
                 onClick={scrollToProposal}
               >
                 <Send size={17} />
                 Send a proposal
-              </button>
+              </Button>
               <button
                 className={styles.questionButton}
                 onClick={() => setQuestionOpen(true)}
@@ -675,7 +676,7 @@ export default function ProjectDetail() {
               placeholder="Your email address"
               aria-label="Email address"
             />
-            <button type="submit">Subscribe</button>
+            <Button type="submit">Subscribe</Button>
           </form>
         </section>
         <section className={styles.bottomTrust}>

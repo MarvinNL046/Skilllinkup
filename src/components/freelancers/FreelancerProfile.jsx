@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "convex/react";
@@ -113,7 +114,7 @@ function BookingCard({ profile }) {
       <p><Clock3 size={18} /><span><strong>Response time</strong>{profile.responseTimeHours ? `Usually within ${profile.responseTimeHours} hours` : "Not published yet"}</span></p>
       <p><ShieldCheck size={18} /><span><strong>Clear beta agreement</strong>Record scope, delivery and approval</span></p>
     </div>
-    {profile.userId && profile._id !== "demo-profile" ? <ContactButton recipientId={profile.userId} profileId={profile._id} className={styles.contactButton} /> : <Link href="/sign-up" className={styles.contactButton}><MessageCircle size={18} />Contact freelancer</Link>}
+    {profile.userId && profile._id !== "demo-profile" ? <ContactButton recipientId={profile.userId} profileId={profile._id} className={styles.contactButton} variant="default" /> : <Button asChild className={styles.contactButton}><Link href="/sign-up"><MessageCircle size={18} />Contact freelancer</Link></Button>}
     <Link href="/create-projects" className={styles.offerButton}><FileText size={17} />Request a quote</Link>
     <div className={styles.secureNote}><LockKeyhole size={18} /><span><strong>Your details stay private</strong>No payment or escrow is active during beta.</span></div>
   </aside>;
@@ -176,7 +177,7 @@ export default function FreelancerProfile() {
               <div className={styles.statusRow}><span>{profile.responseTimeHours ? `Typically responds in ${profile.responseTimeHours} hours` : "Response time not published"}</span>{profile.isAvailable && <span><i />Available</span>}</div>
               <div className={styles.skillRow}>{skills.slice(0, 8).map((skill) => <span key={skill}>{skill}</span>)}</div>
             </div>
-            <div className={styles.profileActions}>{profile.userId && profile._id !== "demo-profile" ? <ContactButton recipientId={profile.userId} profileId={profile._id} className={styles.primaryAction} /> : <Link className={styles.primaryAction} href="/sign-up"><MessageCircle size={18} />Send a message</Link>}<SavedItemButton itemType="freelancer" itemId={profile._id} title={profile.displayName} image={avatar} href={`/online/freelancer/${profile.slug || profile._id}`} showLabel disabled={isDemoProfile} /></div>
+            <div className={styles.profileActions}>{profile.userId && profile._id !== "demo-profile" ? <ContactButton recipientId={profile.userId} profileId={profile._id} className={styles.primaryAction} variant="default" /> : <Button asChild className={styles.primaryAction}><Link href="/sign-up"><MessageCircle size={18} />Send a message</Link></Button>}<SavedItemButton itemType="freelancer" itemId={profile._id} title={profile.displayName} image={avatar} href={`/online/freelancer/${profile.slug || profile._id}`} showLabel disabled={isDemoProfile} /></div>
           </article>
           {profile._id !== "demo-profile" ? (
             <ReportButton
@@ -204,7 +205,7 @@ export default function FreelancerProfile() {
 
       {similarItems.length > 0 && <section className={styles.section}><SectionHeading title={isDemoProfile ? "Illustrative related profiles" : "Similar freelancers"} linkLabel="View all freelancers" href="/online/freelancers" /><div className={styles.similarGrid}>{similarItems.map((person) => <Link href={person.slug ? `/online/freelancer/${person.slug}` : "/online/freelancers"} key={person._id}><Image src={person.avatarUrl || "/images/team/default-avatar.svg"} alt={person.displayName} width={64} height={64} /><div><h3>{person.displayName}</h3><p>{person.tagline}</p><span><Star size={13} fill="currentColor" />{person.ratingAverage || 0} ({person.ratingCount || 0}) · <MapPin size={13} />{person.locationCity || "Online"}</span><strong>{person.hourlyRate ? `From €${person.hourlyRate} / hour` : "Rate on request"}</strong></div></Link>)}</div></section>}
 
-      <section className={styles.cta}><div className={styles.ctaIcon}><ShieldCheck /></div><div><h2>Need talent for your project?</h2><p>Post a project and compare proposals, profiles and previous work.</p></div><div><Link href="/create-projects">Post a project</Link><Link href="/help">Learn about safe collaboration <ArrowRight size={15} /></Link></div></section>
+      <section className={styles.cta}><div className={styles.ctaIcon}><ShieldCheck /></div><div><h2>Need talent for your project?</h2><p>Post a project and compare proposals, profiles and previous work.</p></div><div><Button asChild><Link href="/create-projects">Post a project</Link></Button><Link href="/help">Learn about safe collaboration <ArrowRight size={15} /></Link></div></section>
     </div>
   </main>;
 }

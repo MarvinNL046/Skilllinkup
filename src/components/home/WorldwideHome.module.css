@@ -177,28 +177,6 @@
 }
 .searchBox button {
   min-width: 118px;
-  border: 1px solid #e9482b;
-  border-radius: 10px;
-  background-color: var(--home-coral);
-  background-image: url("/images/skilllinkup-patterns/coral-tiger-print-v1.png");
-  background-position: center;
-  background-size: 150px 84px;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 750;
-  cursor: pointer;
-  box-shadow:
-    inset 0 1px 0 #ffffff4a,
-    0 8px 18px #ff4f2e24;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
-}
-.searchBox button:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    inset 0 1px 0 #ffffff62,
-    0 12px 24px #ff4f2e36;
 }
 .trustList {
   display: flex;
@@ -856,36 +834,6 @@
   color: var(--home-navy);
   font-size: 13px;
 }
-.workspaceCopy > a,
-.businessCopy > a {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 12px 16px;
-  border: 1px solid #e9482b;
-  border-radius: 9px;
-  background-color: var(--home-coral);
-  background-image: url("/images/skilllinkup-patterns/coral-tiger-print-v1.png");
-  background-position: center;
-  background-size: 180px 101px;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 780;
-  text-decoration: none;
-  box-shadow:
-    inset 0 1px 0 #ffffff4a,
-    0 9px 20px #ff4f2e24;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
-}
-.workspaceCopy > a:hover,
-.businessCopy > a:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    inset 0 1px 0 #ffffff62,
-    0 13px 26px #ff4f2e32;
-}
 .workspaceMock {
   overflow: hidden;
   border: 1px solid #dce3e5;
@@ -1342,31 +1290,6 @@
   font: inherit;
   font-size: 12px;
 }
-.newsletterSection button {
-  padding: 0 20px;
-  border: 1px solid #e9482b;
-  border-radius: 8px;
-  background-color: var(--home-coral);
-  background-image: url("/images/skilllinkup-patterns/coral-tiger-print-v1.png");
-  background-position: center;
-  background-size: 150px 84px;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 780;
-  cursor: pointer;
-  box-shadow:
-    inset 0 1px 0 #ffffff4a,
-    0 8px 18px #ff4f2e22;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
-}
-.newsletterSection button:hover {
-  transform: translateY(-1px);
-  box-shadow:
-    inset 0 1px 0 #ffffff62,
-    0 11px 22px #ff4f2e30;
-}
 .footer {
   position: relative;
   overflow: hidden;
@@ -1511,9 +1434,6 @@
     border-top: 1px solid #e5e9eb;
     border-left: 0;
   }
-  .searchBox button {
-    min-height: 46px;
-  }
   .heroVisual {
     min-height: 360px;
   }
@@ -1655,9 +1575,6 @@
   }
   .newsletterSection form {
     grid-template-columns: 1fr;
-  }
-  .newsletterSection button {
-    height: 42px;
   }
 }
 

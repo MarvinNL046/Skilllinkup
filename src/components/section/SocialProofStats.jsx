@@ -3,7 +3,7 @@
 import CountUp from "react-countup";
 import { useTranslations } from "next-intl";
 import { useQuery } from "convex/react";
-import { Users, Sparkles, Heart, Layers } from "lucide-react";
+import { Users, LayoutGrid, Heart, Layers } from "lucide-react";
 import { api } from "../../../convex/_generated/api";
 import { cn } from "@/lib/utils";
 
@@ -13,7 +13,7 @@ const STATS = [
   { end: 98, Icon: Heart, suffix: "%", labelKey: "satisfaction", tone: "primary" },
   {
     end: 50,
-    Icon: Sparkles,
+    Icon: LayoutGrid,
     suffix: "+",
     labelKey: "categoriesLabel",
     tone: "secondary",

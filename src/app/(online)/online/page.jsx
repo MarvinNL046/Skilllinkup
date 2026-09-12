@@ -22,7 +22,7 @@ const config = {
     { icon: "people", value: "Global", label: "English-first discovery" },
     { icon: "global", value: "Worldwide", label: "Remote collaboration" },
     { icon: "shield", value: "Recorded", label: "Milestone approvals" },
-    { icon: "quality", value: "Free beta", label: "Payments disabled" },
+    { icon: "salary", value: "Free beta", label: "Payments disabled" },
   ],
   categoryEyebrow: "Popular online expertise",
   categoryTitle: "Start with the skill you need",
@@ -30,7 +30,7 @@ const config = {
   categories: [
     { name: "Web design", description: "Websites, UX/UI and conversion", icon: "global", href: "/services/webdesign" },
     { name: "Development", description: "Apps, platforms and integrations", icon: "jobs", href: "/online/services?q=development" },
-    { name: "Marketing", description: "Campaigns, SEO and growth", icon: "quality", href: "/online/services?q=marketing" },
+    { name: "Marketing", description: "Campaigns, SEO and growth", icon: "marketing", href: "/online/services?q=marketing" },
     { name: "Writing & translation", description: "Copywriting and translation", icon: "verified", href: "/online/services?q=writing" },
     { name: "Design & branding", description: "Identity, graphics and motion", icon: "people", href: "/online/services?q=design" },
     { name: "Video & audio", description: "Production, editing and voice", icon: "fast", href: "/online/services?q=video" },
@@ -59,7 +59,7 @@ const config = {
   pathTitle: "Use online talent your way",
   pathDescription: "Start with a clearly scoped service, compare freelancers, or publish a project and let specialists come to you.",
   paths: [
-    { icon: "quality", title: "Browse ready-made services", description: "Choose a defined package with transparent scope, timing and price.", href: "/online/services", cta: "Explore services" },
+    { icon: "services", title: "Browse ready-made services", description: "Choose a defined package with transparent scope, timing and price.", href: "/online/services", cta: "Explore services" },
     { icon: "people", title: "Find a freelancer", description: "Search profiles, compare portfolios and contact the right specialist directly.", href: "/online/freelancers", cta: "Browse freelancers" },
     { icon: "jobs", title: "Post a project", description: "Describe the result you need and receive proposals from relevant talent.", href: "/create-projects", cta: "Post a project" },
   ],

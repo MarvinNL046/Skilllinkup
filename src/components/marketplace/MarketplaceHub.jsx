@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -9,10 +10,11 @@ import {
   Clock3,
   Globe2,
   MapPin,
+  Megaphone,
+  Package,
+  Palette,
   Search,
   ShieldCheck,
-  Sparkles,
-  Star,
   Users,
 } from "lucide-react";
 import styles from "./MarketplaceHub.module.css";
@@ -26,7 +28,9 @@ const icons = {
   jobs: BriefcaseBusiness,
   salary: CircleDollarSign,
   fast: Clock3,
-  quality: Star,
+  marketing: Megaphone,
+  services: Package,
+  design: Palette,
 };
 
 export default function MarketplaceHub({ config }) {
@@ -37,7 +41,7 @@ export default function MarketplaceHub({ config }) {
       <section className={styles.hero}>
         <div className={`${styles.container} ${styles.heroGrid}`}>
           <div className={styles.heroCopy}>
-            <span className={styles.eyebrow}>{config.tone !== "local" && <Sparkles aria-hidden="true" />}{config.eyebrow}</span>
+            <span className={styles.eyebrow}>{config.eyebrow}</span>
             <h1>{config.title}{" "}<em>{config.accent}</em></h1>
             <p>{config.description}</p>
 
@@ -52,7 +56,7 @@ export default function MarketplaceHub({ config }) {
                   <input name="location" aria-label="Location" placeholder={config.search.location} />
                 </label>
               )}
-              <button type="submit">{config.search.button}<ArrowRight /></button>
+              <Button type="submit">{config.search.button}<ArrowRight /></Button>
             </form>
 
             <div className={styles.heroTrust}>
@@ -117,7 +121,7 @@ export default function MarketplaceHub({ config }) {
           <ul>
             {config.feature.points.map((point) => <li key={point}><Check />{point}</li>)}
           </ul>
-          <Link href={config.feature.href}>{config.feature.cta}<ArrowRight /></Link>
+          <Button asChild><Link href={config.feature.href}>{config.feature.cta}<ArrowRight /></Link></Button>
         </div>
       </section>
 
@@ -216,8 +220,8 @@ export default function MarketplaceHub({ config }) {
           <p>{config.cta.description}</p>
         </div>
         <div className={styles.ctaActions}>
-          <Link href={config.cta.primaryHref}>{config.cta.primaryLabel}<ArrowRight /></Link>
-          <Link href={config.cta.secondaryHref}>{config.cta.secondaryLabel}</Link>
+          <Button asChild><Link href={config.cta.primaryHref}>{config.cta.primaryLabel}<ArrowRight /></Link></Button>
+          <Button asChild variant="outline"><Link href={config.cta.secondaryHref}>{config.cta.secondaryLabel}</Link></Button>
         </div>
       </section>
     </main>

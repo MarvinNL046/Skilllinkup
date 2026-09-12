@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "convex/react";
-import { CheckCircle2, Sparkles } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,10 +12,7 @@ export default function CreditsInfo() {
   return (
     <div className="space-y-8">
       <Card className="overflow-hidden border-emerald-200 bg-emerald-50/60">
-        <CardContent className="grid gap-6 p-8 sm:grid-cols-[auto_1fr] sm:items-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-emerald-700 shadow-sm">
-            <Sparkles className="h-7 w-7" />
-          </div>
+        <CardContent className="p-8">
           <div>
             <Badge variant="success" className="mb-3">Private beta</Badge>
             <h2 className="mb-2 text-2xl font-semibold text-[var(--navy-900)]">

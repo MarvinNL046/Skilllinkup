@@ -13,7 +13,6 @@ import {
   Globe2,
   MapPin,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "../../../../convex/_generated/api";
@@ -573,7 +572,7 @@ export default function CreateJobInfo() {
             </div>
             <div className={styles.preview}>
               <span>
-                <Sparkles /> Live preview
+                Live preview
               </span>
               <h2>{form.title || "Your vacancy title"}</h2>
               <p className={styles.company}>

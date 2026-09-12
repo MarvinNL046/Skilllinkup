@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BadgeCheck, Check, Globe2, Headphones, ShieldCheck, WalletCards } from "lucide-react";
@@ -49,7 +50,7 @@ export default function TrustStories() {
 
       <section className={`${styles.section} ${styles.businessSection}`}>
         <div className={styles.businessPanel}>
-          <div className={styles.businessCopy}><span className={styles.eyebrow}>Skilllinkup for business</span><h2>Build your team without borders.</h2><p>Hire independent experts for a single project, find reliable local professionals, or reach candidates for permanent roles.</p><Link href="/business">Explore Skilllinkup for business <ArrowRight size={16} /></Link></div>
+          <div className={styles.businessCopy}><span className={styles.eyebrow}>Skilllinkup for business</span><h2>Build your team without borders.</h2><p>Hire independent experts for a single project, find reliable local professionals, or reach candidates for permanent roles.</p><Button asChild><Link href="/business">Explore Skilllinkup for business <ArrowRight size={16} /></Link></Button></div>
           <div className={styles.businessImage}><Image src="/images/skilllinkup-home/business-team-v2.png" alt="A diverse team of professionals collaborating around a laptop" fill unoptimized sizes="(max-width: 800px) 100vw, 55vw" /></div>
         </div>
       </section>

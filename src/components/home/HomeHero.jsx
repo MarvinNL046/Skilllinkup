@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import {
   BadgeCheck,
@@ -54,7 +55,7 @@ export default function HomeHero() {
                   <option value="jobs">Jobs</option>
                 </select>
               </label>
-              <button type="submit">Search</button>
+              <Button type="submit">Search</Button>
             </form>
             <div className={styles.trustList}>
               {trustItems.map(({ Icon, label }) => (

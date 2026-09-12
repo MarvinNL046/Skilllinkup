@@ -30,10 +30,11 @@
   --primary-800: oklch(36% 0.125 36);
   --primary-900: oklch(26% 0.085 35);
 
-  /* Shared action styles: dashboard, onboarding and reusable Button. */
-  --action-primary-bg: #c74620;
-  --action-primary-text: #ffffff;
-  --action-primary-hover: #aa3818;
+  /* Shared actions: warm amber, matching The Rockhounding Hub CTA palette.
+     Dark ink keeps labels readable on both the default and hover orange. */
+  --action-primary-bg: #f59e0b;
+  --action-primary-text: #1c1917;
+  --action-primary-hover: #d97706;
   --action-primary-border: var(--action-primary-bg);
   --action-secondary-bg: #ffffff;
   --action-secondary-text: #0b2041;
@@ -45,7 +46,10 @@
   --action-danger-border: var(--action-danger-bg);
   --action-radius: 8px;
   --action-height: 44px;
-  --action-focus-ring: #a93616;
+  --action-link-text: #92400e;
+  --action-link-hover: #78350f;
+  --action-focus-ring: #b45309;
+  --action-focus-shadow: rgb(245 158 11 / 20%);
 
   /* ---------- SECONDARY — Warm Terracotta-Amber ----------
      De menselijke tegenhanger. Gebruikt voor CTA-accents,
