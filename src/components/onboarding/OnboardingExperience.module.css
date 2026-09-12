@@ -65,3 +65,5 @@
 
 .exitActions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
 @media (max-width: 540px) { .header { flex-wrap: wrap; gap: .75rem; } .exitActions { width: 100%; justify-content: space-between; } }
+
+.draftNotice { margin: 0 0 1rem; text-align: center; color: var(--text-secondary); font-size: .85rem; }
