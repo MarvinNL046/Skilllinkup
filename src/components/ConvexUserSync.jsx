@@ -5,6 +5,7 @@ import { api } from "../../convex/_generated/api";
 import { useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { hasCompletedActiveContext } from "@/lib/accountContext.mjs";
+import { onboardingUrl } from "@/lib/onboardingRedirect.mjs";
 
 export default function ConvexUserSync() {
     const { user, isSignedIn } = useUser();
@@ -47,7 +48,7 @@ export default function ConvexUserSync() {
             pathname.startsWith("/dashboard") &&
             pathname !== "/onboarding"
         ) {
-            router.replace("/onboarding");
+            router.replace(onboardingUrl(window.location.pathname + window.location.search + window.location.hash));
         }
     }, [convexUser, pathname, router]);
 

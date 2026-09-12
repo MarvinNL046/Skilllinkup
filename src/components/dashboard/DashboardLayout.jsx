@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import useConvexUser from "@/hook/useConvexUser";
 import { hasCompletedActiveContext } from "@/lib/accountContext.mjs";
+import { onboardingUrl } from "@/lib/onboardingRedirect.mjs";
 import DashboardHeader from "./header/DashboardHeader";
 import DashboardSidebar from "./sidebar/DashboardSidebar";
 import dashboardSidebarStore, {
@@ -36,7 +37,8 @@ export default function DashboardLayout({ children, maxWidth = "full" }) {
   const closeMobile = dashboardSidebarStore((s) => s.closeMobile);
   useEffect(() => {
     if (isLoaded && !isClerkSignedIn) {
-      router.replace("/login");
+      const destination = window.location.pathname + window.location.search + window.location.hash;
+      router.replace(`/login?${new URLSearchParams({ redirect_url: destination })}`);
       return;
     }
     if (
@@ -44,7 +46,7 @@ export default function DashboardLayout({ children, maxWidth = "full" }) {
       !hasCompletedActiveContext(convexUser) &&
       pathname !== "/onboarding"
     ) {
-      router.replace("/onboarding");
+      router.replace(onboardingUrl(window.location.pathname + window.location.search + window.location.hash));
     }
   }, [convexUser, isLoaded, isClerkSignedIn, pathname, router]);
 
