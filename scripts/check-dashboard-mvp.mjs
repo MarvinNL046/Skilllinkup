@@ -233,6 +233,35 @@ await check("Application retry reuses the uploaded CV and preserves the draft af
 
 
 
+
+await check("Onboarding exits preserve drafts on failure and suppress the login redirect during logout", async () => {
+  const runner = hookRunner(); const navigations = []; const calls = []; let settle; let signedIn = true; let userReady = true;
+  const Page = loader({
+    react: runner.react, "next/image": { default: "img" }, "next/link": { default: "a" },
+    "next/navigation": { useRouter: () => ({ replace: url => navigations.push(url) }), useSearchParams: () => new URLSearchParams("role=company") },
+    "@clerk/nextjs": { useClerk: () => ({ signOut: args => { calls.push(args); return new Promise((resolve, reject) => { settle = {resolve, reject}; }); } }) },
+    "convex/react": { useMutation: () => async () => { throw new Error("Should not save"); } },
+    "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
+    "@/hook/useConvexUser": { default: () => ({ convexUser: userReady ? { accountRoles: [] } : null, isLoaded: true, isClerkSignedIn: signedIn }) },
+    "@/lib/onboardingRedirect.mjs": onboardingRedirects, "./OnboardingExperience.module.css": { default: {} },
+  }, { URLSearchParams })("src/components/onboarding/OnboardingExperience.jsx").default;
+  const render = () => runner.render(() => Page()); let tree = render();
+  findElement(tree, e => e.props?.placeholder === "Your organisation").props.onChange({ target: { value: "QA retained company" } });
+  tree = render(); findElement(tree, e => e.props?.children === "Change").props.onClick();
+  tree = render(); findElement(tree, e => e.type === "button" && findElement(e, x => x.type === "strong" && x.props.children === "I hire for a company")).props.onClick();
+  tree = render(); assert.equal(findElement(tree, e => e.props?.placeholder === "Your organisation").props.value, "QA retained company");
+  const logout = findElement(tree, e => e.props?.children === "Log out").props.onClick;
+  const first = logout(); await logout(); assert.equal(calls.length, 1);
+  settle.reject(new Error("Temporary failure")); await first; tree = render();
+  assert.equal(findElement(tree, e => e.props?.placeholder === "Your organisation").props.value, "QA retained company");
+  assert.ok(findElement(tree, e => e.props?.role === "alert"));
+  const retry = findElement(tree, e => e.props?.children === "Log out").props.onClick();
+  signedIn = false; render(); assert.deepEqual(navigations, []);
+  settle.resolve(); await retry; assert.equal(calls[1].redirectUrl, "/");
+  signedIn = true; userReady = false; tree = render();
+  assert.ok(findElement(tree, e => e.type === "a" && e.props.href === "/"));
+});
+
 await check("Unavailable jobs stop rendering instead of showing an empty application page", async () => {
   let result = null; let fail = false;
   const Page = loader({
@@ -647,6 +676,7 @@ await check("All five onboarding roles save before returning, and failures prese
       "@/hook/useConvexUser": { default: () => ({ convexUser: { accountRoles: ["client"] }, isLoaded: true, isClerkSignedIn: true }) },
       "@/lib/onboardingRedirect.mjs": onboardingRedirects,
       "./OnboardingExperience.module.css": { default: {} },
+      "next/link": { default: "a" }, "@clerk/nextjs": { useClerk: () => ({ signOut: async () => {} }) },
     }, { URLSearchParams })("src/components/onboarding/OnboardingExperience.jsx").default;
     let tree = runner.render(() => Page());
     const input = (placeholder, value) => {
