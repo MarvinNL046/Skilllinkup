@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { onboardingUrl } from "@/lib/onboardingRedirect.mjs";
 import { useMutation } from "convex/react";
 import { LoaderCircle, Plus } from "lucide-react";
 import { toast } from "sonner";
@@ -25,6 +27,8 @@ export default function AccountContextSwitcher({ dark = false, onSwitched }) {
   const { convexUser } = useConvexUser();
   const switchContext = useMutation(api.users.switchAccountContext);
   const [switching, setSwitching] = useState(false);
+  const inFlight = useRef(false);
+  const router = useRouter();
 
   if (!convexUser) return null;
   const accountRoles = convexUser.accountRoles || [];
@@ -44,15 +48,24 @@ export default function AccountContextSwitcher({ dark = false, onSwitched }) {
     : `${options[0]?.role}:${options[0]?.world}`;
 
   async function handleChange(value) {
-    if (value === currentValue) return;
+    if (value === currentValue || inFlight.current) return;
     const [role, world] = value.split(":");
+    if (!options.some((option) => option.role === role && option.world === world)) return;
+    const complete = convexUser.onboardingContexts?.some((context) => context.role === role && context.world === world && context.version > 0);
+    if (!complete) {
+      router.push(onboardingUrl("/dashboard", { role, world }));
+      return;
+    }
+    inFlight.current = true;
     setSwitching(true);
     try {
       await switchContext({ activeRole: role, preferredWorld: world });
+      router.replace("/dashboard");
       onSwitched?.();
     } catch (error) {
       toast.error(error?.message || "Could not switch account. Please try again.");
     } finally {
+      inFlight.current = false;
       setSwitching(false);
     }
   }

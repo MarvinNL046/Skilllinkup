@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
+import { Button } from "@/components/ui/button";
+import { upcomingAppointments } from "@/lib/upcomingAppointments.mjs";
 import styles from "./RoleDashboardInfo.module.css";
 
 const configurations = {
@@ -27,6 +29,7 @@ const configurations = {
     description: "Compare quotes, confirm appointments and follow every local job from one trusted workspace.",
     action: { href: "/local/request-quote", label: "Request local quotes", Icon: Plus },
     sectionTitle: "Recent quote requests",
+    viewAllHref: "/dashboard/quote-requests",
     emptyTitle: "No local requests yet",
     emptyText: "Describe the job once and start receiving suitable local quotes.",
   },
@@ -36,6 +39,7 @@ const configurations = {
     description: "Review claimed opportunities, prepare clear quotes and keep upcoming visits under control.",
     action: { href: "/local/quote-requests", label: "Browse local requests", Icon: Search },
     sectionTitle: "Claimed opportunities",
+    viewAllHref: "/dashboard/my-leads",
     emptyTitle: "No claimed opportunities yet",
     emptyText: "Browse suitable requests in your launch region and claim the work that fits.",
   },
@@ -45,6 +49,7 @@ const configurations = {
     description: "Track every application and see exactly which opportunities need your attention next.",
     action: { href: "/jobs/browse", label: "Browse genuine jobs", Icon: Search },
     sectionTitle: "Recent applications",
+    viewAllHref: "/dashboard/applications",
     emptyTitle: "No applications yet",
     emptyText: "Explore verified vacancies and submit your first application.",
   },
@@ -54,6 +59,7 @@ const configurations = {
     description: "Publish genuine vacancies, monitor applicant interest and keep every hiring decision visible.",
     action: { href: "/create-job", label: "Post a job", Icon: Plus },
     sectionTitle: "Your vacancies",
+    viewAllHref: "/manage-jobs",
     emptyTitle: "No vacancies published yet",
     emptyText: "Create a verified vacancy and start receiving relevant applications.",
   },
@@ -84,7 +90,7 @@ function StatCard({ label, value, hint, Icon }) {
 }
 
 function EmptyState({ config }) {
-  return <div className={styles.empty}><h3>{config.emptyTitle}</h3><p>{config.emptyText}</p><Link className="skl-action-primary" href={config.action.href}>{config.action.label}<ArrowRight size={15} /></Link></div>;
+  return <div className={styles.empty}><h3>{config.emptyTitle}</h3><p>{config.emptyText}</p><Button asChild><Link href={config.action.href}>{config.action.label}<ArrowRight size={15} /></Link></Button></div>;
 }
 
 export default function RoleDashboardInfo({ role, world }) {
@@ -116,22 +122,22 @@ export default function RoleDashboardInfo({ role, world }) {
     stats = [
       { label: "Active requests", value: all.filter((item) => ["open", "matched", "accepted", "in_progress"].includes(item.status)).length, hint: "Local jobs in progress", Icon: ClipboardList },
       { label: "Quotes received", value: all.reduce((sum, item) => sum + item.quoteCount, 0), hint: "Ready to compare", Icon: MessageSquareText },
-      { label: "Upcoming visits", value: visits.filter((item) => ["requested", "confirmed"].includes(item.appointment.status)).length, hint: "Planned appointments", Icon: CalendarDays },
+      { label: "Upcoming visits", value: upcomingAppointments(visits).length, hint: "Planned appointments", Icon: CalendarDays },
       { label: "Completed", value: visits.filter((item) => item.appointment.status === "completed").length, hint: "Finished local jobs", Icon: CheckCircle2 },
     ];
     items = all.slice(0, 6).map((item) => ({ id: item._id, title: item.title, subtitle: item.categoryName || "Local service", status: item.status, meta: `${item.quoteCount} ${item.quoteCount === 1 ? "quote" : "quotes"}`, location: item.locationCity, href: `/local/quote-request/${item._id}` }));
-    schedule = visits.slice(0, 5).map((item) => ({ id: item.appointment._id, title: item.request?.title || "Local appointment", subtitle: item.professionalName, status: item.appointment.status, date: item.appointment.scheduledStart }));
+    schedule = upcomingAppointments(visits).slice(0, 5).map((item) => ({ id: item.appointment._id, title: item.request?.title || "Local appointment", subtitle: item.professionalName, status: item.appointment.status, date: item.appointment.scheduledStart }));
   } else if (localProfessional) {
     const all = claims || [];
     const visits = (appointments || []).filter((item) => item.perspective === "professional");
     stats = [
       { label: "Claimed leads", value: all.length, hint: "Qualified opportunities", Icon: FileSearch },
       { label: "Active requests", value: all.filter((item) => item.request && ["open", "matched", "accepted", "in_progress"].includes(item.request.status)).length, hint: "Still moving", Icon: BriefcaseBusiness },
-      { label: "Upcoming visits", value: visits.filter((item) => ["requested", "confirmed"].includes(item.appointment.status)).length, hint: "Planned appointments", Icon: CalendarDays },
+      { label: "Upcoming visits", value: upcomingAppointments(visits).length, hint: "Planned appointments", Icon: CalendarDays },
       { label: "Completed", value: visits.filter((item) => item.appointment.status === "completed").length, hint: "Finished jobs", Icon: CheckCircle2 },
     ];
     items = all.slice(0, 6).map((item) => ({ id: item._id, title: item.request?.title || "Local opportunity", subtitle: item.categoryName || "Local service", status: item.request?.status || "closed", meta: item.claimType === "exclusive" ? "Exclusive lead" : "Shared lead", location: item.request?.locationCity, href: item.request?._id ? `/local/quote-request/${item.request._id}` : "/local/quote-requests" }));
-    schedule = visits.slice(0, 5).map((item) => ({ id: item.appointment._id, title: item.request?.title || "Local appointment", subtitle: item.request?.locationCity || "Location shared privately", status: item.appointment.status, date: item.appointment.scheduledStart }));
+    schedule = upcomingAppointments(visits).slice(0, 5).map((item) => ({ id: item.appointment._id, title: item.request?.title || "Local appointment", subtitle: item.request?.locationCity || "Location shared privately", status: item.appointment.status, date: item.appointment.scheduledStart }));
   } else if (candidate) {
     const all = applications || [];
     stats = [
@@ -158,13 +164,13 @@ export default function RoleDashboardInfo({ role, world }) {
   return (
     <div className={styles.page}>
       <header className={styles.hero}>
-        <div><span>{config.eyebrow}</span><h1>Good morning, {firstName}</h1><h2>{config.title}</h2><p>{config.description}</p></div>
-        <Link className="skl-action-primary" href={config.action.href}><ActionIcon size={18} />{config.action.label}</Link>
+        <div><span>{config.eyebrow}</span><h1>Welcome, {firstName}</h1><h2>{config.title}</h2><p>{config.description}</p></div>
+        <Button asChild><Link href={config.action.href}><ActionIcon size={18} />{config.action.label}</Link></Button>
       </header>
       <section className={styles.stats}>{stats.map((stat) => <StatCard key={stat.label} {...stat} />)}</section>
       <div className={styles.contentGrid} data-has-schedule={schedule.length ? "true" : "false"}>
         <section className={styles.panel}>
-          <header><h2>{config.sectionTitle}</h2><Link href={config.action.href}>View all <ArrowRight size={14} /></Link></header>
+          <header><h2>{config.sectionTitle}</h2><Link href={config.viewAllHref}>View all <ArrowRight size={14} /></Link></header>
           {items.length ? <div className={styles.list}>{items.map((item) => <Link href={item.href} key={item.id}><i><BriefcaseBusiness size={19} /></i><span><strong>{item.title}</strong><small>{item.subtitle}</small><em>{item.location ? <><MapPin size={12} />{item.location}</> : null}</em></span><b><small>{candidate ? applicationLabels[item.status] || item.status : item.status.replaceAll("_", " ")}</small><strong>{item.meta}</strong></b><ArrowRight size={16} /></Link>)}</div> : <EmptyState config={config} />}
         </section>
         {schedule.length ? <section className={`${styles.panel} ${styles.schedule}`}><header><h2>Upcoming appointments</h2></header><div>{schedule.map((item) => <article key={item.id}><time><CalendarDays size={16} />{dateLabel(item.date)}</time><strong>{item.title}</strong><span>{item.subtitle}</span><small>{item.status.replaceAll("_", " ")}</small></article>)}</div></section> : null}

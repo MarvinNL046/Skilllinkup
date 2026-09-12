@@ -115,6 +115,7 @@ export default function OnboardingExperience() {
   const setAccountContext = useMutation(api.users.setAccountContext);
 
   const requestedRole = roleFromQuery(searchParams.get("role"));
+  const requestedWorld = searchParams.get("world");
   const [step, setStep] = useState(requestedRole ? 2 : 1);
   const [role, setRole] = useState(requestedRole);
   const [world, setWorld] = useState("online");
@@ -146,14 +147,14 @@ export default function OnboardingExperience() {
   useEffect(() => {
     if (!role) return;
     const config = roles.find((item) => item.id === role);
-    setWorld(config?.world || "online");
+    setWorld(role === "client" && requestedWorld === "local" ? "local" : config?.world || "online");
     setSelections([]);
     setHeadline("");
     setBio("");
     setRate("");
     setCity("");
     setCompanyName("");
-  }, [role]);
+  }, [role, requestedWorld]);
 
   const options = useMemo(() => {
     if (role === "freelancer") return onlineSkills;

@@ -10,6 +10,7 @@ import { collectAccountExport, ACCOUNT_EXPORT_SECTIONS } from "../src/lib/accoun
 import { getOrderActionContext } from "../src/lib/orderWorkspace.mjs";
 import * as onboardingRedirects from "../src/lib/onboardingRedirect.mjs";
 import * as messagePolicy from "../src/lib/messagePolicy.mjs";
+import { upcomingAppointments } from "../src/lib/upcomingAppointments.mjs";
 
 // Runs actual handlers and client helpers with in-memory adapters; never connects
 // to Convex, Clerk or browser storage and does not mutate application data.
@@ -150,6 +151,71 @@ function composerFixture(isMobile = false) {
   return { props, sends, render, settle: () => settle };
 }
 
+await check("Role dashboards link View all to owned records and keep creation actions separate", async () => {
+  const Page = loader({
+    "next/link": { default: "a" },
+    "convex/react": { useQuery: () => [] },
+    "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
+    "@/hook/useConvexUser": { default: () => ({ convexUser: { _id: "qa", name: "QA" }, isAuthenticated: true }) },
+    "@/lib/upcomingAppointments.mjs": { upcomingAppointments },
+    "./RoleDashboardInfo.module.css": { default: {} },
+  })("src/components/dashboard/section/RoleDashboardInfo.jsx").default;
+  for (const [role, world, destination, action] of [
+    ["client", "local", "/dashboard/quote-requests", "/local/request-quote"],
+    ["local_professional", "local", "/dashboard/my-leads", "/local/quote-requests"],
+    ["candidate", "jobs", "/dashboard/applications", "/jobs/browse"],
+    ["company", "jobs", "/manage-jobs", "/create-job"],
+  ]) {
+    const tree = Page({ role, world });
+    assert.equal(findElement(tree, (e) => e.type === "a" && e.props.children?.[0] === "View all ").props.href, destination);
+    assert.ok(findElement(tree, (e) => e.type === "a" && e.props.href === action));
+    const empty = findElement(tree, (e) => e.type?.name === "EmptyState");
+    assert.equal(findElement(empty.type(empty.props), (e) => e.type === "a").props.href, action);
+  }
+});
+
+await check("Upcoming visits exclude closed and past appointments and sort the nearest first", async () => {
+  const visit = (id, status, scheduledStart) => ({ appointment: { _id: id, status, scheduledStart } });
+  const visits = [visit("later", "confirmed", 300), visit("closed", "completed", 400), visit("past", "confirmed", 50), visit("undated", "requested"), visit("next", "requested", 200), visit("cancelled", "cancelled", 250)];
+  assert.deepEqual(upcomingAppointments(visits, 100).map(v => v.appointment._id), ["next", "later", "undated"]);
+  assert.equal(visits[0].appointment._id, "later");
+});
+
+await check("Workspace switch opens missing setup and navigates only after a successful switch", async () => {
+  const runner = hookRunner();
+  const routes = [], writes = [], errors = [];
+  let settle;
+  const Switcher = loader({
+    react: runner.react,
+    "next/link": { default: "a" },
+    "next/navigation": { useRouter: () => ({ push: (url) => routes.push(url), replace: (url) => routes.push(url) }) },
+    "@/lib/onboardingRedirect.mjs": onboardingRedirects,
+    "convex/react": { useMutation: () => (args) => { writes.push(args); return new Promise((resolve, reject) => { settle = { resolve, reject }; }); } },
+    "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
+    "sonner": { toast: { error: (error) => errors.push(error) } },
+    "@/hook/useConvexUser": { default: () => ({ convexUser: { activeRole: "client", preferredWorld: "online", accountRoles: ["client", "freelancer"], onboardingContexts: [{ role: "client", world: "online", version: 1 }, { role: "freelancer", world: "online", version: 1 }] } }) },
+    "./AccountContextSwitcher.module.css": { default: {} },
+  })("src/components/dashboard/AccountContextSwitcher.jsx").default;
+  const tree = runner.render(() => Switcher({}));
+  const change = findElement(tree, (e) => e.type === "Select").props.onValueChange;
+  await change("client:local");
+  const params = new URL(routes[0], "https://internal.invalid").searchParams;
+  assert.equal(params.get("role"), "client");
+  assert.equal(params.get("world"), "local");
+  assert.equal(writes.length, 0);
+  const first = change("freelancer:online");
+  await change("freelancer:online");
+  assert.equal(writes.length, 1);
+  settle.reject(new Error("Offline"));
+  await first;
+  assert.deepEqual(errors, ["Offline"]);
+  assert.equal(routes.length, 1);
+  const retry = change("freelancer:online");
+  settle.resolve({ success: true });
+  await retry;
+  assert.equal(routes.at(-1), "/dashboard");
+});
+
 await check("Composer preserves multiline drafts, skips IME and prevents duplicate sends", async () => {
   const f = composerFixture();
   let tree = f.render();
@@ -229,12 +295,14 @@ await check("Onboarding retains conversation destinations and rejects external o
 });
 
 await check("All five onboarding roles save before returning, and failures preserve the form", async () => {
-  for (const role of ["client", "freelancer", "local_professional", "candidate", "company"]) {
+  for (const entry of ["client", "client-local", "freelancer", "local_professional", "candidate", "company"]) {
+    const role = entry === "client-local" ? "client" : entry;
     const runner = hookRunner();
     const navigations = [], writes = [];
     let fail = true;
     const destination = "/message?conversation=qa-conversation#latest";
     const params = new URLSearchParams({ role, redirect_url: destination });
+    if (entry === "client-local") params.set("world", "local");
     const Page = loader({
       react: runner.react,
       "next/image": { default: "img" },
@@ -281,7 +349,7 @@ await check("All five onboarding roles save before returning, and failures prese
     await findElement(tree, (e) => e.type === "form").props.onSubmit({ preventDefault() {} });
     assert.equal(writes.length, 1);
     assert.equal(writes[0].activeRole, role);
-    assert.equal(writes[0].preferredWorld, role === "local_professional" ? "local" : ["candidate", "company"].includes(role) ? "jobs" : "online");
+    assert.equal(writes[0].preferredWorld, role === "local_professional" || entry === "client-local" ? "local" : ["candidate", "company"].includes(role) ? "jobs" : "online");
     assert.deepEqual(navigations, [destination]);
   }
 });
