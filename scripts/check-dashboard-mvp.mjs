@@ -305,10 +305,25 @@ await check("Contact button preserves the full login return path and opens the p
   currentUser = { _id: "seller" };
   assert.equal(render(), null);
 });
-await check("Older conversation links resolve outside the bounded inbox and reuse listed conversations", async () => {
-  const runner = hookRunner();
+function queryWatcher() {
   const pending = [];
-  const client = { query: (_api, args) => new Promise((resolve, reject) => pending.push({ args, resolve, reject })) };
+  const client = { watchQuery: (_api, args) => {
+    let value, error, callback;
+    const item = { args, cancelled: false,
+      resolve(next) { value = next; error = undefined; callback?.(); },
+      reject(next) { error = next; callback?.(); },
+    };
+    pending.push(item);
+    return {
+      onUpdate(next) { callback = next; return () => { item.cancelled = true; callback = null; }; },
+      localQueryResult() { if (error) throw error; return value; },
+    };
+  } };
+  return { pending, client };
+}
+await check("Older conversation links resolve outside the bounded inbox and remain reactive", async () => {
+  const runner = hookRunner();
+  const { pending, client } = queryWatcher();
   const hook = loader({ react: runner.react, "convex/react": { useConvex: () => client } })("src/hook/useRequestedConversation.js").default;
   let recent = [], loading = true;
   const render = () => runner.render(() => hook("buyer", "old-conversation", recent, loading));
@@ -323,15 +338,17 @@ await check("Older conversation links resolve outside the bounded inbox and reus
   assert.equal(result.requestedLoading, false);
   assert.equal(result.conversations[0].otherParticipant._id, "seller");
   assert.equal(result.conversations[0].unreadCount, 3);
+  pending[0].resolve({ _id: "old-conversation", participant1: "buyer", participant2: "seller", unreadCount1: 0 });
+  assert.equal(render().conversations[0].unreadCount, 0);
   recent = [{ _id: "old-conversation", unreadCount: 0 }];
   assert.equal(render().conversations.length, 1);
   assert.equal(render().conversations[0].unreadCount, 0);
   assert.equal(pending.length, 1);
+  assert.equal(pending[0].cancelled, true);
 });
 await check("Conversation link failures retry safely and stale account responses are discarded", async () => {
   const runner = hookRunner();
-  const pending = [];
-  const client = { query: (_api, args) => new Promise((resolve, reject) => pending.push({ args, resolve, reject })) };
+  const { pending, client } = queryWatcher();
   const hook = loader({ react: runner.react, "convex/react": { useConvex: () => client } })("src/hook/useRequestedConversation.js").default;
   let actor = "buyer", id = "private-conversation";
   const render = () => runner.render(() => hook(actor, id, [], false));

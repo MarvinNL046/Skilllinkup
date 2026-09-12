@@ -17,9 +17,12 @@ export default function useRequestedConversation(userId, conversationId, recent,
   useEffect(() => {
     if (!needed) return;
     let cancelled = false;
-    client.query(api.chat.conversations.getById, { conversationId }).then(
-      (conversation) => {
-        if (cancelled) return;
+    const watch = client.watchQuery(api.chat.conversations.getById, { conversationId });
+    const update = () => {
+      if (cancelled) return;
+      try {
+        const conversation = watch.localQueryResult();
+        if (conversation === undefined) return;
         const participant1 = conversation?.participant1 === userId;
         if (!conversation || (!participant1 && conversation.participant2 !== userId)) {
           setResult({ key, conversation: null });
@@ -30,10 +33,13 @@ export default function useRequestedConversation(userId, conversationId, recent,
           otherParticipant: participant1 ? conversation.participant2User : conversation.participant1User,
           unreadCount: participant1 ? conversation.unreadCount1 ?? 0 : conversation.unreadCount2 ?? 0,
         } });
-      },
-      () => { if (!cancelled) setResult({ key, conversation: null }); },
-    );
-    return () => { cancelled = true; };
+      } catch {
+        setResult({ key, conversation: null });
+      }
+    };
+    const unsubscribe = watch.onUpdate(update);
+    update();
+    return () => { cancelled = true; unsubscribe(); };
   }, [client, conversationId, userId, needed, key]);
 
   const resolved = needed && result?.key === key ? result : null;
