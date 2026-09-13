@@ -49,7 +49,7 @@ const config = {
     href: "/jobs/browse",
     cta: "Explore open roles",
   },
-  highlightEyebrow: "Product preview",
+  highlightEyebrow: "World preview",
   highlightTitle: "Types of company roles to explore",
   highlights: [
     { kicker: "Remote", meta: "Full-time", title: "Senior product designer", description: "Lead discovery and product design for an international software team with flexible working hours.", tags: ["Product design", "Figma", "SaaS"], value: "Compare role details", href: "/jobs/browse?q=product", cta: "View roles" },
@@ -61,7 +61,7 @@ const config = {
   paths: [
     { icon: "jobs", title: "Browse verified jobs", description: "Filter by role, location, work model, experience and published salary range.", href: "/jobs/browse", cta: "Browse jobs" },
     { icon: "verified", title: "For employers", description: "Learn how company verification, vacancy publishing and application management work.", href: "/jobs/companies", cta: "For companies" },
-    { icon: "people", title: "Hire through Skilllinkup", description: "Publish a real vacancy and manage candidates alongside flexible talent.", href: "/jobs/companies", cta: "Start hiring" },
+    { icon: "people", title: "Follow your applications", description: "Return to the roles you applied for and check updates from employers.", href: "/dashboard/applications", cta: "View my applications" },
   ],
   stepsTitle: "From discovery to a serious application",
   steps: [
@@ -76,8 +76,9 @@ const config = {
     { initials: "OA", name: "Omar Ali", role: "Customer success manager", quote: "A candidate can revisit submitted applications and see status updates made by the employer." },
   ],
   faqs: [
-    { question: "Are these freelance gigs or company jobs?", answer: "The Jobs product is for genuine permanent, temporary and long-term company roles. Freelance projects live in the Online product." },
-    { question: "Do all vacancies show a salary?", answer: "Published role details is the default. Listings should show a range or clear compensation basis before candidates apply." },
+    { question: "Are these freelance gigs or company jobs?", answer: "The Jobs world is for permanent, temporary and contract company roles. Freelance projects belong in the Online world." },
+    { question: "Where can I upload my CV?", answer: "Add your CV when you apply to a specific vacancy. PDF, DOC and DOCX files up to 10 MB are supported. There is no public CV listing or searchable candidate directory." },
+    { question: "Do all vacancies show a salary?", answer: "Salary details are shown when the employer provides them. Check the listing and ask the employer about any missing information before deciding to proceed." },
     { question: "Can I search for fully remote jobs?", answer: "Yes. Remote, hybrid and on-site work models can be filtered separately, and you can search the published location. Check each listing for geographic restrictions." },
     { question: "How are employers verified?", answer: "A company must complete the platform’s company verification step before its vacancies appear in public search. Read the company information included with each listing." },
     { question: "How can I keep track of interesting jobs?", answer: "Save individual jobs to your account and revisit them from Saved items. Check the jobs directory for new vacancies." },

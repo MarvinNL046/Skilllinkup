@@ -49,7 +49,7 @@ const config = {
     href: "/online/projects",
     cta: "See how projects work",
   },
-  highlightEyebrow: "Product preview",
+  highlightEyebrow: "World preview",
   highlightTitle: "Ways to start with a service or specialist",
   highlights: [
     { kicker: "Popular service", meta: "Scope to agree", title: "Conversion-focused website", description: "A polished responsive website with clear scope, delivery moments and launch support.", tags: ["Web design", "UX/UI", "Responsive"], value: "Compare packages", href: "/services/webdesign", cta: "Explore" },

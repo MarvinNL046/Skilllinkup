@@ -56,7 +56,7 @@ export default function TrustStories() {
       </section>
 
       <section className={`${styles.section} ${styles.testimonialSection}`}>
-        <header className={styles.centerHeading}><span className={styles.eyebrow}>One connected marketplace</span><h2>Three ways to find the right fit</h2></header>
+        <header className={styles.centerHeading}><span className={styles.eyebrow}>Three connected worlds</span><h2>Three ways to find the right fit</h2></header>
         <div className={styles.storyGrid}>
           {stories.map((story) => (
             <article className={styles.storyCard} key={story.name}>

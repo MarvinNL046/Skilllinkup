@@ -12,17 +12,20 @@ import SearchBarWithDropdown from "@/components/ui/SearchBarWithDropdown";
 import { useTranslations } from "next-intl";
 import { LogOut } from "lucide-react";
 import PublicSignInLink from "./PublicSignInLink";
+import WorldHeader from "./WorldHeader";
+import { useWorld } from "@/context/WorldContext";
 
 /**
- * Header20 — primary header used across all /service, /employee, /auth,
- * /dashboard and similar routes. Visually identical to Header19 so the
- * navbar stays consistent across the site (only WorldHeader on /online,
- * /local, /jobs intentionally diverges to insert the WorldSwitcher).
+ * General public header. Routes in a marketplace context reuse WorldHeader
+ * so service overviews, search results and category pages retain navigation.
  */
 export default function Header20() {
   const { user, isSignedIn } = useUser();
   const { signOut } = useClerk();
   const t = useTranslations("nav");
+  const world = useWorld();
+
+  if (world) return <WorldHeader />;
 
   return (
     <>

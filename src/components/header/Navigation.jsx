@@ -1,145 +1,15 @@
 "use client";
-import navigation from "@/data/navigation";
-import { isActiveNavigation } from "@/utils/isActiveNavigation";
-import useConvexCategories from "@/hook/useConvexCategories";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import MarketplaceMegaMenu from "./MarketplaceMegaMenu";
 
 export default function Navigation() {
   const path = usePathname();
-  const categories = useConvexCategories("en");
-
-  // Sort parent categories by sortOrder
-  const sortedCategories = categories
-    ? [...categories].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
-    : [];
-
-  // Split array into chunks of N
-  function chunk(arr, size) {
-    const result = [];
-    for (let i = 0; i < arr.length; i += size) {
-      result.push(arr.slice(i, i + size));
-    }
-    return result;
-  }
-
-  return (
-    <>
-      <ul
-        className={`ace-responsive-menu ui-navigation ${
-          path === "/home-3" || path === "/home-4" || path === "/home-10"
-            ? "menu-without-paddingy"
-            : ""
-        } `}
-      >
-        {/* Home */}
-        <li className="visible_list home-menu-parent">
-          <Link
-            href="/"
-            className={`list-item ${path === "/" ? "ui-active" : ""}`}
-          >
-            <span className="title">Home</span>
-          </Link>
-        </li>
-
-        {/* Categories - Mega Menu */}
-        <li className="visible_list megamenu_style">
-          <a
-            className={`list-item ${
-              path.startsWith("/online") ? "ui-active" : ""
-            }`}
-          >
-            <span className="title">Categories</span>
-            <span className="arrow"></span>
-          </a>
-          <ul className="dropdown-megamenu">
-            {sortedCategories.length === 0 ? (
-              <li className="mega_menu_list">
-                <ul className="sub-menu">
-                  <li>
-                    <a>Loading categories...</a>
-                  </li>
-                </ul>
-              </li>
-            ) : (
-              chunk(sortedCategories, 3).map((group, gi) => (
-                <li key={gi} className="mega_menu_list">
-                  <ul className="sub-menu">
-                    {group.map((cat) => (
-                      <li key={cat._id}>
-                        <Link href={`/online/services/${cat.slug}`}>
-                          {cat.icon && (
-                            <span className={`${cat.icon} mr-1`} />
-                          )}
-                          <span className="font-medium">{cat.name}</span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-              ))
-            )}
-          </ul>
-        </li>
-
-        {/* Browse - Mega Menu */}
-        <li className="visible_list megamenu_style">
-          <a
-            className={`list-item ${
-              ["/online", "/jobs", "/platforms"].some((p) =>
-                path.startsWith(p)
-              )
-                ? "ui-active"
-                : ""
-            }`}
-          >
-            <span className="title">Browse</span>
-            <span className="arrow"></span>
-          </a>
-          <ul className="dropdown-megamenu">
-            <li className="mega_menu_list">
-              <ul className="sub-menu">
-                <li>
-                  <Link href="/online/services">
-                    <span className="flaticon-developer mr-1" />
-                    All Services
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/online/projects">
-                    <span className="flaticon-document mr-1" />
-                    Projects
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/jobs/browse">
-                    <span className="flaticon-briefcase mr-1" />
-                    Jobs
-                  </Link>
-                </li>
-              </ul>
-            </li>
-            <li className="mega_menu_list">
-              <ul className="sub-menu">
-                <li>
-                  <Link href="/online/freelancers">
-                    <span className="flaticon-user mr-1" />
-                    Freelancers
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/platforms">
-                    <span className="flaticon-web-design-1 mr-1" />
-                    Platforms
-                  </Link>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-
-      </ul>
-    </>
-  );
+  return <nav aria-label="Main navigation">
+    <ul className="flex items-center gap-1 list-none m-0 p-0">
+      <li><Link href="/" aria-current={path === "/" ? "page" : undefined} className="inline-flex items-center px-3 py-2 text-sm">Home</Link></li>
+      <li><MarketplaceMegaMenu /></li>
+      <li><MarketplaceMegaMenu label="Browse" kind="browse" /></li>
+    </ul>
+  </nav>;
 }

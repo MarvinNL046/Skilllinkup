@@ -1,7 +1,7 @@
-import BusinessLanding from "@/components/business/BusinessLanding";
+import CompanyHiringLanding from "@/components/jobs/CompanyHiringLanding";
 
-export const metadata = { title: "Skilllinkup for Business", description: "Learn how Skilllinkup supports company vacancies, project briefs, private workspaces and application management during beta." };
+export const metadata = { title: "Post Company Jobs and Manage Applicants", description: "Learn how invited employers set up a company, publish vacancies and review applications in the Skilllinkup Jobs world.", alternates: { canonical: "/jobs/companies" } };
 
 export default function CompaniesPage() {
-  return <BusinessLanding />;
+  return <CompanyHiringLanding />;
 }

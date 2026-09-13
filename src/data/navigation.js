@@ -5,12 +5,27 @@ const menus = [
     path: "/",
   },
   {
+    id: 5,
+    name: "Online",
+    path: "/online",
+  },
+  {
+    id: 6,
+    name: "Local",
+    path: "/local",
+  },
+  {
+    id: 7,
+    name: "Jobs",
+    path: "/jobs",
+  },
+  {
     id: 2,
     name: "Browse",
     children: [
       { id: 1, name: "Services", path: "/services" },
       { id: 2, name: "Projects", path: "/projects" },
-      { id: 3, name: "Jobs", path: "/jobs" },
+      { id: 3, name: "Job listings", path: "/jobs/browse" },
       { id: 4, name: "Freelancers", path: "/online/freelancers" },
       { id: 5, name: "Platforms", path: "/platforms" },
     ],

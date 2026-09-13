@@ -327,7 +327,7 @@ await check("Onboarding exits preserve drafts on failure and suppress the login 
   const render = () => runner.render(() => Page()); let tree = render();
   findElement(tree, e => e.props?.placeholder === "Your organisation").props.onChange({ target: { value: "QA retained company" } });
   tree = render(); findElement(tree, e => e.props?.children === "Change").props.onClick();
-  tree = render(); findElement(tree, e => e.type === "button" && findElement(e, x => x.type === "strong" && x.props.children === "I hire for a company")).props.onClick();
+  tree = render(); findElement(tree, e => e.type === "button" && findElement(e, x => x.type === "strong" && x.props.children === "Hire for a company")).props.onClick();
   tree = render(); assert.equal(findElement(tree, e => e.props?.placeholder === "Your organisation").props.value, "QA retained company");
   const logout = findElement(tree, e => e.props?.children === "Log out").props.onClick;
   const first = logout(); await logout(); assert.equal(calls.length, 1);
@@ -971,15 +971,15 @@ await check("All five onboarding roles save before returning, and failures prese
     };
     if (role === "freelancer") {
       input("65", "90");
-      input("What do you do best?", "QA online headline");
+      input("e.g. Web designer for small businesses", "QA online headline");
       findElement(tree, (e) => e.props?.children === "Change").props.onClick();
       tree = runner.render();
-      findElement(tree, (e) => e.type === "button" && findElement(e, (child) => child.type === "strong" && child.props.children === "I am looking for a job")).props.onClick();
+      findElement(tree, (e) => e.type === "button" && findElement(e, (child) => child.type === "strong" && child.props.children === "Find a job")).props.onClick();
       tree = runner.render();
-      assert.equal(findElement(tree, (e) => e.type === "input" && e.props.placeholder === "What do you do best?").props.value, "");
+      assert.equal(findElement(tree, (e) => e.type === "input" && e.props.placeholder === "e.g. Web designer for small businesses").props.value, "");
       findElement(tree, (e) => e.props?.children === "Change").props.onClick();
       tree = runner.render();
-      findElement(tree, (e) => e.type === "button" && findElement(e, (child) => child.type === "strong" && child.props.children === "I work online")).props.onClick();
+      findElement(tree, (e) => e.type === "button" && findElement(e, (child) => child.type === "strong" && child.props.children === "Offer online services")).props.onClick();
       tree = runner.render();
       assert.equal(findElement(tree, (e) => e.type === "input" && e.props.placeholder === "65").props.value, "");
     }

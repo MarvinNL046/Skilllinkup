@@ -46,7 +46,7 @@ const config = {
     href: "/local/craftsmen",
     cta: "Find someone nearby",
   },
-  highlightEyebrow: "Product preview",
+  highlightEyebrow: "World preview",
   highlightTitle: "Example requests in the launch trades",
   highlights: [
     { kicker: "Home maintenance", meta: "Dates to agree", title: "Boiler and heating service", description: "Routine maintenance, fault finding and efficiency checks by an available professional nearby.", tags: ["Heating", "Maintenance", "Local"], value: "Compare quotes", href: "/local/craftsmen?q=heating", cta: "Find help" },

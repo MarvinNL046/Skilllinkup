@@ -75,7 +75,7 @@ test("registration exposes every marketplace starting role", async ({ page }) =>
   await page.goto("/register", { waitUntil: "domcontentloaded" });
 
   const choices = [
-    ["Hire or book someone", "client"],
+    ["Hire someone", "client"],
     ["Offer online services", "freelancer"],
     ["Offer local services", "local_professional"],
     ["Find a job", "candidate"],

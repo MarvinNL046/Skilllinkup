@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useWorld } from "@/context/WorldContext";
 import worldNavigation from "@/data/worldNavigation";
 import { cn } from "@/lib/utils";
+import MarketplaceMegaMenu from "./MarketplaceMegaMenu";
 
 export default function WorldNavigation() {
   const world = useWorld();
@@ -27,8 +28,11 @@ export default function WorldNavigation() {
   );
 
   return (
-    <ul className="flex gap-0 list-none m-0 p-0">
+    <ul className="flex items-center gap-0 list-none m-0 p-0">
       {worldItems.map((item) => {
+        if (world === "online" && item.path === "/services") {
+          return <li key={item.id}><MarketplaceMegaMenu label="Services" serviceType="digital" /></li>;
+        }
         const isActive = path.startsWith(item.path);
         return <li key={item.id}>{renderLink(item, isActive)}</li>;
       })}
