@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import useConvexOrders from "@/hook/useConvexOrders";
 import OrderCard from "@/components/card/OrderCard";
@@ -60,6 +60,22 @@ export default function OrderList() {
   } = useConvexOrders(roleView);
   const [search, setSearch] = useState("");
   const term = search.trim().toLowerCase();
+  const searchingHistory = Boolean(
+    term && (isLoading || canLoadMore || loadingMore),
+  );
+  useEffect(() => {
+    if (!term || isLoading || !canLoadMore || loadingMore) return;
+    const timer = setTimeout(loadMore, 300);
+    return () => clearTimeout(timer);
+  }, [
+    term,
+    isLoading,
+    canLoadMore,
+    loadingMore,
+    loadMore,
+    profileId,
+    roleView,
+  ]);
 
   const tabs = [
     { key: "all", label: t("all") },
@@ -122,7 +138,7 @@ export default function OrderList() {
         </label>
       )}
       <label className="block mb-2 text-sm">
-        Search loaded orders
+        Search order history
         <input
           type="search"
           className="block w-full rounded-md border p-3 mt-1"
@@ -131,11 +147,27 @@ export default function OrderList() {
           onChange={(event) => setSearch(event.target.value)}
         />
       </label>
-      <p className="text-sm text-[var(--text-secondary)] mb-4">
-        {orders.length} orders loaded. Search and status counts apply to this
-        list.{" "}
-        {canLoadMore || loadingMore ? "Load more to include older orders." : ""}
+      <p role="status" className="text-sm text-[var(--text-secondary)] mb-4">
+        {term
+          ? searchingHistory
+            ? `Searching older orders… ${orders.length} checked so far.`
+            : `Search complete: ${filteredOrders.length} ${filteredOrders.length === 1 ? "match" : "matches"} in this role and profile, with the selected status filter.`
+          : `${orders.length} orders loaded.`}{" "}
+        Status counts apply to loaded orders.{" "}
+        {roleView === "freelancer"
+          ? "Choose a profile to search its history."
+          : ""}
       </p>
+      {term && (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="mb-4"
+          onClick={() => setSearch("")}
+        >
+          {searchingHistory ? "Stop and clear search" : "Clear search"}
+        </Button>
+      )}
       {/* Status filter tabs */}
       <div
         role="tablist"
@@ -212,22 +244,28 @@ export default function OrderList() {
               <Receipt className="h-10 w-10 text-[var(--text-tertiary)] mx-auto mb-4" />
               <h5 className="text-lg font-semibold mb-2">
                 {term
-                  ? "No matching loaded orders"
+                  ? searchingHistory
+                    ? "Searching your order history…"
+                    : "No matching orders"
                   : activeTab === "attention"
                     ? "Nothing needs your action here"
                     : t("noOrdersFound")}
               </h5>
               <p className="text-[var(--text-secondary)] mb-0">
-                {activeTab === "attention"
-                  ? "No deliveries or revision requests need your attention in the loaded orders for this account context."
-                  : activeTab === "all"
-                    ? t("noOrdersRole", {
-                        role:
-                          roleView === "client"
-                            ? t("asBuyer").toLowerCase()
-                            : t("asSeller").toLowerCase(),
-                      })
-                    : t("noOrdersStatus", { status: activeTab })}
+                {term
+                  ? searchingHistory
+                    ? "Matches will appear as older orders are checked."
+                    : "Try another order number, title or person, or change the status filter."
+                  : activeTab === "attention"
+                    ? "No deliveries or revision requests need your attention in the loaded orders for this account context."
+                    : activeTab === "all"
+                      ? t("noOrdersRole", {
+                          role:
+                            roleView === "client"
+                              ? t("asBuyer").toLowerCase()
+                              : t("asSeller").toLowerCase(),
+                        })
+                      : t("noOrdersStatus", { status: activeTab })}
               </p>
               <Button asChild variant="outline" className="mt-5">
                 <Link
@@ -258,7 +296,7 @@ export default function OrderList() {
           )}
         </CardContent>
       </Card>
-      {(canLoadMore || loadingMore) && (
+      {!term && (canLoadMore || loadingMore) && (
         <div className="mt-5 flex justify-center">
           <Button variant="outline" disabled={loadingMore} onClick={loadMore}>
             {loadingMore ? "Loading more orders…" : "Load more orders"}
