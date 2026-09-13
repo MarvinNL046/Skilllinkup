@@ -822,7 +822,7 @@
     "submitBidBtn": "Enviar lance",
     "proposalsOwnerOnly": "As propostas são visíveis apenas para o proprietário do projeto.",
     "loadingProposals": "Carregando propostas...",
-    "noProposals": "Ainda não há propostas. Seja o primeiro a enviar!",
+    "noProposals": "Ainda não recebeu propostas.",
     "averageBid": "Lance médio:",
     "verifiedFreelancer": "Freelancer verificado",
     "days": "dias",

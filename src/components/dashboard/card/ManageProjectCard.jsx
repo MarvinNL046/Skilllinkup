@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Tooltip } from "react-tooltip";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { MapPin, Clock, FileText, Pencil, Trash2 } from "lucide-react";
 
 const STATUS_VARIANTS = {
@@ -102,45 +103,43 @@ export default function ManageProjectCard({ project, onEdit, onDelete }) {
         </div>
       </td>
       <td data-label={t("columnActions")} className="align-top">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {project?._id && (
             <>
-              <Link
+              <Button asChild variant="outline" size="sm"><Link
                 href={`/projects/${project._id}`}
                 id={tooltipViewId}
                 aria-label={t("viewBids")}
-                className="text-[var(--text-tertiary)] hover:text-foreground"
               >
                 <FileText className="h-4 w-4" />
-              </Link>
+                {t("viewBids")}
+              </Link></Button>
               <Tooltip anchorSelect={`#${tooltipViewId}`} place="top">
                 {t("viewBids")}
               </Tooltip>
             </>
           )}
-          <button
+          <Button variant="ghost" size="icon"
             type="button"
             id={tooltipEditId}
             onClick={(event) => onEdit?.(project, event.currentTarget)}
             data-testid="manage-project-edit"
             aria-label={t("edit")}
-            className="text-[var(--text-tertiary)] hover:text-foreground"
           >
             <Pencil className="h-4 w-4" />
-          </button>
+          </Button>
           <Tooltip anchorSelect={`#${tooltipEditId}`} place="top">
             {t("edit")}
           </Tooltip>
-          <button
+          <Button variant="ghost" size="icon"
             type="button"
             id={tooltipDeleteId}
             onClick={(event) => onDelete?.(project, event.currentTarget)}
             data-testid="manage-project-delete"
             aria-label={t("delete")}
-            className="text-[var(--text-tertiary)] hover:text-destructive"
           >
             <Trash2 className="h-4 w-4" />
-          </button>
+          </Button>
           <Tooltip anchorSelect={`#${tooltipDeleteId}`} place="top">
             {t("delete")}
           </Tooltip>

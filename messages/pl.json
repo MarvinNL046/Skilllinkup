@@ -822,7 +822,7 @@
     "submitBidBtn": "Prześlij ofertę",
     "proposalsOwnerOnly": "Propozycje są widoczne tylko dla właściciela projektu.",
     "loadingProposals": "Ładowanie propozycji...",
-    "noProposals": "Nie ma jeszcze żadnych propozycji. Bądź pierwszą osobą, która prześle!",
+    "noProposals": "Nie otrzymano jeszcze żadnych ofert.",
     "averageBid": "Średnia stawka:",
     "verifiedFreelancer": "Sprawdzony freelancer",
     "days": "dni",
