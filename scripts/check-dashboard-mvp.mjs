@@ -7,7 +7,7 @@ import { createRequire } from "node:module";
 import { validateProjectFields } from "../src/lib/projectValidation.mjs";
 import { EMPTY_JOB_FORM, jobDraftKey, restoreJobDraft } from "../src/lib/jobDraft.mjs";
 import { collectAccountExport, ACCOUNT_EXPORT_SECTIONS } from "../src/lib/accountExport.mjs";
-import { getOrderActionContext } from "../src/lib/orderWorkspace.mjs";
+import { getOrderActionContext, getWorkspaceNextStep } from "../src/lib/orderWorkspace.mjs";
 import * as onboardingRedirects from "../src/lib/onboardingRedirect.mjs";
 import * as messagePolicy from "../src/lib/messagePolicy.mjs";
 import { upcomingAppointments } from "../src/lib/upcomingAppointments.mjs";
@@ -379,7 +379,7 @@ await check("Appointment form preserves failed dates, blocks overlapping actions
     "@/components/dashboard/header/DashboardNavigation": { default: "nav" },
     "@/hook/useConversationMessages": { default: () => ({}) },
     "@/components/dashboard/element/MessageBox": { default: "MessageBox" },
-    "@/lib/orderWorkspace.mjs": { getOrderActionContext: () => ({ isClient: true, isLocal: true, matchesContext: true }) },
+    "@/lib/orderWorkspace.mjs": { getWorkspaceNextStep, getOrderActionContext: () => ({ isClient: true, isLocal: true, matchesContext: true }) },
     "./OrderWorkspace.module.css": { default: {} },
   })("src/components/dashboard/section/OrderWorkspace.jsx").default;
   const render = () => runner.render(() => { queryIndex = 0; return Workspace({ orderId: "order" }); });
@@ -1081,6 +1081,21 @@ await check("Notification actions report failure, retry and block duplicate writ
   assert.equal(result.notifications, undefined); assert.equal(result.unreadCount, 0);
   assert.deepEqual(queryArgs.slice(-2), ["skip", "skip"]);
   const count = calls.length; await result.markRead({ notificationId: "message" }); await result.markAllRead(); assert.equal(calls.length, count);
+});
+
+await check("Workspace guidance respects participant, context and terminal states", async () => {
+  const client = { isClient: true, isLocal: false, matchesContext: true };
+  const provider = { ...client, isClient: false };
+  assert.equal(getWorkspaceNextStep({ status: "delivered" }, client).label, "Review delivery");
+  assert.equal(getWorkspaceNextStep({ status: "delivered" }, provider).href, "#workspace-conversation");
+  assert.equal(getWorkspaceNextStep({ status: "active" }, { ...client, matchesContext: false, requiredContext: "client · online" }).href, undefined);
+  for (const context of [client, provider]) {
+    assert.equal(getWorkspaceNextStep({ status: "disputed" }, context).href, "/dashboard/support");
+    assert.equal(getWorkspaceNextStep({ status: "completed" }, context).label, "View files");
+    assert.equal(getWorkspaceNextStep({ status: "cancelled" }, context).label, "View conversation");
+  }
+  assert.equal(getWorkspaceNextStep({ status: "active" }, { ...provider, isLocal: true }).href, "#workspace-work");
+  assert.equal(getWorkspaceNextStep({ status: "revision_requested" }, provider).label, "View feedback");
 });
 
 console.log(`Dashboard MVP regression checks passed: ${checks} scenario groups.`);

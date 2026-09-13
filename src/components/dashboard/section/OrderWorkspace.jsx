@@ -25,7 +25,7 @@ import { Button } from "@/components/ui/button";
 import styles from "./OrderWorkspace.module.css";
 import useConversationMessages from "@/hook/useConversationMessages";
 import MessageBox from "@/components/dashboard/element/MessageBox";
-import { getOrderActionContext } from "@/lib/orderWorkspace.mjs";
+import { getOrderActionContext, getWorkspaceNextStep } from "@/lib/orderWorkspace.mjs";
 
 const statusLabels = {
   pending: "Pending",
@@ -248,6 +248,8 @@ export default function OrderWorkspace({ orderId }) {
       </section>
     );
 
+  const nextStep = getWorkspaceNextStep(order, { isClient, isLocal, matchesContext, requiredContext });
+
   return (
     <div className={styles.page} data-testid="order-workspace">
       <DashboardNavigation />
@@ -303,8 +305,22 @@ export default function OrderWorkspace({ orderId }) {
         </p>
       ) : null}
 
+      <section className={styles.nextStep} aria-labelledby="workspace-next-step">
+        <div>
+          <p className={styles.eyebrow}>Next step</p>
+          <h2 id="workspace-next-step">{nextStep.title}</h2>
+          <p>{nextStep.detail}</p>
+        </div>
+        {nextStep.href && <Button asChild><Link href={nextStep.href}>{nextStep.label}</Link></Button>}
+      </section>
+      <nav className={styles.workspaceNav} aria-label="Order workspace sections">
+        {isLocal && <Link href="#workspace-work">Appointment</Link>}
+        <Link href="#workspace-files">Files &amp; notes ({deliverables.length})</Link>
+        <Link href="#workspace-conversation">Conversation</Link>
+      </nav>
+
       <div className={styles.grid}>
-        <section className={styles.workCard}>
+        <section className={styles.workCard} id="workspace-work" tabIndex={-1}>
           {appointment ? (
             <section
               className={styles.appointmentCard}
@@ -413,7 +429,7 @@ export default function OrderWorkspace({ orderId }) {
               ) : null}
             </section>
           ) : null}
-          <div className={styles.sectionTitle}>
+          <div className={styles.sectionTitle} id="workspace-files" tabIndex={-1}>
             <i>
               <Paperclip />
             </i>
@@ -587,7 +603,7 @@ export default function OrderWorkspace({ orderId }) {
           ) : null}
         </section>
 
-        <aside className={styles.chatCard}>
+        <aside className={styles.chatCard} id="workspace-conversation" tabIndex={-1}>
           <h2 className="mb-3 text-lg font-semibold">Project conversation</h2>
           {conversation ? (
             <MessageBox
