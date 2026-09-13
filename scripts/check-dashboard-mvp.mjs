@@ -448,6 +448,64 @@ await check("Appointment form preserves failed dates, blocks overlapping actions
   assert.equal(dateInput(render()), null);
 });
 
+await check("Delivery review requires confirmation, preserves failed feedback and blocks duplicate requests", async () => {
+  for (const mode of ["delivery", "approval", "revision"]) {
+    const runner = hookRunner(); let queryIndex = 0, settle;
+    const calls = [];
+    const order = { _id: "order", title: "Synthetic mobile delivery", status: mode === "delivery" ? "active" : "delivered", amount: 1, escrowStatus: "beta_no_payment" };
+    const Workspace = loader({
+      react: runner.react, "next/link": { default: "a" },
+      "convex/react": { useQuery: () => [order, [], null, null][queryIndex++], useMutation: () => args => { calls.push(args); return new Promise((resolve, reject) => { settle = { resolve, reject }; }); } },
+      "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
+      "@/hook/useConvexUser": { default: () => ({ isAuthenticated: true, convexUser: { _id: "qa" } }) },
+      "@/components/dashboard/header/DashboardNavigation": { default: "nav" },
+      "@/hook/useIsMobile": { default: () => true },
+      "@/hook/useConversationMessages": { default: () => ({}) },
+      "@/components/dashboard/element/MessageBox": { default: "MessageBox" },
+      "@/lib/orderWorkspace.mjs": { getWorkspaceNextStep, getOrderActionContext: () => ({ isClient: mode !== "delivery", isLocal: false, matchesContext: true }) },
+      "./OrderWorkspace.module.css": { default: {} },
+    }, { window: { location: { hash: "" } } })("src/components/dashboard/section/OrderWorkspace.jsx").default;
+    const render = () => runner.render(() => { queryIndex = 0; return Workspace({ orderId: "order" }); });
+    const button = (tree, label) => findElement(tree, e => e.type === "Button" && [e.props.children].flat().includes(label));
+    const field = (tree, label) => findElement(tree, e => e.props?.["aria-label"] === label);
+    let tree = render();
+    if (mode === "delivery") {
+      field(tree, "Delivery note").props.onChange({ target: { value: "Unsaved work" } });
+      tree = render();
+      assert.equal(button(tree, "Submit work for review").props.disabled, true);
+      await button(tree, "Submit work for review").props.onClick();
+      assert.equal(calls.length, 0);
+      field(tree, "Delivery note").props.onChange({ target: { value: "" } });
+    } else if (mode === "approval") {
+      button(tree, "Approve delivery").props.onClick();
+      assert.equal(calls.length, 0);
+      tree = render();
+      assert.equal(findElement(tree, e => e.type === "Dialog").props.open, true);
+      button(tree, "Keep reviewing").props.onClick();
+      assert.equal(findElement(render(), e => e.type === "Dialog").props.open, false);
+      button(render(), "Approve delivery").props.onClick();
+    } else {
+      field(tree, "Revision request").props.onChange({ target: { value: "Please add a clear version heading." } });
+    }
+    const action = tree => mode === "revision"
+      ? () => findElement(tree, e => e.type === "form" && field(e, "Revision request")).props.onSubmit({ preventDefault() {} })
+      : button(tree, mode === "approval" ? "Confirm completion" : "Submit work for review").props.onClick;
+    const click = action(render()); const first = click(); await click();
+    assert.equal(calls.length, 1);
+    settle.reject(new Error("Connection interrupted")); await first;
+    tree = render();
+    if (mode === "approval") {
+      assert.equal(findElement(tree, e => e.type === "Dialog").props.open, true);
+      assert.match(findElement(tree, e => e.props?.role === "alert").props.children, /Connection interrupted/);
+    }
+    if (mode === "revision") assert.equal(field(tree, "Revision request").props.value, "Please add a clear version heading.");
+    const retry = action(tree)(); settle.resolve({ success: true }); await retry;
+    assert.equal(calls.length, 2);
+    if (mode === "approval") assert.equal(findElement(render(), e => e.type === "Dialog").props.open, false);
+    if (mode === "revision") assert.equal(field(render(), "Revision request").props.value, "");
+  }
+});
+
 await check("Account mode recovery preserves the form destination and switches in place after retry", async () => {
   const runner = hookRunner();
   let account = null, settle;

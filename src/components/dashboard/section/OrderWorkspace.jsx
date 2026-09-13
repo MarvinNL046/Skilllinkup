@@ -22,6 +22,7 @@ import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import DashboardNavigation from "@/components/dashboard/header/DashboardNavigation";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import styles from "./OrderWorkspace.module.css";
 import useIsMobile from "@/hook/useIsMobile";
 import useConversationMessages from "@/hook/useConversationMessages";
@@ -95,6 +96,10 @@ export default function OrderWorkspace({ orderId }) {
   const appointmentBusyRef = useRef(false);
   const [appointmentError, setAppointmentError] = useState("");
   const [busy, setBusy] = useState("");
+  const workActionRef = useRef(false);
+  const [approvalOpen, setApprovalOpen] = useState(false);
+  const [approvalError, setApprovalError] = useState("");
+  const hasPendingAddition = Boolean(file || deliveryNote.trim());
 
   const { isClient, isLocal, matchesContext, requiredContext } =
     getOrderActionContext(order, convexUser);
@@ -111,7 +116,8 @@ export default function OrderWorkspace({ orderId }) {
 
   async function handleAddDeliverable(event) {
     event.preventDefault();
-    if (busy || (!file && !deliveryNote.trim())) return;
+    if (busy || workActionRef.current || !hasPendingAddition) return;
+    workActionRef.current = true;
     const formElement = event.currentTarget;
     setBusy("deliverable");
     try {
@@ -135,6 +141,7 @@ export default function OrderWorkspace({ orderId }) {
       toast.error(error?.message || "The item could not be added.");
     } finally {
       setBusy("");
+      workActionRef.current = false;
     }
   }
 
@@ -150,6 +157,8 @@ export default function OrderWorkspace({ orderId }) {
   }
 
   async function handleDeliver() {
+    if (busy || workActionRef.current || !canDeliver || hasPendingAddition) return;
+    workActionRef.current = true;
     setBusy("deliver");
     try {
       await deliverOrder({ orderId });
@@ -158,24 +167,33 @@ export default function OrderWorkspace({ orderId }) {
       toast.error(error?.message || "The work could not be submitted.");
     } finally {
       setBusy("");
+      workActionRef.current = false;
     }
   }
 
   async function handleApprove() {
+    if (busy || workActionRef.current || !approvalOpen || !canReview || hasPendingAddition) return;
+    workActionRef.current = true;
+    setApprovalError("");
     setBusy("approve");
     try {
       await approveOrder({ orderId });
+      setApprovalOpen(false);
       toast.success("Work approved and project completed.");
     } catch (error) {
-      toast.error(error?.message || "The delivery could not be approved.");
+      const message = error?.message || "The delivery could not be approved. Please try again.";
+      setApprovalError(message);
+      toast.error(message);
     } finally {
       setBusy("");
+      workActionRef.current = false;
     }
   }
 
   async function handleRevision(event) {
     event.preventDefault();
-    if (!canRequestRevision || revision.trim().length < 10) return;
+    if (busy || workActionRef.current || hasPendingAddition || !canRequestRevision || revision.trim().length < 10) return;
+    workActionRef.current = true;
     setBusy("revision");
     try {
       await requestRevision({ orderId, message: revision.trim() });
@@ -185,6 +203,7 @@ export default function OrderWorkspace({ orderId }) {
       toast.error(error?.message || "The revision could not be requested.");
     } finally {
       setBusy("");
+      workActionRef.current = false;
     }
   }
 
@@ -552,12 +571,17 @@ export default function OrderWorkspace({ orderId }) {
               </Button>
             </form>
           ) : null}
+          {(canDeliver || canReview) && hasPendingAddition ? (
+            <p role="status" className="text-sm">
+              Your selected file or note has not been added yet. Choose Add to order before continuing with the delivery.
+            </p>
+          ) : null}
           {canDeliver ? (
             <Button
               className={styles.primaryAction}
               type="button"
               onClick={handleDeliver}
-              disabled={Boolean(busy)}
+              disabled={Boolean(busy) || hasPendingAddition}
             >
               <CheckCircle2 />
               {busy === "deliver" ? "Submitting…" : "Submit work for review"}
@@ -567,8 +591,8 @@ export default function OrderWorkspace({ orderId }) {
             <div className={styles.reviewActions}>
               <Button
                 type="button"
-                onClick={handleApprove}
-                disabled={Boolean(busy)}
+                onClick={() => { setApprovalError(""); setApprovalOpen(true); }}
+                disabled={Boolean(busy) || hasPendingAddition}
               >
                 <CheckCircle2 />{" "}
                 {busy === "approve" ? "Approving…" : "Approve delivery"}
@@ -597,6 +621,7 @@ export default function OrderWorkspace({ orderId }) {
                   disabled={
                     !canRequestRevision ||
                     revision.trim().length < 10 ||
+                    hasPendingAddition ||
                     Boolean(busy)
                   }
                 >
@@ -632,6 +657,29 @@ export default function OrderWorkspace({ orderId }) {
           )}
         </aside>
       </div>
+      <Dialog open={approvalOpen && canReview} onOpenChange={(open) => {
+        if (!workActionRef.current) setApprovalOpen(open);
+      }}>
+        <DialogContent className="max-h-[calc(100dvh-32px)] overflow-y-auto" showCloseButton={!busy}>
+          <DialogHeader>
+            <DialogTitle>Approve and complete this order?</DialogTitle>
+            <DialogDescription>
+              Confirm that you have reviewed the delivered work and it meets the agreed scope.
+              This marks the order as completed and closes the revision step. Your files and conversation stay available.
+              No payment is taken during the private beta.
+            </DialogDescription>
+          </DialogHeader>
+          <p className="break-words font-semibold">{order.title}</p>
+          {revision.trim() ? <p className="text-sm">You have an unsent revision request. Choose Keep reviewing to send your feedback instead.</p> : null}
+          {approvalError ? <p role="alert" className="text-sm">{approvalError}</p> : null}
+          <DialogFooter className="gap-2">
+            <Button variant="outline" disabled={Boolean(busy)} onClick={() => setApprovalOpen(false)}>Keep reviewing</Button>
+            <Button disabled={Boolean(busy) || !canReview || hasPendingAddition} onClick={handleApprove}>
+              {busy === "approve" ? "Completing…" : "Confirm completion"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
