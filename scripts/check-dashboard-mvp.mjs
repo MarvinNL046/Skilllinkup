@@ -194,6 +194,27 @@ await check("Local review queue loads more profiles, prevents duplicate decision
   assert.equal(findElement(tree, e => e.type === "textarea").props.value, "");
 });
 
+await check("Deliverable download preserves filenames and denies unauthenticated, foreign and missing files", async () => {
+  let signedIn = false, allowed = true, missing = false, fetched = 0;
+  let url = "https://fixture.convex.cloud/api/storage/qa";
+  const Route = loader({
+    "@clerk/nextjs/server": { auth: async () => ({ userId: signedIn ? "qa" : null, getToken: async () => "qa-token" }) },
+    "convex/browser": { ConvexHttpClient: class { setAuth() {} async query() { if (!allowed) throw Error("Unauthorized"); return missing ? null : { url, fileName: 'résumé "final".txt' }; } } },
+  }, { Response, AbortSignal, URL, process: { env: { NEXT_PUBLIC_CONVEX_URL: "https://fixture.convex.cloud" } }, fetch: async () => { fetched++; return new Response("QA file"); } })("src/app/api/deliverables/[deliverableId]/download/route.js");
+  const get = () => Route.GET(null, { params: Promise.resolve({ deliverableId: "qa" }) });
+  assert.equal((await get()).status, 401);
+  signedIn = true; allowed = false; assert.equal((await get()).status, 403);
+  allowed = true; missing = true; assert.equal((await get()).status, 404);
+  assert.equal(fetched, 0); missing = false;
+  const response = await get();
+  assert.equal(await response.text(), "QA file");
+  assert.equal(response.headers.get("cache-control"), "private, no-store");
+  assert.equal(response.headers.get("content-type"), "application/octet-stream");
+  assert.match(response.headers.get("content-disposition"), /attachment;.*filename\*=UTF-8''r%C3%A9sum%C3%A9%20%22final%22.txt/);
+  url = "https://other.example.invalid/api/storage/qa";
+  assert.equal((await get()).status, 502); assert.equal(fetched, 1);
+});
+
 await check("CV download authenticates each request and streams a non-cacheable attachment", async () => {
   let signedIn = false, allowed = true, unavailable = false;
   let queries = 0, downloads = 0;

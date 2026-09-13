@@ -384,7 +384,7 @@ var create = mutation({
         d = t.freelancerId ? await ctx.db.get(t.freelancerId) : null,
         s = t.clientId === a._id,
         o = d?.userId === a._id;
-      if (!s && !o) throw new Error("Access denied: you are not a party to this order");
+      if (t.tenantId !== a.tenantId || (!s && !o)) return null;
       let [l, f] = await Promise.all([ctx.db.get(t.clientId), d ? ctx.db.get(d.userId) : Promise.resolve(null)]);
       return {
         ...t,

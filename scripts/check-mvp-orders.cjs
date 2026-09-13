@@ -58,6 +58,24 @@ async function test(name,fn){await fn();tests.push(name);}
 const orderRow=(extra={})=>({_id:'order',_table:'orders',tenantId:'tenant-a',clientId:'buyer',freelancerId:'profile',orderType:'gig',status:'active',escrowStatus:'beta_no_payment',title:'Website design',orderNumber:'BETA-TEST',amount:100,freelancerEarnings:100,revisionCount:1,revisionsUsed:0,...extra});
 const delivery=()=>({_id:'file',_table:'orderDeliverables',orderId:'order',description:'Ready for review'});
 async function main(){
+ await test('deliverable download authorizes the actual order before resolving storage',async()=>{
+   const deliverables=load('convex/marketplace/deliverables.ts');
+   const rows=[...base(),user('outsider'),orderRow(),{...delivery(),storageId:'stored',fileName:'qa.txt'}];
+   let resolved=0;
+   const context=actor=>{const ctx=fixture(rows,actor);ctx.storage={getUrl:async()=>{resolved++;return 'https://fixture.convex.cloud/api/storage/stored';}};return ctx;};
+   for(const actor of ['buyer','seller']) assert.equal((await deliverables.getDownload.handler(context(actor),{deliverableId:'file'})).fileName,'qa.txt');
+   await assert.rejects(()=>deliverables.getDownload.handler(context('outsider'),{deliverableId:'file'}),/Unauthorized/);
+   assert.equal(resolved,2);
+   assert.equal(await deliverables.getDownload.handler(context('buyer'),{deliverableId:'missing'}),null);
+ });
+ await test('order detail is private without throwing for unavailable workspaces',async()=>{
+   const rows=[...base(),user('outsider'),orderRow()];
+   for(const actor of ['buyer','seller']) assert.equal((await orders.getById.handler(fixture(rows,actor),{orderId:'order'}))._id,'order');
+   assert.equal(await orders.getById.handler(fixture(rows,'outsider'),{orderId:'order'}),null);
+   const foreign=copy(rows);foreign.find(r=>r._id==='buyer').tenantId='tenant-b';
+   assert.equal(await orders.getById.handler(fixture(foreign,'buyer'),{orderId:'order'}),null);
+   assert.equal(await orders.getById.handler(fixture(rows),{orderId:'missing'}),null);
+ });
  await test('order pages traverse beyond fifty and reject foreign provider access',async()=>{
  const pages=load('convex/marketplace/orderPages.ts');
  const rows=[...base(),...Array.from({length:65},(_,i)=>orderRow({_id:'order-'+i,createdAt:i}))];
