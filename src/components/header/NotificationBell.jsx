@@ -4,6 +4,7 @@ import { Bell } from "lucide-react";
 import Link from "next/link";
 import useConvexNotifications from "@/hook/useConvexNotifications";
 import { Button } from "@/components/ui/button";
+import styles from "./NotificationBell.module.css";
 
 /**
  * Notification bell + DS-native dropdown. Replaces Bootstrap's
@@ -59,13 +60,14 @@ export default function NotificationBell() {
 
   return (
     <div ref={containerRef} style={{ position: "relative" }}>
-      <button
+      <Button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls="notification-popover"
         aria-label="Notifications"
-        className="btn btn--ghost btn--icon btn--sm"
+        variant="ghost"
+        size="icon"
         style={{ position: "relative" }}
       >
         <Bell size={18} />
@@ -93,26 +95,14 @@ export default function NotificationBell() {
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
-      </button>
+      </Button>
 
       {open && (
         <div
           id="notification-popover"
           role="region"
           aria-label="Recent notifications"
-          style={{
-            position: "absolute",
-            top: "calc(100% + 8px)",
-            right: 0,
-            width: "min(340px, calc(100vw - 32px))",
-            maxHeight: 420,
-            overflowY: "auto",
-            background: "var(--bg-elevated)",
-            border: "1px solid var(--border-subtle)",
-            borderRadius: "var(--radius-lg)",
-            boxShadow: "var(--shadow-3)",
-            zIndex: 60,
-          }}
+          className={styles.popover}
         >
           <div style={{ padding: "var(--space-4) var(--space-5)" }}>
             <div
