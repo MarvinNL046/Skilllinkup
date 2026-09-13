@@ -1,31 +1,21 @@
 "use client";
+import { useId } from "react";
+import { Star } from "lucide-react";
 
-/**
- * StarRating - Clickable 1-5 star selector.
- * Props:
- *   value     {number}   Current rating (1-5), 0 means none selected
- *   onChange  {function} Called with new rating value when a star is clicked
- *   readOnly  {boolean}  If true, stars are not clickable (display only)
- *   size      {string}   "sm" | "md" (default: "md")
- */
-export default function StarRating({ value = 0, onChange, readOnly = false, size = "md" }) {
-  const sizeCls = size === "sm" ? "text-xs" : "text-lg";
-
+export default function StarRating({ value = 0, onChange, readOnly = false, size = "md", label = "Rating", disabled = false }) {
+  const id = useId();
+  const sizeCls = size === "sm" ? "h-4 w-4" : "h-5 w-5";
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1" role={readOnly ? "img" : "radiogroup"} aria-label={readOnly ? `${label}: ${value} out of 5` : label}>
       {[1, 2, 3, 4, 5].map((star) => {
-        const filled = star <= value;
-        return (
-          <i
-            key={star}
-            className={`${filled ? "fas" : "far"} fa-star review-color ${sizeCls}`}
-            style={{ cursor: readOnly ? "default" : "pointer" }}
-            onClick={() => {
-              if (!readOnly && onChange) onChange(star);
-            }}
-            role={readOnly ? undefined : "button"}
-            aria-label={readOnly ? undefined : `Rate ${star} star${star !== 1 ? "s" : ""}`}
-          />
+        const icon = <Star aria-hidden="true" className={`${sizeCls} text-warning ${star <= value ? "fill-warning" : ""}`} />;
+        return readOnly ? <span key={star}>{icon}</span> : (
+          <label key={star} className="inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-md focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary">
+            <input className="sr-only" type="radio" name={id} value={star} checked={value === star}
+              aria-label={`Rate ${star} star${star !== 1 ? "s" : ""}`} disabled={disabled}
+              onChange={() => onChange?.(star)} />
+            {icon}
+          </label>
         );
       })}
     </div>

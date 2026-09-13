@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useId, useRef, useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { useTranslations } from "next-intl";
 import { api } from "../../../convex/_generated/api";
@@ -13,11 +13,13 @@ import { ArrowRight, CheckCircle2, EyeOff } from "lucide-react";
 
 export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
   const t = useTranslations("reviews");
+  const contentId = useId();
+  const pending = useRef(false);
   const { convexUser } = useConvexUser();
 
   const orderReviews = useQuery(
     api.marketplace.reviews.getByOrder,
-    orderId ? { orderId } : "skip"
+    orderId && convexUser?._id ? { orderId } : "skip"
   );
 
   const createReview = useMutation(api.marketplace.reviews.create);
@@ -33,15 +35,15 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
 
-  const alreadyReviewed =
-    orderReviews !== undefined &&
-    convexUser?._id &&
-    orderReviews.some((r) => r.reviewerId === convexUser._id);
+  const ownReview = orderReviews?.find((r) => r.reviewerId === convexUser?._id);
+  const receivedReview = orderReviews?.find((r) => r.reviewerId !== convexUser?._id && r.isPublic);
+  const alreadyReviewed = Boolean(ownReview);
 
   const isLoading = orderReviews === undefined || !convexUser;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (pending.current || isLoading || submitted || alreadyReviewed) return;
     setError(null);
 
     if (overallRating === 0) {
@@ -49,6 +51,11 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
       return;
     }
 
+    if (content.trim() && (content.trim().length < 10 || content.trim().length > 3000)) {
+      setError("Written reviews must be between 10 and 3,000 characters.");
+      return;
+    }
+    pending.current = true;
     setIsSubmitting(true);
     try {
       await createReview({
@@ -67,6 +74,7 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
       setError(err.message || t("errorSubmitFailed"));
     } finally {
       setIsSubmitting(false);
+      pending.current = false;
     }
   };
 
@@ -83,21 +91,30 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
       <div className="mt-5">
         <div className="flex items-center gap-2 mb-2">
           <CheckCircle2 className="h-5 w-5 text-success" />
-          <h6 className="text-base font-semibold mb-0">
+          <h3 className="text-base font-semibold mb-0">
             {alreadyReviewed && !submitted ? t("alreadyReviewed") : t("thankYou")}
-          </h6>
+          </h3>
         </div>
-        <p className="flex items-center gap-1 text-xs text-[var(--text-secondary)] mb-0">
-          <EyeOff className="h-3 w-3" />
-          {t("blindVisibilityNote")}
+        {ownReview && <div className="my-3 space-y-2">
+          <StarRating value={ownReview.overallRating} readOnly label="Your review" />
+          {ownReview.content && <p className="whitespace-pre-wrap break-words text-sm">{ownReview.content}</p>}
+        </div>}
+        <p role="status" className="flex items-center gap-1 text-xs text-[var(--text-secondary)] mb-0">
+          {ownReview?.isPublic ? <CheckCircle2 className="h-3 w-3 shrink-0" /> : <EyeOff className="h-3 w-3 shrink-0" />}
+          {ownReview?.isPublic ? "Both reviews are now visible." : t("blindVisibilityNote")}
         </p>
+        {receivedReview && <div className="mt-5 border-t pt-4 space-y-2">
+          <h3 className="text-base font-semibold">Review from {reviewerRole === "client" ? "your freelancer" : "your client"}</h3>
+          <StarRating value={receivedReview.overallRating} readOnly label="Received review" />
+          {receivedReview.content && <p className="whitespace-pre-wrap break-words text-sm">{receivedReview.content}</p>}
+        </div>}
       </div>
     );
   }
 
   return (
     <div className="mt-5">
-      <h6 className="text-lg font-semibold mb-1">{t("leaveReview")}</h6>
+      <h3 className="text-lg font-semibold mb-1">{t("leaveReview")}</h3>
       <p className="flex items-center gap-1 text-xs text-[var(--text-secondary)] mb-5">
         <EyeOff className="h-3 w-3" />
         {t("reviewBlindNote")}
@@ -108,45 +125,49 @@ export default function ReviewForm({ orderId, revieweeId, reviewerRole }) {
           <Label className="block mb-2">
             {t("overallRating")} <span className="text-destructive">*</span>
           </Label>
-          <StarRating value={overallRating} onChange={setOverallRating} />
+          <StarRating value={overallRating} onChange={setOverallRating} label={t("overallRating")} disabled={isSubmitting} />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+        <div className="grid gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))" }}>
           <div>
             <Label className="block mb-2 text-sm">{t("communication")}</Label>
             <StarRating
               value={communicationRating}
+              label={t("communication")} disabled={isSubmitting}
               onChange={setCommunicationRating}
               size="sm"
             />
           </div>
           <div>
             <Label className="block mb-2 text-sm">{t("quality")}</Label>
-            <StarRating value={qualityRating} onChange={setQualityRating} size="sm" />
+            <StarRating value={qualityRating} onChange={setQualityRating} size="sm" label={t("quality")} disabled={isSubmitting} />
           </div>
           <div>
             <Label className="block mb-2 text-sm">{t("timeliness")}</Label>
             <StarRating
               value={timelinessRating}
+              label={t("timeliness")} disabled={isSubmitting}
               onChange={setTimelinessRating}
               size="sm"
             />
           </div>
           <div>
             <Label className="block mb-2 text-sm">{t("value")}</Label>
-            <StarRating value={valueRating} onChange={setValueRating} size="sm" />
+            <StarRating value={valueRating} onChange={setValueRating} size="sm" label={t("value")} disabled={isSubmitting} />
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="review-content">
+          <Label htmlFor={contentId}>
             {t("writtenReview")}{" "}
             <span className="text-xs text-[var(--text-tertiary)] font-normal">
               {t("optional")}
             </span>
           </Label>
           <Textarea
-            id="review-content"
+            id={contentId}
+            maxLength={3000}
+            disabled={isSubmitting}
             rows={4}
             placeholder={t("reviewPlaceholder")}
             value={content}

@@ -48,6 +48,7 @@ function loader(overrides = {}, globals = {}) {
         if (id === "@/lib/messageDraft.mjs") return load("src/lib/messageDraft.mjs");
         if (id === "@/lib/uploadWorkspaceFile.mjs") return load("src/lib/uploadWorkspaceFile.mjs");
         if (id.startsWith("@/components/ui/")) return new Proxy({}, { get: (_, name) => String(name) });
+        if (id === "@/components/element/ReviewForm") return { default: "ReviewForm" };
         if (id.startsWith(".")) {
           const candidate = path.resolve(path.dirname(file), id);
           return load(fs.existsSync(candidate) ? candidate : `${candidate}.ts`);
@@ -504,6 +505,49 @@ await check("Delivery review requires confirmation, preserves failed feedback an
     if (mode === "approval") assert.equal(findElement(render(), e => e.type === "Dialog").props.open, false);
     if (mode === "revision") assert.equal(field(render(), "Revision request").props.value, "");
   }
+});
+
+await check("Order reviews retain failed drafts, block duplicate taps and show the saved review after remount", async () => {
+  let saved = [], settle;
+  const calls = [];
+  function mount() {
+    const runner = hookRunner();
+    const Form = loader({
+      react: { ...runner.react, useId: () => "review-input" },
+      "next-intl": { useTranslations: () => key => key },
+      "convex/react": { useQuery: () => saved, useMutation: () => args => { calls.push(args); return new Promise((resolve, reject) => { settle = { resolve, reject }; }); } },
+      "@/components/ui/StarRating": { default: "StarRating" },
+      "@/hook/useConvexUser": { default: () => ({ convexUser: { _id: "client" } }) },
+      "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
+    })("src/components/element/ReviewForm.jsx").default;
+    return () => runner.render(() => Form({ orderId: "order", revieweeId: "provider", reviewerRole: "client" }));
+  }
+  let render = mount();
+  const form = tree => findElement(tree, e => e.type === "form");
+  const rating = tree => findElement(tree, e => e.type === "StarRating" && e.props.label === "overallRating");
+  const content = tree => findElement(tree, e => e.type === "Textarea");
+  rating(render()).props.onChange(4);
+  content(render()).props.onChange({ target: { value: "short" } });
+  await form(render()).props.onSubmit({ preventDefault() {} });
+  assert.equal(calls.length, 0);
+  content(render()).props.onChange({ target: { value: "QA ONLY saved review text." } });
+  const submit = form(render()).props.onSubmit;
+  const first = submit({ preventDefault() {} }); await submit({ preventDefault() {} });
+  assert.equal(calls.length, 1);
+  settle.reject(new Error("Connection interrupted")); await first;
+  assert.equal(rating(render()).props.value, 4);
+  assert.equal(content(render()).props.value, "QA ONLY saved review text.");
+  const retry = form(render()).props.onSubmit({ preventDefault() {} });
+  settle.resolve("review"); await retry;
+  assert.equal(calls[1].orderId, "order"); assert.equal(calls[1].revieweeId, "provider");
+  saved = [{ reviewerId: "client", overallRating: 4, content: "QA ONLY saved review text.", isPublic: false }];
+  render = mount();
+  assert.equal(form(render()), null);
+  assert.ok(findElement(render(), e => e.props?.children === "QA ONLY saved review text."));
+  assert.equal(findElement(render(), e => e.props?.role === "status").props.children[1], "blindVisibilityNote");
+  saved = [{ ...saved[0], isPublic: true }, { reviewerId: "provider", overallRating: 5, content: "QA ONLY received review.", isPublic: true }];
+  assert.ok(findElement(render(), e => e.props?.children === "QA ONLY received review."));
+  assert.equal(findElement(render(), e => e.props?.role === "status").props.children[1], "Both reviews are now visible.");
 });
 
 await check("Account mode recovery preserves the form destination and switches in place after retry", async () => {

@@ -344,7 +344,7 @@ export default function OrderCard({ order, role }) {
         )}
 
         {/* Inline review form for completed orders */}
-        {isCompleted && showReviewForm && revieweeId && !alreadyReviewed && (
+        {isCompleted && showReviewForm && revieweeId && (
           <>
             <Separator className="my-4" />
             <ReviewForm
