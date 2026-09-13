@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useQuery } from "convex/react";
+import { usePaginatedQuery } from "convex/react";
 import { useTranslations } from "next-intl";
 import { api } from "../../../../convex/_generated/api";
 import ProposalCard1 from "../card/ProposalCard1";
@@ -17,16 +17,17 @@ export default function ProposalInfo() {
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const { profile } = useConvexProfile();
 
-  const bids = useQuery(
-    api.marketplace.projects.getMyBids,
-    profile?._id ? { freelancerId: profile._id } : "skip",
+  const { results: bids, status, loadMore } = usePaginatedQuery(
+    api.marketplace.projects.getMyBidsPage,
+    isAuthenticated && profile?._id ? { freelancerId: profile._id } : "skip",
+    { initialNumItems: 20 },
   );
 
   const isLoading =
     isAuthenticated &&
     (convexUser === undefined ||
       (convexUser?._id && profile === undefined) ||
-      (profile?._id && bids === undefined));
+      (profile?._id && status === "LoadingFirstPage"));
   const noProfile =
     isAuthenticated &&
     convexUser !== undefined &&
@@ -81,8 +82,8 @@ export default function ProposalInfo() {
                   role="status"
                   className="mt-3 text-sm text-[var(--text-secondary)]"
                 >
-                  Showing {visibleBids.length} of your{" "}
-                  {bids.length >= 50 ? "latest 50" : bids.length} proposals.
+                  Showing {visibleBids.length} of {bids.length} loaded proposals.
+                  {status !== "Exhausted" ? " Counts apply to loaded proposals. Load more to include older results." : " All proposals loaded."}
                 </p>
               </div>
             )}
@@ -135,7 +136,7 @@ export default function ProposalInfo() {
                 </div>
               ) : !visibleBids.length ? (
                 <div className="py-8 text-center">
-                  <p className="mb-4">No proposals with this status.</p>
+                  <p className="mb-4">{status === "Exhausted" ? "No proposals with this status." : "No loaded proposals with this status. Older proposals may still match."}</p>
                   <Button variant="outline" onClick={() => setFilter("all")}>
                     Show all proposals
                   </Button>
@@ -157,6 +158,13 @@ export default function ProposalInfo() {
                 </table>
               )}
             </div>
+            {isAuthenticated && profile?._id && (status === "CanLoadMore" || status === "LoadingMore") && (
+              <div className="mt-6 flex justify-center">
+                <Button variant="outline" disabled={status === "LoadingMore"} onClick={() => loadMore(20)}>
+                  {status === "LoadingMore" ? "Loading more…" : "Load more proposals"}
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

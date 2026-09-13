@@ -19,6 +19,7 @@ import { assertTransition } from "../lib/marketplaceState";
 import { projectStatusValidator } from "../lib/marketplaceState";
 import { bidStatusValidator } from "../lib/marketplaceState";
 import { v } from "convex/values";
+import { paginationOptsValidator, paginationResultValidator } from "convex/server";
 import { assertValidProjectFields } from "../../src/lib/projectValidation.mjs";
 var h = v.union(v.string(), v.null()),
   N = {
@@ -601,6 +602,27 @@ var getOpenCount = query({
       };
     }
   });
+export const getMyBidsPage = query({
+  args: { freelancerId: v.id("freelancerProfiles"), paginationOpts: paginationOptsValidator },
+  returns: paginationResultValidator(L),
+  handler: async (ctx, args) => {
+    const user = await requireAuthUser(ctx);
+    const profile = await ctx.db.get(args.freelancerId);
+    if (!profile || profile.userId !== user._id) throw new Error("Unauthorized.");
+    const result = await ctx.db.query("bids")
+      .withIndex("by_freelancer", q => q.eq("freelancerId", args.freelancerId))
+      .order("desc").paginate({ ...args.paginationOpts, numItems: Math.min(50, args.paginationOpts.numItems) });
+    const projects = await Promise.all([...new Set(result.page.map(bid => bid.projectId))].map(id => ctx.db.get(id)));
+    const byId = new Map(projects.filter(project => project && project.tenantId === user.tenantId).map(project => [project!._id, project!]));
+    return { ...result, page: result.page.map(bid => {
+      const project = byId.get(bid.projectId);
+      return { ...toBidFields(bid), projectTitle: project?.title ?? "Unavailable project",
+        projectSlug: project?.slug ?? "", projectStatus: project?.status ?? "unknown",
+        projectCurrency: bid.currency ?? project?.currency ?? "EUR" };
+    }) };
+  },
+});
+
 export { acceptBid, create, getBids, getByClient, getById, getBySlug, getMyBids, getOpenCount, getPublicByClient, list, remove, submitBid, update };
 
 export { O as publicProjectValidator };
