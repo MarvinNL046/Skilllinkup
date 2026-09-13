@@ -1350,3 +1350,18 @@ await check("Proposal load-more remains available under an empty filter and disa
   status = "LoadingMore"; tree = runner.render(); assert.equal(findElement(tree, e => e.props?.children === "Loading more…").props.disabled, true);
   status = "Exhausted"; tree = runner.render(); assert.equal(findElement(tree, e => e.props?.children === "Load more proposals"), null);
 });
+
+await check("Proposal status query selects the full indexed history before pagination", async () => {
+  const handler = loader({ "../lib/authHelpers": { requireAuthUser: async () => ({ _id: "owner", tenantId: "tenant" }) } })("convex/marketplace/projects.ts").getMyBidsPage.handler;
+  const rows = Array.from({length: 61}, (_, i) => ({_id: `bid-${i}`, projectId: "project", status: i < 60 ? "accepted" : "pending", amount: 125, currency: "EUR"}));
+  const ctx = { db: {
+    get: async id => id === "provider" ? {userId: "owner"} : {_id:"project",tenantId:"tenant",title:"QA",slug:"qa",status:"open"},
+    query: () => ({ withIndex: (name, select) => {
+      assert.equal(name, "by_freelancer_status"); const fields = {}; const range = { eq: (field, value) => { fields[field] = value; return range; } }; select(range);
+      assert.equal(fields.freelancerId, "provider");
+      return { order: () => ({ paginate: async () => ({page: rows.filter(row => row.status === fields.status), isDone:true,continueCursor:"done"}) }) };
+    } }),
+  } };
+  const result = await handler(ctx,{freelancerId:"provider",status:"pending",paginationOpts:{numItems:20,cursor:null}});
+  assert.equal(result.page.length,1); assert.equal(result.page[0]._id,"bid-60");
+});

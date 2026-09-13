@@ -19,7 +19,7 @@ export default function ProposalInfo() {
 
   const { results: bids, status, loadMore } = usePaginatedQuery(
     api.marketplace.projects.getMyBidsPage,
-    isAuthenticated && profile?._id ? { freelancerId: profile._id } : "skip",
+    isAuthenticated && profile?._id ? { freelancerId: profile._id, ...(filter !== "all" ? { status: filter } : {}) } : "skip",
     { initialNumItems: 20 },
   );
 
@@ -41,9 +41,7 @@ export default function ProposalInfo() {
     ["rejected", "Not selected"],
     ["withdrawn", "Withdrawn"],
   ];
-  const visibleBids = (bids || []).filter(
-    (bid) => filter === "all" || bid.status === filter,
-  );
+  const visibleBids = bids || [];
 
   return (
     <>
@@ -55,7 +53,7 @@ export default function ProposalInfo() {
         </div>
         <Card className="overflow-hidden">
           <CardContent className="p-6">
-            {hasBids && (
+            {isAuthenticated && profile?._id && (
               <div className="mb-5">
                 <div
                   className="flex flex-wrap gap-2"
@@ -70,11 +68,7 @@ export default function ProposalInfo() {
                       aria-pressed={filter === value}
                       onClick={() => setFilter(value)}
                     >
-                      {label} (
-                      {value === "all"
-                        ? bids.length
-                        : bids.filter((bid) => bid.status === value).length}
-                      )
+                      {label}
                     </Button>
                   ))}
                 </div>
@@ -82,8 +76,8 @@ export default function ProposalInfo() {
                   role="status"
                   className="mt-3 text-sm text-[var(--text-secondary)]"
                 >
-                  Showing {visibleBids.length} of {bids.length} loaded proposals.
-                  {status !== "Exhausted" ? " Counts apply to loaded proposals. Load more to include older results." : " All proposals loaded."}
+                  {status === "LoadingFirstPage" ? "Finding proposals…" : `${bids.length} ${filter === "all" ? "" : "matching "}${bids.length === 1 ? "proposal" : "proposals"} loaded.`}
+                  {status === "Exhausted" ? " All results shown." : status !== "LoadingFirstPage" ? " Load more for older results." : ""}
                 </p>
               </div>
             )}
@@ -125,7 +119,7 @@ export default function ProposalInfo() {
                     {t("loadingProposals")}
                   </p>
                 </div>
-              ) : !hasBids ? (
+              ) : !hasBids && filter === "all" ? (
                 <div className="text-center py-8">
                   <p className="text-[var(--text-secondary)] mb-4">
                     {t("noProposalsYet")}
@@ -136,7 +130,7 @@ export default function ProposalInfo() {
                 </div>
               ) : !visibleBids.length ? (
                 <div className="py-8 text-center">
-                  <p className="mb-4">{status === "Exhausted" ? "No proposals with this status." : "No loaded proposals with this status. Older proposals may still match."}</p>
+                  <p className="mb-4">No proposals with this status.</p>
                   <Button variant="outline" onClick={() => setFilter("all")}>
                     Show all proposals
                   </Button>
@@ -171,4 +165,5 @@ export default function ProposalInfo() {
     </>
   );
 }
+
 
