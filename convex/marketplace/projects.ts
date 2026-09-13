@@ -75,6 +75,7 @@ var h = v.union(v.string(), v.null()),
     updatedAt: v.number()
   },
   H = v.object({
+    orderId: v.union(v.id("orders"), v.null()),
     ...$,
     freelancerName: v.string(),
     freelancerAvatar: h,
@@ -218,7 +219,7 @@ var getOpenCount = query({
       let r = await requireAuthUser(ctx),
         i = await ctx.db.get(args.projectId);
       if (!i) return [];
-      if (i.clientId !== r._id) throw new Error("Unauthorized.");
+      if (i.clientId !== r._id || i.tenantId !== r.tenantId) throw new Error("Unauthorized.");
       let l = await ctx.db.query("bids").withIndex("by_project", a => a.eq("projectId", args.projectId)).take(500),
         d = [...new Set(l.map(a => a.freelancerId).filter(Boolean))],
         s = await Promise.all(d.map(a => ctx.db.get(a))),
@@ -226,17 +227,21 @@ var getOpenCount = query({
         c = [...new Set(s.filter(Boolean).map(a => a.userId).filter(Boolean))],
         o = await Promise.all(c.map(a => ctx.db.get(a))),
         p = new Map(o.filter(Boolean).map(a => [a._id, a])),
-        b = l.map(a => {
+        b = await Promise.all(l.map(async a => {
+          const order = a.status === "accepted"
+            ? await ctx.db.query("orders").withIndex("by_bid", q => q.eq("bidId", a._id)).unique()
+            : null;
           let y = u.get(a.freelancerId),
             A = y ? p.get(y.userId) : null;
           return {
             ...toBidFields(a),
+            orderId: order && order.clientId === r._id && order.tenantId === r.tenantId && order.projectId === i._id && order.freelancerId === a.freelancerId ? order._id : null,
             freelancerName: y?.displayName ?? A?.name ?? "Unknown",
             freelancerAvatar: y?.avatarUrl ?? A?.image ?? null,
             freelancerRating: y?.ratingAverage ?? 0,
             freelancerVerified: y?.isVerified ?? !1
           };
-        });
+        }));
       return b.sort((a, y) => a.status === "accepted" && y.status !== "accepted" ? -1 : a.status !== "accepted" && y.status === "accepted" ? 1 : (a.createdAt ?? 0) - (y.createdAt ?? 0)), b;
     }
   }),

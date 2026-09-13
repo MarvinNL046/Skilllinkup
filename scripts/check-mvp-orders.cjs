@@ -15,13 +15,13 @@ function load(file) {
   file = path.resolve(root, file);
   if (modules.has(file)) return modules.get(file);
   const exports = {}; modules.set(file, exports);
-  const code = ts.transpileModule(fs.readFileSync(file, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
+  const code = ts.transpileModule(fs.readFileSync(file, 'utf8'), { fileName: file.replace(/\.mjs$/, '.js'), compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   vm.runInNewContext(code, { exports, console: { log(){}, error(){} }, Date: Clock, URL, AbortSignal, Set, Map, Number, Math, process: { env: fixtureEnv }, fetch: (...args) => fetchImpl(...args), require: id => {
     if (id === 'convex/values') return { v: validator };
     if (id.includes('_generated/server')) return Object.fromEntries(['query','mutation','action','internalQuery','internalMutation','internalAction'].map(k=>[k,x=>x]));
     if (id.includes('_generated/api')) return { internal: ref(), api: ref() };
     if (id.endsWith('/rateLimits')) return { rateLimiter: { limit: async()=>{} } };
-    if (id.startsWith('.')) return load(path.resolve(path.dirname(file), id + '.ts'));
+    if (id.startsWith('.')) { const resolved = path.resolve(path.dirname(file), id); return load(fs.existsSync(resolved) ? resolved : resolved + '.ts'); }
     throw new Error(`Unexpected import ${id}`);
   }});
   return exports;
@@ -57,6 +57,22 @@ async function test(name,fn){await fn();tests.push(name);}
 const orderRow=(extra={})=>({_id:'order',_table:'orders',tenantId:'tenant-a',clientId:'buyer',freelancerId:'profile',orderType:'gig',status:'active',escrowStatus:'beta_no_payment',title:'Website design',orderNumber:'BETA-TEST',amount:100,freelancerEarnings:100,revisionCount:1,revisionsUsed:0,...extra});
 const delivery=()=>({_id:'file',_table:'orderDeliverables',orderId:'order',description:'Ready for review'});
 async function main(){
+ await test('proposal workspace links resolve only the matching owned order',async()=>{
+   const projects=load('convex/marketplace/projects.ts');
+   const rows=[...base(),{_id:'project',_table:'projects',clientId:'buyer',tenantId:'tenant-a'},
+     {_id:'bid',_table:'bids',projectId:'project',freelancerId:'profile',status:'accepted',amount:100,deliveryDays:3},
+     orderRow({orderType:'project',projectId:'project',bidId:'bid'})];
+   const read=ctx=>projects.getBids.handler(ctx,{projectId:'project'});
+   assert.equal((await read(fixture(rows)))[0].orderId,'order');
+   for(const patch of [{clientId:'other'},{tenantId:'other'},{projectId:'other'},{freelancerId:'other'}]){
+     const changed=rows.map(row=>row._id==='order'?{...row,...patch}:row);
+     assert.equal((await read(fixture(changed)))[0].orderId,null);
+   }
+   assert.equal((await read(fixture(rows.filter(row=>row._id!=='order'))))[0].orderId,null);
+   assert.equal((await read(fixture(rows.map(row=>row._id==='bid'?{...row,status:'pending'}:row))))[0].orderId,null);
+   await assert.rejects(()=>read(fixture([...rows,user('other')],'other')),/Unauthorized/);
+   await assert.rejects(()=>read(fixture(rows,null)));
+ });
  await test('valid beta order creates one intent and schedules buyer/seller email',async()=>{const ctx=fixture(base());const result=await orders.createBetaGigOrder.handler(ctx,{gigId:'gig',packageId:'package',requestId:intent});assert.equal(ctx.state.get(result.orderId).escrowStatus,'beta_no_payment');assert.equal(ctx.scheduled.length,2);});
  for(const [name,change,actor] of [
   ['anonymous',()=>{},null],['wrong context',rows=>rows[0].preferredWorld='local','buyer'],['foreign tenant',rows=>rows[1].tenantId='other','buyer'],

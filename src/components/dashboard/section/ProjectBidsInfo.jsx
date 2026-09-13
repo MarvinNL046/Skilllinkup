@@ -26,10 +26,14 @@ export default function ProjectBidsInfo({ projectId }) {
 
   const project = useQuery(
     api.marketplace.projects.getById,
-    projectId ? { projectId } : "skip"
+    projectId ? { projectId } : "skip",
   );
 
-  const isOwner = !!(convexUser && project && project.clientId === convexUser._id);
+  const isOwner = !!(
+    convexUser &&
+    project &&
+    project.clientId === convexUser._id
+  );
 
   if (!isLoaded) {
     return (
@@ -52,7 +56,9 @@ export default function ProjectBidsInfo({ projectId }) {
       <PageShell>
         <Card>
           <CardContent className="p-12 text-center">
-            <p className="text-[var(--text-secondary)] mb-4">{t("projectNotFound")}</p>
+            <p className="text-[var(--text-secondary)] mb-4">
+              {t("projectNotFound")}
+            </p>
             <Button asChild variant="outline" size="sm">
               <Link href="/manage-projects">
                 <ArrowLeft className="mr-1 h-4 w-4" />
@@ -74,7 +80,10 @@ export default function ProjectBidsInfo({ projectId }) {
   };
 
   const status = project?.status ?? "open";
-  const statusInfo = STATUS_BADGES[status] ?? { variant: "muted", label: status };
+  const statusInfo = STATUS_BADGES[status] ?? {
+    variant: "muted",
+    label: status,
+  };
   const budgetMin = project?.budgetMin;
   const budgetMax = project?.budgetMax;
   const currency = project?.currency ?? "EUR";
@@ -82,8 +91,8 @@ export default function ProjectBidsInfo({ projectId }) {
     budgetMin != null && budgetMax != null
       ? `${currency} ${budgetMin} - ${budgetMax}`
       : budgetMin != null
-      ? `${currency} ${budgetMin}+`
-      : t("budgetTBD");
+        ? `${currency} ${budgetMin}+`
+        : t("budgetTBD");
 
   return (
     <PageShell>
@@ -100,7 +109,9 @@ export default function ProjectBidsInfo({ projectId }) {
               aria-label={t("loadingProject")}
               className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--border-subtle)] border-t-primary mx-auto"
             />
-            <p className="mt-3 text-sm text-[var(--text-secondary)]">{t("loadingProject")}</p>
+            <p className="mt-3 text-sm text-[var(--text-secondary)]">
+              {t("loadingProject")}
+            </p>
           </CardContent>
         </Card>
       ) : (
@@ -109,7 +120,9 @@ export default function ProjectBidsInfo({ projectId }) {
             <CardContent className="p-6">
               <div className="flex justify-between items-start flex-wrap gap-3 pb-5 mb-5 border-b border-[var(--border-subtle)]">
                 <div className="min-w-0">
-                  <h4 className="text-xl font-semibold mb-2">{project.title}</h4>
+                  <h4 className="text-xl font-semibold mb-2">
+                    {project.title}
+                  </h4>
                   <div className="flex flex-wrap items-center gap-3 text-sm text-[var(--text-secondary)]">
                     {project.categoryName && (
                       <span className="inline-flex items-center gap-1">
@@ -121,20 +134,27 @@ export default function ProjectBidsInfo({ projectId }) {
                       <Wallet className="h-4 w-4 text-primary" />
                       {budgetDisplay}
                     </span>
-                    <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
+                    <Badge variant={statusInfo.variant}>
+                      {statusInfo.label}
+                    </Badge>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-2xl font-semibold">{project.bidCount ?? 0}</div>
                   <p className="text-xs text-[var(--text-secondary)] mb-0">
                     {(project.bidCount ?? 0) !== 1
-                      ? t("bidsReceivedPlural", { count: project.bidCount ?? 0 })
+                      ? t("bidsReceivedPlural", {
+                          count: project.bidCount ?? 0,
+                        })
                       : t("bidsReceived", { count: project.bidCount ?? 0 })}
                   </p>
                 </div>
               </div>
 
-              <BidList projectId={projectId} isOwner={isOwner} />
+              <BidList
+                projectId={projectId}
+                isOwner={isOwner}
+                projectStatus={project.status}
+              />
             </CardContent>
           </Card>
 
@@ -145,9 +165,9 @@ export default function ProjectBidsInfo({ projectId }) {
                 {t("backToMyProjects")}
               </Link>
             </Button>
-            {project.slug && (
+            {project.slug && project.status === "open" && (
               <Button asChild variant="ghost" size="sm">
-                <Link href={`/project/${project.slug}`} target="_blank">
+                <Link href={`/online/project/${project.slug}`} target="_blank">
                   {t("viewPublicPage")}
                   <ExternalLink className="ml-1 h-4 w-4" />
                 </Link>
