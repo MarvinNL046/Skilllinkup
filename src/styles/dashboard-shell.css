@@ -50,12 +50,12 @@
 
 @media (max-width: 600px) {
   .app-shell__content { padding: 18px 14px; }
-  .packages_table.manage-services-table > table { min-width: 0; width: 100%; }
-  .manage-services-table thead { display: none; }
-  .manage-services-table tbody { display: block; }
-  .manage-services-table tbody tr { display: grid; gap: 12px; padding-block: 16px; border-bottom: 1px solid #e2e8f0; }
-  .manage-services-table tbody td { display: block; width: 100%; padding: 0; border: 0; }
-  .manage-services-table tbody td:not(:first-child)::before { content: attr(data-label); display: block; margin-bottom: 4px; color: #64748b; font-size: 12px; }
+  .packages_table:is(.manage-services-table, .manage-projects-table) > table { min-width: 0; width: 100%; }
+  :is(.manage-services-table, .manage-projects-table) thead { display: none; }
+  :is(.manage-services-table, .manage-projects-table) tbody { display: block; }
+  :is(.manage-services-table, .manage-projects-table) tbody tr { display: grid; gap: 12px; padding-block: 16px; border-bottom: 1px solid #e2e8f0; }
+  :is(.manage-services-table, .manage-projects-table) tbody td { display: block; width: 100%; padding: 0; border: 0; }
+  :is(.manage-services-table, .manage-projects-table) tbody td:not(:first-child)::before { content: attr(data-label); display: block; margin-bottom: 4px; color: #64748b; font-size: 12px; }
 }
 
 .packages_table { overflow-x: auto; -webkit-overflow-scrolling: touch; }

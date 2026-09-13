@@ -822,7 +822,7 @@
     "submitBidBtn": "Soumettre une offre",
     "proposalsOwnerOnly": "Les propositions ne sont visibles que par le propriétaire du projet.",
     "loadingProposals": "Chargement des propositions...",
-    "noProposals": "Aucune proposition pour l'instant. Soyez le premier à soumettre !",
+    "noProposals": "Aucune proposition reçue pour le moment.",
     "averageBid": "Enchère moyenne :",
     "verifiedFreelancer": "Freelance vérifié",
     "days": "jours",

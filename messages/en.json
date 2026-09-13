@@ -822,7 +822,7 @@
     "submitBidBtn": "Submit proposal",
     "proposalsOwnerOnly": "Proposals are visible only to the project owner.",
     "loadingProposals": "Loading proposals...",
-    "noProposals": "No proposals yet. Be the first to submit!",
+    "noProposals": "No proposals received yet.",
     "averageBid": "Average proposal:",
     "verifiedFreelancer": "Verified freelancer",
     "days": "days",

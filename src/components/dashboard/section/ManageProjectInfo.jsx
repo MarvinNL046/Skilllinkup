@@ -160,7 +160,7 @@ export default function ManageProjectInfo() {
               />
             </div>
 
-            <div className="packages_table table-responsive">
+            <div className="packages_table table-responsive manage-projects-table">
               {isLoading ? (
                 <div className="text-center py-12">
                   <div
