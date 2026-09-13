@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useClerk } from "@clerk/nextjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMutation } from "convex/react";
+import { toast } from "sonner";
 import {
   ArrowLeft,
   ArrowRight,
@@ -26,6 +27,7 @@ import useConvexUser from "@/hook/useConvexUser";
 import { Button } from "@/components/ui/button";
 import { safeOnboardingRedirect } from "@/lib/onboardingRedirect.mjs";
 import { onboardingDraftKey, restoreOnboardingDraft } from "@/lib/onboardingDraft.mjs";
+import { PROFILE_RATE_CURRENCY } from "@/lib/profileRate.mjs";
 import styles from "./OnboardingExperience.module.css";
 
 const roles = [
@@ -270,6 +272,10 @@ export default function OnboardingExperience() {
       });
 
       clearDraft();
+      toast.success("Your account setup is saved.", {
+        id: "onboarding-saved",
+        description: "Your workspace is ready. You can update your profile at any time.",
+      });
       router.replace(safeOnboardingRedirect(searchParams.get("redirect_url")));
     } catch (cause) {
       setError(
@@ -538,7 +544,7 @@ export default function OnboardingExperience() {
                     Hourly rate <em>optional</em>
                   </span>
                   <span className={styles.moneyInput}>
-                    <b>€</b>
+                    <b>{PROFILE_RATE_CURRENCY}</b>
                     <input
                       type="number"
                       value={rate}

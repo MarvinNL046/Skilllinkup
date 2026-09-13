@@ -7,6 +7,7 @@ import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import useConvexProfile from "@/hook/useConvexProfile";
 import { getActiveRole } from "@/lib/accountContext.mjs";
+import { PROFILE_RATE_CURRENCY } from "@/lib/profileRate.mjs";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -357,7 +358,7 @@ export default function ProfileDetails() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="hourly-rate">{t("hourlyRateLabel")}</Label>
+              <Label htmlFor="hourly-rate">{t("hourlyRateLabel", { currency: PROFILE_RATE_CURRENCY })}</Label>
               <Input
                 id="hourly-rate"
                 type="number"

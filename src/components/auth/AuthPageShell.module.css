@@ -6,3 +6,41 @@
 @media(max-width:620px){.roles a:last-child:nth-child(odd){grid-column:auto}}
 
 .formPanel .authPrimary{min-height:var(--action-height);border:1px solid var(--action-primary-border);border-radius:var(--action-radius);padding:10px 16px;background:var(--action-primary-bg);color:var(--action-primary-text);font-family:var(--font-sans);font-size:14px;font-weight:600;box-shadow:none}.formPanel .authPrimary:hover:not(:disabled){background:var(--action-primary-hover);border-color:var(--action-primary-hover)}.formPanel .authPrimary:focus-visible{outline:2px solid var(--action-focus-ring);outline-offset:3px}.formPanel .authPrimary:disabled{opacity:.5;cursor:not-allowed}
+
+/* Clerk's input slot also targets checkboxes: size text fields separately. */
+.formPanel .clerkTitle {
+  margin: 0;
+  color: var(--brand-navy);
+  font-family: var(--font-sans);
+  font-size: clamp(26px, 3vw, 34px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -.03em;
+  text-align: left;
+}
+.formPanel .authInput:not([type="checkbox"]) {
+  min-height: 48px;
+  border: 1px solid var(--action-secondary-border);
+  border-radius: var(--action-radius);
+  background: var(--action-secondary-bg);
+  color: var(--brand-navy);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  box-shadow: none;
+}
+.formPanel .authInput:focus-visible {
+  outline: 2px solid var(--action-focus-ring);
+  outline-offset: -2px;
+  box-shadow: none;
+}
+.formPanel .authInput[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
+  flex: 0 0 18px;
+  padding: 0;
+  margin: 0;
+  border-radius: 4px;
+  accent-color: var(--action-link-text);
+}

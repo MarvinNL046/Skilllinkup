@@ -1182,7 +1182,7 @@
     "displayNamePlaceholder": "Jouw weergavenaam",
     "tagline": "Tagline",
     "taglinePlaceholder": "Jouw professionele tagline",
-    "hourlyRateLabel": "Uurtarief ($)",
+    "hourlyRateLabel": "Uurtarief ({currency})",
     "hourlyRatePlaceholder": "bijv. 75",
     "websiteUrl": "Website URL",
     "city": "Stad",
