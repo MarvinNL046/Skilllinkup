@@ -54,15 +54,15 @@ export default function OrderWorkspace({ orderId }) {
   );
   const deliverables = useQuery(
     api.marketplace.deliverables.list,
-    isAuthenticated && orderId ? { orderId } : "skip",
+    isAuthenticated && order?._id ? { orderId: order._id } : "skip",
   );
   const conversation = useQuery(
     api.chat.conversations.getByOrder,
-    isAuthenticated && orderId ? { orderId } : "skip",
+    isAuthenticated && order?._id ? { orderId: order._id } : "skip",
   );
   const appointment = useQuery(
     api.marketplace.localAppointments.getByOrder,
-    isAuthenticated && orderId ? { orderId } : "skip",
+    isAuthenticated && order?._id ? { orderId: order._id } : "skip",
   );
   useEffect(() => {
     if (!order?._id) return;
@@ -242,8 +242,7 @@ export default function OrderWorkspace({ orderId }) {
 
   if (
     order === undefined ||
-    deliverables === undefined ||
-    conversation === undefined
+    (order !== null && (deliverables === undefined || conversation === undefined))
   )
     return (
       <div className={styles.loading}>
@@ -253,8 +252,11 @@ export default function OrderWorkspace({ orderId }) {
   if (!order)
     return (
       <section className={styles.empty}>
-        <h1>Order not found</h1>
-        <Link href="/orders">Back to orders</Link>
+        <div>
+          <h1>Workspace unavailable</h1>
+          <p>This workspace may no longer exist, or your current account does not have access. Open an order from your own order list.</p>
+          <Button asChild><Link href="/orders">Back to my orders</Link></Button>
+        </div>
       </section>
     );
 
@@ -472,9 +474,8 @@ export default function OrderWorkspace({ orderId }) {
                   <div>
                     {item.downloadUrl ? (
                       <a
-                        href={item.downloadUrl}
-                        target="_blank"
-                        rel="noreferrer"
+                        href={`/api/deliverables/${item.id}/download`}
+                        download={item.fileName || "attachment"}
                         aria-label={`Download ${item.fileName}`}
                       >
                         <Download />

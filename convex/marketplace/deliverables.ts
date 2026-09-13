@@ -24,6 +24,7 @@ async function requireOrderParty(
   const user = await requireAuthUser(ctx);
   const order = await ctx.db.get(orderId);
   if (!order) throw new Error("Order not found.");
+  if (order.tenantId !== user.tenantId) throw new Error("Unauthorized.");
   const freelancer = order.freelancerId
     ? await ctx.db.get(order.freelancerId)
     : null;
@@ -76,6 +77,19 @@ export const list = query({
         };
       }),
     );
+  },
+});
+
+export const getDownload = query({
+  args: { deliverableId: v.id("orderDeliverables") },
+  returns: v.union(v.null(), v.object({ url: v.string(), fileName: v.string() })),
+  handler: async (ctx, args) => {
+    const item = await ctx.db.get(args.deliverableId);
+    if (!item) return null;
+    await requireOrderParty(ctx, item.orderId);
+    if (!item.storageId) return null;
+    const url = await ctx.storage.getUrl(item.storageId);
+    return url ? { url, fileName: item.fileName || "attachment" } : null;
   },
 });
 
