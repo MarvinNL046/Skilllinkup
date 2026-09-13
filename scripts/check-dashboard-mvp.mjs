@@ -42,6 +42,7 @@ function loader(overrides = {}, globals = {}) {
         if (id.includes("_generated/api")) return { api, internal: api };
         if (id.endsWith("/rateLimits")) return { rateLimiter: { limit: async () => ({ ok: true }) } };
         if (id.endsWith("/notifications")) return { notifyUser: async () => undefined };
+        if (id === "@/lib/accountDisplayName.mjs") return load("src/lib/accountDisplayName.mjs");
         if (id.startsWith("@/components/ui/")) return new Proxy({}, { get: (_, name) => String(name) });
         if (id.startsWith(".")) {
           const candidate = path.resolve(path.dirname(file), id);
@@ -866,30 +867,59 @@ await check("Dashboard metrics repair insert/delete cursor chains before conside
     },
   } })("src/hook/useDashboardMetrics.js").default;
   const total = () => JSON.parse(JSON.stringify(runner.render(() => hook(enabled))));
-  assert.deepEqual(total(), counts(1, 2, 3));
+  assert.deepEqual(total(), { ...counts(1, 2, 3), orderValues: {} });
+  pages.get(null).orderValues = [{ currency: "EUR", cents: 1050, orders: 1 }];
+  pages.get("a").orderValues = [{ currency: "EUR", cents: 2050, orders: 1 }, { currency: "USD", cents: 999, orders: 1 }];
+  assert.deepEqual(total().orderValues, { EUR: { cents: 3100, orders: 2 }, USD: { cents: 999, orders: 1 } });
   // A reactive insertion changes the first boundary; the previous trailing
   // query is now invalid. The hook must drop it before surfacing its error.
   pages = new Map([[null, page("inserted", counts(1))], ["inserted", page("a", counts(4))], ["a", page("new-end", counts(0, 2))], ["new-end", page(null, counts(0, 0, 3))], ["b", new Error("Stale trailing page after insert")]]);
-  assert.deepEqual(total(), counts(5, 2, 3));
+  assert.deepEqual(total(), { ...counts(5, 2, 3), orderValues: {} });
   pages = new Map([[null, page("new-end", counts(1))], ["inserted", new Error("Deleted project")], ["a", undefined], ["new-end", page(null, counts(0, 0, 3))]]);
-  assert.deepEqual(total(), counts(1, 0, 3));
+  assert.deepEqual(total(), { ...counts(1, 0, 3), orderValues: {} });
   // If a predecessor is still loading, a trailing error may also be obsolete.
   pages.set(null, undefined); pages.set("new-end", new Error("Unvalidated trailing page"));
   assert.equal(runner.render(), undefined);
   pages = new Map([[null, page(null, counts(7))]]);
-  assert.deepEqual(total(), counts(7));
+  assert.deepEqual(total(), { ...counts(7), orderValues: {} });
   actor = { ...user, activeRole: "freelancer" };
   pages = new Map([[null, page(null, counts(9, 8, 7))]]);
-  assert.deepEqual(total(), counts(9, 8, 7));
+  assert.deepEqual(total(), { ...counts(9, 8, 7), orderValues: {} });
   assert.equal(requested.at(-1).length, 1);
   assert.match(requested.at(-1)[0].contextKey, /:freelancer:online$/);
   actor = { ...user, _id: "different-account" };
-  assert.deepEqual(total(), counts(9, 8, 7));
+  assert.deepEqual(total(), { ...counts(9, 8, 7), orderValues: {} });
   assert.match(requested.at(-1)[0].contextKey, /^different-account:/);
   enabled = false;
   assert.equal(runner.render(), undefined); assert.equal(requested.at(-1).length, 0);
   enabled = true; pages = new Map([[null, new Error("Current authenticated query failed")]]);
   assert.throws(() => runner.render(), /Current authenticated query failed/);
+});
+await check("Order value keeps currencies separate and excludes cancelled and local work", async () => {
+  const metrics = backend("convex/marketplace/dashboardMetrics.ts");
+  const ctx = fixture(user, null).ctx;
+  const originalQuery = ctx.db.query;
+  ctx.db.query = (table) => table !== "orders" ? originalQuery(table) : {
+    withIndex(index, select) {
+      assert.equal(index, "by_client");
+      select({ eq(field, value) { assert.equal(field, "clientId"); assert.equal(value, user._id); } });
+      return { paginate: async ({ numItems }) => {
+        assert.equal(numItems, 100);
+        return { isDone: true, continueCursor: "end", page: [
+          { orderType: "project", status: "active", amount: 10.25, currency: "EUR" },
+          { orderType: "gig", status: "completed", amount: 20.50, currency: "EUR" },
+          { orderType: "project", status: "completed", amount: 30, currency: "USD" },
+          { orderType: "project", status: "cancelled", amount: 999, currency: "EUR" },
+          { orderType: "local", status: "active", amount: 999, currency: "EUR" },
+        ] };
+      } };
+    },
+  };
+  const result = await metrics.chunk.handler(ctx, { cursor: null, contextKey: `${user._id}:client:online` });
+  assert.deepEqual(JSON.parse(JSON.stringify(result.orderValues)), [
+    { currency: "EUR", cents: 3075, orders: 2 }, { currency: "USD", cents: 3000, orders: 1 },
+  ]);
+  assert.equal(result.counts.activeProjects, 1);
 });
 await check("Metrics cursor skips a deleted project but still rejects another client's project", async () => {
   const metrics = backend("convex/marketplace/dashboardMetrics.ts");

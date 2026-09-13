@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
+import { accountDisplayName } from "@/lib/accountDisplayName.mjs";
 import { Button } from "@/components/ui/button";
 import { upcomingAppointments } from "@/lib/upcomingAppointments.mjs";
 import styles from "./RoleDashboardInfo.module.css";
@@ -94,7 +95,7 @@ function EmptyState({ config }) {
 }
 
 export default function RoleDashboardInfo({ role, world }) {
-  const { convexUser, isAuthenticated } = useConvexUser();
+  const { clerkUser, convexUser, isAuthenticated } = useConvexUser();
   const contextKey = `${role}:${world}`;
   const config = configurations[contextKey];
   const localCustomer = role === "client" && world === "local";
@@ -158,7 +159,7 @@ export default function RoleDashboardInfo({ role, world }) {
     items = all.slice(0, 8).map((item) => ({ id: item._id, title: item.title, subtitle: item.company || "Your company", status: item.status, meta: `${item.applicationCount || 0} applicants`, location: item.locationCity || item.workType, href: `/manage-jobs/${item._id}/applications` }));
   }
 
-  const firstName = convexUser.name?.split(" ")[0] || "there";
+  const firstName = accountDisplayName(convexUser, clerkUser);
   const ActionIcon = config.action.Icon;
 
   return (

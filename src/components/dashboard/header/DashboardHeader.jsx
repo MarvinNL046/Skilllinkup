@@ -84,7 +84,7 @@ export default function DashboardHeader() {
               {user?.imageUrl ? (
                 <Image
                   src={user.imageUrl}
-                  alt={user.fullName || "Your account"}
+                  alt={user.fullName || user.username || "Your account"}
                   width={42}
                   height={42}
                   unoptimized
@@ -93,13 +93,13 @@ export default function DashboardHeader() {
                 <UserRound size={19} />
               )}
             </span>
-            <strong>{user?.fullName || "Your account"}</strong>
+            <strong>{user?.fullName || user?.username || "Your account"}</strong>
             <ChevronDown size={15} />
           </button>
           {open ? (
             <div className={styles.menu} role="menu">
               <div>
-                <strong>{user?.fullName || "Account"}</strong>
+                <strong>{user?.fullName || user?.username || "Account"}</strong>
                 <span>{user?.primaryEmailAddress?.emailAddress}</span>
               </div>
               <Link href="/my-profile" onClick={() => setOpen(false)}>

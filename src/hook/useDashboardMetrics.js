@@ -71,11 +71,21 @@ export default function useDashboardMetrics(enabled) {
   }, [enabled, contextKey, mismatch, repairCursor, nextCursor, cursors]);
   if (error) throw error;
   if (!ready || nextCursor !== null || mismatch >= 0) return undefined;
-  return pages.reduce(
+  const totals = pages.reduce(
     (totals, page) =>
       Object.fromEntries(
         Object.keys(totals).map((key) => [key, totals[key] + page.counts[key]]),
       ),
     { activeProjects: 0, newProposals: 0, unreadMessages: 0 },
   );
+  const orderValues = {};
+  for (const page of pages) {
+    for (const value of page.orderValues ?? []) {
+      const total = orderValues[value.currency] ?? { cents: 0, orders: 0 };
+      total.cents += value.cents;
+      total.orders += value.orders;
+      orderValues[value.currency] = total;
+    }
+  }
+  return { ...totals, orderValues };
 }
