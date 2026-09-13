@@ -60,6 +60,7 @@ import type * as marketplace_localVerifications from "../marketplace/localVerifi
 import type * as marketplace_notificationSettings from "../marketplace/notificationSettings.js";
 import type * as marketplace_notifications from "../marketplace/notifications.js";
 import type * as marketplace_operations from "../marketplace/operations.js";
+import type * as marketplace_orderPages from "../marketplace/orderPages.js";
 import type * as marketplace_orders from "../marketplace/orders.js";
 import type * as marketplace_portfolio from "../marketplace/portfolio.js";
 import type * as marketplace_projects from "../marketplace/projects.js";
@@ -141,6 +142,7 @@ declare const fullApi: ApiFromModules<{
   "marketplace/notificationSettings": typeof marketplace_notificationSettings;
   "marketplace/notifications": typeof marketplace_notifications;
   "marketplace/operations": typeof marketplace_operations;
+  "marketplace/orderPages": typeof marketplace_orderPages;
   "marketplace/orders": typeof marketplace_orders;
   "marketplace/portfolio": typeof marketplace_portfolio;
   "marketplace/projects": typeof marketplace_projects;

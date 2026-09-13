@@ -17,6 +17,7 @@ function load(file) {
   const exports = {}; modules.set(file, exports);
   const code = ts.transpileModule(fs.readFileSync(file, 'utf8'), { fileName: file.replace(/\.mjs$/, '.js'), compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   vm.runInNewContext(code, { exports, console: { log(){}, error(){} }, Date: Clock, URL, AbortSignal, Set, Map, Number, Math, process: { env: fixtureEnv }, fetch: (...args) => fetchImpl(...args), require: id => {
+    if (id === 'convex/server') return { paginationOptsValidator: {} };
     if (id === 'convex/values') return { v: validator };
     if (id.includes('_generated/server')) return Object.fromEntries(['query','mutation','action','internalQuery','internalMutation','internalAction'].map(k=>[k,x=>x]));
     if (id.includes('_generated/api')) return { internal: ref(), api: ref() };
@@ -57,6 +58,17 @@ async function test(name,fn){await fn();tests.push(name);}
 const orderRow=(extra={})=>({_id:'order',_table:'orders',tenantId:'tenant-a',clientId:'buyer',freelancerId:'profile',orderType:'gig',status:'active',escrowStatus:'beta_no_payment',title:'Website design',orderNumber:'BETA-TEST',amount:100,freelancerEarnings:100,revisionCount:1,revisionsUsed:0,...extra});
 const delivery=()=>({_id:'file',_table:'orderDeliverables',orderId:'order',description:'Ready for review'});
 async function main(){
+ await test('order pages traverse beyond fifty and reject foreign provider access',async()=>{
+ const pages=load('convex/marketplace/orderPages.ts');
+ const rows=[...base(),...Array.from({length:65},(_,i)=>orderRow({_id:'order-'+i,createdAt:i}))];
+ const ctx=fixture(rows); let cursor=null; const ids=[];
+ do {const result=await pages.list.handler(ctx,{role:'client',paginationOpts:{numItems:20,cursor}});ids.push(...result.page.map(o=>o._id));if(result.isDone)break;cursor=result.continueCursor;}while(true);
+ assert.equal(ids.length,65);assert.equal(new Set(ids).size,65);assert.equal(ids[0],'order-64');
+ const seller=fixture(rows,'seller');const profiles=await pages.profiles.handler(seller,{});assert.equal(profiles[0].id,'profile');
+ assert.equal((await pages.list.handler(seller,{role:'freelancer',profileId:'profile',paginationOpts:{numItems:20,cursor:null}})).page.length,20);
+ await assert.rejects(()=>pages.list.handler(ctx,{role:'freelancer',profileId:'profile',paginationOpts:{numItems:20,cursor:null}}),/Unauthorized/);
+ await assert.rejects(()=>pages.list.handler(fixture(rows,null),{role:'client',paginationOpts:{numItems:20,cursor:null}}));
+ });
  await test('proposal workspace links resolve only the matching owned order',async()=>{
    const projects=load('convex/marketplace/projects.ts');
    const rows=[...base(),{_id:'project',_table:'projects',clientId:'buyer',tenantId:'tenant-a'},

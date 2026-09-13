@@ -1,15 +1,36 @@
 "use client";
-import { useQuery } from "convex/react";
+import { useQuery, usePaginatedQuery } from "convex/react";
+import { useState } from "react";
 import { api } from "../../convex/_generated/api";
 import useConvexUser from "./useConvexUser";
-
 export default function useConvexOrders(role = "client") {
   const { convexUser, isLoaded } = useConvexUser();
-  const orders = useQuery(
-    api.marketplace.orders.getByUser,
-    convexUser?._id ? { userId: convexUser._id, role, limit: 50 } : "skip"
+  const [choice, setChoice] = useState(null);
+  const profiles = useQuery(
+    api.marketplace.orderPages.profiles,
+    convexUser?._id && role === "freelancer" ? {} : "skip",
   );
-  // isLoading is true until auth resolves AND (if logged in) until the query returns data
-  const isLoading = !isLoaded || (!!convexUser?._id && orders === undefined);
-  return { orders: orders ?? [], isLoading, user: convexUser };
+  const profileId =
+    profiles?.find((p) => p.id === choice)?.id ?? profiles?.[0]?.id;
+  const ready = !!convexUser?._id && (role === "client" || !!profileId);
+  const { results, status, loadMore } = usePaginatedQuery(
+    api.marketplace.orderPages.list,
+    ready ? { role, ...(role === "freelancer" ? { profileId } : {}) } : "skip",
+    { initialNumItems: 20 },
+  );
+  return {
+    orders: ready ? results : [],
+    isLoading:
+      !isLoaded ||
+      (!!convexUser?._id &&
+        ((role === "freelancer" && profiles === undefined) ||
+          (ready && status === "LoadingFirstPage"))),
+    profiles: profiles ?? [],
+    profileId,
+    setProfileId: setChoice,
+    canLoadMore: ready && status === "CanLoadMore",
+    loadingMore: ready && status === "LoadingMore",
+    loadMore: () => loadMore(20),
+    user: convexUser,
+  };
 }
