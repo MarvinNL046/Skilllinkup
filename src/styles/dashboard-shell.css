@@ -48,6 +48,9 @@
   .app-shell__content { padding: 22px 18px; }
 }
 
+.proposal-table th { text-align: left; padding: 12px; }
+.proposal-table td { padding: 20px 12px; border-top: 1px solid var(--border-subtle); }
+
 @media (max-width: 600px) {
   .app-shell__content { padding: 18px 14px; }
   .packages_table:is(.manage-services-table, .manage-projects-table) > table { min-width: 0; width: 100%; }
