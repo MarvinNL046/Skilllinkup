@@ -603,14 +603,16 @@ var getOpenCount = query({
     }
   });
 export const getMyBidsPage = query({
-  args: { freelancerId: v.id("freelancerProfiles"), paginationOpts: paginationOptsValidator },
+  args: { freelancerId: v.id("freelancerProfiles"), status: v.optional(bidStatusValidator), paginationOpts: paginationOptsValidator },
   returns: paginationResultValidator(L),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
     const profile = await ctx.db.get(args.freelancerId);
     if (!profile || profile.userId !== user._id) throw new Error("Unauthorized.");
-    const result = await ctx.db.query("bids")
-      .withIndex("by_freelancer", q => q.eq("freelancerId", args.freelancerId))
+    const source = args.status
+      ? ctx.db.query("bids").withIndex("by_freelancer_status", q => q.eq("freelancerId", args.freelancerId).eq("status", args.status!))
+      : ctx.db.query("bids").withIndex("by_freelancer", q => q.eq("freelancerId", args.freelancerId));
+    const result = await source
       .order("desc").paginate({ ...args.paginationOpts, numItems: Math.min(50, args.paginationOpts.numItems) });
     const projects = await Promise.all([...new Set(result.page.map(bid => bid.projectId))].map(id => ctx.db.get(id)));
     const byId = new Map(projects.filter(project => project && project.tenantId === user.tenantId).map(project => [project!._id, project!]));
