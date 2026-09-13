@@ -1,4 +1,5 @@
 import { MESSAGE_MAX_LENGTH } from "./messagePolicy.mjs";
+import { createRequestId } from "./requestId.mjs";
 
 const drafts = new Map();
 const pending = new Map();
@@ -38,7 +39,7 @@ export function sendMessageDraft(key, content, send) {
     try { attempt = JSON.parse(window.sessionStorage.getItem(`${key}:attempt`)); } catch { /* Memory fallback below. */ }
   }
   if (!attempt || attempt.content !== content || typeof attempt.id !== "string") {
-    attempt = { id: crypto.randomUUID(), content };
+    attempt = { id: createRequestId(), content };
   }
   if (key) {
     attempts.set(key, attempt);
