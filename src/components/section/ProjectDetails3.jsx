@@ -193,7 +193,7 @@ export default function ProjectDetail3() {
                 <h4 className="text-xl font-semibold mb-5">
                   {t("projectProposals")} ({bidCount})
                 </h4>
-                {data?._id && <BidList projectId={data._id} isOwner={isOwner} />}
+                {data?._id && <BidList key={`${convexUser?._id}:${data._id}`} projectId={data._id} isOwner={isOwner} projectStatus={data.status} />}
 
                 <div ref={bidSectionRef} className="mt-6">
                   {!isLoaded ? null : !isAuthenticated ? (

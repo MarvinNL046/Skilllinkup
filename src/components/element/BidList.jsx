@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { useTranslations } from "next-intl";
 import { api } from "../../../convex/_generated/api";
@@ -12,6 +12,14 @@ import { Star, CheckCircle2, AlertCircle, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ContextMessageButton from "@/components/ui/ContextMessageButton";
 import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 export default function BidList({
   projectId,
@@ -28,17 +36,30 @@ export default function BidList({
   const [sort, setSort] = useState("received");
   const [acceptingId, setAcceptingId] = useState(null);
   const [acceptError, setAcceptError] = useState("");
+  const [comparedIds, setComparedIds] = useState([]);
+  const [reviewId, setReviewId] = useState(null);
+  const accepting = useRef(false);
+  const reviewedBid = bids?.find((bid) => bid._id === reviewId);
+  const compared = bids?.filter((bid) => comparedIds.includes(bid._id)) || [];
 
   const handleAccept = async (bidId) => {
-    if (acceptingId !== null || projectStatus !== "open") return;
+    if (
+      accepting.current ||
+      projectStatus !== "open" ||
+      !bids?.some((bid) => bid._id === bidId && bid.status === "pending")
+    )
+      return;
+    accepting.current = true;
     setAcceptingId(bidId);
     setAcceptError("");
     try {
       const result = await acceptBid({ bidId });
+      setReviewId(null);
       router.push(`/orders/${result.orderId}`);
     } catch (err) {
       setAcceptError(err.message || t("failedToSubmit"));
     } finally {
+      accepting.current = false;
       setAcceptingId(null);
     }
   };
@@ -112,11 +133,107 @@ export default function BidList({
           remain here for reference.
         </p>
       )}
-      {acceptError && (
+      {acceptError && !reviewId && (
         <Alert variant="destructive" className="mb-5">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>{acceptError}</AlertDescription>
         </Alert>
+      )}
+      <p className="mb-4 text-sm text-[var(--text-secondary)]">
+        Select up to three proposals to compare. Your comparison selection stays
+        on this page until you leave or reload.
+      </p>
+      {compared.length > 0 && (
+        <section
+          aria-label="Selected proposals comparison"
+          className="mb-6 rounded-xl border border-[var(--border-subtle)] p-4"
+        >
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <h3 className="text-lg font-semibold">
+              Your comparison ({compared.length}/3)
+            </h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setComparedIds([])}
+            >
+              Clear comparison
+            </Button>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            {compared.map((bid) => (
+              <article
+                key={bid._id}
+                className="min-w-0 rounded-lg border border-[var(--border-subtle)] p-4"
+              >
+                <h4 className="font-semibold">{bid.freelancerName}</h4>
+                <dl className="my-3 space-y-2 text-sm">
+                  <div>
+                    <dt>Proposal price</dt>
+                    <dd className="font-semibold">
+                      {money(bid.amount, bid.currency || "EUR")}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Delivery</dt>
+                    <dd>
+                      {bid.deliveryDays}{" "}
+                      {bid.deliveryDays === 1 ? "day" : "days"}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Rating</dt>
+                    <dd>
+                      {bid.freelancerRating > 0
+                        ? `${bid.freelancerRating.toFixed(1)} / 5`
+                        : "No rating yet"}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Status</dt>
+                    <dd>{bid.status}</dd>
+                  </div>
+                </dl>
+                <details className="mb-3 text-sm">
+                  <summary className="cursor-pointer">Read approach</summary>
+                  <p className="mt-2 whitespace-pre-wrap break-words">
+                    {bid.pitch}
+                  </p>
+                </details>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() =>
+                      setComparedIds((ids) =>
+                        ids.filter((id) => id !== bid._id),
+                      )
+                    }
+                  >
+                    Remove
+                  </Button>
+                  {bid.status === "pending" && projectStatus === "open" && (
+                    <Button
+                      size="sm"
+                      disabled={acceptingId !== null}
+                      onClick={() => {
+                        setReviewId(bid._id);
+                        setAcceptError("");
+                      }}
+                    >
+                      Review choice
+                    </Button>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+          {new Set(compared.map((bid) => bid.currency || "EUR")).size > 1 && (
+            <p className="mt-3 text-sm">
+              These prices use different currencies and have not been converted.
+            </p>
+          )}
+        </section>
       )}
       <div className="space-y-5">
         {orderedBids.map((bid) => (
@@ -191,6 +308,25 @@ export default function BidList({
                       ? "Not selected"
                       : bid.status}
               </Badge>
+              <label className="mt-3 flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={comparedIds.includes(bid._id)}
+                  disabled={
+                    !comparedIds.includes(bid._id) && compared.length >= 3
+                  }
+                  onChange={(event) =>
+                    setComparedIds((ids) =>
+                      event.target.checked
+                        ? ids.length < 3
+                          ? [...ids, bid._id]
+                          : ids
+                        : ids.filter((id) => id !== bid._id),
+                    )
+                  }
+                />
+                Compare {bid.freelancerName}
+              </label>
               {bid.status === "accepted" && (
                 <div className="mt-3">
                   {bid.orderId ? (
@@ -217,12 +353,15 @@ export default function BidList({
                     <Button
                       variant="default"
                       size="sm"
-                      onClick={() => handleAccept(bid._id)}
+                      onClick={() => {
+                        setReviewId(bid._id);
+                        setAcceptError("");
+                      }}
                       disabled={acceptingId !== null}
                     >
                       {acceptingId === bid._id
                         ? t("accepting")
-                        : "Choose this proposal"}
+                        : "Review choice"}
                       <Check className="ml-1 h-4 w-4" />
                     </Button>
                   ) : null}
@@ -232,6 +371,72 @@ export default function BidList({
           </article>
         ))}
       </div>
+      <Dialog
+        open={!!reviewedBid}
+        onOpenChange={(open) => {
+          if (!open && !accepting.current) setReviewId(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm your choice</DialogTitle>
+            <DialogDescription>
+              Review the agreed scope before creating the shared workspace.
+            </DialogDescription>
+          </DialogHeader>
+          {reviewedBid && (
+            <div className="space-y-3">
+              <p className="font-semibold">{reviewedBid.freelancerName}</p>
+              <p>
+                {money(reviewedBid.amount, reviewedBid.currency || "EUR")} ·{" "}
+                {reviewedBid.deliveryDays}{" "}
+                {reviewedBid.deliveryDays === 1 ? "day" : "days"}
+              </p>
+              <p className="max-h-48 overflow-y-auto whitespace-pre-wrap break-words text-sm">
+                {reviewedBid.pitch}
+              </p>
+              <p className="text-sm text-[var(--text-secondary)]">
+                Confirming accepts this proposal and closes selection for this
+                project. A shared workspace will be created. No payment is taken
+                during the private beta.
+              </p>
+              {(projectStatus !== "open" ||
+                reviewedBid.status !== "pending") && (
+                <p role="status">
+                  This proposal can no longer be selected. Close this window to
+                  review the current status.
+                </p>
+              )}
+              {acceptError && (
+                <Alert variant="destructive">
+                  <AlertDescription>{acceptError}</AlertDescription>
+                </Alert>
+              )}
+            </div>
+          )}
+          <DialogFooter>
+            <Button
+              variant="outline"
+              disabled={acceptingId !== null}
+              onClick={() => setReviewId(null)}
+            >
+              Keep comparing
+            </Button>
+            <Button
+              disabled={
+                acceptingId !== null ||
+                projectStatus !== "open" ||
+                reviewedBid?.status !== "pending"
+              }
+              onClick={() => handleAccept(reviewId)}
+            >
+              {acceptingId
+                ? "Creating workspace…"
+                : "Confirm and open workspace"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

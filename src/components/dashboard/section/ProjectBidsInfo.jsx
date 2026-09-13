@@ -151,6 +151,7 @@ export default function ProjectBidsInfo({ projectId }) {
               </div>
 
               <BidList
+                key={`${convexUser?._id}:${projectId}`}
                 projectId={projectId}
                 isOwner={isOwner}
                 projectStatus={project.status}
