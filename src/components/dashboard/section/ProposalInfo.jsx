@@ -1,11 +1,11 @@
 "use client";
+import { useState } from "react";
 import { useQuery } from "convex/react";
 import { useTranslations } from "next-intl";
 import { api } from "../../../../convex/_generated/api";
 import ProposalCard1 from "../card/ProposalCard1";
 import DashboardNavigation from "../header/DashboardNavigation";
-import DeleteModal from "../modal/DeleteModal";
-import ProposalModal1 from "../modal/ProposalModal1";
+import { Button } from "@/components/ui/button";
 import useConvexProfile from "@/hook/useConvexProfile";
 import useConvexUser from "@/hook/useConvexUser";
 import Link from "next/link";
@@ -13,12 +13,13 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function ProposalInfo() {
   const t = useTranslations("proposals");
+  const [filter, setFilter] = useState("all");
   const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const { profile } = useConvexProfile();
 
   const bids = useQuery(
     api.marketplace.projects.getMyBids,
-    profile?._id ? { freelancerId: profile._id } : "skip"
+    profile?._id ? { freelancerId: profile._id } : "skip",
   );
 
   const isLoading =
@@ -27,8 +28,21 @@ export default function ProposalInfo() {
       (convexUser?._id && profile === undefined) ||
       (profile?._id && bids === undefined));
   const noProfile =
-    isAuthenticated && convexUser !== undefined && convexUser !== null && profile === null;
+    isAuthenticated &&
+    convexUser !== undefined &&
+    convexUser !== null &&
+    profile === null;
   const hasBids = bids && bids.length > 0;
+  const filters = [
+    ["all", "All"],
+    ["pending", "Awaiting decision"],
+    ["accepted", "Accepted"],
+    ["rejected", "Not selected"],
+    ["withdrawn", "Withdrawn"],
+  ];
+  const visibleBids = (bids || []).filter(
+    (bid) => filter === "all" || bid.status === filter,
+  );
 
   return (
     <>
@@ -40,8 +54,40 @@ export default function ProposalInfo() {
         </div>
         <Card className="overflow-hidden">
           <CardContent className="p-6">
-            <div className="packages_table table-responsive">
-              {isAuthenticated && convexUser === undefined ? (
+            {hasBids && (
+              <div className="mb-5">
+                <div
+                  className="flex flex-wrap gap-2"
+                  role="group"
+                  aria-label="Filter proposals by status"
+                >
+                  {filters.map(([value, label]) => (
+                    <Button
+                      key={value}
+                      size="sm"
+                      variant={filter === value ? "default" : "outline"}
+                      aria-pressed={filter === value}
+                      onClick={() => setFilter(value)}
+                    >
+                      {label} (
+                      {value === "all"
+                        ? bids.length
+                        : bids.filter((bid) => bid.status === value).length}
+                      )
+                    </Button>
+                  ))}
+                </div>
+                <p
+                  role="status"
+                  className="mt-3 text-sm text-[var(--text-secondary)]"
+                >
+                  Showing {visibleBids.length} of your{" "}
+                  {bids.length >= 50 ? "latest 50" : bids.length} proposals.
+                </p>
+              </div>
+            )}
+            <div className="packages_table table-responsive manage-projects-table">
+              {!isLoaded || (isAuthenticated && convexUser === undefined) ? (
                 <div className="flex justify-center py-8">
                   <div
                     role="status"
@@ -60,7 +106,10 @@ export default function ProposalInfo() {
               ) : noProfile ? (
                 <p className="text-center text-[var(--text-secondary)] py-12">
                   {t("noProfile")}{" "}
-                  <Link href="/onboarding" className="text-primary hover:underline">
+                  <Link
+                    href="/onboarding"
+                    className="text-primary hover:underline"
+                  >
                     {t("completeProfile")}
                   </Link>
                 </p>
@@ -76,11 +125,23 @@ export default function ProposalInfo() {
                   </p>
                 </div>
               ) : !hasBids ? (
-                <p className="text-center text-[var(--text-secondary)] py-8">
-                  {t("noProposalsYet")}
-                </p>
+                <div className="text-center py-8">
+                  <p className="text-[var(--text-secondary)] mb-4">
+                    {t("noProposalsYet")}
+                  </p>
+                  <Button asChild>
+                    <Link href="/projects">Explore projects</Link>
+                  </Button>
+                </div>
+              ) : !visibleBids.length ? (
+                <div className="py-8 text-center">
+                  <p className="mb-4">No proposals with this status.</p>
+                  <Button variant="outline" onClick={() => setFilter("all")}>
+                    Show all proposals
+                  </Button>
+                </div>
               ) : (
-                <table className="table-style3 table at-savesearch">
+                <table className="table-style3 table at-savesearch proposal-table">
                   <thead className="t-head">
                     <tr>
                       <th scope="col">{t("columnProject")}</th>
@@ -89,7 +150,7 @@ export default function ProposalInfo() {
                     </tr>
                   </thead>
                   <tbody className="t-body">
-                    {bids.map((bid) => (
+                    {visibleBids.map((bid) => (
                       <ProposalCard1 key={bid._id} bid={bid} />
                     ))}
                   </tbody>
@@ -99,8 +160,7 @@ export default function ProposalInfo() {
           </CardContent>
         </Card>
       </div>
-      <ProposalModal1 />
-      <DeleteModal />
     </>
   );
 }
+

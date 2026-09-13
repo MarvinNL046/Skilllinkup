@@ -1294,3 +1294,19 @@ await check("Lost message acknowledgement reuses persisted request after reload"
   reloaded.writeMessageDraft(key, "QA retry check");
   await reloaded.sendMessageDraft(key, "QA retry check", async (_, id) => assert.notEqual(id, originalId));
 });
+
+await check("Proposal cards keep closed projects unlinked and show saved pitch and order action", async () => {
+  const Card = loader({
+    "next/link": { default: "a" },
+    "next-intl": { useTranslations: () => key => key },
+    "@/hook/useMyProjectProposal": { default: () => ({ orderId: "qa-order" }) },
+  })("src/components/dashboard/card/ProposalCard1.jsx").default;
+  const bid = { _id: "qa-bid", projectId: "qa-project", projectTitle: "QA project", projectSlug: "qa-project", projectStatus: "completed", status: "accepted", amount: 125, currency: "EUR", deliveryDays: 3, createdAt: 1789319054078, pitch: "Saved QA pitch" };
+  let tree = Card({ bid });
+  assert.equal(findElement(tree, e => e.props?.href === "/online/project/qa-project"), null);
+  assert.ok(findElement(tree, e => e.props?.children === "Saved QA pitch"));
+  const action = findElement(tree, e => typeof e.type === "function" && e.props?.projectId === "qa-project");
+  assert.ok(findElement(action.type(action.props), e => e.props?.href === "/orders/qa-order"));
+  tree = Card({ bid: { ...bid, status: "pending", projectStatus: "open" } });
+  assert.ok(findElement(tree, e => e.props?.href === "/online/project/qa-project"));
+});
