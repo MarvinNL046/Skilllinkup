@@ -574,7 +574,7 @@ export default function OrderWorkspace({ orderId }) {
                   {order.remainingRevisions === 0
                     ? "The included revisions have been used. Discuss additional changes in the project conversation."
                     : typeof order.remainingRevisions === "number"
-                      ? `${order.remainingRevisions} revisions remaining`
+                      ? `${order.remainingRevisions} {order.remainingRevisions === 1 ? "revision" : "revisions"} remaining`
                       : "Explain the changes you need."}
                 </p>
                 <textarea
