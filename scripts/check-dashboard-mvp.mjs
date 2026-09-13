@@ -142,19 +142,20 @@ function findElement(tree, predicate) {
   return null;
 }
 
-function composerFixture(isMobile = false, navigator = { onLine: true }) {
+function composerFixture(isMobile = false, navigator = { onLine: true }, connection = { isWebSocketConnected: true, hasEverConnected: true }, window) {
   const runner = hookRunner();
   const sends = [];
   let settle;
   const props = { isMobile, hasConversation: true, currentUserId: "qa", messages: [], onSend: (text) => { sends.push(text); return new Promise((resolve, reject) => { settle = { resolve, reject }; }); } };
   const Box = loader({
+    "convex/react": { useConvexConnectionState: () => connection },
     react: runner.react,
     "next-intl": { useTranslations: () => (key) => key },
     "next/image": { default: "img" },
     "next/link": { default: "a" },
     "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
     "@/lib/messagePolicy.mjs": messagePolicy,
-  }, { navigator, requestAnimationFrame: (callback) => callback() })("src/components/dashboard/element/MessageBox.jsx").default;
+  }, { window, navigator, requestAnimationFrame: (callback) => callback() })("src/components/dashboard/element/MessageBox.jsx").default;
   const render = () => runner.render(() => Box(props));
   return { props, sends, render, settle: () => settle };
 }
@@ -649,6 +650,45 @@ await check("Composer preserves multiline drafts, skips IME and prevents duplica
   await retry;
   tree = f.render();
   assert.equal(findElement(tree, (e) => e.type === "textarea").props.value, "");
+});
+
+await check("Composer reports connection and acknowledgement states without premature success", async () => {
+  const connection = { isWebSocketConnected: false, hasEverConnected: false };
+  const network = { onLine: true };
+  const events = new Map();
+  const f = composerFixture(false, network, connection, {
+    addEventListener: (name, callback) => events.set(name, callback),
+    removeEventListener: name => events.delete(name),
+  });
+  let tree = f.render();
+  const status = () => findElement(tree, e => e.props?.id === "message-connection-status").props.children;
+  const input = () => findElement(tree, e => e.type === "textarea");
+  const submit = () => findElement(tree, e => e.type === "form").props.onSubmit({ preventDefault() {} });
+  assert.match(status(), /Connecting/);
+  input().props.onChange({ target: { value: "QA connection status" } });
+  tree = f.render();
+  await submit();
+  assert.equal(f.sends.length, 0);
+  assert.equal(input().props.disabled, false);
+  connection.hasEverConnected = true;
+  tree = f.render();
+  assert.match(status(), /Reconnecting/);
+  network.onLine = false; events.get("offline")(); tree = f.render();
+  assert.match(status(), /offline/);
+  network.onLine = true; events.get("online")();
+  connection.isWebSocketConnected = true; tree = f.render();
+  const sending = submit(); tree = f.render();
+  assert.match(status(), /Waiting for confirmation/);
+  connection.isWebSocketConnected = false; tree = f.render();
+  assert.match(status(), /retry automatically/);
+  await submit(); assert.equal(f.sends.length, 1);
+  f.settle().reject(new Error("Delivery failed")); await sending;
+  connection.isWebSocketConnected = true; tree = f.render();
+  assert.notEqual(status(), "Message sent.");
+  assert.equal(input().props.value, "QA connection status");
+  const retry = submit(); f.settle().resolve(); await retry; tree = f.render();
+  assert.equal(status(), "Message sent.");
+  assert.equal(input().props.value, "");
 });
 
 await check("Offline composer retains text and allows sending after reconnecting", async () => {

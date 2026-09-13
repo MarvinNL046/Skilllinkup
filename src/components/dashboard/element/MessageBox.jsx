@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
+import { useConvexConnectionState } from "convex/react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, ArrowLeft, Send, LoaderCircle } from "lucide-react";
@@ -27,6 +28,20 @@ export default function MessageBox({
   onRetryRead,
 }) {
   const t = useTranslations("messages");
+  const connection = useConvexConnectionState();
+  const [browserOnline, setBrowserOnline] = useState(true);
+  const [sendConfirmed, setSendConfirmed] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const sync = () => setBrowserOnline(navigator.onLine !== false);
+    sync();
+    window.addEventListener("online", sync);
+    window.addEventListener("offline", sync);
+    return () => {
+      window.removeEventListener("online", sync);
+      window.removeEventListener("offline", sync);
+    };
+  }, []);
   const [inputValue, setInputValue] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [sendError, setSendError] = useState(null);
@@ -50,6 +65,18 @@ export default function MessageBox({
   const blockError = inputValue.trim()
     ? getMessagePolicyError(inputValue)
     : null;
+  const disconnected = !browserOnline || !connection.isWebSocketConnected;
+  const connectionMessage = isSending
+    ? disconnected
+      ? "Connection interrupted. Your message is awaiting confirmation. Keep this page open; it will retry automatically."
+      : "Waiting for confirmation that your message was saved…"
+    : !browserOnline
+      ? "You are offline. You can keep writing; send when you are connected again."
+      : !connection.isWebSocketConnected
+        ? connection.hasEverConnected
+          ? "Reconnecting to messages… You can keep writing while we restore the connection."
+          : "Connecting to messages…"
+        : sendConfirmed ? "Message sent." : "";
 
   const scrollToBottom = () => {
     const el = chatBoxRef.current;
@@ -94,12 +121,15 @@ export default function MessageBox({
       setSendError("You are offline. Your draft is kept here. Reconnect, then try again.");
       return;
     }
+    if (disconnected) return;
     sendingRef.current = true;
+    setSendConfirmed(false);
     setSendError(null);
     setIsSending(true);
     try {
       await sendMessageDraft(draftKey, inputValue, onSend);
       setInputValue("");
+      setSendConfirmed(true);
       nearBottom.current = true;
       scrollToBottom();
     } catch (err) {
@@ -382,6 +412,11 @@ export default function MessageBox({
           flexShrink: 0,
         }}
       >
+        <p id="message-connection-status" role="status" aria-live="polite" aria-atomic="true"
+          className={`text-sm ${disconnected ? "text-amber-800" : "text-slate-600"}`}
+          style={{ margin: connectionMessage ? "0 0 8px" : 0 }}>
+          {connectionMessage}
+        </p>
         <form
           onSubmit={handleSend}
           style={{ display: "flex", alignItems: "flex-end", gap: 10 }}
@@ -392,7 +427,7 @@ export default function MessageBox({
             aria-label="Message"
             maxLength={MESSAGE_MAX_LENGTH}
             aria-describedby={
-              blockError || sendError ? "message-compose-help message-send-error" : "message-compose-help"
+              blockError || sendError ? "message-compose-help message-connection-status message-send-error" : "message-compose-help message-connection-status"
             }
             placeholder={t("typeMessage")}
             value={inputValue}
@@ -400,6 +435,7 @@ export default function MessageBox({
               setInputValue(e.target.value);
               if (draftKey) setDraftStorageUnavailable(!writeMessageDraft(draftKey, e.target.value));
               setSendError(null);
+              setSendConfirmed(false);
             }}
             onKeyDown={handleKeyDown}
             disabled={isSending}
@@ -420,7 +456,7 @@ export default function MessageBox({
             type="submit"
             size={isMobile ? "icon" : "default"}
             aria-label={isSending ? "Sending message" : "Send message"}
-            disabled={isSending || !inputValue.trim() || !!blockError}
+            disabled={isSending || disconnected || !inputValue.trim() || !!blockError}
           >
             {isSending ? (
               isMobile ? (
