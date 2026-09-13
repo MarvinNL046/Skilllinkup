@@ -378,6 +378,7 @@ await check("Appointment form preserves failed dates, blocks overlapping actions
     sonner: { toast: { success() {}, error() {} } },
     "@/hook/useConvexUser": { default: () => ({ isAuthenticated: true, convexUser: { _id: "buyer" } }) },
     "@/components/dashboard/header/DashboardNavigation": { default: "nav" },
+    "@/hook/useIsMobile": { default: () => true },
     "@/hook/useConversationMessages": { default: () => ({}) },
     "@/components/dashboard/element/MessageBox": { default: "MessageBox" },
     "@/lib/orderWorkspace.mjs": { getWorkspaceNextStep, getOrderActionContext: () => ({ isClient: true, isLocal: true, matchesContext: true }) },

@@ -23,6 +23,7 @@ import useConvexUser from "@/hook/useConvexUser";
 import DashboardNavigation from "@/components/dashboard/header/DashboardNavigation";
 import { Button } from "@/components/ui/button";
 import styles from "./OrderWorkspace.module.css";
+import useIsMobile from "@/hook/useIsMobile";
 import useConversationMessages from "@/hook/useConversationMessages";
 import MessageBox from "@/components/dashboard/element/MessageBox";
 import { getOrderActionContext, getWorkspaceNextStep } from "@/lib/orderWorkspace.mjs";
@@ -45,6 +46,7 @@ function formatBytes(value) {
 }
 
 export default function OrderWorkspace({ orderId }) {
+  const isMobile = useIsMobile();
   const { convexUser, isAuthenticated } = useConvexUser();
   const order = useQuery(
     api.marketplace.orders.getById,
@@ -623,6 +625,7 @@ export default function OrderWorkspace({ orderId }) {
               currentUserId={convexUser?._id}
               otherParticipant={conversation.otherParticipant}
               context={conversation.context}
+              isMobile={isMobile}
               hasConversation
               onSend={handleSend}
             />
