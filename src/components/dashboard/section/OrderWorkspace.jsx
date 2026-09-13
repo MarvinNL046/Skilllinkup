@@ -27,6 +27,7 @@ import useIsMobile from "@/hook/useIsMobile";
 import useConversationMessages from "@/hook/useConversationMessages";
 import MessageBox from "@/components/dashboard/element/MessageBox";
 import { getOrderActionContext, getWorkspaceNextStep } from "@/lib/orderWorkspace.mjs";
+import { uploadWorkspaceFile } from "@/lib/uploadWorkspaceFile.mjs";
 
 const statusLabels = {
   pending: "Pending",
@@ -116,16 +117,7 @@ export default function OrderWorkspace({ orderId }) {
     try {
       let storageId;
       if (file) {
-        if (file.size > 25 * 1024 * 1024)
-          throw new Error("Files must be smaller than 25 MB.");
-        const uploadUrl = await generateUploadUrl({ orderId });
-        const response = await fetch(uploadUrl, {
-          method: "POST",
-          headers: { "Content-Type": file.type || "application/octet-stream" },
-          body: file,
-        });
-        if (!response.ok) throw new Error("The file could not be uploaded.");
-        ({ storageId } = await response.json());
+        storageId = await uploadWorkspaceFile(file, () => generateUploadUrl({ orderId }));
       }
       await addDeliverable({
         orderId,
@@ -473,13 +465,15 @@ export default function OrderWorkspace({ orderId }) {
                   </div>
                   <div>
                     {item.downloadUrl ? (
+                      <Button asChild variant="outline">
                       <a
                         href={`/api/deliverables/${item.id}/download`}
                         download={item.fileName || "attachment"}
                         aria-label={`Download ${item.fileName}`}
                       >
-                        <Download />
+                        <Download /> Download
                       </a>
+                      </Button>
                     ) : null}
                     {item.uploadedBy === convexUser?._id &&
                     ![
@@ -490,7 +484,6 @@ export default function OrderWorkspace({ orderId }) {
                     ].includes(order.status) ? (
                       <Button
                         variant="destructive"
-                        size="sm"
                         type="button"
                         disabled={Boolean(busy)}
                         onClick={async () => {

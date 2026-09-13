@@ -46,6 +46,7 @@ function loader(overrides = {}, globals = {}) {
         if (id === "@/lib/accountDisplayName.mjs") return load("src/lib/accountDisplayName.mjs");
         if (id === "@/lib/profileRate.mjs") return load("src/lib/profileRate.mjs");
         if (id === "@/lib/messageDraft.mjs") return load("src/lib/messageDraft.mjs");
+        if (id === "@/lib/uploadWorkspaceFile.mjs") return load("src/lib/uploadWorkspaceFile.mjs");
         if (id.startsWith("@/components/ui/")) return new Proxy({}, { get: (_, name) => String(name) });
         if (id.startsWith(".")) {
           const candidate = path.resolve(path.dirname(file), id);
@@ -192,6 +193,20 @@ await check("Local review queue loads more profiles, prevents duplicate decision
   assert.equal(calls.length, 2);
   tree = render();
   assert.equal(findElement(tree, e => e.type === "textarea").props.value, "");
+});
+
+await check("Workspace uploads distinguish unreadable Android files from failed network requests", async () => {
+  let reads = 0, urls = 0, offline = false, requests = 0;
+  const bytes = new Uint8Array([1,2,3]).buffer;
+  const file = { size: 3, type: "application/pdf", arrayBuffer: async () => { reads++; return bytes; } };
+  const { uploadWorkspaceFile } = loader({}, { fetch: async (_url, options) => { requests++; if (offline) throw new TypeError("Failed to fetch"); assert.equal(options.body,bytes); assert.equal(options.headers["Content-Type"],"application/pdf"); return { ok: true, json: async () => ({ storageId: "stored" }) }; } })("src/lib/uploadWorkspaceFile.mjs");
+  const getUrl = async () => { urls++; return "https://fixture.invalid"; };
+  await assert.rejects(uploadWorkspaceFile({ ...file, size: 26 * 1024 * 1024 },getUrl),/25 MB/);
+  await assert.rejects(uploadWorkspaceFile({ ...file, arrayBuffer: async () => { throw Error("NotReadableError"); } },getUrl),/Downloads/);
+  assert.equal(urls,0); assert.equal(requests,0);
+  offline=true; await assert.rejects(uploadWorkspaceFile(file,getUrl),/connection failed/);
+  offline=false; assert.equal(await uploadWorkspaceFile(file,getUrl),"stored");
+  assert.equal(reads,2);
 });
 
 await check("Deliverable download preserves filenames and denies unauthenticated, foreign and missing files", async () => {
@@ -1291,6 +1306,20 @@ await check("Message drafts isolate accounts and conversations, survive reload a
   const blocked=loader({},{window:{sessionStorage:{getItem(){throw Error("blocked");},setItem(){throw Error("blocked");}}}})("src/lib/messageDraft.mjs");
   assert.equal(blocked.writeMessageDraft(key,"Keep in memory"),false);
   assert.equal(blocked.readMessageDraft(key),"Keep in memory");
+});
+
+await check("LAN HTTP message sends work without randomUUID and retain retry IDs", async () => {
+  const values = new Map();
+  const globals = { crypto: { getRandomValues: bytes => crypto.getRandomValues(bytes) }, window: { sessionStorage: { getItem: k => values.get(k) ?? null, setItem: (k,v) => values.set(k,v), removeItem: k => values.delete(k) } } };
+  const draft = loader({}, globals)("src/lib/messageDraft.mjs");
+  const key = draft.messageDraftKey("client", "conversation");
+  draft.writeMessageDraft(key, "QA mobile message");
+  let firstId;
+  await assert.rejects(draft.sendMessageDraft(key, "QA mobile message", async (_content,id) => { firstId=id; throw Error("offline"); }));
+  assert.match(firstId, /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+  const restored = loader({}, globals)("src/lib/messageDraft.mjs");
+  await restored.sendMessageDraft(key, "QA mobile message", async (_content,id) => { assert.equal(id,firstId); });
+  assert.equal(restored.readMessageDraft(key), "");
 });
 
 await check("Lost message acknowledgement reuses persisted request after reload", async () => {

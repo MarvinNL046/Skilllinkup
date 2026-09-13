@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { createRequestId } from "@/lib/requestId.mjs";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { validateContact } from "@/lib/contactValidation.mjs";
@@ -44,7 +45,7 @@ export default function ContactInfo1() {
     sendingRef.current = true;
     const signature = JSON.stringify(result.value);
     if (requestId.current?.signature !== signature) {
-      requestId.current = { id: crypto.randomUUID(), signature };
+      requestId.current = { id: createRequestId(), signature };
     }
     setSending(true);
     setFeedback(null);

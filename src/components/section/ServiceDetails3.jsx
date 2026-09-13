@@ -1,6 +1,7 @@
 "use client";
 
 import Sticky from "react-stickynode";
+import { createRequestId } from "@/lib/requestId.mjs";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -42,7 +43,7 @@ export default function ServiceDetail3() {
 
     orderPending.current = true;
     const intentKey = `${data.id}:${pkg._id}`;
-    if (!purchaseIntents.current.has(intentKey)) purchaseIntents.current.set(intentKey, crypto.randomUUID());
+    if (!purchaseIntents.current.has(intentKey)) purchaseIntents.current.set(intentKey, createRequestId());
     setOrderingPackageId(pkg._id);
     try {
       const result = await createBetaOrder({
