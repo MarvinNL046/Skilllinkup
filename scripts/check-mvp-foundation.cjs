@@ -370,6 +370,29 @@ async function main() {
       assert.equal(rejected.writes.length, 0);
     }
   });
+  await check("message retries preserve one message, unread increment, notification and email", async () => {
+    const ctx = fixture([user(), user("seller"), user("outsider"), conversation(), conversation("second")]);
+    const args = { conversationId: "conversation", content: "Please confirm the scope.", clientRequestId: "11111111-1111-4111-8111-111111111111" };
+    const id = await messages.send.handler(ctx, args);
+    const writes = ctx.writes.length;
+    assert.equal(await messages.send.handler(ctx, { ...args, content: `  ${args.content}  ` }), id);
+    assert.equal(ctx.writes.length, writes);
+    assert.equal(ctx.scheduled.length, 1);
+    assert.equal(ctx.state.get("conversation").unreadCount2, 1);
+    assert.equal([...ctx.state.values()].filter(x => x._table === "notifications").length, 1);
+    await assert.rejects(() => messages.send.handler(ctx, { ...args, content: "Changed content" }), /different content/);
+    await assert.rejects(() => messages.send.handler(ctx, { ...args, clientRequestId: "invalid" }), /identifier/);
+    for (const actor of ["outsider", null]) {
+      await assert.rejects(() => messages.send.handler(fixture([...ctx.state.values()], actor), args));
+    }
+    assert.notEqual(await messages.send.handler(ctx, { ...args, conversationId: "second" }), id);
+    const seller = fixture([...ctx.state.values()], "seller");
+    await messages.send.handler(seller, args);
+    assert.ok(seller.writes.length > 0);
+    assert.equal(seller.scheduled.length, 1);
+    assert.equal(seller.state.get("conversation").unreadCount1, 1);
+    assert.notEqual(await messages.send.handler(ctx, { ...args, clientRequestId: "22222222-2222-4222-8222-222222222222" }), id);
+  });
   await check("contact is durable and idempotent, with validation and private admin access", async () => {
     const ctx = fixture([]);
     const request = { requestId: "contact-intent-123456", name: "QA Visitor", email: "VISITOR@example.invalid", subject: "bug", message: "This is an isolated contract test message." };

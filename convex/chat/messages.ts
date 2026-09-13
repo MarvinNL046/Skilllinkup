@@ -10,6 +10,7 @@ import { paginationOptsValidator } from "convex/server";
 import { getMessagePolicyError } from "../../src/lib/messagePolicy.mjs";
 
 const enrichedMessageValidator = v.object({
+  clientRequestId: v.optional(v.string()),
   _id: v.id("messages"),
   _creationTime: v.number(),
   conversationId: v.id("conversations"),
@@ -119,6 +120,7 @@ export const getByConversation = query({
  */
 export const send = mutation({
   args: {
+    clientRequestId: v.optional(v.string()),
     conversationId: v.id("conversations"),
     content: v.optional(v.string()),
     messageType: v.optional(v.string()),
@@ -144,6 +146,24 @@ export const send = mutation({
     if (policyError) throw new ConvexError(policyError);
     if (!content) throw new ConvexError("Write a message.");
 
+    // Authenticate first. The indexed read and insert share one transaction:
+    // concurrent retries conflict and then return the already committed message.
+    if (args.clientRequestId !== undefined) {
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(args.clientRequestId)) {
+        throw new ConvexError("Invalid message request identifier.");
+      }
+      const existing = await ctx.db.query("messages")
+        .withIndex("by_conversationId_and_senderId_and_clientRequestId", q =>
+          q.eq("conversationId", args.conversationId).eq("senderId", currentUser._id).eq("clientRequestId", args.clientRequestId))
+        .unique();
+      if (existing) {
+        if (existing.content !== content || existing.messageType !== messageType) {
+          throw new ConvexError("This message request was already used for different content.");
+        }
+        return existing._id;
+      }
+    }
+
     await rateLimiter.limit(ctx, "sendMessage", {
       key: currentUser._id,
       throws: true,
@@ -151,6 +171,7 @@ export const send = mutation({
 
     // Insert the message
     const messageId = await ctx.db.insert("messages", {
+      ...(args.clientRequestId ? { clientRequestId: args.clientRequestId } : {}),
       conversationId: args.conversationId,
       senderId: currentUser._id,
       content,
