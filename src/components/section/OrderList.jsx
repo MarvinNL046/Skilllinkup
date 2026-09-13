@@ -48,7 +48,18 @@ export default function OrderList() {
   const setRoleView = (role) => setRoleChoice({ context, role });
   const [activeTab, setActiveTab] = useState("all");
 
-  const { orders, isLoading } = useConvexOrders(roleView);
+  const {
+    orders,
+    isLoading,
+    profiles,
+    profileId,
+    setProfileId,
+    canLoadMore,
+    loadingMore,
+    loadMore,
+  } = useConvexOrders(roleView);
+  const [search, setSearch] = useState("");
+  const term = search.trim().toLowerCase();
 
   const tabs = [
     { key: "all", label: t("all") },
@@ -58,7 +69,16 @@ export default function OrderList() {
     { key: "completed", label: t("completed") },
   ];
 
-  const filteredOrders = filterOrders(orders, activeTab, convexUser);
+  const filteredOrders = filterOrders(orders, activeTab, convexUser).filter(
+    (order) =>
+      !term ||
+      [
+        order.title,
+        order.orderNumber,
+        order.clientName,
+        order.freelancerName,
+      ].some((value) => value?.toLowerCase().includes(term)),
+  );
 
   return (
     <>
@@ -66,13 +86,6 @@ export default function OrderList() {
         <h1>{t("title")}</h1>
         <p className="text-[var(--text-secondary)]">{t("pageDescription")}</p>
       </div>
-
-      {!isLoading && orders.length >= 50 && (
-        <p className="mb-4 text-sm text-[var(--text-secondary)]">
-          Showing your 50 most recent orders. Counts and filters apply to this
-          list.
-        </p>
-      )}
 
       {/* Role switcher */}
       <div className="flex gap-2 mb-5 flex-wrap">
@@ -92,6 +105,37 @@ export default function OrderList() {
         </Button>
       </div>
 
+      {roleView === "freelancer" && profiles.length > 1 && (
+        <label className="block mb-4 text-sm">
+          Professional profile
+          <select
+            className="block rounded-md border p-2 mt-1"
+            value={profileId}
+            onChange={(event) => setProfileId(event.target.value)}
+          >
+            {profiles.map((profile) => (
+              <option key={profile.id} value={profile.id}>
+                {profile.label}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
+      <label className="block mb-2 text-sm">
+        Search loaded orders
+        <input
+          type="search"
+          className="block w-full rounded-md border p-3 mt-1"
+          placeholder="Order number, title or person"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+        />
+      </label>
+      <p className="text-sm text-[var(--text-secondary)] mb-4">
+        {orders.length} orders loaded. Search and status counts apply to this
+        list.{" "}
+        {canLoadMore || loadingMore ? "Load more to include older orders." : ""}
+      </p>
       {/* Status filter tabs */}
       <div
         role="tablist"
@@ -167,13 +211,15 @@ export default function OrderList() {
             <div className="text-center py-12">
               <Receipt className="h-10 w-10 text-[var(--text-tertiary)] mx-auto mb-4" />
               <h5 className="text-lg font-semibold mb-2">
-                {activeTab === "attention"
-                  ? "Nothing needs your action here"
-                  : t("noOrdersFound")}
+                {term
+                  ? "No matching loaded orders"
+                  : activeTab === "attention"
+                    ? "Nothing needs your action here"
+                    : t("noOrdersFound")}
               </h5>
               <p className="text-[var(--text-secondary)] mb-0">
                 {activeTab === "attention"
-                  ? "No deliveries or revision requests need your attention in this account context."
+                  ? "No deliveries or revision requests need your attention in the loaded orders for this account context."
                   : activeTab === "all"
                     ? t("noOrdersRole", {
                         role:
@@ -212,6 +258,13 @@ export default function OrderList() {
           )}
         </CardContent>
       </Card>
+      {(canLoadMore || loadingMore) && (
+        <div className="mt-5 flex justify-center">
+          <Button variant="outline" disabled={loadingMore} onClick={loadMore}>
+            {loadingMore ? "Loading more orders…" : "Load more orders"}
+          </Button>
+        </div>
+      )}
     </>
   );
 }
