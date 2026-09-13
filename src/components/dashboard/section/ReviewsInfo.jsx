@@ -47,6 +47,7 @@ export default function ReviewsInfo() {
       <div className="dashboard_title_area mb-6">
         <h2>{t("title")}</h2>
         <p className="text-[var(--text-secondary)]">{t("pageDescription")}</p>
+        <Button asChild variant="outline"><Link href="/orders">Review a completed order</Link></Button>
       </div>
 
       <Card className="overflow-hidden">

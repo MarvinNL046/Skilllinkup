@@ -1,5 +1,7 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 import { Star, Flag } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -45,15 +47,11 @@ export default function ReviewComment({ review, i, lenght }) {
             e.currentTarget.src = "/images/blog/comments-2.png";
           }}
         />
-        <div className="flex-1 min-w-0">
-          <button
-            type="button"
-            aria-label="Report review"
-            className="absolute right-0 top-4 text-[var(--text-tertiary)] hover:text-foreground"
-          >
-            <Flag className="h-4 w-4" />
-          </button>
-          <h6 className="text-base font-semibold mb-1">{reviewerName}</h6>
+        <div className="flex-1 min-w-0 sm:pr-12">
+          <Button asChild variant="ghost" size="icon" className="absolute right-0 top-4">
+            <Link href="/dashboard/support" aria-label="Get help with this review"><Flag /></Link>
+          </Button>
+          <h3 className="text-base font-semibold mb-1 break-words">{reviewerName}</h3>
           <div className="flex flex-wrap items-center gap-3 text-sm">
             <div className="inline-flex items-center gap-1">
               <Star className="h-3 w-3 fill-warning text-warning" aria-hidden="true" />
@@ -65,13 +63,15 @@ export default function ReviewComment({ review, i, lenght }) {
               </span>
             )}
             {orderTitle && (
-              <span className="text-[var(--text-secondary)] italic">{orderTitle}</span>
+              review.orderId
+                ? <Link href={`/orders/${review.orderId}#workspace-review`} className="text-[var(--action-link-text)] underline">{orderTitle}</Link>
+                : <span className="text-[var(--text-secondary)] italic">{orderTitle}</span>
             )}
           </div>
         </div>
       </div>
       {content && (
-        <p className="text-sm text-[var(--text-secondary)] mt-4 mb-4">{content}</p>
+        <p className="text-sm text-[var(--text-secondary)] mt-4 mb-4 whitespace-pre-wrap break-words">{content}</p>
       )}
     </div>
   );

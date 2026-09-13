@@ -29,6 +29,7 @@ import useConversationMessages from "@/hook/useConversationMessages";
 import MessageBox from "@/components/dashboard/element/MessageBox";
 import { getOrderActionContext, getWorkspaceNextStep } from "@/lib/orderWorkspace.mjs";
 import { uploadWorkspaceFile } from "@/lib/uploadWorkspaceFile.mjs";
+import ReviewForm from "@/components/element/ReviewForm";
 
 const statusLabels = {
   pending: "Pending",
@@ -69,7 +70,7 @@ export default function OrderWorkspace({ orderId }) {
   useEffect(() => {
     if (!order?._id) return;
     const section = window.location.hash.slice(1);
-    if (!["workspace-files", "workspace-conversation", "workspace-work"].includes(section)) return;
+    if (!["workspace-files", "workspace-conversation", "workspace-work", "workspace-review"].includes(section)) return;
     const frame = requestAnimationFrame(() => document.getElementById(section)?.scrollIntoView({ block: "start" }));
     return () => cancelAnimationFrame(frame);
   }, [order?._id]);
@@ -340,6 +341,7 @@ export default function OrderWorkspace({ orderId }) {
         {isLocal && <Link href="#workspace-work">Appointment</Link>}
         <Link href="#workspace-files">Files &amp; notes ({deliverables.length})</Link>
         <Link href="#workspace-conversation">Conversation</Link>
+        {order.status === "completed" && <Link href="#workspace-review">Order review</Link>}
       </nav>
 
       <div className={styles.grid}>
@@ -630,6 +632,14 @@ export default function OrderWorkspace({ orderId }) {
               </form>
             </div>
           ) : null}
+          {order.status === "completed" && (isClient ? order.freelancerUserId : order.clientId) && (
+            <section id="workspace-review" tabIndex={-1} className="mt-6 border-t pt-4">
+              <h2 className="text-lg font-semibold">Order review</h2>
+              <ReviewForm key={`${orderId}:${convexUser?._id}`} orderId={orderId}
+                revieweeId={isClient ? order.freelancerUserId : order.clientId}
+                reviewerRole={isClient ? "client" : "freelancer"} />
+            </section>
+          )}
         </section>
 
         <aside className={styles.chatCard} id="workspace-conversation" tabIndex={-1}>
