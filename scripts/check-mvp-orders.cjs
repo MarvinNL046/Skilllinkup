@@ -17,7 +17,7 @@ function load(file) {
   const exports = {}; modules.set(file, exports);
   const code = ts.transpileModule(fs.readFileSync(file, 'utf8'), { fileName: file.replace(/\.mjs$/, '.js'), compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   vm.runInNewContext(code, { exports, console: { log(){}, error(){} }, Date: Clock, URL, AbortSignal, Set, Map, Number, Math, process: { env: fixtureEnv }, fetch: (...args) => fetchImpl(...args), require: id => {
-    if (id === 'convex/server') return { paginationOptsValidator: {} };
+    if (id === 'convex/server') return { paginationOptsValidator: {}, paginationResultValidator: () => ({}) };
     if (id === 'convex/values') return { v: validator };
     if (id.includes('_generated/server')) return Object.fromEntries(['query','mutation','action','internalQuery','internalMutation','internalAction'].map(k=>[k,x=>x]));
     if (id.includes('_generated/api')) return { internal: ref(), api: ref() };
@@ -118,3 +118,4 @@ async function main(){
  console.log(`PASS ${tests.length} MVP order/lifecycle/email/export cases (real handlers; in-memory database, clock and HTTP transport).`);
 }
 main().catch(error=>{console.error(error);process.exitCode=1;});
+

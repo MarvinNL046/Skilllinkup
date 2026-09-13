@@ -38,7 +38,7 @@ function loader(overrides = {}, globals = {}) {
       require(id) {
         if (Object.hasOwn(overrides, id)) return overrides[id];
         if (id === "sonner") return { toast: { success() {}, error() {} } };
-        if (id === "convex/values" || id === "react/jsx-runtime") return require(id);
+        if (id === "convex/values" || id === "convex/server" || id === "react/jsx-runtime") return require(id);
         if (id.includes("_generated/server")) return Object.fromEntries(["query", "mutation", "internalQuery", "internalMutation", "action", "internalAction"].map((name) => [name, (config) => config]));
         if (id.includes("_generated/api")) return { api, internal: api };
         if (id.endsWith("/rateLimits")) return { rateLimiter: { limit: async () => ({ ok: true }) } };
@@ -1309,4 +1309,44 @@ await check("Proposal cards keep closed projects unlinked and show saved pitch a
   assert.ok(findElement(action.type(action.props), e => e.props?.href === "/orders/qa-order"));
   tree = Card({ bid: { ...bid, status: "pending", projectStatus: "open" } });
   assert.ok(findElement(tree, e => e.props?.href === "/online/project/qa-project"));
+});
+
+
+await check("Proposal pagination reaches beyond 50, preserves cursors and rejects other owners", async () => {
+  const rows = Array.from({ length: 55 }, (_, i) => ({ _id: `bid-${i}`, _creationTime: i, freelancerId: "provider", projectId: "project", amount: 125, deliveryDays: 3, pitch: "QA", status: "pending", createdAt: i, updatedAt: i }));
+  const actor = { _id: "owner", tenantId: "tenant" };
+  const query = loader({ "../lib/authHelpers": { requireAuthUser: async () => actor } })("convex/marketplace/projects.ts").getMyBidsPage;
+  let indexed = false;
+  const ctx = { db: {
+    get: async id => id === "provider" ? { userId: "owner" } : id === "other" ? { userId: "outsider" } : { _id: "project", tenantId: "tenant", title: "QA", slug: "qa", status: "open", currency: "EUR" },
+    query: table => { assert.equal(table, "bids"); return { withIndex: (name, select) => {
+      assert.equal(name, "by_freelancer"); select({ eq: (field, value) => { assert.equal(field, "freelancerId"); assert.equal(value, "provider"); indexed = true; } });
+      return { order: direction => { assert.equal(direction, "desc"); return { paginate: async opts => {
+        const start = Number(opts.cursor || 0); const end = Math.min(rows.length, start + opts.numItems);
+        return { page: rows.slice(start, end), isDone: end === rows.length, continueCursor: String(end) };
+      } }; } };
+    } }; },
+  } };
+  const seen = []; let cursor = null; let done = false;
+  while (!done) { const result = await query.handler(ctx, { freelancerId: "provider", paginationOpts: { numItems: 20, cursor } }); seen.push(...result.page); cursor = result.continueCursor; done = result.isDone; }
+  assert.equal(indexed, true); assert.equal(seen.length, 55); assert.equal(new Set(seen.map(row => row._id)).size, 55);
+  assert.equal(seen[54].projectTitle, "QA");
+  await assert.rejects(() => query.handler(ctx, { freelancerId: "other", paginationOpts: { numItems: 20, cursor: null } }), /Unauthorized/);
+});
+
+await check("Proposal load-more remains available under an empty filter and disables during loading", async () => {
+  const runner = hookRunner(); let status = "CanLoadMore"; const requests = [];
+  const Page = loader({ react: runner.react, "next/link": { default: "a" },
+    "next-intl": { useTranslations: () => key => key },
+    "../card/ProposalCard1": { default: "ProposalCard" }, "../header/DashboardNavigation": { default: "Navigation" },
+    "@/hook/useConvexUser": { default: () => ({ convexUser: { _id: "owner" }, isLoaded: true, isAuthenticated: true }) },
+    "@/hook/useConvexProfile": { default: () => ({ profile: { _id: "provider" } }) },
+    "convex/react": { usePaginatedQuery: () => ({ results: [{ _id: "bid", status: "pending" }], status, loadMore: count => requests.push(count) }) },
+  })("src/components/dashboard/section/ProposalInfo.jsx").default;
+  let tree = runner.render(Page);
+  const rejected = findElement(tree, e => e.props?.['aria-pressed'] !== undefined && JSON.stringify(e.props.children).includes("Not selected"));
+  rejected.props.onClick(); tree = runner.render();
+  const more = findElement(tree, e => e.props?.children === "Load more proposals"); assert.ok(more); more.props.onClick(); assert.deepEqual(requests, [20]);
+  status = "LoadingMore"; tree = runner.render(); assert.equal(findElement(tree, e => e.props?.children === "Loading more…").props.disabled, true);
+  status = "Exhausted"; tree = runner.render(); assert.equal(findElement(tree, e => e.props?.children === "Load more proposals"), null);
 });
