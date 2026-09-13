@@ -57,6 +57,7 @@ import type * as marketplace_leadPricing from "../marketplace/leadPricing.js";
 import type * as marketplace_leads from "../marketplace/leads.js";
 import type * as marketplace_localAppointments from "../marketplace/localAppointments.js";
 import type * as marketplace_localVerifications from "../marketplace/localVerifications.js";
+import type * as marketplace_myProposal from "../marketplace/myProposal.js";
 import type * as marketplace_notificationSettings from "../marketplace/notificationSettings.js";
 import type * as marketplace_notifications from "../marketplace/notifications.js";
 import type * as marketplace_operations from "../marketplace/operations.js";
@@ -139,6 +140,7 @@ declare const fullApi: ApiFromModules<{
   "marketplace/leads": typeof marketplace_leads;
   "marketplace/localAppointments": typeof marketplace_localAppointments;
   "marketplace/localVerifications": typeof marketplace_localVerifications;
+  "marketplace/myProposal": typeof marketplace_myProposal;
   "marketplace/notificationSettings": typeof marketplace_notificationSettings;
   "marketplace/notifications": typeof marketplace_notifications;
   "marketplace/operations": typeof marketplace_operations;

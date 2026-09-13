@@ -691,6 +691,46 @@ await check("Composer reports connection and acknowledgement states without prem
   assert.equal(input().props.value, "");
 });
 
+await check("Existing proposals show persisted status and block a fresh submission", async () => {
+  const runner = hookRunner(); let existing; let writes = 0;
+  const Form = loader({ react: runner.react, "next/link": { default: "a" },
+    "@/hook/useMyProjectProposal": { default: () => existing },
+    "next-intl": { useTranslations: () => key => key },
+    "convex/react": { useMutation: () => async () => { writes++; } },
+    "lucide-react": new Proxy({}, { get: (_, key) => String(key) }),
+  })("src/components/element/BidForm.jsx").default;
+  let tree = runner.render(() => Form({ projectId: "qa" }));
+  assert.equal(findElement(tree, e => e.type === "form"), null);
+  for (const status of ["pending", "accepted", "rejected", "withdrawn"]) {
+    existing = { status, amount: 125, currency: "EUR", pitch: "QA saved proposal", deliveryDays: 3, orderId: status === "accepted" ? "order" : null };
+    tree = runner.render();
+    assert.equal(findElement(tree, e => e.type === "form"), null);
+    assert.ok(findElement(tree, e => e.props?.children === "QA saved proposal"));
+    assert.ok(findElement(tree, e => e.props?.href === (status === "accepted" ? "/orders/order" : "/proposal")));
+  }
+  existing = null; tree = runner.render();
+  assert.ok(findElement(tree, e => e.type === "form"));
+  assert.equal(writes, 0);
+});
+
+await check("Category search filters groups, keeps selected value and reports no results", async () => {
+  const runner = hookRunner(); let chosen = "web";
+  const options = [{ _id: "web", label: "Programming / Web Development" }, { _id: "logo", label: "Design / Logo Design" }];
+  const Select = loader({ react: { ...runner.react, useId: () => "category-test" } })("src/components/ui/SearchableCategorySelect.jsx").default;
+  let tree = runner.render(() => Select({ options, value: chosen, onChange: value => { chosen = value; } }));
+  const search = value => { findElement(tree, e => e.type === "input").props.onChange({ target: { value } }); tree = runner.render(); };
+  search("logo");
+  assert.ok(findElement(tree, e => e.type === "optgroup" && e.props.label === "Current selection"));
+  assert.equal(findElement(tree, e => e.type === "select").props.value, "web");
+  findElement(tree, e => e.type === "select").props.onChange({ target: { value: "logo" } }); tree = runner.render();
+  assert.equal(chosen, "logo");
+  search("no-match");
+  assert.match(String(findElement(tree, e => e.props?.role === "status").props.children), /No matching/);
+  findElement(tree, e => e.props?.children === "Clear").props.onClick(); tree = runner.render();
+  assert.ok(findElement(tree, e => e.type === "option" && e.props.value === "web"));
+  assert.equal(chosen, "logo");
+});
+
 await check("Offline composer retains text and allows sending after reconnecting", async () => {
   const connection = { onLine: false };
   const f = composerFixture(false, connection);

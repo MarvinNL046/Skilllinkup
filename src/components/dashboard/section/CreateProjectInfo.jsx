@@ -9,6 +9,7 @@ import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import { flattenLeafMarketplaceCategories } from "@/lib/marketplaceCategories";
 import { Button } from "@/components/ui/button";
+import SearchableCategorySelect from "@/components/ui/SearchableCategorySelect";
 import styles from "./ProjectWizard.module.css";
 import {
   validateProjectFields,
@@ -243,25 +244,8 @@ export default function CreateProjectInfo() {
                 placeholder="e.g. Design a website for my bakery"
               />
             </label>
-            <label>
-              Category
-              <select
-                aria-label="Project category"
-                value={form.categoryId}
-                onChange={(e) => field("categoryId", e.target.value)}
-              >
-                <option value="">
-                  {categories === undefined
-                    ? "Loading categories…"
-                    : "Select a category"}
-                </option>
-                {leaves.map((item) => (
-                  <option key={item._id} value={item._id}>
-                    {item.label}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <SearchableCategorySelect options={leaves} value={form.categoryId}
+              onChange={value => field("categoryId", value)} loading={categories === undefined} />
             <aside
               className={styles.briefGuide}
               aria-labelledby="brief-guide-title"

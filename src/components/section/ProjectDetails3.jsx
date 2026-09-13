@@ -214,7 +214,7 @@ export default function ProjectDetail3() {
                   ) : isOwner ? null : data?._id ? (
                     <>
                       <Separator className="mb-6" />
-                      <BidForm projectId={data._id} />
+                      <BidForm key={`${convexUser?._id}:${data._id}`} projectId={data._id} projectStatus={data.status} />
                     </>
                   ) : null}
                 </div>
