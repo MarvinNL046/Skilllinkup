@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, ArrowLeft, Send, LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { messageDraftKey, readMessageDraft, writeMessageDraft, isMessagePending, subscribeMessageDraft, sendMessageDraft } from "@/lib/messageDraft.mjs";
 import {
   getMessagePolicyError,
   MESSAGE_MAX_LENGTH,
@@ -13,6 +14,7 @@ import {
 export default function MessageBox({
   messages = [],
   currentUserId,
+  conversationId,
   otherParticipant,
   context,
   onSend,
@@ -33,6 +35,18 @@ export default function MessageBox({
   const olderAnchor = useRef(null);
   const nearBottom = useRef(true);
   const sendingRef = useRef(false);
+  const draftKey = messageDraftKey(currentUserId, conversationId);
+  const [draftStorageUnavailable, setDraftStorageUnavailable] = useState(false);
+  useEffect(() => {
+    if (!draftKey) return;
+    const sync = (changedKey) => {
+      if (changedKey !== draftKey) return;
+      setInputValue(readMessageDraft(draftKey));
+      setIsSending(isMessagePending(draftKey));
+    };
+    sync(draftKey);
+    return subscribeMessageDraft(sync);
+  }, [draftKey]);
   const blockError = inputValue.trim()
     ? getMessagePolicyError(inputValue)
     : null;
@@ -75,17 +89,21 @@ export default function MessageBox({
 
   async function handleSend(e) {
     e.preventDefault();
-    if (!inputValue.trim() || sendingRef.current || blockError) return;
+    if (!inputValue.trim() || sendingRef.current || isMessagePending(draftKey) || blockError) return;
+    if (typeof navigator !== "undefined" && navigator.onLine === false) {
+      setSendError("You are offline. Your draft is kept here. Reconnect, then try again.");
+      return;
+    }
     sendingRef.current = true;
     setSendError(null);
     setIsSending(true);
     try {
-      await onSend(inputValue);
+      await sendMessageDraft(draftKey, inputValue, onSend);
       setInputValue("");
       nearBottom.current = true;
       scrollToBottom();
     } catch (err) {
-      setSendError(err?.data ?? err?.message ?? t("sendFailed"));
+      setSendError(typeof err?.data === "string" ? err.data : err?.message || t("sendFailed"));
     } finally {
       sendingRef.current = false;
       setIsSending(false);
@@ -380,6 +398,7 @@ export default function MessageBox({
             value={inputValue}
             onChange={(e) => {
               setInputValue(e.target.value);
+              if (draftKey) setDraftStorageUnavailable(!writeMessageDraft(draftKey, e.target.value));
               setSendError(null);
             }}
             onKeyDown={handleKeyDown}
@@ -434,6 +453,7 @@ export default function MessageBox({
             {blockError}
           </p>
         )}
+        {draftKey && <p className="mt-2 text-xs text-slate-500" role="status">{draftStorageUnavailable ? "This browser cannot save drafts after a reload. Keep this page open until you send." : "Unsent drafts stay in this tab for this account and conversation."}</p>}
         {sendError && !blockError && (
           <p
             id="message-send-error"
