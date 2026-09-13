@@ -108,6 +108,8 @@ export default function NotificationBell() {
             <div
               style={{
                 display: "flex",
+                flexWrap: "wrap",
+                gap: 8,
                 alignItems: "center",
                 justifyContent: "space-between",
                 marginBottom: "var(--space-3)",
