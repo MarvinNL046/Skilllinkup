@@ -616,7 +616,8 @@ export default function OrderWorkspace({ orderId }) {
           <h2 className="mb-3 text-lg font-semibold">Project conversation</h2>
           {conversation ? (
             <MessageBox
-              key={conversation._id}
+              key={`${convexUser?._id}:${conversation._id}`}
+              conversationId={conversation._id}
               messages={history.messages}
               messageStatus={history.messageStatus}
               onLoadOlder={history.loadOlder}

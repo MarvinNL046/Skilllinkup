@@ -216,7 +216,8 @@ export default function MessageInfo() {
         {showPanel && !requestedLoading && !requestedError && (
           <div className="flex flex-col min-w-0 min-h-0">
             <MessageBox
-              key={selectedConversationId || "empty"}
+              key={`${userId}:${selectedConversationId || "empty"}`}
+              conversationId={selectedConversationId}
               messages={messages}
               messageStatus={messageStatus}
               onLoadOlder={loadOlder}

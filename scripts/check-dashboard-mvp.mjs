@@ -45,6 +45,7 @@ function loader(overrides = {}, globals = {}) {
         if (id.endsWith("/notifications")) return { notifyUser: async () => undefined };
         if (id === "@/lib/accountDisplayName.mjs") return load("src/lib/accountDisplayName.mjs");
         if (id === "@/lib/profileRate.mjs") return load("src/lib/profileRate.mjs");
+        if (id === "@/lib/messageDraft.mjs") return load("src/lib/messageDraft.mjs");
         if (id.startsWith("@/components/ui/")) return new Proxy({}, { get: (_, name) => String(name) });
         if (id.startsWith(".")) {
           const candidate = path.resolve(path.dirname(file), id);
@@ -141,7 +142,7 @@ function findElement(tree, predicate) {
   return null;
 }
 
-function composerFixture(isMobile = false) {
+function composerFixture(isMobile = false, navigator = { onLine: true }) {
   const runner = hookRunner();
   const sends = [];
   let settle;
@@ -153,7 +154,7 @@ function composerFixture(isMobile = false) {
     "next/link": { default: "a" },
     "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
     "@/lib/messagePolicy.mjs": messagePolicy,
-  }, { requestAnimationFrame: (callback) => callback() })("src/components/dashboard/element/MessageBox.jsx").default;
+  }, { navigator, requestAnimationFrame: (callback) => callback() })("src/components/dashboard/element/MessageBox.jsx").default;
   const render = () => runner.render(() => Box(props));
   return { props, sends, render, settle: () => settle };
 }
@@ -650,6 +651,25 @@ await check("Composer preserves multiline drafts, skips IME and prevents duplica
   assert.equal(findElement(tree, (e) => e.type === "textarea").props.value, "");
 });
 
+await check("Offline composer retains text and allows sending after reconnecting", async () => {
+  const connection = { onLine: false };
+  const f = composerFixture(false, connection);
+  let tree = f.render();
+  findElement(tree, e => e.type === "textarea").props.onChange({ target: { value: "QA offline draft" } });
+  tree = f.render();
+  await findElement(tree, e => e.type === "form").props.onSubmit({ preventDefault() {} });
+  tree = f.render();
+  assert.equal(f.sends.length, 0);
+  assert.equal(findElement(tree, e => e.type === "textarea").props.value, "QA offline draft");
+  assert.match(findElement(tree, e => e.props?.role === "alert").props.children, /offline/);
+  connection.onLine = true;
+  const retry = findElement(tree, e => e.type === "form").props.onSubmit({ preventDefault() {} });
+  f.settle().resolve();
+  await retry;
+  assert.deepEqual(f.sends, ["QA offline draft"]);
+  assert.equal(findElement(f.render(), e => e.type === "textarea").props.value, "");
+});
+
 await check("Mobile Enter adds lines; submit sends, and bubbles retain line breaks", async () => {
   const f = composerFixture(true);
   f.props.messages = [{ _id: "qa-message", content: "One\nTwo", senderId: "qa" }];
@@ -1139,3 +1159,35 @@ console.log(`Dashboard MVP regression checks passed: ${checks} scenario groups.`
  search().props.onChange({target:{value:"older-order"}});tree=runner.render();data.canLoadMore=false;tree=runner.render();assert.equal(timers.size,0);
  console.log("PASS History search advances sequentially, stops on clear and stops at exhaustion");
 }
+
+await check("Message drafts isolate accounts and conversations, survive reload and share pending sends", async () => {
+  const records = new Map();
+  const storage = {getItem:key=>records.get(key)||null,setItem:(key,value)=>records.set(key,value),removeItem:key=>records.delete(key)};
+  const globals = {window:{sessionStorage:storage}};
+  const drafts = loader({},globals)("src/lib/messageDraft.mjs");
+  const key = drafts.messageDraftKey("qa-one","conversation-one");
+  drafts.writeMessageDraft(key,"First line\nSecond line");
+  assert.equal(drafts.readMessageDraft(drafts.messageDraftKey("qa-two","conversation-one")),"");
+  assert.equal(drafts.readMessageDraft(drafts.messageDraftKey("qa-one","conversation-two")),"");
+  assert.equal(loader({},globals)("src/lib/messageDraft.mjs").readMessageDraft(key),"First line\nSecond line");
+  let calls=0, settle;
+  const send=()=>{calls++;return new Promise((resolve,reject)=>{settle={resolve,reject};});};
+  const first=drafts.sendMessageDraft(key,drafts.readMessageDraft(key),send);
+  const duplicate=drafts.sendMessageDraft(key,drafts.readMessageDraft(key),send);
+  assert.equal(first,duplicate);assert.equal(calls,1);assert.equal(drafts.isMessagePending(key),true);
+  settle.reject(new Error("Connection interrupted"));
+  await assert.rejects(first,/Connection interrupted/);
+  assert.equal(drafts.isMessagePending(key),false);
+  assert.equal(drafts.readMessageDraft(key),"First line\nSecond line");
+  const retry=drafts.sendMessageDraft(key,drafts.readMessageDraft(key),send);
+  settle.resolve();await retry;
+  assert.equal(drafts.readMessageDraft(key),"");assert.equal(records.has(key),false);
+  drafts.writeMessageDraft(key,"Older draft");
+  const older=drafts.sendMessageDraft(key,"Older draft",send);
+  drafts.writeMessageDraft(key,"Newer draft from another mounted view");
+  settle.resolve();await older;
+  assert.equal(drafts.readMessageDraft(key),"Newer draft from another mounted view");
+  const blocked=loader({},{window:{sessionStorage:{getItem(){throw Error("blocked");},setItem(){throw Error("blocked");}}}})("src/lib/messageDraft.mjs");
+  assert.equal(blocked.writeMessageDraft(key,"Keep in memory"),false);
+  assert.equal(blocked.readMessageDraft(key),"Keep in memory");
+});
