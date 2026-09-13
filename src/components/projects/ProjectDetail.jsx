@@ -27,6 +27,7 @@ import { api } from "../../../convex/_generated/api";
 import useConvexProjectDetail from "@/hook/useConvexProjectDetail";
 import useConvexUser from "@/hook/useConvexUser";
 import BidForm from "@/components/element/BidForm";
+import useMyProjectProposal from "@/hook/useMyProjectProposal";
 import { DetailPageSkeleton } from "@/components/loading/PageSkeletons";
 import ReportButton from "@/components/trust/ReportButton";
 import styles from "./ProjectDetail.module.css";
@@ -133,6 +134,7 @@ export default function ProjectDetail() {
     liveProject ||
     ((showDemo || liveProject === null) && isDemoRoute ? demoProject : null);
   const isDemoProject = project?._id === "demo-project";
+  const myProposal = useMyProjectProposal(project?._id);
   const similarProjects = useQuery(api.marketplace.projects.list, {
     locale: "en",
     limit: 5,
@@ -328,11 +330,19 @@ export default function ProjectDetail() {
 
             <section className={styles.proposalSection} ref={proposalRef}>
               <h2>
-                {project.status === "open"
-                  ? "Send your proposal"
-                  : "Proposals closed"}
+                {myProposal
+                  ? "Your proposal"
+                  : project.status === "open"
+                    ? "Send your proposal"
+                    : "Proposals closed"}
               </h2>
-              {project.status !== "open" ? (
+              {isAuthenticated && !isOwner && !isDemoProject ? (
+                <BidForm
+                  key={`${convexUser?._id}:${project._id}`}
+                  projectId={project._id}
+                  projectStatus={project.status}
+                />
+              ) : project.status !== "open" ? (
                 <p>This project is no longer accepting proposals.</p>
               ) : !isLoaded ? (
                 <div className={styles.formSkeleton} />
@@ -353,8 +363,6 @@ export default function ProjectDetail() {
                   This is your project. You can review proposals in your
                   dashboard.
                 </p>
-              ) : project._id !== "demo-project" ? (
-                <BidForm projectId={project._id} />
               ) : (
                 <div className={styles.signInPrompt}>
                   <p>The proposal form becomes active for live projects.</p>
@@ -379,9 +387,15 @@ export default function ProjectDetail() {
             <div className={styles.interestCard}>
               <p className={styles.eyebrow}>Project budget</p>
               <p className={styles.budgetHeadline}>{projectBudget(project)}</p>
-              <h2>Could this be your next project?</h2>
+              <h2>
+                {myProposal
+                  ? "Your proposal is saved"
+                  : "Could this be your next project?"}
+              </h2>
               <p className={styles.proposalIntro}>
-                Introduce yourself and explain how you would approach the work.
+                {myProposal
+                  ? "Review your proposal and its current status below."
+                  : "Introduce yourself and explain how you would approach the work."}
               </p>
               <div className={styles.responses}>
                 <span>
@@ -408,13 +422,13 @@ export default function ProjectDetail() {
                     : "To be agreed"}
                 </strong>
               </div>
-              {project.status === "open" && (
+              {(project.status === "open" || myProposal) && (
                 <Button
                   className={styles.proposalButton}
                   onClick={scrollToProposal}
                 >
                   <Send size={17} />
-                  Send a proposal
+                  {myProposal ? "View your proposal" : "Send a proposal"}
                 </Button>
               )}
               <p className={styles.betaNote}>

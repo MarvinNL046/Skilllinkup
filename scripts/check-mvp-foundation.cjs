@@ -53,6 +53,7 @@ const user = (id = "buyer", extra = {}) => ({ _id: id, _table: "users", tenantId
   activeRole: "client", preferredWorld: "online", accountRoles: ["client"], onboardingContexts: [{ role: "client", world: "online", version: 1, completedAt: 1 }], ...extra });
 const conversation = (id = "conversation", extra = {}) => ({ _id: id, _table: "conversations", participant1: "buyer", participant2: "seller", createdAt: 1, unreadCount1: 0, unreadCount2: 0, ...extra });
 const messages = load("convex/chat/messages.ts");
+const myProposal = load("convex/marketplace/myProposal.ts");
 const conversations = load("convex/chat/conversations.ts");
 const contact = load("convex/contact.ts");
 const discovery = load("convex/marketplace/discovery.ts");
@@ -369,6 +370,23 @@ async function main() {
       await assert.rejects(() => messages.send.handler(rejected, { conversationId: "conversation", content }));
       assert.equal(rejected.writes.length, 0);
     }
+  });
+  await check("project proposal lookup returns only the caller's indexed proposal", async () => {
+    const rows = [user(), user("seller"), user("outsider"),
+      { _id: "project", _table: "projects", tenantId: "tenant", currency: "EUR" },
+      { _id: "provider", _table: "freelancerProfiles", userId: "seller", providerRole: "freelancer" },
+      { _id: "bid", _table: "bids", projectId: "project", freelancerId: "provider", amount: 125, deliveryDays: 3, pitch: "QA proposal", status: "pending" },
+    ];
+    const ctx = fixture(rows, "seller");
+    const result = await myProposal.get.handler(ctx, { projectId: "project" });
+    assert.equal(result._id, "bid"); assert.equal(result.currency, "EUR"); assert.equal(result.orderId, null);
+    ctx.state.set("order", { _id: "order", _table: "orders", bidId: "bid", tenantId: "tenant", freelancerId: "provider" });
+    ctx.state.get("bid").status = "accepted";
+    assert.equal((await myProposal.get.handler(ctx, { projectId: "project" })).orderId, "order");
+    for (const actor of [null, "buyer", "outsider"]) assert.equal(await myProposal.get.handler(fixture(rows, actor), { projectId: "project" }), null);
+    ctx.state.get("project").tenantId = "other";
+    assert.equal(await myProposal.get.handler(ctx, { projectId: "project" }), null);
+    assert.equal(await myProposal.get.handler(ctx, { projectId: "missing" }), null);
   });
   await check("message retries preserve one message, unread increment, notification and email", async () => {
     const ctx = fixture([user(), user("seller"), user("outsider"), conversation(), conversation("second")]);

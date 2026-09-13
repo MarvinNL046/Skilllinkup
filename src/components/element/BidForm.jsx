@@ -1,5 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import Link from "next/link";
+import useMyProjectProposal from "@/hook/useMyProjectProposal";
 import { useMutation } from "convex/react";
 import { useTranslations } from "next-intl";
 import { api } from "../../../convex/_generated/api";
@@ -11,7 +13,11 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ArrowRight, CheckCircle2, AlertCircle } from "lucide-react";
 
-export default function BidForm({ projectId, onSuccess }) {
+export default function BidForm({
+  projectId,
+  onSuccess,
+  projectStatus = "open",
+}) {
   const t = useTranslations("projectDetail");
   const [amount, setAmount] = useState("");
   const [deliveryDays, setDeliveryDays] = useState("");
@@ -19,17 +25,22 @@ export default function BidForm({ projectId, onSuccess }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const existing = useMyProjectProposal(projectId);
+  const submitting = useRef(false);
 
   const submitBid = useMutation(api.marketplace.projects.submitBid);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting.current || existing !== null || projectStatus !== "open")
+      return;
     if (!amount || !deliveryDays || !pitch) {
       setError(t("fillAllFields"));
       toast.error(t("fillAllFields"));
       return;
     }
     setIsSubmitting(true);
+    submitting.current = true;
     setError("");
     try {
       await submitBid({
@@ -47,10 +58,49 @@ export default function BidForm({ projectId, onSuccess }) {
       setError(err.message || t("failedToSubmit"));
       toast.error(err.message || t("failedToSubmit"));
     } finally {
+      submitting.current = false;
       setIsSubmitting(false);
     }
   };
 
+  if (existing === undefined)
+    return <p role="status">Checking your proposal…</p>;
+  if (existing) {
+    const labels = {
+      pending: "Awaiting decision",
+      accepted: "Accepted",
+      rejected: "Not selected",
+      withdrawn: "Withdrawn",
+    };
+    return (
+      <section
+        className="mt-4 space-y-4 rounded-xl border border-slate-200 bg-white p-5"
+        aria-label="Your submitted proposal"
+      >
+        <h3 className="text-lg font-semibold">Your proposal</h3>
+        <p role="status">{labels[existing.status] || existing.status}</p>
+        <p>
+          {new Intl.NumberFormat("en-GB", {
+            style: "currency",
+            currency: existing.currency,
+          }).format(existing.amount)}{" "}
+          · {existing.deliveryDays} days
+        </p>
+        <p className="whitespace-pre-wrap break-words">{existing.pitch}</p>
+        <Button asChild variant="outline">
+          <Link
+            href={
+              existing.orderId ? `/orders/${existing.orderId}` : "/proposal"
+            }
+          >
+            {existing.orderId ? "Open order" : "View my proposals"}
+          </Link>
+        </Button>
+      </section>
+    );
+  }
+  if (projectStatus !== "open")
+    return <p>This project is no longer accepting proposals.</p>;
   if (success) {
     return (
       <Alert variant="success" className="mt-5">
