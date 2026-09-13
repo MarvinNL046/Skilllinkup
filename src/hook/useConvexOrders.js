@@ -1,6 +1,6 @@
 "use client";
 import { useQuery, usePaginatedQuery } from "convex/react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { api } from "../../convex/_generated/api";
 import useConvexUser from "./useConvexUser";
 export default function useConvexOrders(role = "client") {
@@ -18,6 +18,7 @@ export default function useConvexOrders(role = "client") {
     ready ? { role, ...(role === "freelancer" ? { profileId } : {}) } : "skip",
     { initialNumItems: 20 },
   );
+  const loadNextPage = useCallback(() => loadMore(20), [loadMore]);
   return {
     orders: ready ? results : [],
     isLoading:
@@ -30,7 +31,7 @@ export default function useConvexOrders(role = "client") {
     setProfileId: setChoice,
     canLoadMore: ready && status === "CanLoadMore",
     loadingMore: ready && status === "LoadingMore",
-    loadMore: () => loadMore(20),
+    loadMore: loadNextPage,
     user: convexUser,
   };
 }

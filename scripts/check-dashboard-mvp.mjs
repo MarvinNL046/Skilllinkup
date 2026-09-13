@@ -1112,3 +1112,18 @@ console.log(`Dashboard MVP regression checks passed: ${checks} scenario groups.`
  assert.equal(orderNeedsAction(row,{...buyer,preferredWorld:"local"}),false);
  console.log("PASS Order attention respects delivery, participant context and terminal states");
 }
+
+{
+ const runner=hookRunner(); const timers=new Map(); let timerId=0, calls=0;
+ const data={orders:[],isLoading:false,profiles:[],canLoadMore:true,loadingMore:false,loadMore:()=>{calls++;}};
+ const List=loader({react:runner.react,"next-intl":{useTranslations:()=>key=>key},"next/link":{default:"a"},"lucide-react":{Receipt:"Receipt"},"@/lib/utils":{cn:(...parts)=>parts.join(" ")},"@/lib/accountContext.mjs":{getActiveRole:()=>"client"},"@/lib/orderWorkspace.mjs":{orderNeedsAction},"@/hook/useConvexUser":{default:()=>({convexUser:{_id:"buyer",activeRole:"client",preferredWorld:"online"}})},"@/hook/useConvexOrders":{default:()=>data},"@/components/card/OrderCard":{default:"OrderCard"}}, {setTimeout:fn=>{timers.set(++timerId,fn);return timerId;},clearTimeout:id=>timers.delete(id)})("src/components/section/OrderList.jsx").default;
+ let tree=runner.render(()=>List()); assert.equal(timers.size,0);
+ const search=()=>findElement(tree,e=>e.type==="input" && e.props.type==="search");
+ search().props.onChange({target:{value:"older-order"}});tree=runner.render();assert.equal(timers.size,1);
+ [...timers.values()][0]();timers.clear();assert.equal(calls,1);
+ data.loadingMore=true;data.canLoadMore=false;tree=runner.render();assert.equal(timers.size,0);
+ data.loadingMore=false;data.canLoadMore=true;tree=runner.render();assert.equal(timers.size,1);
+ search().props.onChange({target:{value:""}});tree=runner.render();assert.equal(timers.size,0);
+ search().props.onChange({target:{value:"older-order"}});tree=runner.render();data.canLoadMore=false;tree=runner.render();assert.equal(timers.size,0);
+ console.log("PASS History search advances sequentially, stops on clear and stops at exhaustion");
+}
