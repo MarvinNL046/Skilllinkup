@@ -12,6 +12,7 @@ import { Star, CheckCircle2, AlertCircle, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ContextMessageButton from "@/components/ui/ContextMessageButton";
 import { useRouter } from "next/navigation";
+import useProposalComparison from "@/hook/useProposalComparison";
 import {
   Dialog,
   DialogContent,
@@ -36,7 +37,8 @@ export default function BidList({
   const [sort, setSort] = useState("received");
   const [acceptingId, setAcceptingId] = useState(null);
   const [acceptError, setAcceptError] = useState("");
-  const [comparedIds, setComparedIds] = useState([]);
+  const comparison = useProposalComparison(projectId, isOwner);
+  const comparedIds = comparison.ids;
   const [reviewId, setReviewId] = useState(null);
   const accepting = useRef(false);
   const reviewedBid = bids?.find((bid) => bid._id === reviewId);
@@ -140,9 +142,10 @@ export default function BidList({
         </Alert>
       )}
       <p className="mb-4 text-sm text-[var(--text-secondary)]">
-        Select up to three proposals to compare. Your comparison selection stays
-        on this page until you leave or reload.
+        Select up to three proposals to compare. Your selection is saved privately to your account for this project.
       </p>
+      <p role="status" className="mb-4 text-sm text-[var(--text-secondary)]">{comparison.loading ? "Loading saved comparison…" : comparison.saving ? "Saving comparison…" : comparison.error ? "Your last change was not saved. Please try again." : "Comparison is up to date."}</p>
+      {comparison.error && <Alert variant="destructive" className="mb-4"><AlertDescription>{comparison.error}</AlertDescription></Alert>}
       {compared.length > 0 && (
         <section
           aria-label="Selected proposals comparison"
@@ -155,7 +158,8 @@ export default function BidList({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setComparedIds([])}
+              disabled={comparison.loading || comparison.saving}
+              onClick={() => comparison.change("clear")}
             >
               Clear comparison
             </Button>
@@ -204,11 +208,8 @@ export default function BidList({
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() =>
-                      setComparedIds((ids) =>
-                        ids.filter((id) => id !== bid._id),
-                      )
-                    }
+                    disabled={comparison.loading || comparison.saving}
+                    onClick={() => comparison.change("remove", bid._id)}
                   >
                     Remove
                   </Button>
@@ -313,16 +314,10 @@ export default function BidList({
                   type="checkbox"
                   checked={comparedIds.includes(bid._id)}
                   disabled={
-                    !comparedIds.includes(bid._id) && compared.length >= 3
+                    comparison.loading || comparison.saving || (!comparedIds.includes(bid._id) && compared.length >= 3)
                   }
                   onChange={(event) =>
-                    setComparedIds((ids) =>
-                      event.target.checked
-                        ? ids.length < 3
-                          ? [...ids, bid._id]
-                          : ids
-                        : ids.filter((id) => id !== bid._id),
-                    )
+                    comparison.change(event.target.checked ? "add" : "remove", bid._id)
                   }
                 />
                 Compare {bid.freelancerName}

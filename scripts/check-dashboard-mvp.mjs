@@ -1369,7 +1369,7 @@ await check("Proposal status query selects the full indexed history before pagin
 await check("Client choice requires review, prevents duplicate acceptance and retains failed choice", async () => {
   const runner = hookRunner(); const calls = []; const routes = []; let settle;
   const bids = Array.from({length:4},(_,i)=>({_id:`bid-${i}`,freelancerName:`QA ${i}`,status:"pending",amount:125+i,deliveryDays:3,currency:"EUR",pitch:"QA scope",createdAt:i}));
-  const List = loader({react:runner.react,"next/link":{default:"a"},"next/image":{default:"img"},
+  const List = loader({"@/hook/useProposalComparison":{default:()=>{const [ids,setIds]=runner.react.useState([]);return {ids,change:(op,id)=>setIds(old=>op==="add"?[...old,id]:op==="clear"?[]:old.filter(x=>x!==id))};}},react:runner.react,"next/link":{default:"a"},"next/image":{default:"img"},
     "next-intl":{useTranslations:()=>key=>key},"next/navigation":{useRouter:()=>({push:url=>routes.push(url)})},
     "@/lib/utils":{cn:(...x)=>x.filter(Boolean).join(" ")},"lucide-react":new Proxy({},{get:(_,key)=>String(key)}),
     "convex/react":{useQuery:()=>bids,useMutation:()=>args=>{calls.push(args);return new Promise((resolve,reject)=>{settle={resolve,reject};});}},
@@ -1381,4 +1381,28 @@ await check("Client choice requires review, prevents duplicate acceptance and re
   let confirm=findElement(tree,e=>e.props?.children==="Confirm and open workspace"); const first=confirm.props.onClick();const second=confirm.props.onClick();assert.equal(calls.length,1);
   settle.reject(new Error("QA temporary failure"));await Promise.all([first,second]);tree=runner.render();assert.ok(findElement(tree,e=>e.props?.children==="QA temporary failure"));
   confirm=findElement(tree,e=>e.props?.children==="Confirm and open workspace");const retry=confirm.props.onClick();settle.resolve({orderId:"qa-order"});await retry;assert.deepEqual(routes,["/orders/qa-order"]);
+});
+
+
+await check("Saved comparisons persist, isolate owners/projects and enforce the three-bid limit", async () => {
+  let actor = { _id:"owner", tenantId:"tenant" };
+  const state = new Map([["project",{_id:"project",clientId:"owner",tenantId:"tenant"}],...Array.from({length:4},(_,i)=>[`b${i}`,{_id:`b${i}`,projectId:"project"}]),["foreign",{_id:"foreign",projectId:"another"}]]);
+  const ctx={db:{get:async id=>state.get(id),patch:async(id,fields)=>state.set(id,{...state.get(id),...fields})}};
+  const api=loader({"../lib/authHelpers":{requireAuthUser:async()=>actor}})("convex/marketplace/proposalComparison.ts");
+  const change=(operation,bidId)=>api.update.handler(ctx,{projectId:"project",operation,bidId});
+  await change("add","b0");await change("add","b1");await change("add","b2");await change("add","b0");
+  assert.equal((await api.get.handler(ctx,{projectId:"project"})).length,3);
+  await assert.rejects(()=>change("add","b3"),/three/);await assert.rejects(()=>change("add","foreign"),/belong/);
+  actor={_id:"outsider",tenantId:"tenant"};await assert.rejects(()=>change("clear"),/Unauthorized/);await assert.rejects(()=>api.get.handler(ctx,{projectId:"project"}),/Unauthorized/);
+  actor={_id:"owner",tenantId:"other"};await assert.rejects(()=>change("clear"),/Unauthorized/);
+  actor={_id:"owner",tenantId:"tenant"};state.delete("b0");await change("add","b3");assert.equal((await api.get.handler(ctx,{projectId:"project"})).length,3);
+  await change("remove","b1");await change("clear");assert.equal((await api.get.handler(ctx,{projectId:"project"})).length,0);
+});
+
+await check("Comparison saving blocks duplicate requests and retains server state on failure", async () => {
+  const runner=hookRunner();const calls=[];let settle;let stored=[];
+  const useComparison=loader({react:runner.react,"convex/react":{useQuery:()=>stored,useMutation:()=>args=>{calls.push(args);return new Promise((resolve,reject)=>{settle={resolve,reject};});}}})("src/hook/useProposalComparison.js").default;
+  let model=runner.render(()=>useComparison("project",true));const first=model.change("add","bid");await model.change("add","other");assert.equal(calls.length,1);
+  settle.reject(new Error("QA failed save"));await first;model=runner.render();assert.equal(model.ids.length,0);assert.equal(model.error,"QA failed save");assert.equal(model.saving,false);
+  const retry=model.change("add","bid");stored=["bid"];settle.resolve(null);await retry;model=runner.render();assert.equal(model.ids[0],"bid");assert.equal(model.error,"");
 });
