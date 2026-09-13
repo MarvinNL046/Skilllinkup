@@ -7,7 +7,11 @@ import { api } from "../../../convex/_generated/api";
 import ReviewForm from "@/components/element/ReviewForm";
 import OpenDisputeModal from "@/components/dispute/OpenDisputeModal";
 import useConvexUser from "@/hook/useConvexUser";
-import { getOrderActionContext } from "@/lib/orderWorkspace.mjs";
+import {
+  getOrderActionContext,
+  getWorkspaceNextStep,
+  orderNeedsAction,
+} from "@/lib/orderWorkspace.mjs";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -121,7 +125,13 @@ export default function OrderCard({ order, role }) {
     setActionLoading(false);
   };
 
-  const { isLocal, matchesContext } = getOrderActionContext(order, convexUser);
+  const actionContext = getOrderActionContext(order, convexUser);
+  const { isLocal, matchesContext } = actionContext;
+  const nextStep = getWorkspaceNextStep(order, actionContext);
+  const needsAction = orderNeedsAction(order, convexUser);
+  const workspaceHref = nextStep.href?.startsWith("#")
+    ? `/orders/${order._id}${nextStep.href}`
+    : nextStep.href || `/orders/${order._id}`;
   const showClientButtons =
     role === "client" &&
     !isLocal &&
@@ -158,6 +168,15 @@ export default function OrderCard({ order, role }) {
             </div>
             <div className="min-w-0 flex-grow">
               <h5 className="text-base font-semibold mb-1">{order.title}</h5>
+              {needsAction && (
+                <Badge variant="warning" className="mb-2">
+                  Needs your action
+                </Badge>
+              )}
+              <p className="text-sm font-medium mb-1">{nextStep.title}</p>
+              <p className="text-sm text-[var(--text-secondary)] mb-3">
+                {nextStep.detail}
+              </p>
               <p className="text-xs text-[var(--text-secondary)] mb-2">
                 <span className="font-medium text-foreground">
                   {order.orderNumber}
@@ -197,8 +216,8 @@ export default function OrderCard({ order, role }) {
 
             <div className="flex flex-col gap-2">
               <Button size="sm" variant="outline" asChild>
-                <Link href={`/orders/${order._id}`}>
-                  Open workspace
+                <Link href={workspaceHref}>
+                  {nextStep.label || "Open workspace"}
                   <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
@@ -285,7 +304,9 @@ export default function OrderCard({ order, role }) {
             <div className="rounded-md bg-[var(--surface-2)] p-5">
               {typeof order.remainingRevisions === "number" ? (
                 <p className="mb-2 text-sm">
-                  {order.remainingRevisions} {order.remainingRevisions === 1 ? "revision" : "revisions"} remaining
+                  {order.remainingRevisions}{" "}
+                  {order.remainingRevisions === 1 ? "revision" : "revisions"}{" "}
+                  remaining
                 </p>
               ) : null}
               <p className="text-sm font-medium mb-3">{t("revisionPrompt")}</p>

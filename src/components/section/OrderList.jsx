@@ -11,6 +11,8 @@ import Link from "next/link";
 import useConvexUser from "@/hook/useConvexUser";
 import { getActiveRole } from "@/lib/accountContext.mjs";
 
+import { orderNeedsAction } from "@/lib/orderWorkspace.mjs";
+
 const ACTIVE_STATUSES = [
   "pending",
   "active",
@@ -18,9 +20,11 @@ const ACTIVE_STATUSES = [
   "revision_requested",
 ];
 
-function filterOrders(orders, tab) {
+function filterOrders(orders, tab, user) {
   if (!orders) return [];
   if (tab === "all") return orders;
+  if (tab === "attention")
+    return orders.filter((order) => orderNeedsAction(order, user));
   if (tab === "active")
     return orders.filter((o) => ACTIVE_STATUSES.includes(o.status));
   if (tab === "delivered")
@@ -48,12 +52,13 @@ export default function OrderList() {
 
   const tabs = [
     { key: "all", label: t("all") },
+    { key: "attention", label: "Needs your action" },
     { key: "active", label: t("active") },
     { key: "delivered", label: t("delivered") },
     { key: "completed", label: t("completed") },
   ];
 
-  const filteredOrders = filterOrders(orders, activeTab);
+  const filteredOrders = filterOrders(orders, activeTab, convexUser);
 
   return (
     <>
@@ -61,6 +66,13 @@ export default function OrderList() {
         <h1>{t("title")}</h1>
         <p className="text-[var(--text-secondary)]">{t("pageDescription")}</p>
       </div>
+
+      {!isLoading && orders.length >= 50 && (
+        <p className="mb-4 text-sm text-[var(--text-secondary)]">
+          Showing your 50 most recent orders. Counts and filters apply to this
+          list.
+        </p>
+      )}
 
       {/* Role switcher */}
       <div className="flex gap-2 mb-5 flex-wrap">
@@ -92,7 +104,7 @@ export default function OrderList() {
             tab.key === "all"
               ? orders?.length
               : orders
-                ? filterOrders(orders, tab.key).length
+                ? filterOrders(orders, tab.key, convexUser).length
                 : null;
           return (
             <button
@@ -155,17 +167,21 @@ export default function OrderList() {
             <div className="text-center py-12">
               <Receipt className="h-10 w-10 text-[var(--text-tertiary)] mx-auto mb-4" />
               <h5 className="text-lg font-semibold mb-2">
-                {t("noOrdersFound")}
+                {activeTab === "attention"
+                  ? "Nothing needs your action here"
+                  : t("noOrdersFound")}
               </h5>
               <p className="text-[var(--text-secondary)] mb-0">
-                {activeTab === "all"
-                  ? t("noOrdersRole", {
-                      role:
-                        roleView === "client"
-                          ? t("asBuyer").toLowerCase()
-                          : t("asSeller").toLowerCase(),
-                    })
-                  : t("noOrdersStatus", { status: activeTab })}
+                {activeTab === "attention"
+                  ? "No deliveries or revision requests need your attention in this account context."
+                  : activeTab === "all"
+                    ? t("noOrdersRole", {
+                        role:
+                          roleView === "client"
+                            ? t("asBuyer").toLowerCase()
+                            : t("asSeller").toLowerCase(),
+                      })
+                    : t("noOrdersStatus", { status: activeTab })}
               </p>
               <Button asChild variant="outline" className="mt-5">
                 <Link
