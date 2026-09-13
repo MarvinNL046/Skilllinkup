@@ -13,6 +13,7 @@ import * as messagePolicy from "../src/lib/messagePolicy.mjs";
 import { upcomingAppointments } from "../src/lib/upcomingAppointments.mjs";
 import { validatePublishingForm } from "../src/lib/publishingValidation.mjs";
 import * as onboardingDraft from "../src/lib/onboardingDraft.mjs";
+import * as authRedirects from "../src/lib/authRedirect.mjs";
 import * as quoteDraft from "../src/lib/quoteRequestDraft.mjs";
 
 // Runs actual handlers and client helpers with in-memory adapters; never connects
@@ -997,4 +998,59 @@ await check("Conversation link failures retry safely and stale account responses
   assert.equal(render().requestedError, false);
   assert.equal(render().requestedLoading, false);
 });
+
+await check("Notification actions report failure, retry and block duplicate writes while preserving destinations", async () => {
+  const runner = hookRunner(), errors = [], calls = [], queryArgs = [];
+  let authenticated = true, rejectRead = true, settleAll, queryIndex = 0, mutationIndex = 0;
+  const items = [
+    { _id: "message", link: "/message?conversation=abc#latest", isRead: false },
+    { _id: "company", link: "/manage-jobs/job-id/applications", isRead: false },
+    { _id: "candidate", link: "/dashboard/applications" },
+    { _id: "local", link: "/dashboard/my-leads" },
+    { _id: "order", link: "/orders/order-id" },
+    { _id: "unsafe", link: "javascript:alert(1)" },
+    { _id: "external", link: "//external.example" },
+    { _id: "plain" },
+  ];
+  const hook = loader({ react: runner.react, sonner: { toast: { error: text => errors.push(text) } },
+    "./useConvexUser": { default: () => ({ convexUser: { _id: "viewer" }, isAuthenticated: authenticated }) },
+    "@/lib/authRedirect.mjs": authRedirects,
+    "convex/react": {
+      useQuery: (_, args) => { queryArgs.push(args); return queryIndex++ % 2 === 0 ? items : 8; },
+      useMutation: () => mutationIndex++ % 2 === 0 ? async args => { calls.push(args); if (rejectRead) throw Error("offline"); return { success: true }; }
+        : args => { calls.push(args); return new Promise((resolve, reject) => { settleAll = { resolve, reject }; }); },
+    },
+  })("src/hook/useConvexNotifications.js").default;
+  const render = () => runner.render(() => hook(50));
+  let result = render();
+  assert.equal(result.notifications[0].link, items[0].link);
+  for (let i = 0; i < 5; i++) {
+    const destination = result.notifications[i].link;
+    const afterLogin = new URLSearchParams(new URLSearchParams({ redirect_url: destination }).toString()).get("redirect_url");
+    assert.equal(authRedirects.safeAuthRedirect(afterLogin), destination);
+  }
+  assert.equal(result.notifications[5].link, "/dashboard");
+  assert.equal(result.notifications[6].link, "/dashboard");
+  assert.equal(result.notifications[7].link, undefined);
+  const first = result.markRead({ notificationId: "message" });
+  await result.markRead({ notificationId: "message" });
+  await first;
+  assert.equal(calls.length, 1); assert.equal(errors.length, 1);
+  rejectRead = false;
+  assert.equal((await result.markRead({ notificationId: "message" })).success, true);
+  const all = result.markAllRead();
+  assert.equal(render().markingAll, true);
+  await result.markAllRead();
+  assert.equal(calls.length, 3);
+  settleAll.reject(Error("offline")); await all;
+  assert.equal(render().markingAll, false); assert.equal(errors.length, 2);
+  const retry = render().markAllRead(); settleAll.resolve({ success: true, markedCount: 8 });
+  assert.equal((await retry).markedCount, 8);
+  authenticated = false;
+  result = render();
+  assert.equal(result.notifications, undefined); assert.equal(result.unreadCount, 0);
+  assert.deepEqual(queryArgs.slice(-2), ["skip", "skip"]);
+  const count = calls.length; await result.markRead({ notificationId: "message" }); await result.markAllRead(); assert.equal(calls.length, count);
+});
+
 console.log(`Dashboard MVP regression checks passed: ${checks} scenario groups.`);
