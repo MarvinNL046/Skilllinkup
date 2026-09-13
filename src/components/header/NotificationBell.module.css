@@ -1,0 +1,25 @@
+.popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: min(340px, calc(100vw - 32px));
+  max-height: min(420px, calc(100dvh - 96px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  overflow-wrap: anywhere;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-3);
+  z-index: 60;
+}
+
+@media (max-width: 767px) {
+  .popover {
+    position: fixed;
+    top: calc(var(--dash-topbar-h, 64px) + 8px);
+    left: 16px;
+    right: 16px;
+    width: auto;
+  }
+}

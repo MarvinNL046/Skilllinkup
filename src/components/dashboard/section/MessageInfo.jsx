@@ -45,13 +45,9 @@ export default function MessageInfo() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredConversations = conversations.filter((conv) => {
-    if (!searchQuery.trim()) return true;
-    const name = conv.otherParticipant?.name || "";
-    const preview = conv.lastMessagePreview || "";
-    return (
-      name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      preview.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const query = searchQuery.trim().toLowerCase();
+    return !query || [conv.otherParticipant?.name, conv.lastMessagePreview, conv.context?.title]
+      .some((value) => value?.toLowerCase().includes(query));
   });
 
   const selectedConversation = conversations.find(
@@ -60,7 +56,12 @@ export default function MessageInfo() {
 
   const requestedAvailable = conversations.some((item) => item._id === requestedConversation);
   useEffect(() => {
-    if (!requestedConversation || !requestedAvailable) return;
+    if (!requestedConversation) {
+      setSelectedConversationId(null);
+      setMobileShowChat(false);
+      return;
+    }
+    if (!requestedAvailable) return;
     setSelectedConversationId(requestedConversation);
     setMobileShowChat(true);
   }, [requestedConversation, requestedAvailable, userId, setSelectedConversationId]);
@@ -69,12 +70,17 @@ export default function MessageInfo() {
     setSelectedConversationId(conversationId);
     const params = new URLSearchParams(searchParams.toString());
     params.set("conversation", conversationId);
-    router.replace(`/message?${params.toString()}`, { scroll: false });
+    router.push(`/message?${params.toString()}`, { scroll: false });
     if (isMobile) setMobileShowChat(true);
   }
 
   function handleMobileBack() {
     setMobileShowChat(false);
+    setSelectedConversationId(null);
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("conversation");
+    const query = params.toString();
+    router.replace(`/message${query ? `?${query}` : ""}`, { scroll: false });
   }
 
   async function handleSendMessage(content, clientRequestId) {
@@ -189,7 +195,7 @@ export default function MessageInfo() {
                   {t("noConversationsMatch")}
                 </p>
               ) : (
-                <div className="grid gap-0.5">
+                <div className="grid grid-cols-1 gap-0.5">
                   {filteredConversations.map((conv) => {
                     const active = selectedConversationId === conv._id;
                     return (
@@ -198,7 +204,7 @@ export default function MessageInfo() {
                         type="button"
                         onClick={() => handleSelectConversation(conv._id)}
                         className={cn(
-                          "p-3 rounded-md text-left font-inherit cursor-pointer transition-colors",
+                          "min-w-0 p-3 rounded-md text-left font-inherit cursor-pointer transition-colors",
                           active
                             ? "bg-primary/10"
                             : "hover:bg-[var(--surface-2)]",
