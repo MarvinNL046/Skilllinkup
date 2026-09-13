@@ -5,13 +5,13 @@ import AppFooter from "@/components/footer/AppFooter";
 import styles from "./WorldwideHome.module.css";
 
 const faqs = [
-  ["Is Skilllinkup publicly launched?", "Skilllinkup is in private beta ahead of public launch. You can explore published profiles now. Existing beta participants can log in to their workspace; the waitlist is for public launch updates."],
-  ["What makes Skilllinkup different?", "Online freelance work, local service requests, and real company jobs come together in one worldwide marketplace."],
-  ["Can I offer more than one type of service?", "Yes. You can offer remote expertise, provide hands-on services locally, and explore company jobs."],
-  ["How does Skilllinkup build trust?", "Compare the published profile and reviews, check any verification badge, and confirm the scope before starting work."],
-  ["Is Skilllinkup available worldwide?", "Online discovery supports international projects. Local services depend on the professionals in your chosen area, and jobs may have geographic requirements. The beta network is still growing."],
-  ["How do payments work during beta?", "Skilllinkup does not collect, hold, or release funds during the free private beta. Payment policy will be published before activation."],
-  ["Can businesses post permanent jobs?", "Yes. Companies can publish permanent, temporary or contract roles after company onboarding and verification."],
+  ["Can I use Skilllinkup now?", "You can browse published profiles, services and jobs now. Account access is currently by invitation during our private beta. If you already have a beta account, sign in to continue your work."],
+  ["What happens when I join the waitlist?", "We will email you about the public launch. Joining the waitlist does not create an account, book a service or guarantee a match."],
+  ["Can I hire someone and offer my own services?", "Yes. Beta participants can add another role to the same account and switch between hiring, offering services and finding jobs."],
+  ["How do I choose a professional?", "Read their profile, work samples and reviews. Check what any verification badge covers, then discuss the scope, timing and expectations before agreeing to work together."],
+  ["Can I work with someone in another country?", "You can explore freelancers for remote projects. Availability depends on the professional and your requirements. Local services depend on your area, and job listings may specify where you need to live or work."],
+  ["Does Skilllinkup handle payments?", "No. Skilllinkup does not collect, hold or send project payments during the private beta. Amounts shown in your workspace record agreed project values, not money paid or received."],
+  ["Can my company post a job?", "Invited companies can complete onboarding and company verification to publish permanent, temporary or contract roles. Public registration is not open yet."],
 ];
 
 export default function HomeFaqFooter() {
@@ -21,7 +21,7 @@ export default function HomeFaqFooter() {
         <header className={styles.centerHeading}>
           <span className={styles.eyebrow}>Good to know</span>
           <h2>Frequently asked questions</h2>
-          <p>Everything you need before making your first connection.</p>
+          <p>What you can explore today and how the private beta works.</p>
         </header>
         <div className={styles.faqList}>
           {faqs.map(([question, answer], index) => (
@@ -36,7 +36,7 @@ export default function HomeFaqFooter() {
 
       <section className={`${styles.section} ${styles.newsletterSection}`}>
         <Send size={30} aria-hidden="true" />
-        <div><h2>Follow the public launch</h2><p>Explore profiles during the private beta and join the waitlist for public launch updates.</p></div>
+        <div><h2>Be there when we open</h2><p>Join the waitlist and we’ll email you about the public launch.</p></div>
         <div><WaitlistButton label="Join the waitlist" /></div>
       </section>
 

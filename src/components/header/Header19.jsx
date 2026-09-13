@@ -13,8 +13,8 @@ import PublicSignInLink from "./PublicSignInLink";
 import WaitlistButton from "@/components/ui/WaitlistButton";
 
 const NAV_ITEMS = [
-  { label: "Online Services", href: "/services" },
-  { label: "Local Services", href: "/local" },
+  { label: "Online", href: "/online" },
+  { label: "Local", href: "/local" },
   { label: "Jobs", href: "/jobs" },
   { label: "For businesses", href: "/jobs/companies" },
 ];

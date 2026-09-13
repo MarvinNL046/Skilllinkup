@@ -185,7 +185,7 @@ export default function DashboardInfo() {
       <EmptyState
         icon={LockKeyhole}
         title="Sign in to open your dashboard"
-        text="Your projects, messages and private workspaces stay protected."
+        text="Sign in to find your projects, messages and shared files."
         href="/login"
         action="Sign in"
       />
@@ -263,8 +263,8 @@ export default function DashboardInfo() {
           <h1>Hello, {firstName}</h1>
           <p>
             {isFreelancer
-              ? "Here is an overview of your proposals, active work and client activity."
-              : "Here is an overview of your projects and recent activity."}
+              ? "Pick up your client work, check proposals and reply to messages."
+              : "Follow your projects, review proposals and keep in touch with your freelancers."}
           </p>
         </div>
         {!firstStep ? (
@@ -331,8 +331,8 @@ export default function DashboardInfo() {
               <div className={styles.empty}>
                 <p>
                   {isFreelancer
-                    ? "Your proposals and orders will appear here once you start working with a client."
-                    : "Proposals will appear here after you publish a project. Accept a proposal to start an order."}
+                    ? "Track the proposals you send here. When a client accepts one, you can open the order to start working together."
+                    : "When a freelancer responds to your project, you can review their proposal here. Accept a proposal to start an order."}
                 </p>
               </div>
             </section>
@@ -372,7 +372,7 @@ export default function DashboardInfo() {
                         />
                         <b>
                           {project.freelancerName ||
-                            (isFreelancer ? "Client" : "Matching…")}
+                            (isFreelancer ? "Client" : "Freelancer")}
                         </b>
                       </span>
                       <span>
@@ -460,7 +460,7 @@ export default function DashboardInfo() {
                               : `/projects/${proposal.projectId}`
                           }
                         >
-                          {!isFreelancer && proposal.status === "pending" ? "Review proposals" : "View"}
+                          {!isFreelancer && proposal.status === "pending" ? "Review proposals" : "View proposals"}
                         </Link>
                       </Button>
                     </article>
@@ -475,7 +475,7 @@ export default function DashboardInfo() {
                   text={
                     isFreelancer
                       ? "Explore open projects and send a proposal when your experience is a strong match."
-                      : "New proposals from professionals will appear here."
+                      : "Proposals will appear here when freelancers respond to your project."
                   }
                 />
               )}

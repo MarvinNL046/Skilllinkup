@@ -17,7 +17,7 @@ import PublicSignInLink from "./PublicSignInLink";
 /**
  * Header for /online, /local, /jobs world sections. Same design-system
  * language as Header19/20, with a WorldSwitcher between the brand and
- * nav so visitors can jump between the three marketplaces.
+ * nav so visitors can jump between the three worlds.
  */
 export default function WorldHeader() {
   const { user, isSignedIn } = useUser();
@@ -58,7 +58,7 @@ export default function WorldHeader() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", flexShrink: 0 }}>
-          <div className="hidden lg:block" style={{ width: 280 }}>
+          <div className="hidden 2xl:block" style={{ width: 280 }}>
             <SearchBarWithDropdown placeholder={t("searchPlaceholderShort")} />
           </div>
 

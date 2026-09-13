@@ -19,10 +19,10 @@ const trustItems = [
 ];
 
 const stats = [
-  { Icon: Users, value: "One account", label: "Multiple professional roles" },
-  { Icon: BriefcaseBusiness, value: "3 products", label: "Online · Local · Jobs" },
+  { Icon: Users, value: "One account", label: "Hire, offer services or find a job" },
+  { Icon: BriefcaseBusiness, value: "3 worlds", label: "Online · Local · Jobs" },
   { Icon: ShieldCheck, value: "Private beta", label: "No platform payments" },
-  { Icon: Globe2, value: "English-first", label: "Online launches worldwide" },
+  { Icon: Globe2, value: "English-first", label: "Built for remote collaboration" },
 ];
 
 export default function HomeHero() {
@@ -36,9 +36,9 @@ export default function HomeHero() {
               Find the right work. <span>Or the right person.</span>
             </h1>
             <p className={styles.lead}>
-              Explore online freelancers, local professionals and company jobs
-              while Skilllinkup is in private beta. Our network is growing
-              ahead of public launch.
+              Find freelancers for your next project, explore local services or
+              browse company jobs. You can explore now; working together on
+              Skilllinkup is currently by invitation.
             </p>
             <form className={styles.searchBox} action="/services" method="get">
               <label className={styles.searchField}>
@@ -77,7 +77,7 @@ export default function HomeHero() {
             <div className={`${styles.floatingCard} ${styles.floatingTop}`}>
               <span className={styles.avatarDot}><Users size={18} /></span>
               <span>
-                <strong>Find your professional</strong>
+                <strong>Explore the skills you need</strong>
                 <small>
                   <MapPin size={12} /> Online and local expertise
                 </small>
@@ -96,7 +96,7 @@ export default function HomeHero() {
           </div>
         </div>
       </section>
-      <section className={styles.stats} aria-label="Marketplace statistics">
+      <section className={styles.stats} aria-label="About Skilllinkup">
         {stats.map(({ Icon, value, label }) => (
           <div className={styles.statItem} key={value}>
             <Icon />

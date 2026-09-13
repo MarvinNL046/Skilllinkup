@@ -8,7 +8,7 @@ const columns = [
     title: "For clients",
     links: [
       ["Post a project", "/create-projects"],
-      ["Online services", "/services"],
+      ["Browse services", "/services"],
       ["Local services", "/local"],
       ["Post a job", "/create-job"],
     ],
@@ -49,7 +49,7 @@ export default function AppFooter() {
             <Link href="/" className={styles.logoLink} aria-label="Skilllinkup home">
               <BrandLogo className={styles.logo} />
             </Link>
-            <p>One worldwide marketplace for online services, local expertise, and real company jobs.</p>
+            <p>One account, three worlds. Find freelance expertise in Online, help nearby in Local and company roles in Jobs.</p>
             <div className={styles.world}><Globe2 size={16} /> English · Worldwide</div>
             <div className={styles.socials}>
               {socialLinks.map(({ label, href, icon: Icon }) => (

@@ -12,8 +12,8 @@ export function SeoWaitlistCTA({ skill = '', role = '', locale = 'en' }) {
   const nl = locale === 'nl';
   return <section className={styles.cta} aria-label={nl ? 'SkillLinkup wachtlijst' : 'SkillLinkup waitlist'}>
     <span className={styles.eyebrow}>{nl ? 'We bereiden de lancering voor' : 'Preparing for launch'}</span>
-    <h2>{nl ? 'Je volgende project begint met een duidelijke vraag.' : 'Your next project starts with a clear brief.'}</h2>
-    <p>{nl ? 'Meld je aan voor een bericht over de lancering van SkillLinkup. Vertel wat je zoekt of aanbiedt. Je boekt geen project en een match is niet gegarandeerd.' : 'Join the SkillLinkup waitlist for a launch update. Tell us what you need or offer. No project commitment and no guaranteed match.'}</p>
+    <h2>{nl ? 'Hoor wanneer Skilllinkup voor iedereen opengaat.' : 'Know when Skilllinkup opens to everyone.'}</h2>
+    <p>{nl ? 'Meld je aan voor de wachtlijst en ontvang een bericht over de publieke lancering. Dit maakt geen account aan en is geen boeking.' : 'Join the waitlist for an email about our public launch. This does not create an account or book a service.'}</p>
     <WaitlistButton label={nl ? 'Meld je aan voor de wachtlijst' : 'Join the waitlist'} initialSkill={skill} initialUserType={role} />
   </section>;
 }

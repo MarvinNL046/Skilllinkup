@@ -5,9 +5,9 @@ import { ArrowRight, FileCheck2, MessageSquareText, ShieldCheck } from "lucide-r
 import styles from "./WorldwideHome.module.css";
 
 const steps = [
-  { number: "1", title: "Tell us what you need", text: "Post a project, find local help, or explore real company jobs." },
-  { number: "2", title: "Compare professionals", text: "Review profiles, ratings, experience, location, and availability." },
-  { number: "3", title: "Work with clear agreements", text: "Set clear terms, record approvals, and stay connected from start to finish." },
+  { number: "1", title: "Describe your project", text: "Tell freelancers what you need, when you need it and your budget." },
+  { number: "2", title: "Choose a freelancer", text: "Compare proposals, ask questions and agree on the scope and timing." },
+  { number: "3", title: "Keep the work together", text: "Share messages and files, request changes and approve the finished work." },
 ];
 
 export default function ProcessWorkspace() {
@@ -15,8 +15,8 @@ export default function ProcessWorkspace() {
     <>
       <section className={`${styles.section} ${styles.processSection}`}>
         <header className={styles.centerHeading}>
-          <span className={styles.eyebrow}>Simple from start to finish</span>
-          <h2>How the beta workspace works</h2>
+          <span className={styles.eyebrow}>For Online beta participants</span>
+          <h2>From project brief to delivery</h2>
         </header>
         <div className={styles.processVisual}>
           <Image
@@ -45,13 +45,13 @@ export default function ProcessWorkspace() {
           <div className={styles.workspaceCopy}>
             <span className={styles.eyebrow}>Everything in one place</span>
             <h2>From first message to finished work.</h2>
-            <p>Beta participants can keep scope, messages, files and delivery decisions organised in one shared workspace. Skilllinkup does not process payments.</p>
+            <p>Keep your agreement, messages and delivery files with the order, so you and your freelancer can pick up where you left off. Skilllinkup does not process payments.</p>
             <ul>
-              <li><ShieldCheck size={18} /><span><strong>Recorded approvals</strong>Confirm delivered milestones in one clear workspace.</span></li>
-              <li><MessageSquareText size={18} /><span><strong>Built-in conversations</strong>Keep messages and project details together.</span></li>
-              <li><FileCheck2 size={18} /><span><strong>Clear agreements</strong>Record scope, timing, files, and decisions.</span></li>
+              <li><ShieldCheck size={18} /><span><strong>Review the delivery</strong>Ask for changes or approve the finished work.</span></li>
+              <li><MessageSquareText size={18} /><span><strong>Keep the conversation together</strong>Find project messages alongside the order.</span></li>
+              <li><FileCheck2 size={18} /><span><strong>Find the latest files</strong>Open shared files and follow the delivery history.</span></li>
             </ul>
-            <Button asChild><Link href="/help">Discover how it works <ArrowRight size={16} /></Link></Button>
+            <Button asChild><Link href="/help">Read the help guide <ArrowRight size={16} /></Link></Button>
           </div>
           <div className={styles.workspaceMock} aria-label="Example Skilllinkup project workspace">
             <Image

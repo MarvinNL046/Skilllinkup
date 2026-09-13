@@ -117,12 +117,12 @@ export default function ServicesOverview() {
               <span className={styles.eyebrow}>Worldwide services marketplace</span>
               <h1>Find the service that fits you.</h1>
               <strong>Nearby when it matters. Online everywhere.</strong>
-              <p>From web design and marketing to trusted help at home. Discover skilled professionals for every kind of project.</p>
+              <p>Explore service categories, compare the published scope and find professionals for the work you need.</p>
             </div>
             <div className={styles.heroProof}>
-              <article><UsersRound size={27} /><strong>3 products</strong><span>Online · Local · Jobs</span></article>
+              <article><UsersRound size={27} /><strong>3 worlds</strong><span>Online · Local · Jobs</span></article>
               <article><ShieldCheck size={27} /><strong>Clear agreements</strong><span>Scope & approvals recorded</span></article>
-              <article><MessageCircleMore size={27} /><strong>Clear agreements</strong><span>Everything in one place</span></article>
+              <article><MessageCircleMore size={27} /><strong>Project conversations</strong><span>Messages alongside your work</span></article>
             </div>
           </div>
           <form className={styles.searchBar} action="/online/services" method="get">
@@ -158,7 +158,7 @@ export default function ServicesOverview() {
         <div className={styles.centerTitle}><span className={styles.eyebrow}>Simple from start to finish</span><h2>Choose the right professional</h2></div>
         <div className={styles.processWrap}>
           <Image src="/images/skilllinkup-home/how-skilllinkup-works-v1.png" alt="Post your request, compare professionals and record the collaboration" width={1536} height={648} />
-          <div className={styles.processSteps}><article><b>1</b><strong>Post your request</strong><p>Tell us what you need and receive relevant matches.</p></article><article><b>2</b><strong>Compare & choose</strong><p>Review profiles, offers, experience and ratings.</p></article><article><b>3</b><strong>Work with clarity</strong><p>Agree the scope and keep messages, files and approval together.</p></article></div>
+          <div className={styles.processSteps}><article><b>1</b><strong>Explore services</strong><p>Start with the category or skill your project needs.</p></article><article><b>2</b><strong>Compare your options</strong><p>Read profiles, work samples, reviews and the service scope.</p></article><article><b>3</b><strong>Agree before you start</strong><p>Beta members can discuss the work and keep delivery details together.</p></article></div>
         </div>
       </section>
 
@@ -169,7 +169,7 @@ export default function ServicesOverview() {
 
       <section className={`${styles.section} ${styles.joinSection}`}>
         <div className={styles.joinPanel}>
-          <div><span className={styles.eyebrow}>Grow with Skilllinkup</span><h2>Can&apos;t find your service?</h2><p>Offer your expertise and reach clients nearby and worldwide. Creating a profile is free.</p><Button asChild><Link href="/register">Offer your services<ArrowRight size={16} /></Link></Button></div>
+          <div><span className={styles.eyebrow}>Your skills, your world</span><h2>Want to offer your own services?</h2><p>Explore how to share your skills in the Online world. Account setup is currently for invited beta members.</p><Button asChild><Link href="/online#online-start-title">Explore ways to offer services<ArrowRight size={16} /></Link></Button></div>
           <Image src="/images/skilllinkup-home/business-team-v2.png" alt="Professionals working together" width={1100} height={640} />
         </div>
       </section>
@@ -183,7 +183,7 @@ export default function ServicesOverview() {
         <article><ShieldCheck size={27} /><span><strong>Compare profiles</strong><small>Published experience and work samples.</small></span></article>
         <article><ClipboardList size={27} /><span><strong>Clear agreements</strong><small>Transparent pricing and communication.</small></span></article>
         <article><BadgeCheck size={27} /><span><strong>Professional profiles</strong><small>Profiles, ratings and verification signals.</small></span></article>
-        <article><Target size={27} /><span><strong>Quality first</strong><small>Find the right match for every project.</small></span></article>
+        <article><Target size={27} /><span><strong>Choose your fit</strong><small>Compare experience with your project needs.</small></span></article>
       </section>
     </main>
   );

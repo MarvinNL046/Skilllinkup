@@ -18,6 +18,7 @@ import {
   Users,
 } from "lucide-react";
 import styles from "./MarketplaceHub.module.css";
+import WorldEntryPoints from "./WorldEntryPoints";
 
 const icons = {
   verified: BadgeCheck,
@@ -86,6 +87,8 @@ export default function MarketplaceHub({ config }) {
           return <article key={stat.label}><Icon /><span><strong>{stat.value}</strong><small>{stat.label}</small></span></article>;
         })}
       </section>
+
+      <WorldEntryPoints world={config.tone} />
 
       <section className={`${styles.container} ${styles.section}`}>
         <header className={styles.sectionHeader}>

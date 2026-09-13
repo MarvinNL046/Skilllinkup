@@ -33,36 +33,36 @@ import styles from "./OnboardingExperience.module.css";
 const roles = [
   {
     id: "client",
-    title: "Hire or book someone",
-    description: "Find online talent or a trusted professional nearby.",
+    title: "Hire someone",
+    description: "Find a freelancer or a local professional for your project.",
     Icon: UserRoundSearch,
     world: "online",
   },
   {
     id: "freelancer",
-    title: "I work online",
-    description: "Offer digital services to clients worldwide.",
+    title: "Offer online services",
+    description: "Work with clients worldwide as an online freelancer.",
     Icon: Laptop2,
     world: "online",
   },
   {
     id: "local_professional",
-    title: "I work locally",
-    description: "Receive qualified requests in your service area.",
+    title: "Offer local services",
+    description: "Explore requests for work in your service area.",
     Icon: Wrench,
     world: "local",
   },
   {
     id: "candidate",
-    title: "I am looking for a job",
-    description: "Discover verified local and remote company roles.",
+    title: "Find a job",
+    description: "Explore remote, hybrid and on-site company roles.",
     Icon: BriefcaseBusiness,
     world: "jobs",
   },
   {
     id: "company",
-    title: "I hire for a company",
-    description: "Publish real vacancies and manage candidates.",
+    title: "Hire for a company",
+    description: "Publish vacancies and manage candidates.",
     Icon: Building2,
     world: "jobs",
   },
@@ -327,16 +327,16 @@ export default function OnboardingExperience() {
       <main className={styles.shell}>
         {draftNotice && <p className={styles.draftNotice} role="status">{draftNotice}</p>}
         <section className={styles.intro}>
-          <p className={styles.eyebrow}>One account · three marketplaces</p>
+          <p className={styles.eyebrow}>One account · three worlds</p>
           <h1 ref={headingRef} tabIndex={-1}>
             {step === 1
               ? "What brings you to Skilllinkup?"
-              : "Make your account work for you"}
+              : "Tell us a little about yourself"}
           </h1>
           <p>
             {step === 1
-              ? "Choose your starting role. You can add another role or switch product worlds later."
-              : "A few useful details help us show better matches from day one."}
+              ? "Choose how you want to start. You can add another role later from your dashboard."
+              : "Add the details you want to start with. You can update your profile later."}
           </p>
           <div
             className={styles.progress}
@@ -435,7 +435,7 @@ export default function OnboardingExperience() {
                   <span>
                     <strong>Local, nearby</strong>
                     <small>
-                      Trusted professionals around Rotterdam–The Hague
+                      Hands-on services in your area
                     </small>
                   </span>
                   <Check />
@@ -470,7 +470,7 @@ export default function OnboardingExperience() {
                   placeholder={
                     role === "local_professional"
                       ? "e.g. Certified HVAC technician"
-                      : "What do you do best?"
+                      : "e.g. Web designer for small businesses"
                   }
                   maxLength={120}
                 />
@@ -500,7 +500,7 @@ export default function OnboardingExperience() {
                       : "Choose your strongest skills"}
                 </legend>
                 <p aria-live="polite">
-                  {selections.length} of 8 selected. You can refine this later.
+                  {selections.length} of 8 selected. You can change these later.
                 </p>
                 <div>
                   {options.map((option) => (
@@ -534,7 +534,7 @@ export default function OnboardingExperience() {
                   <textarea
                     value={bio}
                     onChange={(event) => setBio(event.target.value)}
-                    placeholder="Tell clients what they can rely on you for."
+                    placeholder="Describe the work you do and the clients you help."
                     rows={4}
                     maxLength={800}
                   />
