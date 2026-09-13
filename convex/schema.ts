@@ -551,6 +551,7 @@ export default defineSchema({
   // ============================================================
 
   projects: defineTable({
+    comparedBidIds: v.optional(v.array(v.id("bids"))),
     budgetSortValue: v.optional(v.number()),
     tenantId: v.id("tenants"),
     clientId: v.id("users"),
