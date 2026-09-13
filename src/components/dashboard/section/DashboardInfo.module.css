@@ -21,7 +21,7 @@
 .topGrid { display:grid; grid-template-columns:minmax(0,2.2fr) minmax(285px,1fr); gap:18px; margin-bottom:18px; }
 
 .projectTable { padding:0 18px 12px; overflow-x:auto; }
-.tableHead,.projectRow { display:grid; grid-template-columns:minmax(190px,1.45fr) minmax(145px,1.1fr) minmax(130px,.9fr) 112px 20px; align-items:center; gap:12px; min-width:650px; }
+.tableHead,.projectRow { display:grid; grid-template-columns:minmax(140px,1.45fr) minmax(105px,1.1fr) minmax(105px,.9fr) 90px 16px; align-items:center; gap:8px; min-width:530px; }
 .tableHead { min-height:41px; color:#69778b; font-size:11px; font-weight:700; }
 .projectRow { min-height:66px; border-top:1px solid #e8ecef; color:#33455f; font-size:12px; text-decoration:none; }
 .projectRow>span:first-child,.person { display:flex; min-width:0; flex-direction:column; gap:3px; }
