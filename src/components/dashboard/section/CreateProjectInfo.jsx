@@ -262,19 +262,76 @@ export default function CreateProjectInfo() {
                 ))}
               </select>
             </label>
+            <aside
+              className={styles.briefGuide}
+              aria-labelledby="brief-guide-title"
+            >
+              <h3 id="brief-guide-title">
+                Help the right freelancer understand your project
+              </h3>
+              <p>A few clear sentences are enough. Cover these three things:</p>
+              <ol>
+                <li>
+                  <strong>The goal</strong>
+                  <span>
+                    What do you need, who is it for, and what should it help
+                    them do?
+                  </span>
+                </li>
+                <li>
+                  <strong>The deliverables</strong>
+                  <span>
+                    What should you receive? Mention the quantity, format and
+                    anything you already have.
+                  </span>
+                </li>
+                <li>
+                  <strong>A successful result</strong>
+                  <span>
+                    How will you check the work? Include any must-haves or
+                    constraints.
+                  </span>
+                </li>
+              </ol>
+              <details>
+                <summary>See an example brief</summary>
+                <p className={styles.exampleLabel}>
+                  Example only — write your own scope below.
+                </p>
+                <p>
+                  We need a one-page website for our bakery so local customers
+                  can find our opening hours and request a cake quote.
+                </p>
+                <p>
+                  Please deliver a responsive WordPress page with a contact
+                  form. We will supply the logo, photos and text. Hosting is
+                  already set up; ongoing maintenance is outside this project.
+                </p>
+                <p>
+                  The result should work on mobile and desktop, send form
+                  enquiries to our inbox, and let us update the opening hours
+                  ourselves.
+                </p>
+              </details>
+            </aside>
             <label>
               Project description
               <textarea
                 aria-label="Project description"
+                aria-describedby="project-description-help"
                 rows={7}
                 maxLength={PROJECT_LIMITS.descriptionMax}
                 value={form.description}
                 onChange={(e) => field("description", e.target.value)}
-                placeholder="Describe your goal, the deliverables and what a successful result looks like."
+                placeholder={
+                  "Goal: What do you want to achieve?\n\nDeliverables: What should the freelancer provide?\n\nSuccess: What must the finished work do?"
+                }
               />
-              <small>
-                80–10,000 characters. Include the deliverables and what success
-                looks like.
+              <small id="project-description-help">
+                {form.description.trim().length.toLocaleString("en-GB")} /
+                10,000 characters · Minimum 80. If something is undecided, say
+                so. Keep private contact details and passwords out of your
+                public brief.
               </small>
             </label>
             <label>
@@ -338,6 +395,19 @@ export default function CreateProjectInfo() {
         ) : null}
         {step === 2 ? (
           <div className={styles.review}>
+            <aside className={styles.reviewGuide}>
+              <h3>Read it as a freelancer</h3>
+              <p>
+                Could someone estimate the work from this brief? Check that it
+                explains what you need, what they should deliver and how you
+                will review the result.
+              </p>
+              <p>
+                Your title, description, skills and budget will be visible in
+                the project listing. Remove private information before
+                publishing.
+              </p>
+            </aside>
             <h3>{form.title}</h3>
             <p>{form.description}</p>
             <dl>
@@ -375,7 +445,12 @@ export default function CreateProjectInfo() {
               Previous
             </Button>
           ) : null}
-          <Button variant="outline" type="button" disabled={saving || !ready} onClick={saveDraft}>
+          <Button
+            variant="outline"
+            type="button"
+            disabled={saving || !ready}
+            onClick={saveDraft}
+          >
             Save draft
           </Button>
           <Button

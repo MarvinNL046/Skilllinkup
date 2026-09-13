@@ -251,13 +251,16 @@ export default function ProjectDetail() {
         <div className={styles.layout}>
           <div className={styles.content}>
             <header className={styles.hero}>
+              <p className={styles.eyebrow}>
+                {project.categoryName || "Online project"}
+              </p>
               <div className={styles.titleLine}>
                 <h1>{project.title}</h1>
                 <div className={styles.headerActions}>
-                  <button onClick={shareProject}>
+                  <Button variant="outline" size="sm" onClick={shareProject}>
                     <Share2 size={17} />
                     {shared ? "Copied" : "Share"}
-                  </button>
+                  </Button>
                 </div>
               </div>
               <div className={styles.badges}>
@@ -305,7 +308,12 @@ export default function ProjectDetail() {
             <section className={styles.textSection}>
               <h2>About the project</h2>
               <p>{description}</p>
-              {project.categoryName && <p>Category: {project.categoryName}</p>}
+              {description.trim().length < 160 && (
+                <aside className={styles.briefNote}>
+                  This is a short brief. Use your proposal to clarify the scope,
+                  deliverables and timing before starting.
+                </aside>
+              )}
             </section>
             {skills.length > 0 && (
               <section className={styles.textSection}>
@@ -369,7 +377,12 @@ export default function ProjectDetail() {
 
           <aside className={styles.sidebar}>
             <div className={styles.interestCard}>
-              <h2>Interested in this project?</h2>
+              <p className={styles.eyebrow}>Project budget</p>
+              <p className={styles.budgetHeadline}>{projectBudget(project)}</p>
+              <h2>Could this be your next project?</h2>
+              <p className={styles.proposalIntro}>
+                Introduce yourself and explain how you would approach the work.
+              </p>
               <div className={styles.responses}>
                 <span>
                   <strong>
@@ -404,23 +417,9 @@ export default function ProjectDetail() {
                   Send a proposal
                 </Button>
               )}
-              <div className={styles.trustList}>
-                <TrustRow
-                  icon={ShieldCheck}
-                  title="Clear beta agreement"
-                  text="Record scope, milestones and delivery"
-                />
-                <TrustRow
-                  icon={WalletCards}
-                  title="Approval history"
-                  text="Keep feedback and approval in one workspace"
-                />
-                <TrustRow
-                  icon={Headphones}
-                  title="Personal support"
-                  text="We are here when you need us"
-                />
-              </div>
+              <p className={styles.betaNote}>
+                Free private beta · No platform payments
+              </p>
             </div>
 
             <div className={styles.clientCard}>

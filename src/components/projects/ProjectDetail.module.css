@@ -76,21 +76,7 @@
   gap: 9px;
   flex-shrink: 0;
 }
-.headerActions button,
-.sectionTitle button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  height: 40px;
-  padding: 0 14px;
-  border: 1px solid #dfe2e4;
-  border-radius: 8px;
-  background: #fff;
-  color: #3e4d66;
-  font-size: 12px;
-  font-weight: 700;
-}
+
 .headerActions .saved {
   color: #ff4f2e;
   border-color: #ffc6bb;
@@ -126,7 +112,7 @@
 }
 .facts {
   display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr 1.3fr 0.9fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin-bottom: 30px;
   padding: 14px;
   background: #fff;
@@ -844,4 +830,40 @@
   .page * {
     scroll-behavior: auto !important;
   }
+}
+
+/* Project overview: compact scope, readable brief and a clear next action. */
+.page { background: #fff; }
+.shell { width: min(1120px, calc(100% - 48px)); }
+.layout { gap: 40px; grid-template-columns: minmax(0, 1fr) 340px; }
+.hero { padding: 8px 0 28px; }
+.eyebrow { margin: 0 0 12px; color: #597068; font-size: 12px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
+.titleLine h1 { font-family: inherit; font-size: clamp(30px, 3.5vw, 44px); font-weight: 650; line-height: 1.15; overflow-wrap: anywhere; }
+.facts { gap: 18px; padding: 22px; background: #f7faf9; box-shadow: none; border-color: #e5ece8; }
+.fact { padding: 0; border: 0; align-items: flex-start; }
+.fact strong { white-space: normal; overflow-wrap: anywhere; font-size: 14px; }
+.fact i { background: transparent; width: 24px; height: 24px; }
+.textSection { padding: 8px 0 26px; }
+.textSection h2, .proposalSection h2, .interestCard h2, .clientCard h2, .sectionTitle h2 { font-family: inherit; font-size: 21px; font-weight: 650; }
+.textSection > p { white-space: pre-line; overflow-wrap: anywhere; font-size: 16px; }
+.briefNote { margin-top: 22px; padding-left: 14px; border-left: 2px solid #d8e6df; color: #667486; font-size: 14px; line-height: 1.7; }
+.interestCard { background: #f7faf9; padding: 28px; box-shadow: none; border-color: #dde7e2; }
+.interestCard .budgetHeadline { margin: 0 0 24px; color: #071f43; font-size: 32px; font-weight: 650; letter-spacing: -.03em; }
+.interestCard h2 { font-size: 19px; margin-bottom: 10px; }
+.proposalIntro { color: #526178; font-size: 14px; line-height: 1.65; margin: 0 0 20px; }
+.betaNote { margin: 16px 0 0; color: #667486; font-size: 12px; line-height: 1.5; text-align: center; }
+.clientCard { box-shadow: none; padding: 24px; }
+.proposalSection { margin-top: 26px; padding: 26px; scroll-margin-top: 100px; }
+.signInPrompt { align-items: flex-start; flex-direction: column; gap: 18px; }
+.similarSection { margin-top: 40px; }
+@media (max-width: 1050px) { .layout { grid-template-columns: minmax(0, 1fr); gap: 24px; } }
+@media (max-width: 720px) {
+  .shell { width: calc(100% - 32px); }
+  .titleLine { display: flex; gap: 12px; }
+  .headerActions { margin-top: 0; }
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 18px; gap: 20px 12px; }
+  .fact { gap: 6px; }
+  .fact strong { font-size: 13px; }
+  .interestCard, .proposalSection { padding: 22px; }
+  .breadcrumb { flex-wrap: wrap; white-space: normal; }
 }
