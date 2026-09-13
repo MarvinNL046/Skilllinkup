@@ -67,8 +67,8 @@ function statusLabel(status) {
     {
       active: "In progress",
       in_progress: "In progress",
-      delivered: "Delivered",
-      revision_requested: "Revision",
+      delivered: "Awaiting review",
+      revision_requested: "Revision requested",
       pending: "Pending",
       completed: "Completed",
     }[status] || status.replaceAll("_", " ")
@@ -320,7 +320,7 @@ export default function DashboardInfo() {
             </select>
           </div>
           <strong>{totals ? new Intl.NumberFormat("en-GB", { style: "currency", currency: valueCurrency }).format((totals.orderValues[valueCurrency]?.cents ?? 0) / 100) : "…"}</strong>
-          <small>All time · {totals?.orderValues[valueCurrency]?.orders ?? 0} orders</small>
+          <small>All time · {totals?.orderValues[valueCurrency]?.orders ?? 0} {totals?.orderValues[valueCurrency]?.orders === 1 ? "order" : "orders"}</small>
           <span className={styles.valueNote}>Agreed amounts, not payments. Currencies are kept separate.</span>
         </div>
         {statCards.map(({ label, value, link, hint, icon: Icon }) => (
@@ -366,8 +366,7 @@ export default function DashboardInfo() {
                   <div className={styles.tableHead}>
                     <span>Project</span>
                     <span>{isFreelancer ? "Client" : "Professional"}</span>
-                    <span>Progress</span>
-                    <span>Status</span>
+                    <span>Stage</span>
                     <span>Deadline</span>
                     <span />
                   </div>
@@ -392,12 +391,6 @@ export default function DashboardInfo() {
                           {project.freelancerName ||
                             (isFreelancer ? "Client" : "Matching…")}
                         </b>
-                      </span>
-                      <span className={styles.progressCell}>
-                        <b>{project.progress}%</b>
-                        <i>
-                          <em style={{ width: `${project.progress}%` }} />
-                        </i>
                       </span>
                       <span>
                         <b
