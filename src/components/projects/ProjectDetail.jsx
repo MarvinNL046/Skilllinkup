@@ -378,8 +378,9 @@ export default function ProjectDetail() {
                       ? "freelancer"
                       : "freelancers"}
                   </strong>{" "}
-                  {(project.bidCount || 0) === 1 ? "has" : "have"}
-                  responded
+                  {(project.bidCount || 0) === 1
+                    ? "has responded"
+                    : "have responded"}
                 </span>
               </div>
               <div className={styles.deadline}>
