@@ -368,6 +368,7 @@ await check("Appointment form preserves failed dates, blocks overlapping actions
   const runner = hookRunner();
   let queryIndex = 0, settle;
   const calls = [];
+  const scrolledSections = [];
   const visit = { _id: "visit", status: "confirmed", updatedAt: 7, timezone: "Europe/Amsterdam" };
   const order = { _id: "order", status: "active", amount: 150, escrowStatus: "beta_no_payment" };
   const Workspace = loader({
@@ -381,9 +382,10 @@ await check("Appointment form preserves failed dates, blocks overlapping actions
     "@/components/dashboard/element/MessageBox": { default: "MessageBox" },
     "@/lib/orderWorkspace.mjs": { getWorkspaceNextStep, getOrderActionContext: () => ({ isClient: true, isLocal: true, matchesContext: true }) },
     "./OrderWorkspace.module.css": { default: {} },
-  })("src/components/dashboard/section/OrderWorkspace.jsx").default;
+  }, { window: { location: { hash: "#workspace-files" } }, document: { getElementById: id => ({ scrollIntoView: () => scrolledSections.push(id) }) }, requestAnimationFrame: fn => { fn(); return 1; }, cancelAnimationFrame() {} })("src/components/dashboard/section/OrderWorkspace.jsx").default;
   const render = () => runner.render(() => { queryIndex = 0; return Workspace({ orderId: "order" }); });
   let tree = render();
+  assert.deepEqual(scrolledSections, ["workspace-files"]);
   const dateInput = t => findElement(t, e => e.props?.type === "datetime-local");
   dateInput(tree).props.onChange({ target: { value: "2030-10-12T14:30" } });
   tree = render();

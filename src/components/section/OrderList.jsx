@@ -228,7 +228,7 @@ export default function OrderList() {
       </div>
 
       <Card className="overflow-hidden">
-        <CardContent className="p-6">
+        <CardContent className="p-3 sm:p-6">
           {isLoading && (
             <div className="flex justify-center py-12">
               <div

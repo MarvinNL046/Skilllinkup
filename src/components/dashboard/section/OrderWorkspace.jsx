@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useMutation, useQuery } from "convex/react";
 import {
@@ -62,6 +62,13 @@ export default function OrderWorkspace({ orderId }) {
     api.marketplace.localAppointments.getByOrder,
     isAuthenticated && orderId ? { orderId } : "skip",
   );
+  useEffect(() => {
+    if (!order?._id) return;
+    const section = window.location.hash.slice(1);
+    if (!["workspace-files", "workspace-conversation", "workspace-work"].includes(section)) return;
+    const frame = requestAnimationFrame(() => document.getElementById(section)?.scrollIntoView({ block: "start" }));
+    return () => cancelAnimationFrame(frame);
+  }, [order?._id]);
   const history = useConversationMessages(conversation?._id, convexUser?._id);
   const generateUploadUrl = useMutation(
     api.marketplace.deliverables.generateUploadUrl,
@@ -574,7 +581,7 @@ export default function OrderWorkspace({ orderId }) {
                   {order.remainingRevisions === 0
                     ? "The included revisions have been used. Discuss additional changes in the project conversation."
                     : typeof order.remainingRevisions === "number"
-                      ? `${order.remainingRevisions} {order.remainingRevisions === 1 ? "revision" : "revisions"} remaining`
+                      ? `${order.remainingRevisions} ${order.remainingRevisions === 1 ? "revision" : "revisions"} remaining`
                       : "Explain the changes you need."}
                 </p>
                 <textarea
