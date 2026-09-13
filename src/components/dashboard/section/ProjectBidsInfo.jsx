@@ -128,8 +128,8 @@ export default function ProjectBidsInfo({ projectId }) {
                   <div className="text-2xl font-semibold">{project.bidCount ?? 0}</div>
                   <p className="text-xs text-[var(--text-secondary)] mb-0">
                     {(project.bidCount ?? 0) !== 1
-                      ? t("bidsReceivedPlural")
-                      : t("bidsReceived")}
+                      ? t("bidsReceivedPlural", { count: project.bidCount ?? 0 })
+                      : t("bidsReceived", { count: project.bidCount ?? 0 })}
                   </p>
                 </div>
               </div>

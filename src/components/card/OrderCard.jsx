@@ -285,7 +285,7 @@ export default function OrderCard({ order, role }) {
             <div className="rounded-md bg-[var(--surface-2)] p-5">
               {typeof order.remainingRevisions === "number" ? (
                 <p className="mb-2 text-sm">
-                  {order.remainingRevisions} revisions remaining
+                  {order.remainingRevisions} {order.remainingRevisions === 1 ? "revision" : "revisions"} remaining
                 </p>
               ) : null}
               <p className="text-sm font-medium mb-3">{t("revisionPrompt")}</p>
