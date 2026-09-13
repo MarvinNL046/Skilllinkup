@@ -1,10 +1,9 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { useQuery, useMutation } from "convex/react";
 import { Bell } from "lucide-react";
 import Link from "next/link";
-import { api } from "../../../convex/_generated/api";
-import useConvexUser from "@/hook/useConvexUser";
+import useConvexNotifications from "@/hook/useConvexNotifications";
+import { Button } from "@/components/ui/button";
 
 /**
  * Notification bell + DS-native dropdown. Replaces Bootstrap's
@@ -13,29 +12,7 @@ import useConvexUser from "@/hook/useConvexUser";
  * users with a matching Convex user record.
  */
 export default function NotificationBell() {
-  const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
-  const userId = convexUser?._id;
-  const authUser = useQuery(
-    api.users.getCurrentUser,
-    isLoaded && isAuthenticated ? {} : "skip"
-  );
-  const canReadNotifications =
-    !!userId &&
-    !!authUser &&
-    authUser._id === userId;
-
-  const unreadCount = useQuery(
-    api.marketplace.notifications.getUnreadCount,
-    canReadNotifications ? { userId } : "skip"
-  );
-
-  const notifications = useQuery(
-    api.marketplace.notifications.list,
-    canReadNotifications ? { userId, limit: 10 } : "skip"
-  );
-
-  const markRead = useMutation(api.marketplace.notifications.markRead);
-  const markAllRead = useMutation(api.marketplace.notifications.markAllRead);
+  const { notifications, unreadCount, markRead, markAllRead, markingAll, userId } = useConvexNotifications(10);
 
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
@@ -58,7 +35,7 @@ export default function NotificationBell() {
     };
   }, [open]);
 
-  if (!isLoaded || !isAuthenticated || !userId || !canReadNotifications) {
+  if (!userId) {
     return null;
   }
 
@@ -86,7 +63,7 @@ export default function NotificationBell() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        aria-haspopup="menu"
+        aria-controls="notification-popover"
         aria-label="Notifications"
         className="btn btn--ghost btn--icon btn--sm"
         style={{ position: "relative" }}
@@ -120,12 +97,14 @@ export default function NotificationBell() {
 
       {open && (
         <div
-          role="menu"
+          id="notification-popover"
+          role="region"
+          aria-label="Recent notifications"
           style={{
             position: "absolute",
             top: "calc(100% + 8px)",
             right: 0,
-            width: 340,
+            width: "min(340px, calc(100vw - 32px))",
             maxHeight: 420,
             overflowY: "auto",
             background: "var(--bg-elevated)",
@@ -154,21 +133,9 @@ export default function NotificationBell() {
                 Notifications
               </div>
               {unreadCount > 0 && (
-                <button
-                  type="button"
-                  onClick={() => markAllRead({ userId })}
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    cursor: "pointer",
-                    padding: 0,
-                    fontSize: "var(--text-body-sm)",
-                    fontWeight: 500,
-                    color: "var(--primary-600)",
-                  }}
-                >
-                  Mark all read
-                </button>
+                <Button variant="link" size="sm" type="button" disabled={markingAll} onClick={() => void markAllRead()}>
+                  {markingAll ? "Updating…" : "Mark all read"}
+                </Button>
               )}
             </div>
 
@@ -182,18 +149,17 @@ export default function NotificationBell() {
                   margin: 0,
                 }}
               >
-                No notifications yet
+                {notifications === undefined ? "Loading notifications…" : "No notifications yet"}
               </p>
             ) : (
               <div style={{ display: "grid", gap: 4 }}>
                 {notifications.map((notif) => (
-                  <a
+                  <Link
                     key={notif._id}
-                    href={notif.link || "#"}
-                    onClick={(e) => {
-                      if (!notif.link) e.preventDefault();
+                    href={notif.link || "/dashboard/notifications"}
+                    onClick={() => {
                       if (!notif.isRead) {
-                        markRead({ notificationId: notif._id });
+                        void markRead({ notificationId: notif._id });
                       }
                       setOpen(false);
                     }}
@@ -236,7 +202,7 @@ export default function NotificationBell() {
                     >
                       {formatDate(notif.createdAt || notif._creationTime)}
                     </span>
-                  </a>
+                  </Link>
                 ))}
               </div>
             )}

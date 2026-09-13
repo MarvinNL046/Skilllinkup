@@ -5,6 +5,7 @@ import { Bell, CheckCheck, Circle, ExternalLink, LoaderCircle } from "lucide-rea
 import { toast } from "sonner";
 import useConvexNotifications from "@/hook/useConvexNotifications";
 import DashboardNavigation from "@/components/dashboard/header/DashboardNavigation";
+import { Button } from "@/components/ui/button";
 import styles from "./NotificationCentre.module.css";
 
 function relativeTime(timestamp) {
@@ -29,13 +30,15 @@ export default function NotificationCentre() {
     unreadCount,
     markRead,
     markAllRead,
+    markingAll,
     userId,
   } = useConvexNotifications(50);
 
   async function handleMarkAll() {
     if (!userId) return;
     try {
-      const result = await markAllRead({ userId });
+      const result = await markAllRead();
+      if (!result) return;
       toast.success(
         result.markedCount
           ? `${result.markedCount} notifications marked as read.`
@@ -63,9 +66,9 @@ export default function NotificationCentre() {
           <h1>Notifications</h1>
           <p>Updates from your projects, local work, applications and support—kept in one reliable timeline.</p>
         </div>
-        <button className="skl-action-secondary" type="button" onClick={handleMarkAll} disabled={!unreadCount}>
-          <CheckCheck size={17} /> Mark all as read
-        </button>
+        <Button variant="outline" type="button" onClick={handleMarkAll} disabled={!unreadCount || markingAll}>
+          <CheckCheck size={17} /> {markingAll ? "Updating…" : "Mark all as read"}
+        </Button>
       </header>
 
       <section className={styles.summary} aria-label="Notification summary">
