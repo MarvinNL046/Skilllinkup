@@ -1180,7 +1180,7 @@
     "displayNamePlaceholder": "Ihr Anzeigename",
     "tagline": "Slogan",
     "taglinePlaceholder": "Ihr professioneller Slogan",
-    "hourlyRateLabel": "Stundensatz ($)",
+    "hourlyRateLabel": "Stundensatz ({currency})",
     "hourlyRatePlaceholder": "z.B. 75",
     "websiteUrl": "Website-URL",
     "city": "Stadt",

@@ -7,7 +7,7 @@ import Providers from "@/components/Providers";
 import ExitIntentPopup from "@/components/ui/ExitIntentPopup";
 import CookieConsent from "@/components/ui/CookieConsent";
 import RouteProgress from "@/components/ui/RouteProgress";
-import { Toaster } from "sonner";
+import AppToaster from "@/components/ui/AppToaster";
 
 export default function ClientLayout({ children }) {
   const path = usePathname();
@@ -79,7 +79,7 @@ export default function ClientLayout({ children }) {
           no Bootstrap JS required. */}
       <NavSidebar />
       <ExitIntentPopup />
-      <Toaster position="bottom-right" richColors />
+      <AppToaster />
       <CookieConsent />
     </Providers>
   );

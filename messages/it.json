@@ -1179,7 +1179,7 @@
     "displayNamePlaceholder": "Il tuo nome visualizzato",
     "tagline": "Slogan",
     "taglinePlaceholder": "Il tuo slogan professionale",
-    "hourlyRateLabel": "Tariffa oraria ($)",
+    "hourlyRateLabel": "Tariffa oraria ({currency})",
     "hourlyRatePlaceholder": "per esempio. 75",
     "websiteUrl": "URL del sito web",
     "city": "Città",

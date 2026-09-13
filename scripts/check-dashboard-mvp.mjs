@@ -37,12 +37,14 @@ function loader(overrides = {}, globals = {}) {
       exports, process: { env: {} }, Date, Math, Number, Set, Map, Error, console, ...globals,
       require(id) {
         if (Object.hasOwn(overrides, id)) return overrides[id];
+        if (id === "sonner") return { toast: { success() {}, error() {} } };
         if (id === "convex/values" || id === "react/jsx-runtime") return require(id);
         if (id.includes("_generated/server")) return Object.fromEntries(["query", "mutation", "internalQuery", "internalMutation", "action", "internalAction"].map((name) => [name, (config) => config]));
         if (id.includes("_generated/api")) return { api, internal: api };
         if (id.endsWith("/rateLimits")) return { rateLimiter: { limit: async () => ({ ok: true }) } };
         if (id.endsWith("/notifications")) return { notifyUser: async () => undefined };
         if (id === "@/lib/accountDisplayName.mjs") return load("src/lib/accountDisplayName.mjs");
+        if (id === "@/lib/profileRate.mjs") return load("src/lib/profileRate.mjs");
         if (id.startsWith("@/components/ui/")) return new Proxy({}, { get: (_, name) => String(name) });
         if (id.startsWith(".")) {
           const candidate = path.resolve(path.dirname(file), id);
@@ -703,13 +705,18 @@ await check("All five onboarding roles save before returning, and failures prese
   for (const entry of ["client", "client-local", "freelancer", "local_professional", "candidate", "company"]) {
     const role = entry === "client-local" ? "client" : entry;
     const runner = hookRunner();
-    const navigations = [], writes = [];
+    const navigations = [], writes = [], confirmations = [];
     let fail = true;
     const destination = "/message?conversation=qa-conversation#latest";
     const params = new URLSearchParams({ role, redirect_url: destination });
     if (entry === "client-local") params.set("world", "local");
     const Page = loader({
       react: runner.react,
+      sonner: { toast: { success: (message) => {
+        assert.equal(writes.length, 1, "Confirm only after persistence succeeds");
+        assert.equal(navigations.length, 0, "Confirm before redirecting");
+        confirmations.push(message);
+      } } },
       "next/image": { default: "img" },
       "next/navigation": { useRouter: () => ({ replace: (url) => navigations.push(url) }), useSearchParams: () => params },
       "convex/react": { useMutation: () => async (value) => { if (fail) throw new Error("Temporary failure"); writes.push(value); } },
@@ -751,12 +758,14 @@ await check("All five onboarding roles save before returning, and failures prese
     tree = runner.render();
     assert.equal(navigations.length, 0);
     assert.equal(findElement(tree, (e) => e.props?.role === "alert").props.children, "Temporary failure");
+    assert.equal(confirmations.length, 0, "Failed setup must not show a success toast");
     fail = false;
     await findElement(tree, (e) => e.type === "form").props.onSubmit({ preventDefault() {} });
     assert.equal(writes.length, 1);
     assert.equal(writes[0].activeRole, role);
     assert.equal(writes[0].preferredWorld, role === "local_professional" || entry === "client-local" ? "local" : ["candidate", "company"].includes(role) ? "jobs" : "online");
     assert.deepEqual(navigations, [destination]);
+    assert.deepEqual(confirmations, ["Your account setup is saved."]);
   }
 });
 await check("Real vacancy editor sends jobId, persists edits and clears an optional deadline", async () => {

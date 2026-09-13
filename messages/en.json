@@ -1182,7 +1182,7 @@
     "displayNamePlaceholder": "Your display name",
     "tagline": "Tagline",
     "taglinePlaceholder": "Your professional tagline",
-    "hourlyRateLabel": "Hourly Rate ($)",
+    "hourlyRateLabel": "Hourly Rate ({currency})",
     "hourlyRatePlaceholder": "e.g. 75",
     "websiteUrl": "Website URL",
     "city": "City",
