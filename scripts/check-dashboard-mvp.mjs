@@ -34,7 +34,7 @@ function loader(overrides = {}, globals = {}) {
       fileName: file.replace(/\.mjs$/, ".js"),
     }).outputText;
     vm.runInNewContext(code, {
-      exports, process: { env: {} }, Date, Math, Number, Set, Map, Error, console, ...globals,
+      exports, process: { env: {} }, Date, Math, Number, Set, Map, Error, console, crypto, ...globals,
       require(id) {
         if (Object.hasOwn(overrides, id)) return overrides[id];
         if (id === "sonner") return { toast: { success() {}, error() {} } };
@@ -1190,4 +1190,27 @@ await check("Message drafts isolate accounts and conversations, survive reload a
   const blocked=loader({},{window:{sessionStorage:{getItem(){throw Error("blocked");},setItem(){throw Error("blocked");}}}})("src/lib/messageDraft.mjs");
   assert.equal(blocked.writeMessageDraft(key,"Keep in memory"),false);
   assert.equal(blocked.readMessageDraft(key),"Keep in memory");
+});
+
+await check("Lost message acknowledgement reuses persisted request after reload", async () => {
+  const records = new Map();
+  const globals = { window: { sessionStorage: {
+    getItem: key => records.get(key) || null,
+    setItem: (key, value) => records.set(key, value),
+    removeItem: key => records.delete(key),
+  } } };
+  const first = loader({}, globals)("src/lib/messageDraft.mjs");
+  const key = first.messageDraftKey("qa", "conversation");
+  first.writeMessageDraft(key, "QA retry check");
+  let originalId;
+  await assert.rejects(first.sendMessageDraft(key, "QA retry check", async (_, id) => {
+    originalId = id;
+    assert.equal(JSON.parse(records.get(`${key}:attempt`)).id, id);
+    throw Error("Acknowledgement lost after commit");
+  }));
+  const reloaded = loader({}, globals)("src/lib/messageDraft.mjs");
+  await reloaded.sendMessageDraft(key, reloaded.readMessageDraft(key), async (_, id) => assert.equal(id, originalId));
+  assert.equal(records.has(`${key}:attempt`), false);
+  reloaded.writeMessageDraft(key, "QA retry check");
+  await reloaded.sendMessageDraft(key, "QA retry check", async (_, id) => assert.notEqual(id, originalId));
 });

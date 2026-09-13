@@ -865,6 +865,7 @@ export default defineSchema({
 
   messages: defineTable({
     conversationId: v.id("conversations"),
+    clientRequestId: v.optional(v.string()),
     senderId: v.optional(v.id("users")),
     content: v.optional(v.string()),
     messageType: v.optional(v.string()), // text, file, system, order_update
@@ -873,7 +874,8 @@ export default defineSchema({
     fileSize: v.optional(v.number()),
     isRead: v.optional(v.boolean()),
     createdAt: v.number(),
-  }).index("by_conversation", ["conversationId", "createdAt"]),
+  }).index("by_conversation", ["conversationId", "createdAt"])
+    .index("by_conversationId_and_senderId_and_clientRequestId", ["conversationId", "senderId", "clientRequestId"]),
 
   // ============================================================
   // NOTIFICATIONS

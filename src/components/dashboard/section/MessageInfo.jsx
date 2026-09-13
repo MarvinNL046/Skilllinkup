@@ -77,9 +77,10 @@ export default function MessageInfo() {
     setMobileShowChat(false);
   }
 
-  async function handleSendMessage(content) {
+  async function handleSendMessage(content, clientRequestId) {
     if (!selectedConversationId || !content.trim()) return;
     await sendMessage({
+      clientRequestId,
       conversationId: selectedConversationId,
       content: content.trim(),
       messageType: "text",

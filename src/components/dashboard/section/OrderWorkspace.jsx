@@ -146,10 +146,11 @@ export default function OrderWorkspace({ orderId }) {
     }
   }
 
-  async function handleSend(content) {
+  async function handleSend(content, clientRequestId) {
     if (!conversation?._id)
       throw new Error("Conversation is not ready. Please try again.");
     await sendMessage({
+      clientRequestId,
       conversationId: conversation._id,
       content,
       messageType: "text",

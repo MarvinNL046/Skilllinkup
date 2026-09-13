@@ -2,6 +2,7 @@ import { MESSAGE_MAX_LENGTH } from "./messagePolicy.mjs";
 
 const drafts = new Map();
 const pending = new Map();
+const attempts = new Map();
 const listeners = new Set();
 export const messageDraftKey = (userId, conversationId) => userId && conversationId
   ? `skilllinkup-message:${userId}:${conversationId}` : null;
@@ -32,8 +33,24 @@ export function subscribeMessageDraft(listener) {
 // Reuse the in-flight mutation when the composer remounts in another view.
 export function sendMessageDraft(key, content, send) {
   if (key && pending.has(key)) return pending.get(key);
-  const task = (async () => send(content))().then(result => {
+  let attempt = key ? attempts.get(key) : null;
+  if (key && !attempt) {
+    try { attempt = JSON.parse(window.sessionStorage.getItem(`${key}:attempt`)); } catch { /* Memory fallback below. */ }
+  }
+  if (!attempt || attempt.content !== content || typeof attempt.id !== "string") {
+    attempt = { id: crypto.randomUUID(), content };
+  }
+  if (key) {
+    attempts.set(key, attempt);
+    // Persist before sending so a reload can reuse the same request identifier.
+    try { window.sessionStorage.setItem(`${key}:attempt`, JSON.stringify(attempt)); } catch { /* The composer already warns about unavailable storage. */ }
+  }
+  const task = (async () => send(content, attempt.id))().then(result => {
     if (key && readMessageDraft(key) === content) writeMessageDraft(key, "");
+    if (key && attempts.get(key)?.id === attempt.id) {
+      attempts.delete(key);
+      try { window.sessionStorage.removeItem(`${key}:attempt`); } catch { /* Memory was cleared. */ }
+    }
     return result;
   }).finally(() => {
     if (key) pending.delete(key);
