@@ -1365,3 +1365,20 @@ await check("Proposal status query selects the full indexed history before pagin
   const result = await handler(ctx,{freelancerId:"provider",status:"pending",paginationOpts:{numItems:20,cursor:null}});
   assert.equal(result.page.length,1); assert.equal(result.page[0]._id,"bid-60");
 });
+
+await check("Client choice requires review, prevents duplicate acceptance and retains failed choice", async () => {
+  const runner = hookRunner(); const calls = []; const routes = []; let settle;
+  const bids = Array.from({length:4},(_,i)=>({_id:`bid-${i}`,freelancerName:`QA ${i}`,status:"pending",amount:125+i,deliveryDays:3,currency:"EUR",pitch:"QA scope",createdAt:i}));
+  const List = loader({react:runner.react,"next/link":{default:"a"},"next/image":{default:"img"},
+    "next-intl":{useTranslations:()=>key=>key},"next/navigation":{useRouter:()=>({push:url=>routes.push(url)})},
+    "@/lib/utils":{cn:(...x)=>x.filter(Boolean).join(" ")},"lucide-react":new Proxy({},{get:(_,key)=>String(key)}),
+    "convex/react":{useQuery:()=>bids,useMutation:()=>args=>{calls.push(args);return new Promise((resolve,reject)=>{settle={resolve,reject};});}},
+  })("src/components/element/BidList.jsx").default;
+  let tree=runner.render(()=>List({projectId:"project",isOwner:true,projectStatus:"open"}));
+  for(let i=0;i<3;i++){ const input=findElement(tree,e=>e.type==="input"&&e.props.type==="checkbox"&&!e.props.checked); input.props.onChange({target:{checked:true}});tree=runner.render(); }
+  assert.equal(findElement(tree,e=>e.type==="input"&&!e.props.checked).props.disabled,true);
+  findElement(tree,e=>e.props?.children==="Review choice").props.onClick(); tree=runner.render(); assert.equal(calls.length,0);
+  let confirm=findElement(tree,e=>e.props?.children==="Confirm and open workspace"); const first=confirm.props.onClick();const second=confirm.props.onClick();assert.equal(calls.length,1);
+  settle.reject(new Error("QA temporary failure"));await Promise.all([first,second]);tree=runner.render();assert.ok(findElement(tree,e=>e.props?.children==="QA temporary failure"));
+  confirm=findElement(tree,e=>e.props?.children==="Confirm and open workspace");const retry=confirm.props.onClick();settle.resolve({orderId:"qa-order"});await retry;assert.deepEqual(routes,["/orders/qa-order"]);
+});

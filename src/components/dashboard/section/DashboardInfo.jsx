@@ -3,8 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useMutation, useQuery } from "convex/react";
-import { toast } from "sonner";
+import { useQuery } from "convex/react";
 import {
   ArrowRight,
   BriefcaseBusiness,
@@ -25,7 +24,6 @@ import { accountDisplayName } from "@/lib/accountDisplayName.mjs";
 import { getActiveRole } from "@/lib/accountContext.mjs";
 import RoleDashboardInfo from "./RoleDashboardInfo";
 import styles from "./DashboardInfo.module.css";
-import { useRouter } from "next/navigation";
 import useDashboardMetrics from "@/hook/useDashboardMetrics";
 import { Button } from "@/components/ui/button";
 
@@ -143,7 +141,6 @@ function DashboardSkeleton() {
 
 export default function DashboardInfo() {
   const [valueCurrency, setValueCurrency] = useState("EUR");
-  const router = useRouter();
   const { clerkUser, convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const role = getActiveRole(convexUser);
   const world = convexUser?.preferredWorld || "online";
@@ -180,8 +177,6 @@ export default function DashboardInfo() {
       ? { clientId: convexUser._id, limit: 1 }
       : "skip",
   );
-  const acceptBid = useMutation(api.marketplace.projects.acceptBid);
-  const [accepting, setAccepting] = useState(null);
 
   if (!isLoaded || (isAuthenticated && convexUser === undefined))
     return <DashboardSkeleton />;
@@ -260,18 +255,6 @@ export default function DashboardInfo() {
     },
   ];
 
-  const handleAccept = async (bidId) => {
-    setAccepting(bidId);
-    try {
-      const result = await acceptBid({ bidId });
-      toast.success("Proposal accepted");
-      router.push(`/orders/${result.orderId}`);
-    } catch (error) {
-      toast.error(error?.message || "Could not accept this proposal");
-    } finally {
-      setAccepting(null);
-    }
-  };
 
   return (
     <div className={styles.dashboard}>
@@ -469,7 +452,7 @@ export default function DashboardInfo() {
                           {money(proposal.amount, proposal.currency)}
                         </strong>
                       </p>
-                      <Button asChild variant="secondary">
+                      <Button asChild variant={!isFreelancer && proposal.status === "pending" ? "default" : "secondary"}>
                         <Link
                           href={
                             isFreelancer
@@ -477,18 +460,9 @@ export default function DashboardInfo() {
                               : `/projects/${proposal.projectId}`
                           }
                         >
-                          View
+                          {!isFreelancer && proposal.status === "pending" ? "Review proposals" : "View"}
                         </Link>
                       </Button>
-                      {!isFreelancer && proposal.status === "pending" ? (
-                        <Button
-                          type="button"
-                          onClick={() => handleAccept(proposal.id)}
-                          disabled={accepting === proposal.id}
-                        >
-                          {accepting === proposal.id ? "Accepting…" : "Accept"}
-                        </Button>
-                      ) : null}
                     </article>
                   ))}
                 </div>
