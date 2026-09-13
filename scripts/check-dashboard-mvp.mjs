@@ -7,7 +7,7 @@ import { createRequire } from "node:module";
 import { validateProjectFields } from "../src/lib/projectValidation.mjs";
 import { EMPTY_JOB_FORM, jobDraftKey, restoreJobDraft } from "../src/lib/jobDraft.mjs";
 import { collectAccountExport, ACCOUNT_EXPORT_SECTIONS } from "../src/lib/accountExport.mjs";
-import { getOrderActionContext, getWorkspaceNextStep } from "../src/lib/orderWorkspace.mjs";
+import { getOrderActionContext, getWorkspaceNextStep, orderNeedsAction } from "../src/lib/orderWorkspace.mjs";
 import * as onboardingRedirects from "../src/lib/onboardingRedirect.mjs";
 import * as messagePolicy from "../src/lib/messagePolicy.mjs";
 import { upcomingAppointments } from "../src/lib/upcomingAppointments.mjs";
@@ -1099,3 +1099,16 @@ await check("Workspace guidance respects participant, context and terminal state
 });
 
 console.log(`Dashboard MVP regression checks passed: ${checks} scenario groups.`);
+
+{
+ const buyer = {_id:"buyer",activeRole:"client",accountRoles:["client"],preferredWorld:"online"};
+ const seller = {_id:"seller",activeRole:"freelancer",accountRoles:["freelancer"],preferredWorld:"online"};
+ const row = {clientId:"buyer",orderType:"project",status:"delivered"};
+ assert.equal(orderNeedsAction(row,buyer),true);
+ assert.equal(orderNeedsAction(row,seller),false);
+ assert.equal(orderNeedsAction({...row,status:"revision_requested"},seller),true);
+ for (const status of ["completed","cancelled","disputed","active","pending"]) assert.equal(orderNeedsAction({...row,status},buyer),false);
+ assert.equal(orderNeedsAction({...row,orderType:"local_quote"},buyer),false);
+ assert.equal(orderNeedsAction(row,{...buyer,preferredWorld:"local"}),false);
+ console.log("PASS Order attention respects delivery, participant context and terminal states");
+}

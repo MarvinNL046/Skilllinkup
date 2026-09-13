@@ -4,7 +4,7 @@ export function getWorkspaceNextStep(order, context) {
   const link = (title, detail, label, href) => ({ title, detail, label, href });
   if (order.status === "cancelled") return link("Order cancelled", "Keep the files and conversation as a record of your agreement.", "View conversation", "#workspace-conversation");
   if (order.status === "disputed") return link("Order under review", "Keep relevant files and messages available while the issue is reviewed.", "Get support", "/dashboard/support");
-  if (order.status === "completed") return link("Work completed", "Your shared files and conversation remain available below.", "View files", "#workspace-files");
+  if (order.status === "completed") return link("Work completed", "Your shared files and conversation remain available in this workspace.", "View files", "#workspace-files");
   if (!context.matchesContext) return { title: "Switch account context", detail: `Choose ${context.requiredContext} in the account menu to update this order.` };
   if (context.isLocal) return link("Check your appointment", "Review the visit details and agree any changes in the conversation.", "View appointment", "#workspace-work");
   if (order.status === "delivered") return context.isClient
@@ -39,4 +39,11 @@ export function getOrderActionContext(order, user) {
       user.preferredWorld === world,
     ),
   };
+}
+
+// Only actionable online delivery states count; active work is not a notification.
+export function orderNeedsAction(order, user) {
+  const context = getOrderActionContext(order, user);
+  if (!context.matchesContext || context.isLocal) return false;
+  return context.isClient ? order.status === "delivered" : order.status === "revision_requested";
 }
