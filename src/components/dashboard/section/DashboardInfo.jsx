@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
+import { accountDisplayName } from "@/lib/accountDisplayName.mjs";
 import { getActiveRole } from "@/lib/accountContext.mjs";
 import RoleDashboardInfo from "./RoleDashboardInfo";
 import styles from "./DashboardInfo.module.css";
@@ -141,8 +142,9 @@ function DashboardSkeleton() {
 }
 
 export default function DashboardInfo() {
+  const [valueCurrency, setValueCurrency] = useState("EUR");
   const router = useRouter();
-  const { convexUser, isLoaded, isAuthenticated } = useConvexUser();
+  const { clerkUser, convexUser, isLoaded, isAuthenticated } = useConvexUser();
   const role = getActiveRole(convexUser);
   const world = convexUser?.preferredWorld || "online";
   const usesSpecializedDashboard =
@@ -198,7 +200,7 @@ export default function DashboardInfo() {
   if (overview === undefined) return <DashboardSkeleton />;
   if (!overview) return null;
 
-  const firstName = overview.user.name.split(" ")[0] || "there";
+  const firstName = accountDisplayName(convexUser, clerkUser);
   const isFreelancer = role === "freelancer";
   const hasWorkHistory =
     overview.activeProjects.length > 0 ||
@@ -310,6 +312,17 @@ export default function DashboardInfo() {
       ) : null}
 
       <section className={styles.stats}>
+        <div className={`${styles.statCard} ${styles.valueCard}`}>
+          <div className={styles.valueHeading}>
+            <label htmlFor="dashboard-value-currency">Agreed order value</label>
+            <select id="dashboard-value-currency" aria-label="Order value currency" value={valueCurrency} onChange={(event) => setValueCurrency(event.target.value)}>
+              {[...new Set(["EUR", "USD", "GBP", ...Object.keys(totals?.orderValues ?? {})])].filter((code) => /^[A-Z]{3}$/.test(code)).map((code) => <option key={code} value={code}>{code}</option>)}
+            </select>
+          </div>
+          <strong>{totals ? new Intl.NumberFormat("en-GB", { style: "currency", currency: valueCurrency }).format((totals.orderValues[valueCurrency]?.cents ?? 0) / 100) : "…"}</strong>
+          <small>All time · {totals?.orderValues[valueCurrency]?.orders ?? 0} orders</small>
+          <span className={styles.valueNote}>Agreed amounts, not payments. Currencies are kept separate.</span>
+        </div>
         {statCards.map(({ label, value, link, hint, icon: Icon }) => (
           <Link href={link} key={label} className={styles.statCard}>
             <span className={styles.statIcon}>

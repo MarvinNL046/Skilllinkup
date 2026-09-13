@@ -14,6 +14,7 @@ export const chunk = query({
   args: { cursor: v.union(v.string(), v.null()), contextKey: v.string() },
   returns: v.object({
     counts: v.object({ activeProjects: v.number(), newProposals: v.number(), unreadMessages: v.number() }),
+    orderValues: v.optional(v.array(v.object({ currency: v.string(), cents: v.number(), orders: v.number() }))),
     nextCursor: v.union(v.string(), v.null()),
   }),
   handler: async (ctx, args) => {
@@ -42,10 +43,20 @@ export const chunk = query({
         ? ctx.db.query("orders").withIndex("by_freelancer", (q) => q.eq("freelancerId", profile!._id))
         : ctx.db.query("orders").withIndex("by_client", (q) => q.eq("clientId", user._id));
       const result = await source.paginate({ cursor: cursor.page, numItems: 100 });
+      const values = new Map<string, { currency: string; cents: number; orders: number }>();
+      for (const order of result.page) {
+        if (!["gig", "project"].includes(order.orderType) ||
+          !(active.has(order.status) || order.status === "completed")) continue;
+        const currency = (order.currency ?? "EUR").toUpperCase();
+        const value = values.get(currency) ?? { currency, cents: 0, orders: 0 };
+        value.cents += Math.round(order.amount * 100);
+        value.orders++;
+        values.set(currency, value);
+      }
       for (const order of result.page) if (active.has(order.status) && ["gig", "project"].includes(order.orderType)) {
         counts.activeProjects++;
       }
-      return { counts, nextCursor: next(result) };
+      return { counts, orderValues: [...values.values()], nextCursor: next(result) };
     }
     if (cursor.phase === 1 || cursor.phase === 2) {
       const first = cursor.phase === 1;
