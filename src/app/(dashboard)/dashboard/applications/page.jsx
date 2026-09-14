@@ -7,6 +7,8 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function ApplicationsPage() {
-  return <DashboardLayout maxWidth="wide"><AccountModeGuard role="candidate" world="jobs"><CandidateApplications /></AccountModeGuard></DashboardLayout>;
+export default async function ApplicationsPage({ searchParams }) {
+  const params = await searchParams;
+  const applicationId = typeof params?.application === "string" ? params.application : undefined;
+  return <DashboardLayout maxWidth="wide"><AccountModeGuard role="candidate" world="jobs"><CandidateApplications applicationId={applicationId} /></AccountModeGuard></DashboardLayout>;
 }
