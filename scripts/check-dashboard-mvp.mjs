@@ -417,15 +417,42 @@ await check("Candidate withdrawal and employer stages block duplicate actions an
       "./HiringOverview": { default: "HiringOverview" },
     })(`src/components/dashboard/section/${mode}Applications.jsx`).default;
     const render = () => runner.render(() => Page({ jobId: "job" }));
+    if (mode === "Candidate") {
+      const open = () => findElement(render(), e => e.props?.children === "Withdraw").props.onClick({ currentTarget: null });
+      open();
+      assert.equal(calls.length, 0, "Opening the confirmation does not withdraw");
+      assert.equal(findElement(render(), e => e.type === "Dialog").props.open, true);
+      findElement(render(), e => e.props?.children === "Keep application").props.onClick();
+      assert.equal(findElement(render(), e => e.type === "Dialog").props.open, false);
+      assert.equal(calls.length, 0, "Cancel keeps the application");
+      open();
+      findElement(render(), e => e.type === "Dialog").props.onOpenChange(false);
+      assert.equal(findElement(render(), e => e.type === "Dialog").props.open, false);
+      open();
+    }
     const action = tree => mode === "Candidate"
-      ? () => findElement(tree, e => e.props?.children === "Withdraw").props.onClick()
+      ? () => findElement(tree, e => e.props?.children === "Withdraw application").props.onClick()
       : () => findElement(tree, e => e.type === "select" && e.props.value === "").props.onChange({ target: { value: "screening" } });
     const click = action(render()); const first = click(); await click();
     assert.equal(calls.length, 1); assert.equal(calls[0].expectedUpdatedAt, 1);
+    if (mode === "Candidate") {
+      findElement(render(), e => e.type === "Dialog").props.onOpenChange(false);
+      assert.equal(findElement(render(), e => e.type === "Dialog").props.open, true, "Pending withdrawal cannot be dismissed");
+    }
     settle.reject(new Error("Temporary failure")); await first;
+    if (mode === "Candidate") {
+      assert.equal(findElement(render(), e => e.type === "Dialog").props.open, true);
+      assert.equal(findElement(render(), e => e.props?.role === "alert").props.children, "Temporary failure");
+      application.status = "hired";
+      assert.equal(findElement(render(), e => e.props?.children === "Withdraw application").props.disabled, true);
+      await action(render())();
+      assert.equal(calls.length, 1, "Changed status prevents withdrawal");
+      application.status = "submitted";
+    }
     application.updatedAt = 2;
     const retry = action(render())(); settle.resolve("application"); await retry;
     assert.equal(calls.length, 2); assert.equal(calls[1].expectedUpdatedAt, 2);
+    if (mode === "Candidate") assert.equal(findElement(render(), e => e.type === "Dialog").props.open, false);
   }
 });
 
