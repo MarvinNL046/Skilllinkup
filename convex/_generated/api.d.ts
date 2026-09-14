@@ -36,6 +36,7 @@ import type * as lib_storageState from "../lib/storageState.js";
 import type * as lib_storageValidation from "../lib/storageValidation.js";
 import type * as lib_trustState from "../lib/trustState.js";
 import type * as marketplace_accountPrivacy from "../marketplace/accountPrivacy.js";
+import type * as marketplace_candidateProfiles from "../marketplace/candidateProfiles.js";
 import type * as marketplace_categories from "../marketplace/categories.js";
 import type * as marketplace_clients from "../marketplace/clients.js";
 import type * as marketplace_companyVerifications from "../marketplace/companyVerifications.js";
@@ -120,6 +121,7 @@ declare const fullApi: ApiFromModules<{
   "lib/storageValidation": typeof lib_storageValidation;
   "lib/trustState": typeof lib_trustState;
   "marketplace/accountPrivacy": typeof marketplace_accountPrivacy;
+  "marketplace/candidateProfiles": typeof marketplace_candidateProfiles;
   "marketplace/categories": typeof marketplace_categories;
   "marketplace/clients": typeof marketplace_clients;
   "marketplace/companyVerifications": typeof marketplace_companyVerifications;

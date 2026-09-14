@@ -40,6 +40,8 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
   const [coverLetter, setCoverLetter] = useState("");
   const [portfolioUrl, setPortfolioUrl] = useState("");
   const [resume, setResume] = useState(null);
+  const [useSavedResume, setUseSavedResume] = useState(false);
+  const savedProfile = useQuery(api.marketplace.candidateProfiles.getMine, isAuthenticated ? {} : "skip");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
   const actionRef = useRef(false);
@@ -67,6 +69,22 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
   );
 
   async function uploadResume() {
+    if (useSavedResume) {
+      if (!savedProfile?.resumeUrl) throw new Error("Your saved CV is no longer available. Choose a file or update your profile.");
+      const cached = uploadedResumeRef.current;
+      if (cached?.savedRevision === savedProfile.updatedAt && cached.ownerId === convexUser?._id) return cached.storageId;
+      // Attach an independent copy so replacing the profile CV never alters an application.
+      const download = await fetch(`${savedProfile.resumeUrl}?version=${savedProfile.updatedAt}`, { cache: "no-store" });
+      if (!download.ok) throw new Error("Your saved CV could not be read. Try again or choose a file.");
+      const copy = await download.blob();
+      const uploadUrl = await generateUploadUrl({});
+      const response = await fetch(uploadUrl, { method: "POST", headers: { "Content-Type": download.headers.get("Content-Type") }, body: copy });
+      if (!response.ok) throw new Error("Your CV could not be attached. Try again.");
+      const { storageId } = await response.json();
+      if (!storageId) throw new Error("The CV upload was not confirmed.");
+      uploadedResumeRef.current = { savedRevision: savedProfile.updatedAt, ownerId: convexUser?._id, storageId };
+      return storageId;
+    }
     if (!resume) return undefined;
     if (resume.size < 1) throw new Error("Your CV file is empty. Choose another file.");
     if (resume.size > 10 * 1024 * 1024) {
@@ -113,6 +131,7 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
       setCoverLetter("");
       setPortfolioUrl("");
       setResume(null);
+      setUseSavedResume(false);
       uploadedResumeRef.current = null;
     } catch (error) {
       toast.error(error?.message || "Your application could not be sent.");
@@ -266,7 +285,8 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
             placeholder="https://"
           />
         </label>
-        <label className={styles.fileField}>
+        {savedProfile?.resumeUrl && <label><span>CV attachment</span><select value={useSavedResume ? "saved" : "file"} onChange={e => { setUseSavedResume(e.target.value === "saved"); uploadedResumeRef.current = null; }}><option value="file">Choose a file or apply without a CV</option><option value="saved">Use my saved CV: {savedProfile.resumeName}</option></select><small>A copy is sent only to this vacancy’s company when you submit.</small></label>}
+        {!useSavedResume && <label className={styles.fileField}>
           <UploadCloud size={21} />
           <span>{resume ? resume.name : "Add your CV (PDF, DOC or DOCX)"}</span>
           <small>Optional · maximum 10 MB</small>
@@ -275,7 +295,8 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
             accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             onChange={(event) => setResume(event.target.files?.[0] || null)}
           />
-        </label>
+        </label>}
+        <Link href="/dashboard/candidate-profile">Manage my profile &amp; saved CV</Link>
         <Button className={styles.primaryButton} type="submit" disabled={!canSubmit}>
           {isSubmitting ? <LoaderCircle className={styles.spinnerInline} /> : <Send size={18} />}
           {isSubmitting ? "Sending application…" : "Send application"}

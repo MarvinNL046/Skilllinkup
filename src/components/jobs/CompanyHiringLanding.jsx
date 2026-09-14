@@ -21,9 +21,10 @@ export default function CompanyHiringLanding() {
     <h2>From company profile to applications</h2>
     <div className={styles.grid}>{steps.map(([title, text], index) => <article key={title}><p className={styles.eyebrow}>Step {index + 1}</p><h3>{title}</h3><p>{text}</p></article>)}</div>
     <section className="mt-10"><h2>What can I do as an employer?</h2>
-      <p>You can publish and manage your vacancies, review people who apply to them and update their application status. There is currently no public CV bank or directory for searching all job seekers.</p>
+      <p>You can publish vacancies, review applications and update their status. Verified employers can also search profiles that candidates have chosen to share. CVs are available only when a candidate separately enables CV sharing.</p>
+      <Button asChild variant="outline"><Link href="/dashboard/candidates">Find candidates</Link></Button>
       <p>If you need a freelancer for a project rather than a company role, explore the <Link className={styles.textLink} href="/online">Online world</Link>.</p>
     </section>
-    <section className="mt-10"><h2>Looking for a job yourself?</h2><p>Browse vacancies and add your CV when applying. Your dashboard keeps track of the applications you send.</p><Button asChild variant="outline"><Link href="/jobs/browse">Browse jobs</Link></Button></section>
+    <section className="mt-10"><h2>Looking for a job yourself?</h2><p>Keep your profile and CV ready, choose who can see them and track the applications you send.</p><Button asChild variant="outline"><Link href="/dashboard/candidate-profile">Set up my profile &amp; CV</Link></Button></section>
   </main>;
 }

@@ -71,6 +71,7 @@ export const exportMyData = query({
         account: safeUser,
         freelancerProfile: profiles[0] ?? null,
         providerProfiles: profiles,
+        candidateProfile: await ctx.db.query("candidateProfiles").withIndex("by_userId", q => q.eq("userId", user._id)).unique(),
         partialExport: true,
         fullExportAvailableVia: "marketplace/accountPrivacy:exportSection",
         online: { projects, orders: [...clientOrders, ...freelancerOrders], reviewsAuthored: reviewsGiven, reviewsReceived: reviewsReceived.filter(review => review.isPublic === true || review.reviewerId === user._id) },
@@ -88,6 +89,7 @@ export const exportMyData = query({
 
 const userSections = {
   providerProfiles: ["freelancerProfiles", "by_userId", "userId"],
+  candidateProfiles: ["candidateProfiles", "by_userId", "userId"],
   clientOrders: ["orders", "by_client", "clientId"],
   clientAppointments: ["localAppointments", "by_client", "clientId"],
   projects: ["projects", "by_client", "clientId"],
@@ -214,6 +216,8 @@ export const requestAccountDeletion = mutation({
       updatedAt: now,
     });
     await ctx.db.patch(user._id, { deletionRequestedAt: now, updatedAt: now });
+    const candidateProfile = await ctx.db.query("candidateProfiles").withIndex("by_userId", q => q.eq("userId", user._id)).unique();
+    if (candidateProfile) await ctx.db.patch(candidateProfile._id, { discoverable: false, shareResume: false, consentUpdatedAt: now, updatedAt: Math.max(now, candidateProfile.updatedAt + 1) });
     return { ticketId };
   },
 });

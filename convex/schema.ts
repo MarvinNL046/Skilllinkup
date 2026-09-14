@@ -95,6 +95,33 @@ export default defineSchema({
     .index("by_tenant", ["tenantId"]),
 
   // ============================================================
+  // CANDIDATE PROFILES (private unless explicitly discoverable)
+  // ============================================================
+
+  candidateProfiles: defineTable({
+    tenantId: v.id("tenants"),
+    userId: v.id("users"),
+    displayName: v.string(),
+    headline: v.string(),
+    location: v.string(),
+    summary: v.string(),
+    skills: v.array(v.string()),
+    discoverable: v.boolean(),
+    shareResume: v.boolean(),
+    searchText: v.string(),
+    resumeStorageId: v.optional(v.id("_storage")),
+    resumeName: v.optional(v.string()),
+    resumeType: v.optional(v.string()),
+    resumeSize: v.optional(v.number()),
+    consentUpdatedAt: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_userId", ["userId"])
+    .index("by_tenantId_and_discoverable", ["tenantId", "discoverable"])
+    .searchIndex("search_candidates", { searchField: "searchText", filterFields: ["tenantId", "discoverable"] }),
+
+  // ============================================================
   // BLOG / CONTENT
   // ============================================================
 

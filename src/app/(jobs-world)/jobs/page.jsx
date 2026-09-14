@@ -77,7 +77,7 @@ const config = {
   ],
   faqs: [
     { question: "Are these freelance gigs or company jobs?", answer: "The Jobs world is for permanent, temporary and contract company roles. Freelance projects belong in the Online world." },
-    { question: "Where can I upload my CV?", answer: "Add your CV when you apply to a specific vacancy. PDF, DOC and DOCX files up to 10 MB are supported. There is no public CV listing or searchable candidate directory." },
+    { question: "Where can I upload my CV?", answer: "Open My Profile & CV in your Jobs dashboard to save a PDF, DOC or DOCX up to 3 MB. It stays private by default. You can attach a copy when applying, or separately choose to share your profile and CV with verified employers. A new file attached directly to an application can be up to 10 MB." },
     { question: "Do all vacancies show a salary?", answer: "Salary details are shown when the employer provides them. Check the listing and ask the employer about any missing information before deciding to proceed." },
     { question: "Can I search for fully remote jobs?", answer: "Yes. Remote, hybrid and on-site work models can be filtered separately, and you can search the published location. Check each listing for geographic restrictions." },
     { question: "How are employers verified?", answer: "A company must complete the platform’s company verification step before its vacancies appear in public search. Read the company information included with each listing." },
