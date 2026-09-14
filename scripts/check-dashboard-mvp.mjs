@@ -367,11 +367,13 @@ await check("Application lists expose loading controls and send stage filters to
       "@/hook/useConvexUser": { default: () => ({ isAuthenticated: true }) },
       "@/components/dashboard/header/DashboardNavigation": { default: "nav" },
       ["./" + mode + "Applications.module.css"]: { default: {} },
+      "./HiringOverview": { default: "HiringOverview" },
     })("src/components/dashboard/section/" + mode + "Applications.jsx").default;
     const render = () => runner.render(() => Page({ jobId: "job" }));
     let tree = render(); const more = findElement(tree, e => e.props?.children === "Load more");
     assert.ok(more); assert.equal(more.props.disabled, false); more.props.onClick(); assert.deepEqual(loads, [25]);
     if (mode === "Employer") { findElement(tree, e => e.type === "select" && e.props.value === "all").props.onChange({ target: { value: "screening" } }); render(); assert.equal(queryArgs.status, "screening"); assert.equal(queryArgs.jobId, "job"); }
+    if (mode === "Employer") { const overview = () => findElement(render(), e => e.type === "HiringOverview"); overview().props.onApplication("linked-application"); render(); assert.equal(queryArgs.applicationId, "linked-application"); assert.equal(queryArgs.status, undefined); overview().props.onView("invitations"); render(); assert.equal(queryArgs, "skip"); overview().props.onView("applications"); render(); assert.equal(queryArgs.applicationId, undefined); }
     state = "LoadingMore"; assert.equal(findElement(render(), e => e.props?.children === "Loading…").props.disabled, true);
     state = "Exhausted"; assert.ok(!findElement(render(), e => e.props?.children === "Load more"));
     state = "LoadingFirstPage"; assert.ok(!findElement(render(), e => e.props?.children === "Load more"));
@@ -391,6 +393,7 @@ await check("Candidate withdrawal and employer stages block duplicate actions an
       "@/hook/useConvexUser": { default: () => ({ isAuthenticated: true }) },
       "@/components/dashboard/header/DashboardNavigation": { default: "nav" },
       [`./${mode}Applications.module.css`]: { default: {} },
+      "./HiringOverview": { default: "HiringOverview" },
     })(`src/components/dashboard/section/${mode}Applications.jsx`).default;
     const render = () => runner.render(() => Page({ jobId: "job" }));
     const action = tree => mode === "Candidate"

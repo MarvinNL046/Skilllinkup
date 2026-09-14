@@ -70,6 +70,7 @@ scripts/verify-*.mjs
 !scripts/check-dashboard-mvp.mjs
 !scripts/check-candidate-profiles.mjs
 !scripts/check-job-invitations.mjs
+!scripts/check-hiring-pipeline.mjs
 !scripts/verify-environment.mjs
 !scripts/verify-hosted-release.mjs
 

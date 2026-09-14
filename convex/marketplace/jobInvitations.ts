@@ -17,6 +17,7 @@ const status = v.union(
 );
 const row = v.object({
   _id: v.id("jobInvitations"),
+  jobId: v.id("jobs"),
   candidateName: v.string(),
   companyName: v.string(),
   jobTitle: v.string(),
@@ -237,6 +238,7 @@ export const listMine = query({
       const { allowed, job } = await available(ctx, invitation);
       page.push({
         _id: invitation._id,
+        jobId: invitation.jobId,
         candidateName: invitation.candidateName,
         companyName: invitation.companyName,
         jobTitle: invitation.jobTitle,

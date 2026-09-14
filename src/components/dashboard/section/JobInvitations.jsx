@@ -82,6 +82,13 @@ function Invitation({ item, audience, now }) {
         </p>
       )}
       <div className={styles.actions}>
+        {!candidate && item.jobId && (
+          <Button asChild variant="outline">
+            <Link href={`/manage-jobs/${item.jobId}/applications`}>
+              Hiring overview
+            </Link>
+          </Button>
+        )}
         {current && item.jobHref && (
           <Button asChild variant="outline">
             <Link href={item.jobHref}>
