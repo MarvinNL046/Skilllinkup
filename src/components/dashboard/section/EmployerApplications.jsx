@@ -34,7 +34,7 @@ const statusLabels = {
   interview: "Interview",
   offer: "Offer",
   hired: "Hired",
-  rejected: "Rejected",
+  rejected: "Closed",
   withdrawn: "Withdrawn",
 };
 const messageableStatuses = new Set([
@@ -43,6 +43,22 @@ const messageableStatuses = new Set([
   "offer",
   "hired",
 ]);
+const stageGuidance = {
+  submitted:
+    "Review the candidate’s application and any attached CV. Move it to In review to open messaging, or close it if you will not take it further.",
+  screening:
+    "The candidate sees In review and can message you. Review their experience, ask questions and choose the next stage when you are ready.",
+  interview:
+    "The candidate sees Interview. Use messaging to agree on a time, format and preparation; changing this status does not schedule an interview.",
+  offer:
+    "The candidate sees Offer. Discuss the terms and next steps in messages. This status does not mean the candidate has accepted; mark Hired once you have agreed to proceed.",
+  hired:
+    "The candidate sees Hired. Message them to confirm their start date and onboarding arrangements. No further application stage changes are available here.",
+  rejected:
+    "The candidate sees Closed. This application is no longer progressing, and you cannot reopen it or start a conversation from this application here.",
+  withdrawn:
+    "The candidate has withdrawn their application. You cannot change its stage or start a conversation from this application here.",
+};
 
 export default function EmployerApplications({ jobId }) {
   const { isAuthenticated } = useConvexUser();
@@ -205,7 +221,19 @@ export default function EmployerApplications({ jobId }) {
                       </a>
                     ) : null}
                   </div>
-                  <p className={styles.letter}>{application.coverLetter}</p>
+                  {application.coverLetter && (
+                    <p className={styles.letter}>{application.coverLetter}</p>
+                  )}
+                  <section
+                    className={styles.guidance}
+                    aria-label="Application stage guidance"
+                  >
+                    <h3>Your next step</h3>
+                    <p>
+                      {stageGuidance[application.status] ||
+                        "Review the current application status before choosing your next step."}
+                    </p>
+                  </section>
                   <div className={styles.stage}>
                     {messageableStatuses.has(application.status) ? (
                       <ContextMessageButton
@@ -214,34 +242,47 @@ export default function EmployerApplications({ jobId }) {
                           applicationId: application._id,
                         }}
                         label="Message candidate"
+                        size="default"
                       />
                     ) : null}
-                    <label>
-                      Move to
-                      <select
-                        value=""
-                        disabled={
-                          updating !== null ||
-                          !nextStatuses[application.status]?.length
-                        }
-                        onChange={(event) =>
-                          changeStatus(application, event.target.value)
-                        }
+                    {nextStatuses[application.status]?.length > 0 && (
+                      <label>
+                        Move to
+                        <select
+                          aria-describedby={`stage-notice-${application._id}`}
+                          value=""
+                          disabled={
+                            updating !== null ||
+                            !nextStatuses[application.status]?.length
+                          }
+                          onChange={(event) =>
+                            changeStatus(application, event.target.value)
+                          }
+                        >
+                          <option value="" disabled>
+                            {updating === application._id
+                              ? "Updating…"
+                              : "Choose stage"}
+                          </option>
+                          {(nextStatuses[application.status] || []).map(
+                            (status) => (
+                              <option key={status} value={status}>
+                                {statusLabels[status]}
+                              </option>
+                            ),
+                          )}
+                        </select>
+                      </label>
+                    )}
+                    {nextStatuses[application.status]?.length > 0 && (
+                      <p
+                        id={`stage-notice-${application._id}`}
+                        className={styles.stageNotice}
                       >
-                        <option value="" disabled>
-                          {updating === application._id
-                            ? "Updating…"
-                            : "Choose stage"}
-                        </option>
-                        {(nextStatuses[application.status] || []).map(
-                          (status) => (
-                            <option key={status} value={status}>
-                              {statusLabels[status]}
-                            </option>
-                          ),
-                        )}
-                      </select>
-                    </label>
+                        Choosing a new stage saves it immediately and notifies
+                        the candidate.
+                      </p>
+                    )}
                   </div>
                 </article>
               ))}
