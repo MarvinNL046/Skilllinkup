@@ -1,5 +1,5 @@
 import type { Doc, Id } from "../_generated/dataModel";
-import type { MutationCtx } from "../_generated/server";
+import type { MutationCtx, QueryCtx } from "../_generated/server";
 type ConversationContextInput = Infer<typeof _>;
 type ResolvedContext = {
   type: Infer<typeof conversationContextTypeValidator>;
@@ -182,9 +182,21 @@ async function resolveContext(ctx: MutationCtx, caller: Doc<"users">, context: C
 async function findExisting(ctx: MutationCtx, resolved: ResolvedContext, participant1: Id<"users">, participant2: Id<"users">) {
   return resolved.orderId ? await ctx.db.query("conversations").withIndex("by_order", a => a.eq("orderId", resolved.orderId)).first() : resolved.bidId ? await ctx.db.query("conversations").withIndex("by_bid", a => a.eq("bidId", resolved.bidId)).first() : resolved.quoteId ? await ctx.db.query("conversations").withIndex("by_quote", a => a.eq("quoteId", resolved.quoteId)).first() : resolved.localAppointmentId ? await ctx.db.query("conversations").withIndex("by_localAppointment", a => a.eq("localAppointmentId", resolved.localAppointmentId)).first() : resolved.jobApplicationId ? await ctx.db.query("conversations").withIndex("by_jobApplication", a => a.eq("jobApplicationId", resolved.jobApplicationId)).first() : resolved.gigId ? await ctx.db.query("conversations").withIndex("by_gig_and_participants", a => a.eq("gigId", resolved.gigId).eq("participant1", participant1).eq("participant2", participant2)).first() : resolved.freelancerProfileId ? await ctx.db.query("conversations").withIndex("by_freelancerProfile_and_participants", a => a.eq("freelancerProfileId", resolved.freelancerProfileId).eq("participant1", participant1).eq("participant2", participant2)).first() : null;
 }
-function contextSummary(conversation: Doc<"conversations">) {
+async function contextSummary(conversation: Doc<"conversations">, ctx: Pick<QueryCtx, "db">, viewerId: Id<"users">) {
   let i = conversation.contextType ?? (conversation.orderId ? "order" : conversation.projectId ? "project_bid" : null),
     o = conversation.contextHref ?? (conversation.orderId ? `/orders/${conversation.orderId}` : conversation.projectId ? `/online/project/${conversation.projectId}` : null);
+  if (conversation.jobApplicationId) {
+    const application = await ctx.db.get(conversation.jobApplicationId);
+    o = null;
+    if (application && application.tenantId === conversation.tenantId) {
+      if (application.candidateId === viewerId) {
+        o = `/dashboard/applications?application=${application._id}`;
+      } else {
+        const job = await ctx.db.get(application.jobId);
+        if (job?.clientId === viewerId && job.tenantId === application.tenantId) o = `/manage-jobs/${job._id}/applications`;
+      }
+    }
+  }
   return {
     type: i,
     title: conversation.contextTitle ?? "Skilllinkup conversation",
@@ -203,7 +215,7 @@ var list = query({
         s = [...new Set(a.map(r => r.participant1 === args.userId ? r.participant2 : r.participant1))],
         c = await Promise.all(s.map(r => ctx.db.get(r))),
         t = new Map(c.filter(r => r !== null).map(r => [r._id, r]));
-      return a.map(r => {
+      return await Promise.all(a.map(async r => {
         let p = r.participant1 === args.userId ? r.participant2 : r.participant1,
           l = t.get(p) ?? null;
         return {
@@ -214,9 +226,9 @@ var list = query({
             image: l.image ?? l.avatar ?? null
           } : null,
           unreadCount: r.participant1 === args.userId ? r.unreadCount1 ?? 0 : r.unreadCount2 ?? 0,
-          context: contextSummary(r)
+          context: await contextSummary(r, ctx, args.userId)
         };
-      });
+      }));
     }
   }),
   openForContext = mutation({
@@ -270,7 +282,7 @@ var list = query({
       let [a, s] = await Promise.all([ctx.db.get(n.participant1), ctx.db.get(n.participant2)]);
       return {
         ...n,
-        context: contextSummary(n),
+        context: await contextSummary(n, ctx, o._id),
         participant1User: a ? {
           _id: a._id,
           name: a.name,
@@ -298,7 +310,7 @@ var list = query({
         s = await ctx.db.get(a);
       return {
         ...n,
-        context: contextSummary(n),
+        context: await contextSummary(n, ctx, o._id),
         otherParticipant: s ? {
           _id: s._id,
           name: s.name,

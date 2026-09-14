@@ -68,6 +68,29 @@ async function drain(fn, ctx, args) {
   return rows;
 }
 async function main() {
+  await check("job conversation links lead to the participant workspace, including legacy and closed vacancies", async () => {
+    const ctx = fixture([user("candidate"), user("employer"), user("outsider"),
+      { _id: "job", _table: "jobs", tenantId: "tenant", clientId: "employer", status: "closed" },
+      { _id: "app", _table: "jobApplications", tenantId: "tenant", candidateId: "candidate", jobId: "job" },
+      conversation("chat", { tenantId: "tenant", participant1: "candidate", participant2: "employer", jobApplicationId: "app", contextType: "job_application", contextHref: "/jobs/job/old-internal-id" }),
+    ], "candidate");
+    for (const [actor, href] of [["candidate", "/dashboard/applications?application=app"], ["employer", "/manage-jobs/job/applications"]]) {
+      ctx.auth.getUserIdentity = async () => ({ subject: actor });
+      assert.equal((await conversations.getById.handler(ctx, { conversationId: "chat" })).context.href, href);
+      assert.equal((await conversations.list.handler(ctx, { userId: actor }))[0].context.href, href);
+    }
+    ctx.auth.getUserIdentity = async () => ({ subject: "outsider" });
+    await assert.rejects(() => conversations.getById.handler(ctx, { conversationId: "chat" }), /Unauthorized/);
+    ctx.auth.getUserIdentity = async () => ({ subject: "employer" });
+    ctx.state.delete("job");
+    assert.equal((await conversations.getById.handler(ctx, { conversationId: "chat" })).context.href, null);
+    ctx.auth.getUserIdentity = async () => ({ subject: "candidate" });
+    assert.equal((await conversations.getById.handler(ctx, { conversationId: "chat" })).context.href, "/dashboard/applications?application=app");
+    ctx.state.get("app").tenantId = "other-tenant";
+    assert.equal((await conversations.getById.handler(ctx, { conversationId: "chat" })).context.href, null);
+    ctx.state.delete("app");
+    assert.equal((await conversations.getById.handler(ctx, { conversationId: "chat" })).context.href, null);
+  });
   await check("application pages reach older rows, preserve privacy and enforce job ownership", async () => {
     const apps = load("convex/marketplace/jobApplications.ts");
     const company = user("employer", { activeRole: "company", accountRoles: ["company"], preferredWorld: "jobs", onboardingContexts: [{ role: "company", world: "jobs", version: 1, completedAt: 1 }] });

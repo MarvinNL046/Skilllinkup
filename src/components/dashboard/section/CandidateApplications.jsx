@@ -145,8 +145,8 @@ export default function CandidateApplications({ applicationId } = {}) {
           aria-label="Selected application"
         >
           <p>
-            Showing the application from your notification. The status below is
-            the latest update.
+            Showing your selected application. The status below is the latest
+            update.
           </p>
           <Button asChild variant="outline">
             <Link href="/dashboard/applications">Show all applications</Link>
