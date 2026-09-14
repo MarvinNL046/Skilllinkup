@@ -27,11 +27,10 @@ const statusCopy = {
   interview: ["Interview stage", "You have progressed to the interview stage."],
   offer: ["Offer stage", "The company has moved your application to the offer stage."],
   hired: ["Hired", "Congratulations — this application resulted in a hire."],
-  rejected: ["Application closed", "The company continued with another candidate."],
+  rejected: ["Application closed", "The company has closed your application."],
   withdrawn: ["Withdrawn", "You withdrew this application."],
 };
 
-const withdrawableStatuses = new Set(["submitted", "screening", "interview", "offer"]);
 const messageableStatuses = new Set(["screening", "interview", "offer", "hired"]);
 
 export default function JobApplicationPanel({ jobId, ownerId }) {
@@ -43,7 +42,6 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
   const [useSavedResume, setUseSavedResume] = useState(false);
   const savedProfile = useQuery(api.marketplace.candidateProfiles.getMine, isAuthenticated ? {} : "skip");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isWithdrawing, setIsWithdrawing] = useState(false);
   const actionRef = useRef(false);
   const uploadedResumeRef = useRef(null);
 
@@ -55,7 +53,6 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
     api.marketplace.jobApplications.generateResumeUploadUrl
   );
   const submitApplication = useMutation(api.marketplace.jobApplications.submit);
-  const withdrawApplication = useMutation(api.marketplace.jobApplications.withdraw);
 
   const isOwner = Boolean(convexUser?._id && ownerId && convexUser._id === ownerId);
   const hasCandidateMode = (convexUser?.accountRoles || []).includes("candidate");
@@ -138,21 +135,6 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
     } finally {
       actionRef.current = false;
       setIsSubmitting(false);
-    }
-  }
-
-  async function handleWithdraw() {
-    if (!application?._id || actionRef.current) return;
-    actionRef.current = true;
-    setIsWithdrawing(true);
-    try {
-      await withdrawApplication({ applicationId: application._id, expectedUpdatedAt: application.updatedAt });
-      toast.success("Your application has been withdrawn.");
-    } catch (error) {
-      toast.error(error?.message || "The application could not be withdrawn.");
-    } finally {
-      actionRef.current = false;
-      setIsWithdrawing(false);
     }
   }
 
@@ -243,11 +225,9 @@ export default function JobApplicationPanel({ jobId, ownerId }) {
         {messageableStatuses.has(application.status) ? (
           <ContextMessageButton context={{ type: "job_application", applicationId: application._id }} label="Message company" size="default" />
         ) : null}
-        {withdrawableStatuses.has(application.status) ? (
-          <button className={styles.textButton} type="button" onClick={handleWithdraw} disabled={isWithdrawing}>
-            {isWithdrawing ? "Withdrawing…" : "Withdraw application"}
-          </button>
-        ) : null}
+        <Button asChild variant="outline">
+          <Link href={`/dashboard/applications?application=${application._id}`}>Manage application</Link>
+        </Button>
       </aside>
     );
   }

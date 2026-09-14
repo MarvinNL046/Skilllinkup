@@ -273,6 +273,23 @@ await check("CV download authenticates each request and streams a non-cacheable 
   assert.equal(response.headers.get("location"), null); assert.equal(response.headers.get("x-content-type-options"), "nosniff");
 });
 
+await check("Public applications route management through the dashboard confirmation flow", () => {
+  for (const status of ["submitted", "screening", "interview", "offer", "hired", "rejected", "withdrawn"]) {
+    const runner = hookRunner(); let queryIndex = 0, mutations = 0;
+    const Panel = loader({
+      react: runner.react, "next/link": { default: "a" }, "next/navigation": { usePathname: () => "/jobs/job/qa" },
+      "convex/react": { useQuery: () => queryIndex++ === 0 ? null : { _id: "qa-application", status }, useMutation: () => { mutations++; return async () => { throw Error("Unexpected mutation"); }; } },
+      "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
+      sonner: { toast: { success() {}, error() {} } },
+      "@/hook/useConvexUser": { default: () => ({ isLoaded: true, isAuthenticated: true, convexUser: { _id: "candidate", accountRoles: ["candidate"], activeRole: "candidate", preferredWorld: "jobs" } }) },
+      "./JobApplicationPanel.module.css": { default: {} },
+    })("src/components/jobs/JobApplicationPanel.jsx").default;
+    const tree = runner.render(() => Panel({ jobId: "job", ownerId: "employer" }));
+    assert.ok(findElement(tree, e => e.type === "a" && e.props.href === "/dashboard/applications?application=qa-application" && e.props.children === "Manage application"));
+    assert.equal(mutations, 2, "No direct withdrawal mutation on the public page");
+  }
+});
+
 await check("Application retry reuses the uploaded CV and preserves the draft after failure", async () => {
   const runner = hookRunner(); let mutationIndex = 0, submits = 0, uploads = 0;
   const messages = [];
