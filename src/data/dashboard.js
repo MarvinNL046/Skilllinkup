@@ -32,6 +32,8 @@ const _browseLocal  = { id: 28, name: "Find Local Pros",     icon: "flaticon-pla
 const _browseJobs   = { id: 29, name: "Find Jobs",           icon: "flaticon-briefcase",   path: "/jobs/browse", subtitle: "Browse genuine vacancies" };
 const _candidateProfile = { id: 30, name: "My Profile & CV", icon: "flaticon-photo", path: "/dashboard/candidate-profile" };
 const _findCandidates = { id: 31, name: "Find Candidates", icon: "flaticon-search", path: "/dashboard/candidates" };
+const _jobInvitations = { id: 32, name: "Invitations", icon: "flaticon-chat", path: "/dashboard/job-invitations" };
+const _sentInvitations = { id: 33, name: "Sent Invitations", icon: "flaticon-chat", path: "/dashboard/sent-invitations" };
 
 // ============================================================
 // World-specific navigation: dashboardNavigation[role][world]
@@ -81,14 +83,14 @@ export const dashboardNavigation = {
   },
   candidate: {
     jobs: {
-      start:    [_dashboard, _browseJobs, _applications, _saved],
+      start:    [_dashboard, _browseJobs, _applications, _jobInvitations, _saved],
       organize: [_message],
       account:  [_candidateProfile, { ..._profile, name: "Account settings", path: "/my-profile?tab=settings" }, _privacy, _support, _feedback],
     },
   },
   company: {
     jobs: {
-      start:    [_dashboard, _manageJobs, _createJob, _findCandidates],
+      start:    [_dashboard, _manageJobs, _createJob, _findCandidates, _sentInvitations],
       organize: [_message],
       account:  [_profile, _privacy, _support, _feedback],
     },

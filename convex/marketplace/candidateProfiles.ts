@@ -29,6 +29,7 @@ const fields = {
 const profileView = v.object({
   _id: v.id("candidateProfiles"),
   ...fields,
+  allowInvitations: v.boolean(),
   resumeName: v.union(v.string(), v.null()),
   resumeType: v.union(v.string(), v.null()),
   resumeSize: v.union(v.number(), v.null()),
@@ -36,6 +37,7 @@ const profileView = v.object({
   updatedAt: v.number(),
 });
 const directoryView = v.object({
+  allowInvitations: v.boolean(),
   _id: v.id("candidateProfiles"),
   displayName: v.string(),
   headline: v.string(),
@@ -54,6 +56,7 @@ function ownView(profile: Doc<"candidateProfiles">) {
     skills: profile.skills,
     discoverable: profile.discoverable,
     shareResume: profile.shareResume,
+    allowInvitations: profile.allowInvitations === true,
     resumeName: profile.resumeName ?? null,
     resumeType: profile.resumeType ?? null,
     resumeSize: profile.resumeSize ?? null,
@@ -87,6 +90,7 @@ export const getMine = query({
 export const save = mutation({
   args: {
     ...fields,
+    allowInvitations: v.optional(v.boolean()),
     expectedUpdatedAt: v.number(),
     resumeStorageId: v.optional(v.id("_storage")),
     resumeName: v.optional(v.string()),
@@ -162,6 +166,9 @@ export const save = mutation({
         resumeSize: metadata.size,
       };
     }
+    const allowInvitations =
+      args.discoverable &&
+      (args.allowInvitations ?? current?.allowInvitations ?? false);
     const now = Math.max(Date.now(), (current?.updatedAt ?? 0) + 1);
     const data = {
       displayName,
@@ -171,12 +178,14 @@ export const save = mutation({
       skills,
       discoverable: args.discoverable,
       shareResume: args.shareResume,
+      allowInvitations,
       searchText: [displayName, headline, location, ...skills].join(" "),
       updatedAt: now,
       consentUpdatedAt:
         !current ||
         current.discoverable !== args.discoverable ||
-        current.shareResume !== args.shareResume
+        current.shareResume !== args.shareResume ||
+        current.allowInvitations !== allowInvitations
           ? now
           : current.consentUpdatedAt,
       ...resume,
@@ -291,6 +300,7 @@ export const listDiscoverable = query({
       const owner = await ctx.db.get(profile.userId);
       if (!owner || owner.deletionRequestedAt) continue;
       page.push({
+        allowInvitations: profile.allowInvitations === true,
         _id: profile._id,
         displayName: profile.displayName,
         headline: profile.headline,

@@ -53,6 +53,7 @@ import type * as marketplace_freelancers from "../marketplace/freelancers.js";
 import type * as marketplace_gigs from "../marketplace/gigs.js";
 import type * as marketplace_imageCleanup from "../marketplace/imageCleanup.js";
 import type * as marketplace_jobApplications from "../marketplace/jobApplications.js";
+import type * as marketplace_jobInvitations from "../marketplace/jobInvitations.js";
 import type * as marketplace_jobs from "../marketplace/jobs.js";
 import type * as marketplace_leadPricing from "../marketplace/leadPricing.js";
 import type * as marketplace_leads from "../marketplace/leads.js";
@@ -138,6 +139,7 @@ declare const fullApi: ApiFromModules<{
   "marketplace/gigs": typeof marketplace_gigs;
   "marketplace/imageCleanup": typeof marketplace_imageCleanup;
   "marketplace/jobApplications": typeof marketplace_jobApplications;
+  "marketplace/jobInvitations": typeof marketplace_jobInvitations;
   "marketplace/jobs": typeof marketplace_jobs;
   "marketplace/leadPricing": typeof marketplace_leadPricing;
   "marketplace/leads": typeof marketplace_leads;

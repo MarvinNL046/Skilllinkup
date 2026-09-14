@@ -108,6 +108,7 @@ export default defineSchema({
     skills: v.array(v.string()),
     discoverable: v.boolean(),
     shareResume: v.boolean(),
+    allowInvitations: v.optional(v.boolean()),
     searchText: v.string(),
     resumeStorageId: v.optional(v.id("_storage")),
     resumeName: v.optional(v.string()),
@@ -668,6 +669,24 @@ export default defineSchema({
     .index("by_client", ["clientId"])
     .index("by_client_status", ["clientId", "status"])
     .index("by_status_locale_salaryValue", ["status", "locale", "salarySortValue"]),
+
+  jobInvitations: defineTable({
+    tenantId: v.id("tenants"),
+    jobId: v.id("jobs"),
+    employerId: v.id("users"),
+    candidateId: v.id("users"),
+    candidateName: v.string(),
+    jobTitle: v.string(),
+    companyName: v.string(),
+    note: v.string(),
+    status: v.union(v.literal("pending"), v.literal("interested"), v.literal("declined"), v.literal("withdrawn")),
+    expiresAt: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_candidateId", ["candidateId"])
+    .index("by_employerId", ["employerId"])
+    .index("by_jobId_and_candidateId", ["jobId", "candidateId"]),
 
   jobApplications: defineTable({
     tenantId: v.id("tenants"),

@@ -86,6 +86,7 @@ export async function POST(request) {
         skills: fields.skills,
         discoverable: fields.discoverable,
         shareResume: fields.shareResume,
+        allowInvitations: fields.allowInvitations,
         expectedUpdatedAt: fields.expectedUpdatedAt,
         resumeStorageId: storageId,
         resumeName: file.name,

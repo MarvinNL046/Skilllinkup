@@ -7,6 +7,7 @@ import useConvexUser from "@/hook/useConvexUser";
 import DashboardNavigation from "../header/DashboardNavigation";
 import { Button } from "@/components/ui/button";
 import styles from "./CandidateProfile.module.css";
+import InviteCandidate from "./InviteCandidate";
 
 function Results({ search }) {
   const { results, status, loadMore } = usePaginatedQuery(
@@ -48,6 +49,7 @@ function Results({ search }) {
             ) : (
               <p>This candidate has kept their CV private.</p>
             )}
+            <InviteCandidate profile={profile} />
           </article>
         ))}
       </div>
@@ -117,9 +119,15 @@ export default function CandidateDirectory() {
             <Button type="submit">Search candidates</Button>
           </form>
           <p>
-            Contact candidates only through details they chose to include in a
-            shared CV. These profiles are not applications to your vacancies.
+            Invite candidates who accept vacancy invitations. They decide
+            whether to respond or apply; their CV and email are not shared by an
+            invitation.
           </p>
+          <Button asChild variant="outline">
+            <Link href="/dashboard/sent-invitations">
+              View sent invitations
+            </Link>
+          </Button>
           <Results key={search} search={search} />
         </>
       )}
