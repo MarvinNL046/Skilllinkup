@@ -1,6 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -67,6 +75,11 @@ export default function EmployerApplications({ jobId }) {
   const [focusedApplication, setFocusedApplication] = useState(null);
   const [updating, setUpdating] = useState(null);
   const updatingRef = useRef(false);
+  const [decision, setDecision] = useState(null);
+  const [decisionError, setDecisionError] = useState("");
+  const cancelRef = useRef(null);
+  const decisionTriggerRef = useRef(null);
+  const headingRef = useRef(null);
   const {
     results: applications,
     status: pageStatus,
@@ -86,9 +99,41 @@ export default function EmployerApplications({ jobId }) {
     api.marketplace.jobApplications.updateStatus,
   );
 
+  const reviewedApplication = applications.find(
+    ({ application }) => application._id === decision?.application._id,
+  )?.application;
+  const decisionIsCurrent =
+    !!decision &&
+    !!reviewedApplication &&
+    reviewedApplication.updatedAt === decision.application.updatedAt &&
+    nextStatuses[reviewedApplication.status]?.includes(decision.status);
+
+  function closeDecision() {
+    if (updatingRef.current) return;
+    setDecision(null);
+    setDecisionError("");
+  }
+
+  function chooseStage(application, candidate, event) {
+    const status = event.target.value;
+    if (!status || updatingRef.current) return;
+    if (["hired", "rejected"].includes(status)) {
+      decisionTriggerRef.current = event.currentTarget;
+      setDecisionError("");
+      setDecision({
+        application: { ...application },
+        name: candidate.name,
+        status,
+      });
+    } else {
+      return changeStatus(application, status);
+    }
+  }
+
   async function changeStatus(application, status) {
     if (!status || updatingRef.current) return;
     updatingRef.current = true;
+    setDecisionError("");
     setUpdating(application._id);
     try {
       await updateStatus({
@@ -97,10 +142,13 @@ export default function EmployerApplications({ jobId }) {
         expectedUpdatedAt: application.updatedAt,
       });
       toast.success(`Application moved to ${statusLabels[status] || status}.`);
+      setDecision(null);
     } catch (error) {
-      toast.error(
-        error?.message || "The application stage could not be changed.",
-      );
+      const message =
+        error?.message ||
+        "The application stage could not be changed. Please try again.";
+      setDecisionError(message);
+      toast.error(message);
     } finally {
       updatingRef.current = false;
       setUpdating(null);
@@ -110,12 +158,81 @@ export default function EmployerApplications({ jobId }) {
   return (
     <div className={styles.page}>
       <DashboardNavigation />
+      <Dialog
+        open={decision !== null}
+        onOpenChange={(open) => {
+          if (!open) closeDecision();
+        }}
+      >
+        <DialogContent
+          className="max-w-[calc(100vw-2rem)] sm:max-w-lg max-h-[calc(100dvh-2rem)] overflow-y-auto rounded-lg data-[state=closed]:invisible"
+          showCloseButton={updating === null}
+          onOpenAutoFocus={(event) => {
+            event.preventDefault();
+            cancelRef.current?.focus();
+          }}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            const trigger = decisionTriggerRef.current;
+            if (trigger?.isConnected && !trigger.disabled) trigger.focus();
+            else headingRef.current?.focus();
+          }}
+        >
+          <DialogHeader>
+            <DialogTitle>
+              {decision?.status === "hired"
+                ? "Mark this candidate as hired?"
+                : "Close this application?"}
+            </DialogTitle>
+            <DialogDescription>
+              {decision?.status === "hired"
+                ? `You are marking ${decision.name} as Hired. Confirm only after you and the candidate have agreed to proceed. The candidate will be notified. You cannot change the application stage again here; messaging remains available.`
+                : `You are closing ${decision?.name || "this candidate"}’s application. The candidate will see Closed and receive a notification. You cannot reopen the application or start a conversation from it here.`}
+            </DialogDescription>
+          </DialogHeader>
+          {decision && !decisionIsCurrent && (
+            <p role="status">
+              This application has changed. Cancel and review its latest status
+              before making a decision.
+            </p>
+          )}
+          {decisionError && <p role="alert">{decisionError}</p>}
+          <DialogFooter className="gap-2">
+            <Button
+              ref={cancelRef}
+              type="button"
+              variant="outline"
+              disabled={updating !== null}
+              onClick={closeDecision}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant={decision?.status === "hired" ? "default" : "destructive"}
+              disabled={updating !== null || !decisionIsCurrent}
+              onClick={() => {
+                if (decisionIsCurrent)
+                  return changeStatus(decision.application, decision.status);
+              }}
+            >
+              {updating !== null
+                ? "Saving…"
+                : decision?.status === "hired"
+                  ? "Confirm hired"
+                  : "Close application"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <header className={styles.header}>
         <div>
           <Link href="/manage-jobs">
             <ArrowLeft size={16} /> Back to vacancies
           </Link>
-          <h1>Hiring overview</h1>
+          <h1 ref={headingRef} tabIndex={-1}>
+            Hiring overview
+          </h1>
           <p>Follow invitations, interest and applications for this vacancy.</p>
         </div>
         {view === "applications" && (
@@ -256,7 +373,7 @@ export default function EmployerApplications({ jobId }) {
                             !nextStatuses[application.status]?.length
                           }
                           onChange={(event) =>
-                            changeStatus(application, event.target.value)
+                            chooseStage(application, candidate, event)
                           }
                         >
                           <option value="" disabled>
@@ -279,8 +396,9 @@ export default function EmployerApplications({ jobId }) {
                         id={`stage-notice-${application._id}`}
                         className={styles.stageNotice}
                       >
-                        Choosing a new stage saves it immediately and notifies
-                        the candidate.
+                        Closed and Hired require confirmation. Other stages save
+                        immediately. Each saved stage change notifies the
+                        candidate.
                       </p>
                     )}
                   </div>

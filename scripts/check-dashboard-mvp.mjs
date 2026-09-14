@@ -454,6 +454,42 @@ await check("Employer stage guidance matches candidate labels and terminal actio
   }
 });
 
+await check("Employer final decisions require review, preserve failures and reject stale confirmation", async () => {
+  for (const status of ["rejected", "hired"]) {
+    const runner = hookRunner(), calls = [];
+    let settle;
+    const application = { _id: "application", status: "offer", updatedAt: 1 };
+    const Page = loader({
+      react: runner.react, "next/link": { default: "a" }, "next/image": { default: "img" },
+      "convex/react": { usePaginatedQuery: () => ({ results: [{ application, candidate: { name: "QA Candidate" } }], status: "Exhausted", loadMore() {} }), useMutation: () => args => { calls.push(args); return new Promise((resolve, reject) => { settle = { resolve, reject }; }); } },
+      "lucide-react": new Proxy({}, { get: (_, name) => String(name) }), sonner: { toast: { success() {}, error() {} } },
+      "@/hook/useConvexUser": { default: () => ({ isAuthenticated: true }) },
+      "@/components/dashboard/header/DashboardNavigation": { default: "nav" },
+      "./EmployerApplications.module.css": { default: {} }, "./HiringOverview": { default: "HiringOverview" },
+    })("src/components/dashboard/section/EmployerApplications.jsx").default;
+    const render = () => runner.render(() => Page({ jobId: "job" }));
+    const dialog = () => findElement(render(), e => e.type === "Dialog");
+    const open = () => findElement(render(), e => e.type === "select" && e.props.value === "").props.onChange({ target: { value: status }, currentTarget: null });
+    const confirm = () => findElement(render(), e => e.props?.children === (status === "hired" ? "Confirm hired" : "Close application"));
+    open(); assert.equal(calls.length, 0); assert.equal(dialog().props.open, true);
+    assert.match(JSON.stringify(render()), /QA Candidate/);
+    findElement(render(), e => e.props?.children === "Cancel").props.onClick();
+    assert.equal(dialog().props.open, false); assert.equal(calls.length, 0);
+    open(); dialog().props.onOpenChange(false); assert.equal(dialog().props.open, false);
+    open(); application.updatedAt = 2;
+    assert.equal(confirm().props.disabled, true); await confirm().props.onClick(); assert.equal(calls.length, 0);
+    dialog().props.onOpenChange(false); open();
+    const click = confirm().props.onClick; const first = click(); await click();
+    assert.equal(calls.length, 1); assert.equal(calls[0].expectedUpdatedAt, 2); assert.equal(calls[0].status, status);
+    dialog().props.onOpenChange(false); assert.equal(dialog().props.open, true);
+    settle.reject(new Error("Temporary failure")); await first;
+    assert.equal(dialog().props.open, true);
+    assert.equal(findElement(render(), e => e.props?.role === "alert").props.children, "Temporary failure");
+    const retry = confirm().props.onClick(); settle.resolve("application"); await retry;
+    assert.equal(calls.length, 2); assert.equal(dialog().props.open, false);
+  }
+});
+
 await check("Candidate withdrawal and employer stages block duplicate actions and retry with the current version", async () => {
   for (const mode of ["Candidate", "Employer"]) {
     const runner = hookRunner(); const calls = [];
