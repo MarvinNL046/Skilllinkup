@@ -428,6 +428,32 @@ await check("Candidate next steps match messaging eligibility and preserve close
   assert.match(JSON.stringify(render()), /vacancy has been removed/);
 });
 
+await check("Employer stage guidance matches candidate labels and terminal actions", async () => {
+  const runner = hookRunner();
+  const application = { _id: "application", status: "submitted", updatedAt: 1 };
+  const Page = loader({
+    react: runner.react, "next/link": { default: "a" }, "next/image": { default: "img" },
+    "convex/react": { usePaginatedQuery: () => ({ results: [{ application, candidate: { name: "QA Candidate" } }], status: "Exhausted", loadMore() {} }), useMutation: () => async () => {} },
+    "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
+    sonner: { toast: { success() {}, error() {} } },
+    "@/hook/useConvexUser": { default: () => ({ isAuthenticated: true }) },
+    "@/components/dashboard/header/DashboardNavigation": { default: "nav" },
+    "./EmployerApplications.module.css": { default: {} }, "./HiringOverview": { default: "HiringOverview" },
+  })("src/components/dashboard/section/EmployerApplications.jsx").default;
+  for (const status of ["submitted", "screening", "interview", "offer", "hired", "rejected", "withdrawn"]) {
+    application.status = status;
+    const tree = runner.render(() => Page({ jobId: "job" }));
+    assert.ok(findElement(tree, e => e.props?.["aria-label"] === "Application stage guidance"));
+    assert.equal(!!findElement(tree, e => e.props?.label === "Message candidate"), ["screening", "interview", "offer", "hired"].includes(status));
+    const stage = findElement(tree, e => e.type === "select" && e.props.value === "");
+    assert.equal(!!stage, ["submitted", "screening", "interview", "offer"].includes(status));
+    if (stage) assert.ok(findElement(tree, e => e.props?.id === stage.props["aria-describedby"]));
+    if (status === "rejected") assert.match(JSON.stringify(tree), /candidate sees Closed/);
+    if (status === "offer") assert.match(JSON.stringify(tree), /does not mean the candidate has accepted/);
+    if (status === "interview") assert.match(JSON.stringify(tree), /does not schedule an interview/);
+  }
+});
+
 await check("Candidate withdrawal and employer stages block duplicate actions and retry with the current version", async () => {
   for (const mode of ["Candidate", "Employer"]) {
     const runner = hookRunner(); const calls = [];
