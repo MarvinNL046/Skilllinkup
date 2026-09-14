@@ -16,6 +16,10 @@
 .details > div { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: .35rem; }
 .details > div span { display: inline-flex; align-items: center; gap: .3rem; color: var(--text-tertiary); font-size: .82rem; }
 .details svg { width: .85rem; }
+.nextStep { margin-top: .75rem; padding-top: .75rem; border-top: 1px solid var(--border-subtle); }
+.nextStep h3 { margin: 0 0 .3rem; font-size: .88rem; font-weight: 700; }
+.nextStep p { max-width: 65ch; font-size: .9rem; line-height: 1.6; }
+.nextStep a { display: inline-flex; align-items: center; gap: .35rem; margin-top: .5rem; color: var(--action-link-text); text-decoration: underline; text-underline-offset: .2em; }
 .status { width: fit-content; padding: .25rem .5rem; border-radius: 999px; background: #eef2f6; color: #506176; font-size: .72rem; font-weight: 750; }
 .status[data-status="screening"], .status[data-status="interview"], .status[data-status="offer"] { background: #fff3dd; color: #8a5a00; }
 .status[data-status="hired"] { background: #e4f7ef; color: #147253; }
@@ -28,6 +32,7 @@
 .loading svg { animation: spin 800ms linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (max-width: 700px) { .header { align-items: stretch; flex-direction: column; } .list article { grid-template-columns: auto 1fr; } .actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: end; } }
+@media (max-width: 480px) { .list article { grid-template-columns: 1fr; } .companyIcon { display: none; } }
 
 .pagination { display: grid; justify-items: center; gap: .65rem; }
 .pagination p { margin: 0; color: var(--text-secondary); font-size: .85rem; }

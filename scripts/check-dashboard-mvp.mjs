@@ -401,6 +401,33 @@ await check("Application lists expose loading controls and send stage filters to
   }
 });
 
+await check("Candidate next steps match messaging eligibility and preserve closed-vacancy context", async () => {
+  const runner = hookRunner();
+  const application = { _id: "application", status: "submitted", updatedAt: 1, statusUpdatedAt: 1 };
+  const job = { slug: "qa", title: "QA vacancy", status: "closed" };
+  const Page = loader({
+    react: runner.react, "next/link": { default: "a" },
+    "convex/react": { usePaginatedQuery: () => ({ results: [{ application, job }], status: "Exhausted", loadMore() {} }), useMutation: () => async () => {} },
+    "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
+    sonner: { toast: { success() {}, error() {} } },
+    "@/hook/useConvexUser": { default: () => ({ isAuthenticated: true }) },
+    "@/components/dashboard/header/DashboardNavigation": { default: "nav" },
+    "./CandidateApplications.module.css": { default: {} },
+  })("src/components/dashboard/section/CandidateApplications.jsx").default;
+  const render = () => runner.render(() => Page({}));
+  for (const status of ["draft", "submitted", "screening", "interview", "offer", "hired", "rejected", "withdrawn"]) {
+    application.status = status;
+    const tree = render();
+    assert.ok(findElement(tree, e => e.props?.["aria-label"] === "Your next step"));
+    assert.equal(!!findElement(tree, e => e.props?.label === "Message company"), ["screening", "interview", "offer", "hired"].includes(status));
+    assert.ok(!findElement(tree, e => e.props?.href === "/jobs/job/qa"), "Closed vacancies have no public link");
+    if (status === "offer") assert.match(JSON.stringify(tree), /does not accept an offer for you/);
+  }
+  application.status = "screening"; job.slug = "";
+  assert.ok(!findElement(render(), e => e.props?.label === "Message company"));
+  assert.match(JSON.stringify(render()), /vacancy has been removed/);
+});
+
 await check("Candidate withdrawal and employer stages block duplicate actions and retry with the current version", async () => {
   for (const mode of ["Candidate", "Employer"]) {
     const runner = hookRunner(); const calls = [];

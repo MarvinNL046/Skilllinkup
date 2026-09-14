@@ -39,6 +39,24 @@ const labels = {
 };
 const withdrawable = new Set(["submitted", "screening", "interview", "offer"]);
 const messageable = new Set(["screening", "interview", "offer", "hired"]);
+const nextSteps = {
+  draft:
+    "This application has not been submitted. The company cannot review it yet.",
+  submitted:
+    "Your application has been sent. Messaging becomes available when the company moves it to In review.",
+  screening:
+    "The company has started reviewing your application. You can message them with questions or additional information.",
+  interview:
+    "Your application is at the interview stage. Message the company to confirm the time, format and anything you should prepare.",
+  offer:
+    "The company has moved your application to the offer stage. Message them to discuss the terms and next steps; this status does not accept an offer for you.",
+  hired:
+    "The company has marked you as hired. Message them to confirm your start date and onboarding arrangements.",
+  rejected:
+    "The company has closed your application. You can explore other vacancies; starting a conversation from this application is no longer available.",
+  withdrawn:
+    "You have withdrawn this application. It stays in your history, but you cannot undo this or apply to the same vacancy again.",
+};
 
 export default function CandidateApplications({ applicationId } = {}) {
   const { isAuthenticated } = useConvexUser();
@@ -205,6 +223,28 @@ export default function CandidateApplications({ applicationId } = {}) {
                     }).format(application.statusUpdatedAt)}
                   </span>
                 </div>
+                <section
+                  className={styles.nextStep}
+                  aria-label="Your next step"
+                >
+                  <h3>
+                    {["rejected", "withdrawn"].includes(application.status)
+                      ? "Explore your next opportunity"
+                      : "Your next step"}
+                  </h3>
+                  <p>
+                    {!job.slug && messageable.has(application.status)
+                      ? "This vacancy has been removed. Your application stays in your history, but messaging from this application is no longer available."
+                      : nextSteps[application.status] ||
+                        "Check back here for the latest application status."}
+                  </p>
+                  {["rejected", "withdrawn"].includes(application.status) && (
+                    <Link href="/jobs/browse">
+                      Explore other jobs{" "}
+                      <ArrowRight size={16} aria-hidden="true" />
+                    </Link>
+                  )}
+                </section>
               </div>
               <div className={styles.actions}>
                 {job.status === "open" && job.slug && (
@@ -212,13 +252,14 @@ export default function CandidateApplications({ applicationId } = {}) {
                     <Link href={`/jobs/job/${job.slug}`}>View vacancy</Link>
                   </Button>
                 )}
-                {messageable.has(application.status) ? (
+                {job.slug && messageable.has(application.status) ? (
                   <ContextMessageButton
                     context={{
                       type: "job_application",
                       applicationId: application._id,
                     }}
                     label="Message company"
+                    size="default"
                   />
                 ) : null}
                 {withdrawable.has(application.status) ? (
