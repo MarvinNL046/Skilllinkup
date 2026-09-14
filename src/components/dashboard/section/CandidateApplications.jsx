@@ -3,6 +3,14 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { useMutation, usePaginatedQuery } from "convex/react";
 import {
   ArrowRight,
@@ -48,10 +56,32 @@ export default function CandidateApplications({ applicationId } = {}) {
   const withdraw = useMutation(api.marketplace.jobApplications.withdraw);
   const withdrawingRef = useRef(false);
   const [withdrawing, setWithdrawing] = useState(null);
+  const [withdrawSelection, setWithdrawSelection] = useState(null);
+  const [withdrawError, setWithdrawError] = useState("");
+  const cancelRef = useRef(null);
+  const withdrawTriggerRef = useRef(null);
+  const headingRef = useRef(null);
+  const selectedApplication = applications.find(
+    ({ application }) => application._id === withdrawSelection?.id,
+  )?.application;
+  const canWithdraw =
+    selectedApplication && withdrawable.has(selectedApplication.status);
+
+  function closeWithdrawal() {
+    if (withdrawingRef.current) return;
+    setWithdrawSelection(null);
+    setWithdrawError("");
+  }
 
   async function handleWithdraw(application) {
-    if (withdrawingRef.current) return;
+    if (
+      withdrawingRef.current ||
+      !application ||
+      !withdrawable.has(application.status)
+    )
+      return;
     withdrawingRef.current = true;
+    setWithdrawError("");
     setWithdrawing(application._id);
     try {
       await withdraw({
@@ -59,8 +89,13 @@ export default function CandidateApplications({ applicationId } = {}) {
         expectedUpdatedAt: application.updatedAt,
       });
       toast.success("Application withdrawn.");
+      setWithdrawSelection(null);
     } catch (error) {
-      toast.error(error?.message || "The application could not be withdrawn.");
+      const message =
+        error?.message ||
+        "The application could not be withdrawn. Please try again.";
+      setWithdrawError(message);
+      toast.error(message);
     } finally {
       withdrawingRef.current = false;
       setWithdrawing(null);
@@ -73,7 +108,9 @@ export default function CandidateApplications({ applicationId } = {}) {
       <header className={styles.header}>
         <div>
           <p>Jobs · Candidate workspace</p>
-          <h1>My applications</h1>
+          <h1 ref={headingRef} tabIndex={-1}>
+            My applications
+          </h1>
           <span>
             Follow every application from first submission to final decision.
           </span>
@@ -189,7 +226,14 @@ export default function CandidateApplications({ applicationId } = {}) {
                     variant="destructive"
                     type="button"
                     disabled={withdrawing !== null}
-                    onClick={() => handleWithdraw(application)}
+                    onClick={(event) => {
+                      withdrawTriggerRef.current = event.currentTarget;
+                      setWithdrawError("");
+                      setWithdrawSelection({
+                        id: application._id,
+                        title: job.title,
+                      });
+                    }}
                   >
                     {withdrawing === application._id
                       ? "Withdrawing…"
@@ -201,6 +245,62 @@ export default function CandidateApplications({ applicationId } = {}) {
           ))}
         </section>
       )}
+      <Dialog
+        open={withdrawSelection !== null}
+        onOpenChange={(open) => {
+          if (!open) closeWithdrawal();
+        }}
+      >
+        <DialogContent
+          className="max-w-[calc(100vw-2rem)] sm:max-w-lg max-h-[calc(100dvh-2rem)] overflow-y-auto rounded-lg data-[state=closed]:invisible"
+          showCloseButton={withdrawing === null}
+          onOpenAutoFocus={(event) => {
+            event.preventDefault();
+            cancelRef.current?.focus();
+          }}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            const trigger = withdrawTriggerRef.current;
+            if (trigger?.isConnected && !trigger.disabled) trigger.focus();
+            else headingRef.current?.focus();
+          }}
+        >
+          <DialogHeader>
+            <DialogTitle>Withdraw this application?</DialogTitle>
+            <DialogDescription>
+              You are withdrawing your application for “
+              {withdrawSelection?.title}”. Your application will be marked as
+              withdrawn. You cannot undo this or apply to this vacancy again.
+            </DialogDescription>
+          </DialogHeader>
+          {withdrawSelection && !canWithdraw && (
+            <p role="status">
+              This application has changed and can no longer be withdrawn. Close
+              this window to see its latest status.
+            </p>
+          )}
+          {withdrawError && <p role="alert">{withdrawError}</p>}
+          <DialogFooter className="gap-2">
+            <Button
+              ref={cancelRef}
+              type="button"
+              variant="outline"
+              disabled={withdrawing !== null}
+              onClick={closeWithdrawal}
+            >
+              {canWithdraw ? "Keep application" : "Close"}
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              disabled={withdrawing !== null || !canWithdraw}
+              onClick={() => handleWithdraw(selectedApplication)}
+            >
+              {withdrawing !== null ? "Withdrawing…" : "Withdraw application"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       {pageStatus !== "LoadingFirstPage" && (
         <div className={styles.pagination}>
           <p role="status">
