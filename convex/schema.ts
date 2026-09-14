@@ -686,6 +686,8 @@ export default defineSchema({
   })
     .index("by_candidateId", ["candidateId"])
     .index("by_employerId", ["employerId"])
+    .index("by_jobId", ["jobId"])
+    .index("by_jobId_and_status", ["jobId", "status"])
     .index("by_jobId_and_candidateId", ["jobId", "candidateId"]),
 
   jobApplications: defineTable({

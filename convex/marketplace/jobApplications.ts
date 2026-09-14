@@ -109,18 +109,16 @@ async function employerRows(ctx: QueryCtx, applications: Doc<"jobApplications">[
     return await Promise.all(
       applications.map(async (application) => {
         const candidate = await ctx.db.get(application.candidateId);
-        if (!candidate)
-          throw new Error("Application candidate no longer exists.");
         const resumeUrl = application.resumeStorageId
           ? `/api/applications/${application._id}/resume`
           : null;
         return {
           application,
           candidate: {
-            id: candidate._id,
-            name: candidate.name,
-            email: candidate.email,
-            image: candidate.image ?? candidate.avatar ?? null,
+            id: application.candidateId,
+            name: candidate?.name ?? "Former candidate",
+            email: candidate?.email ?? "",
+            image: candidate?.image ?? candidate?.avatar ?? null,
           },
           resumeUrl,
         };
@@ -141,18 +139,25 @@ export const listMinePage = query({
 });
 
 export const listForJobPage = query({
-  args: { jobId: v.id("jobs"), status: v.optional(jobApplicationStatusValidator), paginationOpts: paginationOptsValidator },
+  args: { jobId: v.id("jobs"), status: v.optional(jobApplicationStatusValidator), applicationId: v.optional(v.id("jobApplications")), paginationOpts: paginationOptsValidator },
   returns: paginationResultValidator(employerApplicationValidator),
   handler: async (ctx, args) => {
     const job = await ctx.db.get(args.jobId);
     if (!job) throw new Error("Job not found.");
     const employer = await requireOwner(ctx, job.clientId);
     requireMarketplaceContext(employer, "company", "jobs", "viewing applicants");
+    if (job.tenantId !== employer.tenantId) throw new Error("This vacancy is not available to your account.");
+    if (args.paginationOpts.numItems > 50) throw new Error("Load up to 50 applications at a time.");
+    if (args.applicationId) {
+      const application = await ctx.db.get(args.applicationId);
+      const visible = application && application.jobId === job._id && application.tenantId === job.tenantId && application.status !== "draft";
+      return { page: visible ? await employerRows(ctx, [application]) : [], isDone: true, continueCursor: "" };
+    }
     const applications = args.status
       ? ctx.db.query("jobApplications").withIndex("by_job_status", q => q.eq("jobId", args.jobId).eq("status", args.status!))
       : ctx.db.query("jobApplications").withIndex("by_job", q => q.eq("jobId", args.jobId));
     const result = await applications.order("desc").paginate(args.paginationOpts);
-    return { ...result, page: await employerRows(ctx, result.page) };
+    return { ...result, page: await employerRows(ctx, result.page.filter(application => application.status !== "draft" && application.tenantId === job.tenantId)) };
   },
 });
 

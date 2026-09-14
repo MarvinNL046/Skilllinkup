@@ -3,6 +3,7 @@ import { Tooltip } from "react-tooltip";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { FileText, Pencil, Trash2, UsersRound } from "lucide-react";
 
 const STATUS_VARIANTS = {
@@ -66,7 +67,7 @@ export default function ManageJobCard({ job, onEdit, onDelete }) {
         <Badge variant={statusVariant}>{statusLabel}</Badge>
       </td>
       <td data-label={t("columnAction")} className="align-top">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {slug && (
             <>
               <Link
@@ -82,7 +83,7 @@ export default function ManageJobCard({ job, onEdit, onDelete }) {
               </Tooltip>
             </>
           )}
-          <Link href={`/manage-jobs/${job._id}/applications`} aria-label="View applicants" className="text-[var(--text-tertiary)] hover:text-foreground"><UsersRound className="h-4 w-4" /></Link>
+          <Button asChild variant="outline" size="sm"><Link href={`/manage-jobs/${job._id}/applications`}><UsersRound className="h-4 w-4" /> Hiring overview</Link></Button>
           <button
             type="button"
             id={tooltipEditId}

@@ -51,6 +51,7 @@ import type * as marketplace_escrow from "../marketplace/escrow.js";
 import type * as marketplace_experience from "../marketplace/experience.js";
 import type * as marketplace_freelancers from "../marketplace/freelancers.js";
 import type * as marketplace_gigs from "../marketplace/gigs.js";
+import type * as marketplace_hiringPipeline from "../marketplace/hiringPipeline.js";
 import type * as marketplace_imageCleanup from "../marketplace/imageCleanup.js";
 import type * as marketplace_jobApplications from "../marketplace/jobApplications.js";
 import type * as marketplace_jobInvitations from "../marketplace/jobInvitations.js";
@@ -137,6 +138,7 @@ declare const fullApi: ApiFromModules<{
   "marketplace/experience": typeof marketplace_experience;
   "marketplace/freelancers": typeof marketplace_freelancers;
   "marketplace/gigs": typeof marketplace_gigs;
+  "marketplace/hiringPipeline": typeof marketplace_hiringPipeline;
   "marketplace/imageCleanup": typeof marketplace_imageCleanup;
   "marketplace/jobApplications": typeof marketplace_jobApplications;
   "marketplace/jobInvitations": typeof marketplace_jobInvitations;
