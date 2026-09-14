@@ -49,6 +49,7 @@
 }
 .form input:not([type="checkbox"]),
 .form textarea,
+.form select,
 .search input {
   width: 100%;
   min-width: 0;

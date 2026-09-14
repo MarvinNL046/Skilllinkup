@@ -370,3 +370,25 @@ await assert.rejects(
 console.log(
   "PASS candidate profile ownership, private defaults, CV separation, verified-employer access, tenant boundaries, search, immediate revocation, stale writes, replacement and orphan cleanup",
 );
+const consentFixture = fixture();
+let consentProfile = await backend.save.handler(consentFixture.ctx, {
+  ...fields,
+  discoverable: true,
+  allowInvitations: true,
+});
+assert.equal(consentProfile.allowInvitations, true);
+consentProfile = await backend.save.handler(consentFixture.ctx, {
+  ...fields,
+  discoverable: true,
+  expectedUpdatedAt: consentProfile.updatedAt,
+});
+assert.equal(consentProfile.allowInvitations, true);
+consentProfile = await backend.save.handler(consentFixture.ctx, {
+  ...fields,
+  allowInvitations: true,
+  expectedUpdatedAt: consentProfile.updatedAt,
+});
+assert.equal(consentProfile.allowInvitations, false);
+console.log(
+  "PASS invitation preference defaults, legacy saves and discovery opt-out",
+);

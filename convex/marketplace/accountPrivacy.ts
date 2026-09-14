@@ -90,6 +90,8 @@ export const exportMyData = query({
 const userSections = {
   providerProfiles: ["freelancerProfiles", "by_userId", "userId"],
   candidateProfiles: ["candidateProfiles", "by_userId", "userId"],
+  receivedJobInvitations: ["jobInvitations", "by_candidateId", "candidateId"],
+  sentJobInvitations: ["jobInvitations", "by_employerId", "employerId"],
   clientOrders: ["orders", "by_client", "clientId"],
   clientAppointments: ["localAppointments", "by_client", "clientId"],
   projects: ["projects", "by_client", "clientId"],
@@ -217,7 +219,7 @@ export const requestAccountDeletion = mutation({
     });
     await ctx.db.patch(user._id, { deletionRequestedAt: now, updatedAt: now });
     const candidateProfile = await ctx.db.query("candidateProfiles").withIndex("by_userId", q => q.eq("userId", user._id)).unique();
-    if (candidateProfile) await ctx.db.patch(candidateProfile._id, { discoverable: false, shareResume: false, consentUpdatedAt: now, updatedAt: Math.max(now, candidateProfile.updatedAt + 1) });
+    if (candidateProfile) await ctx.db.patch(candidateProfile._id, { discoverable: false, shareResume: false, allowInvitations: false, consentUpdatedAt: now, updatedAt: Math.max(now, candidateProfile.updatedAt + 1) });
     return { ticketId };
   },
 });

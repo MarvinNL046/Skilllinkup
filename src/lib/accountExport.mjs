@@ -2,6 +2,8 @@ export const ACCOUNT_EXPORT_SECTIONS = [
   "account",
   "providerProfiles",
   "candidateProfiles",
+  "receivedJobInvitations",
+  "sentJobInvitations",
   "clientOrders",
   "projects",
   "jobs",

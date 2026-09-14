@@ -18,6 +18,7 @@ function ProfileEditor({ profile, name }) {
     skills: (profile?.skills || []).join(", "),
     discoverable: profile?.discoverable || false,
     shareResume: profile?.shareResume || false,
+    allowInvitations: profile?.allowInvitations || false,
   }));
   const [file, setFile] = useState(null),
     [busy, setBusy] = useState(false),
@@ -31,7 +32,9 @@ function ProfileEditor({ profile, name }) {
     setForm((old) => ({
       ...old,
       [key]: value,
-      ...(key === "discoverable" && !value ? { shareResume: false } : {}),
+      ...(key === "discoverable" && !value
+        ? { shareResume: false, allowInvitations: false }
+        : {}),
     }));
   async function submit(event) {
     event.preventDefault();
@@ -276,9 +279,28 @@ function ProfileEditor({ profile, name }) {
           </span>
         </label>
         <p>
-          Turn either choice off and save to stop future access. Files someone
-          already downloaded cannot be recalled. Copies sent with applications
-          keep their existing access.
+          Turn a sharing choice off and save to stop future access. Files
+          someone already downloaded cannot be recalled. Copies sent with
+          applications keep their existing access.
+        </p>
+        <label className={styles.choice}>
+          <input
+            type="checkbox"
+            disabled={!form.discoverable}
+            checked={form.allowInvitations}
+            onChange={(e) => change("allowInvitations", e.target.checked)}
+          />
+          <span>
+            <strong>Let verified employers invite me to vacancies</strong>
+            <small>
+              Receive invitations in my Jobs dashboard. I decide whether to show
+              interest or apply. This does not share my CV or account email.
+            </small>
+          </span>
+        </label>
+        <p>
+          Turn invitations off and save to stop new invitations. You can still
+          review and decline invitations already received.
         </p>
         <p role="status">
           After saving:{" "}
@@ -296,6 +318,9 @@ function ProfileEditor({ profile, name }) {
         </Button>
         <Button asChild variant="outline">
           <Link href="/dashboard/applications">My applications</Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link href="/dashboard/job-invitations">My invitations</Link>
         </Button>
       </div>
     </form>
