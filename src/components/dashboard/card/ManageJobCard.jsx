@@ -12,7 +12,12 @@ const STATUS_VARIANTS = {
   filled: "info",
 };
 
-export default function ManageJobCard({ job, onEdit, onDelete }) {
+export default function ManageJobCard({
+  job,
+  onEdit,
+  onDelete,
+  canViewPublic = true,
+}) {
   const t = useTranslations("manageJobs");
 
   const title = job?.title ?? t("untitledJob");
@@ -51,8 +56,12 @@ export default function ManageJobCard({ job, onEdit, onDelete }) {
     <tr>
       <td data-label={t("columnTitle")} className="align-top">
         <h5 className="text-base font-semibold mb-1">{title}</h5>
-        {company && <p className="text-sm text-[var(--text-secondary)]">{company}</p>}
-        <p className="text-xs text-[var(--text-tertiary)] mt-1">{categoryName}</p>
+        {company && (
+          <p className="text-sm text-[var(--text-secondary)]">{company}</p>
+        )}
+        <p className="text-xs text-[var(--text-tertiary)] mt-1">
+          {categoryName}
+        </p>
       </td>
       <td data-label={t("columnApplications")} className="align-top">
         <span className="text-base">{applicationCount}</span>
@@ -60,7 +69,9 @@ export default function ManageJobCard({ job, onEdit, onDelete }) {
       <td data-label={t("columnCreatedExpired")} className="align-top">
         <div className="text-sm">{formatDate(createdAt)}</div>
         <div className="text-xs text-[var(--text-tertiary)]">
-          {expiresAt ? `${t("expiresPrefix")}${formatDate(expiresAt)}` : t("noExpiry")}
+          {expiresAt
+            ? `${t("expiresPrefix")}${formatDate(expiresAt)}`
+            : t("noExpiry")}
         </div>
       </td>
       <td data-label={t("columnStatus")} className="align-top">
@@ -68,43 +79,53 @@ export default function ManageJobCard({ job, onEdit, onDelete }) {
       </td>
       <td data-label={t("columnAction")} className="align-top">
         <div className="flex flex-wrap items-center gap-2">
-          {slug && (
-            <>
-              <Link
-                href={`/jobs/job/${slug}`}
-                id={tooltipViewId}
-                aria-label={t("viewJob")}
-                className="text-[var(--text-tertiary)] hover:text-foreground"
-              >
-                <FileText className="h-4 w-4" />
-              </Link>
-              <Tooltip anchorSelect={`#${tooltipViewId}`} place="top">
-                {t("viewJob")}
-              </Tooltip>
-            </>
-          )}
-          <Button asChild variant="outline" size="sm"><Link href={`/manage-jobs/${job._id}/applications`}><UsersRound className="h-4 w-4" /> Hiring overview</Link></Button>
-          <button
+          {slug &&
+            canViewPublic &&
+            status === "open" &&
+            (!expiresAt || expiresAt > Date.now()) && (
+              <>
+                <Button asChild variant="ghost" size="icon">
+                  <Link
+                    href={`/jobs/job/${slug}`}
+                    id={tooltipViewId}
+                    aria-label={t("viewJob")}
+                  >
+                    <FileText className="h-4 w-4" />
+                  </Link>
+                </Button>
+                <Tooltip anchorSelect={`#${tooltipViewId}`} place="top">
+                  {t("viewJob")}
+                </Tooltip>
+              </>
+            )}
+          <Button asChild variant="outline">
+            <Link href={`/manage-jobs/${job._id}/applications`}>
+              <UsersRound className="h-4 w-4" /> Hiring overview
+            </Link>
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
             type="button"
             id={tooltipEditId}
             onClick={() => onEdit?.(job)}
             aria-label={t("edit")}
-            className="text-[var(--text-tertiary)] hover:text-foreground"
           >
             <Pencil className="h-4 w-4" />
-          </button>
+          </Button>
           <Tooltip anchorSelect={`#${tooltipEditId}`} place="top">
             {t("edit")}
           </Tooltip>
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             type="button"
             id={tooltipDeleteId}
             onClick={() => onDelete?.(job)}
             aria-label={t("delete")}
-            className="text-[var(--text-tertiary)] hover:text-destructive"
           >
             <Trash2 className="h-4 w-4" />
-          </button>
+          </Button>
           <Tooltip anchorSelect={`#${tooltipDeleteId}`} place="top">
             {t("delete")}
           </Tooltip>

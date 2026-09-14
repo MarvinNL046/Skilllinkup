@@ -61,6 +61,27 @@ function loader(overrides = {}, globals = {}) {
   return load;
 }
 
+await (async () => {
+  const Card = loader({
+    "next-intl": { useTranslations: () => key => key },
+    "next/link": { default: "Link" },
+    "react-tooltip": { Tooltip: "Tooltip" },
+    "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
+  })("src/components/dashboard/card/ManageJobCard.jsx").default;
+  const job = { _id: "qa-job", title: "QA vacancy", slug: "qa-vacancy", status: "open" };
+  const nodes = tree => !tree || typeof tree !== "object" ? [] : [tree, ...[tree.props?.children].flat(Infinity).flatMap(nodes)];
+  for (const [fields, verified, visible] of [[{}, true, true], [{ status: "closed" }, true, false], [{ status: "filled" }, true, false], [{ expiresAt: 1 }, true, false], [{}, false, false]]) {
+    let edited = null;
+    const rendered = nodes(Card({ job: { ...job, ...fields }, canViewPublic: verified, onEdit: value => { edited = value._id; } }));
+    assert.equal(rendered.some(n => n.props?.href === "/jobs/job/qa-vacancy"), visible);
+    assert.ok(rendered.some(n => n.props?.href === "/manage-jobs/qa-job/applications"));
+    const edit = rendered.find(n => n.props?.["aria-label"] === "edit");
+    edit.props.onClick();
+    assert.equal(edited, "qa-job");
+  }
+  console.log("PASS vacancy actions keep hiring review available and hide unavailable public links");
+})();
+
 function fixture(user, record) {
   const writes = [];
   return {

@@ -51,14 +51,23 @@
 .proposal-table th { text-align: left; padding: 12px; }
 .proposal-table td { padding: 20px 12px; border-top: 1px solid var(--border-subtle); }
 
+.manage-jobs-table > table { width: 100%; border-collapse: collapse; }
+.manage-jobs-table th { padding: 12px; text-align: left; font-size: 13px; color: var(--text-secondary); }
+.manage-jobs-table td { padding: 18px 12px; border-top: 1px solid var(--border-subtle); }
+.manage-jobs-table th:first-child { width: 32%; }
+.manage-jobs-table td:last-child { min-width: 290px; }
+
 @media (max-width: 600px) {
   .app-shell__content { padding: 18px 14px; }
-  .packages_table:is(.manage-services-table, .manage-projects-table) > table { min-width: 0; width: 100%; }
-  :is(.manage-services-table, .manage-projects-table) thead { display: none; }
-  :is(.manage-services-table, .manage-projects-table) tbody { display: block; }
-  :is(.manage-services-table, .manage-projects-table) tbody tr { display: grid; gap: 12px; padding-block: 16px; border-bottom: 1px solid #e2e8f0; }
-  :is(.manage-services-table, .manage-projects-table) tbody td { display: block; width: 100%; padding: 0; border: 0; }
-  :is(.manage-services-table, .manage-projects-table) tbody td:not(:first-child)::before { content: attr(data-label); display: block; margin-bottom: 4px; color: #64748b; font-size: 12px; }
+  .packages_table:is(.manage-services-table, .manage-projects-table, .manage-jobs-table) > table { min-width: 0; width: 100%; }
+  :is(.manage-services-table, .manage-projects-table, .manage-jobs-table) thead { display: none; }
+  :is(.manage-services-table, .manage-projects-table, .manage-jobs-table) tbody { display: block; }
+  :is(.manage-services-table, .manage-projects-table, .manage-jobs-table) tbody tr { display: grid; gap: 12px; padding-block: 16px; border-bottom: 1px solid #e2e8f0; }
+  :is(.manage-services-table, .manage-projects-table, .manage-jobs-table) tbody td { display: block; width: 100%; padding: 0; border: 0; }
+  :is(.manage-services-table, .manage-projects-table, .manage-jobs-table) tbody td:not(:first-child)::before { content: attr(data-label); display: block; margin-bottom: 4px; color: #64748b; font-size: 12px; }
+  .packages_table.manage-jobs-table { overflow: visible; }
+  .manage-jobs-table tbody td { overflow-wrap: anywhere; }
+  .manage-jobs-table td:last-child { min-width: 0; }
 }
 
 .packages_table { overflow-x: auto; -webkit-overflow-scrolling: touch; }
