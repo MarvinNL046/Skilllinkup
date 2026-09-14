@@ -202,7 +202,7 @@ export default function ManageJobInfo() {
               />
             </div>
 
-            <div className="packages_table table-responsive">
+            <div className="packages_table table-responsive manage-jobs-table">
               {isLoading ? (
                 <div className="text-center py-12">
                   <div
@@ -246,6 +246,7 @@ export default function ManageJobInfo() {
                       <ManageJobCard
                         key={job._id}
                         job={job}
+                        canViewPublic={verificationStatus === "verified"}
                         onEdit={(j) => {
                           setSelectedJob(j);
                           setEditOpen(true);
