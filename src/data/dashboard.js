@@ -30,6 +30,8 @@ const _privacy      = { id: 26, name: "Data & Privacy",      icon: "flaticon-doc
 const _browseOnline = { id: 27, name: "Find Online Talent",  icon: "flaticon-wifi",        path: "/online/freelancers", subtitle: "Browse worldwide freelancers" };
 const _browseLocal  = { id: 28, name: "Find Local Pros",     icon: "flaticon-place",       path: "/local/craftsmen", subtitle: "Browse trusted professionals nearby" };
 const _browseJobs   = { id: 29, name: "Find Jobs",           icon: "flaticon-briefcase",   path: "/jobs/browse", subtitle: "Browse genuine vacancies" };
+const _candidateProfile = { id: 30, name: "My Profile & CV", icon: "flaticon-photo", path: "/dashboard/candidate-profile" };
+const _findCandidates = { id: 31, name: "Find Candidates", icon: "flaticon-search", path: "/dashboard/candidates" };
 
 // ============================================================
 // World-specific navigation: dashboardNavigation[role][world]
@@ -81,12 +83,12 @@ export const dashboardNavigation = {
     jobs: {
       start:    [_dashboard, _browseJobs, _applications, _saved],
       organize: [_message],
-      account:  [_profile, _privacy, _support, _feedback],
+      account:  [_candidateProfile, { ..._profile, name: "Account settings", path: "/my-profile?tab=settings" }, _privacy, _support, _feedback],
     },
   },
   company: {
     jobs: {
-      start:    [_dashboard, _manageJobs, _createJob],
+      start:    [_dashboard, _manageJobs, _createJob, _findCandidates],
       organize: [_message],
       account:  [_profile, _privacy, _support, _feedback],
     },

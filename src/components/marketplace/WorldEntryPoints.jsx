@@ -13,8 +13,8 @@ const entries = {
     { title: "I offer local services", text: "Add your trade and service area, explore local requests and quote for work that fits your availability.", primary: ["Browse local requests", "/local/quote-requests"], account: ["Set up my local profile", "/onboarding?role=local_professional"] },
   ],
   jobs: [
-    { title: "I’m looking for a job", text: "Set up your job-seeker profile and attach a CV when you apply to a vacancy. Follow your applications from your dashboard. Your CV is not a public listing.", primary: ["Browse jobs", "/jobs/browse"], account: ["Set up my job-seeker profile", "/onboarding?role=candidate&redirect_url=%2Fdashboard%2Fapplications"], extra: ["View my applications", "/dashboard/applications"] },
-    { title: "I’m looking for people", text: "Set up your company, complete verification and publish a vacancy. Review the people who apply and update their application status from your dashboard.", primary: ["See how hiring works", "/jobs/companies"], account: ["Post a vacancy", "/create-job"], extra: ["Manage my vacancies", "/manage-jobs"] },
+    { title: "I’m looking for a job", text: "Create your job-seeker profile, keep a CV ready and choose whether verified employers can find you. Your profile and CV stay private until you choose to share them.", primary: ["Browse jobs", "/jobs/browse"], account: ["Set up my profile & CV", "/dashboard/candidate-profile"], extra: ["View my applications", "/dashboard/applications"] },
+    { title: "I’m looking for people", text: "Verify your company, publish a vacancy and review applications. You can also explore candidates who have chosen to be discoverable to verified employers.", primary: ["See how hiring works", "/jobs/companies"], account: ["Post a vacancy", "/create-job"], extra: ["Find candidates", "/dashboard/candidates"] },
   ],
 };
 

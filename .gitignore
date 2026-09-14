@@ -68,6 +68,7 @@ scripts/verify-*.mjs
 !scripts/check-invoice.mjs
 !scripts/check-invoice-pdf.mjs
 !scripts/check-dashboard-mvp.mjs
+!scripts/check-candidate-profiles.mjs
 !scripts/verify-environment.mjs
 !scripts/verify-hosted-release.mjs
 

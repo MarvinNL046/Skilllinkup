@@ -9,6 +9,7 @@ export const rateLimiter = new RateLimiter(components.rateLimiter, {
   waitlistPerEmail: { kind: "fixed window", rate: 2, period: DAY },
   waitlistGlobal: { kind: "token bucket", rate: 500, period: HOUR, shards: 5 },
   jobApplication: { kind: "token bucket", rate: 20, period: DAY, capacity: 5 },
+  candidateCvUpload: { kind: "token bucket", rate: 20, period: HOUR, capacity: 5 },
   projectProposal: { kind: "token bucket", rate: 20, period: DAY, capacity: 5 },
   localRequest: { kind: "token bucket", rate: 10, period: DAY, capacity: 3 },
   localQuote: { kind: "token bucket", rate: 30, period: DAY, capacity: 6 },

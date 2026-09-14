@@ -168,6 +168,8 @@ export default function RoleDashboardInfo({ role, world }) {
         <div><span>{config.eyebrow}</span><h1>Welcome, {firstName}</h1><h2>{config.title}</h2><p>{config.description}</p></div>
         <Button asChild><Link href={config.action.href}><ActionIcon size={18} />{config.action.label}</Link></Button>
       </header>
+      {candidate && <p><Link href="/dashboard/candidate-profile">Manage my profile, CV and employer visibility</Link></p>}
+      {role === "company" && <p><Link href="/dashboard/candidates">Find candidates who chose to share their profile</Link></p>}
       <section className={styles.stats}>{stats.map((stat) => <StatCard key={stat.label} {...stat} />)}</section>
       <div className={styles.contentGrid} data-has-schedule={schedule.length ? "true" : "false"}>
         <section className={styles.panel}>
