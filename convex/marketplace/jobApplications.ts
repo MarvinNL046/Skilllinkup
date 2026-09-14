@@ -82,7 +82,6 @@ async function candidateRows(ctx: QueryCtx, applications: Doc<"jobApplications">
     );
     return applications.flatMap((application, index) => {
       const job = jobs[index];
-      if (!job) return [];
       const {
         candidateId: _candidateId,
         employerNote: _privateNote,
@@ -93,13 +92,13 @@ async function candidateRows(ctx: QueryCtx, applications: Doc<"jobApplications">
         {
           application: safe,
           job: {
-            id: job._id,
-            slug: job.slug,
-            title: job.title,
-            company: job.company ?? null,
-            workType: job.workType ?? null,
-            locationCity: job.locationCity ?? null,
-            status: job.status,
+            id: application.jobId,
+            slug: job?.slug ?? "",
+            title: job?.title ?? "Vacancy no longer available",
+            company: job?.company ?? null,
+            workType: job?.workType ?? null,
+            locationCity: job?.locationCity ?? null,
+            status: job && (!job.expiresAt || job.expiresAt > Date.now()) ? job.status : "closed",
           },
         },
       ];
@@ -127,10 +126,16 @@ async function employerRows(ctx: QueryCtx, applications: Doc<"jobApplications">[
 }
 
 export const listMinePage = query({
-  args: { paginationOpts: paginationOptsValidator },
+  args: { applicationId: v.optional(v.string()), paginationOpts: paginationOptsValidator },
   returns: paginationResultValidator(candidateRowValidator),
   handler: async (ctx, args) => {
     const user = await requireAuthUser(ctx);
+    if (args.applicationId !== undefined) {
+      const id = ctx.db.normalizeId("jobApplications", args.applicationId);
+      const application = id ? await ctx.db.get(id) : null;
+      const owned = application && application.candidateId === user._id && application.tenantId === user.tenantId;
+      return { page: owned ? await candidateRows(ctx, [application]) : [], isDone: true, continueCursor: "" };
+    }
     const result = await ctx.db.query("jobApplications")
       .withIndex("by_candidate", q => q.eq("candidateId", user._id))
       .order("desc").paginate(args.paginationOpts);
@@ -436,8 +441,8 @@ export const updateStatus = mutation({
       userId: application.candidateId,
       type: "job_application_status",
       title: "Application updated",
-      body: `${job.title} moved to ${args.status.replaceAll("_", " ")}.`,
-      link: "/dashboard/applications",
+      body: `${job.title}: ${args.status === "screening" ? "In review" : args.status === "rejected" ? "Application closed" : args.status.charAt(0).toUpperCase() + args.status.slice(1)}. View your application for the latest status.`,
+      link: `/dashboard/applications?application=${application._id}`,
       metadata: {
         jobId: job._id,
         applicationId: application._id,

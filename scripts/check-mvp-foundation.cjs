@@ -30,6 +30,7 @@ function fixture(rows, actor = "buyer") {
   const state = new Map(rows.map((row) => [row._id, copy(row)]));
   let seq = 0; const writes = []; const scheduled = [];
   return { state, writes, scheduled, auth: { getUserIdentity: async () => actor ? { subject: actor } : null }, db: {
+    normalizeId: (_table, id) => state.has(id) ? id : null,
     get: async (...ids) => copy(state.get(ids.at(-1)) ?? null),
     query(table) {
       const filters = []; let desc = false; let sortField = "_creationTime";
@@ -76,11 +77,20 @@ async function main() {
     assert.equal(mine.length, 125); assert.equal(new Set(mine.map(r => r.application._id)).size, 125);
     assert.equal(mine[0].application._id, "app-124"); assert.equal(mine.at(-1).application._id, "app-0");
     assert.ok(mine.every(r => !("employerNote" in r.application) && !("candidateId" in r.application)));
+    const focused = await drain(apps.listMinePage, ctx, { applicationId: "app-0" });
+    assert.equal(focused.length, 1); assert.equal(focused[0].application._id, "app-0");
+    assert.ok(!("employerNote" in focused[0].application));
+    assert.equal((await drain(apps.listMinePage, ctx, { applicationId: "invalid" })).length, 0);
+    ctx.state.delete("job");
+    const missingJob = await drain(apps.listMinePage, ctx, { applicationId: "app-0" });
+    assert.equal(missingJob[0].job.title, "Vacancy no longer available"); assert.equal(missingJob[0].job.status, "closed");
+    ctx.state.set("job", { _id: "job", _table: "jobs", tenantId: "tenant", clientId: "employer", title: "QA", slug: "qa", status: "open" });
     ctx.auth.getUserIdentity = async () => ({ subject: "employer" });
     assert.equal((await drain(apps.listForJobPage, ctx, { jobId: "job" })).length, 125);
     const filtered = await drain(apps.listForJobPage, ctx, { jobId: "job", status: "screening" });
     assert.equal(filtered.length, 62); assert.ok(filtered.every(r => r.application.status === "screening"));
     ctx.auth.getUserIdentity = async () => ({ subject: "outsider" });
+    assert.equal((await drain(apps.listMinePage, ctx, { applicationId: "app-0" })).length, 0);
     assert.equal((await drain(apps.listMinePage, ctx, {})).length, 0);
     await assert.rejects(() => drain(apps.listForJobPage, ctx, { jobId: "job" }));
     ctx.auth.getUserIdentity = async () => null;
@@ -134,6 +144,10 @@ async function main() {
       await assert.rejects(() => apps.updateStatus.handler(ctx, { applicationId: id, status: "screening" }), /Unauthorized/);
       actAs("employer");
       await apps.updateStatus.handler(ctx, { applicationId: id, status: "screening", employerNote: "Private internal evaluation" });
+      const statusNotice = [...ctx.state.values()].find(row => row._table === "notifications" && row.userId === "candidate" && row.link === `/dashboard/applications?application=${id}`);
+      assert.ok(statusNotice, "Status notification links to the exact application");
+      assert.match(statusNotice.body, /In review/);
+      assert.ok(!statusNotice.body.includes("Private internal"));
       let version = ctx.state.get(id).updatedAt;
       await apps.updateStatus.handler(ctx, { applicationId: id, status: "interview", expectedUpdatedAt: version });
       assert.equal(ctx.state.get(id).employerNote, "Private internal evaluation");
