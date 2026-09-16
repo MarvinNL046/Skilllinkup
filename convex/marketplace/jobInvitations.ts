@@ -8,6 +8,7 @@ import type { Doc } from "../_generated/dataModel";
 import { requireAuthUser, requireMarketplaceContext } from "../lib/authHelpers";
 import { rateLimiter } from "../lib/rateLimits";
 import { notifyUser } from "../lib/notifications";
+import { jobApplicationStatusValidator } from "../lib/marketplaceState";
 
 const status = v.union(
   v.literal("pending"),
@@ -28,6 +29,10 @@ const row = v.object({
   updatedAt: v.number(),
   available: v.boolean(),
   jobHref: v.union(v.string(), v.null()),
+  // A submitted application by the invited candidate for the same vacancy.
+  // Interest alone never creates one; drafts stay private to the candidate.
+  applicationId: v.union(v.id("jobApplications"), v.null()),
+  applicationStatus: v.union(jobApplicationStatusValidator, v.null()),
 });
 async function employer(ctx: QueryCtx) {
   const user = await requireAuthUser(ctx);
@@ -185,7 +190,7 @@ export const send = mutation({
       type: "job_invitation_received",
       title: "You have a vacancy invitation",
       body: `${job.company || sender.name} invited you to consider ${job.title}. You decide whether to respond.`,
-      link: "/dashboard/job-invitations",
+      link: `/dashboard/job-invitations?invitation=${id}`,
     });
     return id;
   },
@@ -207,9 +212,28 @@ async function available(ctx: QueryCtx, invitation: Doc<"jobInvitations">) {
     invitation.expiresAt > Date.now();
   return { allowed: !!allowed, job };
 }
+async function linkedApplication(
+  ctx: QueryCtx,
+  invitation: Doc<"jobInvitations">,
+) {
+  const application = await ctx.db
+    .query("jobApplications")
+    .withIndex("by_job_candidate", (q) =>
+      q.eq("jobId", invitation.jobId).eq("candidateId", invitation.candidateId),
+    )
+    .unique();
+  return application &&
+    application.status !== "draft" &&
+    application.tenantId === invitation.tenantId
+    ? application
+    : null;
+}
 export const listMine = query({
   args: {
     audience: v.union(v.literal("candidate"), v.literal("company")),
+    // Notification and dashboard links select one invitation; an unknown or
+    // foreign id yields an empty page instead of an error.
+    invitationId: v.optional(v.string()),
     paginationOpts: paginationOptsValidator,
   },
   returns: paginationResultValidator(row),
@@ -223,19 +247,32 @@ export const listMine = query({
     );
     if (args.paginationOpts.numItems > 50)
       throw new Error("Load up to 50 invitations at a time.");
-    const source =
-      args.audience === "candidate"
-        ? ctx.db
-            .query("jobInvitations")
-            .withIndex("by_candidateId", (q) => q.eq("candidateId", user._id))
-        : ctx.db
-            .query("jobInvitations")
-            .withIndex("by_employerId", (q) => q.eq("employerId", user._id));
-    const result = await source.order("desc").paginate(args.paginationOpts);
+    let result;
+    if (args.invitationId !== undefined) {
+      const id = ctx.db.normalizeId("jobInvitations", args.invitationId);
+      const invitation = id ? await ctx.db.get(id) : null;
+      const owned =
+        invitation &&
+        (args.audience === "candidate"
+          ? invitation.candidateId === user._id
+          : invitation.employerId === user._id);
+      result = { page: owned ? [invitation] : [], isDone: true, continueCursor: "" };
+    } else {
+      const source =
+        args.audience === "candidate"
+          ? ctx.db
+              .query("jobInvitations")
+              .withIndex("by_candidateId", (q) => q.eq("candidateId", user._id))
+          : ctx.db
+              .query("jobInvitations")
+              .withIndex("by_employerId", (q) => q.eq("employerId", user._id));
+      result = await source.order("desc").paginate(args.paginationOpts);
+    }
     const page = [];
     for (const invitation of result.page) {
       if (invitation.tenantId !== user.tenantId) continue;
       const { allowed, job } = await available(ctx, invitation);
+      const application = await linkedApplication(ctx, invitation);
       page.push({
         _id: invitation._id,
         jobId: invitation.jobId,
@@ -250,6 +287,8 @@ export const listMine = query({
         available: allowed,
         jobHref:
           allowed && job ? `/jobs/job/${encodeURIComponent(job.slug)}` : null,
+        applicationId: application ? application._id : null,
+        applicationStatus: application ? application.status : null,
       });
     }
     return { ...result, page };
@@ -284,10 +323,9 @@ export const respond = mutation({
       invitation.updatedAt !== args.expectedUpdatedAt
     )
       throw new Error("This invitation changed. Review its current status.");
-    if (
-      args.response === "interested" &&
-      !(await available(ctx, invitation)).allowed
-    )
+    // Expired, closed or unverified invitations accept no response at all, so
+    // the employer never receives a misleading decline for a dead invitation.
+    if (!(await available(ctx, invitation)).allowed)
       throw new Error("This invitation is no longer available.");
     await ctx.db.patch(invitation._id, {
       status: args.response,
@@ -300,7 +338,7 @@ export const respond = mutation({
         type: "job_invitation_response",
         title: "A candidate responded to your invitation",
         body: `${invitation.candidateName} ${args.response === "interested" ? "is interested in" : "declined the invitation for"} ${invitation.jobTitle}.`,
-        link: "/dashboard/sent-invitations",
+        link: `/dashboard/sent-invitations?invitation=${invitation._id}`,
       });
     return null;
   },

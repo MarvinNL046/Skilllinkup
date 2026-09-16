@@ -7,7 +7,9 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function JobApplicationsPage({ params }) {
+export default async function JobApplicationsPage({ params, searchParams }) {
   const { id } = await params;
-  return <DashboardLayout maxWidth="wide"><AccountModeGuard role="company" world="jobs"><EmployerApplications jobId={id} /></AccountModeGuard></DashboardLayout>;
+  const query = await searchParams;
+  const applicationId = typeof query?.application === "string" ? query.application : undefined;
+  return <DashboardLayout maxWidth="wide"><AccountModeGuard role="company" world="jobs"><EmployerApplications jobId={id} applicationId={applicationId} /></AccountModeGuard></DashboardLayout>;
 }

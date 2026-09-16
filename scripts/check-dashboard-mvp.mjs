@@ -183,6 +183,71 @@ function composerFixture(isMobile = false, navigator = { onLine: true }, connect
   return { props, sends, render, settle: () => settle };
 }
 
+await check("Invitation pages select linked invitations, confirm responses in a dialog and retire expired invitations", async () => {
+  for (const audience of ["candidate", "company"]) {
+    const candidate = audience === "candidate";
+    const runner = hookRunner(); const calls = []; let queryArgs; let settle;
+    const base = { _id: "inv", jobId: "job", candidateName: "QA Candidate", companyName: "QA Company", jobTitle: "QA vacancy", note: "", status: "pending", expiresAt: Date.now() + 86400000, createdAt: 1, updatedAt: 5, available: true, jobHref: "/jobs/job/qa", applicationId: null, applicationStatus: null };
+    let results = [base];
+    const Page = loader({
+      react: runner.react, "next/link": { default: "a" },
+      "convex/react": { usePaginatedQuery: (_query, args, options) => { queryArgs = args; assert.equal(options.initialNumItems, 20); return { results, status: "Exhausted", loadMore() {} }; }, useMutation: () => args => { calls.push(args); return new Promise((resolve, reject) => { settle = { resolve, reject }; }); } },
+      "../header/DashboardNavigation": { default: "nav" }, "./CandidateProfile.module.css": { default: {} },
+    }, { setInterval: () => 0, clearInterval() {} })("src/components/dashboard/section/JobInvitations.jsx").default;
+    // Invitation rows are stateless child components, so expand them into the tree.
+    const expand = tree => !tree || typeof tree !== "object" ? tree : Array.isArray(tree) ? tree.map(expand) : typeof tree.type === "function" ? expand(tree.type(tree.props)) : { ...tree, props: { ...tree.props, children: expand(tree.props?.children) } };
+    const render = (props = { audience }) => expand(runner.render(() => Page(props)));
+    const dialog = tree => findElement(tree, e => e.type === "Dialog");
+    let tree = render({ audience, invitationId: "inv" });
+    assert.equal(queryArgs.invitationId, "inv"); assert.equal(queryArgs.audience, audience);
+    assert.ok(findElement(tree, e => e.props?.href === (candidate ? "/dashboard/job-invitations" : "/dashboard/sent-invitations") && e.props?.children === "Show all invitations"));
+    results = []; tree = render({ audience, invitationId: "inv" });
+    assert.ok(findElement(tree, e => e.props?.children === "Invitation not available"));
+    results = [base]; tree = render(); assert.equal("invitationId" in queryArgs, false);
+    assert.equal(dialog(tree).props.open, false);
+    const triggerLabel = candidate ? "I’m interested" : "Withdraw invitation";
+    findElement(tree, e => e.props?.children === triggerLabel && e.props?.onClick).props.onClick();
+    tree = render(); assert.equal(dialog(tree).props.open, true);
+    const confirmLabel = candidate ? "Confirm interest" : "Withdraw invitation";
+    const confirm = () => findElement(render(), e => e.props?.variant === (candidate ? "default" : "destructive") && e.props?.type === "button");
+    assert.equal(confirm().props.children, confirmLabel);
+    assert.equal(confirm().props.disabled, false);
+    const first = confirm().props.onClick();
+    await confirm().props.onClick();
+    assert.equal(calls.length, 1);
+    assert.deepEqual(JSON.parse(JSON.stringify(calls[0])), candidate ? { invitationId: "inv", expectedUpdatedAt: 5, response: "interested" } : { invitationId: "inv", expectedUpdatedAt: 5 });
+    assert.equal(findElement(render(), e => e.props?.children === "Saving…").props.disabled, true);
+    settle.reject(new Error("This invitation changed. Review its current status.")); await first;
+    tree = render(); assert.equal(dialog(tree).props.open, true);
+    assert.match(findElement(tree, e => e.props?.role === "alert").props.children, /invitation changed/);
+    results = [{ ...base, updatedAt: 6 }]; tree = render();
+    assert.equal(confirm().props.disabled, true);
+    assert.match([].concat(findElement(tree, e => e.props?.role === "status").props.children).join(""), /has changed/);
+    assert.equal(findElement(tree, e => e.props?.children === "Close").props.variant, "outline");
+    findElement(tree, e => e.props?.children === "Close").props.onClick();
+    tree = render(); assert.equal(dialog(tree).props.open, false);
+    findElement(tree, e => e.props?.children === triggerLabel && e.props?.onClick).props.onClick();
+    const retry = confirm().props.onClick(); settle.resolve(null); await retry;
+    assert.equal(calls.length, 2); assert.equal(calls[1].expectedUpdatedAt, 6);
+    assert.equal(dialog(render()).props.open, false);
+    results = [{ ...base, expiresAt: 1 }]; tree = render();
+    assert.ok(!findElement(tree, e => e.props?.children === triggerLabel && e.props?.onClick));
+    assert.ok(!findElement(tree, e => e.props?.children === "Decline"));
+    assert.ok(findElement(tree, e => e.props?.children === "Expired"));
+    assert.ok(!findElement(tree, e => e.props?.href === "/jobs/job/qa"));
+    results = [{ ...base, status: "pending", available: false }]; tree = render();
+    assert.ok(findElement(tree, e => e.props?.children === "No longer available"));
+    assert.ok(!findElement(tree, e => e.props?.children === triggerLabel && e.props?.onClick));
+    results = [{ ...base, status: "interested" }]; tree = render();
+    assert.equal(!!findElement(tree, e => e.props?.children === "Review vacancy and apply"), candidate);
+    assert.ok(!findElement(tree, e => e.props?.children?.includes?.("Manage application") || e.props?.children === "Review application"));
+    results = [{ ...base, status: "interested", applicationId: "app", applicationStatus: "screening" }]; tree = render();
+    assert.ok(findElement(tree, e => e.props?.href === (candidate ? "/dashboard/applications?application=app" : "/manage-jobs/job/applications?application=app") && e.props?.children === (candidate ? "Manage application" : "Review application")));
+    assert.ok(!findElement(tree, e => e.props?.children === "Review vacancy and apply"));
+    assert.ok(findElement(tree, e => Array.isArray(e.props?.children) && e.props.children.join("").includes("In review")));
+  }
+});
+
 await check("Local review queue loads more profiles, prevents duplicate decisions and preserves failed evidence", async () => {
   const runner = hookRunner();
   const calls = [], loads = [];

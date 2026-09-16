@@ -5,11 +5,14 @@ export const metadata = {
   title: "Vacancy invitations",
   robots: { index: false, follow: false },
 };
-export default function Page() {
+export default async function Page({ searchParams }) {
+  const params = await searchParams;
+  const invitationId =
+    typeof params?.invitation === "string" ? params.invitation : undefined;
   return (
     <DashboardLayout>
       <AccountModeGuard role="candidate" world="jobs">
-        <JobInvitations audience="candidate" />
+        <JobInvitations audience="candidate" invitationId={invitationId} />
       </AccountModeGuard>
     </DashboardLayout>
   );

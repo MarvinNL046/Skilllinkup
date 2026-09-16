@@ -93,6 +93,8 @@ function fixture() {
     },
     db: {
       get: async (id) => structuredClone(records.get(id) || null),
+      normalizeId: (table, id) =>
+        records.get(id)?.table === table ? id : null,
       system: { get: async (_table, id) => metadata.get(id) || null },
       insert: async (table, fields) => {
         const id = `${table}-${records.size}`;
