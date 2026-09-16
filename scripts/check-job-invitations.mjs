@@ -92,6 +92,8 @@ function fixture() {
     },
     db: {
       get: async (id) => structuredClone(records.get(id) || null),
+      normalizeId: (table, id) =>
+        records.get(id)?.table === table ? id : null,
       system: { get: async (_table, id) => metadata.get(id) || null },
       insert: async (table, fields) => {
         const id = `${table}-${records.size}`;
@@ -446,3 +448,119 @@ await assert.rejects(
   /Too many invitations/,
 );
 console.log("PASS rate limiting blocks new invitations");
+
+// Deep links, linked applications and expired responses reuse the fixture above.
+f.ctx.rateLimited = false;
+f.as(company);
+const byType = (type) =>
+  [...f.records.values()].find(
+    (x) => x.table === "notifications" && x.type === type,
+  );
+assert.equal(
+  byType("job_invitation_received").link,
+  `/dashboard/job-invitations?invitation=${id}`,
+);
+assert.equal(
+  byType("job_invitation_response").link,
+  `/dashboard/sent-invitations?invitation=${id}`,
+);
+let focused = await backend.listMine.handler(f.ctx, {
+  audience: "company",
+  invitationId: id,
+  ...page,
+});
+assert.equal(focused.page.length, 1);
+assert.equal(focused.page[0]._id, id);
+assert.equal(focused.isDone, true);
+assert.equal(focused.page[0].applicationId, null);
+assert.equal(focused.page[0].applicationStatus, null);
+for (const bad of ["missing", "job", ""])
+  assert.equal(
+    (
+      await backend.listMine.handler(f.ctx, {
+        audience: "company",
+        invitationId: bad,
+        ...page,
+      })
+    ).page.length,
+    0,
+  );
+f.as(makeUser("stranger-company", "company"));
+assert.equal(
+  (
+    await backend.listMine.handler(f.ctx, {
+      audience: "company",
+      invitationId: id,
+      ...page,
+    })
+  ).page.length,
+  0,
+);
+f.as(makeUser("other-candidate"));
+assert.equal(
+  (
+    await backend.listMine.handler(f.ctx, {
+      audience: "candidate",
+      invitationId: id,
+      ...page,
+    })
+  ).page.length,
+  0,
+);
+f.as(candidate);
+focused = await backend.listMine.handler(f.ctx, {
+  audience: "candidate",
+  invitationId: id,
+  ...page,
+});
+assert.equal(focused.page[0]._id, id);
+f.records.set("linked-application", {
+  _id: "linked-application",
+  table: "jobApplications",
+  tenantId: "tenant",
+  jobId: "job",
+  candidateId: "candidate",
+  status: "draft",
+  coverLetter: "private draft",
+});
+const linked = async (audience) =>
+  (
+    await backend.listMine.handler(f.ctx, {
+      audience,
+      invitationId: id,
+      ...page,
+    })
+  ).page[0];
+assert.equal((await linked("candidate")).applicationId, null);
+f.records.get("linked-application").status = "screening";
+for (const [user, audience] of [
+  [candidate, "candidate"],
+  [company, "company"],
+]) {
+  f.as(user);
+  const item = await linked(audience);
+  assert.equal(item.applicationId, "linked-application");
+  assert.equal(item.applicationStatus, "screening");
+  assert.equal("coverLetter" in item, false);
+}
+f.records.get("linked-application").tenantId = "other-tenant";
+f.as(candidate);
+assert.equal((await linked("candidate")).applicationId, null);
+f.records.delete("linked-application");
+const notificationCount = () =>
+  [...f.records.values()].filter((x) => x.table === "notifications").length;
+const beforeDecline = notificationCount();
+await assert.rejects(
+  () =>
+    backend.respond.handler(f.ctx, {
+      invitationId: expired,
+      response: "declined",
+      expectedUpdatedAt: f.records.get(expired).updatedAt,
+    }),
+  /no longer/,
+);
+assert.equal(f.records.get(expired).status, "pending");
+assert.equal(notificationCount(), beforeDecline);
+console.log(
+  "PASS invitation deep links, linked applications and expired responses",
+);

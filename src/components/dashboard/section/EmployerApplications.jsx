@@ -68,11 +68,14 @@ const stageGuidance = {
     "The candidate has withdrawn their application. You cannot change its stage or start a conversation from this application here.",
 };
 
-export default function EmployerApplications({ jobId }) {
+export default function EmployerApplications({ jobId, applicationId }) {
   const { isAuthenticated } = useConvexUser();
   const [filter, setFilter] = useState("all");
   const [view, setView] = useState("applications");
-  const [focusedApplication, setFocusedApplication] = useState(null);
+  // Sent-invitation and notification links open one application directly.
+  const [focusedApplication, setFocusedApplication] = useState(
+    applicationId ?? null,
+  );
   const [updating, setUpdating] = useState(null);
   const updatingRef = useRef(false);
   const [decision, setDecision] = useState(null);
@@ -274,7 +277,7 @@ export default function EmployerApplications({ jobId }) {
         <>
           {focusedApplication && (
             <div>
-              <p>Showing the application linked to this invitation.</p>
+              <p>Showing the selected application for this vacancy.</p>
               <Button
                 variant="outline"
                 onClick={() => setFocusedApplication(null)}
@@ -290,8 +293,16 @@ export default function EmployerApplications({ jobId }) {
           ) : applications.length === 0 && pageStatus === "Exhausted" ? (
             <section className={styles.empty}>
               <UserRound />
-              <h2>No applicants in this stage</h2>
-              <p>New candidates will appear here as soon as they apply.</p>
+              <h2>
+                {focusedApplication
+                  ? "Application not available"
+                  : "No applicants in this stage"}
+              </h2>
+              <p>
+                {focusedApplication
+                  ? "This application may have been removed or belong to another vacancy. Show all applications to continue."
+                  : "New candidates will appear here as soon as they apply."}
+              </p>
             </section>
           ) : (
             <section className={styles.list}>

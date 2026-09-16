@@ -144,7 +144,8 @@ export const listMinePage = query({
 });
 
 export const listForJobPage = query({
-  args: { jobId: v.id("jobs"), status: v.optional(jobApplicationStatusValidator), applicationId: v.optional(v.id("jobApplications")), paginationOpts: paginationOptsValidator },
+  // applicationId may come from a URL, so it is a string normalized here rather than a strict id.
+  args: { jobId: v.id("jobs"), status: v.optional(jobApplicationStatusValidator), applicationId: v.optional(v.string()), paginationOpts: paginationOptsValidator },
   returns: paginationResultValidator(employerApplicationValidator),
   handler: async (ctx, args) => {
     const job = await ctx.db.get(args.jobId);
@@ -153,8 +154,9 @@ export const listForJobPage = query({
     requireMarketplaceContext(employer, "company", "jobs", "viewing applicants");
     if (job.tenantId !== employer.tenantId) throw new Error("This vacancy is not available to your account.");
     if (args.paginationOpts.numItems > 50) throw new Error("Load up to 50 applications at a time.");
-    if (args.applicationId) {
-      const application = await ctx.db.get(args.applicationId);
+    if (args.applicationId !== undefined) {
+      const id = ctx.db.normalizeId("jobApplications", args.applicationId);
+      const application = id ? await ctx.db.get(id) : null;
       const visible = application && application.jobId === job._id && application.tenantId === job.tenantId && application.status !== "draft";
       return { page: visible ? await employerRows(ctx, [application]) : [], isDone: true, continueCursor: "" };
     }
