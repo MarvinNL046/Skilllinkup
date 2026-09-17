@@ -1,5 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import Image from "next/image";
+import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
@@ -16,19 +20,17 @@ function ProjectCard({ project, onEdit, onDelete }) {
       <div className="ps-widget bgc-white bdrs4 overflow-hidden relative bdr1">
         {/* Thumbnail */}
         <div
-          style={{
-            height: 160,
-            background: hasImages ? "#ddd" : "#f5f5f5",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+          className="relative flex items-center justify-center bg-[var(--bg-subtle,#f5f5f5)]"
+          style={{ height: 160 }}
         >
           {hasImages ? (
-            <span className="text-sm text-muted">
-              {project.imageUrls.length} image
-              {project.imageUrls.length !== 1 ? "s" : ""}
-            </span>
+            <Image
+              src={project.imageUrls[0]}
+              alt={`${project.title} preview`}
+              fill
+              sizes="(max-width: 640px) 100vw, 33vw"
+              className="object-cover"
+            />
           ) : (
             <span className="flaticon-photo text-3xl text-muted" />
           )}
@@ -58,20 +60,18 @@ function ProjectCard({ project, onEdit, onDelete }) {
             </div>
           )}
           <div className="flex gap-2">
-            <button
-              className="skl-action-secondary"
-              onClick={() => onEdit(project)}
+            <Button type="button" variant="outline" size="sm" onClick={() => onEdit(project)}>
+              <Pencil aria-hidden="true" /> Edit
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={`Delete ${project.title}`}
+              onClick={(event) => onDelete(project, event)}
             >
-              <span className="flaticon-pencil me-1" />
-              Edit
-            </button>
-            <button
-              className="skl-action-destructive"
-              aria-label="Delete portfolio project"
-              onClick={() => onDelete(project._id)}
-            >
-              <span className="flaticon-delete" />
-            </button>
+              <Trash2 aria-hidden="true" />
+            </Button>
           </div>
         </div>
       </div>
@@ -100,14 +100,15 @@ export default function PortfolioTab() {
   );
   const removeProject = useMutation(api.marketplace.portfolio.remove);
 
-  const handleDelete = async (projectId) => {
-    if (!confirm("Delete this portfolio project?")) return;
-    try {
-      await removeProject({ projectId });
-      toast.success(tt("projectDeleted"));
-    } catch (err) {
-      toast.error(err.message || tt("failedToDelete"));
-    }
+  const [pendingDelete, setPendingDelete] = useState(null);
+  const deleteTriggerRef = useRef(null);
+  const handleDelete = (project, event) => {
+    deleteTriggerRef.current = event.currentTarget;
+    setPendingDelete({ id: project._id, title: project.title });
+  };
+  const confirmDelete = async () => {
+    await removeProject({ projectId: pendingDelete.id });
+    toast.success(tt("projectDeleted"));
   };
 
 
@@ -124,12 +125,9 @@ export default function PortfolioTab() {
       <div className="ps-widget bgc-white bdrs4 p-8 mb-8">
         <div className="flex justify-between items-center bdrb1 pb-4 mb-6">
           <h5 className="list-title">Portfolio Projects</h5>
-          <button
-            className="skl-action-primary"
-            onClick={openCreate}
-          >
-            + Add Project
-          </button>
+          <Button type="button" size="sm" onClick={openCreate}>
+            <Plus aria-hidden="true" /> Add project
+          </Button>
         </div>
 
         {projects.length === 0 ? (
@@ -138,12 +136,9 @@ export default function PortfolioTab() {
             <p className="text mt-2.5 mb-4">
               No portfolio projects yet. Add your first project!
             </p>
-            <button
-              className="skl-action-primary"
-              onClick={openCreate}
-            >
-              + Add Project
-            </button>
+            <Button type="button" onClick={openCreate}>
+              <Plus aria-hidden="true" /> Add project
+            </Button>
           </div>
         ) : (
           <div className="row">
@@ -159,6 +154,16 @@ export default function PortfolioTab() {
         )}
       </div>
 
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        title="Delete this portfolio project?"
+        description={`${pendingDelete?.title ?? "This project"} and its images will be removed from your profile. You cannot undo this.`}
+        confirmLabel="Delete project"
+        busyLabel="Deleting…"
+        onConfirm={confirmDelete}
+        onClose={() => setPendingDelete(null)}
+        returnFocusTo={deleteTriggerRef}
+      />
       <PortfolioProjectModal
         project={selectedProject}
         open={modalOpen}

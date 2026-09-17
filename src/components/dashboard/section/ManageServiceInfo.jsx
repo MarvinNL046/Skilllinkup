@@ -83,7 +83,7 @@ function GigTable({ gigs, removeGig, onEdit, t }) {
 export default function ManageServiceInfo() {
   const t = useTranslations("manageServices");
   const [selectedTab, setSelectedTab] = useState(0);
-  const { gigs, removeGig, updateGig } = useConvexMyGigs();
+  const { gigs, removeGig, updateGig, profileMissing } = useConvexMyGigs();
   const [editing, setEditing] = useState(null);
 
   const tabs = [
@@ -138,7 +138,13 @@ export default function ManageServiceInfo() {
                 }))}
               />
             </div>
-            {gigs === undefined ? <p role="status">Loading your services…</p> : <GigTable gigs={filteredGigs} removeGig={removeGig} onEdit={setEditing} t={t} />}
+            {profileMissing ? (
+              <section aria-label="Profile required">
+                <h2 className="text-lg font-semibold">Complete your freelancer profile first</h2>
+                <p className="mt-2 text-[var(--text-secondary)]">Services are published from your freelancer profile. Finish your profile, then add your first service.</p>
+                <Button asChild className="mt-4"><Link href="/my-profile">Complete my profile</Link></Button>
+              </section>
+            ) : gigs === undefined ? <p role="status">Loading your services…</p> : <GigTable gigs={filteredGigs} removeGig={removeGig} onEdit={setEditing} t={t} />}
           </CardContent>
         </Card>
       </div>

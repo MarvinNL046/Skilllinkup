@@ -1,25 +1,30 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import useConvexUser from "@/hook/useConvexUser";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import ExperienceModal from "../modal/ExperienceModal";
 
 function SectionHeader({ title, modalType, onAdd, setModalType }) {
   return (
     <div className="flex justify-between items-center bdrb1 pb-4 mb-5">
       <h5 className="list-title mb-0">{title}</h5>
-      <button
-        className="skl-action-primary"
+      <Button
+        type="button"
+        size="sm"
+        aria-label={`Add ${title.toLowerCase()}`}
         onClick={() => {
           setModalType(modalType);
           onAdd();
         }}
       >
-        + Add
-      </button>
+        <Plus aria-hidden="true" /> Add
+      </Button>
     </div>
   );
 }
@@ -56,16 +61,18 @@ export default function ExperienceTab() {
   const removeEdu = useMutation(api.marketplace.experience.removeEducation);
   const removeCert = useMutation(api.marketplace.experience.removeCertification);
 
-  const handleDelete = async (type, id) => {
-    if (!confirm("Delete this item?")) return;
-    try {
-      if (type === "work") await removeWork({ id });
-      else if (type === "education") await removeEdu({ id });
-      else await removeCert({ id });
-      toast.success(tt("deleted"));
-    } catch (err) {
-      toast.error(err.message || tt("failed"));
-    }
+  const [pendingDelete, setPendingDelete] = useState(null);
+  const deleteTriggerRef = useRef(null);
+  const askDelete = (type, item, label, event) => {
+    deleteTriggerRef.current = event.currentTarget;
+    setPendingDelete({ type, id: item._id, label });
+  };
+  const confirmDelete = async () => {
+    const { type, id } = pendingDelete;
+    if (type === "work") await removeWork({ id });
+    else if (type === "education") await removeEdu({ id });
+    else await removeCert({ id });
+    toast.success(tt("deleted"));
   };
 
   const handleEdit = (type, item) => {
@@ -116,20 +123,24 @@ export default function ExperienceTab() {
                 )}
               </div>
               <div className="flex gap-2">
-                <a
-                  className="icon"
-                  style={{ cursor: "pointer" }}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Edit ${item.title}`}
                   onClick={() => handleEdit("work", item)}
                 >
-                  <span className="flaticon-pencil" />
-                </a>
-                <a
-                  className="icon text-danger"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleDelete("work", item._id)}
+                  <Pencil aria-hidden="true" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Delete ${item.title}`}
+                  onClick={(event) => askDelete("work", item, item.title, event)}
                 >
-                  <span className="flaticon-delete" />
-                </a>
+                  <Trash2 aria-hidden="true" />
+                </Button>
               </div>
             </div>
           ))
@@ -168,20 +179,24 @@ export default function ExperienceTab() {
                 )}
               </div>
               <div className="flex gap-2">
-                <a
-                  className="icon"
-                  style={{ cursor: "pointer" }}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Edit ${item.school}`}
                   onClick={() => handleEdit("education", item)}
                 >
-                  <span className="flaticon-pencil" />
-                </a>
-                <a
-                  className="icon text-danger"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleDelete("education", item._id)}
+                  <Pencil aria-hidden="true" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Delete ${item.school}`}
+                  onClick={(event) => askDelete("education", item, item.school, event)}
                 >
-                  <span className="flaticon-delete" />
-                </a>
+                  <Trash2 aria-hidden="true" />
+                </Button>
               </div>
             </div>
           ))
@@ -212,7 +227,7 @@ export default function ExperienceTab() {
                     {item.year ? ` · ${item.year}` : ""}
                   </p>
                 )}
-                {item.url && (
+                {item.url?.startsWith("https://") && (
                   <a
                     href={item.url}
                     target="_blank"
@@ -223,18 +238,30 @@ export default function ExperienceTab() {
                   </a>
                 )}
               </div>
-              <a
-                className="icon text-danger"
-                style={{ cursor: "pointer" }}
-                onClick={() => handleDelete("certification", item._id)}
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label={`Delete ${item.name}`}
+                onClick={(event) => askDelete("certification", item, item.name, event)}
               >
-                <span className="flaticon-delete" />
-              </a>
+                <Trash2 aria-hidden="true" />
+              </Button>
             </div>
           ))
         )}
       </div>
 
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        title="Delete this item?"
+        description={`“${pendingDelete?.label ?? "This item"}” will be removed from your profile. You cannot undo this.`}
+        confirmLabel="Delete"
+        busyLabel="Deleting…"
+        onConfirm={confirmDelete}
+        onClose={() => setPendingDelete(null)}
+        returnFocusTo={deleteTriggerRef}
+      />
       <ExperienceModal
         type={modalType}
         item={selectedItem}

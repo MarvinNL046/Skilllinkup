@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import AccountModeGuard from "@/components/dashboard/AccountModeGuard";
 import ProposalInfo from "@/components/dashboard/section/ProposalInfo";
 
 
@@ -15,7 +16,9 @@ export default function page() {
     <>
 
       <DashboardLayout maxWidth="wide">
-        <ProposalInfo />
+        <AccountModeGuard role="freelancer" world="online">
+          <ProposalInfo />
+        </AccountModeGuard>
       </DashboardLayout>
     </>
   );

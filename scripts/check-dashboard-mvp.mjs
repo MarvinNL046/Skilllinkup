@@ -183,6 +183,58 @@ function composerFixture(isMobile = false, navigator = { onLine: true }, connect
   return { props, sends, render, settle: () => settle };
 }
 
+await check("Shared confirmation blocks double submits, keeps failures visible and irreversible dashboard actions wait for it", async () => {
+  const ui = { "@/components/ui/button": { Button: "Button" }, "@/components/ui/dialog": new Proxy({}, { get: (_, name) => String(name) }) };
+  const runner = hookRunner(); const calls = []; let settle; let closed = 0;
+  const Confirm = loader({ react: runner.react, ...ui })("src/components/ui/ConfirmDialog.jsx").default;
+  const props = { open: true, title: "Remove this file?", description: "You cannot undo this.", confirmLabel: "Remove file", onConfirm: () => { calls.push(1); return new Promise((resolve, reject) => { settle = { resolve, reject }; }); }, onClose: () => { closed++; } };
+  const render = () => runner.render(() => Confirm(props));
+  const confirmButton = () => findElement(render(), e => e.type === "Button" && e.props?.variant === "destructive");
+  assert.equal(findElement(render(), e => e.type === "Dialog").props.open, true);
+  assert.equal(confirmButton().props.children, "Remove file");
+  const first = confirmButton().props.onClick();
+  await confirmButton().props.onClick();
+  assert.equal(calls.length, 1);
+  assert.equal(confirmButton().props.disabled, true);
+  findElement(render(), e => e.props?.children === "Cancel").props.onClick();
+  assert.equal(closed, 0);
+  settle.reject(new Error("The appointment changed.")); await first;
+  assert.equal(closed, 0);
+  assert.match(findElement(render(), e => e.props?.role === "alert").props.children, /appointment changed/);
+  assert.equal(confirmButton().props.disabled, false);
+  const retry = confirmButton().props.onClick(); settle.resolve(null); await retry;
+  assert.equal(calls.length, 2); assert.equal(closed, 1);
+
+  // Removing a service only reaches the mutation through the confirmation.
+  const cardRunner = hookRunner(); const removed = [];
+  const CardRow = loader({
+    react: cardRunner.react, "next/image": { default: "img" }, "next/link": { default: "a" }, "react-tooltip": { Tooltip: "Tooltip" },
+    "next-intl": { useTranslations: () => key => key }, "lucide-react": new Proxy({}, { get: (_, name) => String(name) }),
+    "@/components/ui/ConfirmDialog": { default: "ConfirmDialog" },
+  })("src/components/dashboard/card/ManageServiceCard1.jsx").default;
+  const renderCard = () => cardRunner.render(() => CardRow({ data: { _id: "gig", title: "QA service", img: "/x.png", cost: 10 }, removeGig: async args => { removed.push(args); } }));
+  let row = renderCard();
+  assert.equal(findElement(row, e => e.type === "ConfirmDialog").props.open, false);
+  findElement(row, e => e.props?.["aria-label"] === "delete").props.onClick();
+  assert.equal(removed.length, 0);
+  row = renderCard();
+  const dialog = findElement(row, e => e.type === "ConfirmDialog");
+  assert.equal(dialog.props.open, true);
+  await dialog.props.onConfirm();
+  assert.equal(JSON.stringify(removed), JSON.stringify([{ gigId: "gig" }]));
+
+  // Native browser prompts bypass the shared dialog, focus handling and error states.
+  const offenders = [];
+  const scan = dir => { for (const entry of fs.readdirSync(dir, { withFileTypes: true })) { const full = path.join(dir, entry.name); if (entry.isDirectory()) scan(full); else if (/\.(jsx|js|tsx)$/.test(entry.name) && /(^|[^.\w])(window\.)?(confirm|alert)\(/.test(fs.readFileSync(full, "utf8").replace(/(async )?function confirm\(|const confirm = /g, ""))) offenders.push(path.relative(root, full)); } };
+  scan(path.join(root, "src/components/dashboard"));
+  assert.deepEqual(offenders, []);
+  const workspace = fs.readFileSync(path.join(root, "src/components/dashboard/section/OrderWorkspace.jsx"), "utf8");
+  for (const status of ["completed", "cancelled"]) assert.ok(!workspace.includes(`onClick={() => handleAppointmentStatus("${status}")}`), status);
+  assert.ok(workspace.includes('askConfirmation({ kind: "file"'));
+  for (const [file, role] of [["dashboard/credits", "local_professional"], ["proposal", "freelancer"], ["projects/[id]", "client"]])
+    assert.ok(fs.readFileSync(path.join(root, "src/app/(dashboard)", file, "page.jsx"), "utf8").includes(`<AccountModeGuard role="${role}"`), file);
+});
+
 await check("Invitation pages select linked invitations, confirm responses in a dialog and retire expired invitations", async () => {
   for (const audience of ["candidate", "company"]) {
     const candidate = audience === "candidate";
