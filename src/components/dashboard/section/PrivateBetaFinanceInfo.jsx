@@ -22,6 +22,11 @@ const COPY = {
     description:
       "Because Skilllinkup is not processing payments, it does not issue payment or VAT invoices for beta workspaces.",
   },
+  rewards: {
+    title: "Rewards are not active during beta",
+    description:
+      "Skilllinkup has no cashback, credit balance or reward tiers during the free private beta. Nothing is earned, stored or paid out.",
+  },
   statements: {
     title: "Financial statements are not active during beta",
     description:

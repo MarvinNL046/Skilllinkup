@@ -105,7 +105,7 @@ export default function DashboardHeader() {
               <Link href="/my-profile" onClick={() => setOpen(false)}>
                 <UserRound size={16} /> Profile
               </Link>
-              <Link href="/dashboard/settings" onClick={() => setOpen(false)}>
+              <Link href="/my-profile?tab=settings" onClick={() => setOpen(false)}>
                 <Settings size={16} /> Settings
               </Link>
               <button

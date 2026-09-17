@@ -20,7 +20,6 @@ const _myProjects   = { id: 16, name: "My Projects",      icon: "flaticon-conten
 const _createProj   = { id: 17, name: "Create Project",   icon: "flaticon-content",      path: "/create-projects",  subtitle: "Post a job and receive bids" };
 const _saved        = { id: 18, name: "Saved",            icon: "flaticon-like",         path: "/saved" };
 const _quoteReqs    = { id: 19, name: "My Quote Requests", icon: "flaticon-document",    path: "/dashboard/quote-requests" };
-const _rewards      = { id: 20, name: "Rewards",           icon: "flaticon-star",         path: "/dashboard/rewards" };
 const _feedback     = { id: 21, name: "Feedback",          icon: "flaticon-chat-1",       path: "/dashboard/feedback" };
 const _applications = { id: 22, name: "My Applications",   icon: "flaticon-briefcase",    path: "/dashboard/applications" };
 const _createJob    = { id: 23, name: "Post a Job",         icon: "flaticon-document",     path: "/create-job", subtitle: "Publish a verified company vacancy" };
@@ -60,17 +59,17 @@ export const dashboardNavigation = {
   client: {
     online: {
       start:    [_dashboard, _browseOnline, _myProjects, _createProj, _orders, _saved],
-      organize: [_message, _reviews, _rewards],
+      organize: [_message, _reviews],
       account:  [_profile, _privacy, _support, _feedback],
     },
     local: {
       start:    [_dashboard, _browseLocal, _requestLocal, _quoteReqs, _orders, _saved],
-      organize: [_message, _reviews, _rewards],
+      organize: [_message, _reviews],
       account:  [_profile, _privacy, _support, _feedback],
     },
     jobs: {
       start:    [_dashboard, _myProjects, _createProj, _orders, _saved],
-      organize: [_message, _reviews, _rewards],
+      organize: [_message, _reviews],
       account:  [_profile, _privacy, _support, _feedback],
     },
   },

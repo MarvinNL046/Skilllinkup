@@ -71,9 +71,9 @@ const config = {
   ],
   testimonialTitle: "A better hiring experience on both sides",
   testimonials: [
-    { initials: "NW", name: "Nina Williams", role: "Product designer", quote: "A candidate can compare the published salary and work model, then decide which roles to apply for." },
-    { initials: "EB", name: "Elise Bakker", role: "People lead, Flowstate", quote: "An employer can explain the role, publish requirements and review applications in one place." },
-    { initials: "OA", name: "Omar Ali", role: "Customer success manager", quote: "A candidate can revisit submitted applications and see status updates made by the employer." },
+    { role: "Product designer", quote: "A candidate can compare the published salary and work model, then decide which roles to apply for." },
+    { role: "People lead", quote: "An employer can explain the role, publish requirements and review applications in one place." },
+    { role: "Customer success manager", quote: "A candidate can revisit submitted applications and see status updates made by the employer." },
   ],
   faqs: [
     { question: "Are these freelance gigs or company jobs?", answer: "The Jobs world is for permanent, temporary and contract company roles. Freelance projects belong in the Online world." },

@@ -192,7 +192,7 @@ export default function MarketplaceHub({ config }) {
           </header>
           <div className={styles.testimonials}>
             {config.testimonials.map((item) => (
-              <article key={item.name}>
+              <article key={item.role}>
                 <p>{item.quote}</p>
                 <footer><span aria-hidden="true"><Users size={20} /></span><strong>{item.role}<small>Example workflow</small></strong></footer>
               </article>

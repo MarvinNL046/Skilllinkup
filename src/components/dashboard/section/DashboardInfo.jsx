@@ -600,7 +600,7 @@ export default function DashboardInfo() {
 
       <footer className={styles.dashboardFooter}>
         <span>
-          <LockKeyhole size={14} /> Secure platform
+          <LockKeyhole size={14} /> Free private beta
         </span>
         <span>© {new Date().getFullYear()} Skilllinkup</span>
         <nav>
