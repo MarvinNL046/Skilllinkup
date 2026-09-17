@@ -5,12 +5,14 @@ import Link from "next/link";
 import { RefreshCw } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
+import { reportClientError } from "@/lib/reportClientError.mjs";
 
 // A failing query or a malformed id keeps the dashboard shell and navigation
 // instead of replacing the whole workspace with the site-wide error page.
 export default function DashboardError({ error, retry, reset }) {
   useEffect(() => {
     console.error("[Skilllinkup dashboard error]", error);
+    reportClientError(error, { source: "dashboard-boundary" });
   }, [error]);
   const tryAgain = retry ?? reset;
 
