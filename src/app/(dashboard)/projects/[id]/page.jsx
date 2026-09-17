@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import AccountModeGuard from "@/components/dashboard/AccountModeGuard";
 import ProjectBidsInfo from "@/components/dashboard/section/ProjectBidsInfo";
 
 export async function generateMetadata() {
@@ -15,7 +16,9 @@ export default async function ProjectBidsPage({ params }) {
   return (
     <>
       <DashboardLayout maxWidth="full">
-        <ProjectBidsInfo projectId={id} />
+        <AccountModeGuard role="client" world="online">
+          <ProjectBidsInfo projectId={id} />
+        </AccountModeGuard>
       </DashboardLayout>
     </>
   );

@@ -970,15 +970,15 @@
   "adminDisputes": {
     "title": "Admin — Geschillen",
     "heading": "Geschillenbeheer",
-    "pageDescription": "Bekijk openstaande geschillen en keer geld uit aan de freelancer of restitueer de klant.",
+    "pageDescription": "Bekijk openstaande geschillen en leg een beslissing vast voor beide partijen. Tijdens de private beta wordt er geen geld uitgekeerd of terugbetaald.",
     "noOpenDisputes": "Geen openstaande geschillen.",
     "columnDisputeId": "Geschil-ID",
     "columnOrderId": "Order-ID",
     "columnReason": "Reden",
     "columnOpened": "Geopend",
     "columnActions": "Acties",
-    "releaseToFreelancer": "Uitbetalen aan freelancer",
-    "refundClient": "Klant terugbetalen",
+    "releaseToFreelancer": "Beslis voor professional",
+    "refundClient": "Beslis voor klant",
     "resolvedNote": "Opgelost via admin dashboard: {resolution}",
     "errorPrefix": "Fout: "
   },

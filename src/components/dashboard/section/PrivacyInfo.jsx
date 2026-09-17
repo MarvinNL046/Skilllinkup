@@ -10,6 +10,7 @@ import DashboardNavigation from "../header/DashboardNavigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { collectAccountExport } from "@/lib/accountExport.mjs";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 export default function PrivacyInfo() {
   const { convexUser } = useConvexUser();
@@ -67,22 +68,19 @@ export default function PrivacyInfo() {
     }
   }
 
-  async function submitDeletion(event) {
+  const [confirmDeletion, setConfirmDeletion] = useState(false);
+  const deletionSubmitRef = useRef(null);
+  // The form validates the reason; the request itself is sent only after confirmation.
+  function submitDeletion(event) {
     event.preventDefault();
-    setBusy(true);
-    try {
-      await requestDeletion({ reason });
-      setReason("");
-      toast.success(
-        "Your deletion request was created. Support will review active obligations first.",
-      );
-    } catch (error) {
-      toast.error(
-        error?.message || "The deletion request could not be created.",
-      );
-    } finally {
-      setBusy(false);
-    }
+    setConfirmDeletion(true);
+  }
+  async function confirmDeletionRequest() {
+    await requestDeletion({ reason });
+    setReason("");
+    toast.success(
+      "Your deletion request was created. Support will review active obligations first.",
+    );
   }
 
   async function cancelRequest() {
@@ -208,7 +206,7 @@ export default function PrivacyInfo() {
                     required
                   />
                 </label>
-                <Button type="submit" variant="destructive" disabled={busy}>
+                <Button ref={deletionSubmitRef} type="submit" variant="destructive" disabled={busy}>
                   {busy ? "Submitting…" : "Request account deletion"}
                 </Button>
               </form>
@@ -216,6 +214,17 @@ export default function PrivacyInfo() {
           </CardContent>
         </Card>
       </div>
+      <ConfirmDialog
+        open={confirmDeletion}
+        title="Request account deletion?"
+        description="This takes effect immediately: your candidate profile becomes private, CV sharing and vacancy invitations are switched off, and companies can no longer invite you. Support then reviews active work before the account is removed. You can cancel the request from this page while it is pending."
+        confirmLabel="Request deletion"
+        busyLabel="Submitting…"
+        cancelLabel="Keep my account"
+        onConfirm={confirmDeletionRequest}
+        onClose={() => setConfirmDeletion(false)}
+        returnFocusTo={deletionSubmitRef}
+      />
     </div>
   );
 }

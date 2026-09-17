@@ -19,5 +19,7 @@ export default function useConvexMyGigs() {
     updateGig,
     removeGig,
     freelancerId: profile?._id,
+    // null means the account has no provider profile yet; undefined is still loading.
+    profileMissing: profile === null,
   };
 }

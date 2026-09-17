@@ -30,6 +30,7 @@ import MessageBox from "@/components/dashboard/element/MessageBox";
 import { getOrderActionContext, getWorkspaceNextStep } from "@/lib/orderWorkspace.mjs";
 import { uploadWorkspaceFile } from "@/lib/uploadWorkspaceFile.mjs";
 import ReviewForm from "@/components/element/ReviewForm";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 const statusLabels = {
   pending: "Pending",
@@ -227,6 +228,45 @@ export default function OrderWorkspace({ orderId }) {
       setBusy("");
     }
   }
+
+  const [pendingAction, setPendingAction] = useState(null);
+  const pendingTriggerRef = useRef(null);
+  function askConfirmation(action, event) {
+    if (busy || appointmentBusyRef.current) return;
+    pendingTriggerRef.current = event.currentTarget;
+    setPendingAction(action);
+  }
+  async function runPendingAction() {
+    const action = pendingAction;
+    if (!action) return;
+    if (action.kind === "file") {
+      await removeDeliverable({ deliverableId: action.id });
+      toast.success("File removed.");
+      return;
+    }
+    await updateAppointmentStatus({ appointmentId: appointment._id, status: action.status, expectedUpdatedAt: appointment.updatedAt });
+    toast.success(action.status === "completed" ? "Local service completed." : "Appointment cancelled.");
+  }
+  const confirmCopy = {
+    completed: {
+      title: "Mark this service as complete?",
+      description: "The client is notified and the appointment is closed. You cannot reopen it or change its status afterwards.",
+      confirmLabel: "Mark complete",
+      destructive: false,
+    },
+    cancelled: {
+      title: "Cancel this appointment?",
+      description: "The other party is notified and the appointment is closed. You cannot undo this; a new visit needs a new appointment.",
+      confirmLabel: "Cancel appointment",
+      destructive: true,
+    },
+    file: {
+      title: "Remove this file?",
+      description: `${pendingAction?.name || "This file"} will be removed from the workspace for both parties. You cannot undo this.`,
+      confirmLabel: "Remove file",
+      destructive: true,
+    },
+  }[pendingAction?.kind === "file" ? "file" : pendingAction?.status] ?? null;
 
   async function handleReschedule(event) {
     event.preventDefault();
@@ -433,7 +473,7 @@ export default function OrderWorkspace({ orderId }) {
                     <Button
                       type="button"
                       disabled={Boolean(busy)}
-                      onClick={() => handleAppointmentStatus("completed")}
+                      onClick={(event) => askConfirmation({ kind: "appointment", status: "completed" }, event)}
                     >
                       Mark service complete
                     </Button>
@@ -445,7 +485,7 @@ export default function OrderWorkspace({ orderId }) {
                       type="button"
                       disabled={Boolean(busy)}
                       variant="destructive"
-                      onClick={() => handleAppointmentStatus("cancelled")}
+                      onClick={(event) => askConfirmation({ kind: "appointment", status: "cancelled" }, event)}
                     >
                       Cancel appointment
                     </Button>
@@ -507,19 +547,8 @@ export default function OrderWorkspace({ orderId }) {
                         variant="destructive"
                         type="button"
                         disabled={Boolean(busy)}
-                        onClick={async () => {
-                          setBusy("remove-file");
-                          try {
-                            await removeDeliverable({ deliverableId: item.id });
-                          } catch (error) {
-                            toast.error(
-                              error?.message ||
-                                "The file could not be removed.",
-                            );
-                          } finally {
-                            setBusy("");
-                          }
-                        }}
+                        aria-label={`Remove ${item.fileName || "file"}`}
+                        onClick={(event) => askConfirmation({ kind: "file", id: item.id, name: item.fileName }, event)}
                       >
                         Remove
                       </Button>
@@ -667,6 +696,17 @@ export default function OrderWorkspace({ orderId }) {
           )}
         </aside>
       </div>
+      <ConfirmDialog
+        open={pendingAction !== null}
+        title={confirmCopy?.title ?? ""}
+        description={confirmCopy?.description ?? ""}
+        confirmLabel={confirmCopy?.confirmLabel}
+        destructive={confirmCopy?.destructive ?? true}
+        cancelLabel="Keep as is"
+        onConfirm={runPendingAction}
+        onClose={() => setPendingAction(null)}
+        returnFocusTo={pendingTriggerRef}
+      />
       <Dialog open={approvalOpen && canReview} onOpenChange={(open) => {
         if (!workActionRef.current) setApprovalOpen(open);
       }}>

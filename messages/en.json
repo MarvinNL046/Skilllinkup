@@ -970,15 +970,15 @@
   "adminDisputes": {
     "title": "Admin — Disputes",
     "heading": "Dispute Management",
-    "pageDescription": "Review open disputes and release funds or refund the client.",
+    "pageDescription": "Review open disputes and record a decision for both parties. No payment is released or refunded during the private beta.",
     "noOpenDisputes": "No open disputes.",
     "columnDisputeId": "Dispute ID",
     "columnOrderId": "Order ID",
     "columnReason": "Reason",
     "columnOpened": "Opened",
     "columnActions": "Actions",
-    "releaseToFreelancer": "Release to Freelancer",
-    "refundClient": "Refund Client",
+    "releaseToFreelancer": "Decide for professional",
+    "refundClient": "Decide for client",
     "resolvedNote": "Resolved via admin dashboard: {resolution}",
     "errorPrefix": "Error: "
   },

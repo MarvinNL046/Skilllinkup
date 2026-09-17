@@ -4,23 +4,18 @@ import Link from "next/link";
 import { Tooltip } from "react-tooltip";
 import { useTranslations } from "next-intl";
 import { Pencil, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { toast } from "sonner";
 
 export default function ManageServiceCard1({ data, removeGig, onEdit }) {
-  const [deleting, setDeleting] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const deleteRef = useRef(null);
   const t = useTranslations("manageServices");
-  const handleDelete = async () => {
-    if (!window.confirm(`Remove “${data.title}” from your services?`)) return;
-    if (data._id && removeGig) {
-      setDeleting(true);
-      try {
-        await removeGig({ gigId: data._id });
-        toast.success("Service removed");
-      } catch (error) {
-        toast.error(error?.message || "Could not remove service");
-      } finally { setDeleting(false); }
-    }
+  const confirmDelete = async () => {
+    if (!data._id || !removeGig) return;
+    await removeGig({ gigId: data._id });
+    toast.success("Service removed");
   };
 
   const id = data._id || data.id;
@@ -79,8 +74,8 @@ export default function ManageServiceCard1({ data, removeGig, onEdit }) {
           <button
             type="button"
             id={`delete-${id}`}
-            onClick={handleDelete}
-            disabled={deleting}
+            ref={deleteRef}
+            onClick={() => setConfirmOpen(true)}
             aria-label={t("delete")}
             className="text-[var(--text-tertiary)] hover:text-destructive"
           >
@@ -89,6 +84,16 @@ export default function ManageServiceCard1({ data, removeGig, onEdit }) {
           <Tooltip anchorSelect={`#delete-${id}`} place="top">
             {t("delete")}
           </Tooltip>
+          <ConfirmDialog
+            open={confirmOpen}
+            title="Remove this service?"
+            description={`${data.title} will be removed from your services and from search. You cannot undo this.`}
+            confirmLabel="Remove service"
+            busyLabel="Removing…"
+            onConfirm={confirmDelete}
+            onClose={() => setConfirmOpen(false)}
+            returnFocusTo={deleteRef}
+          />
         </div>
       </td>
     </tr>
