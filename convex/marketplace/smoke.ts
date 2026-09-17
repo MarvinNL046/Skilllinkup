@@ -17,6 +17,17 @@ import { requireServerSecret } from "../lib/authHelpers";
 import { companyVerificationStatusValidator } from "../lib/marketplaceState";
 import { hasCompletedMarketplaceContext } from "../lib/marketplaceState";
 import { v } from "convex/values";
+// Smoke fixtures can grant admin rights and hard-delete rows. They run only on
+// deployments that explicitly opt in (never production), and elevated roles are
+// granted only to dedicated QA addresses.
+function requireSmokeFixtures(secret: string, privilegedEmails: Array<string | undefined> = []) {
+  requireServerSecret(secret);
+  if (process.env.SMOKE_FIXTURES_ENABLED !== "true")
+    throw new Error("Smoke fixtures are disabled on this deployment.");
+  for (const email of privilegedEmails)
+    if (!email || !/^skilllinkup.qa+[a-z0-9_.-]+@/i.test(email))
+      throw new Error("Smoke fixtures only elevate dedicated QA accounts.");
+}
 var ne = v.object({
   tag: v.string(),
   locale: v.string(),
@@ -132,7 +143,7 @@ var seed = mutation({
     },
     returns: ne,
     handler: async (ctx, args) => {
-      requireServerSecret(args.serverSecret);
+      requireSmokeFixtures(args.serverSecret, [args.adminEmail, args.companyEmail]);
       let c = args.locale ?? "en",
         p = args.categorySlug ?? "finance-accounting",
         o = Date.now(),
@@ -954,7 +965,7 @@ var seed = mutation({
       ok: v.boolean()
     }),
     handler: async (ctx, args) => {
-      if (requireServerSecret(args.serverSecret), args.localAppointmentId || args.cancellationAppointmentId) {
+      if (requireSmokeFixtures(args.serverSecret), args.localAppointmentId || args.cancellationAppointmentId) {
         let o = [args.localClientId, args.localProfessionalUserId].filter(a => a !== void 0);
         for (let a of o) {
           let n = await ctx.db.query("notifications").withIndex("by_user", l => l.eq("userId", a)).order("desc").take(100);
@@ -1099,7 +1110,7 @@ var seed = mutation({
       adminRole: v.union(v.string(), v.null())
     }),
     handler: async (ctx, args) => {
-      requireServerSecret(args.serverSecret);
+      requireSmokeFixtures(args.serverSecret);
       let c = 0;
       for (let d of args.fixtureIds) {
         let r = ctx.db.normalizeId("gigs", d) ?? ctx.db.normalizeId("gigPackages", d) ?? ctx.db.normalizeId("projects", d) ?? ctx.db.normalizeId("quoteRequests", d) ?? ctx.db.normalizeId("jobs", d) ?? ctx.db.normalizeId("jobApplications", d) ?? ctx.db.normalizeId("bids", d) ?? ctx.db.normalizeId("orders", d) ?? ctx.db.normalizeId("conversations", d) ?? ctx.db.normalizeId("messages", d) ?? ctx.db.normalizeId("orderDeliverables", d) ?? ctx.db.normalizeId("leadClaims", d) ?? ctx.db.normalizeId("quotes", d) ?? ctx.db.normalizeId("localAppointments", d) ?? ctx.db.normalizeId("users", d);

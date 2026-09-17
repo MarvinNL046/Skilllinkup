@@ -72,6 +72,7 @@ async function main() {
         slug: skill.slug,
         categoryId: skill.categoryId,
         locale: TARGET,
+        serverSecret: env.INTERNAL_EMAIL_SECRET,
       });
     }
 

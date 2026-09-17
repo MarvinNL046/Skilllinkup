@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "../_generated/server";
 import { requireAuthUser } from "../lib/authHelpers";
+import { canViewProfileExtras } from "../lib/profileAccess";
 
 const workValidator = v.object({
   _id: v.id("workExperience"),
@@ -58,7 +59,9 @@ export const getWorkExperience = query({
   args: { userId: v.id("users") },
   returns: v.array(workValidator),
   handler: async (ctx, args) =>
-    ctx.db.query("workExperience").withIndex("by_user", (q) => q.eq("userId", args.userId)).order("desc").take(100),
+    (await canViewProfileExtras(ctx, args.userId))
+      ? ctx.db.query("workExperience").withIndex("by_user", (q) => q.eq("userId", args.userId)).order("desc").take(100)
+      : [],
 });
 
 export const addWorkExperience = mutation({
@@ -143,7 +146,9 @@ export const getEducation = query({
   args: { userId: v.id("users") },
   returns: v.array(educationValidator),
   handler: async (ctx, args) =>
-    ctx.db.query("education").withIndex("by_user", (q) => q.eq("userId", args.userId)).order("desc").take(100),
+    (await canViewProfileExtras(ctx, args.userId))
+      ? ctx.db.query("education").withIndex("by_user", (q) => q.eq("userId", args.userId)).order("desc").take(100)
+      : [],
 });
 
 export const addEducation = mutation({
@@ -231,7 +236,9 @@ export const getCertifications = query({
   args: { userId: v.id("users") },
   returns: v.array(certificationValidator),
   handler: async (ctx, args) =>
-    ctx.db.query("userCertifications").withIndex("by_user", (q) => q.eq("userId", args.userId)).order("desc").take(100),
+    (await canViewProfileExtras(ctx, args.userId))
+      ? ctx.db.query("userCertifications").withIndex("by_user", (q) => q.eq("userId", args.userId)).order("desc").take(100)
+      : [],
 });
 
 export const addCertification = mutation({

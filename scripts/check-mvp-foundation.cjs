@@ -342,7 +342,7 @@ async function main() {
   await check("profile and service enquiries share privacy checks and remain idempotent", async () => {
     for (const permission of ["everyone", "clients_only", "nobody"]) {
       const rows = [user(), user("seller"),
-        { _id: "profile", _table: "freelancerProfiles", userId: "seller", providerRole: "freelancer", status: "active", displayName: "QA professional", contactPermission: permission },
+        { _id: "profile", _table: "freelancerProfiles", tenantId: user().tenantId, userId: "seller", providerRole: "freelancer", status: "active", displayName: "QA professional", contactPermission: permission },
         { _id: "gig", _table: "gigs", freelancerId: "profile", status: "active", title: "QA service" }];
       const ctx = fixture(rows);
       for (const context of [{ type: "profile_inquiry", freelancerProfileId: "profile" }, { type: "gig_inquiry", gigId: "gig" }]) {
@@ -355,6 +355,17 @@ async function main() {
           const stranger = fixture([...ctx.state.values(), user("stranger")], "stranger");
           await assert.rejects(() => conversations.getById.handler(stranger, { conversationId: id }), /Unauthorized/);
         }
+      }
+    }
+  });
+  await check("private or foreign-workspace professionals cannot be contacted through profile or service enquiries", async () => {
+    for (const fields of [{ profileVisibility: "private" }, { tenantId: "other-tenant" }, { status: "paused" }]) {
+      const ctx = fixture([user(), user("seller"),
+        { _id: "profile", _table: "freelancerProfiles", tenantId: user().tenantId, userId: "seller", providerRole: "freelancer", status: "active", displayName: "QA professional", contactPermission: "everyone", ...fields },
+        { _id: "gig", _table: "gigs", freelancerId: "profile", status: "active", title: "QA service" }]);
+      for (const context of [{ type: "profile_inquiry", freelancerProfileId: "profile" }, { type: "gig_inquiry", gigId: "gig" }]) {
+        await assert.rejects(() => conversations.openForContext.handler(ctx, { context }), /not available/);
+        assert.equal(ctx.writes.length, 0);
       }
     }
   });

@@ -73,6 +73,7 @@ async function main() {
 
     if (!DRY_RUN) {
       await client.mutation(api.tools.insert, {
+        serverSecret: env.INTERNAL_EMAIL_SECRET,
         ownerId: tool.ownerId,
         name: nlName,
         slug: tool.slug,

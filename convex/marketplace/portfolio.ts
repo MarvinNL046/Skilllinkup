@@ -3,6 +3,7 @@ import { mutation, query } from "../_generated/server";
 import type { MutationCtx } from "../_generated/server";
 import type { Id } from "../_generated/dataModel";
 import { requireAuthUser } from "../lib/authHelpers";
+import { canViewProfileExtras } from "../lib/profileAccess";
 import {
   claimStoredFile,
   IMAGE_CONTENT_TYPES,
@@ -86,11 +87,13 @@ export const getByUser = query({
   args: { userId: v.id("users") },
   returns: v.array(portfolioProjectValidator),
   handler: async (ctx, args) =>
-    ctx.db
-      .query("portfolioProjects")
-      .withIndex("by_user", (q) => q.eq("userId", args.userId))
-      .order("asc")
-      .take(100),
+    (await canViewProfileExtras(ctx, args.userId))
+      ? ctx.db
+          .query("portfolioProjects")
+          .withIndex("by_user", (q) => q.eq("userId", args.userId))
+          .order("asc")
+          .take(100)
+      : [],
 });
 
 export const create = mutation({

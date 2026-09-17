@@ -24,6 +24,8 @@ import { requireMarketplaceContext } from "../lib/authHelpers";
 import type { Infer } from "convex/values";
 import { conversationContextTypeValidator } from "../lib/marketplaceState";
 import { v } from "convex/values";
+import { rateLimiter } from "../lib/rateLimits";
+import { isPublicFreelancerProfile } from "../lib/publicData";
 var _ = v.union(v.object({
   type: v.literal("profile_inquiry"),
   freelancerProfileId: v.id("freelancerProfiles")
@@ -59,7 +61,8 @@ function requireInquiryPermission(caller: Doc<"users">, profile: Doc<"freelancer
 async function resolveContext(ctx: MutationCtx, caller: Doc<"users">, context: ConversationContextInput): Promise<ResolvedContext> {
   if (context.type === "profile_inquiry") {
     let t = await ctx.db.get(context.freelancerProfileId);
-    if (!t || t.status !== "active") throw new Error("This professional is not available.");
+    // Private profiles are not contactable, and enquiries stay inside one workspace.
+    if (!isPublicFreelancerProfile(t) || t.tenantId !== caller.tenantId) throw new Error("This professional is not available.");
     let r: "local" | "online" = t.providerRole === "local_professional" || !t.providerRole && t.workType === "local" ? "local" : "online";
     if (requireMarketplaceContext(caller, "client", r, "contacting a professional"), t.userId === caller._id) throw new Error("You cannot start a conversation with yourself.");
     requireInquiryPermission(caller, t);
@@ -76,7 +79,7 @@ async function resolveContext(ctx: MutationCtx, caller: Doc<"users">, context: C
     let t = await ctx.db.get(context.gigId);
     if (!t || t.status !== "active") throw new Error("This service is not available.");
     let r = await ctx.db.get(t.freelancerId);
-    if (!r || r.status !== "active") throw new Error("This professional is not available.");
+    if (!isPublicFreelancerProfile(r) || r.tenantId !== caller.tenantId) throw new Error("This professional is not available.");
     if (r.userId === caller._id) throw new Error("You cannot enquire about your own service.");
     requireInquiryPermission(caller, r);
     return {
@@ -245,6 +248,8 @@ var list = query({
         if (!(c.participant1 === a && c.participant2 === s || c.participant1 === s && c.participant2 === a)) throw new Error("Conversation participants do not match this context.");
         return c._id;
       }
+      // Only new conversations count; reopening an existing one is free.
+      await rateLimiter.limit(ctx, "startConversation", { key: o._id, throws: true });
       let t = Date.now();
       return await ctx.db.insert("conversations", {
         tenantId: o.tenantId,

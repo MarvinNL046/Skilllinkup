@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { requireServerSecret } from "./lib/authHelpers";
 
 /**
  * List all skills for a given locale.
@@ -23,12 +24,15 @@ export const list = query({
  */
 export const insert = mutation({
   args: {
+    serverSecret: v.string(),
     name: v.string(),
     slug: v.string(),
     categoryId: v.optional(v.id("marketplaceCategories")),
     locale: v.string(),
   },
   handler: async (ctx, args) => {
+    // Content tooling only: anonymous callers must not write the skills table.
+    requireServerSecret(args.serverSecret);
     // Check if already exists
     const existing = await ctx.db
       .query("skills")

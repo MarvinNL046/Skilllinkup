@@ -338,7 +338,8 @@ var list = query({
     },
     returns: v.id("freelancerProfiles"),
     handler: async (ctx, args) => {
-      args.serverSecret ? requireServerSecret(args.serverSecret) : await requireOwner(ctx, args.userId);
+      // Payout accounts are attached only by the trusted server route, never from the browser.
+      requireServerSecret(args.serverSecret);
       let i = await ctx.db.query("freelancerProfiles").withIndex("by_userId", o => o.eq("userId", args.userId)).first();
       if (!i) throw new Error("Freelancer profile not found");
       return await ctx.db.patch(i._id, {

@@ -2,6 +2,7 @@ import { fetchQuery } from "convex/nextjs";
 import { api } from "../../../../convex/_generated/api";
 import PlatformPageClient from "@/components/platforms/PlatformPageClient";
 import { getTranslations } from "next-intl/server";
+import { serializeJsonLd } from "@/lib/jsonLd.mjs";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://skilllinkup.com";
 
@@ -60,7 +61,7 @@ export default async function PlatformPage({ params }) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <PlatformPageClient slug={slug} />
     </>

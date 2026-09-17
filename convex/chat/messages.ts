@@ -164,6 +164,19 @@ export const send = mutation({
       }
     }
 
+    // A conversation tied to a closed application or proposal is read-only: the
+    // history stays, but neither side can keep contacting the other through it.
+    if (conversation.contextType === "job_application" && conversation.jobApplicationId) {
+      const application = await ctx.db.get(conversation.jobApplicationId);
+      if (!application || ["rejected", "withdrawn", "draft"].includes(application.status))
+        throw new ConvexError("This application is closed, so messaging is no longer available.");
+    }
+    if (conversation.contextType === "project_bid" && conversation.bidId) {
+      const bid = await ctx.db.get(conversation.bidId);
+      if (!bid || !["pending", "accepted"].includes(bid.status))
+        throw new ConvexError("This proposal is closed, so messaging is no longer available.");
+    }
+
     await rateLimiter.limit(ctx, "sendMessage", {
       key: currentUser._id,
       throws: true,

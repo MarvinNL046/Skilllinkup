@@ -108,7 +108,9 @@ async function employerRows(ctx: QueryCtx, applications: Doc<"jobApplications">[
     return await Promise.all(
       applications.map(async (application) => {
         const candidate = await ctx.db.get(application.candidateId);
-        const resumeUrl = application.resumeStorageId
+        // Contact details and the CV stay available only while the application is under review or hired.
+        const active = !["withdrawn", "rejected"].includes(application.status);
+        const resumeUrl = active && application.resumeStorageId
           ? `/api/applications/${application._id}/resume`
           : null;
         return {
@@ -116,7 +118,7 @@ async function employerRows(ctx: QueryCtx, applications: Doc<"jobApplications">[
           candidate: {
             id: application.candidateId,
             name: candidate?.name ?? "Former candidate",
-            email: candidate?.email ?? "",
+            email: active ? (candidate?.email ?? "") : "",
             image: candidate?.image ?? candidate?.avatar ?? null,
           },
           resumeUrl,
@@ -263,6 +265,9 @@ export const getResumeDownload = query({
     if (!application?.resumeStorageId) return null;
     const job = await ctx.db.get(application.jobId);
     if (!job || (user._id !== application.candidateId && user._id !== job.clientId)) throw new Error("Unauthorized.");
+    // The employer's access to a CV ends when the application is no longer under review.
+    // The candidate keeps access to their own file.
+    if (user._id !== application.candidateId && (application.tenantId !== user.tenantId || ["draft", "withdrawn", "rejected"].includes(application.status))) return null;
     const metadata = await ctx.db.system.get("_storage", application.resumeStorageId);
     if (!metadata || !metadata.contentType || !DOCUMENT_CONTENT_TYPES.has(metadata.contentType)) return null;
     const url = await ctx.storage.getUrl(application.resumeStorageId);
@@ -276,6 +281,8 @@ export const generateResumeUploadUrl = mutation({
   handler: async (ctx) => {
     const candidate = await requireAuthUser(ctx);
     requireMarketplaceContext(candidate, "candidate", "jobs", "uploading a resume");
+    if (candidate.deletionRequestedAt) throw new Error("Account deletion is pending.");
+    await rateLimiter.limit(ctx, "candidateCvUpload", { key: candidate._id, throws: true });
     return await ctx.storage.generateUploadUrl();
   },
 });

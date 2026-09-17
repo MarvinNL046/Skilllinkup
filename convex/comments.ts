@@ -40,39 +40,6 @@ export const getByPost = query({
 });
 
 /**
- * Create a new comment with status "pending".
- * Derives tenantId from the parent post document.
- */
-export const create = mutation({
-  args: {
-    postId: v.id("posts"),
-    authorName: v.string(),
-    authorEmail: v.string(),
-    authorWebsite: v.optional(v.string()),
-    content: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const post = await ctx.db.get(args.postId);
-    if (!post) {
-      throw new Error("Post not found");
-    }
-
-    const commentId = await ctx.db.insert("comments", {
-      tenantId: post.tenantId,
-      postId: args.postId,
-      authorName: args.authorName,
-      authorEmail: args.authorEmail,
-      authorWebsite: args.authorWebsite,
-      content: args.content,
-      status: "pending",
-      createdAt: Date.now(),
-    });
-
-    return commentId;
-  },
-});
-
-/**
  * Approve a comment by setting its status to "approved".
  */
 export const approve = mutation({
