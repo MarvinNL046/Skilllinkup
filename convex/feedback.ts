@@ -1,31 +1,33 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireAdmin, requireAuthUser } from "./lib/authHelpers";
+import { rateLimiter } from "./lib/rateLimits";
 
-// Submit feedback (public — works for anonymous and logged-in users)
+// Submit feedback. The only entry point is the signed-in dashboard, so anonymous
+// writes are rejected; input is bounded and rate limited per account.
 export const submit = mutation({
   args: {
-    type: v.string(),             // "feedback" | "bug" | "feature"
+    type: v.union(v.literal("feedback"), v.literal("bug"), v.literal("feature")),
     message: v.string(),
     rating: v.optional(v.number()),
     pageUrl: v.optional(v.string()),
     email: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    // Optionally attach logged-in user
-    const identity = await ctx.auth.getUserIdentity();
-    let userId = undefined;
-    if (identity?.email) {
-      const user = await ctx.db
-        .query("users")
-        .withIndex("by_email", (q) => q.eq("email", identity.email!))
-        .first();
-      if (user) userId = user._id;
-    }
+    const user = await requireAuthUser(ctx);
+    const userId = user._id;
+    const message = args.message.trim();
+    if (message.length < 5 || message.length > 4000)
+      throw new Error("Write between 5 and 4,000 characters.");
+    if (args.rating !== undefined && (!Number.isInteger(args.rating) || args.rating < 1 || args.rating > 5))
+      throw new Error("Choose a rating from 1 to 5.");
+    if ((args.pageUrl?.length ?? 0) > 500 || (args.email?.length ?? 0) > 254)
+      throw new Error("That value is too long.");
+    await rateLimiter.limit(ctx, "feedback", { key: user._id, throws: true });
 
     await ctx.db.insert("feedback", {
       type: args.type,
-      message: args.message,
+      message,
       rating: args.rating,
       pageUrl: args.pageUrl,
       email: args.email,

@@ -1,5 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { requireServerSecret } from "./lib/authHelpers";
 
 /**
  * Get published tools ordered by sortOrder ASC, then createdAt DESC.
@@ -106,6 +107,7 @@ export const getFeatured = query({
  */
 export const insert = mutation({
   args: {
+    serverSecret: v.string(),
     ownerId: v.string(),
     name: v.string(),
     slug: v.string(),
@@ -120,7 +122,9 @@ export const insert = mutation({
     status: v.optional(v.string()),
     locale: v.string(),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, { serverSecret, ...args }) => {
+    // Content tooling only: anonymous callers must not write the public tools table.
+    requireServerSecret(serverSecret);
     const existing = await ctx.db
       .query("tools")
       .withIndex("by_slug_locale", (q) =>

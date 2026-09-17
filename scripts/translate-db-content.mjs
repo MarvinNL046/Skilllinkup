@@ -216,7 +216,7 @@ async function translateSkills() {
   for (const skill of toTranslate) {
     if (!DRY_RUN) {
       await client.mutation(api.skills.insert, {
-        name: await tr(skill.name), slug: skill.slug, categoryId: skill.categoryId, locale: TARGET,
+        name: await tr(skill.name), slug: skill.slug, categoryId: skill.categoryId, locale: TARGET, serverSecret: SERVER_SECRET,
       });
     }
   }
@@ -238,7 +238,7 @@ async function translateTools() {
         description: tool.description ? await tr(tool.description) : undefined,
         category: tool.category, icon: tool.icon, color: tool.color, toolUrl: tool.toolUrl,
         isAvailable: tool.isAvailable, featured: tool.featured, sortOrder: tool.sortOrder,
-        status: tool.status, locale: TARGET,
+        status: tool.status, locale: TARGET, serverSecret: SERVER_SECRET,
       });
     }
   }

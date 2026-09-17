@@ -6,6 +6,7 @@ import ResourcePricingTemplate from "@/components/resources/ResourcePricingTempl
 import ResourceComparisonTemplate from "@/components/resources/ResourceComparisonTemplate";
 import ResourceGuideTemplate from "@/components/resources/ResourceGuideTemplate";
 import { notFound } from "next/navigation";
+import { serializeJsonLd } from "@/lib/jsonLd.mjs";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://skilllinkup.com";
 
@@ -74,7 +75,7 @@ export default async function LocaleResourcePage({ params }) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       {resource.type === "pricing" && <ResourcePricingTemplate resource={resource} />}
       {resource.type === "comparison" && <ResourceComparisonTemplate resource={resource} />}

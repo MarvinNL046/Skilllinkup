@@ -4,6 +4,8 @@ import { components } from "../_generated/api";
 const DAY = 24 * HOUR;
 
 export const rateLimiter = new RateLimiter(components.rateLimiter, {
+  startConversation: { kind: "token bucket", rate: 30, period: DAY, capacity: 10 },
+  feedback: { kind: "token bucket", rate: 10, period: DAY, capacity: 3 },
   contactPerEmail: { kind: "fixed window", rate: 3, period: DAY },
   contactGlobal: { kind: "token bucket", rate: 100, period: HOUR, capacity: 10 },
   waitlistPerEmail: { kind: "fixed window", rate: 2, period: DAY },
