@@ -5,12 +5,12 @@ const STEPS = [
   {
     icon: Grid3x3,
     title: "Compare platforms",
-    body: "Browse our reviews of 19+ freelance platforms. Find the one that matches your skills and goals.",
+    body: "Browse our reviews of freelance platforms. Find the one that matches your skills and goals.",
   },
   {
     icon: UserPlus,
     title: "Create your profile",
-    body: "Sign up, showcase your portfolio, and list your services. Let clients discover what you can do.",
+    body: "Beta participants showcase their portfolio and list their services so clients can discover what they do.",
   },
   {
     icon: ShieldCheck,

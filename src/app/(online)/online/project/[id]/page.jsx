@@ -4,13 +4,6 @@ import ProjectDetail from "@/components/projects/ProjectDetail";
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
-  if (id === "sustainable-interior-brand") {
-    return {
-      title: "New website for a sustainable interior brand",
-      description:
-        "View this featured web design project and send a proposal on SkillLinkup.",
-    };
-  }
   try {
     const project = await fetchQuery(api.marketplace.projects.getBySlug, {
       slug: id,

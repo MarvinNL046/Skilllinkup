@@ -71,9 +71,9 @@ const config = {
   ],
   testimonialTitle: "Work that feels personal—even across borders",
   testimonials: [
-    { initials: "EV", name: "Eva van Dijk", role: "Founder, Bloom & Grow", quote: "A founder can share a brief, compare service packages and agree on a delivery before starting." },
-    { initials: "BJ", name: "Bas de Jong", role: "Marketing lead", quote: "A marketing lead can compare portfolios, discuss the approach and keep decisions in the workspace." },
-    { initials: "FE", name: "Fatima El Yousfi", role: "Independent photographer", quote: "A freelancer can publish services, explain their experience and share examples of previous work." },
+    { role: "Founder", quote: "A founder can share a brief, compare service packages and agree on a delivery before starting." },
+    { role: "Marketing lead", quote: "A marketing lead can compare portfolios, discuss the approach and keep decisions in the workspace." },
+    { role: "Independent photographer", quote: "A freelancer can publish services, explain their experience and share examples of previous work." },
   ],
   faqs: [
     { question: "How should I assess a freelancer?", answer: "Compare the biography, skills, portfolio and reviews that are published. A profile badge is one signal; confirm that the person has the experience your specific project needs." },

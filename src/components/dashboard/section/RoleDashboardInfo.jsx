@@ -147,7 +147,7 @@ export default function RoleDashboardInfo({ role, world }) {
       { label: "Interviews", value: all.filter((item) => item.application.status === "interview").length, hint: "Conversations planned", Icon: UsersRound },
       { label: "Offers", value: all.filter((item) => ["offer", "hired"].includes(item.application.status)).length, hint: "Positive outcomes", Icon: CheckCircle2 },
     ];
-    items = all.slice(0, 8).map((item) => ({ id: item.application._id, title: item.job.title, subtitle: item.job.company || "Verified company", status: item.application.status, meta: item.job.workType || "Job", location: item.job.locationCity, href: `/jobs/job/${item.job.id}` }));
+    items = all.slice(0, 8).map((item) => ({ id: item.application._id, title: item.job.title, subtitle: item.job.company || "Company", status: item.application.status, meta: item.job.workType || "Job", location: item.job.locationCity, href: `/jobs/job/${item.job.id}` }));
   } else {
     const all = jobs || [];
     stats = [

@@ -129,7 +129,8 @@ export default function ProjectDetail() {
     return () => clearTimeout(timer);
   }, [liveProject]);
 
-  const isDemoRoute = id === "sustainable-interior-brand" || id === "demo";
+  // The illustrative project exists for local design work only; production never shows invented clients or bids.
+  const isDemoRoute = process.env.NODE_ENV === "development" && (id === "sustainable-interior-brand" || id === "demo");
   const project =
     liveProject ||
     ((showDemo || liveProject === null) && isDemoRoute ? demoProject : null);

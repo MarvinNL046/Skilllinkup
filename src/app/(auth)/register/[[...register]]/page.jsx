@@ -20,5 +20,5 @@ export default function RegisterPage() {
   const { isLoaded, isSignedIn } = useUser();
   useEffect(() => { if (isLoaded && isSignedIn) router.replace("/dashboard"); }, [isLoaded, isSignedIn, router]);
   if (!isLoaded || isSignedIn) return <div className="flex justify-center items-center min-h-screen" role="status" aria-label="Opening your account"><div className="spinner-border text-primary" /></div>;
-  return <div><AuthPageShell mode="register" title="Create your free account." subtitle="One account for hiring, offering services or finding your next job."><Suspense fallback={<div role="status">Loading registration…</div>}><RegisterContent /></Suspense></AuthPageShell><Footer14 /></div>;
+  return <div><AuthPageShell mode="register" title="Create your free account." subtitle="One account for hiring, offering services or finding your next job. Skilllinkup is in private beta: you can explore now, and working together is currently by invitation."><Suspense fallback={<div role="status">Loading registration…</div>}><RegisterContent /></Suspense></AuthPageShell><Footer14 /></div>;
 }

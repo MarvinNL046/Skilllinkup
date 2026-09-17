@@ -68,9 +68,9 @@ const config = {
   ],
   testimonialTitle: "Ways to use a local workspace",
   testimonials: [
-    { initials: "LH", name: "Laura Hendriks", role: "Homeowner", quote: "A homeowner can describe a repair, add photos and compare the quotes that arrive." },
-    { initials: "MS", name: "Mehmet Sahin", role: "Heating engineer", quote: "A professional can review the request before proposing a price and suitable visit time." },
-    { initials: "RB", name: "Rosa Bakker", role: "Property manager", quote: "A property manager can keep separate requests, appointments and written agreements organised." },
+    { role: "Homeowner", quote: "A homeowner can describe a repair, add photos and compare the quotes that arrive." },
+    { role: "Heating engineer", quote: "A professional can review the request before proposing a price and suitable visit time." },
+    { role: "Property manager", quote: "A property manager can keep separate requests, appointments and written agreements organised." },
   ],
   faqs: [
     { question: "What should I check before hiring?", answer: "Review the published profile and any verification badge. Ask the professional directly for relevant qualifications and insurance before agreeing to regulated or specialist work." },

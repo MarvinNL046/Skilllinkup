@@ -51,7 +51,6 @@ export const header3 = [
     "/help",
     "/pricing",
     "/terms",
-    "/ui-elements",
 ];
 export const header4 = ["/home-3"];
 export const header5 = ["/home-4"];

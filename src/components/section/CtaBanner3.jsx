@@ -4,18 +4,18 @@ import { BadgeCheck, DollarSign, ShieldCheck } from "lucide-react";
 const FEATURES = [
   {
     icon: BadgeCheck,
-    title: "Proof of quality",
-    body: "Check any pro's work samples, client reviews, and identity verification.",
+    title: "Compare with context",
+    body: "Review a professional's work samples, experience and scope before you start a conversation.",
   },
   {
     icon: DollarSign,
-    title: "No cost until you hire",
-    body: "Interview potential fits for your job, negotiate rates, and only pay for work you approve.",
+    title: "Free during the private beta",
+    body: "There are no platform fees in the beta and Skilllinkup does not process payments. You agree on scope and price directly.",
   },
   {
     icon: ShieldCheck,
-    title: "Safe and secure",
-    body: "Focus on your work knowing we help protect your data and privacy. We're here with 24/7 support if you need it.",
+    title: "Privacy by default",
+    body: "You choose what your profile shares. If something needs attention, contact our support team by email.",
   },
 ];
 

@@ -8,8 +8,8 @@ import { Check, ArrowRight } from "lucide-react";
  */
 export default function About5() {
   const bullets = [
-    "Compare 19+ freelance platforms side by side",
-    "Find services from verified freelancers",
+    "Compare freelance platforms side by side",
+    "Explore services from professionals in the private beta",
     "Clear workspaces with recorded milestones and approvals",
   ];
 
