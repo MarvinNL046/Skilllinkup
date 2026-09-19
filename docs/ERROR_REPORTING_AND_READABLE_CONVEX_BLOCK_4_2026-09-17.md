@@ -25,7 +25,7 @@ Synthetic uptime monitoring already existed (`PRODUCTION_MONITORING_RUNBOOK.md`)
 - The readable file reproduces all 32 scenarios exactly. The check was shown to fail when two behaviour changes were injected.
 - The check also fails if single-letter minified bindings reappear.
 
-`orders.ts` followed on 19 September 2026 (108 scenarios, including paid paths opened inside the harness only). `freelancers.ts` followed the same day (77 scenarios). Remaining minified files, in proposed order: `quotes.ts`, `leads.ts`, `gigs.ts`, `projects.ts`, `reviews.ts`, `dashboard.ts`, `chat/conversations.ts`. Each gets its own recording before it is rewritten. `smoke.ts` is test tooling and comes last.
+`orders.ts` followed on 19 September 2026 (108 scenarios, including paid paths opened inside the harness only). `freelancers.ts` followed the same day (77 scenarios). `leads.ts` and `quotes.ts` followed the same day (69 and 75 scenarios). Remaining minified files, in proposed order: `gigs.ts`, `projects.ts`, `reviews.ts`, `dashboard.ts`, `chat/conversations.ts`. Each gets its own recording before it is rewritten. `smoke.ts` is test tooling and comes last.
 
 ## Verification
 

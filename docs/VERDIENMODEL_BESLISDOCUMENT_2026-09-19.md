@@ -4,6 +4,30 @@ Datum: 19 september 2026. Status: voorstel ter beslissing door de product owner.
 
 Dit document beschrijft wat de code nu al bevat, welke keuzes er per world liggen, wat elke keuze technisch en juridisch betekent, en in welke volgorde bouwen verstandig is. Het is geen juridisch, fiscaal of financieel advies. De punten onder "Eerst extern laten toetsen" horen bij een jurist of fiscalist.
 
+## 0. Voorgestelde richting (advies van 19 september 2026, nog niet vastgesteld)
+
+> Status: dit is ingebracht advies. Het wordt pas een besluit wanneer de product owner het uitdrukkelijk bevestigt. Paragraaf 7 houdt bij wat wel en niet is goedgekeurd.
+
+Uitgangspunt: **omzet is geen voorwaarde voor launch; aantoonbare waarde voor beide kanten is de voorwaarde voor monetisatie.** Wat het makkelijkst te bouwen is, is niet automatisch het beste verdienmodel. Er worden geen drie betaalmodellen tegelijk gebouwd.
+
+| World | Richting |
+|---|---|
+| Local | Kleine pilot met betalen per lead, pas nadat de kwaliteit van aanvragen bewezen is. Exclusiviteit aanvankelijk weglaten. |
+| Jobs | Gratis tijdens de bèta. Daarna een gratis instap met betaalde extra vacatures of werkgeversfuncties. Prijzen pas na gesprekken met de eerste werkgevers. Solliciteren blijft gratis voor kandidaten; hun toestemming voor vindbaarheid en uitnodigingen blijft leidend. |
+| Online | Voorlopig gratis. Later één vast commissiepercentage, zodra betaalroute en verantwoordelijkheden geregeld zijn. Cashback voorlopig schrappen. |
+
+**Voorwaarden voor de Local-pilot, vóór er betaalde credits komen:**
+1. Wat maakt een aanvraag geldig en voldoende concreet?
+2. Wanneer krijgt een vakman credits terug, bijvoorbeeld bij spam, dubbele aanvragen of onjuiste contactgegevens?
+3. Hoeveel andere vakmensen krijgen dezelfde aanvraag, en is dat vooraf zichtbaar?
+4. Vóór het claimen staan zowel de credits als de bijbehorende europrijs in beeld. Met de huidige pakketten kost één credit tussen €3,96 (pakket van 25) en €5,00 (pakket van 5). Een gedeelde lead van 2 tot 6 credits kost daarmee ongeveer €7,92 tot €30. Dat verschil moet voor een vakman begrijpelijk zijn.
+
+**Waarom cashback vervalt.** Als commissie en cashback over hetzelfde orderbedrag gaan, blijft bij 10% commissie en 7% cashback 3% over, vóór betaalverwerking, support en verliezen. Eerst aantonen dat transacties rendabel zijn.
+
+**Eerstvolgend werk:** de betaalfouten uit paragraaf 2 repareren terwijl betalingen uit blijven, en de Local-pilot ontwerpen op leadkwaliteit, prijs en terugboekregels.
+
+De paragrafen hieronder zijn de oorspronkelijke analyse. Zolang paragraaf 0 niet is bevestigd, zijn beide invalshoeken voorstellen.
+
 ## 1. Wat er al ligt (feiten uit de code)
 
 **De blokkade.** `convex/lib/paymentPolicy.ts` gooit altijd een fout. Er is geen schakelaar per world en geen omgevingsvariabele; openzetten betekent die functie herschrijven. Er bestaat een tweede, losse vlag in `convex/marketplace/leadPricing.ts`.
@@ -13,7 +37,7 @@ Dit document beschrijft wat de code nu al bevat, welke keuzes er per world ligge
 - Escrow-statussen, automatische vrijgave zeven dagen na oplevering, koppeling van Stripe-chargebacks aan geschillen, en idempotente vrijgave en terugbetaling.
 - Stripe Connect Express-onboarding bestaat, maar staat in commentaar.
 - Ontbreekt: het aanmaken van een betaalsessie (verwijderd), gedeeltelijke terugbetaling, grootboekregels voor uitbetaling en terugbetaling, btw en facturen.
-- Het model is "separate charges and transfers": het geld staat tussentijds op het platformsaldo. Skilllinkup houdt dan geld van derden vast. Dat is precies de open juridische vraag.
+- Het model is "separate charges and transfers": de betaling wordt op het platformaccount verwerkt en later overgemaakt naar de freelancer. Wat dat juridisch betekent is een open vraag. Dat het saldo technisch op het platformaccount staat, betekent niet automatisch dat Skilllinkup zelf derdengelden bewaart; Stripe beschrijft Connect als een structuur waarbij de gelden bij Stripe staan. De concrete inrichting en verantwoordelijkheden moeten worden beoordeeld. Het gekozen technische betaaltype beantwoordt die vraag niet. (Gecorrigeerd op 19 september; de eerdere formulering was te stellig.)
 - Cashback van 3, 5 of 7% voor klanten, betaald uit de commissie.
 
 **Local.** Pay-per-lead is grotendeels af:
@@ -59,7 +83,8 @@ Geen geldstroom tussen partijen, dus geen Connect, geen escrow en geen derdengel
 | Optie | Wat het is | Stripe | Werk | Kanttekening |
 |---|---|---|---|---|
 | A. Commissie met beschermde betaling | Bestaand ontwerp: klant betaalt vooraf, vrijgave na goedkeuring | Connect, platform houdt geld vast | Groot | Sterkste propositie, zwaarste juridische last |
-| B. Commissie met directe betaling | Klant betaalt de freelancer rechtstreeks, platform houdt alleen de fee in | Connect, direct of destination charges | Middel tot groot | Geen derdengelden op het platformsaldo; minder bescherming voor de klant |
+| B1. Commissie met direct charges | De betaling wordt op het Stripe-account van de freelancer verwerkt; het platform ontvangt alleen zijn fee | Connect, direct charges | Middel tot groot | Stripe-kosten, refunds en chargebacks worden op het account van de freelancer geboekt. Afhankelijk van de Connect-configuratie kan het platform alsnog aansprakelijk zijn voor negatieve saldi op dat account. De verantwoordelijkheid ligt dus niet automatisch volledig bij de freelancer; de configuratie en de juridische verantwoordelijkheden apart toetsen |
+| B2. Commissie met destination charges | De betaling wordt op het platform verwerkt en daarna overgemaakt naar de freelancer | Connect, destination charges | Middel tot groot | Niet hetzelfde als B1. Stripe-kosten, refunds en chargebacks belasten het platformsaldo; juridische verantwoordelijkheden apart toetsen |
 | C. Abonnement voor freelancers | Maandbedrag voor zichtbaarheid of extra voorstellen, geen transactiefee | Billing | Middel | Geen geldstroom tussen partijen; inkomsten los van omzet |
 | D. Gratis blijven tot er volume is | Eerst aanbod en vraag opbouwen | Geen | Geen | Uitstel van de moeilijkste beslissing |
 
@@ -90,10 +115,33 @@ Zo leer je met echte betalingen in de eenvoudigste world, terwijl de zwaarste be
 - De Stripe-koppeling in de ontwikkelomgeving herstellen; die maakte in de afgelopen sessies geen verbinding.
 - De overige geminificeerde Convex-bestanden leesbaar maken die betalingen raken: `freelancers.ts`, `quotes.ts` en `leads.ts`. `orders.ts` en `disputes.ts` zijn klaar en vastgepind.
 
-## 7. Beslissingen die ik van je nodig heb
+## 7. Beslissingen
 
-1. Per world: welke optie, of "nog niet".
-2. Akkoord op de volgorde Local, Jobs, Online, of een andere.
-3. Wie doet de juridische en fiscale toets, en wanneer.
-4. Voor Online: blijft de getrapte commissie, of wordt het een staffel zonder knik?
-5. Blijft cashback voor klanten bestaan? Het gaat van de marge af en is nu nergens meer zichtbaar.
+**Goedgekeurd door de product owner:** nog niets uit dit document.
+
+Vastgelegd als werkafspraak, los van het verdienmodel: documentatie, het leesbaar maken van code en gedragswijzigingen blijven gescheiden, elk in eigen wijzigingen.
+
+**Voorgesteld, wacht op uitdrukkelijke bevestiging:**
+1. Local als kleine pilot met betalen per lead, pas na bewezen leadkwaliteit, aanvankelijk zonder exclusiviteit.
+2. Jobs gratis tijdens de bèta, daarna een gratis instap met betaalde uitbreiding. Prijzen na gesprekken met de eerste werkgevers.
+3. Online voorlopig gratis, later één vast commissiepercentage in plaats van de getrapte tabel.
+4. Nieuwe cashback-toekenningen stoppen.
+5. Volgorde van werk: eerst de creditbijschrijving betrouwbaar maken en testen terwijl betalingen uit blijven, daarna de Local-pilotregels uitwerken (geldige lead, prijs, maximaal aantal ontvangers, wanneer credits terugkomen).
+
+**Open, ongeacht bovenstaande:**
+- Wie doet de juridische en fiscale toets, en wanneer.
+- De vier voorwaarden voor de Local-pilot uit paragraaf 0.
+- Het percentage voor Online, te bepalen wanneer de betaalroute vaststaat.
+- Of tegenover bestaande cashback-saldi aanspraken staan.
+
+## 8. Gevolgen voor de code, nog niet uitgevoerd
+
+Deze punten volgen uit paragraaf 0 en gelden pas na bevestiging van de bijbehorende keuze, met uitzondering van de reparatie van de creditbijschrijving: dat is een fout, geen productkeuze. Ze veranderen gedrag en komen daarom in eigen wijzigingen met tests, los van het leesbaar maken van bestanden:
+- Exclusief claimen blokkeren in de backend (`leads.claimLead` weigert het claimtype), niet alleen de knop of de status verbergen. Bestaande exclusieve claims en hun historie blijven behouden en leesbaar.
+- Creditbijschrijving betrouwbaar maken. Niet alleen dubbele sessies weigeren, maar vóór bijschrijven controleren: betaalstatus (daadwerkelijk betaald), bedrag, valuta, het gekochte pakket en de gekoppelde gebruiker, en dat het aantal credits bij dat pakket hoort. Verwerking en bijschrijving in één atomaire stap vastleggen, met de Stripe-sessie als unieke sleutel, zodat gelijktijdige webhookpogingen nooit dubbele credits opleveren. Afwijkingen worden geweigerd en gelogd, niet stil ingeslikt.
+- De claimweergave toont de europrijs naast de credits.
+- Een terugboekpad voor credits, met reden en auditspoor.
+- De getrapte `calculatePlatformFee` vervangen door één percentage zodra dat is vastgesteld.
+- Cashback stoppen zonder historie te verwijderen: alleen nieuwe toekenningen uitschakelen. Bestaande saldi en transacties blijven staan totdat duidelijk is of daar aanspraken tegenover staan.
+- De Connect-callback laten controleren wie is ingelogd, en een bestaand Stripe-account hergebruiken.
+- De verkeerde melding in `updateStripePayment` corrigeren.

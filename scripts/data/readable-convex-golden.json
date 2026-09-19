@@ -4010,5 +4010,2679 @@
    "error": "Unauthorized.",
    "log": []
   }
+ },
+ "convex/marketplace/leads.ts": {
+  "credits for professional": {
+   "result": {
+    "balance": 10,
+    "userId": "plumber",
+    "profileId": "profile"
+   },
+   "log": []
+  },
+  "credits without profile": {
+   "result": {
+    "balance": 0,
+    "userId": "stranger",
+    "profileId": null
+   },
+   "log": []
+  },
+  "credits anonymous": {
+   "result": null,
+   "log": []
+  },
+  "credit history": {
+   "result": [
+    {
+     "_id": "t1",
+     "_table": "creditTransactions",
+     "freelancerId": "plumber",
+     "amount": 5,
+     "type": "purchase"
+    }
+   ],
+   "log": []
+  },
+  "credit history limit clamps": {
+   "result": [
+    {
+     "_id": "t1",
+     "_table": "creditTransactions",
+     "freelancerId": "plumber",
+     "amount": 5
+    }
+   ],
+   "log": []
+  },
+  "credit history anonymous": {
+   "result": [],
+   "log": []
+  },
+  "claims with request, client contact and category": {
+   "result": [
+    {
+     "_id": "c1",
+     "_table": "leadClaims",
+     "quoteRequestId": "request",
+     "freelancerId": "profile",
+     "creditsSpent": 0,
+     "claimType": "shared",
+     "claimedAt": 20,
+     "request": {
+      "_id": "request",
+      "title": "Fix a leaking kitchen tap",
+      "description": "The kitchen mixer tap drips constantly and the cabinet below is getting wet.",
+      "locationCity": "Rotterdam",
+      "locationPostcode": "3011AB",
+      "budgetIndication": "< €500",
+      "preferredDate": 1800100000000,
+      "status": "open",
+      "createdAt": 10
+     },
+     "client": {
+      "name": "buyer",
+      "email": "buyer@example.invalid"
+     },
+     "categoryName": "Plumbing"
+    }
+   ],
+   "log": []
+  },
+  "claims with deleted request": {
+   "result": [
+    {
+     "_id": "c1",
+     "_table": "leadClaims",
+     "quoteRequestId": "request",
+     "freelancerId": "profile",
+     "creditsSpent": 0,
+     "claimType": "shared",
+     "claimedAt": 20,
+     "request": null,
+     "client": null,
+     "categoryName": null
+    }
+   ],
+   "log": []
+  },
+  "claims with deleted client and category": {
+   "result": [
+    {
+     "_id": "c1",
+     "_table": "leadClaims",
+     "quoteRequestId": "request",
+     "freelancerId": "profile",
+     "creditsSpent": 0,
+     "claimType": "shared",
+     "claimedAt": 20,
+     "request": {
+      "_id": "request",
+      "title": "Fix a leaking kitchen tap",
+      "description": "The kitchen mixer tap drips constantly and the cabinet below is getting wet.",
+      "locationCity": "Rotterdam",
+      "locationPostcode": "3011AB",
+      "budgetIndication": "< €500",
+      "preferredDate": 1800100000000,
+      "status": "open",
+      "createdAt": 10
+     },
+     "client": null,
+     "categoryName": null
+    }
+   ],
+   "log": []
+  },
+  "claims without profile": {
+   "result": [],
+   "log": []
+  },
+  "claims anonymous": {
+   "result": [],
+   "log": []
+  },
+  "lead status for eligible professional": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 0,
+    "exclusiveCost": 0,
+    "canClaimExclusive": true,
+    "claimBlockReason": null
+   },
+   "log": []
+  },
+  "lead status anonymous": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 0,
+    "exclusiveCost": 0,
+    "canClaimExclusive": true,
+    "claimBlockReason": null
+   },
+   "log": []
+  },
+  "lead status missing request": {
+   "result": null,
+   "log": []
+  },
+  "lead status already claimed": {
+   "result": {
+    "claimedSlots": 1,
+    "maxSlots": 3,
+    "slotsRemaining": 2,
+    "isExclusive": false,
+    "alreadyClaimed": true,
+    "creditCost": 0,
+    "exclusiveCost": 0,
+    "canClaimExclusive": false,
+    "claimBlockReason": null
+   },
+   "log": []
+  },
+  "lead status exclusive": {
+   "result": {
+    "claimedSlots": 1,
+    "maxSlots": 1,
+    "slotsRemaining": 0,
+    "isExclusive": true,
+    "alreadyClaimed": false,
+    "creditCost": 0,
+    "exclusiveCost": 0,
+    "canClaimExclusive": false,
+    "claimBlockReason": null
+   },
+   "log": []
+  },
+  "lead status custom slots": {
+   "result": {
+    "claimedSlots": 2,
+    "maxSlots": 5,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 0,
+    "exclusiveCost": 0,
+    "canClaimExclusive": false,
+    "claimBlockReason": null
+   },
+   "log": []
+  },
+  "lead status for admin": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 0,
+    "exclusiveCost": 0,
+    "canClaimExclusive": true,
+    "claimBlockReason": "Administrators cannot claim Local leads."
+   },
+   "log": []
+  },
+  "lead status for client": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 0,
+    "exclusiveCost": 0,
+    "canClaimExclusive": true,
+    "claimBlockReason": "Add the local professional role before claiming a lead."
+   },
+   "log": []
+  },
+  "lead status unverified": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 0,
+    "exclusiveCost": 0,
+    "canClaimExclusive": true,
+    "claimBlockReason": "Your Local professional profile is not eligible to claim leads until it is verified. Contact support to arrange an identity, business and service-area review."
+   },
+   "log": []
+  },
+  "lead status when verification was never set": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 0,
+    "exclusiveCost": 0,
+    "canClaimExclusive": true,
+    "claimBlockReason": "Your Local professional profile is not eligible to claim leads until it is verified. Contact support to arrange an identity, business and service-area review."
+   },
+   "log": []
+  },
+  "lead status inactive profile": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 0,
+    "exclusiveCost": 0,
+    "canClaimExclusive": true,
+    "claimBlockReason": "Your Local professional profile is not active for local work. Contact support to review it."
+   },
+   "log": []
+  },
+  "lead status remote work type": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 0,
+    "exclusiveCost": 0,
+    "canClaimExclusive": true,
+    "claimBlockReason": "Your Local professional profile is not active for local work. Contact support to review it."
+   },
+   "log": []
+  },
+  "lead status hybrid work type": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 0,
+    "exclusiveCost": 0,
+    "canClaimExclusive": true,
+    "claimBlockReason": null
+   },
+   "log": []
+  },
+  "lead status outside area by city": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 0,
+    "exclusiveCost": 0,
+    "canClaimExclusive": true,
+    "claimBlockReason": "This quote request is outside your verified service area."
+   },
+   "log": []
+  },
+  "lead status matched by postcode only": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 0,
+    "exclusiveCost": 0,
+    "canClaimExclusive": true,
+    "claimBlockReason": null
+   },
+   "log": []
+  },
+  "lead status other country": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 0,
+    "exclusiveCost": 0,
+    "canClaimExclusive": true,
+    "claimBlockReason": "This quote request is outside your verified service area."
+   },
+   "log": []
+  },
+  "lead status missing country": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 0,
+    "exclusiveCost": 0,
+    "canClaimExclusive": true,
+    "claimBlockReason": "This quote request is outside your verified service area."
+   },
+   "log": []
+  },
+  "lead status inside radius": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 0,
+    "exclusiveCost": 0,
+    "canClaimExclusive": true,
+    "claimBlockReason": null
+   },
+   "log": []
+  },
+  "lead status outside radius": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 0,
+    "exclusiveCost": 0,
+    "canClaimExclusive": true,
+    "claimBlockReason": "This quote request is outside your verified service area."
+   },
+   "log": []
+  },
+  "lead status zero radius falls back to city": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 0,
+    "exclusiveCost": 0,
+    "canClaimExclusive": true,
+    "claimBlockReason": null
+   },
+   "log": []
+  },
+  "lead status request in other workspace": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 0,
+    "exclusiveCost": 0,
+    "canClaimExclusive": true,
+    "claimBlockReason": "This request or profile belongs to another workspace."
+   },
+   "log": []
+  },
+  "paid lead prices for budget none": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 3,
+    "exclusiveCost": 6,
+    "canClaimExclusive": true,
+    "claimBlockReason": null
+   },
+   "log": []
+  },
+  "paid lead prices for budget < €500": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 2,
+    "exclusiveCost": 4,
+    "canClaimExclusive": true,
+    "claimBlockReason": null
+   },
+   "log": []
+  },
+  "paid lead prices for budget €500 - €2,000": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 4,
+    "exclusiveCost": 8,
+    "canClaimExclusive": true,
+    "claimBlockReason": null
+   },
+   "log": []
+  },
+  "paid lead prices for budget €500-2000": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 4,
+    "exclusiveCost": 8,
+    "canClaimExclusive": true,
+    "claimBlockReason": null
+   },
+   "log": []
+  },
+  "paid lead prices for budget > €2,000": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 4,
+    "exclusiveCost": 8,
+    "canClaimExclusive": true,
+    "claimBlockReason": null
+   },
+   "log": []
+  },
+  "paid lead prices for budget €2,000+": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 4,
+    "exclusiveCost": 8,
+    "canClaimExclusive": true,
+    "claimBlockReason": null
+   },
+   "log": []
+  },
+  "paid lead prices for budget Not sure yet": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 3,
+    "exclusiveCost": 6,
+    "canClaimExclusive": true,
+    "claimBlockReason": null
+   },
+   "log": []
+  },
+  "paid lead prices for budget €250": {
+   "result": {
+    "claimedSlots": 0,
+    "maxSlots": 3,
+    "slotsRemaining": 3,
+    "isExclusive": false,
+    "alreadyClaimed": false,
+    "creditCost": 3,
+    "exclusiveCost": 6,
+    "canClaimExclusive": true,
+    "claimBlockReason": null
+   },
+   "log": []
+  },
+  "shared claim during beta": {
+   "result": {
+    "claimId": "leadClaims-new-0",
+    "creditsSpent": 0,
+    "newBalance": 10
+   },
+   "log": [
+    [
+     "rateLimit",
+     "localLeadClaim",
+     "plumber"
+    ],
+    [
+     "patch",
+     "profile",
+     {
+      "creditBalance": 10
+     }
+    ],
+    [
+     "insert",
+     "leadClaims",
+     {
+      "quoteRequestId": "request",
+      "freelancerId": "profile",
+      "creditsSpent": 0,
+      "claimType": "shared",
+      "claimedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "request",
+     {
+      "claimedSlots": 1,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "creditTransactions",
+     {
+      "freelancerId": "plumber",
+      "amount": 0,
+      "type": "spend",
+      "description": "Claimed lead: Fix a leaking kitchen tap",
+      "referenceId": "leadClaims-new-0",
+      "createdAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "exclusive claim during beta": {
+   "result": {
+    "claimId": "leadClaims-new-0",
+    "creditsSpent": 0,
+    "newBalance": 10
+   },
+   "log": [
+    [
+     "rateLimit",
+     "localLeadClaim",
+     "plumber"
+    ],
+    [
+     "patch",
+     "profile",
+     {
+      "creditBalance": 10
+     }
+    ],
+    [
+     "insert",
+     "leadClaims",
+     {
+      "quoteRequestId": "request",
+      "freelancerId": "profile",
+      "creditsSpent": 0,
+      "claimType": "exclusive",
+      "claimedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "request",
+     {
+      "isExclusive": true,
+      "claimedSlots": 1,
+      "maxSlots": 1,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "creditTransactions",
+     {
+      "freelancerId": "plumber",
+      "amount": 0,
+      "type": "spend",
+      "description": "Claimed lead: Fix a leaking kitchen tap",
+      "referenceId": "leadClaims-new-0",
+      "createdAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "second shared claim": {
+   "result": {
+    "claimId": "leadClaims-new-1",
+    "creditsSpent": 0,
+    "newBalance": 10
+   },
+   "log": [
+    [
+     "rateLimit",
+     "localLeadClaim",
+     "plumber"
+    ],
+    [
+     "patch",
+     "profile",
+     {
+      "creditBalance": 10
+     }
+    ],
+    [
+     "insert",
+     "leadClaims",
+     {
+      "quoteRequestId": "request",
+      "freelancerId": "profile",
+      "creditsSpent": 0,
+      "claimType": "shared",
+      "claimedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "request",
+     {
+      "claimedSlots": 2,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "creditTransactions",
+     {
+      "freelancerId": "plumber",
+      "amount": 0,
+      "type": "spend",
+      "description": "Claimed lead: Fix a leaking kitchen tap",
+      "referenceId": "leadClaims-new-1",
+      "createdAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "shared claim with all slots taken": {
+   "error": "All slots for this lead are taken.",
+   "log": [
+    [
+     "rateLimit",
+     "localLeadClaim",
+     "plumber"
+    ]
+   ]
+  },
+  "shared claim with custom slots": {
+   "result": {
+    "claimId": "leadClaims-new-0",
+    "creditsSpent": 0,
+    "newBalance": 10
+   },
+   "log": [
+    [
+     "rateLimit",
+     "localLeadClaim",
+     "plumber"
+    ],
+    [
+     "patch",
+     "profile",
+     {
+      "creditBalance": 10
+     }
+    ],
+    [
+     "insert",
+     "leadClaims",
+     {
+      "quoteRequestId": "request",
+      "freelancerId": "profile",
+      "creditsSpent": 0,
+      "claimType": "shared",
+      "claimedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "request",
+     {
+      "claimedSlots": 4,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "creditTransactions",
+     {
+      "freelancerId": "plumber",
+      "amount": 0,
+      "type": "spend",
+      "description": "Claimed lead: Fix a leaking kitchen tap",
+      "referenceId": "leadClaims-new-0",
+      "createdAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "shared claim on exclusive lead": {
+   "error": "This lead has been exclusively claimed.",
+   "log": [
+    [
+     "rateLimit",
+     "localLeadClaim",
+     "plumber"
+    ]
+   ]
+  },
+  "exclusive claim after another claim": {
+   "error": "Exclusive claim not available — lead already has claims.",
+   "log": [
+    [
+     "rateLimit",
+     "localLeadClaim",
+     "plumber"
+    ]
+   ]
+  },
+  "claim twice": {
+   "error": "You have already claimed this lead.",
+   "log": [
+    [
+     "rateLimit",
+     "localLeadClaim",
+     "plumber"
+    ]
+   ]
+  },
+  "claim closed request": {
+   "error": "This quote request is no longer open.",
+   "log": [
+    [
+     "rateLimit",
+     "localLeadClaim",
+     "plumber"
+    ]
+   ]
+  },
+  "claim missing request": {
+   "error": "Quote request not found.",
+   "log": [
+    [
+     "rateLimit",
+     "localLeadClaim",
+     "plumber"
+    ]
+   ]
+  },
+  "claim as admin": {
+   "error": "Administrators cannot claim Local leads.",
+   "log": []
+  },
+  "claim as client": {
+   "error": "Add the local professional role before claiming a lead.",
+   "log": []
+  },
+  "claim anonymous": {
+   "error": "Authentication required.",
+   "log": []
+  },
+  "claim unverified": {
+   "error": "Your Local professional profile is not eligible to claim leads until it is verified. Contact support to arrange an identity, business and service-area review.",
+   "log": [
+    [
+     "rateLimit",
+     "localLeadClaim",
+     "plumber"
+    ]
+   ]
+  },
+  "claim when verification was never set": {
+   "error": "Your Local professional profile is not eligible to claim leads until it is verified. Contact support to arrange an identity, business and service-area review.",
+   "log": [
+    [
+     "rateLimit",
+     "localLeadClaim",
+     "plumber"
+    ]
+   ]
+  },
+  "claim outside area": {
+   "error": "This quote request is outside your verified service area.",
+   "log": [
+    [
+     "rateLimit",
+     "localLeadClaim",
+     "plumber"
+    ]
+   ]
+  },
+  "claim without profile": {
+   "error": "Complete your Local professional profile before claiming requests.",
+   "log": [
+    [
+     "rateLimit",
+     "localLeadClaim",
+     "plumber"
+    ]
+   ]
+  },
+  "claim from another workspace": {
+   "error": "This request or profile belongs to another workspace.",
+   "log": [
+    [
+     "rateLimit",
+     "localLeadClaim",
+     "foreign"
+    ]
+   ]
+  },
+  "paid shared claim spends credits": {
+   "result": {
+    "claimId": "leadClaims-new-0",
+    "creditsSpent": 2,
+    "newBalance": 8
+   },
+   "log": [
+    [
+     "rateLimit",
+     "localLeadClaim",
+     "plumber"
+    ],
+    [
+     "patch",
+     "profile",
+     {
+      "creditBalance": 8
+     }
+    ],
+    [
+     "insert",
+     "leadClaims",
+     {
+      "quoteRequestId": "request",
+      "freelancerId": "profile",
+      "creditsSpent": 2,
+      "claimType": "shared",
+      "claimedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "request",
+     {
+      "claimedSlots": 1,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "creditTransactions",
+     {
+      "freelancerId": "plumber",
+      "amount": -2,
+      "type": "spend",
+      "description": "Claimed lead: Fix a leaking kitchen tap",
+      "referenceId": "leadClaims-new-0",
+      "createdAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "paid exclusive claim costs double": {
+   "result": {
+    "claimId": "leadClaims-new-0",
+    "creditsSpent": 8,
+    "newBalance": 2
+   },
+   "log": [
+    [
+     "rateLimit",
+     "localLeadClaim",
+     "plumber"
+    ],
+    [
+     "patch",
+     "profile",
+     {
+      "creditBalance": 2
+     }
+    ],
+    [
+     "insert",
+     "leadClaims",
+     {
+      "quoteRequestId": "request",
+      "freelancerId": "profile",
+      "creditsSpent": 8,
+      "claimType": "exclusive",
+      "claimedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "request",
+     {
+      "isExclusive": true,
+      "claimedSlots": 1,
+      "maxSlots": 1,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "creditTransactions",
+     {
+      "freelancerId": "plumber",
+      "amount": -8,
+      "type": "spend",
+      "description": "Claimed lead: Fix a leaking kitchen tap",
+      "referenceId": "leadClaims-new-0",
+      "createdAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "paid claim with too few credits": {
+   "error": "Insufficient credits. You need 2 credits but have 1.",
+   "log": [
+    [
+     "rateLimit",
+     "localLeadClaim",
+     "plumber"
+    ]
+   ]
+  },
+  "paid claim with missing balance": {
+   "error": "Insufficient credits. You need 2 credits but have 0.",
+   "log": [
+    [
+     "rateLimit",
+     "localLeadClaim",
+     "plumber"
+    ]
+   ]
+  },
+  "credits added by server": {
+   "result": {
+    "newBalance": 20
+   },
+   "log": [
+    [
+     "patch",
+     "profile",
+     {
+      "creditBalance": 20
+     }
+    ],
+    [
+     "insert",
+     "creditTransactions",
+     {
+      "freelancerId": "plumber",
+      "amount": 10,
+      "type": "purchase",
+      "description": "Popular package",
+      "referenceId": "cs_1",
+      "createdAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "credits added twice for the same session": {
+   "result": {
+    "newBalance": 20
+   },
+   "log": [
+    [
+     "patch",
+     "profile",
+     {
+      "creditBalance": 20
+     }
+    ],
+    [
+     "insert",
+     "creditTransactions",
+     {
+      "freelancerId": "plumber",
+      "amount": 10,
+      "type": "purchase",
+      "description": "Popular package",
+      "referenceId": "cs_1",
+      "createdAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "negative credits are accepted": {
+   "result": {
+    "newBalance": 6
+   },
+   "log": [
+    [
+     "patch",
+     "profile",
+     {
+      "creditBalance": 6
+     }
+    ],
+    [
+     "insert",
+     "creditTransactions",
+     {
+      "freelancerId": "plumber",
+      "amount": -4,
+      "type": "purchase",
+      "description": "Adjustment",
+      "referenceId": "cs_2",
+      "createdAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "credits to missing balance": {
+   "result": {
+    "newBalance": 5
+   },
+   "log": [
+    [
+     "patch",
+     "profile",
+     {
+      "creditBalance": 5
+     }
+    ],
+    [
+     "insert",
+     "creditTransactions",
+     {
+      "freelancerId": "plumber",
+      "amount": 5,
+      "type": "purchase",
+      "description": "Starter",
+      "referenceId": "cs_3",
+      "createdAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "credits added without profile": {
+   "error": "Freelancer profile not found.",
+   "log": []
+  },
+  "credits by signed-in user": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "credits wrong secret": {
+   "error": "Unauthorized.",
+   "log": []
+  }
+ },
+ "convex/marketplace/quotes.ts": {
+  "open requests": {
+   "result": [
+    {
+     "_id": "request",
+     "title": "Plumbing request",
+     "descriptionPreview": "Plumbing request in Rotterdam, Netherlands. Full job details are private and become available only after an eligible professional claims the lead.",
+     "categoryName": "Plumbing",
+     "locationCity": "Rotterdam",
+     "locationCountry": "Netherlands",
+     "budgetIndication": null,
+     "preferredDate": 1800100000000,
+     "status": "open",
+     "quoteCount": 0,
+     "maxSlots": 3,
+     "claimedSlots": 0,
+     "isExclusive": false,
+     "createdAt": 10,
+     "updatedAt": 10
+    },
+    {
+     "_id": "request-3",
+     "title": "Local service request",
+     "descriptionPreview": "Local service request in Rotterdam, Netherlands. Full job details are private and become available only after an eligible professional claims the lead.",
+     "categoryName": "Local service",
+     "locationCity": "Rotterdam",
+     "locationCountry": "Netherlands",
+     "budgetIndication": null,
+     "preferredDate": 1800100000000,
+     "status": "open",
+     "quoteCount": 0,
+     "maxSlots": 3,
+     "claimedSlots": 0,
+     "isExclusive": false,
+     "createdAt": 10,
+     "updatedAt": 10
+    }
+   ],
+   "log": []
+  },
+  "open requests limit clamps": {
+   "result": [
+    {
+     "_id": "request",
+     "title": "Plumbing request",
+     "descriptionPreview": "Plumbing request in Rotterdam, Netherlands. Full job details are private and become available only after an eligible professional claims the lead.",
+     "categoryName": "Plumbing",
+     "locationCity": "Rotterdam",
+     "locationCountry": "Netherlands",
+     "budgetIndication": null,
+     "preferredDate": 1800100000000,
+     "status": "open",
+     "quoteCount": 0,
+     "maxSlots": 3,
+     "claimedSlots": 0,
+     "isExclusive": false,
+     "createdAt": 10,
+     "updatedAt": 10
+    }
+   ],
+   "log": []
+  },
+  "public request": {
+   "result": {
+    "_id": "request",
+    "title": "Plumbing request",
+    "descriptionPreview": "Plumbing request in Rotterdam, Netherlands. Full job details are private and become available only after an eligible professional claims the lead.",
+    "categoryName": "Plumbing",
+    "locationCity": "Rotterdam",
+    "locationCountry": "Netherlands",
+    "budgetIndication": null,
+    "preferredDate": 1800100000000,
+    "status": "open",
+    "quoteCount": 0,
+    "maxSlots": 3,
+    "claimedSlots": 0,
+    "isExclusive": false,
+    "createdAt": 10,
+    "updatedAt": 10
+   },
+   "log": []
+  },
+  "public request closed": {
+   "result": null,
+   "log": []
+  },
+  "public request missing": {
+   "result": null,
+   "log": []
+  },
+  "participant view for owner with quotes": {
+   "result": {
+    "_id": "request",
+    "title": "Fix a leaking kitchen tap",
+    "descriptionPreview": "Plumbing request in Rotterdam, Netherlands. Full job details are private and become available only after an eligible professional claims the lead.",
+    "categoryName": "Plumbing",
+    "locationCity": "Rotterdam",
+    "locationCountry": "Netherlands",
+    "budgetIndication": "< €500",
+    "preferredDate": 1800100000000,
+    "status": "open",
+    "quoteCount": 0,
+    "maxSlots": 3,
+    "claimedSlots": 0,
+    "isExclusive": false,
+    "createdAt": 10,
+    "updatedAt": 10,
+    "description": "The kitchen mixer tap drips constantly and the cabinet below is getting wet.",
+    "locationPostcode": "3011AB",
+    "latitude": null,
+    "longitude": null,
+    "photos": [],
+    "isOwner": true,
+    "clientName": "buyer",
+    "canViewFullDetails": true,
+    "quotes": [
+     {
+      "_id": "q1",
+      "amount": 180,
+      "currency": "EUR",
+      "description": "Replace the cartridge and reseal the tap base.",
+      "estimatedDays": 1,
+      "validUntil": null,
+      "status": "pending",
+      "createdAt": 30,
+      "updatedAt": 30,
+      "freelancerProfile": {
+       "_id": "profile",
+       "displayName": "plumber services",
+       "tagline": null,
+       "avatarUrl": null,
+       "ratingAverage": 4.5,
+       "ratingCount": 8,
+       "isVerified": true
+      }
+     },
+     {
+      "_id": "q2",
+      "amount": 180,
+      "currency": "EUR",
+      "description": "Replace the cartridge and reseal the tap base.",
+      "estimatedDays": 1,
+      "validUntil": null,
+      "status": "pending",
+      "createdAt": 30,
+      "updatedAt": 30,
+      "freelancerProfile": {
+       "_id": "rival-profile",
+       "displayName": "rival services",
+       "tagline": "Fast",
+       "avatarUrl": "/rival.png",
+       "ratingAverage": 4.5,
+       "ratingCount": 8,
+       "isVerified": true
+      }
+     },
+     {
+      "_id": "q3",
+      "amount": 180,
+      "currency": "EUR",
+      "description": "Replace the cartridge and reseal the tap base.",
+      "estimatedDays": 1,
+      "validUntil": null,
+      "status": "pending",
+      "createdAt": 30,
+      "updatedAt": 30,
+      "freelancerProfile": null
+     }
+    ],
+    "myQuote": null
+   },
+   "log": []
+  },
+  "participant view for claimer with own quote": {
+   "result": {
+    "_id": "request",
+    "title": "Fix a leaking kitchen tap",
+    "descriptionPreview": "Plumbing request in Rotterdam, Netherlands. Full job details are private and become available only after an eligible professional claims the lead.",
+    "categoryName": "Plumbing",
+    "locationCity": "Rotterdam",
+    "locationCountry": "Netherlands",
+    "budgetIndication": "< €500",
+    "preferredDate": 1800100000000,
+    "status": "open",
+    "quoteCount": 0,
+    "maxSlots": 3,
+    "claimedSlots": 0,
+    "isExclusive": false,
+    "createdAt": 10,
+    "updatedAt": 10,
+    "description": "The kitchen mixer tap drips constantly and the cabinet below is getting wet.",
+    "locationPostcode": "3011AB",
+    "latitude": null,
+    "longitude": null,
+    "photos": [],
+    "isOwner": false,
+    "clientName": "buyer",
+    "canViewFullDetails": true,
+    "quotes": [],
+    "myQuote": {
+     "_id": "q1",
+     "amount": 180,
+     "currency": "EUR",
+     "description": "Replace the cartridge and reseal the tap base.",
+     "estimatedDays": 1,
+     "validUntil": null,
+     "status": "pending",
+     "createdAt": 30,
+     "updatedAt": 30
+    }
+   },
+   "log": []
+  },
+  "participant view for claimer without quote": {
+   "result": {
+    "_id": "request",
+    "title": "Fix a leaking kitchen tap",
+    "descriptionPreview": "Plumbing request in Rotterdam, Netherlands. Full job details are private and become available only after an eligible professional claims the lead.",
+    "categoryName": "Plumbing",
+    "locationCity": "Rotterdam",
+    "locationCountry": "Netherlands",
+    "budgetIndication": "< €500",
+    "preferredDate": 1800100000000,
+    "status": "open",
+    "quoteCount": 0,
+    "maxSlots": 3,
+    "claimedSlots": 0,
+    "isExclusive": false,
+    "createdAt": 10,
+    "updatedAt": 10,
+    "description": "The kitchen mixer tap drips constantly and the cabinet below is getting wet.",
+    "locationPostcode": "3011AB",
+    "latitude": null,
+    "longitude": null,
+    "photos": [],
+    "isOwner": false,
+    "clientName": "buyer",
+    "canViewFullDetails": true,
+    "quotes": [],
+    "myQuote": null
+   },
+   "log": []
+  },
+  "participant view for professional without claim": {
+   "result": null,
+   "log": []
+  },
+  "participant view for stranger": {
+   "result": null,
+   "log": []
+  },
+  "participant view missing request": {
+   "result": null,
+   "log": []
+  },
+  "participant view anonymous": {
+   "error": "Authentication required.",
+   "log": []
+  },
+  "create request": {
+   "result": "quoteRequests-new-1",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ],
+    [
+     "insert",
+     "quoteRequests",
+     {
+      "tenantId": "tenant-a",
+      "clientId": "buyer",
+      "categoryId": "category",
+      "title": "Replace bathroom extractor fan",
+      "description": "The extractor fan in the bathroom stopped working and needs to be replaced this month.",
+      "locationCity": "Rotterdam",
+      "locationPostcode": "3011 AB",
+      "locationCountry": "Netherlands",
+      "photos": [
+       {
+        "id": "p1"
+       }
+      ],
+      "budgetIndication": "< €500",
+      "preferredDate": 1800200000000,
+      "status": "open",
+      "quoteCount": 0,
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "create request by postcode only with coordinates": {
+   "result": "quoteRequests-new-1",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ],
+    [
+     "insert",
+     "quoteRequests",
+     {
+      "tenantId": "tenant-a",
+      "clientId": "buyer",
+      "categoryId": "category",
+      "title": "Replace bathroom extractor fan",
+      "description": "The extractor fan in the bathroom stopped working and needs to be replaced this month.",
+      "locationPostcode": "3011 AB",
+      "locationCountry": "Netherlands",
+      "latitude": 51.92,
+      "longitude": 4.48,
+      "photos": [
+       {
+        "id": "p1"
+       }
+      ],
+      "budgetIndication": "< €500",
+      "preferredDate": 1800200000000,
+      "status": "open",
+      "quoteCount": 0,
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "create request in hybrid category": {
+   "result": "quoteRequests-new-1",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ],
+    [
+     "insert",
+     "quoteRequests",
+     {
+      "tenantId": "tenant-a",
+      "clientId": "buyer",
+      "categoryId": "category",
+      "title": "Replace bathroom extractor fan",
+      "description": "The extractor fan in the bathroom stopped working and needs to be replaced this month.",
+      "locationCity": "Rotterdam",
+      "locationPostcode": "3011 AB",
+      "locationCountry": "Netherlands",
+      "photos": [
+       {
+        "id": "p1"
+       }
+      ],
+      "budgetIndication": "< €500",
+      "preferredDate": 1800200000000,
+      "status": "open",
+      "quoteCount": 0,
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "create request in category without service type": {
+   "result": "quoteRequests-new-1",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ],
+    [
+     "insert",
+     "quoteRequests",
+     {
+      "tenantId": "tenant-a",
+      "clientId": "buyer",
+      "categoryId": "category",
+      "title": "Replace bathroom extractor fan",
+      "description": "The extractor fan in the bathroom stopped working and needs to be replaced this month.",
+      "locationCity": "Rotterdam",
+      "locationPostcode": "3011 AB",
+      "locationCountry": "Netherlands",
+      "photos": [
+       {
+        "id": "p1"
+       }
+      ],
+      "budgetIndication": "< €500",
+      "preferredDate": 1800200000000,
+      "status": "open",
+      "quoteCount": 0,
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "create request with title 7 and description 40 characters": {
+   "error": "Use a title between 8 and 120 characters.",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ]
+   ]
+  },
+  "create request with title 8 and description 40 characters": {
+   "result": "quoteRequests-new-1",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ],
+    [
+     "insert",
+     "quoteRequests",
+     {
+      "tenantId": "tenant-a",
+      "clientId": "buyer",
+      "categoryId": "category",
+      "title": "tttttttt",
+      "description": "dddddddddddddddddddddddddddddddddddddddd",
+      "locationCity": "Rotterdam",
+      "locationPostcode": "3011 AB",
+      "locationCountry": "Netherlands",
+      "photos": [
+       {
+        "id": "p1"
+       }
+      ],
+      "budgetIndication": "< €500",
+      "preferredDate": 1800200000000,
+      "status": "open",
+      "quoteCount": 0,
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "create request with title 120 and description 40 characters": {
+   "result": "quoteRequests-new-1",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ],
+    [
+     "insert",
+     "quoteRequests",
+     {
+      "tenantId": "tenant-a",
+      "clientId": "buyer",
+      "categoryId": "category",
+      "title": "tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+      "description": "dddddddddddddddddddddddddddddddddddddddd",
+      "locationCity": "Rotterdam",
+      "locationPostcode": "3011 AB",
+      "locationCountry": "Netherlands",
+      "photos": [
+       {
+        "id": "p1"
+       }
+      ],
+      "budgetIndication": "< €500",
+      "preferredDate": 1800200000000,
+      "status": "open",
+      "quoteCount": 0,
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "create request with title 121 and description 40 characters": {
+   "error": "Use a title between 8 and 120 characters.",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ]
+   ]
+  },
+  "create request with title 8 and description 39 characters": {
+   "error": "Use a description between 40 and 5,000 characters.",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ]
+   ]
+  },
+  "create request with title 8 and description 5000 characters": {
+   "result": "quoteRequests-new-1",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ],
+    [
+     "insert",
+     "quoteRequests",
+     {
+      "tenantId": "tenant-a",
+      "clientId": "buyer",
+      "categoryId": "category",
+      "title": "tttttttt",
+      "description": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "locationCity": "Rotterdam",
+      "locationPostcode": "3011 AB",
+      "locationCountry": "Netherlands",
+      "photos": [
+       {
+        "id": "p1"
+       }
+      ],
+      "budgetIndication": "< €500",
+      "preferredDate": 1800200000000,
+      "status": "open",
+      "quoteCount": 0,
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "create request with title 8 and description 5001 characters": {
+   "error": "Use a description between 40 and 5,000 characters.",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ]
+   ]
+  },
+  "create request with city 2 and postcode 20 characters": {
+   "result": "quoteRequests-new-1",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ],
+    [
+     "insert",
+     "quoteRequests",
+     {
+      "tenantId": "tenant-a",
+      "clientId": "buyer",
+      "categoryId": "category",
+      "title": "Replace bathroom extractor fan",
+      "description": "The extractor fan in the bathroom stopped working and needs to be replaced this month.",
+      "locationCity": "cc",
+      "locationPostcode": "99999999999999999999",
+      "locationCountry": "Netherlands",
+      "photos": [
+       {
+        "id": "p1"
+       }
+      ],
+      "budgetIndication": "< €500",
+      "preferredDate": 1800200000000,
+      "status": "open",
+      "quoteCount": 0,
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "create request with city 100 and postcode 20 characters": {
+   "result": "quoteRequests-new-1",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ],
+    [
+     "insert",
+     "quoteRequests",
+     {
+      "tenantId": "tenant-a",
+      "clientId": "buyer",
+      "categoryId": "category",
+      "title": "Replace bathroom extractor fan",
+      "description": "The extractor fan in the bathroom stopped working and needs to be replaced this month.",
+      "locationCity": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "locationPostcode": "99999999999999999999",
+      "locationCountry": "Netherlands",
+      "photos": [
+       {
+        "id": "p1"
+       }
+      ],
+      "budgetIndication": "< €500",
+      "preferredDate": 1800200000000,
+      "status": "open",
+      "quoteCount": 0,
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "create request with city 101 and postcode 20 characters": {
+   "error": "Use a city or region between 2 and 100 characters.",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ]
+   ]
+  },
+  "create request short title": {
+   "error": "Use a title between 8 and 120 characters.",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ]
+   ]
+  },
+  "create request short description": {
+   "error": "Use a description between 40 and 5,000 characters.",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ]
+   ]
+  },
+  "create request without location": {
+   "error": "Enter a city or postcode for the local request.",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ]
+   ]
+  },
+  "create request short city": {
+   "error": "Use a city or region between 2 and 100 characters.",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ]
+   ]
+  },
+  "create request long postcode": {
+   "error": "Postcode must be at most 20 characters.",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ]
+   ]
+  },
+  "create request outside the Netherlands": {
+   "error": "Local private-beta requests are currently limited to the Netherlands.",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ]
+   ]
+  },
+  "create request bad latitude": {
+   "error": "Latitude must be between -90 and 90.",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ]
+   ]
+  },
+  "create request bad longitude": {
+   "error": "Longitude must be between -180 and 180.",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ]
+   ]
+  },
+  "create request online category": {
+   "error": "Choose a Local service category.",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ]
+   ]
+  },
+  "create request category in other workspace": {
+   "error": "Local service category not found.",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ]
+   ]
+  },
+  "create request missing category": {
+   "error": "Local service category not found.",
+   "log": [
+    [
+     "rateLimit",
+     "localRequest",
+     "buyer"
+    ]
+   ]
+  },
+  "create request as professional": {
+   "error": "Add the client role before requesting a local quote.",
+   "log": []
+  },
+  "create request anonymous": {
+   "error": "Authentication required.",
+   "log": []
+  },
+  "submit quote": {
+   "result": "quotes-new-0",
+   "log": [
+    [
+     "rateLimit",
+     "localQuote",
+     "plumber"
+    ],
+    [
+     "insert",
+     "quotes",
+     {
+      "quoteRequestId": "request",
+      "freelancerId": "profile",
+      "amount": 180,
+      "currency": "EUR",
+      "description": "Replace the cartridge and reseal the tap base.",
+      "estimatedDays": 1,
+      "validUntil": 1800300000000,
+      "status": "pending",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "request",
+     {
+      "quoteCount": 1,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "buyer",
+      "type": "local_quote_received",
+      "title": "New local quote received",
+      "body": "plumber services sent a quote for Fix a leaking kitchen tap.",
+      "link": "/local/quote-request/request",
+      "metadata": {
+       "quoteRequestId": "request",
+       "quoteId": "quotes-new-0"
+      }
+     }
+    ]
+   ]
+  },
+  "submit quote increments existing count": {
+   "result": "quotes-new-0",
+   "log": [
+    [
+     "rateLimit",
+     "localQuote",
+     "plumber"
+    ],
+    [
+     "insert",
+     "quotes",
+     {
+      "quoteRequestId": "request",
+      "freelancerId": "profile",
+      "amount": 180,
+      "description": "Replace the cartridge and reseal the tap base.",
+      "estimatedDays": 1,
+      "validUntil": 1800300000000,
+      "status": "pending",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "request",
+     {
+      "quoteCount": 3,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "buyer",
+      "type": "local_quote_received",
+      "title": "New local quote received",
+      "body": "plumber services sent a quote for Fix a leaking kitchen tap.",
+      "link": "/local/quote-request/request",
+      "metadata": {
+       "quoteRequestId": "request",
+       "quoteId": "quotes-new-0"
+      }
+     }
+    ]
+   ]
+  },
+  "submit quote without claim": {
+   "error": "Claim this lead before submitting a quote.",
+   "log": [
+    [
+     "rateLimit",
+     "localQuote",
+     "plumber"
+    ]
+   ]
+  },
+  "submit quote twice": {
+   "error": "You already submitted a quote for this request.",
+   "log": [
+    [
+     "rateLimit",
+     "localQuote",
+     "plumber"
+    ]
+   ]
+  },
+  "submit quote closed request": {
+   "error": "This quote request is no longer accepting quotes.",
+   "log": [
+    [
+     "rateLimit",
+     "localQuote",
+     "plumber"
+    ]
+   ]
+  },
+  "submit quote missing request": {
+   "error": "Quote request not found.",
+   "log": [
+    [
+     "rateLimit",
+     "localQuote",
+     "plumber"
+    ]
+   ]
+  },
+  "submit quote own request": {
+   "error": "You cannot submit a quote to your own request.",
+   "log": [
+    [
+     "rateLimit",
+     "localQuote",
+     "plumber"
+    ]
+   ]
+  },
+  "submit quote zero amount": {
+   "error": "Enter a valid quote amount.",
+   "log": [
+    [
+     "rateLimit",
+     "localQuote",
+     "plumber"
+    ]
+   ]
+  },
+  "submit quote huge amount": {
+   "error": "Enter a valid quote amount.",
+   "log": [
+    [
+     "rateLimit",
+     "localQuote",
+     "plumber"
+    ]
+   ]
+  },
+  "submit quote with description of 19 characters": {
+   "error": "Use a quote description between 20 and 5,000 characters.",
+   "log": [
+    [
+     "rateLimit",
+     "localQuote",
+     "plumber"
+    ]
+   ]
+  },
+  "submit quote with description of 20 characters": {
+   "result": "quotes-new-0",
+   "log": [
+    [
+     "rateLimit",
+     "localQuote",
+     "plumber"
+    ],
+    [
+     "insert",
+     "quotes",
+     {
+      "quoteRequestId": "request",
+      "freelancerId": "profile",
+      "amount": 180,
+      "currency": "EUR",
+      "description": "qqqqqqqqqqqqqqqqqqqq",
+      "estimatedDays": 1,
+      "validUntil": 1800300000000,
+      "status": "pending",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "request",
+     {
+      "quoteCount": 1,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "buyer",
+      "type": "local_quote_received",
+      "title": "New local quote received",
+      "body": "plumber services sent a quote for Fix a leaking kitchen tap.",
+      "link": "/local/quote-request/request",
+      "metadata": {
+       "quoteRequestId": "request",
+       "quoteId": "quotes-new-0"
+      }
+     }
+    ]
+   ]
+  },
+  "submit quote with description of 5000 characters": {
+   "result": "quotes-new-0",
+   "log": [
+    [
+     "rateLimit",
+     "localQuote",
+     "plumber"
+    ],
+    [
+     "insert",
+     "quotes",
+     {
+      "quoteRequestId": "request",
+      "freelancerId": "profile",
+      "amount": 180,
+      "currency": "EUR",
+      "description": "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+      "estimatedDays": 1,
+      "validUntil": 1800300000000,
+      "status": "pending",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "request",
+     {
+      "quoteCount": 1,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "buyer",
+      "type": "local_quote_received",
+      "title": "New local quote received",
+      "body": "plumber services sent a quote for Fix a leaking kitchen tap.",
+      "link": "/local/quote-request/request",
+      "metadata": {
+       "quoteRequestId": "request",
+       "quoteId": "quotes-new-0"
+      }
+     }
+    ]
+   ]
+  },
+  "submit quote with description of 5001 characters": {
+   "error": "Use a quote description between 20 and 5,000 characters.",
+   "log": [
+    [
+     "rateLimit",
+     "localQuote",
+     "plumber"
+    ]
+   ]
+  },
+  "submit quote with amount 0.01": {
+   "result": "quotes-new-0",
+   "log": [
+    [
+     "rateLimit",
+     "localQuote",
+     "plumber"
+    ],
+    [
+     "insert",
+     "quotes",
+     {
+      "quoteRequestId": "request",
+      "freelancerId": "profile",
+      "amount": 0.01,
+      "currency": "EUR",
+      "description": "Replace the cartridge and reseal the tap base.",
+      "estimatedDays": 1,
+      "validUntil": 1800300000000,
+      "status": "pending",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "request",
+     {
+      "quoteCount": 1,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "buyer",
+      "type": "local_quote_received",
+      "title": "New local quote received",
+      "body": "plumber services sent a quote for Fix a leaking kitchen tap.",
+      "link": "/local/quote-request/request",
+      "metadata": {
+       "quoteRequestId": "request",
+       "quoteId": "quotes-new-0"
+      }
+     }
+    ]
+   ]
+  },
+  "submit quote with amount 1000000": {
+   "result": "quotes-new-0",
+   "log": [
+    [
+     "rateLimit",
+     "localQuote",
+     "plumber"
+    ],
+    [
+     "insert",
+     "quotes",
+     {
+      "quoteRequestId": "request",
+      "freelancerId": "profile",
+      "amount": 1000000,
+      "currency": "EUR",
+      "description": "Replace the cartridge and reseal the tap base.",
+      "estimatedDays": 1,
+      "validUntil": 1800300000000,
+      "status": "pending",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "request",
+     {
+      "quoteCount": 1,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "buyer",
+      "type": "local_quote_received",
+      "title": "New local quote received",
+      "body": "plumber services sent a quote for Fix a leaking kitchen tap.",
+      "link": "/local/quote-request/request",
+      "metadata": {
+       "quoteRequestId": "request",
+       "quoteId": "quotes-new-0"
+      }
+     }
+    ]
+   ]
+  },
+  "submit quote short description": {
+   "error": "Use a quote description between 20 and 5,000 characters.",
+   "log": [
+    [
+     "rateLimit",
+     "localQuote",
+     "plumber"
+    ]
+   ]
+  },
+  "submit quote without profile": {
+   "error": "Freelancer profile not found. Please create a profile first.",
+   "log": [
+    [
+     "rateLimit",
+     "localQuote",
+     "plumber"
+    ]
+   ]
+  },
+  "submit quote as client": {
+   "error": "Add the local professional role before submitting a quote.",
+   "log": []
+  },
+  "accept quote": {
+   "result": {
+    "success": true,
+    "quoteId": "q1",
+    "orderId": "orders-new-0",
+    "appointmentId": "localAppointments-new-0"
+   },
+   "log": [
+    [
+     "patch",
+     "q1",
+     {
+      "status": "accepted",
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "request",
+     {
+      "status": "accepted",
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "q2",
+     {
+      "status": "rejected",
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "orders",
+     {
+      "tenantId": "tenant-a",
+      "orderNumber": "LOCAL-BETA-20270115-4FZZZX",
+      "orderType": "local_quote",
+      "clientId": "buyer",
+      "freelancerId": "profile",
+      "quoteRequestId": "request",
+      "quoteId": "q1",
+      "title": "Fix a leaking kitchen tap",
+      "description": "Replace the cartridge and reseal the tap base.",
+      "amount": 180,
+      "platformFee": 0,
+      "freelancerEarnings": 180,
+      "currency": "EUR",
+      "revisionsUsed": 0,
+      "status": "active",
+      "escrowStatus": "beta_no_payment",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "conversations",
+     {
+      "tenantId": "tenant-a",
+      "contextType": "local_appointment",
+      "contextTitle": "Fix a leaking kitchen tap",
+      "contextHref": "/orders/orders-new-0",
+      "orderId": "orders-new-0",
+      "freelancerProfileId": "profile",
+      "quoteId": "q1",
+      "participant1": "buyer",
+      "participant2": "plumber",
+      "unreadCount1": 0,
+      "unreadCount2": 0,
+      "status": "active",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "localAppointments",
+     {
+      "tenantId": "tenant-a",
+      "quoteRequestId": "request",
+      "quoteId": "q1",
+      "orderId": "orders-new-0",
+      "clientId": "buyer",
+      "professionalId": "profile",
+      "scheduledStart": 1800100000000,
+      "timezone": "Europe/Amsterdam",
+      "locationAddress": "3011AB, Rotterdam, Netherlands",
+      "status": "requested",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "conversations-new-0",
+     {
+      "localAppointmentId": "localAppointments-new-0"
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "plumber",
+      "type": "local_quote_accepted",
+      "title": "Your local quote was accepted",
+      "body": "Fix a leaking kitchen tap is ready in your private workspace.",
+      "link": "/orders/orders-new-0",
+      "metadata": {
+       "orderId": "orders-new-0",
+       "appointmentId": "localAppointments-new-0"
+      }
+     }
+    ]
+   ]
+  },
+  "accept quote without currency, date or city": {
+   "result": {
+    "success": true,
+    "quoteId": "q1",
+    "orderId": "orders-new-0",
+    "appointmentId": "localAppointments-new-0"
+   },
+   "log": [
+    [
+     "patch",
+     "q1",
+     {
+      "status": "accepted",
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "request",
+     {
+      "status": "accepted",
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "orders",
+     {
+      "tenantId": "tenant-a",
+      "orderNumber": "LOCAL-BETA-20270115-4FZZZX",
+      "orderType": "local_quote",
+      "clientId": "buyer",
+      "freelancerId": "profile",
+      "quoteRequestId": "request",
+      "quoteId": "q1",
+      "title": "Fix a leaking kitchen tap",
+      "description": "Replace the cartridge and reseal the tap base.",
+      "amount": 180,
+      "platformFee": 0,
+      "freelancerEarnings": 180,
+      "currency": "EUR",
+      "revisionsUsed": 0,
+      "status": "active",
+      "escrowStatus": "beta_no_payment",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "conversations",
+     {
+      "tenantId": "tenant-a",
+      "contextType": "local_appointment",
+      "contextTitle": "Fix a leaking kitchen tap",
+      "contextHref": "/orders/orders-new-0",
+      "orderId": "orders-new-0",
+      "freelancerProfileId": "profile",
+      "quoteId": "q1",
+      "participant1": "buyer",
+      "participant2": "plumber",
+      "unreadCount1": 0,
+      "unreadCount2": 0,
+      "status": "active",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "localAppointments",
+     {
+      "tenantId": "tenant-a",
+      "quoteRequestId": "request",
+      "quoteId": "q1",
+      "orderId": "orders-new-0",
+      "clientId": "buyer",
+      "professionalId": "profile",
+      "timezone": "Europe/Amsterdam",
+      "status": "requested",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "conversations-new-0",
+     {
+      "localAppointmentId": "localAppointments-new-0"
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "plumber",
+      "type": "local_quote_accepted",
+      "title": "Your local quote was accepted",
+      "body": "Fix a leaking kitchen tap is ready in your private workspace.",
+      "link": "/orders/orders-new-0",
+      "metadata": {
+       "orderId": "orders-new-0",
+       "appointmentId": "localAppointments-new-0"
+      }
+     }
+    ]
+   ]
+  },
+  "accept quote on matched request": {
+   "result": {
+    "success": true,
+    "quoteId": "q1",
+    "orderId": "orders-new-0",
+    "appointmentId": "localAppointments-new-0"
+   },
+   "log": [
+    [
+     "patch",
+     "q1",
+     {
+      "status": "accepted",
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "request",
+     {
+      "status": "accepted",
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "orders",
+     {
+      "tenantId": "tenant-a",
+      "orderNumber": "LOCAL-BETA-20270115-4FZZZX",
+      "orderType": "local_quote",
+      "clientId": "buyer",
+      "freelancerId": "profile",
+      "quoteRequestId": "request",
+      "quoteId": "q1",
+      "title": "Fix a leaking kitchen tap",
+      "description": "Replace the cartridge and reseal the tap base.",
+      "amount": 180,
+      "platformFee": 0,
+      "freelancerEarnings": 180,
+      "currency": "EUR",
+      "revisionsUsed": 0,
+      "status": "active",
+      "escrowStatus": "beta_no_payment",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "conversations",
+     {
+      "tenantId": "tenant-a",
+      "contextType": "local_appointment",
+      "contextTitle": "Fix a leaking kitchen tap",
+      "contextHref": "/orders/orders-new-0",
+      "orderId": "orders-new-0",
+      "freelancerProfileId": "profile",
+      "quoteId": "q1",
+      "participant1": "buyer",
+      "participant2": "plumber",
+      "unreadCount1": 0,
+      "unreadCount2": 0,
+      "status": "active",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "localAppointments",
+     {
+      "tenantId": "tenant-a",
+      "quoteRequestId": "request",
+      "quoteId": "q1",
+      "orderId": "orders-new-0",
+      "clientId": "buyer",
+      "professionalId": "profile",
+      "scheduledStart": 1800100000000,
+      "timezone": "Europe/Amsterdam",
+      "locationAddress": "3011AB, Rotterdam, Netherlands",
+      "status": "requested",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "conversations-new-0",
+     {
+      "localAppointmentId": "localAppointments-new-0"
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "plumber",
+      "type": "local_quote_accepted",
+      "title": "Your local quote was accepted",
+      "body": "Fix a leaking kitchen tap is ready in your private workspace.",
+      "link": "/orders/orders-new-0",
+      "metadata": {
+       "orderId": "orders-new-0",
+       "appointmentId": "localAppointments-new-0"
+      }
+     }
+    ]
+   ]
+  },
+  "accept quote retry returns existing workspace": {
+   "result": {
+    "success": true,
+    "quoteId": "q1",
+    "orderId": "order",
+    "appointmentId": "appointment"
+   },
+   "log": []
+  },
+  "accept quote retry without appointment": {
+   "result": {
+    "success": true,
+    "quoteId": "q1",
+    "orderId": "order",
+    "appointmentId": null
+   },
+   "log": []
+  },
+  "accept quote with mismatching order": {
+   "error": "The accepted quote and order do not match.",
+   "log": []
+  },
+  "accept quote on closed request": {
+   "error": "This quote request can no longer be awarded.",
+   "log": []
+  },
+  "accept rejected quote": {
+   "error": "Invalid status transition: rejected -> accepted",
+   "log": []
+  },
+  "accept quote as another client": {
+   "error": "Only the client who created this request can accept quotes.",
+   "log": []
+  },
+  "accept quote in other workspace": {
+   "error": "This quote request belongs to another workspace.",
+   "log": []
+  },
+  "accept quote missing quote": {
+   "error": "Quote not found.",
+   "log": []
+  },
+  "accept quote missing request": {
+   "error": "Quote request not found.",
+   "log": []
+  },
+  "accept quote missing profile": {
+   "error": "Local professional profile not found.",
+   "log": []
+  },
+  "accept quote missing professional account": {
+   "error": "Local professional account not found.",
+   "log": []
+  },
+  "accept quote as professional": {
+   "error": "Add the client role before accepting a local quote.",
+   "log": []
+  },
+  "my requests": {
+   "result": [
+    {
+     "_id": "request",
+     "title": "Fix a leaking kitchen tap",
+     "status": "open",
+     "categoryName": "Plumbing",
+     "locationCity": "Rotterdam",
+     "budgetIndication": "< €500",
+     "preferredDate": 1800100000000,
+     "quoteCount": 0,
+     "createdAt": 10,
+     "updatedAt": 10
+    },
+    {
+     "_id": "request-2",
+     "title": "Fix a leaking kitchen tap",
+     "status": "open",
+     "categoryName": null,
+     "locationCity": null,
+     "budgetIndication": null,
+     "preferredDate": null,
+     "quoteCount": 0,
+     "createdAt": 10,
+     "updatedAt": 10
+    }
+   ],
+   "log": []
+  },
+  "my requests as professional": {
+   "error": "Add the client role before updating a local request.",
+   "log": []
+  },
+  "my requests anonymous": {
+   "error": "Authentication required.",
+   "log": []
+  }
  }
 }

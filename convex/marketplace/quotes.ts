@@ -1,327 +1,484 @@
-// Reconciled with the existing development deployment (2026-09-07).
-import { publicLocalQuoteRequestValidator } from "../lib/publicData";
-import { participantLocalQuoteRequestValidator } from "../lib/publicData";
-import { toPublicLocalQuoteRequest } from "../lib/publicData";
-import { toParticipantLocalQuoteRequest } from "../lib/publicData";
-import { rateLimiter } from "../lib/rateLimits";
-import { notifyUser } from "../lib/notifications";
-import { query } from "../_generated/server";
-import { mutation } from "../_generated/server";
-import { requireAuthUser } from "../lib/authHelpers";
-import { requireMarketplaceContext } from "../lib/authHelpers";
-import { getProviderProfile } from "../lib/authHelpers";
-import { quoteRequestTransitions } from "../lib/marketplaceState";
-import { quoteTransitions } from "../lib/marketplaceState";
-import { assertTransition } from "../lib/marketplaceState";
+// Local quote requests: the public request board, the participant view,
+// creating a request, submitting a quote and accepting one, which opens the
+// private workspace (order, conversation and appointment) without any payment.
+// Readable source restored on 2026-09-19; behaviour is identical to the
+// reconciled deployment version and is pinned by scripts/check-readable-convex.mjs.
 import { v } from "convex/values";
-function betaLocalOrderNumber() {
-  return `LOCAL-BETA-${new Date().toISOString().slice(0, 10).replaceAll("-", "")}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+import { mutation, query } from "../_generated/server";
+import {
+  getProviderProfile,
+  requireAuthUser,
+  requireMarketplaceContext,
+} from "../lib/authHelpers";
+import {
+  assertTransition,
+  quoteRequestTransitions,
+  quoteTransitions,
+} from "../lib/marketplaceState";
+import { notifyUser } from "../lib/notifications";
+import {
+  participantLocalQuoteRequestValidator,
+  publicLocalQuoteRequestValidator,
+  toParticipantLocalQuoteRequest,
+  toPublicLocalQuoteRequest,
+} from "../lib/publicData";
+import { rateLimiter } from "../lib/rateLimits";
+
+function betaLocalOrderNumber(): string {
+  const day = new Date().toISOString().slice(0, 10).replaceAll("-", "");
+  const suffix = Math.random().toString(36).slice(2, 8).toUpperCase();
+  return `LOCAL-BETA-${day}-${suffix}`;
 }
-var listRequests = query({
-    args: {
-      limit: v.optional(v.number())
-    },
-    returns: v.array(publicLocalQuoteRequestValidator),
-    handler: async (ctx, args) => {
-      let i = Math.min(Math.max(args.limit ?? 20, 1), 100),
-        r = await ctx.db.query("quoteRequests").withIndex("by_status", n => n.eq("status", "open")).order("desc").take(i);
-      return await Promise.all(r.map(async n => {
-        let u = await ctx.db.get(n.categoryId);
-        return toPublicLocalQuoteRequest(n, u?.name ?? null);
-      }));
-    }
+
+/** Public board of open requests, newest first, without private details. */
+const listRequests = query({
+  args: {
+    limit: v.optional(v.number()),
+  },
+  returns: v.array(publicLocalQuoteRequestValidator),
+  handler: async (ctx, args) => {
+    const limit = Math.min(Math.max(args.limit ?? 20, 1), 100);
+    const requests = await ctx.db
+      .query("quoteRequests")
+      .withIndex("by_status", (q) => q.eq("status", "open"))
+      .order("desc")
+      .take(limit);
+    return await Promise.all(
+      requests.map(async (request) => {
+        const category = await ctx.db.get(request.categoryId);
+        return toPublicLocalQuoteRequest(request, category?.name ?? null);
+      }),
+    );
+  },
+});
+
+/** One open request in its public form; closed requests are not public. */
+const getRequestById = query({
+  args: {
+    requestId: v.id("quoteRequests"),
+  },
+  returns: v.union(publicLocalQuoteRequestValidator, v.null()),
+  handler: async (ctx, args) => {
+    const request = await ctx.db.get(args.requestId);
+    if (!request || request.status !== "open") return null;
+    const category = await ctx.db.get(request.categoryId);
+    return toPublicLocalQuoteRequest(request, category?.name ?? null);
+  },
+});
+
+/**
+ * Full request for its two kinds of participant: the client who owns it, who
+ * sees every quote, and a professional who claimed it, who sees only their own.
+ */
+const getParticipantRequestById = query({
+  args: {
+    requestId: v.id("quoteRequests"),
+  },
+  returns: v.union(participantLocalQuoteRequestValidator, v.null()),
+  handler: async (ctx, args) => {
+    const user = await requireAuthUser(ctx);
+    const request = await ctx.db.get(args.requestId);
+    if (!request) return null;
+
+    const profile = await getProviderProfile(ctx, user._id, "local_professional");
+    const claims = await ctx.db
+      .query("leadClaims")
+      .withIndex("by_quoteRequest", (q) => q.eq("quoteRequestId", args.requestId))
+      .take(10);
+    const isOwner = user._id === request.clientId;
+    const hasClaimed =
+      !!profile && claims.some((claim) => claim.freelancerId === profile._id);
+    if (!isOwner && !hasClaimed) return null;
+
+    const [category, client] = await Promise.all([
+      ctx.db.get(request.categoryId),
+      ctx.db.get(request.clientId),
+    ]);
+
+    const quotes = isOwner
+      ? await ctx.db
+          .query("quotes")
+          .withIndex("by_quoteRequest", (q) => q.eq("quoteRequestId", args.requestId))
+          .take(100)
+          .then((rows) =>
+            Promise.all(
+              rows.map(async (quote) => {
+                const quoteProfile = await ctx.db.get(quote.freelancerId);
+                const quoteUser = quoteProfile
+                  ? await ctx.db.get(quoteProfile.userId)
+                  : null;
+                return {
+                  quote,
+                  freelancerProfile: quoteProfile
+                    ? {
+                        _id: quoteProfile._id,
+                        displayName: quoteProfile.displayName,
+                        tagline: quoteProfile.tagline ?? null,
+                        avatarUrl:
+                          quoteProfile.avatarUrl ??
+                          quoteUser?.image ??
+                          quoteUser?.avatar ??
+                          null,
+                        ratingAverage: quoteProfile.ratingAverage ?? 0,
+                        ratingCount: quoteProfile.ratingCount ?? 0,
+                        isVerified: quoteProfile.isVerified ?? false,
+                      }
+                    : null,
+                };
+              }),
+            ),
+          )
+      : [];
+
+    const myQuote = profile
+      ? await ctx.db
+          .query("quotes")
+          .withIndex("by_quoteRequest_freelancer", (q) =>
+            q.eq("quoteRequestId", args.requestId).eq("freelancerId", profile._id),
+          )
+          .unique()
+      : null;
+
+    return toParticipantLocalQuoteRequest(request, {
+      categoryName: category?.name ?? null,
+      clientName: client?.name ?? null,
+      isOwner,
+      quotes,
+      myQuote,
+    });
+  },
+});
+
+/** A Local client posts a request. The private beta is limited to the Netherlands. */
+const createRequest = mutation({
+  args: {
+    categoryId: v.id("marketplaceCategories"),
+    title: v.string(),
+    description: v.string(),
+    locationCity: v.optional(v.string()),
+    locationPostcode: v.optional(v.string()),
+    locationCountry: v.optional(v.string()),
+    latitude: v.optional(v.number()),
+    longitude: v.optional(v.number()),
+    photos: v.optional(v.array(v.any())),
+    budgetIndication: v.optional(v.string()),
+    preferredDate: v.optional(v.number()),
+  },
+  returns: v.id("quoteRequests"),
+  handler: async (ctx, args) => {
+    const user = await requireAuthUser(ctx);
+    requireMarketplaceContext(user, "client", "local", "requesting a local quote");
+    await rateLimiter.limit(ctx, "localRequest", { key: user._id, throws: true });
+
+    const title = args.title.trim();
+    const description = args.description.trim();
+    if (title.length < 8 || title.length > 120)
+      throw new Error("Use a title between 8 and 120 characters.");
+    if (description.length < 40 || description.length > 5000)
+      throw new Error("Use a description between 40 and 5,000 characters.");
+
+    const city = args.locationCity?.trim();
+    const postcode = args.locationPostcode?.trim();
+    if (!city && !postcode)
+      throw new Error("Enter a city or postcode for the local request.");
+    if (city && (city.length < 2 || city.length > 100))
+      throw new Error("Use a city or region between 2 and 100 characters.");
+    if (postcode && postcode.length > 20)
+      throw new Error("Postcode must be at most 20 characters.");
+
+    const country = args.locationCountry?.trim() || "Netherlands";
+    if (!/^(netherlands|nederland|nl)$/i.test(country))
+      throw new Error(
+        "Local private-beta requests are currently limited to the Netherlands.",
+      );
+    if (
+      args.latitude !== undefined &&
+      (!Number.isFinite(args.latitude) || args.latitude < -90 || args.latitude > 90)
+    )
+      throw new Error("Latitude must be between -90 and 90.");
+    if (
+      args.longitude !== undefined &&
+      (!Number.isFinite(args.longitude) ||
+        args.longitude < -180 ||
+        args.longitude > 180)
+    )
+      throw new Error("Longitude must be between -180 and 180.");
+
+    const category = await ctx.db.get(args.categoryId);
+    if (!category || category.tenantId !== user.tenantId)
+      throw new Error("Local service category not found.");
+    if (
+      category.serviceType &&
+      category.serviceType !== "local" &&
+      category.serviceType !== "hybrid"
+    )
+      throw new Error("Choose a Local service category.");
+
+    const now = Date.now();
+    return await ctx.db.insert("quoteRequests", {
+      tenantId: user.tenantId,
+      clientId: user._id,
+      categoryId: args.categoryId,
+      title,
+      description,
+      locationCity: city,
+      locationPostcode: postcode,
+      locationCountry: "Netherlands",
+      latitude: args.latitude,
+      longitude: args.longitude,
+      photos: args.photos,
+      budgetIndication: args.budgetIndication,
+      preferredDate: args.preferredDate,
+      status: "open",
+      quoteCount: 0,
+      createdAt: now,
+      updatedAt: now,
+    });
+  },
+});
+
+/** A professional who claimed the lead sends one quote for it. */
+const submitQuote = mutation({
+  args: {
+    quoteRequestId: v.id("quoteRequests"),
+    amount: v.number(),
+    currency: v.optional(v.string()),
+    description: v.string(),
+    estimatedDays: v.optional(v.number()),
+    validUntil: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const user = await requireAuthUser(ctx);
+    requireMarketplaceContext(user, "local_professional", "local", "submitting a quote");
+    await rateLimiter.limit(ctx, "localQuote", { key: user._id, throws: true });
+
+    const profile = await getProviderProfile(ctx, user._id, "local_professional");
+    if (!profile)
+      throw new Error("Freelancer profile not found. Please create a profile first.");
+    const request = await ctx.db.get(args.quoteRequestId);
+    if (!request) throw new Error("Quote request not found.");
+    if (request.status !== "open")
+      throw new Error("This quote request is no longer accepting quotes.");
+    if (request.clientId === user._id)
+      throw new Error("You cannot submit a quote to your own request.");
+    if (!Number.isFinite(args.amount) || args.amount <= 0 || args.amount > 1_000_000)
+      throw new Error("Enter a valid quote amount.");
+
+    const description = args.description.trim();
+    if (description.length < 20 || description.length > 5000)
+      throw new Error("Use a quote description between 20 and 5,000 characters.");
+
+    const existingQuote = await ctx.db
+      .query("quotes")
+      .withIndex("by_quoteRequest_freelancer", (q) =>
+        q.eq("quoteRequestId", args.quoteRequestId).eq("freelancerId", profile._id),
+      )
+      .unique();
+    if (existingQuote)
+      throw new Error("You already submitted a quote for this request.");
+
+    const claims = await ctx.db
+      .query("leadClaims")
+      .withIndex("by_quoteRequest", (q) => q.eq("quoteRequestId", args.quoteRequestId))
+      .take(10);
+    if (!claims.find((claim) => claim.freelancerId === profile._id))
+      throw new Error("Claim this lead before submitting a quote.");
+
+    const now = Date.now();
+    const quoteId = await ctx.db.insert("quotes", {
+      quoteRequestId: args.quoteRequestId,
+      freelancerId: profile._id,
+      amount: args.amount,
+      currency: args.currency,
+      description,
+      estimatedDays: args.estimatedDays,
+      validUntil: args.validUntil,
+      status: "pending",
+      createdAt: now,
+      updatedAt: now,
+    });
+    await ctx.db.patch(args.quoteRequestId, {
+      quoteCount: (request.quoteCount ?? 0) + 1,
+      updatedAt: now,
+    });
+    await notifyUser(ctx, {
+      userId: request.clientId,
+      type: "local_quote_received",
+      title: "New local quote received",
+      body: `${profile.displayName} sent a quote for ${request.title}.`,
+      link: `/local/quote-request/${request._id}`,
+      metadata: {
+        quoteRequestId: request._id,
+        quoteId,
+      },
+    });
+    return quoteId;
+  },
+});
+
+/**
+ * The client accepts one quote. Other pending quotes are rejected and the
+ * private workspace is created: a free beta order, a conversation and a
+ * requested appointment. No payment is involved.
+ */
+const acceptQuote = mutation({
+  args: {
+    quoteId: v.id("quotes"),
+  },
+  returns: v.object({
+    success: v.boolean(),
+    quoteId: v.id("quotes"),
+    orderId: v.id("orders"),
+    appointmentId: v.union(v.id("localAppointments"), v.null()),
   }),
-  getRequestById = query({
-    args: {
-      requestId: v.id("quoteRequests")
-    },
-    returns: v.union(publicLocalQuoteRequestValidator, v.null()),
-    handler: async (ctx, args) => {
-      let i = await ctx.db.get(args.requestId);
-      if (!i || i.status !== "open") return null;
-      let r = await ctx.db.get(i.categoryId);
-      return toPublicLocalQuoteRequest(i, r?.name ?? null);
-    }
-  }),
-  getParticipantRequestById = query({
-    args: {
-      requestId: v.id("quoteRequests")
-    },
-    returns: v.union(participantLocalQuoteRequestValidator, v.null()),
-    handler: async (ctx, args) => {
-      let i = await requireAuthUser(ctx),
-        r = await ctx.db.get(args.requestId);
-      if (!r) return null;
-      let n = await getProviderProfile(ctx, i._id, "local_professional"),
-        u = await ctx.db.query("leadClaims").withIndex("by_quoteRequest", l => l.eq("quoteRequestId", args.requestId)).take(10),
-        a = i._id === r.clientId,
-        m = !!n && u.some(l => l.freelancerId === n._id);
-      if (!a && !m) return null;
-      let [d, p] = await Promise.all([ctx.db.get(r.categoryId), ctx.db.get(r.clientId)]),
-        s = a ? await ctx.db.query("quotes").withIndex("by_quoteRequest", l => l.eq("quoteRequestId", args.requestId)).take(100).then(l => Promise.all(l.map(async c => {
-          let q = await ctx.db.get(c.freelancerId),
-            v = q ? await ctx.db.get(q.userId) : null;
-          return {
-            quote: c,
-            freelancerProfile: q ? {
-              _id: q._id,
-              displayName: q.displayName,
-              tagline: q.tagline ?? null,
-              avatarUrl: q.avatarUrl ?? v?.image ?? v?.avatar ?? null,
-              ratingAverage: q.ratingAverage ?? 0,
-              ratingCount: q.ratingCount ?? 0,
-              isVerified: q.isVerified ?? !1
-            } : null
-          };
-        }))) : [],
-        f = n ? await ctx.db.query("quotes").withIndex("by_quoteRequest_freelancer", l => l.eq("quoteRequestId", args.requestId).eq("freelancerId", n._id)).unique() : null;
-      return toParticipantLocalQuoteRequest(r, {
-        categoryName: d?.name ?? null,
-        clientName: p?.name ?? null,
-        isOwner: a,
-        quotes: s,
-        myQuote: f
-      });
-    }
-  }),
-  createRequest = mutation({
-    args: {
-      categoryId: v.id("marketplaceCategories"),
-      title: v.string(),
-      description: v.string(),
-      locationCity: v.optional(v.string()),
-      locationPostcode: v.optional(v.string()),
-      locationCountry: v.optional(v.string()),
-      latitude: v.optional(v.number()),
-      longitude: v.optional(v.number()),
-      photos: v.optional(v.array(v.any())),
-      budgetIndication: v.optional(v.string()),
-      preferredDate: v.optional(v.number())
-    },
-    returns: v.id("quoteRequests"),
-    handler: async (ctx, args) => {
-      let i = await requireAuthUser(ctx);
-      requireMarketplaceContext(i, "client", "local", "requesting a local quote"), await rateLimiter.limit(ctx, "localRequest", {
-        key: i._id,
-        throws: !0
-      });
-      let r = args.title.trim(),
-        n = args.description.trim();
-      if (r.length < 8 || r.length > 120) throw new Error("Use a title between 8 and 120 characters.");
-      if (n.length < 40 || n.length > 5e3) throw new Error("Use a description between 40 and 5,000 characters.");
-      let u = args.locationCity?.trim(),
-        a = args.locationPostcode?.trim();
-      if (!u && !a) throw new Error("Enter a city or postcode for the local request.");
-      if (u && (u.length < 2 || u.length > 100)) throw new Error("Use a city or region between 2 and 100 characters.");
-      if (a && a.length > 20) throw new Error("Postcode must be at most 20 characters.");
-      let m = args.locationCountry?.trim() || "Netherlands";
-      if (!/^(netherlands|nederland|nl)$/i.test(m)) throw new Error("Local private-beta requests are currently limited to the Netherlands.");
-      if (args.latitude !== void 0 && (!Number.isFinite(args.latitude) || args.latitude < -90 || args.latitude > 90)) throw new Error("Latitude must be between -90 and 90.");
-      if (args.longitude !== void 0 && (!Number.isFinite(args.longitude) || args.longitude < -180 || args.longitude > 180)) throw new Error("Longitude must be between -180 and 180.");
-      let d = await ctx.db.get(args.categoryId);
-      if (!d || d.tenantId !== i.tenantId) throw new Error("Local service category not found.");
-      if (d.serviceType && d.serviceType !== "local" && d.serviceType !== "hybrid") throw new Error("Choose a Local service category.");
-      let p = Date.now();
-      return await ctx.db.insert("quoteRequests", {
-        tenantId: i.tenantId,
-        clientId: i._id,
-        categoryId: args.categoryId,
-        title: r,
-        description: n,
-        locationCity: u,
-        locationPostcode: a,
-        locationCountry: "Netherlands",
-        latitude: args.latitude,
-        longitude: args.longitude,
-        photos: args.photos,
-        budgetIndication: args.budgetIndication,
-        preferredDate: args.preferredDate,
-        status: "open",
-        quoteCount: 0,
-        createdAt: p,
-        updatedAt: p
-      });
-    }
-  }),
-  submitQuote = mutation({
-    args: {
-      quoteRequestId: v.id("quoteRequests"),
-      amount: v.number(),
-      currency: v.optional(v.string()),
-      description: v.string(),
-      estimatedDays: v.optional(v.number()),
-      validUntil: v.optional(v.number())
-    },
-    handler: async (ctx, args) => {
-      let i = await requireAuthUser(ctx);
-      requireMarketplaceContext(i, "local_professional", "local", "submitting a quote"), await rateLimiter.limit(ctx, "localQuote", {
-        key: i._id,
-        throws: !0
-      });
-      let r = await getProviderProfile(ctx, i._id, "local_professional");
-      if (!r) throw new Error("Freelancer profile not found. Please create a profile first.");
-      let n = await ctx.db.get(args.quoteRequestId);
-      if (!n) throw new Error("Quote request not found.");
-      if (n.status !== "open") throw new Error("This quote request is no longer accepting quotes.");
-      if (n.clientId === i._id) throw new Error("You cannot submit a quote to your own request.");
-      if (!Number.isFinite(args.amount) || args.amount <= 0 || args.amount > 1e6) throw new Error("Enter a valid quote amount.");
-      let u = args.description.trim();
-      if (u.length < 20 || u.length > 5e3) throw new Error("Use a quote description between 20 and 5,000 characters.");
-      if (await ctx.db.query("quotes").withIndex("by_quoteRequest_freelancer", s => s.eq("quoteRequestId", args.quoteRequestId).eq("freelancerId", r._id)).unique()) throw new Error("You already submitted a quote for this request.");
-      if (!(await ctx.db.query("leadClaims").withIndex("by_quoteRequest", s => s.eq("quoteRequestId", args.quoteRequestId)).take(10).then(s => s.find(f => f.freelancerId === r._id)))) throw new Error("Claim this lead before submitting a quote.");
-      let d = Date.now(),
-        p = await ctx.db.insert("quotes", {
-          quoteRequestId: args.quoteRequestId,
-          freelancerId: r._id,
-          amount: args.amount,
-          currency: args.currency,
-          description: u,
-          estimatedDays: args.estimatedDays,
-          validUntil: args.validUntil,
-          status: "pending",
-          createdAt: d,
-          updatedAt: d
-        });
-      return await ctx.db.patch(args.quoteRequestId, {
-        quoteCount: (n.quoteCount ?? 0) + 1,
-        updatedAt: d
-      }), await notifyUser(ctx, {
-        userId: n.clientId,
-        type: "local_quote_received",
-        title: "New local quote received",
-        body: `${r.displayName} sent a quote for ${n.title}.`,
-        link: `/local/quote-request/${n._id}`,
-        metadata: {
-          quoteRequestId: n._id,
-          quoteId: p
-        }
-      }), p;
-    }
-  }),
-  acceptQuote = mutation({
-    args: {
-      quoteId: v.id("quotes")
-    },
-    returns: v.object({
-      success: v.boolean(),
-      quoteId: v.id("quotes"),
-      orderId: v.id("orders"),
-      appointmentId: v.union(v.id("localAppointments"), v.null())
-    }),
-    handler: async (ctx, args) => {
-      let i = await requireAuthUser(ctx);
-      requireMarketplaceContext(i, "client", "local", "accepting a local quote");
-      let r = await ctx.db.get(args.quoteId);
-      if (!r) throw new Error("Quote not found.");
-      let n = await ctx.db.get(r.quoteRequestId);
-      if (!n) throw new Error("Quote request not found.");
-      if (n.clientId !== i._id) throw new Error("Only the client who created this request can accept quotes.");
-      if (n.tenantId !== i.tenantId) throw new Error("This quote request belongs to another workspace.");
-      // A retry returns the original result, including after the appointment advances.
-      // Keep ownership checks above this branch; never create a second workspace.
-      let u = await ctx.db.query("orders").withIndex("by_quote", c => c.eq("quoteId", r._id)).unique();
-      if (u) {
-        if (r.status !== "accepted" || u.clientId !== i._id || u.tenantId !== n.tenantId || u.quoteRequestId !== n._id || u.freelancerId !== r.freelancerId || u.orderType !== "local_quote") throw new Error("The accepted quote and order do not match.");
-        let c = await ctx.db.query("localAppointments").withIndex("by_order", q => q.eq("orderId", u._id)).unique();
-        return {
-          success: !0,
-          quoteId: r._id,
-          orderId: u._id,
-          appointmentId: c?._id ?? null
-        };
-      }
-      if (!["open", "matched"].includes(n.status)) throw new Error("This quote request can no longer be awarded.");
-      assertTransition(quoteTransitions, r.status, "accepted"), assertTransition(quoteRequestTransitions, n.status, "accepted");
-      let a = await ctx.db.get(r.freelancerId);
-      if (!a) throw new Error("Local professional profile not found.");
-      let m = await ctx.db.get(a.userId);
-      if (!m) throw new Error("Local professional account not found.");
-      let d = Date.now();
-      await ctx.db.patch(args.quoteId, {
-        status: "accepted",
-        updatedAt: d
-      }), await ctx.db.patch(r.quoteRequestId, {
-        status: "accepted",
-        updatedAt: d
-      });
-      let p = await ctx.db.query("quotes").withIndex("by_quoteRequest_status", c => c.eq("quoteRequestId", r.quoteRequestId).eq("status", "pending")).take(100);
-      await Promise.all(p.filter(c => c._id !== r._id).map(c => ctx.db.patch(c._id, {
-        status: "rejected",
-        updatedAt: d
-      })));
-      let s = await ctx.db.insert("orders", {
-          tenantId: n.tenantId,
-          orderNumber: betaLocalOrderNumber(),
-          orderType: "local_quote",
-          clientId: n.clientId,
-          freelancerId: r.freelancerId,
-          quoteRequestId: n._id,
-          quoteId: r._id,
-          title: n.title,
-          description: r.description,
-          amount: r.amount,
-          platformFee: 0,
-          freelancerEarnings: r.amount,
-          currency: r.currency ?? "EUR",
-          revisionsUsed: 0,
-          status: "active",
-          escrowStatus: "beta_no_payment",
-          createdAt: d,
-          updatedAt: d
-        }),
-        f = await ctx.db.insert("conversations", {
-          tenantId: n.tenantId,
-          contextType: "local_appointment",
-          contextTitle: n.title,
-          contextHref: `/orders/${s}`,
-          orderId: s,
-          freelancerProfileId: r.freelancerId,
-          quoteId: r._id,
-          participant1: n.clientId,
-          participant2: m._id,
-          unreadCount1: 0,
-          unreadCount2: 0,
-          status: "active",
-          createdAt: d,
-          updatedAt: d
-        }),
-        l = await ctx.db.insert("localAppointments", {
-          tenantId: n.tenantId,
-          quoteRequestId: n._id,
-          quoteId: r._id,
-          orderId: s,
-          clientId: n.clientId,
-          professionalId: r.freelancerId,
-          scheduledStart: n.preferredDate,
-          timezone: "Europe/Amsterdam",
-          locationAddress: [n.locationPostcode, n.locationCity, n.locationCountry].filter(Boolean).join(", ") || void 0,
-          status: "requested",
-          createdAt: d,
-          updatedAt: d
-        });
-      return await ctx.db.patch(f, {
-        localAppointmentId: l
-      }), await notifyUser(ctx, {
-        userId: m._id,
-        type: "local_quote_accepted",
-        title: "Your local quote was accepted",
-        body: `${n.title} is ready in your private workspace.`,
-        link: `/orders/${s}`,
-        metadata: {
-          orderId: s,
-          appointmentId: l
-        }
-      }), {
-        success: !0,
-        quoteId: args.quoteId,
-        orderId: s,
-        appointmentId: l
+  handler: async (ctx, args) => {
+    const user = await requireAuthUser(ctx);
+    requireMarketplaceContext(user, "client", "local", "accepting a local quote");
+    const quote = await ctx.db.get(args.quoteId);
+    if (!quote) throw new Error("Quote not found.");
+    const request = await ctx.db.get(quote.quoteRequestId);
+    if (!request) throw new Error("Quote request not found.");
+    if (request.clientId !== user._id)
+      throw new Error("Only the client who created this request can accept quotes.");
+    if (request.tenantId !== user.tenantId)
+      throw new Error("This quote request belongs to another workspace.");
+
+    // A retry returns the original result, including after the appointment advances.
+    // Keep ownership checks above this branch; never create a second workspace.
+    const existingOrder = await ctx.db
+      .query("orders")
+      .withIndex("by_quote", (q) => q.eq("quoteId", quote._id))
+      .unique();
+    if (existingOrder) {
+      if (
+        quote.status !== "accepted" ||
+        existingOrder.clientId !== user._id ||
+        existingOrder.tenantId !== request.tenantId ||
+        existingOrder.quoteRequestId !== request._id ||
+        existingOrder.freelancerId !== quote.freelancerId ||
+        existingOrder.orderType !== "local_quote"
+      )
+        throw new Error("The accepted quote and order do not match.");
+      const existingAppointment = await ctx.db
+        .query("localAppointments")
+        .withIndex("by_order", (q) => q.eq("orderId", existingOrder._id))
+        .unique();
+      return {
+        success: true,
+        quoteId: quote._id,
+        orderId: existingOrder._id,
+        appointmentId: existingAppointment?._id ?? null,
       };
     }
-  }),
-  listMyRequests = query({
-    args: {},
-    returns: v.array(v.object({
+
+    if (!["open", "matched"].includes(request.status))
+      throw new Error("This quote request can no longer be awarded.");
+    assertTransition(quoteTransitions, quote.status, "accepted");
+    assertTransition(quoteRequestTransitions, request.status, "accepted");
+
+    const profile = await ctx.db.get(quote.freelancerId);
+    if (!profile) throw new Error("Local professional profile not found.");
+    const professional = await ctx.db.get(profile.userId);
+    if (!professional) throw new Error("Local professional account not found.");
+
+    const now = Date.now();
+    await ctx.db.patch(args.quoteId, { status: "accepted", updatedAt: now });
+    await ctx.db.patch(quote.quoteRequestId, { status: "accepted", updatedAt: now });
+
+    const pendingQuotes = await ctx.db
+      .query("quotes")
+      .withIndex("by_quoteRequest_status", (q) =>
+        q.eq("quoteRequestId", quote.quoteRequestId).eq("status", "pending"),
+      )
+      .take(100);
+    await Promise.all(
+      pendingQuotes
+        .filter((other) => other._id !== quote._id)
+        .map((other) =>
+          ctx.db.patch(other._id, { status: "rejected", updatedAt: now }),
+        ),
+    );
+
+    const orderId = await ctx.db.insert("orders", {
+      tenantId: request.tenantId,
+      orderNumber: betaLocalOrderNumber(),
+      orderType: "local_quote",
+      clientId: request.clientId,
+      freelancerId: quote.freelancerId,
+      quoteRequestId: request._id,
+      quoteId: quote._id,
+      title: request.title,
+      description: quote.description,
+      amount: quote.amount,
+      platformFee: 0,
+      freelancerEarnings: quote.amount,
+      currency: quote.currency ?? "EUR",
+      revisionsUsed: 0,
+      status: "active",
+      escrowStatus: "beta_no_payment",
+      createdAt: now,
+      updatedAt: now,
+    });
+    const conversationId = await ctx.db.insert("conversations", {
+      tenantId: request.tenantId,
+      contextType: "local_appointment",
+      contextTitle: request.title,
+      contextHref: `/orders/${orderId}`,
+      orderId,
+      freelancerProfileId: quote.freelancerId,
+      quoteId: quote._id,
+      participant1: request.clientId,
+      participant2: professional._id,
+      unreadCount1: 0,
+      unreadCount2: 0,
+      status: "active",
+      createdAt: now,
+      updatedAt: now,
+    });
+    const appointmentId = await ctx.db.insert("localAppointments", {
+      tenantId: request.tenantId,
+      quoteRequestId: request._id,
+      quoteId: quote._id,
+      orderId,
+      clientId: request.clientId,
+      professionalId: quote.freelancerId,
+      scheduledStart: request.preferredDate,
+      timezone: "Europe/Amsterdam",
+      locationAddress:
+        [request.locationPostcode, request.locationCity, request.locationCountry]
+          .filter(Boolean)
+          .join(", ") || undefined,
+      status: "requested",
+      createdAt: now,
+      updatedAt: now,
+    });
+    await ctx.db.patch(conversationId, { localAppointmentId: appointmentId });
+
+    await notifyUser(ctx, {
+      userId: professional._id,
+      type: "local_quote_accepted",
+      title: "Your local quote was accepted",
+      body: `${request.title} is ready in your private workspace.`,
+      link: `/orders/${orderId}`,
+      metadata: {
+        orderId,
+        appointmentId,
+      },
+    });
+    return {
+      success: true,
+      quoteId: args.quoteId,
+      orderId,
+      appointmentId,
+    };
+  },
+});
+
+/** The signed-in Local client's own requests, newest first. */
+const listMyRequests = query({
+  args: {},
+  returns: v.array(
+    v.object({
       _id: v.id("quoteRequests"),
       title: v.string(),
       status: v.string(),
@@ -331,27 +488,45 @@ var listRequests = query({
       preferredDate: v.union(v.number(), v.null()),
       quoteCount: v.number(),
       createdAt: v.number(),
-      updatedAt: v.number()
-    })),
-    handler: async ctx => {
-      let o = await requireAuthUser(ctx);
-      requireMarketplaceContext(o, "client", "local", "updating a local request");
-      let i = await ctx.db.query("quoteRequests").withIndex("by_client", a => a.eq("clientId", o._id)).order("desc").take(100),
-        r = [...new Set(i.map(a => a.categoryId))],
-        n = await Promise.all(r.map(a => ctx.db.get(a))),
-        u = new Map(n.filter(Boolean).map(a => [a._id, a.name]));
-      return i.map(a => ({
-        _id: a._id,
-        title: a.title,
-        status: a.status,
-        categoryName: u.get(a.categoryId) ?? null,
-        locationCity: a.locationCity ?? null,
-        budgetIndication: a.budgetIndication ?? null,
-        preferredDate: a.preferredDate ?? null,
-        quoteCount: a.quoteCount ?? 0,
-        createdAt: a.createdAt,
-        updatedAt: a.updatedAt
-      }));
-    }
-  });
-export { acceptQuote, createRequest, getParticipantRequestById, getRequestById, listMyRequests, listRequests, submitQuote };
+      updatedAt: v.number(),
+    }),
+  ),
+  handler: async (ctx) => {
+    const user = await requireAuthUser(ctx);
+    requireMarketplaceContext(user, "client", "local", "updating a local request");
+    const requests = await ctx.db
+      .query("quoteRequests")
+      .withIndex("by_client", (q) => q.eq("clientId", user._id))
+      .order("desc")
+      .take(100);
+
+    const categoryIds = [...new Set(requests.map((request) => request.categoryId))];
+    const categories = await Promise.all(categoryIds.map((id) => ctx.db.get(id)));
+    const categoryNames = new Map(
+      categories.filter(Boolean).map((category) => [category!._id, category!.name]),
+    );
+
+    return requests.map((request) => ({
+      _id: request._id,
+      title: request.title,
+      status: request.status,
+      categoryName: categoryNames.get(request.categoryId) ?? null,
+      locationCity: request.locationCity ?? null,
+      budgetIndication: request.budgetIndication ?? null,
+      preferredDate: request.preferredDate ?? null,
+      quoteCount: request.quoteCount ?? 0,
+      createdAt: request.createdAt,
+      updatedAt: request.updatedAt,
+    }));
+  },
+});
+
+export {
+  acceptQuote,
+  createRequest,
+  getParticipantRequestById,
+  getRequestById,
+  listMyRequests,
+  listRequests,
+  submitQuote,
+};
