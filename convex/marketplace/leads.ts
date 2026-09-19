@@ -13,6 +13,8 @@ import {
   requireMarketplaceContext,
   requireServerSecret,
 } from "../lib/authHelpers";
+import { applyCreditPurchase } from "../lib/creditPurchases";
+import { requireLivePaymentsEnabled } from "../lib/paymentPolicy";
 import { rateLimiter } from "../lib/rateLimits";
 import { getLeadCreditCost, MAX_SHARED_SLOTS } from "./leadPricing";
 
@@ -426,46 +428,38 @@ const claimLead = mutation({
 });
 
 /**
- * Credit a professional after a purchase. Server only.
+ * Credit a Local professional for a paid Stripe Checkout session. Server only.
  *
- * Known defects, kept as-is so this rewrite stays behaviour-identical. Fix them
- * before credit purchases go live:
- *  - the Stripe session id is not checked, so a replayed or concurrent webhook
- *    credits twice. Recording the session and crediting must be one atomic step
- *    keyed on the session id;
- *  - `credits` is not validated, so zero, negative or fractional values are accepted;
- *  - nothing here ties the credits to what was actually paid. The caller must
- *    verify payment status, amount, currency, the purchased package and the
- *    linked user, and this mutation should only accept a known package.
+ * Disabled while live payments are off. The caller passes what Stripe reported;
+ * `applyCreditPurchase` verifies it against the known package and makes the
+ * session id the idempotency key, so a replayed or concurrent webhook credits once.
  */
 const addCredits = mutation({
   args: {
     freelancerUserId: v.id("users"),
-    credits: v.number(),
+    packageId: v.string(),
     stripeSessionId: v.string(),
-    description: v.string(),
+    paymentStatus: v.string(),
+    amountTotalCents: v.number(),
+    currency: v.string(),
     serverSecret: v.optional(v.string()),
   },
+  returns: v.object({
+    newBalance: v.number(),
+    credits: v.number(),
+    alreadyProcessed: v.boolean(),
+  }),
   handler: async (ctx, args) => {
     requireServerSecret(args.serverSecret);
-    const profile = await getProviderProfile(
-      ctx,
-      args.freelancerUserId,
-      "local_professional",
-    );
-    if (!profile) throw new Error("Freelancer profile not found.");
-
-    const newBalance = (profile.creditBalance ?? 0) + args.credits;
-    await ctx.db.patch(profile._id, { creditBalance: newBalance });
-    await ctx.db.insert("creditTransactions", {
-      freelancerId: args.freelancerUserId,
-      amount: args.credits,
-      type: "purchase",
-      description: args.description,
-      referenceId: args.stripeSessionId,
-      createdAt: Date.now(),
+    requireLivePaymentsEnabled("Buying credits");
+    return await applyCreditPurchase(ctx, {
+      freelancerUserId: args.freelancerUserId,
+      packageId: args.packageId,
+      stripeSessionId: args.stripeSessionId,
+      paymentStatus: args.paymentStatus,
+      amountTotalCents: args.amountTotalCents,
+      currency: args.currency,
     });
-    return { newBalance };
   },
 });
 

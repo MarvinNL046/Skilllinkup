@@ -4995,9 +4995,23 @@
     ]
    ]
   },
-  "credits added by server": {
+  "top-up blocked during beta": {
+   "error": "Buying credits is unavailable during the free private beta. No platform payment or credit movement is active.",
+   "log": []
+  },
+  "top-up wrong secret": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "top-up by signed-in user": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "paid: top-up credits the package": {
    "result": {
-    "newBalance": 20
+    "newBalance": 20,
+    "credits": 10,
+    "alreadyProcessed": false
    },
    "log": [
     [
@@ -5014,101 +5028,46 @@
       "freelancerId": "plumber",
       "amount": 10,
       "type": "purchase",
-      "description": "Popular package",
-      "referenceId": "cs_1",
+      "description": "Purchased 10 credits (Popular package)",
+      "referenceId": "cs_test_a1B2c3D4e5",
       "createdAt": 1800000000000
-     }
-    ]
-   ]
-  },
-  "credits added twice for the same session": {
-   "result": {
-    "newBalance": 20
-   },
-   "log": [
-    [
-     "patch",
-     "profile",
-     {
-      "creditBalance": 20
      }
     ],
     [
      "insert",
-     "creditTransactions",
+     "creditPurchases",
      {
-      "freelancerId": "plumber",
-      "amount": 10,
-      "type": "purchase",
-      "description": "Popular package",
-      "referenceId": "cs_1",
+      "stripeSessionId": "cs_test_a1B2c3D4e5",
+      "freelancerUserId": "plumber",
+      "profileId": "profile",
+      "packageId": "popular",
+      "credits": 10,
+      "amountCents": 4500,
+      "currency": "eur",
+      "creditTransactionId": "creditTransactions-new-0",
       "createdAt": 1800000000000
      }
     ]
    ]
   },
-  "negative credits are accepted": {
+  "paid: top-up replay credits nothing": {
    "result": {
-    "newBalance": 6
+    "newBalance": 10,
+    "credits": 10,
+    "alreadyProcessed": true
    },
-   "log": [
-    [
-     "patch",
-     "profile",
-     {
-      "creditBalance": 6
-     }
-    ],
-    [
-     "insert",
-     "creditTransactions",
-     {
-      "freelancerId": "plumber",
-      "amount": -4,
-      "type": "purchase",
-      "description": "Adjustment",
-      "referenceId": "cs_2",
-      "createdAt": 1800000000000
-     }
-    ]
-   ]
-  },
-  "credits to missing balance": {
-   "result": {
-    "newBalance": 5
-   },
-   "log": [
-    [
-     "patch",
-     "profile",
-     {
-      "creditBalance": 5
-     }
-    ],
-    [
-     "insert",
-     "creditTransactions",
-     {
-      "freelancerId": "plumber",
-      "amount": 5,
-      "type": "purchase",
-      "description": "Starter",
-      "referenceId": "cs_3",
-      "createdAt": 1800000000000
-     }
-    ]
-   ]
-  },
-  "credits added without profile": {
-   "error": "Freelancer profile not found.",
    "log": []
   },
-  "credits by signed-in user": {
-   "error": "Unauthorized.",
+  "paid: top-up with wrong amount": {
+   "error": "{\"code\":\"CREDIT_PURCHASE_REJECTED\",\"reason\":\"The paid amount does not match the credit package.\"}",
    "log": []
   },
-  "credits wrong secret": {
-   "error": "Unauthorized.",
+  "paid: top-up unpaid": {
+   "error": "{\"code\":\"CREDIT_PURCHASE_REJECTED\",\"reason\":\"The Stripe session is not paid.\"}",
+   "log": []
+  },
+  "paid: top-up without profile": {
+   "error": "{\"code\":\"CREDIT_PURCHASE_REJECTED\",\"reason\":\"The buyer has no Local professional profile.\"}",
    "log": []
   }
  },

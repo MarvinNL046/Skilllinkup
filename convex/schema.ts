@@ -1124,6 +1124,23 @@ export default defineSchema({
     createdAt: v.number(),
   }).index("by_freelancer", ["freelancerId"]),
 
+  // One row per verified Stripe Checkout session that bought credits. The session
+  // id is the idempotency key: a replayed or concurrent webhook finds this row and
+  // credits nothing. The verified payment facts are kept for audit and refunds.
+  creditPurchases: defineTable({
+    stripeSessionId: v.string(),
+    freelancerUserId: v.id("users"),
+    profileId: v.id("freelancerProfiles"),
+    packageId: v.string(),
+    credits: v.number(),
+    amountCents: v.number(),
+    currency: v.string(),
+    creditTransactionId: v.id("creditTransactions"),
+    createdAt: v.number(),
+  })
+    .index("by_stripeSessionId", ["stripeSessionId"])
+    .index("by_freelancerUserId", ["freelancerUserId"]),
+
   // ============================================================
   // SAVED ITEMS / FAVORITES
   // ============================================================
