@@ -428,10 +428,15 @@ const claimLead = mutation({
 /**
  * Credit a professional after a purchase. Server only.
  *
- * Known defects, kept as-is so this rewrite stays behaviour-identical. Fix both
+ * Known defects, kept as-is so this rewrite stays behaviour-identical. Fix them
  * before credit purchases go live:
- *  - the Stripe session id is not checked, so a replayed webhook credits twice;
- *  - `credits` is not validated, so zero, negative or fractional values are accepted.
+ *  - the Stripe session id is not checked, so a replayed or concurrent webhook
+ *    credits twice. Recording the session and crediting must be one atomic step
+ *    keyed on the session id;
+ *  - `credits` is not validated, so zero, negative or fractional values are accepted;
+ *  - nothing here ties the credits to what was actually paid. The caller must
+ *    verify payment status, amount, currency, the purchased package and the
+ *    linked user, and this mutation should only accept a known package.
  */
 const addCredits = mutation({
   args: {
