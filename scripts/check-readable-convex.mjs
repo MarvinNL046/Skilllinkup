@@ -68,7 +68,13 @@ function fixture(rows, log) {
       runAfter: async (delay, fn, args) => { log.push(["schedule", delay, JSON.parse(JSON.stringify(fn)), args]); return "job"; },
       cancel: async (id) => { log.push(["cancelJob", id]); },
     },
+    storage: {
+      generateUploadUrl: async () => { log.push(["uploadUrl"]); return "https://fixture.invalid/upload"; },
+      getUrl: async (id) => (records.get(id)?._table === "_storage" && !records.get(id).withoutUrl ? `https://fixture.invalid/storage/${id}` : null),
+      delete: async (id) => { records.delete(id); log.push(["deleteFile", id]); },
+    },
     db: {
+      system: { get: async (_table, id) => { const row = records.get(id); return row?._table === "_storage" ? structuredClone(row) : null; } },
       get: async (id) => structuredClone(records.get(id) ?? null),
       insert: async (table, fields) => {
         const id = `${table}-new-${[...records.values()].filter((r) => r._table === table).length}`;
@@ -84,9 +90,10 @@ function fixture(rows, log) {
       delete: async (id) => { records.delete(id); log.push(["delete", id]); },
       query: (table) => {
         const conditions = [];
-        const q = { eq(key, value) { conditions.push([key, value]); return q; } };
-        const rowsFor = () => structuredClone([...records.values()].filter((row) => (table === "users" ? Boolean(row.stackAuthId) : row._table === table) && conditions.every(([key, value]) => row[key] === value)));
-        const chain = { withIndex(_name, fn) { fn(q); return chain; }, order: () => chain, first: async () => rowsFor()[0] ?? null, unique: async () => rowsFor()[0] ?? null, take: async (count) => rowsFor().slice(0, count), collect: async () => rowsFor() };
+        let searchTerm = null;
+        const q = { eq(key, value) { conditions.push([key, value]); return q; }, search(field, text) { searchTerm = [field, String(text).toLowerCase()]; return q; } };
+        const rowsFor = () => structuredClone([...records.values()].filter((row) => (table === "users" ? Boolean(row.stackAuthId) : row._table === table) && conditions.every(([key, value]) => row[key] === value) && (!searchTerm || String(row[searchTerm[0]] ?? "").toLowerCase().includes(searchTerm[1]))));
+        const chain = { withIndex(_name, fn) { fn(q); return chain; }, withSearchIndex(_name, fn) { fn(q); return chain; }, order: () => chain, first: async () => rowsFor()[0] ?? null, unique: async () => rowsFor()[0] ?? null, take: async (count) => rowsFor().slice(0, count), collect: async () => rowsFor() };
         return chain;
       },
     },
@@ -277,6 +284,105 @@ suites["convex/marketplace/orders.ts"] = () => {
     ["internal order lookup", rows({}, [order()]), null, "getByIdInternal", { orderId: "order" }],
     ["transfer reconciliation blocked", rows({}, [order()]), null, "markReleased", { orderId: "order", stripeTransferId: "tr_1" }],
     ["refund reconciliation blocked", rows({}, [order()]), null, "markRefunded", { orderId: "order" }],
+  ];
+};
+
+suites["convex/marketplace/freelancers.ts"] = () => {
+  const online = (id, extra = {}) => ({ _id: id, _table: "freelancerProfiles", _creationTime: 1, userId: "seller", tenantId: "tenant-a", providerRole: "freelancer", workType: "remote", status: "active", profileVisibility: "public", displayName: "Ada Writer", slug: "ada-writer", bio: "Technical writer for developer tools", skills: ["Docs", "API"], locale: "en", ratingAverage: 4.5, createdAt: 1, updatedAt: 1, stripeAccountId: "acct_private", creditBalance: 7, totalEarnings: 900, ...extra });
+  const local = (id, extra = {}) => online(id, { userId: "plumber", providerRole: "local_professional", workType: "local", displayName: "Rotterdam Plumbing", slug: "rotterdam-plumbing", tagline: "Leaks and boilers", bio: "Emergency plumbing", skills: ["Plumbing"], locationCity: "Rotterdam", locationPostcode: "3011 AB", locationCountry: "Netherlands", isVerified: true, verificationDate: 5, serviceRadiusKm: 25, ...extra });
+  const people = () => [member("seller", "freelancer", "online"), member("plumber", "local_professional", "local"), member("outsider", "client", "online"), member("admin", "client", "online", { role: "admin" }), member("reviewer", "client", "online", { avatar: "/a.png" })];
+  const directory = () => [
+    ...people(),
+    online("p-top", { isVerified: true, ratingAverage: 4.1, displayName: "Top Verified", slug: "top-verified" }),
+    online("p-high", { ratingAverage: 4.9, displayName: "High Rated", slug: "high-rated" }),
+    online("p-private", { profileVisibility: "private", ratingAverage: 5, displayName: "Hidden", slug: "hidden" }),
+    online("p-nl", { locale: "nl", displayName: "Dutch Writer", slug: "dutch-writer" }),
+    online("p-paused", { status: "paused", displayName: "Paused", slug: "paused" }),
+    local("l-featured", { featured: true, isVerified: false, ratingAverage: 3 }),
+    local("l-verified", { displayName: "Den Haag Électricien", slug: "den-haag-electricien", tagline: "Wiring", bio: "Electrical work", skills: ["Electrician"], locationCity: "Den Haag", locationPostcode: "2511 CV", ratingAverage: 4 }),
+    local("l-private", { profileVisibility: "private", displayName: "Hidden Local", slug: "hidden-local" }),
+  ];
+  const review = (id, extra = {}) => ({ _id: id, _table: "marketplaceReviews", _creationTime: 2, revieweeId: "seller", reviewerId: "reviewer", reviewerRole: "client", overallRating: 5, qualityRating: 5, content: "Great work", isPublic: true, createdAt: 3, updatedAt: 3, privateNote: "internal", ...extra });
+  const image = (id, extra = {}) => ({ _id: id, _table: "_storage", contentType: "image/png", size: 2048, ...extra });
+  const one = (profile, extra = []) => [...people(), profile, ...extra];
+  return [
+    ["list default", directory(), null, "list", {}],
+    ["list by locale", directory(), null, "list", { locale: "nl" }],
+    ["list limit cuts before the privacy filter", directory(), null, "list", { limit: 1 }],
+    ["list limit clamps", directory(), null, "list", { limit: 0 }],
+    ["local list default", directory(), null, "listLocal", {}],
+    ["local list by query with accents", directory(), null, "listLocal", { query: "  ELECTRICIEN wiring " }],
+    ["local list by postcode without space", directory(), null, "listLocal", { location: "3011ab" }],
+    ["local list by short location", directory(), null, "listLocal", { location: "ha" }],
+    ["local list two-character compact location does not match", directory(), null, "listLocal", { location: "1a" }],
+    ["local list three-character compact location matches", directory(), null, "listLocal", { location: "11a" }],
+    ["local list no match", directory(), null, "listLocal", { query: "roofing" }],
+    ["local list by locale and limit", directory(), null, "listLocal", { locale: "en", limit: 1 }],
+    ["own profile", one(online("p1")), "seller", "getByUserId", { userId: "seller" }],
+    ["own local profile by active role", one(local("l1")), "plumber", "getByUserId", { userId: "plumber" }],
+    ["own profile explicit role without match", one(online("p1")), "seller", "getByUserId", { userId: "seller", providerRole: "local_professional" }],
+    ["someone else's profile", one(online("p1")), "outsider", "getByUserId", { userId: "seller" }],
+    ["public profile by id", one(online("p1")), null, "getById", { profileId: "p1" }],
+    ["private profile by id", one(online("p1", { profileVisibility: "private" })), null, "getById", { profileId: "p1" }],
+    ["local profile through online lookup", one(local("l1")), null, "getById", { profileId: "l1" }],
+    ["missing profile by id", people(), null, "getById", { profileId: "p1" }],
+    ["public profile by slug", one(online("p1")), null, "getBySlug", { slug: "ada-writer" }],
+    ["unknown slug", one(online("p1")), null, "getBySlug", { slug: "nobody" }],
+    ["local profile by id", one(local("l1")), null, "getLocalById", { profileId: "l1" }],
+    ["online profile through local lookup", one(online("p1")), null, "getLocalById", { profileId: "p1" }],
+    ["local profile by slug", one(local("l1")), null, "getLocalBySlug", { slug: "rotterdam-plumbing" }],
+    ["search by bio", directory(), null, "search", { query: "technical" }],
+    ["update text fields keeps slug", one(online("p1")), "seller", "updateProfile", { profileId: "p1", tagline: "Docs that ship", hourlyRate: 80, skills: ["Docs"] }],
+    ["update display name regenerates slug", one(online("p1")), "seller", "updateProfile", { profileId: "p1", displayName: "Ada L. Writer!" }],
+    ["update display name with taken slug", one(online("p1"), [online("p2", { userId: "outsider", slug: "grace-hopper", displayName: "Grace Hopper" })]), "seller", "updateProfile", { profileId: "p1", displayName: "Grace Hopper" }],
+    ["update symbols-only name falls back", one(online("p1")), "seller", "updateProfile", { profileId: "p1", displayName: "***" }],
+    ["update adds missing slug", one(online("p1", { slug: undefined })), "seller", "updateProfile", { profileId: "p1", bio: "New bio" }],
+    ["update local location resets verification", one(local("l1")), "plumber", "updateProfile", { profileId: "l1", locationCity: "Delft" }],
+    ["update local same location keeps verification", one(local("l1")), "plumber", "updateProfile", { profileId: "l1", locationCity: "Rotterdam", tagline: "Boilers" }],
+    ["update local unverified location", one(local("l1", { isVerified: false })), "plumber", "updateProfile", { profileId: "l1", serviceRadiusKm: 40 }],
+    ["update local location when verification was never set", one(local("l1", { isVerified: undefined, verificationDate: undefined })), "plumber", "updateProfile", { profileId: "l1", locationCity: "Delft" }],
+    ["update legacy local profile without provider role resets verification", one(local("l1", { providerRole: undefined })), "plumber", "updateProfile", { profileId: "l1", latitude: 52.01 }],
+    ["update online location keeps verification", one(online("p1", { isVerified: true, verificationDate: 5 })), "seller", "updateProfile", { profileId: "p1", locationCity: "Utrecht" }],
+    ["update bad radius", one(local("l1")), "plumber", "updateProfile", { profileId: "l1", serviceRadiusKm: 0 }],
+    ["update fractional radius", one(local("l1")), "plumber", "updateProfile", { profileId: "l1", serviceRadiusKm: 2.5 }],
+    ["update bad latitude", one(local("l1")), "plumber", "updateProfile", { profileId: "l1", latitude: 91 }],
+    ["update bad longitude", one(local("l1")), "plumber", "updateProfile", { profileId: "l1", longitude: -181 }],
+    ["update someone else's profile", one(online("p1")), "outsider", "updateProfile", { profileId: "p1", bio: "x" }],
+    ["update in the wrong account mode", [member("seller", "client", "online"), online("p1")], "seller", "updateProfile", { profileId: "p1", bio: "x" }],
+    ["update missing profile", people(), "seller", "updateProfile", { profileId: "p1", bio: "x" }],
+    ["update anonymous", one(online("p1")), null, "updateProfile", { profileId: "p1", bio: "x" }],
+    ["avatar upload url", people(), "seller", "generateAvatarUploadUrl", {}],
+    ["avatar upload url anonymous", people(), null, "generateAvatarUploadUrl", {}],
+    ["cover upload url", people(), "seller", "generateCoverUploadUrl", {}],
+    ["cover upload url anonymous", people(), null, "generateCoverUploadUrl", {}],
+    ["save avatar", one(online("p1"), [image("file")]), "seller", "saveAvatarStorageId", { profileId: "p1", storageId: "file" }],
+    ["save avatar wrong type", one(online("p1"), [image("file", { contentType: "application/pdf" })]), "seller", "saveAvatarStorageId", { profileId: "p1", storageId: "file" }],
+    ["save avatar too large", one(online("p1"), [image("file", { size: 6 * 1024 * 1024 })]), "seller", "saveAvatarStorageId", { profileId: "p1", storageId: "file" }],
+    ["save avatar already attached", one(online("p1"), [image("file"), { _id: "asset", _table: "fileAssets", storageId: "file", ownerId: "seller" }]), "seller", "saveAvatarStorageId", { profileId: "p1", storageId: "file" }],
+    ["save avatar of another account", one(online("p1"), [image("file"), { _id: "asset", _table: "fileAssets", storageId: "file", ownerId: "outsider" }]), "seller", "saveAvatarStorageId", { profileId: "p1", storageId: "file" }],
+    ["save avatar without url", one(online("p1"), [image("file", { withoutUrl: true })]), "seller", "saveAvatarStorageId", { profileId: "p1", storageId: "file" }],
+    ["save avatar on someone else's profile", one(online("p1"), [image("file")]), "outsider", "saveAvatarStorageId", { profileId: "p1", storageId: "file" }],
+    ["save avatar missing profile", [...people(), image("file")], "seller", "saveAvatarStorageId", { profileId: "p1", storageId: "file" }],
+    ["save cover", one(local("l1"), [image("file", { size: 8 * 1024 * 1024 })]), "plumber", "saveCoverStorageId", { profileId: "l1", storageId: "file" }],
+    ["save cover too large", one(local("l1"), [image("file", { size: 11 * 1024 * 1024 })]), "plumber", "saveCoverStorageId", { profileId: "l1", storageId: "file" }],
+    ["save cover wrong account mode", [member("plumber", "client", "local"), local("l1"), image("file")], "plumber", "saveCoverStorageId", { profileId: "l1", storageId: "file" }],
+    ["payout account by server", one(online("p1")), null, "updateStripeAccount", { userId: "seller", stripeAccountId: "acct_new", serverSecret: SECRET }],
+    ["payout account picks the first of two profiles", one(online("p1"), [local("l-second", { userId: "seller" })]), null, "updateStripeAccount", { userId: "seller", stripeAccountId: "acct_new", serverSecret: SECRET }],
+    ["payout account by signed-in owner", one(online("p1")), "seller", "updateStripeAccount", { userId: "seller", stripeAccountId: "acct_new" }],
+    ["payout account wrong secret", one(online("p1")), null, "updateStripeAccount", { userId: "seller", stripeAccountId: "acct_new", serverSecret: "wrong" }],
+    ["payout account without profile", people(), null, "updateStripeAccount", { userId: "outsider", stripeAccountId: "acct_new", serverSecret: SECRET }],
+    ["onboarding complete by server", one(online("p1")), null, "setOnboardingComplete", { userId: "seller", serverSecret: SECRET }],
+    ["onboarding complete without secret", one(online("p1")), "seller", "setOnboardingComplete", { userId: "seller" }],
+    ["onboarding complete without profile", people(), null, "setOnboardingComplete", { userId: "outsider", serverSecret: SECRET }],
+    ["reviews public only", one(online("p1"), [review("r1"), review("r2", { isPublic: false }), review("r3", { reviewerId: undefined, overallRating: 3 })]), null, "getReviews", { freelancerId: "p1" }],
+    ["reviews limit", one(online("p1"), [review("r1"), review("r2"), review("r3")]), null, "getReviews", { freelancerId: "p1", limit: 2 }],
+    ["reviews limit clamps", one(online("p1"), [review("r1"), review("r2")]), null, "getReviews", { freelancerId: "p1", limit: 0 }],
+    ["reviews of a private profile", one(online("p1", { profileVisibility: "private" }), [review("r1")]), null, "getReviews", { freelancerId: "p1" }],
+    ["internal profile lookup", one(online("p1")), null, "getProfileById", { profileId: "p1" }],
+    ["backfill slugs as admin", [...people(), online("p1", { slug: undefined }), online("p2", { slug: undefined, displayName: "Ada Writer" }), online("p3")], "admin", "backfillSlugs", {}],
+    ["backfill slugs by server", [...people(), online("p1", { slug: undefined, displayName: "Ünïcode Näme" })], null, "backfillSlugs", { serverSecret: SECRET }],
+    ["backfill slugs as member", one(online("p1", { slug: undefined })), "seller", "backfillSlugs", {}],
+    ["backfill slugs wrong secret", one(online("p1", { slug: undefined })), null, "backfillSlugs", { serverSecret: "wrong" }],
   ];
 };
 

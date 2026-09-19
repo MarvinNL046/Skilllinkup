@@ -2486,5 +2486,1529 @@
    "error": "Stripe refund reconciliation is unavailable during the free private beta. No platform payment or credit movement is active.",
    "log": []
   }
+ },
+ "convex/marketplace/freelancers.ts": {
+  "list default": {
+   "result": [
+    {
+     "_id": "p-top",
+     "userId": "seller",
+     "displayName": "Top Verified",
+     "slug": "top-verified",
+     "tagline": null,
+     "bio": "Technical writer for developer tools",
+     "avatarUrl": null,
+     "coverImageUrl": null,
+     "hourlyRate": null,
+     "workType": "remote",
+     "locationCity": null,
+     "locationCountry": null,
+     "serviceRadiusKm": null,
+     "languages": [],
+     "skills": [
+      "Docs",
+      "API"
+     ],
+     "portfolioUrls": [],
+     "websiteUrl": null,
+     "linkedinUrl": null,
+     "twitterUrl": null,
+     "githubUrl": null,
+     "profileVisibility": "public",
+     "contactPermission": "everyone",
+     "isVerified": true,
+     "verificationDate": null,
+     "responseTimeHours": null,
+     "completionRate": null,
+     "totalOrders": 0,
+     "ratingAverage": 4.1,
+     "ratingCount": 0,
+     "isAvailable": true,
+     "featured": false,
+     "level": "new",
+     "status": "active",
+     "locale": "en",
+     "createdAt": 1,
+     "updatedAt": 1
+    },
+    {
+     "_id": "p-high",
+     "userId": "seller",
+     "displayName": "High Rated",
+     "slug": "high-rated",
+     "tagline": null,
+     "bio": "Technical writer for developer tools",
+     "avatarUrl": null,
+     "coverImageUrl": null,
+     "hourlyRate": null,
+     "workType": "remote",
+     "locationCity": null,
+     "locationCountry": null,
+     "serviceRadiusKm": null,
+     "languages": [],
+     "skills": [
+      "Docs",
+      "API"
+     ],
+     "portfolioUrls": [],
+     "websiteUrl": null,
+     "linkedinUrl": null,
+     "twitterUrl": null,
+     "githubUrl": null,
+     "profileVisibility": "public",
+     "contactPermission": "everyone",
+     "isVerified": false,
+     "verificationDate": null,
+     "responseTimeHours": null,
+     "completionRate": null,
+     "totalOrders": 0,
+     "ratingAverage": 4.9,
+     "ratingCount": 0,
+     "isAvailable": true,
+     "featured": false,
+     "level": "new",
+     "status": "active",
+     "locale": "en",
+     "createdAt": 1,
+     "updatedAt": 1
+    },
+    {
+     "_id": "p-nl",
+     "userId": "seller",
+     "displayName": "Dutch Writer",
+     "slug": "dutch-writer",
+     "tagline": null,
+     "bio": "Technical writer for developer tools",
+     "avatarUrl": null,
+     "coverImageUrl": null,
+     "hourlyRate": null,
+     "workType": "remote",
+     "locationCity": null,
+     "locationCountry": null,
+     "serviceRadiusKm": null,
+     "languages": [],
+     "skills": [
+      "Docs",
+      "API"
+     ],
+     "portfolioUrls": [],
+     "websiteUrl": null,
+     "linkedinUrl": null,
+     "twitterUrl": null,
+     "githubUrl": null,
+     "profileVisibility": "public",
+     "contactPermission": "everyone",
+     "isVerified": false,
+     "verificationDate": null,
+     "responseTimeHours": null,
+     "completionRate": null,
+     "totalOrders": 0,
+     "ratingAverage": 4.5,
+     "ratingCount": 0,
+     "isAvailable": true,
+     "featured": false,
+     "level": "new",
+     "status": "active",
+     "locale": "nl",
+     "createdAt": 1,
+     "updatedAt": 1
+    }
+   ],
+   "log": []
+  },
+  "list by locale": {
+   "result": [
+    {
+     "_id": "p-nl",
+     "userId": "seller",
+     "displayName": "Dutch Writer",
+     "slug": "dutch-writer",
+     "tagline": null,
+     "bio": "Technical writer for developer tools",
+     "avatarUrl": null,
+     "coverImageUrl": null,
+     "hourlyRate": null,
+     "workType": "remote",
+     "locationCity": null,
+     "locationCountry": null,
+     "serviceRadiusKm": null,
+     "languages": [],
+     "skills": [
+      "Docs",
+      "API"
+     ],
+     "portfolioUrls": [],
+     "websiteUrl": null,
+     "linkedinUrl": null,
+     "twitterUrl": null,
+     "githubUrl": null,
+     "profileVisibility": "public",
+     "contactPermission": "everyone",
+     "isVerified": false,
+     "verificationDate": null,
+     "responseTimeHours": null,
+     "completionRate": null,
+     "totalOrders": 0,
+     "ratingAverage": 4.5,
+     "ratingCount": 0,
+     "isAvailable": true,
+     "featured": false,
+     "level": "new",
+     "status": "active",
+     "locale": "nl",
+     "createdAt": 1,
+     "updatedAt": 1
+    }
+   ],
+   "log": []
+  },
+  "list limit cuts before the privacy filter": {
+   "result": [
+    {
+     "_id": "p-top",
+     "userId": "seller",
+     "displayName": "Top Verified",
+     "slug": "top-verified",
+     "tagline": null,
+     "bio": "Technical writer for developer tools",
+     "avatarUrl": null,
+     "coverImageUrl": null,
+     "hourlyRate": null,
+     "workType": "remote",
+     "locationCity": null,
+     "locationCountry": null,
+     "serviceRadiusKm": null,
+     "languages": [],
+     "skills": [
+      "Docs",
+      "API"
+     ],
+     "portfolioUrls": [],
+     "websiteUrl": null,
+     "linkedinUrl": null,
+     "twitterUrl": null,
+     "githubUrl": null,
+     "profileVisibility": "public",
+     "contactPermission": "everyone",
+     "isVerified": true,
+     "verificationDate": null,
+     "responseTimeHours": null,
+     "completionRate": null,
+     "totalOrders": 0,
+     "ratingAverage": 4.1,
+     "ratingCount": 0,
+     "isAvailable": true,
+     "featured": false,
+     "level": "new",
+     "status": "active",
+     "locale": "en",
+     "createdAt": 1,
+     "updatedAt": 1
+    }
+   ],
+   "log": []
+  },
+  "list limit clamps": {
+   "result": [
+    {
+     "_id": "p-top",
+     "userId": "seller",
+     "displayName": "Top Verified",
+     "slug": "top-verified",
+     "tagline": null,
+     "bio": "Technical writer for developer tools",
+     "avatarUrl": null,
+     "coverImageUrl": null,
+     "hourlyRate": null,
+     "workType": "remote",
+     "locationCity": null,
+     "locationCountry": null,
+     "serviceRadiusKm": null,
+     "languages": [],
+     "skills": [
+      "Docs",
+      "API"
+     ],
+     "portfolioUrls": [],
+     "websiteUrl": null,
+     "linkedinUrl": null,
+     "twitterUrl": null,
+     "githubUrl": null,
+     "profileVisibility": "public",
+     "contactPermission": "everyone",
+     "isVerified": true,
+     "verificationDate": null,
+     "responseTimeHours": null,
+     "completionRate": null,
+     "totalOrders": 0,
+     "ratingAverage": 4.1,
+     "ratingCount": 0,
+     "isAvailable": true,
+     "featured": false,
+     "level": "new",
+     "status": "active",
+     "locale": "en",
+     "createdAt": 1,
+     "updatedAt": 1
+    }
+   ],
+   "log": []
+  },
+  "local list default": {
+   "result": [
+    {
+     "_id": "l-featured",
+     "userId": "plumber",
+     "displayName": "Rotterdam Plumbing",
+     "slug": "rotterdam-plumbing",
+     "tagline": "Leaks and boilers",
+     "bio": "Emergency plumbing",
+     "avatarUrl": null,
+     "coverImageUrl": null,
+     "hourlyRate": null,
+     "workType": "local",
+     "locationCity": "Rotterdam",
+     "locationCountry": "Netherlands",
+     "serviceRadiusKm": 25,
+     "languages": [],
+     "skills": [
+      "Plumbing"
+     ],
+     "portfolioUrls": [],
+     "websiteUrl": null,
+     "linkedinUrl": null,
+     "twitterUrl": null,
+     "githubUrl": null,
+     "profileVisibility": "public",
+     "contactPermission": "everyone",
+     "isVerified": false,
+     "verificationDate": 5,
+     "responseTimeHours": null,
+     "completionRate": null,
+     "totalOrders": 0,
+     "ratingAverage": 3,
+     "ratingCount": 0,
+     "isAvailable": true,
+     "featured": true,
+     "level": "new",
+     "status": "active",
+     "locale": "en",
+     "createdAt": 1,
+     "updatedAt": 1
+    },
+    {
+     "_id": "l-verified",
+     "userId": "plumber",
+     "displayName": "Den Haag Électricien",
+     "slug": "den-haag-electricien",
+     "tagline": "Wiring",
+     "bio": "Electrical work",
+     "avatarUrl": null,
+     "coverImageUrl": null,
+     "hourlyRate": null,
+     "workType": "local",
+     "locationCity": "Den Haag",
+     "locationCountry": "Netherlands",
+     "serviceRadiusKm": 25,
+     "languages": [],
+     "skills": [
+      "Electrician"
+     ],
+     "portfolioUrls": [],
+     "websiteUrl": null,
+     "linkedinUrl": null,
+     "twitterUrl": null,
+     "githubUrl": null,
+     "profileVisibility": "public",
+     "contactPermission": "everyone",
+     "isVerified": true,
+     "verificationDate": 5,
+     "responseTimeHours": null,
+     "completionRate": null,
+     "totalOrders": 0,
+     "ratingAverage": 4,
+     "ratingCount": 0,
+     "isAvailable": true,
+     "featured": false,
+     "level": "new",
+     "status": "active",
+     "locale": "en",
+     "createdAt": 1,
+     "updatedAt": 1
+    }
+   ],
+   "log": []
+  },
+  "local list by query with accents": {
+   "result": [
+    {
+     "_id": "l-verified",
+     "userId": "plumber",
+     "displayName": "Den Haag Électricien",
+     "slug": "den-haag-electricien",
+     "tagline": "Wiring",
+     "bio": "Electrical work",
+     "avatarUrl": null,
+     "coverImageUrl": null,
+     "hourlyRate": null,
+     "workType": "local",
+     "locationCity": "Den Haag",
+     "locationCountry": "Netherlands",
+     "serviceRadiusKm": 25,
+     "languages": [],
+     "skills": [
+      "Electrician"
+     ],
+     "portfolioUrls": [],
+     "websiteUrl": null,
+     "linkedinUrl": null,
+     "twitterUrl": null,
+     "githubUrl": null,
+     "profileVisibility": "public",
+     "contactPermission": "everyone",
+     "isVerified": true,
+     "verificationDate": 5,
+     "responseTimeHours": null,
+     "completionRate": null,
+     "totalOrders": 0,
+     "ratingAverage": 4,
+     "ratingCount": 0,
+     "isAvailable": true,
+     "featured": false,
+     "level": "new",
+     "status": "active",
+     "locale": "en",
+     "createdAt": 1,
+     "updatedAt": 1
+    }
+   ],
+   "log": []
+  },
+  "local list by postcode without space": {
+   "result": [
+    {
+     "_id": "l-featured",
+     "userId": "plumber",
+     "displayName": "Rotterdam Plumbing",
+     "slug": "rotterdam-plumbing",
+     "tagline": "Leaks and boilers",
+     "bio": "Emergency plumbing",
+     "avatarUrl": null,
+     "coverImageUrl": null,
+     "hourlyRate": null,
+     "workType": "local",
+     "locationCity": "Rotterdam",
+     "locationCountry": "Netherlands",
+     "serviceRadiusKm": 25,
+     "languages": [],
+     "skills": [
+      "Plumbing"
+     ],
+     "portfolioUrls": [],
+     "websiteUrl": null,
+     "linkedinUrl": null,
+     "twitterUrl": null,
+     "githubUrl": null,
+     "profileVisibility": "public",
+     "contactPermission": "everyone",
+     "isVerified": false,
+     "verificationDate": 5,
+     "responseTimeHours": null,
+     "completionRate": null,
+     "totalOrders": 0,
+     "ratingAverage": 3,
+     "ratingCount": 0,
+     "isAvailable": true,
+     "featured": true,
+     "level": "new",
+     "status": "active",
+     "locale": "en",
+     "createdAt": 1,
+     "updatedAt": 1
+    }
+   ],
+   "log": []
+  },
+  "local list by short location": {
+   "result": [
+    {
+     "_id": "l-verified",
+     "userId": "plumber",
+     "displayName": "Den Haag Électricien",
+     "slug": "den-haag-electricien",
+     "tagline": "Wiring",
+     "bio": "Electrical work",
+     "avatarUrl": null,
+     "coverImageUrl": null,
+     "hourlyRate": null,
+     "workType": "local",
+     "locationCity": "Den Haag",
+     "locationCountry": "Netherlands",
+     "serviceRadiusKm": 25,
+     "languages": [],
+     "skills": [
+      "Electrician"
+     ],
+     "portfolioUrls": [],
+     "websiteUrl": null,
+     "linkedinUrl": null,
+     "twitterUrl": null,
+     "githubUrl": null,
+     "profileVisibility": "public",
+     "contactPermission": "everyone",
+     "isVerified": true,
+     "verificationDate": 5,
+     "responseTimeHours": null,
+     "completionRate": null,
+     "totalOrders": 0,
+     "ratingAverage": 4,
+     "ratingCount": 0,
+     "isAvailable": true,
+     "featured": false,
+     "level": "new",
+     "status": "active",
+     "locale": "en",
+     "createdAt": 1,
+     "updatedAt": 1
+    }
+   ],
+   "log": []
+  },
+  "local list two-character compact location does not match": {
+   "result": [],
+   "log": []
+  },
+  "local list three-character compact location matches": {
+   "result": [
+    {
+     "_id": "l-featured",
+     "userId": "plumber",
+     "displayName": "Rotterdam Plumbing",
+     "slug": "rotterdam-plumbing",
+     "tagline": "Leaks and boilers",
+     "bio": "Emergency plumbing",
+     "avatarUrl": null,
+     "coverImageUrl": null,
+     "hourlyRate": null,
+     "workType": "local",
+     "locationCity": "Rotterdam",
+     "locationCountry": "Netherlands",
+     "serviceRadiusKm": 25,
+     "languages": [],
+     "skills": [
+      "Plumbing"
+     ],
+     "portfolioUrls": [],
+     "websiteUrl": null,
+     "linkedinUrl": null,
+     "twitterUrl": null,
+     "githubUrl": null,
+     "profileVisibility": "public",
+     "contactPermission": "everyone",
+     "isVerified": false,
+     "verificationDate": 5,
+     "responseTimeHours": null,
+     "completionRate": null,
+     "totalOrders": 0,
+     "ratingAverage": 3,
+     "ratingCount": 0,
+     "isAvailable": true,
+     "featured": true,
+     "level": "new",
+     "status": "active",
+     "locale": "en",
+     "createdAt": 1,
+     "updatedAt": 1
+    }
+   ],
+   "log": []
+  },
+  "local list no match": {
+   "result": [],
+   "log": []
+  },
+  "local list by locale and limit": {
+   "result": [
+    {
+     "_id": "l-featured",
+     "userId": "plumber",
+     "displayName": "Rotterdam Plumbing",
+     "slug": "rotterdam-plumbing",
+     "tagline": "Leaks and boilers",
+     "bio": "Emergency plumbing",
+     "avatarUrl": null,
+     "coverImageUrl": null,
+     "hourlyRate": null,
+     "workType": "local",
+     "locationCity": "Rotterdam",
+     "locationCountry": "Netherlands",
+     "serviceRadiusKm": 25,
+     "languages": [],
+     "skills": [
+      "Plumbing"
+     ],
+     "portfolioUrls": [],
+     "websiteUrl": null,
+     "linkedinUrl": null,
+     "twitterUrl": null,
+     "githubUrl": null,
+     "profileVisibility": "public",
+     "contactPermission": "everyone",
+     "isVerified": false,
+     "verificationDate": 5,
+     "responseTimeHours": null,
+     "completionRate": null,
+     "totalOrders": 0,
+     "ratingAverage": 3,
+     "ratingCount": 0,
+     "isAvailable": true,
+     "featured": true,
+     "level": "new",
+     "status": "active",
+     "locale": "en",
+     "createdAt": 1,
+     "updatedAt": 1
+    }
+   ],
+   "log": []
+  },
+  "own profile": {
+   "result": {
+    "_id": "p1",
+    "_table": "freelancerProfiles",
+    "_creationTime": 1,
+    "userId": "seller",
+    "tenantId": "tenant-a",
+    "providerRole": "freelancer",
+    "workType": "remote",
+    "status": "active",
+    "profileVisibility": "public",
+    "displayName": "Ada Writer",
+    "slug": "ada-writer",
+    "bio": "Technical writer for developer tools",
+    "skills": [
+     "Docs",
+     "API"
+    ],
+    "locale": "en",
+    "ratingAverage": 4.5,
+    "createdAt": 1,
+    "updatedAt": 1,
+    "stripeAccountId": "acct_private",
+    "creditBalance": 7,
+    "totalEarnings": 900
+   },
+   "log": []
+  },
+  "own local profile by active role": {
+   "result": {
+    "_id": "l1",
+    "_table": "freelancerProfiles",
+    "_creationTime": 1,
+    "userId": "plumber",
+    "tenantId": "tenant-a",
+    "providerRole": "local_professional",
+    "workType": "local",
+    "status": "active",
+    "profileVisibility": "public",
+    "displayName": "Rotterdam Plumbing",
+    "slug": "rotterdam-plumbing",
+    "bio": "Emergency plumbing",
+    "skills": [
+     "Plumbing"
+    ],
+    "locale": "en",
+    "ratingAverage": 4.5,
+    "createdAt": 1,
+    "updatedAt": 1,
+    "stripeAccountId": "acct_private",
+    "creditBalance": 7,
+    "totalEarnings": 900,
+    "tagline": "Leaks and boilers",
+    "locationCity": "Rotterdam",
+    "locationPostcode": "3011 AB",
+    "locationCountry": "Netherlands",
+    "isVerified": true,
+    "verificationDate": 5,
+    "serviceRadiusKm": 25
+   },
+   "log": []
+  },
+  "own profile explicit role without match": {
+   "result": null,
+   "log": []
+  },
+  "someone else's profile": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "public profile by id": {
+   "result": {
+    "_id": "p1",
+    "userId": "seller",
+    "displayName": "Ada Writer",
+    "slug": "ada-writer",
+    "tagline": null,
+    "bio": "Technical writer for developer tools",
+    "avatarUrl": null,
+    "coverImageUrl": null,
+    "hourlyRate": null,
+    "workType": "remote",
+    "locationCity": null,
+    "locationCountry": null,
+    "serviceRadiusKm": null,
+    "languages": [],
+    "skills": [
+     "Docs",
+     "API"
+    ],
+    "portfolioUrls": [],
+    "websiteUrl": null,
+    "linkedinUrl": null,
+    "twitterUrl": null,
+    "githubUrl": null,
+    "profileVisibility": "public",
+    "contactPermission": "everyone",
+    "isVerified": false,
+    "verificationDate": null,
+    "responseTimeHours": null,
+    "completionRate": null,
+    "totalOrders": 0,
+    "ratingAverage": 4.5,
+    "ratingCount": 0,
+    "isAvailable": true,
+    "featured": false,
+    "level": "new",
+    "status": "active",
+    "locale": "en",
+    "createdAt": 1,
+    "updatedAt": 1
+   },
+   "log": []
+  },
+  "private profile by id": {
+   "result": null,
+   "log": []
+  },
+  "local profile through online lookup": {
+   "result": null,
+   "log": []
+  },
+  "missing profile by id": {
+   "result": null,
+   "log": []
+  },
+  "public profile by slug": {
+   "result": {
+    "_id": "p1",
+    "userId": "seller",
+    "displayName": "Ada Writer",
+    "slug": "ada-writer",
+    "tagline": null,
+    "bio": "Technical writer for developer tools",
+    "avatarUrl": null,
+    "coverImageUrl": null,
+    "hourlyRate": null,
+    "workType": "remote",
+    "locationCity": null,
+    "locationCountry": null,
+    "serviceRadiusKm": null,
+    "languages": [],
+    "skills": [
+     "Docs",
+     "API"
+    ],
+    "portfolioUrls": [],
+    "websiteUrl": null,
+    "linkedinUrl": null,
+    "twitterUrl": null,
+    "githubUrl": null,
+    "profileVisibility": "public",
+    "contactPermission": "everyone",
+    "isVerified": false,
+    "verificationDate": null,
+    "responseTimeHours": null,
+    "completionRate": null,
+    "totalOrders": 0,
+    "ratingAverage": 4.5,
+    "ratingCount": 0,
+    "isAvailable": true,
+    "featured": false,
+    "level": "new",
+    "status": "active",
+    "locale": "en",
+    "createdAt": 1,
+    "updatedAt": 1
+   },
+   "log": []
+  },
+  "unknown slug": {
+   "result": null,
+   "log": []
+  },
+  "local profile by id": {
+   "result": {
+    "_id": "l1",
+    "userId": "plumber",
+    "displayName": "Rotterdam Plumbing",
+    "slug": "rotterdam-plumbing",
+    "tagline": "Leaks and boilers",
+    "bio": "Emergency plumbing",
+    "avatarUrl": null,
+    "coverImageUrl": null,
+    "hourlyRate": null,
+    "workType": "local",
+    "locationCity": "Rotterdam",
+    "locationCountry": "Netherlands",
+    "serviceRadiusKm": 25,
+    "languages": [],
+    "skills": [
+     "Plumbing"
+    ],
+    "portfolioUrls": [],
+    "websiteUrl": null,
+    "linkedinUrl": null,
+    "twitterUrl": null,
+    "githubUrl": null,
+    "profileVisibility": "public",
+    "contactPermission": "everyone",
+    "isVerified": true,
+    "verificationDate": 5,
+    "responseTimeHours": null,
+    "completionRate": null,
+    "totalOrders": 0,
+    "ratingAverage": 4.5,
+    "ratingCount": 0,
+    "isAvailable": true,
+    "featured": false,
+    "level": "new",
+    "status": "active",
+    "locale": "en",
+    "createdAt": 1,
+    "updatedAt": 1
+   },
+   "log": []
+  },
+  "online profile through local lookup": {
+   "result": null,
+   "log": []
+  },
+  "local profile by slug": {
+   "result": {
+    "_id": "l1",
+    "userId": "plumber",
+    "displayName": "Rotterdam Plumbing",
+    "slug": "rotterdam-plumbing",
+    "tagline": "Leaks and boilers",
+    "bio": "Emergency plumbing",
+    "avatarUrl": null,
+    "coverImageUrl": null,
+    "hourlyRate": null,
+    "workType": "local",
+    "locationCity": "Rotterdam",
+    "locationCountry": "Netherlands",
+    "serviceRadiusKm": 25,
+    "languages": [],
+    "skills": [
+     "Plumbing"
+    ],
+    "portfolioUrls": [],
+    "websiteUrl": null,
+    "linkedinUrl": null,
+    "twitterUrl": null,
+    "githubUrl": null,
+    "profileVisibility": "public",
+    "contactPermission": "everyone",
+    "isVerified": true,
+    "verificationDate": 5,
+    "responseTimeHours": null,
+    "completionRate": null,
+    "totalOrders": 0,
+    "ratingAverage": 4.5,
+    "ratingCount": 0,
+    "isAvailable": true,
+    "featured": false,
+    "level": "new",
+    "status": "active",
+    "locale": "en",
+    "createdAt": 1,
+    "updatedAt": 1
+   },
+   "log": []
+  },
+  "search by bio": {
+   "result": [
+    {
+     "_id": "p-top",
+     "userId": "seller",
+     "displayName": "Top Verified",
+     "slug": "top-verified",
+     "tagline": null,
+     "bio": "Technical writer for developer tools",
+     "avatarUrl": null,
+     "coverImageUrl": null,
+     "hourlyRate": null,
+     "workType": "remote",
+     "locationCity": null,
+     "locationCountry": null,
+     "serviceRadiusKm": null,
+     "languages": [],
+     "skills": [
+      "Docs",
+      "API"
+     ],
+     "portfolioUrls": [],
+     "websiteUrl": null,
+     "linkedinUrl": null,
+     "twitterUrl": null,
+     "githubUrl": null,
+     "profileVisibility": "public",
+     "contactPermission": "everyone",
+     "isVerified": true,
+     "verificationDate": null,
+     "responseTimeHours": null,
+     "completionRate": null,
+     "totalOrders": 0,
+     "ratingAverage": 4.1,
+     "ratingCount": 0,
+     "isAvailable": true,
+     "featured": false,
+     "level": "new",
+     "status": "active",
+     "locale": "en",
+     "createdAt": 1,
+     "updatedAt": 1
+    },
+    {
+     "_id": "p-high",
+     "userId": "seller",
+     "displayName": "High Rated",
+     "slug": "high-rated",
+     "tagline": null,
+     "bio": "Technical writer for developer tools",
+     "avatarUrl": null,
+     "coverImageUrl": null,
+     "hourlyRate": null,
+     "workType": "remote",
+     "locationCity": null,
+     "locationCountry": null,
+     "serviceRadiusKm": null,
+     "languages": [],
+     "skills": [
+      "Docs",
+      "API"
+     ],
+     "portfolioUrls": [],
+     "websiteUrl": null,
+     "linkedinUrl": null,
+     "twitterUrl": null,
+     "githubUrl": null,
+     "profileVisibility": "public",
+     "contactPermission": "everyone",
+     "isVerified": false,
+     "verificationDate": null,
+     "responseTimeHours": null,
+     "completionRate": null,
+     "totalOrders": 0,
+     "ratingAverage": 4.9,
+     "ratingCount": 0,
+     "isAvailable": true,
+     "featured": false,
+     "level": "new",
+     "status": "active",
+     "locale": "en",
+     "createdAt": 1,
+     "updatedAt": 1
+    },
+    {
+     "_id": "p-nl",
+     "userId": "seller",
+     "displayName": "Dutch Writer",
+     "slug": "dutch-writer",
+     "tagline": null,
+     "bio": "Technical writer for developer tools",
+     "avatarUrl": null,
+     "coverImageUrl": null,
+     "hourlyRate": null,
+     "workType": "remote",
+     "locationCity": null,
+     "locationCountry": null,
+     "serviceRadiusKm": null,
+     "languages": [],
+     "skills": [
+      "Docs",
+      "API"
+     ],
+     "portfolioUrls": [],
+     "websiteUrl": null,
+     "linkedinUrl": null,
+     "twitterUrl": null,
+     "githubUrl": null,
+     "profileVisibility": "public",
+     "contactPermission": "everyone",
+     "isVerified": false,
+     "verificationDate": null,
+     "responseTimeHours": null,
+     "completionRate": null,
+     "totalOrders": 0,
+     "ratingAverage": 4.5,
+     "ratingCount": 0,
+     "isAvailable": true,
+     "featured": false,
+     "level": "new",
+     "status": "active",
+     "locale": "nl",
+     "createdAt": 1,
+     "updatedAt": 1
+    }
+   ],
+   "log": []
+  },
+  "update text fields keeps slug": {
+   "result": "p1",
+   "log": [
+    [
+     "patch",
+     "p1",
+     {
+      "updatedAt": 1800000000000,
+      "tagline": "Docs that ship",
+      "hourlyRate": 80,
+      "skills": [
+       "Docs"
+      ]
+     }
+    ]
+   ]
+  },
+  "update display name regenerates slug": {
+   "result": "p1",
+   "log": [
+    [
+     "patch",
+     "p1",
+     {
+      "updatedAt": 1800000000000,
+      "displayName": "Ada L. Writer!",
+      "slug": "ada-l-writer"
+     }
+    ]
+   ]
+  },
+  "update display name with taken slug": {
+   "result": "p1",
+   "log": [
+    [
+     "patch",
+     "p1",
+     {
+      "updatedAt": 1800000000000,
+      "displayName": "Grace Hopper",
+      "slug": "grace-hopper-4fzz"
+     }
+    ]
+   ]
+  },
+  "update symbols-only name falls back": {
+   "result": "p1",
+   "log": [
+    [
+     "patch",
+     "p1",
+     {
+      "updatedAt": 1800000000000,
+      "displayName": "***",
+      "slug": "freelancer"
+     }
+    ]
+   ]
+  },
+  "update adds missing slug": {
+   "result": "p1",
+   "log": [
+    [
+     "patch",
+     "p1",
+     {
+      "updatedAt": 1800000000000,
+      "bio": "New bio",
+      "slug": "ada-writer"
+     }
+    ]
+   ]
+  },
+  "update local location resets verification": {
+   "result": "l1",
+   "log": [
+    [
+     "patch",
+     "l1",
+     {
+      "updatedAt": 1800000000000,
+      "locationCity": "Delft",
+      "isVerified": false,
+      "verificationDate": "__undefined__"
+     }
+    ]
+   ]
+  },
+  "update local same location keeps verification": {
+   "result": "l1",
+   "log": [
+    [
+     "patch",
+     "l1",
+     {
+      "updatedAt": 1800000000000,
+      "locationCity": "Rotterdam",
+      "tagline": "Boilers"
+     }
+    ]
+   ]
+  },
+  "update local unverified location": {
+   "result": "l1",
+   "log": [
+    [
+     "patch",
+     "l1",
+     {
+      "updatedAt": 1800000000000,
+      "serviceRadiusKm": 40
+     }
+    ]
+   ]
+  },
+  "update local location when verification was never set": {
+   "result": "l1",
+   "log": [
+    [
+     "patch",
+     "l1",
+     {
+      "updatedAt": 1800000000000,
+      "locationCity": "Delft"
+     }
+    ]
+   ]
+  },
+  "update legacy local profile without provider role resets verification": {
+   "result": "l1",
+   "log": [
+    [
+     "patch",
+     "l1",
+     {
+      "updatedAt": 1800000000000,
+      "latitude": 52.01,
+      "isVerified": false,
+      "verificationDate": "__undefined__"
+     }
+    ]
+   ]
+  },
+  "update online location keeps verification": {
+   "result": "p1",
+   "log": [
+    [
+     "patch",
+     "p1",
+     {
+      "updatedAt": 1800000000000,
+      "locationCity": "Utrecht"
+     }
+    ]
+   ]
+  },
+  "update bad radius": {
+   "error": "Service radius must be a whole number from 1 to 100 km.",
+   "log": []
+  },
+  "update fractional radius": {
+   "error": "Service radius must be a whole number from 1 to 100 km.",
+   "log": []
+  },
+  "update bad latitude": {
+   "error": "Latitude must be between -90 and 90.",
+   "log": []
+  },
+  "update bad longitude": {
+   "error": "Longitude must be between -180 and 180.",
+   "log": []
+  },
+  "update someone else's profile": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "update in the wrong account mode": {
+   "error": "Add the freelancer role before updating this professional profile.",
+   "log": []
+  },
+  "update missing profile": {
+   "error": "Profile not found.",
+   "log": []
+  },
+  "update anonymous": {
+   "error": "Authentication required.",
+   "log": []
+  },
+  "avatar upload url": {
+   "result": "https://fixture.invalid/upload",
+   "log": [
+    [
+     "uploadUrl"
+    ]
+   ]
+  },
+  "avatar upload url anonymous": {
+   "error": "Authentication required",
+   "log": []
+  },
+  "cover upload url": {
+   "result": "https://fixture.invalid/upload",
+   "log": [
+    [
+     "uploadUrl"
+    ]
+   ]
+  },
+  "cover upload url anonymous": {
+   "error": "Authentication required",
+   "log": []
+  },
+  "save avatar": {
+   "result": "https://fixture.invalid/storage/file",
+   "log": [
+    [
+     "insert",
+     "fileAssets",
+     {
+      "storageId": "file",
+      "ownerId": "seller",
+      "purpose": "avatar",
+      "contentType": "image/png",
+      "fileSize": 2048,
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "fileAssets-new-0",
+     {
+      "publicUrl": "https://fixture.invalid/storage/file",
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "p1",
+     {
+      "avatarUrl": "https://fixture.invalid/storage/file",
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "save avatar wrong type": {
+   "error": "Upload a JPG, PNG or WebP profile image.",
+   "log": []
+  },
+  "save avatar too large": {
+   "error": "The uploaded file must be smaller than 5 MB.",
+   "log": []
+  },
+  "save avatar already attached": {
+   "error": "This uploaded file has already been attached.",
+   "log": []
+  },
+  "save avatar of another account": {
+   "error": "This uploaded file belongs to another account.",
+   "log": []
+  },
+  "save avatar without url": {
+   "error": "Failed to get storage URL",
+   "log": [
+    [
+     "insert",
+     "fileAssets",
+     {
+      "storageId": "file",
+      "ownerId": "seller",
+      "purpose": "avatar",
+      "contentType": "image/png",
+      "fileSize": 2048,
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "save avatar on someone else's profile": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "save avatar missing profile": {
+   "error": "Profile not found.",
+   "log": []
+  },
+  "save cover": {
+   "result": "https://fixture.invalid/storage/file",
+   "log": [
+    [
+     "insert",
+     "fileAssets",
+     {
+      "storageId": "file",
+      "ownerId": "plumber",
+      "purpose": "cover",
+      "contentType": "image/png",
+      "fileSize": 8388608,
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "fileAssets-new-0",
+     {
+      "publicUrl": "https://fixture.invalid/storage/file",
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "l1",
+     {
+      "coverImageUrl": "https://fixture.invalid/storage/file",
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "save cover too large": {
+   "error": "The uploaded file must be smaller than 10 MB.",
+   "log": []
+  },
+  "save cover wrong account mode": {
+   "error": "Add the local professional role before updating this profile cover.",
+   "log": []
+  },
+  "payout account by server": {
+   "result": "p1",
+   "log": [
+    [
+     "patch",
+     "p1",
+     {
+      "stripeAccountId": "acct_new",
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "payout account picks the first of two profiles": {
+   "result": "p1",
+   "log": [
+    [
+     "patch",
+     "p1",
+     {
+      "stripeAccountId": "acct_new",
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "payout account by signed-in owner": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "payout account wrong secret": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "payout account without profile": {
+   "error": "Freelancer profile not found",
+   "log": []
+  },
+  "onboarding complete by server": {
+   "result": "p1",
+   "log": [
+    [
+     "patch",
+     "p1",
+     {
+      "stripeOnboardingComplete": true,
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "onboarding complete without secret": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "onboarding complete without profile": {
+   "error": "Freelancer profile not found",
+   "log": []
+  },
+  "reviews public only": {
+   "result": [
+    {
+     "_id": "r1",
+     "_creationTime": 2,
+     "reviewerRole": "client",
+     "overallRating": 5,
+     "qualityRating": 5,
+     "content": "Great work",
+     "createdAt": 3,
+     "updatedAt": 3,
+     "reviewerName": "reviewer",
+     "reviewerAvatar": "/a.png"
+    },
+    {
+     "_id": "r3",
+     "_creationTime": 2,
+     "reviewerRole": "client",
+     "overallRating": 3,
+     "qualityRating": 5,
+     "content": "Great work",
+     "createdAt": 3,
+     "updatedAt": 3,
+     "reviewerName": null,
+     "reviewerAvatar": null
+    }
+   ],
+   "log": []
+  },
+  "reviews limit": {
+   "result": [
+    {
+     "_id": "r1",
+     "_creationTime": 2,
+     "reviewerRole": "client",
+     "overallRating": 5,
+     "qualityRating": 5,
+     "content": "Great work",
+     "createdAt": 3,
+     "updatedAt": 3,
+     "reviewerName": "reviewer",
+     "reviewerAvatar": "/a.png"
+    },
+    {
+     "_id": "r2",
+     "_creationTime": 2,
+     "reviewerRole": "client",
+     "overallRating": 5,
+     "qualityRating": 5,
+     "content": "Great work",
+     "createdAt": 3,
+     "updatedAt": 3,
+     "reviewerName": "reviewer",
+     "reviewerAvatar": "/a.png"
+    }
+   ],
+   "log": []
+  },
+  "reviews limit clamps": {
+   "result": [
+    {
+     "_id": "r1",
+     "_creationTime": 2,
+     "reviewerRole": "client",
+     "overallRating": 5,
+     "qualityRating": 5,
+     "content": "Great work",
+     "createdAt": 3,
+     "updatedAt": 3,
+     "reviewerName": "reviewer",
+     "reviewerAvatar": "/a.png"
+    }
+   ],
+   "log": []
+  },
+  "reviews of a private profile": {
+   "result": [],
+   "log": []
+  },
+  "internal profile lookup": {
+   "result": {
+    "_id": "p1",
+    "_table": "freelancerProfiles",
+    "_creationTime": 1,
+    "userId": "seller",
+    "tenantId": "tenant-a",
+    "providerRole": "freelancer",
+    "workType": "remote",
+    "status": "active",
+    "profileVisibility": "public",
+    "displayName": "Ada Writer",
+    "slug": "ada-writer",
+    "bio": "Technical writer for developer tools",
+    "skills": [
+     "Docs",
+     "API"
+    ],
+    "locale": "en",
+    "ratingAverage": 4.5,
+    "createdAt": 1,
+    "updatedAt": 1,
+    "stripeAccountId": "acct_private",
+    "creditBalance": 7,
+    "totalEarnings": 900
+   },
+   "log": []
+  },
+  "backfill slugs as admin": {
+   "result": {
+    "updated": 2,
+    "scanned": 3,
+    "hasMore": false
+   },
+   "log": [
+    [
+     "patch",
+     "p1",
+     {
+      "slug": "ada-writer-4fzz",
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "p2",
+     {
+      "slug": "ada-writer-4fzz",
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "backfill slugs by server": {
+   "result": {
+    "updated": 1,
+    "scanned": 1,
+    "hasMore": false
+   },
+   "log": [
+    [
+     "patch",
+     "p1",
+     {
+      "slug": "n-code-n-me",
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "backfill slugs as member": {
+   "error": "Admin access required.",
+   "log": []
+  },
+  "backfill slugs wrong secret": {
+   "error": "Unauthorized.",
+   "log": []
+  }
  }
 }
