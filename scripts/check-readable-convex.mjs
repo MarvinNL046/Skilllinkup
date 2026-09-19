@@ -462,13 +462,16 @@ suites["convex/marketplace/leads.ts"] = () => {
     ["paid exclusive claim costs double", world({ request: { budgetIndication: "> €2,000" } }, []), "plumber", "claimLead", exclusive, { paidLeads: true }],
     ["paid claim with too few credits", world({ profile: { creditBalance: 1 } }), "plumber", "claimLead", shared, paid],
     ["paid claim with missing balance", world({ profile: { creditBalance: undefined } }), "plumber", "claimLead", shared, paid],
-    ["credits added by server", world(), null, "addCredits", { freelancerUserId: "plumber", credits: 10, stripeSessionId: "cs_1", description: "Popular package", serverSecret: SECRET }],
-    ["credits added twice for the same session", world({}, [{ _id: "t1", _table: "creditTransactions", freelancerId: "plumber", amount: 10, type: "purchase", referenceId: "cs_1" }]), null, "addCredits", { freelancerUserId: "plumber", credits: 10, stripeSessionId: "cs_1", description: "Popular package", serverSecret: SECRET }],
-    ["negative credits are accepted", world(), null, "addCredits", { freelancerUserId: "plumber", credits: -4, stripeSessionId: "cs_2", description: "Adjustment", serverSecret: SECRET }],
-    ["credits to missing balance", world({ profile: { creditBalance: undefined } }), null, "addCredits", { freelancerUserId: "plumber", credits: 5, stripeSessionId: "cs_3", description: "Starter", serverSecret: SECRET }],
-    ["credits added without profile", localPeople(), null, "addCredits", { freelancerUserId: "stranger", credits: 5, stripeSessionId: "cs_4", description: "Starter", serverSecret: SECRET }],
-    ["credits by signed-in user", world(), "plumber", "addCredits", { freelancerUserId: "plumber", credits: 5, stripeSessionId: "cs_5", description: "Starter" }],
-    ["credits wrong secret", world(), null, "addCredits", { freelancerUserId: "plumber", credits: 5, stripeSessionId: "cs_6", description: "Starter", serverSecret: "wrong" }],
+    // Credit top-up was deliberately changed on 2026-09-19 (verified, idempotent,
+    // gated). These scenarios were re-recorded from the new implementation.
+    ["top-up blocked during beta", world(), null, "addCredits", { freelancerUserId: "plumber", packageId: "popular", stripeSessionId: "cs_test_a1B2c3D4e5", paymentStatus: "paid", amountTotalCents: 4500, currency: "eur", serverSecret: SECRET }],
+    ["top-up wrong secret", world(), null, "addCredits", { ...{ freelancerUserId: "plumber", packageId: "popular", stripeSessionId: "cs_test_a1B2c3D4e5", paymentStatus: "paid", amountTotalCents: 4500, currency: "eur", serverSecret: SECRET }, serverSecret: "wrong" }],
+    ["top-up by signed-in user", world(), "plumber", "addCredits", { ...{ freelancerUserId: "plumber", packageId: "popular", stripeSessionId: "cs_test_a1B2c3D4e5", paymentStatus: "paid", amountTotalCents: 4500, currency: "eur", serverSecret: SECRET }, serverSecret: undefined }],
+    ["paid: top-up credits the package", world(), null, "addCredits", { freelancerUserId: "plumber", packageId: "popular", stripeSessionId: "cs_test_a1B2c3D4e5", paymentStatus: "paid", amountTotalCents: 4500, currency: "eur", serverSecret: SECRET }, { livePayments: true }],
+    ["paid: top-up replay credits nothing", world({}, [{ _id: "purchase", _table: "creditPurchases", stripeSessionId: "cs_test_a1B2c3D4e5", freelancerUserId: "plumber", packageId: "popular", credits: 10 }]), null, "addCredits", { freelancerUserId: "plumber", packageId: "popular", stripeSessionId: "cs_test_a1B2c3D4e5", paymentStatus: "paid", amountTotalCents: 4500, currency: "eur", serverSecret: SECRET }, { livePayments: true }],
+    ["paid: top-up with wrong amount", world(), null, "addCredits", { ...{ freelancerUserId: "plumber", packageId: "popular", stripeSessionId: "cs_test_a1B2c3D4e5", paymentStatus: "paid", amountTotalCents: 4500, currency: "eur", serverSecret: SECRET }, amountTotalCents: 4499 }, { livePayments: true }],
+    ["paid: top-up unpaid", world(), null, "addCredits", { ...{ freelancerUserId: "plumber", packageId: "popular", stripeSessionId: "cs_test_a1B2c3D4e5", paymentStatus: "paid", amountTotalCents: 4500, currency: "eur", serverSecret: SECRET }, paymentStatus: "unpaid" }, { livePayments: true }],
+    ["paid: top-up without profile", localPeople(), null, "addCredits", { ...{ freelancerUserId: "plumber", packageId: "popular", stripeSessionId: "cs_test_a1B2c3D4e5", paymentStatus: "paid", amountTotalCents: 4500, currency: "eur", serverSecret: SECRET }, freelancerUserId: "stranger" }, { livePayments: true }],
   ];
 };
 

@@ -74,6 +74,7 @@ scripts/verify-*.mjs
 !scripts/check-security-hardening.mjs
 !scripts/check-error-reporting.mjs
 !scripts/check-readable-convex.mjs
+!scripts/check-credit-top-up.mjs
 !scripts/verify-environment.mjs
 !scripts/verify-hosted-release.mjs
 

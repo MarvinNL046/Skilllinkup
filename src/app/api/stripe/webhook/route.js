@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../../../../convex/_generated/api";
+import { creditPurchaseFromSession, isRejectedCreditPurchase } from "@/lib/creditPurchaseEvent.mjs";
+import { formatErrorLog, sanitizeErrorReport } from "@/lib/errorReport.mjs";
 
 // ---------------------------------------------------------------------------
 // POST /api/stripe/webhook
@@ -288,36 +290,31 @@ async function handleCheckoutSessionCompleted(session) {
 // ---------------------------------------------------------------------------
 
 async function handleCreditPurchase(session) {
-  const { credits, freelancerUserId, packageId } = session.metadata || {};
-
-  if (!credits || !freelancerUserId) {
-    console.error(
-      "[stripe/webhook] Credit purchase missing metadata:",
-      session.metadata
-    );
-    return;
-  }
-
-  const creditsNum = parseInt(credits, 10);
-  if (!creditsNum || creditsNum <= 0) {
-    console.error("[stripe/webhook] Invalid credits value:", credits);
+  const parsed = creditPurchaseFromSession(session);
+  if (!parsed.ok) {
+    console.error(formatErrorLog("server", sanitizeErrorReport({ message: `Credit purchase ignored: ${parsed.reason}`, source: "stripe-webhook", path: "/api/stripe/webhook" }), process.env));
     return;
   }
 
   try {
-    await convex.mutation(api.marketplace.leads.addCredits, {
-      freelancerUserId,
-      credits: creditsNum,
-      stripeSessionId: session.id,
-      description: `Purchased ${creditsNum} credits (${packageId} package)`,
+    const result = await convex.mutation(api.marketplace.leads.addCredits, {
+      ...parsed.purchase,
       serverSecret: SERVER_SECRET,
     });
-
     console.log(
-      `[stripe/webhook] Added ${creditsNum} credits to user ${freelancerUserId} (session: ${session.id})`
+      `[stripe/webhook] Credit purchase ${result.alreadyProcessed ? "already processed" : "credited"}: ${result.credits} credits (session: ${session.id})`
     );
   } catch (err) {
-    console.error("[stripe/webhook] Failed to add credits:", err);
+    // A rejected purchase (wrong amount, unpaid, unknown package, other buyer) is
+    // final: log it and acknowledge, so Stripe does not retry something that must
+    // never be credited. Anything else is transient and is rethrown, which makes
+    // the webhook fail and Stripe retry. Retries are safe: the session id is the
+    // idempotency key in the backend.
+    if (isRejectedCreditPurchase(err)) {
+      console.error(formatErrorLog("server", sanitizeErrorReport({ message: `Credit purchase rejected: ${err.data.reason}`, source: "stripe-webhook", path: "/api/stripe/webhook" }), process.env));
+      return;
+    }
+    throw err;
   }
 }
 
