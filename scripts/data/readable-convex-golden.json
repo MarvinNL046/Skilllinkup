@@ -444,5 +444,2047 @@
    "error": "Resolving a paid-order dispute is unavailable during the free private beta. No platform payment or credit movement is active.",
    "log": []
   }
+ },
+ "convex/marketplace/orders.ts": {
+  "create wrong secret": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "create blocked during beta": {
+   "error": "Paid order creation is unavailable during the free private beta. No platform payment or credit movement is active.",
+   "log": []
+  },
+  "beta order success": {
+   "result": {
+    "orderId": "orders-new-0"
+   },
+   "log": [
+    [
+     "insert",
+     "orders",
+     {
+      "tenantId": "tenant-a",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderType": "gig",
+      "clientId": "buyer",
+      "freelancerId": "profile",
+      "gigId": "gig",
+      "gigPackageId": "package",
+      "clientRequestId": "purchase-intent-0001",
+      "title": "Website design - Basic",
+      "description": "Website design",
+      "amount": 100,
+      "platformFee": 0,
+      "freelancerEarnings": 100,
+      "currency": "EUR",
+      "deliveryDeadline": 1800259200000,
+      "revisionCount": 1,
+      "revisionsUsed": 0,
+      "deliveryVersion": 0,
+      "status": "active",
+      "escrowStatus": "beta_no_payment",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "conversations",
+     {
+      "tenantId": "tenant-a",
+      "contextType": "order",
+      "contextTitle": "Website design",
+      "contextHref": "/orders/orders-new-0",
+      "orderId": "orders-new-0",
+      "freelancerProfileId": "profile",
+      "gigId": "gig",
+      "participant1": "buyer",
+      "participant2": "seller",
+      "status": "active",
+      "unreadCount1": 0,
+      "unreadCount2": 0,
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendOrderConfirmation",
+     {
+      "clientEmail": "buyer@example.invalid",
+      "clientName": "buyer",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Website design - Basic",
+      "amount": 100,
+      "currency": "EUR",
+      "deliveryDays": 3,
+      "orderId": "orders-new-0"
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendNewOrderNotification",
+     {
+      "freelancerEmail": "seller@example.invalid",
+      "freelancerName": "Seller",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Website design - Basic",
+      "amount": 100,
+      "currency": "EUR",
+      "deliveryDays": 3,
+      "orderId": "orders-new-0"
+     }
+    ],
+    [
+     "insert",
+     "messages",
+     {
+      "conversationId": "conversations-new-0",
+      "content": "Private beta order started: Website design",
+      "messageType": "system",
+      "isRead": false,
+      "createdAt": 1800000000000
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "seller",
+      "type": "order_placed",
+      "title": "New private beta order",
+      "body": "buyer started Basic for Website design.",
+      "link": "/orders/orders-new-0",
+      "metadata": {
+       "orderId": "orders-new-0",
+       "gigId": "gig"
+      }
+     }
+    ]
+   ]
+  },
+  "beta order with package currency and no revisions": {
+   "result": {
+    "orderId": "orders-new-0"
+   },
+   "log": [
+    [
+     "insert",
+     "orders",
+     {
+      "tenantId": "tenant-a",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderType": "gig",
+      "clientId": "buyer",
+      "freelancerId": "profile",
+      "gigId": "gig",
+      "gigPackageId": "package",
+      "clientRequestId": "purchase-intent-0001",
+      "title": "Website design - Basic",
+      "description": "Website design",
+      "amount": 100,
+      "platformFee": 0,
+      "freelancerEarnings": 100,
+      "currency": "USD",
+      "deliveryDeadline": 1800259200000,
+      "revisionsUsed": 0,
+      "deliveryVersion": 0,
+      "status": "active",
+      "escrowStatus": "beta_no_payment",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "conversations",
+     {
+      "tenantId": "tenant-a",
+      "contextType": "order",
+      "contextTitle": "Website design",
+      "contextHref": "/orders/orders-new-0",
+      "orderId": "orders-new-0",
+      "freelancerProfileId": "profile",
+      "gigId": "gig",
+      "participant1": "buyer",
+      "participant2": "seller",
+      "status": "active",
+      "unreadCount1": 0,
+      "unreadCount2": 0,
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendOrderConfirmation",
+     {
+      "clientEmail": "buyer@example.invalid",
+      "clientName": "buyer",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Website design - Basic",
+      "amount": 100,
+      "currency": "USD",
+      "deliveryDays": 3,
+      "orderId": "orders-new-0"
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendNewOrderNotification",
+     {
+      "freelancerEmail": "seller@example.invalid",
+      "freelancerName": "Seller",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Website design - Basic",
+      "amount": 100,
+      "currency": "USD",
+      "deliveryDays": 3,
+      "orderId": "orders-new-0"
+     }
+    ],
+    [
+     "insert",
+     "messages",
+     {
+      "conversationId": "conversations-new-0",
+      "content": "Private beta order started: Website design",
+      "messageType": "system",
+      "isRead": false,
+      "createdAt": 1800000000000
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "seller",
+      "type": "order_placed",
+      "title": "New private beta order",
+      "body": "buyer started Basic for Website design.",
+      "link": "/orders/orders-new-0",
+      "metadata": {
+       "orderId": "orders-new-0",
+       "gigId": "gig"
+      }
+     }
+    ]
+   ]
+  },
+  "beta order invalid request id": {
+   "error": "Invalid order request ID.",
+   "log": []
+  },
+  "beta order anonymous": {
+   "error": "Authentication required.",
+   "log": []
+  },
+  "beta order wrong context": {
+   "error": "Switch to the client · online account mode before buying a service.",
+   "log": []
+  },
+  "beta order inactive service": {
+   "error": "This service is not available.",
+   "log": []
+  },
+  "beta order foreign package": {
+   "error": "The selected package does not belong to this service.",
+   "log": []
+  },
+  "beta order inactive profile": {
+   "error": "The freelancer profile is not available.",
+   "log": []
+  },
+  "beta order private profile": {
+   "error": "This freelancer is not accepting new orders.",
+   "log": []
+  },
+  "beta order unavailable profile": {
+   "error": "This freelancer is not accepting new orders.",
+   "log": []
+  },
+  "beta order seller in other workspace": {
+   "error": "The freelancer account belongs to another workspace.",
+   "log": []
+  },
+  "beta order bad currency": {
+   "error": "The selected package needs a valid currency.",
+   "log": []
+  },
+  "beta order bad price": {
+   "error": "The selected package needs to be updated before ordering.",
+   "log": []
+  },
+  "beta order bad delivery days": {
+   "error": "The selected package needs to be updated before ordering.",
+   "log": []
+  },
+  "beta order retry returns existing": {
+   "result": {
+    "orderId": "order"
+   },
+   "log": []
+  },
+  "beta order request id reused for other package": {
+   "error": "This order request ID was already used for another package.",
+   "log": []
+  },
+  "beta order legacy caller reuses active order": {
+   "result": {
+    "orderId": "order"
+   },
+   "log": []
+  },
+  "beta order legacy caller after completion": {
+   "result": {
+    "orderId": "orders-new-1"
+   },
+   "log": [
+    [
+     "insert",
+     "orders",
+     {
+      "tenantId": "tenant-a",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderType": "gig",
+      "clientId": "buyer",
+      "freelancerId": "profile",
+      "gigId": "gig",
+      "gigPackageId": "package",
+      "title": "Website design - Basic",
+      "description": "Website design",
+      "amount": 100,
+      "platformFee": 0,
+      "freelancerEarnings": 100,
+      "currency": "EUR",
+      "deliveryDeadline": 1800259200000,
+      "revisionCount": 1,
+      "revisionsUsed": 0,
+      "deliveryVersion": 0,
+      "status": "active",
+      "escrowStatus": "beta_no_payment",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "conversations",
+     {
+      "tenantId": "tenant-a",
+      "contextType": "order",
+      "contextTitle": "Website design",
+      "contextHref": "/orders/orders-new-1",
+      "orderId": "orders-new-1",
+      "freelancerProfileId": "profile",
+      "gigId": "gig",
+      "participant1": "buyer",
+      "participant2": "seller",
+      "status": "active",
+      "unreadCount1": 0,
+      "unreadCount2": 0,
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendOrderConfirmation",
+     {
+      "clientEmail": "buyer@example.invalid",
+      "clientName": "buyer",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Website design - Basic",
+      "amount": 100,
+      "currency": "EUR",
+      "deliveryDays": 3,
+      "orderId": "orders-new-1"
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendNewOrderNotification",
+     {
+      "freelancerEmail": "seller@example.invalid",
+      "freelancerName": "Seller",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Website design - Basic",
+      "amount": 100,
+      "currency": "EUR",
+      "deliveryDays": 3,
+      "orderId": "orders-new-1"
+     }
+    ],
+    [
+     "insert",
+     "messages",
+     {
+      "conversationId": "conversations-new-0",
+      "content": "Private beta order started: Website design",
+      "messageType": "system",
+      "isRead": false,
+      "createdAt": 1800000000000
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "seller",
+      "type": "order_placed",
+      "title": "New private beta order",
+      "body": "buyer started Basic for Website design.",
+      "link": "/orders/orders-new-1",
+      "metadata": {
+       "orderId": "orders-new-1",
+       "gigId": "gig"
+      }
+     }
+    ]
+   ]
+  },
+  "payment intent lookup found": {
+   "result": {
+    "_id": "order",
+    "_table": "orders",
+    "tenantId": "tenant-a",
+    "clientId": "buyer",
+    "freelancerId": "profile",
+    "orderType": "gig",
+    "gigId": "gig",
+    "gigPackageId": "package",
+    "status": "active",
+    "escrowStatus": "beta_no_payment",
+    "title": "Website design - Basic",
+    "orderNumber": "BETA-TEST",
+    "amount": 100,
+    "freelancerEarnings": 100,
+    "currency": "EUR",
+    "revisionCount": 1,
+    "revisionsUsed": 0,
+    "createdAt": 5,
+    "stripePaymentIntentId": "pi_1"
+   },
+   "log": []
+  },
+  "payment intent lookup missing": {
+   "result": null,
+   "log": []
+  },
+  "payment intent lookup without secret": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "stripe payment update blocked": {
+   "error": "Stripe payment reconciliation is unavailable during the free private beta. No platform payment or credit movement is active.",
+   "log": []
+  },
+  "stripe payment update wrong secret": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "ledger entry blocked": {
+   "error": "Payment ledger creation is unavailable during the free private beta. No platform payment or credit movement is active.",
+   "log": []
+  },
+  "orders for client": {
+   "result": [
+    {
+     "_id": "order",
+     "_table": "orders",
+     "tenantId": "tenant-a",
+     "clientId": "buyer",
+     "freelancerId": "profile",
+     "orderType": "gig",
+     "gigId": "gig",
+     "gigPackageId": "package",
+     "status": "active",
+     "escrowStatus": "beta_no_payment",
+     "title": "Website design - Basic",
+     "orderNumber": "BETA-TEST",
+     "amount": 100,
+     "freelancerEarnings": 100,
+     "currency": "EUR",
+     "revisionCount": 1,
+     "revisionsUsed": 0,
+     "createdAt": 5,
+     "remainingRevisions": 1,
+     "deliveryVersion": 0,
+     "clientName": "buyer",
+     "freelancerName": "Seller",
+     "freelancerUserId": "seller"
+    },
+    {
+     "_id": "order-2",
+     "_table": "orders",
+     "tenantId": "tenant-a",
+     "clientId": "buyer",
+     "freelancerId": "profile",
+     "orderType": "gig",
+     "gigId": "gig",
+     "gigPackageId": "package",
+     "status": "active",
+     "escrowStatus": "beta_no_payment",
+     "title": "Website design - Basic",
+     "orderNumber": "BETA-TEST",
+     "amount": 100,
+     "freelancerEarnings": 100,
+     "currency": "EUR",
+     "revisionCount": 1,
+     "revisionsUsed": 1,
+     "createdAt": 9,
+     "deliveryVersion": 2,
+     "remainingRevisions": 0,
+     "clientName": "buyer",
+     "freelancerName": "Seller",
+     "freelancerUserId": "seller"
+    }
+   ],
+   "log": []
+  },
+  "orders for provider with limit": {
+   "result": [
+    {
+     "_id": "order",
+     "_table": "orders",
+     "tenantId": "tenant-a",
+     "clientId": "buyer",
+     "freelancerId": "profile",
+     "orderType": "gig",
+     "gigId": "gig",
+     "gigPackageId": "package",
+     "status": "active",
+     "escrowStatus": "beta_no_payment",
+     "title": "Website design - Basic",
+     "orderNumber": "BETA-TEST",
+     "amount": 100,
+     "freelancerEarnings": 100,
+     "currency": "EUR",
+     "revisionCount": 1,
+     "revisionsUsed": 0,
+     "createdAt": 5,
+     "remainingRevisions": 1,
+     "deliveryVersion": 0,
+     "clientName": "buyer",
+     "freelancerName": "Seller",
+     "freelancerUserId": "seller"
+    }
+   ],
+   "log": []
+  },
+  "orders limit clamps": {
+   "result": [
+    {
+     "_id": "order",
+     "_table": "orders",
+     "tenantId": "tenant-a",
+     "clientId": "buyer",
+     "freelancerId": "profile",
+     "orderType": "gig",
+     "gigId": "gig",
+     "gigPackageId": "package",
+     "status": "active",
+     "escrowStatus": "beta_no_payment",
+     "title": "Website design - Basic",
+     "orderNumber": "BETA-TEST",
+     "amount": 100,
+     "freelancerEarnings": 100,
+     "currency": "EUR",
+     "revisionCount": 1,
+     "revisionsUsed": 0,
+     "createdAt": 5,
+     "remainingRevisions": 1,
+     "deliveryVersion": 0,
+     "clientName": "buyer",
+     "freelancerName": "Seller",
+     "freelancerUserId": "seller"
+    }
+   ],
+   "log": []
+  },
+  "orders for someone else": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "order for client": {
+   "result": {
+    "_id": "order",
+    "_table": "orders",
+    "tenantId": "tenant-a",
+    "clientId": "buyer",
+    "freelancerId": "profile",
+    "orderType": "gig",
+    "gigId": "gig",
+    "gigPackageId": "package",
+    "status": "active",
+    "escrowStatus": "beta_no_payment",
+    "title": "Website design - Basic",
+    "orderNumber": "BETA-TEST",
+    "amount": 100,
+    "freelancerEarnings": 100,
+    "currency": "EUR",
+    "revisionCount": 1,
+    "revisionsUsed": 0,
+    "createdAt": 5,
+    "remainingRevisions": 1,
+    "deliveryVersion": 0,
+    "clientName": "buyer",
+    "freelancerName": "Seller",
+    "freelancerUserId": "seller"
+   },
+   "log": []
+  },
+  "order for provider": {
+   "result": {
+    "_id": "order",
+    "_table": "orders",
+    "tenantId": "tenant-a",
+    "clientId": "buyer",
+    "freelancerId": "profile",
+    "orderType": "gig",
+    "gigId": "gig",
+    "gigPackageId": "package",
+    "status": "active",
+    "escrowStatus": "beta_no_payment",
+    "title": "Website design - Basic",
+    "orderNumber": "BETA-TEST",
+    "amount": 100,
+    "freelancerEarnings": 100,
+    "currency": "EUR",
+    "revisionCount": 1,
+    "revisionsUsed": 0,
+    "createdAt": 5,
+    "remainingRevisions": 1,
+    "deliveryVersion": 0,
+    "clientName": "buyer",
+    "freelancerName": "Seller",
+    "freelancerUserId": "seller"
+   },
+   "log": []
+  },
+  "order for outsider": {
+   "result": null,
+   "log": []
+  },
+  "order in other workspace": {
+   "result": null,
+   "log": []
+  },
+  "order missing": {
+   "result": null,
+   "log": []
+  },
+  "order anonymous": {
+   "error": "Authentication required.",
+   "log": []
+  },
+  "deliver success": {
+   "result": {
+    "success": true
+   },
+   "log": [
+    [
+     "patch",
+     "order",
+     {
+      "status": "delivered",
+      "deliveryVersion": 1,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "buyer",
+      "type": "order_delivered",
+      "title": "Work submitted for review",
+      "body": "Website design - Basic is ready for your review.",
+      "link": "/orders/order",
+      "metadata": {
+       "orderId": "order",
+       "deliveryVersion": 1
+      }
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendOrderDelivered",
+     {
+      "clientEmail": "buyer@example.invalid",
+      "clientName": "buyer",
+      "orderNumber": "BETA-TEST",
+      "orderTitle": "Website design - Basic",
+      "orderId": "order",
+      "deliveryVersion": 1
+     }
+    ]
+   ]
+  },
+  "deliver second version": {
+   "result": {
+    "success": true
+   },
+   "log": [
+    [
+     "patch",
+     "order",
+     {
+      "status": "delivered",
+      "deliveryVersion": 2,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "buyer",
+      "type": "order_delivered",
+      "title": "Work submitted for review",
+      "body": "Website design - Basic is ready for your review.",
+      "link": "/orders/order",
+      "metadata": {
+       "orderId": "order",
+       "deliveryVersion": 2
+      }
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendOrderDelivered",
+     {
+      "clientEmail": "buyer@example.invalid",
+      "clientName": "buyer",
+      "orderNumber": "BETA-TEST",
+      "orderTitle": "Website design - Basic",
+      "orderId": "order",
+      "deliveryVersion": 2
+     }
+    ]
+   ]
+  },
+  "deliver without files": {
+   "error": "Add at least one file or delivery note before submitting the work.",
+   "log": []
+  },
+  "deliver as client": {
+   "error": "Access denied: only the freelancer can deliver this order",
+   "log": []
+  },
+  "deliver already delivered": {
+   "result": {
+    "success": true
+   },
+   "log": []
+  },
+  "deliver completed order": {
+   "error": "Invalid status transition: completed -> delivered",
+   "log": []
+  },
+  "deliver local order": {
+   "error": "Add the local professional role before updating an order.",
+   "log": []
+  },
+  "deliver paid order": {
+   "error": "Changing a paid order is unavailable during the free private beta. No platform payment or credit movement is active.",
+   "log": []
+  },
+  "deliver disputed order": {
+   "error": "This order has an open dispute. Support must resolve it before work can change.",
+   "log": []
+  },
+  "deliver missing order": {
+   "error": "Order not found",
+   "log": []
+  },
+  "approve success": {
+   "result": {
+    "success": true
+   },
+   "log": [
+    [
+     "cancelJob",
+     "release-job"
+    ],
+    [
+     "patch",
+     "order",
+     {
+      "status": "completed",
+      "completedAt": 1800000000000,
+      "updatedAt": 1800000000000,
+      "autoReleaseJobId": "__undefined__"
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendOrderCompleted",
+     {
+      "freelancerEmail": "seller@example.invalid",
+      "freelancerName": "Seller",
+      "orderNumber": "BETA-TEST",
+      "orderTitle": "Website design - Basic",
+      "amount": 100,
+      "currency": "EUR",
+      "orderId": "order"
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "seller",
+      "type": "order_completed",
+      "title": "Order completed",
+      "body": "Website design - Basic was approved by the client.",
+      "link": "/orders/order",
+      "metadata": {
+       "orderId": "order"
+      }
+     }
+    ]
+   ]
+  },
+  "approve with linked project": {
+   "result": {
+    "success": true
+   },
+   "log": [
+    [
+     "patch",
+     "project",
+     {
+      "status": "completed",
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "order",
+     {
+      "status": "completed",
+      "completedAt": 1800000000000,
+      "updatedAt": 1800000000000,
+      "autoReleaseJobId": "__undefined__"
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendOrderCompleted",
+     {
+      "freelancerEmail": "seller@example.invalid",
+      "freelancerName": "Seller",
+      "orderNumber": "BETA-TEST",
+      "orderTitle": "Website design - Basic",
+      "amount": 100,
+      "currency": "EUR",
+      "orderId": "order"
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "seller",
+      "type": "order_completed",
+      "title": "Order completed",
+      "body": "Website design - Basic was approved by the client.",
+      "link": "/orders/order",
+      "metadata": {
+       "orderId": "order"
+      }
+     }
+    ]
+   ]
+  },
+  "approve already completed": {
+   "result": {
+    "success": true
+   },
+   "log": []
+  },
+  "approve before delivery": {
+   "error": "Invalid status transition: active -> completed",
+   "log": []
+  },
+  "approve as provider": {
+   "error": "Access denied: only the client can approve this order",
+   "log": []
+  },
+  "approve local order": {
+   "error": "Switch to the client · local account mode before updating an order.",
+   "log": []
+  },
+  "approve paid order": {
+   "error": "Changing a paid order is unavailable during the free private beta. No platform payment or credit movement is active.",
+   "log": []
+  },
+  "revision success as participant one": {
+   "result": {
+    "success": true,
+    "revisionsUsed": 1
+   },
+   "log": [
+    [
+     "patch",
+     "order",
+     {
+      "status": "revision_requested",
+      "revisionsUsed": 1,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "messages",
+     {
+      "conversationId": "conversation",
+      "senderId": "buyer",
+      "content": "Please adjust the header spacing and the footer links.",
+      "messageType": "order_update",
+      "isRead": false,
+      "createdAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "conversation",
+     {
+      "lastMessageAt": 1800000000000,
+      "lastMessagePreview": "Please adjust the header spacing and the footer links.",
+      "unreadCount2": 3,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "seller",
+      "type": "revision_requested",
+      "title": "Revision requested",
+      "body": "Website design - Basic: Please adjust the header spacing and the footer links.",
+      "link": "/orders/order",
+      "metadata": {
+       "orderId": "order"
+      }
+     }
+    ]
+   ]
+  },
+  "revision success as participant two": {
+   "result": {
+    "success": true,
+    "revisionsUsed": 1
+   },
+   "log": [
+    [
+     "patch",
+     "order",
+     {
+      "status": "revision_requested",
+      "revisionsUsed": 1,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "messages",
+     {
+      "conversationId": "conversation",
+      "senderId": "buyer",
+      "content": "Please adjust the header spacing and the footer links.",
+      "messageType": "order_update",
+      "isRead": false,
+      "createdAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "conversation",
+     {
+      "lastMessageAt": 1800000000000,
+      "lastMessagePreview": "Please adjust the header spacing and the footer links.",
+      "unreadCount1": 1,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "seller",
+      "type": "revision_requested",
+      "title": "Revision requested",
+      "body": "Website design - Basic: Please adjust the header spacing and the footer links.",
+      "link": "/orders/order",
+      "metadata": {
+       "orderId": "order"
+      }
+     }
+    ]
+   ]
+  },
+  "revision without conversation": {
+   "result": {
+    "success": true,
+    "revisionsUsed": 1
+   },
+   "log": [
+    [
+     "patch",
+     "order",
+     {
+      "status": "revision_requested",
+      "revisionsUsed": 1,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "seller",
+      "type": "revision_requested",
+      "title": "Revision requested",
+      "body": "Website design - Basic: Please adjust the header spacing and the footer links.",
+      "link": "/orders/order",
+      "metadata": {
+       "orderId": "order"
+      }
+     }
+    ]
+   ]
+  },
+  "revision long preview": {
+   "result": {
+    "success": true,
+    "revisionsUsed": 1
+   },
+   "log": [
+    [
+     "patch",
+     "order",
+     {
+      "status": "revision_requested",
+      "revisionsUsed": 1,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "messages",
+     {
+      "conversationId": "conversation",
+      "senderId": "buyer",
+      "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "messageType": "order_update",
+      "isRead": false,
+      "createdAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "conversation",
+     {
+      "lastMessageAt": 1800000000000,
+      "lastMessagePreview": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "unreadCount2": 3,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "seller",
+      "type": "revision_requested",
+      "title": "Revision requested",
+      "body": "Website design - Basic: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "link": "/orders/order",
+      "metadata": {
+       "orderId": "order"
+      }
+     }
+    ]
+   ]
+  },
+  "revision already requested": {
+   "error": "A revision has already been requested. Wait for the next delivery.",
+   "log": []
+  },
+  "revision none remaining": {
+   "error": "All included revisions have been used. Discuss any additional work with the freelancer.",
+   "log": []
+  },
+  "revision short feedback": {
+   "error": "Revision feedback must be between 10 and 3,000 characters.",
+   "log": []
+  },
+  "revision before delivery": {
+   "error": "Invalid status transition: active -> revision_requested",
+   "log": []
+  },
+  "revision as provider": {
+   "error": "Access denied: only the client can request a revision",
+   "log": []
+  },
+  "revision local order": {
+   "error": "Switch to the client · local account mode before updating an order.",
+   "log": []
+  },
+  "deliver local order in the local context": {
+   "error": "Update local service progress in the appointment workspace.",
+   "log": []
+  },
+  "approve local order in the local context": {
+   "error": "Update local service progress in the appointment workspace.",
+   "log": []
+  },
+  "requestRevision local order in the local context": {
+   "error": "Use the local appointment workspace for this order.",
+   "log": []
+  },
+  "paid: gig order uses package price and tiered fee": {
+   "result": "orders-new-0",
+   "log": [
+    [
+     "insert",
+     "orders",
+     {
+      "tenantId": "tenant-a",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderType": "gig",
+      "clientId": "buyer",
+      "freelancerId": "profile",
+      "gigId": "gig",
+      "gigPackageId": "package",
+      "title": "Website design - Basic",
+      "amount": 100,
+      "platformFee": 12,
+      "freelancerEarnings": 88,
+      "currency": "EUR",
+      "deliveryDeadline": 1800259200000,
+      "revisionsUsed": 0,
+      "status": "pending",
+      "escrowStatus": "held",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendOrderConfirmation",
+     {
+      "clientEmail": "buyer@example.invalid",
+      "clientName": "buyer",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Website design - Basic",
+      "amount": 100,
+      "currency": "EUR",
+      "deliveryDays": 3,
+      "orderId": "orders-new-0"
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendNewOrderNotification",
+     {
+      "freelancerEmail": "seller@example.invalid",
+      "freelancerName": "Seller",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Website design - Basic",
+      "amount": 88,
+      "currency": "EUR",
+      "deliveryDays": 3,
+      "orderId": "orders-new-0"
+     }
+    ]
+   ]
+  },
+  "paid: fee tier boundary at 49.99": {
+   "result": "orders-new-0",
+   "log": [
+    [
+     "insert",
+     "orders",
+     {
+      "tenantId": "tenant-a",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderType": "gig",
+      "clientId": "buyer",
+      "freelancerId": "profile",
+      "gigId": "gig",
+      "gigPackageId": "package",
+      "title": "Website design - Basic",
+      "amount": 49.99,
+      "platformFee": 7.5,
+      "freelancerEarnings": 42.49,
+      "currency": "EUR",
+      "deliveryDeadline": 1800259200000,
+      "revisionsUsed": 0,
+      "status": "pending",
+      "escrowStatus": "held",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendOrderConfirmation",
+     {
+      "clientEmail": "buyer@example.invalid",
+      "clientName": "buyer",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Website design - Basic",
+      "amount": 49.99,
+      "currency": "EUR",
+      "deliveryDays": 3,
+      "orderId": "orders-new-0"
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendNewOrderNotification",
+     {
+      "freelancerEmail": "seller@example.invalid",
+      "freelancerName": "Seller",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Website design - Basic",
+      "amount": 42.49,
+      "currency": "EUR",
+      "deliveryDays": 3,
+      "orderId": "orders-new-0"
+     }
+    ]
+   ]
+  },
+  "paid: fee tier boundary at 50": {
+   "result": "orders-new-0",
+   "log": [
+    [
+     "insert",
+     "orders",
+     {
+      "tenantId": "tenant-a",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderType": "gig",
+      "clientId": "buyer",
+      "freelancerId": "profile",
+      "gigId": "gig",
+      "gigPackageId": "package",
+      "title": "Website design - Basic",
+      "amount": 50,
+      "platformFee": 6,
+      "freelancerEarnings": 44,
+      "currency": "EUR",
+      "deliveryDeadline": 1800259200000,
+      "revisionsUsed": 0,
+      "status": "pending",
+      "escrowStatus": "held",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendOrderConfirmation",
+     {
+      "clientEmail": "buyer@example.invalid",
+      "clientName": "buyer",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Website design - Basic",
+      "amount": 50,
+      "currency": "EUR",
+      "deliveryDays": 3,
+      "orderId": "orders-new-0"
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendNewOrderNotification",
+     {
+      "freelancerEmail": "seller@example.invalid",
+      "freelancerName": "Seller",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Website design - Basic",
+      "amount": 44,
+      "currency": "EUR",
+      "deliveryDays": 3,
+      "orderId": "orders-new-0"
+     }
+    ]
+   ]
+  },
+  "paid: fee tier boundary at 500": {
+   "result": "orders-new-0",
+   "log": [
+    [
+     "insert",
+     "orders",
+     {
+      "tenantId": "tenant-a",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderType": "gig",
+      "clientId": "buyer",
+      "freelancerId": "profile",
+      "gigId": "gig",
+      "gigPackageId": "package",
+      "title": "Website design - Basic",
+      "amount": 500,
+      "platformFee": 60,
+      "freelancerEarnings": 440,
+      "currency": "EUR",
+      "deliveryDeadline": 1800259200000,
+      "revisionsUsed": 0,
+      "status": "pending",
+      "escrowStatus": "held",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendOrderConfirmation",
+     {
+      "clientEmail": "buyer@example.invalid",
+      "clientName": "buyer",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Website design - Basic",
+      "amount": 500,
+      "currency": "EUR",
+      "deliveryDays": 3,
+      "orderId": "orders-new-0"
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendNewOrderNotification",
+     {
+      "freelancerEmail": "seller@example.invalid",
+      "freelancerName": "Seller",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Website design - Basic",
+      "amount": 440,
+      "currency": "EUR",
+      "deliveryDays": 3,
+      "orderId": "orders-new-0"
+     }
+    ]
+   ]
+  },
+  "paid: fee tier boundary at 500.01": {
+   "result": "orders-new-0",
+   "log": [
+    [
+     "insert",
+     "orders",
+     {
+      "tenantId": "tenant-a",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderType": "gig",
+      "clientId": "buyer",
+      "freelancerId": "profile",
+      "gigId": "gig",
+      "gigPackageId": "package",
+      "title": "Website design - Basic",
+      "amount": 500.01,
+      "platformFee": 50,
+      "freelancerEarnings": 450.01,
+      "currency": "EUR",
+      "deliveryDeadline": 1800259200000,
+      "revisionsUsed": 0,
+      "status": "pending",
+      "escrowStatus": "held",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendOrderConfirmation",
+     {
+      "clientEmail": "buyer@example.invalid",
+      "clientName": "buyer",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Website design - Basic",
+      "amount": 500.01,
+      "currency": "EUR",
+      "deliveryDays": 3,
+      "orderId": "orders-new-0"
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendNewOrderNotification",
+     {
+      "freelancerEmail": "seller@example.invalid",
+      "freelancerName": "Seller",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Website design - Basic",
+      "amount": 450.01,
+      "currency": "EUR",
+      "deliveryDays": 3,
+      "orderId": "orders-new-0"
+     }
+    ]
+   ]
+  },
+  "paid: fee tier boundary at 33.33": {
+   "result": "orders-new-0",
+   "log": [
+    [
+     "insert",
+     "orders",
+     {
+      "tenantId": "tenant-a",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderType": "gig",
+      "clientId": "buyer",
+      "freelancerId": "profile",
+      "gigId": "gig",
+      "gigPackageId": "package",
+      "title": "Website design - Basic",
+      "amount": 33.33,
+      "platformFee": 5,
+      "freelancerEarnings": 28.33,
+      "currency": "EUR",
+      "deliveryDeadline": 1800259200000,
+      "revisionsUsed": 0,
+      "status": "pending",
+      "escrowStatus": "held",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendOrderConfirmation",
+     {
+      "clientEmail": "buyer@example.invalid",
+      "clientName": "buyer",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Website design - Basic",
+      "amount": 33.33,
+      "currency": "EUR",
+      "deliveryDays": 3,
+      "orderId": "orders-new-0"
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendNewOrderNotification",
+     {
+      "freelancerEmail": "seller@example.invalid",
+      "freelancerName": "Seller",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Website design - Basic",
+      "amount": 28.33,
+      "currency": "EUR",
+      "deliveryDays": 3,
+      "orderId": "orders-new-0"
+     }
+    ]
+   ]
+  },
+  "paid: large gig order fee tier": {
+   "result": "orders-new-0",
+   "log": [
+    [
+     "insert",
+     "orders",
+     {
+      "tenantId": "tenant-a",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderType": "gig",
+      "clientId": "buyer",
+      "freelancerId": "profile",
+      "gigId": "gig",
+      "gigPackageId": "package",
+      "title": "Website design - Basic",
+      "amount": 900,
+      "platformFee": 90,
+      "freelancerEarnings": 810,
+      "currency": "GBP",
+      "deliveryDeadline": 1800259200000,
+      "revisionsUsed": 0,
+      "status": "pending",
+      "escrowStatus": "held",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendOrderConfirmation",
+     {
+      "clientEmail": "buyer@example.invalid",
+      "clientName": "buyer",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Website design - Basic",
+      "amount": 900,
+      "currency": "GBP",
+      "deliveryDays": 3,
+      "orderId": "orders-new-0"
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendNewOrderNotification",
+     {
+      "freelancerEmail": "seller@example.invalid",
+      "freelancerName": "Seller",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Website design - Basic",
+      "amount": 810,
+      "currency": "GBP",
+      "deliveryDays": 3,
+      "orderId": "orders-new-0"
+     }
+    ]
+   ]
+  },
+  "paid: project order small fee tier": {
+   "result": "orders-new-0",
+   "log": [
+    [
+     "insert",
+     "orders",
+     {
+      "tenantId": "tenant-a",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderType": "project",
+      "clientId": "buyer",
+      "freelancerId": "profile",
+      "projectId": "project",
+      "title": "Brand site",
+      "amount": 40,
+      "platformFee": 6,
+      "freelancerEarnings": 34,
+      "currency": "USD",
+      "deliveryDeadline": 1800432000000,
+      "revisionsUsed": 0,
+      "status": "pending",
+      "escrowStatus": "held",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendOrderConfirmation",
+     {
+      "clientEmail": "buyer@example.invalid",
+      "clientName": "buyer",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Brand site",
+      "amount": 40,
+      "currency": "USD",
+      "deliveryDays": 5,
+      "orderId": "orders-new-0"
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendNewOrderNotification",
+     {
+      "freelancerEmail": "seller@example.invalid",
+      "freelancerName": "Seller",
+      "orderNumber": "ORD-20270115-4FZZZX",
+      "orderTitle": "Brand site",
+      "amount": 34,
+      "currency": "USD",
+      "deliveryDays": 5,
+      "orderId": "orders-new-0"
+     }
+    ]
+   ]
+  },
+  "paid: unsupported order type": {
+   "error": "Unsupported order type.",
+   "log": []
+  },
+  "paid: gig and project together": {
+   "error": "Order cannot reference both a gig and a project.",
+   "log": []
+  },
+  "paid: gig order without package": {
+   "error": "Gig orders require both gigId and gigPackageId.",
+   "log": []
+  },
+  "paid: project order without project": {
+   "error": "Project orders require a projectId.",
+   "log": []
+  },
+  "paid: client missing": {
+   "error": "Client not found",
+   "log": []
+  },
+  "paid: provider missing": {
+   "error": "Freelancer profile not found",
+   "log": []
+  },
+  "paid: other workspace": {
+   "error": "Client and freelancer must belong to the same tenant.",
+   "log": []
+  },
+  "paid: ordering from yourself": {
+   "error": "You cannot create an order for yourself.",
+   "log": []
+  },
+  "paid: gig of another provider": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "paid: package of another gig": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "paid: project of another client": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "paid: project without selected provider": {
+   "error": "Project order cannot be created before a freelancer is selected.",
+   "log": []
+  },
+  "paid: project with another provider": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "paid: payment reconciled from pending": {
+   "result": "order",
+   "log": [
+    [
+     "notify",
+     {
+      "userId": "buyer",
+      "type": "order_delivered",
+      "title": "Work submitted for review",
+      "body": "Website design - Basic is ready for your review.",
+      "link": "/orders/order",
+      "metadata": {
+       "orderId": "order"
+      }
+     }
+    ],
+    [
+     "patch",
+     "order",
+     {
+      "stripePaymentIntentId": "pi_1",
+      "escrowStatus": "held",
+      "status": "active",
+      "requirements": "Logo files",
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "paid: payment reconciled when already active": {
+   "result": "order",
+   "log": [
+    [
+     "notify",
+     {
+      "userId": "buyer",
+      "type": "order_delivered",
+      "title": "Work submitted for review",
+      "body": "Website design - Basic is ready for your review.",
+      "link": "/orders/order",
+      "metadata": {
+       "orderId": "order"
+      }
+     }
+    ],
+    [
+     "patch",
+     "order",
+     {
+      "stripePaymentIntentId": "pi_1",
+      "escrowStatus": "held",
+      "status": "active",
+      "requirements": "__undefined__",
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "paid: payment for completed order": {
+   "error": "Invalid status transition: completed -> active",
+   "log": []
+  },
+  "paid: payment for missing order": {
+   "error": "Order not found.",
+   "log": []
+  },
+  "paid: ledger entry": {
+   "result": "transactions-new-0",
+   "log": [
+    [
+     "insert",
+     "transactions",
+     {
+      "tenantId": "tenant-a",
+      "orderId": "order",
+      "payerId": "buyer",
+      "payeeId": "seller",
+      "amount": 100,
+      "platformFee": 12,
+      "currency": "EUR",
+      "transactionType": "payment",
+      "stripePaymentIntentId": "pi_1",
+      "status": "completed",
+      "description": "Order payment",
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "paid: ledger entry for missing order": {
+   "error": "Order not found",
+   "log": []
+  },
+  "paid: delivery schedules auto release": {
+   "result": {
+    "success": true
+   },
+   "log": [
+    [
+     "patch",
+     "order",
+     {
+      "status": "delivered",
+      "deliveryVersion": 1,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "schedule",
+     604800000,
+     "internal.marketplace.escrow.releaseToFreelancer",
+     {
+      "orderId": "order"
+     }
+    ],
+    [
+     "patch",
+     "order",
+     {
+      "autoReleaseJobId": "job"
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "buyer",
+      "type": "order_delivered",
+      "title": "Work submitted for review",
+      "body": "Website design - Basic is ready for your review.",
+      "link": "/orders/order",
+      "metadata": {
+       "orderId": "order",
+       "deliveryVersion": 1
+      }
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendOrderDelivered",
+     {
+      "clientEmail": "buyer@example.invalid",
+      "clientName": "buyer",
+      "orderNumber": "BETA-TEST",
+      "orderTitle": "Website design - Basic",
+      "orderId": "order",
+      "deliveryVersion": 1
+     }
+    ]
+   ]
+  },
+  "paid: approval releases and rewards": {
+   "result": {
+    "success": true
+   },
+   "log": [
+    [
+     "cancelJob",
+     "release-job"
+    ],
+    [
+     "patch",
+     "order",
+     {
+      "status": "completed",
+      "completedAt": 1800000000000,
+      "updatedAt": 1800000000000,
+      "autoReleaseJobId": "__undefined__"
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.marketplace.escrow.releaseToFreelancer",
+     {
+      "orderId": "order"
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.marketplace.rewards.processOrderCashback",
+     {
+      "orderId": "order"
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.marketplace.rewards.recalculateFreelancerLevel",
+     {
+      "freelancerProfileId": "profile"
+     }
+    ],
+    [
+     "schedule",
+     0,
+     "internal.lib.email.sendOrderCompleted",
+     {
+      "freelancerEmail": "seller@example.invalid",
+      "freelancerName": "Seller",
+      "orderNumber": "BETA-TEST",
+      "orderTitle": "Website design - Basic",
+      "amount": 88,
+      "currency": "EUR",
+      "orderId": "order"
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "seller",
+      "type": "order_completed",
+      "title": "Order completed",
+      "body": "Website design - Basic was approved by the client.",
+      "link": "/orders/order",
+      "metadata": {
+       "orderId": "order"
+      }
+     }
+    ]
+   ]
+  },
+  "paid: transfer recorded": {
+   "result": null,
+   "log": [
+    [
+     "patch",
+     "order",
+     {
+      "escrowStatus": "released",
+      "stripeTransferId": "tr_1",
+      "status": "completed",
+      "completedAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "paid: transfer recorded twice with same id": {
+   "result": null,
+   "log": [
+    [
+     "patch",
+     "order",
+     {
+      "escrowStatus": "released",
+      "stripeTransferId": "tr_1",
+      "status": "completed",
+      "completedAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "paid: transfer conflicts with earlier transfer": {
+   "error": "Order is already associated with a different Stripe transfer.",
+   "log": []
+  },
+  "paid: transfer completes linked project": {
+   "result": null,
+   "log": [
+    [
+     "patch",
+     "order",
+     {
+      "escrowStatus": "released",
+      "stripeTransferId": "tr_1",
+      "status": "completed",
+      "completedAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "project",
+     {
+      "status": "completed",
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "paid: transfer with cancelled project": {
+   "result": null,
+   "log": [
+    [
+     "patch",
+     "order",
+     {
+      "escrowStatus": "released",
+      "stripeTransferId": "tr_1",
+      "status": "completed",
+      "completedAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "project",
+     {
+      "status": "completed",
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "paid: transfer with mismatching project is logged": {
+   "result": null,
+   "log": [
+    [
+     "patch",
+     "order",
+     {
+      "escrowStatus": "released",
+      "stripeTransferId": "tr_1",
+      "status": "completed",
+      "completedAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "console.error",
+     "[orders] Project completion reconciliation skipped for order order: Linked project does not match this order."
+    ]
+   ]
+  },
+  "paid: transfer with missing project is logged": {
+   "result": null,
+   "log": [
+    [
+     "patch",
+     "order",
+     {
+      "escrowStatus": "released",
+      "stripeTransferId": "tr_1",
+      "status": "completed",
+      "completedAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "console.error",
+     "[orders] Project completion reconciliation skipped for order order: Linked project not found."
+    ]
+   ]
+  },
+  "paid: transfer with open project is logged": {
+   "result": null,
+   "log": [
+    [
+     "patch",
+     "order",
+     {
+      "escrowStatus": "released",
+      "stripeTransferId": "tr_1",
+      "status": "completed",
+      "completedAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "console.error",
+     "[orders] Project completion reconciliation skipped for order order: Linked project cannot complete from open."
+    ]
+   ]
+  },
+  "paid: transfer for missing order": {
+   "error": "Order not found.",
+   "log": []
+  },
+  "paid: refund recorded": {
+   "result": null,
+   "log": [
+    [
+     "patch",
+     "order",
+     {
+      "escrowStatus": "refunded",
+      "status": "cancelled",
+      "cancelledAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "internal order lookup": {
+   "result": {
+    "_id": "order",
+    "_table": "orders",
+    "tenantId": "tenant-a",
+    "clientId": "buyer",
+    "freelancerId": "profile",
+    "orderType": "gig",
+    "gigId": "gig",
+    "gigPackageId": "package",
+    "status": "active",
+    "escrowStatus": "beta_no_payment",
+    "title": "Website design - Basic",
+    "orderNumber": "BETA-TEST",
+    "amount": 100,
+    "freelancerEarnings": 100,
+    "currency": "EUR",
+    "revisionCount": 1,
+    "revisionsUsed": 0,
+    "createdAt": 5
+   },
+   "log": []
+  },
+  "transfer reconciliation blocked": {
+   "error": "Stripe transfer reconciliation is unavailable during the free private beta. No platform payment or credit movement is active.",
+   "log": []
+  },
+  "refund reconciliation blocked": {
+   "error": "Stripe refund reconciliation is unavailable during the free private beta. No platform payment or credit movement is active.",
+   "log": []
+  }
  }
 }
