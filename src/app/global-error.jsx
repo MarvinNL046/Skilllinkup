@@ -2,10 +2,12 @@
 
 import { useEffect } from "react";
 import AppErrorState from "@/components/error/AppErrorState";
+import { reportClientError } from "@/lib/reportClientError.mjs";
 
 export default function GlobalError({ error, reset }) {
   useEffect(() => {
     console.error("[Skilllinkup global error]", error);
+    reportClientError(error, { source: "global-boundary" });
   }, [error]);
 
   return (

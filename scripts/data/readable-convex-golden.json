@@ -1,0 +1,448 @@
+{
+ "convex/marketplace/disputes.ts": {
+  "list as admin": {
+   "result": [
+    {
+     "_id": "dispute",
+     "_table": "disputes",
+     "tenantId": "tenant-a",
+     "orderId": "order",
+     "status": "open"
+    },
+    {
+     "_id": "d2",
+     "_table": "disputes",
+     "tenantId": "tenant-a",
+     "orderId": "order",
+     "status": "resolved"
+    }
+   ],
+   "log": []
+  },
+  "list by status": {
+   "result": [
+    {
+     "_id": "d2",
+     "_table": "disputes",
+     "tenantId": "tenant-a",
+     "orderId": "order",
+     "status": "resolved"
+    }
+   ],
+   "log": []
+  },
+  "list as non-admin": {
+   "error": "Admin access required.",
+   "log": []
+  },
+  "getByOrder as client": {
+   "result": {
+    "_id": "dispute",
+    "_table": "disputes",
+    "tenantId": "tenant-a",
+    "orderId": "order",
+    "status": "open"
+   },
+   "log": []
+  },
+  "getByOrder as provider": {
+   "result": {
+    "_id": "dispute",
+    "_table": "disputes",
+    "tenantId": "tenant-a",
+    "orderId": "order",
+    "status": "open"
+   },
+   "log": []
+  },
+  "getByOrder as outsider": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "getByOrder as admin without dispute": {
+   "result": null,
+   "log": []
+  },
+  "getByOrder missing order": {
+   "result": null,
+   "log": []
+  },
+  "open missing order": {
+   "error": "Order not found.",
+   "log": []
+  },
+  "open wrong status": {
+   "error": "This order cannot be disputed in its current state.",
+   "log": []
+  },
+  "open short description": {
+   "error": "Describe the issue in 20 to 5,000 characters.",
+   "log": []
+  },
+  "open as outsider": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "open unauthenticated": {
+   "error": "Authentication required.",
+   "log": []
+  },
+  "open as client with auto release": {
+   "result": "disputes-new-0",
+   "log": [
+    [
+     "insert",
+     "disputes",
+     {
+      "tenantId": "tenant-a",
+      "orderId": "order",
+      "openedBy": "buyer",
+      "reason": "quality",
+      "description": "The delivered work does not match the agreed scope at all.",
+      "evidence": [
+       {
+        "note": "screenshot"
+       }
+      ],
+      "status": "open",
+      "openedAt": 1800000000000,
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "cancelJob",
+     "release-job"
+    ],
+    [
+     "patch",
+     "order",
+     {
+      "status": "disputed",
+      "escrowStatus": "beta_no_payment",
+      "autoReleaseJobId": "__undefined__",
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "open as provider on paid order": {
+   "result": "disputes-new-0",
+   "log": [
+    [
+     "insert",
+     "disputes",
+     {
+      "tenantId": "tenant-a",
+      "orderId": "order",
+      "openedBy": "seller",
+      "reason": "non_delivery",
+      "description": "The delivered work does not match the agreed scope at all.",
+      "status": "open",
+      "openedAt": 1800000000000,
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "order",
+     {
+      "status": "disputed",
+      "escrowStatus": "disputed",
+      "autoReleaseJobId": "__undefined__",
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "open duplicate": {
+   "error": "A dispute already exists for this order.",
+   "log": []
+  },
+  "open via server for provider": {
+   "result": "disputes-new-0",
+   "log": [
+    [
+     "insert",
+     "disputes",
+     {
+      "tenantId": "tenant-a",
+      "orderId": "order",
+      "openedBy": "seller",
+      "reason": "quality",
+      "description": "The delivered work does not match the agreed scope at all.",
+      "status": "open",
+      "openedAt": 1800000000000,
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "order",
+     {
+      "status": "disputed",
+      "escrowStatus": "beta_no_payment",
+      "autoReleaseJobId": "__undefined__",
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "open via server default client": {
+   "result": "disputes-new-0",
+   "log": [
+    [
+     "insert",
+     "disputes",
+     {
+      "tenantId": "tenant-a",
+      "orderId": "order",
+      "openedBy": "buyer",
+      "reason": "quality",
+      "description": "The delivered work does not match the agreed scope at all.",
+      "status": "open",
+      "openedAt": 1800000000000,
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "order",
+     {
+      "status": "disputed",
+      "escrowStatus": "beta_no_payment",
+      "autoReleaseJobId": "__undefined__",
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "open via server for outsider": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "open via server wrong secret": {
+   "error": "Unauthorized.",
+   "log": []
+  },
+  "open without tenant": {
+   "result": "disputes-new-0",
+   "log": [
+    [
+     "insert",
+     "disputes",
+     {
+      "tenantId": "tenant-a",
+      "orderId": "order",
+      "openedBy": "buyer",
+      "reason": "quality",
+      "description": "The delivered work does not match the agreed scope at all.",
+      "status": "open",
+      "openedAt": 1800000000000,
+      "createdAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "order",
+     {
+      "status": "disputed",
+      "escrowStatus": "beta_no_payment",
+      "autoReleaseJobId": "__undefined__",
+      "updatedAt": 1800000000000
+     }
+    ]
+   ]
+  },
+  "open without any tenant": {
+   "error": "No tenant found — run data migration first",
+   "log": []
+  },
+  "resolve as non-admin": {
+   "error": "Admin access required.",
+   "log": []
+  },
+  "resolve missing": {
+   "error": "Dispute not found.",
+   "log": []
+  },
+  "resolve other workspace": {
+   "error": "This dispute belongs to another workspace.",
+   "log": []
+  },
+  "resolve already resolved": {
+   "error": "This dispute has already been resolved or closed.",
+   "log": []
+  },
+  "resolve short note": {
+   "error": "Add a resolution note between 10 and 5,000 characters.",
+   "log": []
+  },
+  "resolve unlinked": {
+   "error": "The dispute is not linked to an order.",
+   "log": []
+  },
+  "resolve inconsistent order": {
+   "error": "The dispute and order are not in a consistent state.",
+   "log": []
+  },
+  "resolve beta for professional": {
+   "result": {
+    "success": true,
+    "disputeId": "dispute"
+   },
+   "log": [
+    [
+     "patch",
+     "dispute",
+     {
+      "resolution": "freelancer_wins",
+      "resolutionNote": "Reviewed the supplied evidence.",
+      "resolvedBy": "admin",
+      "status": "resolved",
+      "resolvedAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "moderationAuditEvents",
+     {
+      "tenantId": "tenant-a",
+      "actorId": "admin",
+      "action": "order_dispute_resolved",
+      "targetType": "dispute",
+      "targetId": "dispute",
+      "fromStatus": "open",
+      "toStatus": "resolved",
+      "note": "Reviewed the supplied evidence.",
+      "createdAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "order",
+     {
+      "status": "completed",
+      "escrowStatus": "beta_no_payment",
+      "completedAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "buyer",
+      "type": "order_dispute_resolved",
+      "title": "Order dispute resolved",
+      "body": "Support resolved the dispute for QA order. The order is completed.",
+      "link": "/orders/order",
+      "metadata": {
+       "orderId": "order",
+       "disputeId": "dispute",
+       "status": "completed"
+      }
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "seller",
+      "type": "order_dispute_resolved",
+      "title": "Order dispute resolved",
+      "body": "Support resolved the dispute for QA order. The order is completed.",
+      "link": "/orders/order",
+      "metadata": {
+       "orderId": "order",
+       "disputeId": "dispute",
+       "status": "completed"
+      }
+     }
+    ]
+   ]
+  },
+  "resolve beta for client": {
+   "result": {
+    "success": true,
+    "disputeId": "dispute"
+   },
+   "log": [
+    [
+     "patch",
+     "dispute",
+     {
+      "resolution": "client_wins",
+      "resolutionNote": "Reviewed the supplied evidence.",
+      "resolvedBy": "admin",
+      "status": "resolved",
+      "resolvedAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "insert",
+     "moderationAuditEvents",
+     {
+      "tenantId": "tenant-a",
+      "actorId": "admin",
+      "action": "order_dispute_resolved",
+      "targetType": "dispute",
+      "targetId": "dispute",
+      "fromStatus": "open",
+      "toStatus": "resolved",
+      "note": "Reviewed the supplied evidence.",
+      "createdAt": 1800000000000
+     }
+    ],
+    [
+     "patch",
+     "order",
+     {
+      "status": "cancelled",
+      "escrowStatus": "beta_no_payment",
+      "cancelledAt": 1800000000000,
+      "updatedAt": 1800000000000
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "buyer",
+      "type": "order_dispute_resolved",
+      "title": "Order dispute resolved",
+      "body": "Support resolved the dispute for QA order. The order is cancelled.",
+      "link": "/orders/order",
+      "metadata": {
+       "orderId": "order",
+       "disputeId": "dispute",
+       "status": "cancelled"
+      }
+     }
+    ],
+    [
+     "notify",
+     {
+      "userId": "seller",
+      "type": "order_dispute_resolved",
+      "title": "Order dispute resolved",
+      "body": "Support resolved the dispute for QA order. The order is cancelled.",
+      "link": "/orders/order",
+      "metadata": {
+       "orderId": "order",
+       "disputeId": "dispute",
+       "status": "cancelled"
+      }
+     }
+    ]
+   ]
+  },
+  "resolve paid order stays blocked": {
+   "error": "Resolving a paid-order dispute is unavailable during the free private beta. No platform payment or credit movement is active.",
+   "log": []
+  }
+ }
+}

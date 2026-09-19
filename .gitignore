@@ -72,6 +72,8 @@ scripts/verify-*.mjs
 !scripts/check-job-invitations.mjs
 !scripts/check-hiring-pipeline.mjs
 !scripts/check-security-hardening.mjs
+!scripts/check-error-reporting.mjs
+!scripts/check-readable-convex.mjs
 !scripts/verify-environment.mjs
 !scripts/verify-hosted-release.mjs
 
