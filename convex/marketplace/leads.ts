@@ -1,17 +1,23 @@
-import type { Id } from "../_generated/dataModel";
-// Reconciled with the existing development deployment (2026-09-07).
-import { getLeadCreditCost } from "./leadPricing";
-import { MAX_SHARED_SLOTS } from "./leadPricing";
-import { rateLimiter } from "../lib/rateLimits";
-import { query } from "../_generated/server";
-import { mutation } from "../_generated/server";
-import { requireAuthUser } from "../lib/authHelpers";
-import { getOptionalAuthUser } from "../lib/authHelpers";
-import { requireMarketplaceContext } from "../lib/authHelpers";
-import { getProviderProfile } from "../lib/authHelpers";
-import { requireServerSecret } from "../lib/authHelpers";
+// Local pay-per-lead: credit balance and history, a professional's claimed
+// leads, claim eligibility, claiming a lead and the server-only credit top-up.
+// Lead prices come from ./leadPricing and are zero during the free private beta.
+// Readable source restored on 2026-09-19; behaviour is identical to the
+// reconciled deployment version and is pinned by scripts/check-readable-convex.mjs.
 import { v } from "convex/values";
-var T = {
+import type { Doc } from "../_generated/dataModel";
+import { mutation, query } from "../_generated/server";
+import {
+  getOptionalAuthUser,
+  getProviderProfile,
+  requireAuthUser,
+  requireMarketplaceContext,
+  requireServerSecret,
+} from "../lib/authHelpers";
+import { rateLimiter } from "../lib/rateLimits";
+import { getLeadCreditCost, MAX_SHARED_SLOTS } from "./leadPricing";
+
+/** Country spellings that mean the same place, keyed by their normalised form. */
+const COUNTRY_ALIASES: Record<string, string> = {
   be: "be",
   belgie: "be",
   belgique: "be",
@@ -26,254 +32,443 @@ var T = {
   uk: "gb",
   gb: "gb",
   greatbritain: "gb",
-  unitedkingdom: "gb"
+  unitedkingdom: "gb",
 };
-function normalizeAreaValue(e) {
-  return e?.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "") || null;
+
+const EARTH_RADIUS_KM = 6371;
+
+type ServiceArea = {
+  locationCountry?: string;
+  locationCity?: string;
+  locationPostcode?: string;
+  latitude?: number;
+  longitude?: number;
+  serviceRadiusKm?: number;
+};
+
+/** Lower-case letters and digits only, without accents; null when nothing is left. */
+function normalizeAreaValue(value: string | undefined | null): string | null {
+  return (
+    value
+      ?.normalize("NFKD")
+      .replace(/[̀-ͯ]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "") || null
+  );
 }
-function normalizeCountry(e) {
-  let t = normalizeAreaValue(e);
-  return t ? T[t] ?? t : null;
+
+function normalizeCountry(value: string | undefined | null): string | null {
+  const normalized = normalizeAreaValue(value);
+  return normalized ? (COUNTRY_ALIASES[normalized] ?? normalized) : null;
 }
-function isLatitude(e) {
-  return typeof e == "number" && Number.isFinite(e) && e >= -90 && e <= 90;
+
+function isLatitude(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value >= -90 && value <= 90;
 }
-function isLongitude(e) {
-  return typeof e == "number" && Number.isFinite(e) && e >= -180 && e <= 180;
+
+function isLongitude(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value >= -180 && value <= 180;
 }
-function distanceKm(e, t, i, o) {
-  let a = p => p * Math.PI / 180,
-    d = a(i - e),
-    c = a(o - t),
-    m = a(e),
-    s = a(i),
-    f = Math.sin(d / 2) ** 2 + Math.cos(m) * Math.cos(s) * Math.sin(c / 2) ** 2;
-  return 2 * 6371 * Math.asin(Math.sqrt(f));
+
+/** Great-circle distance between two coordinates (haversine). */
+function distanceKm(
+  fromLatitude: number,
+  fromLongitude: number,
+  toLatitude: number,
+  toLongitude: number,
+): number {
+  const toRadians = (degrees: number) => (degrees * Math.PI) / 180;
+  const latitudeDelta = toRadians(toLatitude - fromLatitude);
+  const longitudeDelta = toRadians(toLongitude - fromLongitude);
+  const a =
+    Math.sin(latitudeDelta / 2) ** 2 +
+    Math.cos(toRadians(fromLatitude)) *
+      Math.cos(toRadians(toLatitude)) *
+      Math.sin(longitudeDelta / 2) ** 2;
+  return 2 * EARTH_RADIUS_KM * Math.asin(Math.sqrt(a));
 }
-function coversLocalServiceArea(e, t) {
-  let i = normalizeCountry(e.locationCountry),
-    o = normalizeCountry(t.locationCountry);
-  if (!i || !o || i !== o) return !1;
-  if (isLatitude(e.latitude) && isLongitude(e.longitude) && isLatitude(t.latitude) && isLongitude(t.longitude) && typeof e.serviceRadiusKm == "number" && Number.isFinite(e.serviceRadiusKm) && e.serviceRadiusKm > 0) return distanceKm(e.latitude, e.longitude, t.latitude, t.longitude) <= e.serviceRadiusKm;
-  let d = normalizeAreaValue(e.locationCity),
-    c = normalizeAreaValue(t.locationCity);
-  if (d && c && d === c) return !0;
-  let m = normalizeAreaValue(e.locationPostcode),
-    s = normalizeAreaValue(t.locationPostcode);
-  return !!(m && s && m === s);
+
+/**
+ * Whether a request falls inside a professional's service area. The country must
+ * match. With coordinates and a positive radius on both sides the distance
+ * decides; otherwise the same city or the same postcode is enough.
+ */
+function coversLocalServiceArea(profile: ServiceArea, request: ServiceArea): boolean {
+  const profileCountry = normalizeCountry(profile.locationCountry);
+  const requestCountry = normalizeCountry(request.locationCountry);
+  if (!profileCountry || !requestCountry || profileCountry !== requestCountry)
+    return false;
+
+  if (
+    isLatitude(profile.latitude) &&
+    isLongitude(profile.longitude) &&
+    isLatitude(request.latitude) &&
+    isLongitude(request.longitude) &&
+    typeof profile.serviceRadiusKm === "number" &&
+    Number.isFinite(profile.serviceRadiusKm) &&
+    profile.serviceRadiusKm > 0
+  ) {
+    return (
+      distanceKm(
+        profile.latitude,
+        profile.longitude,
+        request.latitude,
+        request.longitude,
+      ) <= profile.serviceRadiusKm
+    );
+  }
+
+  const profileCity = normalizeAreaValue(profile.locationCity);
+  const requestCity = normalizeAreaValue(request.locationCity);
+  if (profileCity && requestCity && profileCity === requestCity) return true;
+
+  const profilePostcode = normalizeAreaValue(profile.locationPostcode);
+  const requestPostcode = normalizeAreaValue(request.locationPostcode);
+  return !!(profilePostcode && requestPostcode && profilePostcode === requestPostcode);
 }
-function profileClaimBlock(user, profile, request): string | null {
-  if (!profile || profile.providerRole !== "local_professional") return "Complete your Local professional profile before claiming requests.";
-  if (profile.status !== "active" || !["local", "hybrid"].includes(profile.workType)) return "Your Local professional profile is not active for local work. Contact support to review it.";
-  if (profile.tenantId !== user.tenantId || request.tenantId !== user.tenantId) return "This request or profile belongs to another workspace.";
-  if (profile.isVerified !== true) return "Your Local professional profile is not eligible to claim leads until it is verified. Contact support to arrange an identity, business and service-area review.";
-  if (!coversLocalServiceArea(profile, request)) return "This quote request is outside your verified service area.";
+
+/** The reason this professional may not claim this request, or null when they may. */
+function profileClaimBlock(
+  user: Doc<"users">,
+  profile: Doc<"freelancerProfiles"> | null,
+  request: Doc<"quoteRequests">,
+): string | null {
+  if (!profile || profile.providerRole !== "local_professional")
+    return "Complete your Local professional profile before claiming requests.";
+  if (
+    profile.status !== "active" ||
+    !["local", "hybrid"].includes(profile.workType as string)
+  )
+    return "Your Local professional profile is not active for local work. Contact support to review it.";
+  if (profile.tenantId !== user.tenantId || request.tenantId !== user.tenantId)
+    return "This request or profile belongs to another workspace.";
+  if (profile.isVerified !== true)
+    return "Your Local professional profile is not eligible to claim leads until it is verified. Contact support to arrange an identity, business and service-area review.";
+  if (!coversLocalServiceArea(profile, request))
+    return "This quote request is outside your verified service area.";
   return null;
 }
-var getMyCredits = query({
-    args: {},
-    handler: async ctx => {
-      let t = await getOptionalAuthUser(ctx);
-      if (!t) return null;
-      let i = await getProviderProfile(ctx, t._id, "local_professional");
+
+/** The signed-in professional's credit balance; null for visitors. */
+const getMyCredits = query({
+  args: {},
+  handler: async (ctx) => {
+    const user = await getOptionalAuthUser(ctx);
+    if (!user) return null;
+    const profile = await getProviderProfile(ctx, user._id, "local_professional");
+    return {
+      balance: profile?.creditBalance ?? 0,
+      userId: user._id,
+      profileId: profile?._id ?? null,
+    };
+  },
+});
+
+const getMyTransactions = query({
+  args: {
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const user = await getOptionalAuthUser(ctx);
+    if (!user) return [];
+    return await ctx.db
+      .query("creditTransactions")
+      .withIndex("by_freelancer", (q) => q.eq("freelancerId", user._id))
+      .order("desc")
+      .take(Math.min(Math.max(args.limit ?? 50, 1), 100));
+  },
+});
+
+/**
+ * Leads this professional has claimed. A claim unlocks the request details and
+ * the client's name and email, which is the purpose of claiming a lead.
+ */
+const getMyClaims = query({
+  args: {},
+  handler: async (ctx) => {
+    const user = await getOptionalAuthUser(ctx);
+    if (!user) return [];
+    const profile = await getProviderProfile(ctx, user._id, "local_professional");
+    if (!profile) return [];
+
+    const claims = await ctx.db
+      .query("leadClaims")
+      .withIndex("by_freelancer", (q) => q.eq("freelancerId", profile._id))
+      .order("desc")
+      .take(200);
+
+    const requestIds = [
+      ...new Set(claims.map((claim) => claim.quoteRequestId).filter(Boolean)),
+    ];
+    const requests = await Promise.all(requestIds.map((id) => ctx.db.get(id)));
+    const requestsById = new Map(
+      requests.filter(Boolean).map((request) => [request!._id, request!]),
+    );
+
+    const clientIds = [
+      ...new Set(
+        requests
+          .filter(Boolean)
+          .map((request) => request!.clientId)
+          .filter(Boolean),
+      ),
+    ];
+    const categoryIds = [
+      ...new Set(
+        requests
+          .filter(Boolean)
+          .map((request) => request!.categoryId)
+          .filter(Boolean),
+      ),
+    ];
+    const [clients, categories] = await Promise.all([
+      Promise.all(clientIds.map((id) => ctx.db.get(id))),
+      Promise.all(categoryIds.map((id) => ctx.db.get(id))),
+    ]);
+    const clientsById = new Map(
+      clients.filter(Boolean).map((client) => [client!._id, client!]),
+    );
+    const categoriesById = new Map(
+      categories.filter(Boolean).map((category) => [category!._id, category!]),
+    );
+
+    return claims.map((claim) => {
+      const request = requestsById.get(claim.quoteRequestId);
+      if (!request)
+        return { ...claim, request: null, client: null, categoryName: null };
+
+      const client = clientsById.get(request.clientId);
+      const category = categoriesById.get(request.categoryId);
       return {
-        balance: i?.creditBalance ?? 0,
-        userId: t._id,
-        profileId: i?._id ?? null
+        ...claim,
+        request: {
+          _id: request._id,
+          title: request.title,
+          description: request.description,
+          locationCity: request.locationCity,
+          locationPostcode: request.locationPostcode,
+          budgetIndication: request.budgetIndication,
+          preferredDate: request.preferredDate,
+          status: request.status,
+          createdAt: request.createdAt,
+        },
+        client: client ? { name: client.name, email: client.email } : null,
+        categoryName: category?.name ?? null,
       };
-    }
-  }),
-  getMyTransactions = query({
-    args: {
-      limit: v.optional(v.number())
-    },
-    handler: async (ctx, args) => {
-      let i = await getOptionalAuthUser(ctx);
-      return i ? await ctx.db.query("creditTransactions").withIndex("by_freelancer", a => a.eq("freelancerId", i._id)).order("desc").take(Math.min(Math.max(args.limit ?? 50, 1), 100)) : [];
-    }
-  }),
-  getMyClaims = query({
-    args: {},
-    handler: async ctx => {
-      let t = await getOptionalAuthUser(ctx);
-      if (!t) return [];
-      let i = await getProviderProfile(ctx, t._id, "local_professional");
-      if (!i) return [];
-      let o = await ctx.db.query("leadClaims").withIndex("by_freelancer", r => r.eq("freelancerId", i._id)).order("desc").take(200),
-        a = [...new Set(o.map(r => r.quoteRequestId).filter(Boolean))],
-        d = await Promise.all(a.map(r => ctx.db.get(r))),
-        c = new Map(d.filter(Boolean).map(r => [r._id, r])),
-        m = [...new Set(d.filter(Boolean).map(r => r.clientId).filter(Boolean))],
-        s = [...new Set(d.filter(Boolean).map(r => r.categoryId).filter(Boolean))],
-        [f, p] = await Promise.all([Promise.all(m.map(r => ctx.db.get(r))), Promise.all(s.map(r => ctx.db.get(r)))]),
-        w = new Map(f.filter(Boolean).map(r => [r._id, r])),
-        q = new Map(p.filter(Boolean).map(r => [r._id, r]));
-      return o.map(r => {
-        let u = c.get(r.quoteRequestId);
-        if (!u) return {
-          ...r,
-          request: null,
-          client: null,
-          categoryName: null
-        };
-        let R = w.get(u.clientId),
-          B = q.get(u.categoryId);
-        return {
-          ...r,
-          request: {
-            _id: u._id,
-            title: u.title,
-            description: u.description,
-            locationCity: u.locationCity,
-            locationPostcode: u.locationPostcode,
-            budgetIndication: u.budgetIndication,
-            preferredDate: u.preferredDate,
-            status: u.status,
-            createdAt: u.createdAt
-          },
-          client: R ? {
-            name: R.name,
-            email: R.email
-          } : null,
-          categoryName: B?.name ?? null
-        };
-      });
-    }
-  }),
-  getLeadStatus = query({
-    args: {
-      quoteRequestId: v.id("quoteRequests")
-    },
-    returns: v.union(v.null(), v.object({ claimedSlots: v.number(), maxSlots: v.number(), slotsRemaining: v.number(), isExclusive: v.boolean(), alreadyClaimed: v.boolean(), creditCost: v.number(), exclusiveCost: v.number(), canClaimExclusive: v.boolean(), claimBlockReason: v.union(v.string(), v.null()) })),
-    handler: async (ctx, args) => {
-      let i = await ctx.db.get(args.quoteRequestId);
-      if (!i) return null;
-      let o = await ctx.db.query("leadClaims").withIndex("by_quoteRequest", w => w.eq("quoteRequestId", args.quoteRequestId)).take(MAX_SHARED_SLOTS),
-        a = i.isExclusive ? 1 : i.maxSlots ?? MAX_SHARED_SLOTS,
-        d = i.claimedSlots ?? 0,
-        c = Math.max(0, a - d),
-        m = !1,
-        s = await getOptionalAuthUser(ctx);
-      let claimBlockReason: string | null = null;
-      if (s) {
-        let w = await getProviderProfile(ctx, s._id, "local_professional");
-        w && (m = o.some(q => q.freelancerId === w._id));
-        if (s.role === "admin") claimBlockReason = "Administrators cannot claim Local leads.";
-        else {
-          try { requireMarketplaceContext(s, "local_professional", "local", "claiming a lead"); }
-          catch (error) { claimBlockReason = error instanceof Error ? error.message : "Complete Local professional onboarding before claiming a lead."; }
-          claimBlockReason ??= profileClaimBlock(s, w, i);
-        }
-      }
-      let f = getLeadCreditCost(i.budgetIndication, "shared"),
-        p = getLeadCreditCost(i.budgetIndication, "exclusive");
-      return {
-        claimedSlots: d,
-        maxSlots: a,
-        slotsRemaining: c,
-        isExclusive: i.isExclusive ?? !1,
-        alreadyClaimed: m,
-        creditCost: f,
-        exclusiveCost: p,
-        canClaimExclusive: d === 0 && !i.isExclusive,
-        claimBlockReason
-      };
-    }
-  }),
-  claimLead = mutation({
-    args: {
-      quoteRequestId: v.id("quoteRequests"),
-      claimType: v.union(v.literal("shared"), v.literal("exclusive"))
-    },
-    returns: v.object({
-      claimId: v.id("leadClaims"),
-      creditsSpent: v.number(),
-      newBalance: v.number()
+    });
+  },
+});
+
+/** Slot availability, prices and, for a signed-in caller, why they cannot claim. */
+const getLeadStatus = query({
+  args: {
+    quoteRequestId: v.id("quoteRequests"),
+  },
+  returns: v.union(
+    v.null(),
+    v.object({
+      claimedSlots: v.number(),
+      maxSlots: v.number(),
+      slotsRemaining: v.number(),
+      isExclusive: v.boolean(),
+      alreadyClaimed: v.boolean(),
+      creditCost: v.number(),
+      exclusiveCost: v.number(),
+      canClaimExclusive: v.boolean(),
+      claimBlockReason: v.union(v.string(), v.null()),
     }),
-    handler: async (ctx, args) => {
-      let i = await requireAuthUser(ctx);
-      if (i.role === "admin") throw new Error("Administrators cannot claim Local leads.");
-      requireMarketplaceContext(i, "local_professional", "local", "claiming a lead"), await rateLimiter.limit(ctx, "localLeadClaim", {
-        key: i._id,
-        throws: !0
-      });
-      let o = await ctx.db.query("freelancerProfiles").withIndex("by_userId_and_providerRole", q => q.eq("userId", i._id).eq("providerRole", "local_professional")).unique();
-      let a = await ctx.db.get(args.quoteRequestId);
-      if (!a) throw new Error("Quote request not found.");
-      if (a.status !== "open") throw new Error("This quote request is no longer open.");
-      const blocked = profileClaimBlock(i, o, a);
-      if (blocked) throw new Error(blocked);
-      if (!o) throw new Error("Local professional profile not found.");
-      if ((await ctx.db.query("leadClaims").withIndex("by_quoteRequest", q => q.eq("quoteRequestId", args.quoteRequestId)).take(MAX_SHARED_SLOTS)).some(q => q.freelancerId === o._id)) throw new Error("You have already claimed this lead.");
-      let c = a.claimedSlots ?? 0,
-        m = a.maxSlots ?? MAX_SHARED_SLOTS;
-      if (args.claimType === "exclusive") {
-        if (c > 0) throw new Error("Exclusive claim not available \u2014 lead already has claims.");
+  ),
+  handler: async (ctx, args) => {
+    const request = await ctx.db.get(args.quoteRequestId);
+    if (!request) return null;
+
+    const claims = await ctx.db
+      .query("leadClaims")
+      .withIndex("by_quoteRequest", (q) => q.eq("quoteRequestId", args.quoteRequestId))
+      .take(MAX_SHARED_SLOTS);
+    const maxSlots = request.isExclusive ? 1 : (request.maxSlots ?? MAX_SHARED_SLOTS);
+    const claimedSlots = request.claimedSlots ?? 0;
+    const slotsRemaining = Math.max(0, maxSlots - claimedSlots);
+
+    let alreadyClaimed = false;
+    let claimBlockReason: string | null = null;
+    const user = await getOptionalAuthUser(ctx);
+    if (user) {
+      const profile = await getProviderProfile(ctx, user._id, "local_professional");
+      if (profile)
+        alreadyClaimed = claims.some((claim) => claim.freelancerId === profile._id);
+
+      if (user.role === "admin") {
+        claimBlockReason = "Administrators cannot claim Local leads.";
       } else {
-        if (a.isExclusive) throw new Error("This lead has been exclusively claimed.");
-        if (c >= m) throw new Error("All slots for this lead are taken.");
+        try {
+          requireMarketplaceContext(user, "local_professional", "local", "claiming a lead");
+        } catch (error) {
+          claimBlockReason =
+            error instanceof Error
+              ? error.message
+              : "Complete Local professional onboarding before claiming a lead.";
+        }
+        claimBlockReason ??= profileClaimBlock(user, profile, request);
       }
-      let s = getLeadCreditCost(a.budgetIndication, args.claimType),
-        f = o.creditBalance ?? 0;
-      if (f < s) throw new Error(`Insufficient credits. You need ${s} credits but have ${f}.`);
-      let p = Date.now();
-      await ctx.db.patch(o._id, {
-        creditBalance: f - s
-      });
-      let w = await ctx.db.insert("leadClaims", {
-        quoteRequestId: args.quoteRequestId,
-        freelancerId: o._id,
-        creditsSpent: s,
-        claimType: args.claimType,
-        claimedAt: p
-      });
-      return args.claimType === "exclusive" ? await ctx.db.patch(args.quoteRequestId, {
-        isExclusive: !0,
+    }
+
+    return {
+      claimedSlots,
+      maxSlots,
+      slotsRemaining,
+      isExclusive: request.isExclusive ?? false,
+      alreadyClaimed,
+      creditCost: getLeadCreditCost(request.budgetIndication, "shared"),
+      exclusiveCost: getLeadCreditCost(request.budgetIndication, "exclusive"),
+      canClaimExclusive: claimedSlots === 0 && !request.isExclusive,
+      claimBlockReason,
+    };
+  },
+});
+
+/**
+ * Claim a lead as a verified Local professional inside their service area.
+ * A shared claim takes one of the slots; an exclusive claim takes the whole lead
+ * and is only possible while nobody else has claimed it.
+ */
+const claimLead = mutation({
+  args: {
+    quoteRequestId: v.id("quoteRequests"),
+    claimType: v.union(v.literal("shared"), v.literal("exclusive")),
+  },
+  returns: v.object({
+    claimId: v.id("leadClaims"),
+    creditsSpent: v.number(),
+    newBalance: v.number(),
+  }),
+  handler: async (ctx, args) => {
+    const user = await requireAuthUser(ctx);
+    if (user.role === "admin")
+      throw new Error("Administrators cannot claim Local leads.");
+    requireMarketplaceContext(user, "local_professional", "local", "claiming a lead");
+    await rateLimiter.limit(ctx, "localLeadClaim", { key: user._id, throws: true });
+
+    const profile = await ctx.db
+      .query("freelancerProfiles")
+      .withIndex("by_userId_and_providerRole", (q) =>
+        q.eq("userId", user._id).eq("providerRole", "local_professional"),
+      )
+      .unique();
+    const request = await ctx.db.get(args.quoteRequestId);
+    if (!request) throw new Error("Quote request not found.");
+    if (request.status !== "open")
+      throw new Error("This quote request is no longer open.");
+
+    const blocked = profileClaimBlock(user, profile, request);
+    if (blocked) throw new Error(blocked);
+    if (!profile) throw new Error("Local professional profile not found.");
+
+    const existingClaims = await ctx.db
+      .query("leadClaims")
+      .withIndex("by_quoteRequest", (q) => q.eq("quoteRequestId", args.quoteRequestId))
+      .take(MAX_SHARED_SLOTS);
+    if (existingClaims.some((claim) => claim.freelancerId === profile._id))
+      throw new Error("You have already claimed this lead.");
+
+    const claimedSlots = request.claimedSlots ?? 0;
+    const maxSlots = request.maxSlots ?? MAX_SHARED_SLOTS;
+    if (args.claimType === "exclusive") {
+      if (claimedSlots > 0)
+        throw new Error("Exclusive claim not available — lead already has claims.");
+    } else {
+      if (request.isExclusive)
+        throw new Error("This lead has been exclusively claimed.");
+      if (claimedSlots >= maxSlots)
+        throw new Error("All slots for this lead are taken.");
+    }
+
+    const cost = getLeadCreditCost(request.budgetIndication, args.claimType);
+    const balance = profile.creditBalance ?? 0;
+    if (balance < cost)
+      throw new Error(
+        `Insufficient credits. You need ${cost} credits but have ${balance}.`,
+      );
+
+    const now = Date.now();
+    await ctx.db.patch(profile._id, { creditBalance: balance - cost });
+    const claimId = await ctx.db.insert("leadClaims", {
+      quoteRequestId: args.quoteRequestId,
+      freelancerId: profile._id,
+      creditsSpent: cost,
+      claimType: args.claimType,
+      claimedAt: now,
+    });
+    if (args.claimType === "exclusive") {
+      await ctx.db.patch(args.quoteRequestId, {
+        isExclusive: true,
         claimedSlots: 1,
         maxSlots: 1,
-        updatedAt: p
-      }) : await ctx.db.patch(args.quoteRequestId, {
-        claimedSlots: c + 1,
-        updatedAt: p
-      }), await ctx.db.insert("creditTransactions", {
-        freelancerId: i._id,
-        amount: -s,
-        type: "spend",
-        description: `Claimed lead: ${a.title}`,
-        referenceId: w,
-        createdAt: p
-      }), {
-        claimId: w,
-        creditsSpent: s,
-        newBalance: f - s
-      };
+        updatedAt: now,
+      });
+    } else {
+      await ctx.db.patch(args.quoteRequestId, {
+        claimedSlots: claimedSlots + 1,
+        updatedAt: now,
+      });
     }
-  }),
-  addCredits = mutation({
-    args: {
-      freelancerUserId: v.id("users"),
-      credits: v.number(),
-      stripeSessionId: v.string(),
-      description: v.string(),
-      serverSecret: v.optional(v.string())
-    },
-    handler: async (ctx, args) => {
-      requireServerSecret(args.serverSecret);
-      let i = await getProviderProfile(ctx, args.freelancerUserId, "local_professional");
-      if (!i) throw new Error("Freelancer profile not found.");
-      let a = (i.creditBalance ?? 0) + args.credits;
-      return await ctx.db.patch(i._id, {
-        creditBalance: a
-      }), await ctx.db.insert("creditTransactions", {
-        freelancerId: args.freelancerUserId,
-        amount: args.credits,
-        type: "purchase",
-        description: args.description,
-        referenceId: args.stripeSessionId,
-        createdAt: Date.now()
-      }), {
-        newBalance: a
-      };
-    }
-  });
-export { addCredits, claimLead, getLeadStatus, getMyClaims, getMyCredits, getMyTransactions };
+    await ctx.db.insert("creditTransactions", {
+      freelancerId: user._id,
+      amount: -cost,
+      type: "spend",
+      description: `Claimed lead: ${request.title}`,
+      referenceId: claimId,
+      createdAt: now,
+    });
+
+    return { claimId, creditsSpent: cost, newBalance: balance - cost };
+  },
+});
+
+/**
+ * Credit a professional after a purchase. Server only.
+ *
+ * Known defects, kept as-is so this rewrite stays behaviour-identical. Fix both
+ * before credit purchases go live:
+ *  - the Stripe session id is not checked, so a replayed webhook credits twice;
+ *  - `credits` is not validated, so zero, negative or fractional values are accepted.
+ */
+const addCredits = mutation({
+  args: {
+    freelancerUserId: v.id("users"),
+    credits: v.number(),
+    stripeSessionId: v.string(),
+    description: v.string(),
+    serverSecret: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    requireServerSecret(args.serverSecret);
+    const profile = await getProviderProfile(
+      ctx,
+      args.freelancerUserId,
+      "local_professional",
+    );
+    if (!profile) throw new Error("Freelancer profile not found.");
+
+    const newBalance = (profile.creditBalance ?? 0) + args.credits;
+    await ctx.db.patch(profile._id, { creditBalance: newBalance });
+    await ctx.db.insert("creditTransactions", {
+      freelancerId: args.freelancerUserId,
+      amount: args.credits,
+      type: "purchase",
+      description: args.description,
+      referenceId: args.stripeSessionId,
+      createdAt: Date.now(),
+    });
+    return { newBalance };
+  },
+});
+
+export {
+  addCredits,
+  claimLead,
+  getLeadStatus,
+  getMyClaims,
+  getMyCredits,
+  getMyTransactions,
+};

@@ -36,7 +36,12 @@ function loadModule(entryFile, canonicalFile, log, options = {}) {
     if (cache.has(file)) return cache.get(file);
     const exports = {};
     cache.set(file, exports);
-    const source = ts.transpileModule(fs.readFileSync(sourceFile, "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
+    let text = fs.readFileSync(sourceFile, "utf8");
+    if (options.paidLeads && file.endsWith("leadPricing.ts")) {
+      if (!text.includes("PRIVATE_BETA_FREE = true")) throw new Error("leadPricing beta flag not found");
+      text = text.replace("PRIVATE_BETA_FREE = true", "PRIVATE_BETA_FREE = false");
+    }
+    const source = ts.transpileModule(text, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
     vm.runInNewContext(source, {
       exports, Date: FixedDate, Math: fixedMath, console: recordingConsole, Set, Map, Error, Number, Promise, JSON, Object, Array, String, Boolean, RegExp,
       process: { env: { INTERNAL_EMAIL_SECRET: SECRET } },
@@ -386,9 +391,167 @@ suites["convex/marketplace/freelancers.ts"] = () => {
   ];
 };
 
+const localPeople = () => [
+  member("buyer", "client", "local"), member("plumber", "local_professional", "local"), member("rival", "local_professional", "local"),
+  member("stranger", "client", "local"), member("admin", "local_professional", "local", { role: "admin" }), member("foreign", "local_professional", "local", { tenantId: "tenant-b" }),
+];
+const localProfile = (id, userId, extra = {}) => ({ _id: id, _table: "freelancerProfiles", userId, tenantId: "tenant-a", providerRole: "local_professional", workType: "local", status: "active", isVerified: true, displayName: `${userId} services`, locationCity: "Rotterdam", locationPostcode: "3011 AB", locationCountry: "Nederland", creditBalance: 10, ratingAverage: 4.5, ratingCount: 8, ...extra });
+const localRequest = (extra = {}) => ({ _id: "request", _table: "quoteRequests", tenantId: "tenant-a", clientId: "buyer", categoryId: "category", title: "Fix a leaking kitchen tap", description: "The kitchen mixer tap drips constantly and the cabinet below is getting wet.", locationCity: "Rotterdam", locationPostcode: "3011AB", locationCountry: "Netherlands", budgetIndication: "< €500", preferredDate: 1_800_100_000_000, status: "open", quoteCount: 0, createdAt: 10, updatedAt: 10, ...extra });
+const localCategory = (extra = {}) => ({ _id: "category", _table: "marketplaceCategories", tenantId: "tenant-a", name: "Plumbing", serviceType: "local", ...extra });
+
+suites["convex/marketplace/leads.ts"] = () => {
+  const world = (change = {}, extra = []) => [...localPeople(), localCategory(), localProfile("profile", "plumber", change.profile), localProfile("rival-profile", "rival"), localRequest(change.request), ...extra];
+  const claim = (id, freelancerId, extra = {}) => ({ _id: id, _table: "leadClaims", quoteRequestId: "request", freelancerId, creditsSpent: 0, claimType: "shared", claimedAt: 20, ...extra });
+  const shared = { quoteRequestId: "request", claimType: "shared" };
+  const exclusive = { quoteRequestId: "request", claimType: "exclusive" };
+  const paid = { paidLeads: true };
+  const budgets = [undefined, "< €500", "€500 - €2,000", "€500-2000", "> €2,000", "€2,000+", "Not sure yet", "€250"];
+  return [
+    ["credits for professional", world(), "plumber", "getMyCredits", {}],
+    ["credits without profile", localPeople(), "stranger", "getMyCredits", {}],
+    ["credits anonymous", world(), null, "getMyCredits", {}],
+    ["credit history", world({}, [{ _id: "t1", _table: "creditTransactions", freelancerId: "plumber", amount: 5, type: "purchase" }, { _id: "t2", _table: "creditTransactions", freelancerId: "rival", amount: 9, type: "purchase" }]), "plumber", "getMyTransactions", {}],
+    ["credit history limit clamps", world({}, [{ _id: "t1", _table: "creditTransactions", freelancerId: "plumber", amount: 5 }, { _id: "t2", _table: "creditTransactions", freelancerId: "plumber", amount: -2 }]), "plumber", "getMyTransactions", { limit: 0 }],
+    ["credit history anonymous", world(), null, "getMyTransactions", {}],
+    ["claims with request, client contact and category", world({}, [claim("c1", "profile")]), "plumber", "getMyClaims", {}],
+    ["claims with deleted request", [...localPeople(), localProfile("profile", "plumber"), claim("c1", "profile")], "plumber", "getMyClaims", {}],
+    ["claims with deleted client and category", [member("plumber", "local_professional", "local"), localProfile("profile", "plumber"), localRequest(), claim("c1", "profile")], "plumber", "getMyClaims", {}],
+    ["claims without profile", localPeople(), "stranger", "getMyClaims", {}],
+    ["claims anonymous", world(), null, "getMyClaims", {}],
+    ["lead status for eligible professional", world(), "plumber", "getLeadStatus", { quoteRequestId: "request" }],
+    ["lead status anonymous", world(), null, "getLeadStatus", { quoteRequestId: "request" }],
+    ["lead status missing request", localPeople(), "plumber", "getLeadStatus", { quoteRequestId: "request" }],
+    ["lead status already claimed", world({ request: { claimedSlots: 1 } }, [claim("c1", "profile")]), "plumber", "getLeadStatus", { quoteRequestId: "request" }],
+    ["lead status exclusive", world({ request: { isExclusive: true, claimedSlots: 1, maxSlots: 1 } }, [claim("c1", "rival-profile", { claimType: "exclusive" })]), "plumber", "getLeadStatus", { quoteRequestId: "request" }],
+    ["lead status custom slots", world({ request: { maxSlots: 5, claimedSlots: 2 } }), "plumber", "getLeadStatus", { quoteRequestId: "request" }],
+    ["lead status for admin", world({}, [localProfile("admin-profile", "admin")]), "admin", "getLeadStatus", { quoteRequestId: "request" }],
+    ["lead status for client", world(), "buyer", "getLeadStatus", { quoteRequestId: "request" }],
+    ["lead status unverified", world({ profile: { isVerified: false } }), "plumber", "getLeadStatus", { quoteRequestId: "request" }],
+    ["lead status when verification was never set", world({ profile: { isVerified: undefined } }), "plumber", "getLeadStatus", { quoteRequestId: "request" }],
+    ["lead status inactive profile", world({ profile: { status: "paused" } }), "plumber", "getLeadStatus", { quoteRequestId: "request" }],
+    ["lead status remote work type", world({ profile: { workType: "remote" } }), "plumber", "getLeadStatus", { quoteRequestId: "request" }],
+    ["lead status hybrid work type", world({ profile: { workType: "hybrid" } }), "plumber", "getLeadStatus", { quoteRequestId: "request" }],
+    ["lead status outside area by city", world({ profile: { locationCity: "Groningen", locationPostcode: "9711 AA" } }), "plumber", "getLeadStatus", { quoteRequestId: "request" }],
+    ["lead status matched by postcode only", world({ profile: { locationCity: "Schiedam", locationPostcode: "3011-ab" } }), "plumber", "getLeadStatus", { quoteRequestId: "request" }],
+    ["lead status other country", world({ profile: { locationCountry: "Belgique" } }), "plumber", "getLeadStatus", { quoteRequestId: "request" }],
+    ["lead status missing country", world({ profile: { locationCountry: undefined } }), "plumber", "getLeadStatus", { quoteRequestId: "request" }],
+    ["lead status inside radius", world({ profile: { latitude: 51.92, longitude: 4.48, serviceRadiusKm: 15, locationCity: "Elsewhere", locationPostcode: "0000" }, request: { latitude: 51.95, longitude: 4.55 } }), "plumber", "getLeadStatus", { quoteRequestId: "request" }],
+    ["lead status outside radius", world({ profile: { latitude: 51.92, longitude: 4.48, serviceRadiusKm: 5 }, request: { latitude: 52.37, longitude: 4.9 } }), "plumber", "getLeadStatus", { quoteRequestId: "request" }],
+    ["lead status zero radius falls back to city", world({ profile: { latitude: 51.92, longitude: 4.48, serviceRadiusKm: 0 }, request: { latitude: 52.37, longitude: 4.9 } }), "plumber", "getLeadStatus", { quoteRequestId: "request" }],
+    ["lead status request in other workspace", world({ request: { tenantId: "tenant-b" } }), "plumber", "getLeadStatus", { quoteRequestId: "request" }],
+    ...budgets.map((budget) => [`paid lead prices for budget ${budget ?? "none"}`, world({ request: { budgetIndication: budget } }), "plumber", "getLeadStatus", { quoteRequestId: "request" }, paid]),
+    ["shared claim during beta", world(), "plumber", "claimLead", shared],
+    ["exclusive claim during beta", world(), "plumber", "claimLead", exclusive],
+    ["second shared claim", world({ request: { claimedSlots: 1 } }, [claim("c1", "rival-profile")]), "plumber", "claimLead", shared],
+    ["shared claim with all slots taken", world({ request: { claimedSlots: 3 } }), "plumber", "claimLead", shared],
+    ["shared claim with custom slots", world({ request: { claimedSlots: 3, maxSlots: 4 } }), "plumber", "claimLead", shared],
+    ["shared claim on exclusive lead", world({ request: { isExclusive: true, claimedSlots: 1, maxSlots: 1 } }), "plumber", "claimLead", shared],
+    ["exclusive claim after another claim", world({ request: { claimedSlots: 1 } }, [claim("c1", "rival-profile")]), "plumber", "claimLead", exclusive],
+    ["claim twice", world({ request: { claimedSlots: 1 } }, [claim("c1", "profile")]), "plumber", "claimLead", shared],
+    ["claim closed request", world({ request: { status: "accepted" } }), "plumber", "claimLead", shared],
+    ["claim missing request", localPeople(), "plumber", "claimLead", shared],
+    ["claim as admin", world({}, [localProfile("admin-profile", "admin")]), "admin", "claimLead", shared],
+    ["claim as client", world(), "buyer", "claimLead", shared],
+    ["claim anonymous", world(), null, "claimLead", shared],
+    ["claim unverified", world({ profile: { isVerified: false } }), "plumber", "claimLead", shared],
+    ["claim when verification was never set", world({ profile: { isVerified: undefined } }), "plumber", "claimLead", shared],
+    ["claim outside area", world({ profile: { locationCity: "Groningen", locationPostcode: "9711 AA" } }), "plumber", "claimLead", shared],
+    ["claim without profile", [...localPeople(), localCategory(), localRequest()], "plumber", "claimLead", shared],
+    ["claim from another workspace", [...localPeople(), localCategory(), localProfile("foreign-profile", "foreign", { tenantId: "tenant-b" }), localRequest()], "foreign", "claimLead", shared],
+    ["paid shared claim spends credits", world(), "plumber", "claimLead", shared, paid],
+    ["paid exclusive claim costs double", world({ request: { budgetIndication: "> €2,000" } }, []), "plumber", "claimLead", exclusive, { paidLeads: true }],
+    ["paid claim with too few credits", world({ profile: { creditBalance: 1 } }), "plumber", "claimLead", shared, paid],
+    ["paid claim with missing balance", world({ profile: { creditBalance: undefined } }), "plumber", "claimLead", shared, paid],
+    ["credits added by server", world(), null, "addCredits", { freelancerUserId: "plumber", credits: 10, stripeSessionId: "cs_1", description: "Popular package", serverSecret: SECRET }],
+    ["credits added twice for the same session", world({}, [{ _id: "t1", _table: "creditTransactions", freelancerId: "plumber", amount: 10, type: "purchase", referenceId: "cs_1" }]), null, "addCredits", { freelancerUserId: "plumber", credits: 10, stripeSessionId: "cs_1", description: "Popular package", serverSecret: SECRET }],
+    ["negative credits are accepted", world(), null, "addCredits", { freelancerUserId: "plumber", credits: -4, stripeSessionId: "cs_2", description: "Adjustment", serverSecret: SECRET }],
+    ["credits to missing balance", world({ profile: { creditBalance: undefined } }), null, "addCredits", { freelancerUserId: "plumber", credits: 5, stripeSessionId: "cs_3", description: "Starter", serverSecret: SECRET }],
+    ["credits added without profile", localPeople(), null, "addCredits", { freelancerUserId: "stranger", credits: 5, stripeSessionId: "cs_4", description: "Starter", serverSecret: SECRET }],
+    ["credits by signed-in user", world(), "plumber", "addCredits", { freelancerUserId: "plumber", credits: 5, stripeSessionId: "cs_5", description: "Starter" }],
+    ["credits wrong secret", world(), null, "addCredits", { freelancerUserId: "plumber", credits: 5, stripeSessionId: "cs_6", description: "Starter", serverSecret: "wrong" }],
+  ];
+};
+
+suites["convex/marketplace/quotes.ts"] = () => {
+  const claim = (freelancerId) => ({ _id: `claim-${freelancerId}`, _table: "leadClaims", quoteRequestId: "request", freelancerId, claimType: "shared", claimedAt: 20 });
+  const quote = (id, freelancerId, extra = {}) => ({ _id: id, _table: "quotes", quoteRequestId: "request", freelancerId, amount: 180, currency: "EUR", description: "Replace the cartridge and reseal the tap base.", estimatedDays: 1, status: "pending", createdAt: 30, updatedAt: 30, ...extra });
+  const world = (change = {}, extra = []) => [...localPeople(), localCategory(change.category), localProfile("profile", "plumber", change.profile), localProfile("rival-profile", "rival", { avatarUrl: "/rival.png", tagline: "Fast" }), localRequest(change.request), ...extra];
+  const newRequest = { categoryId: "category", title: "  Replace bathroom extractor fan  ", description: "  The extractor fan in the bathroom stopped working and needs to be replaced this month.  ", locationCity: " Rotterdam ", locationPostcode: " 3011 AB ", budgetIndication: "< €500", preferredDate: 1_800_200_000_000, photos: [{ id: "p1" }] };
+  const newQuote = { quoteRequestId: "request", amount: 180, currency: "EUR", description: "  Replace the cartridge and reseal the tap base.  ", estimatedDays: 1, validUntil: 1_800_300_000_000 };
+  const accepted = (extra = []) => world({ request: { status: "accepted" } }, [quote("q1", "profile", { status: "accepted" }), { _id: "order", _table: "orders", tenantId: "tenant-a", clientId: "buyer", quoteRequestId: "request", quoteId: "q1", freelancerId: "profile", orderType: "local_quote" }, ...extra]);
+  return [
+    ["open requests", world({}, [localRequest({ _id: "request-2", status: "accepted" }), localRequest({ _id: "request-3", categoryId: "gone", title: "Paint a hallway" })]), null, "listRequests", {}],
+    ["open requests limit clamps", world({}, [localRequest({ _id: "request-3", title: "Paint a hallway" })]), null, "listRequests", { limit: 0 }],
+    ["public request", world(), null, "getRequestById", { requestId: "request" }],
+    ["public request closed", world({ request: { status: "accepted" } }), null, "getRequestById", { requestId: "request" }],
+    ["public request missing", localPeople(), null, "getRequestById", { requestId: "request" }],
+    ["participant view for owner with quotes", world({}, [claim("profile"), quote("q1", "profile"), quote("q2", "rival-profile"), quote("q3", "ghost-profile")]), "buyer", "getParticipantRequestById", { requestId: "request" }],
+    ["participant view for claimer with own quote", world({}, [claim("profile"), quote("q1", "profile"), quote("q2", "rival-profile")]), "plumber", "getParticipantRequestById", { requestId: "request" }],
+    ["participant view for claimer without quote", world({}, [claim("profile")]), "plumber", "getParticipantRequestById", { requestId: "request" }],
+    ["participant view for professional without claim", world(), "plumber", "getParticipantRequestById", { requestId: "request" }],
+    ["participant view for stranger", world(), "stranger", "getParticipantRequestById", { requestId: "request" }],
+    ["participant view missing request", localPeople(), "buyer", "getParticipantRequestById", { requestId: "request" }],
+    ["participant view anonymous", world(), null, "getParticipantRequestById", { requestId: "request" }],
+    ["create request", world(), "buyer", "createRequest", newRequest],
+    ["create request by postcode only with coordinates", world(), "buyer", "createRequest", { ...newRequest, locationCity: undefined, latitude: 51.92, longitude: 4.48, locationCountry: "nl" }],
+    ["create request in hybrid category", world({ category: { serviceType: "hybrid" } }), "buyer", "createRequest", newRequest],
+    ["create request in category without service type", world({ category: { serviceType: undefined } }), "buyer", "createRequest", newRequest],
+    ...[[7, 40], [8, 40], [120, 40], [121, 40], [8, 39], [8, 5000], [8, 5001]].map(([titleLength, descriptionLength]) => [`create request with title ${titleLength} and description ${descriptionLength} characters`, world(), "buyer", "createRequest", { ...newRequest, title: "t".repeat(titleLength), description: "d".repeat(descriptionLength) }]),
+    ...[[2, 20], [100, 20], [101, 20]].map(([cityLength, postcodeLength]) => [`create request with city ${cityLength} and postcode ${postcodeLength} characters`, world(), "buyer", "createRequest", { ...newRequest, locationCity: "c".repeat(cityLength), locationPostcode: "9".repeat(postcodeLength) }]),
+    ["create request short title", world(), "buyer", "createRequest", { ...newRequest, title: " Fan " }],
+    ["create request short description", world(), "buyer", "createRequest", { ...newRequest, description: "Too short" }],
+    ["create request without location", world(), "buyer", "createRequest", { ...newRequest, locationCity: "  ", locationPostcode: undefined }],
+    ["create request short city", world(), "buyer", "createRequest", { ...newRequest, locationCity: "R" }],
+    ["create request long postcode", world(), "buyer", "createRequest", { ...newRequest, locationPostcode: "1".repeat(21) }],
+    ["create request outside the Netherlands", world(), "buyer", "createRequest", { ...newRequest, locationCountry: "Belgium" }],
+    ["create request bad latitude", world(), "buyer", "createRequest", { ...newRequest, latitude: -91 }],
+    ["create request bad longitude", world(), "buyer", "createRequest", { ...newRequest, longitude: 181 }],
+    ["create request online category", world({ category: { serviceType: "online" } }), "buyer", "createRequest", newRequest],
+    ["create request category in other workspace", world({ category: { tenantId: "tenant-b" } }), "buyer", "createRequest", newRequest],
+    ["create request missing category", [...localPeople()], "buyer", "createRequest", newRequest],
+    ["create request as professional", world(), "plumber", "createRequest", newRequest],
+    ["create request anonymous", world(), null, "createRequest", newRequest],
+    ["submit quote", world({}, [claim("profile")]), "plumber", "submitQuote", newQuote],
+    ["submit quote increments existing count", world({ request: { quoteCount: 2 } }, [claim("profile")]), "plumber", "submitQuote", { ...newQuote, currency: undefined }],
+    ["submit quote without claim", world(), "plumber", "submitQuote", newQuote],
+    ["submit quote twice", world({}, [claim("profile"), quote("q1", "profile")]), "plumber", "submitQuote", newQuote],
+    ["submit quote closed request", world({ request: { status: "accepted" } }, [claim("profile")]), "plumber", "submitQuote", newQuote],
+    ["submit quote missing request", [...localPeople(), localProfile("profile", "plumber")], "plumber", "submitQuote", newQuote],
+    ["submit quote own request", world({ request: { clientId: "plumber" } }, [claim("profile")]), "plumber", "submitQuote", newQuote],
+    ["submit quote zero amount", world({}, [claim("profile")]), "plumber", "submitQuote", { ...newQuote, amount: 0 }],
+    ["submit quote huge amount", world({}, [claim("profile")]), "plumber", "submitQuote", { ...newQuote, amount: 1_000_001 }],
+    ...[19, 20, 5000, 5001].map((length) => [`submit quote with description of ${length} characters`, world({}, [claim("profile")]), "plumber", "submitQuote", { ...newQuote, description: "q".repeat(length) }]),
+    ...[0.01, 1_000_000].map((amount) => [`submit quote with amount ${amount}`, world({}, [claim("profile")]), "plumber", "submitQuote", { ...newQuote, amount }]),
+    ["submit quote short description", world({}, [claim("profile")]), "plumber", "submitQuote", { ...newQuote, description: "Will fix it" }],
+    ["submit quote without profile", [...localPeople(), localCategory(), localRequest()], "plumber", "submitQuote", newQuote],
+    ["submit quote as client", world(), "buyer", "submitQuote", newQuote],
+    ["accept quote", world({ request: { quoteCount: 2 } }, [quote("q1", "profile"), quote("q2", "rival-profile"), quote("q3", "rival-profile", { status: "withdrawn" })]), "buyer", "acceptQuote", { quoteId: "q1" }],
+    ["accept quote without currency, date or city", world({ request: { preferredDate: undefined, locationCity: undefined, locationPostcode: undefined, locationCountry: undefined } }, [quote("q1", "profile", { currency: undefined })]), "buyer", "acceptQuote", { quoteId: "q1" }],
+    ["accept quote on matched request", world({ request: { status: "matched" } }, [quote("q1", "profile")]), "buyer", "acceptQuote", { quoteId: "q1" }],
+    ["accept quote retry returns existing workspace", accepted([{ _id: "appointment", _table: "localAppointments", orderId: "order" }]), "buyer", "acceptQuote", { quoteId: "q1" }],
+    ["accept quote retry without appointment", accepted(), "buyer", "acceptQuote", { quoteId: "q1" }],
+    ["accept quote with mismatching order", world({ request: { status: "accepted" } }, [quote("q1", "profile", { status: "accepted" }), { _id: "order", _table: "orders", tenantId: "tenant-a", clientId: "buyer", quoteRequestId: "request", quoteId: "q1", freelancerId: "rival-profile", orderType: "local_quote" }]), "buyer", "acceptQuote", { quoteId: "q1" }],
+    ["accept quote on closed request", world({ request: { status: "cancelled" } }, [quote("q1", "profile")]), "buyer", "acceptQuote", { quoteId: "q1" }],
+    ["accept rejected quote", world({}, [quote("q1", "profile", { status: "rejected" })]), "buyer", "acceptQuote", { quoteId: "q1" }],
+    ["accept quote as another client", world({}, [quote("q1", "profile")]), "stranger", "acceptQuote", { quoteId: "q1" }],
+    ["accept quote in other workspace", world({ request: { tenantId: "tenant-b" } }, [quote("q1", "profile")]), "buyer", "acceptQuote", { quoteId: "q1" }],
+    ["accept quote missing quote", world(), "buyer", "acceptQuote", { quoteId: "q1" }],
+    ["accept quote missing request", [...localPeople(), quote("q1", "profile")], "buyer", "acceptQuote", { quoteId: "q1" }],
+    ["accept quote missing profile", world({}, [quote("q1", "ghost-profile")]), "buyer", "acceptQuote", { quoteId: "q1" }],
+    ["accept quote missing professional account", [...localPeople().filter((p) => p._id !== "plumber"), localCategory(), localProfile("profile", "plumber"), localRequest(), quote("q1", "profile")], "buyer", "acceptQuote", { quoteId: "q1" }],
+    ["accept quote as professional", world({}, [quote("q1", "profile")]), "plumber", "acceptQuote", { quoteId: "q1" }],
+    ["my requests", world({}, [localRequest({ _id: "request-2", categoryId: "gone", locationCity: undefined, budgetIndication: undefined, preferredDate: undefined, quoteCount: undefined }), localRequest({ _id: "request-3", clientId: "stranger" })]), "buyer", "listMyRequests", {}],
+    ["my requests as professional", world(), "plumber", "listMyRequests", {}],
+    ["my requests anonymous", world(), null, "listMyRequests", {}],
+  ];
+};
+
 async function record(moduleName, sourceFile) {
   const canonical = path.join(root, moduleName);
   const output = {};
+  const names = suites[moduleName]().map(([name]) => name);
+  const duplicate = names.find((name, index) => names.indexOf(name) !== index);
+  if (duplicate) throw new Error(`${moduleName}: duplicate scenario name "${duplicate}"`);
   for (const [name, rows, actor, fn, args, options] of suites[moduleName]()) {
     const log = [];
     const mod = loadModule(sourceFile, canonical, log, options);
